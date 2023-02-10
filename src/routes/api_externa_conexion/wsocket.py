@@ -1,0 +1,170 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+import routes.instrumentosGet as instrumentosGet
+from utils.db import db
+import routes.api_externa_conexion.get_login as get
+import routes.api_externa_conexion.validaInstrumentos as val
+import routes.instrumentos as inst
+from datetime import datetime
+import pandas as pd
+import pyRofex #lo utilizo para test
+import time    #lo utilizo para test
+
+wsocket = Blueprint('wsocket',__name__)
+
+reporte_de_instrumentos = []
+
+@wsocket.route('/suscriptos/')
+def suscriptos():
+      try:
+        #traigo los instrumentos para suscribirme
+        mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
+        print("<<<<<---------------------mis_instrumentos --------------------------->>>>>> ",mis_instrumentos)
+        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+      # print("repuesta_listado_instrumento repuesta_listado_instrumento ",repuesta_listado_instrumento)
+        listado_instrumentos = repuesta_listado_instrumento['instruments']   
+        tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+        instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
+          
+        print("<<<-----------instrumentos_existentes suscriptos wsocket.py--------->>>>>",instrumentos_existentes)
+      ##aqui se conecta al ws
+        
+        get.pyRofexInicializada.init_websocket_connection(market_data_handler,order_report_handler,error_handler,exception_error)
+        #### aqui define el MarketDataEntry
+        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                    get.pyRofexInicializada.MarketDataEntry.OFFERS,
+                    get.pyRofexInicializada.MarketDataEntry.LAST]
+          
+        ###asi puedo llamar otra funcion para manejar los datos del ws#####      
+        #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
+        #### aqui se subscribe   
+        print("entries instrumento_suscriptio",entries)         
+        instrumento_suscriptio =  get.pyRofexInicializada.market_data_subscription(instrumentos_existentes,entries)
+        print("instrumento_suscriptio",instrumento_suscriptio)
+        # Subscribes to an Invalid Instrument (Error Message Handler should be call)
+        get.pyRofexInicializada.market_data_subscription(tickers=["InvalidInstrument"],
+                                 entries=entries)
+        get.pyRofexInicializada.order_report_subscription(snapshot=True)
+        actualizarTablaMD()
+        return render_template('suscripcion.html', datos =  get.market_data_recibida)
+      except:  
+           print("contraseña o usuario incorrecto")  
+           flash('Loggin Incorrect')    
+           return render_template("errorLogueo.html" ) 
+
+@wsocket.route('/SuscripcionWs/', methods = ['POST'])
+def webSocket():
+     if request.method == "POST":         
+        Ticker = request.form["symbol"]                 
+        Ticker = Ticker.replace("*", " ")
+       # print("websoooooooooooooooooketttt en wsocket.py ",Ticker)
+        #almaceno los symbol a suscribirme
+        instrumentosGet.guarda_instrumento_para_suscripcion_ws(Ticker)
+        #traigo los instrumentos para suscribirme
+        mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
+       # print("mis_instrumentos",mis_instrumentos)
+        #mis_instrumentos = [Ticker]
+        #mis_instrumentos = ["DLR/NOV22"]
+       # print("llega aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",mis_instrumentos)
+        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+        listado_instrumentos = repuesta_listado_instrumento['instruments']   
+        tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+        
+        instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
+        print(instrumentos_existentes)    
+    ##aqui se conecta al ws
+       
+        get.pyRofexInicializada.init_websocket_connection(market_data_handler,order_report_handler,error_handler,exception_error)
+        #### aqui define el MarketDataEntry
+        #print("siiiiiiiiiiiiiiiiiiiiii paaaaaaaaaaaaaaaaaasaaaaaaaaaaaaaaaaa")
+        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                    get.pyRofexInicializada.MarketDataEntry.OFFERS,
+                    get.pyRofexInicializada.MarketDataEntry.LAST]
+         
+        ###asi puedo llamar otra funcion para manejar los datos del ws#####      
+        #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
+         #### aqui se subscribe            
+        instrumento_suscriptio =  get.pyRofexInicializada.market_data_subscription(instrumentos_existentes,entries)
+        print("instrumento_suscriptio",instrumento_suscriptio)
+        get.pyRofexInicializada.order_report_subscription(snapshot=True)
+       
+        actualizarTablaMD()
+        
+        return render_template('suscripcion.html', datos =  get.market_data_recibida)
+
+
+##########################esto es para ws#############################
+#Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
+def error_handler(message):
+  print("Mensaje de error: {0}".format(message))
+  
+def exception_error(message):
+  print("Mensaje de excepción: {0}".format(message))  
+  {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic23"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
+
+def order_report_handler(message):
+  print("Mensaje de OrderRouting: {0}".format(message))
+  get.reporte_de_ordenes.append(message)
+  
+  
+  
+  ###########tabla de market data
+  #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
+
+def market_data_handler(message):
+  print("message",message)
+  ticker = message["instrumentId"]["symbol"]
+  bid = message["marketData"]["BI"] if len(message["marketData"]["BI"]) != 0 else [{'price': "-", 'size': "-"}]
+  offer = message["marketData"]["OF"] if len(message["marketData"]["OF"]) != 0 else [{'price': "-", 'size': "-"}]
+  last = message["marketData"]["LA"]["price"] if message["marketData"]["LA"] != None else 0
+  dateLA = message['marketData']['LA']['date'] if message["marketData"]["LA"] != None else 0
+
+  timestamp = message['timestamp']
+  objeto_md = {'ticker':ticker,'bid':bid,'offer':offer,'last':last,'dateLA':dateLA,'timestamp':timestamp}
+  get.market_data_recibida.append(objeto_md)
+  print("Mensaje de MarketData en market_data_handler: {0}".format(message))
+  
+  
+  #{"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
+def order_report_handler(message):
+  print("Mensaje de OrderRouting: {0}".format(message))
+  get.reporte_de_ordenes.append(message)
+  
+  
+def actualizarTablaMD():
+  print("actualizarTablaMD")
+  
+  df = pd.DataFrame(columns=pd.Index(['Ticker','Timestamp','Vol. Compra','Precio Compra', 'Precio Venta', 'Vol. Venta', 'Ult. Precio Operado']))
+  for md in get.market_data_recibida: 
+    reporte_de_instrumentos.append({
+          'Ticker': md['ticker'],
+          'Timestamp':datetime.fromtimestamp(int(md['timestamp'])/1000),
+          'Vol. Compra':md['bid'][0]['size'],
+          'Precio Compra':md['bid'][0]['price'],
+          'Precio Venta': md['offer'][0]['price'],
+          'Vol. Venta': md['offer'][0]['size'],
+          'Ult. Precio Operado': md['last']})
+    df = df.append(
+        {
+          'Ticker': md['ticker'],
+          'Timestamp':datetime.fromtimestamp(int(md['timestamp'])/1000),
+          'Vol. Compra':md['bid'][0]['size'],
+          'Precio Compra':md['bid'][0]['price'],
+          'Precio Venta': md['offer'][0]['price'],
+          'Vol. Venta': md['offer'][0]['size'],
+          'Ult. Precio Operado': md['last']}, 
+          ignore_index=True)
+ 
+  return df.style.set_table_styles(
+      [{'selector': 'tr:hover',
+        'props': [('background-color', 'yellow'),('color', 'black')]},
+      {'selector': 'thead',
+        'props': [('font-size', '16px'),('padding', '8px'),('background-color','brown')]}]
+      )
+   #return  render_template("suscripcion.html")
+
+#primera estrategia de practica
+@wsocket.route('/estrategia/')
+def estrategia():
+  return redirect('/estrategyUno')
+    
+

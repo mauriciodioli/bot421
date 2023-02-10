@@ -1,0 +1,127 @@
+
+{% extends 'layout.html'%}
+{% block content%}
+    <div class = 'container p-4'>
+      <div class = 'row'>
+        <div class = "col-md-12">
+          {% with messages = get_flashed_messages()%}
+          {% if messages %}
+          {% for message in messages%}
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{message}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+          {% endif %}
+          {% endwith %}
+          <div class = "card card-body">
+            <form action="/add_instrumento" method="POST">
+              <input type="text" name="especie" placeholder="especie" >
+              <input type="text" name="c_compra" placeholder="c_compra" >
+              <input type="text" name="p_compra" placeholder="p_compra" >
+              <input type="text" name="p_venta" placeholder="p_venta" >
+              <input type="text" name="c_venta" placeholder="c_venta" >
+              <input type="text" name="ultimo" placeholder="ultimo" >
+              <input type="text" name="var" placeholder="var" >
+              <input type="text" name="apertura" placeholder="apertura" >
+              <input type="text" name="minimo" placeholder="minimo" >
+              <input type="text" name="maximo" placeholder="maximo" >                
+              <input type="text" name="cierre_anterior" placeholder="cierre_anterior" >
+              <input type="text" name="volumen" placeholder="volumen" >
+              <input type="text" name="vol_monto" placeholder="vol_monto" >
+              <input type="text" name="vwap" placeholder="vwap" >
+              <input type="text" name="idsegmento" placeholder="idsegmento" >
+              <input type="text" name="idmarket" placeholder="idmarket" >
+              <Button type="submit" class="btn btn-primary btn-sm btn-block" >Guardar</Button>
+            </form> 
+          </div>
+        </div>
+        <div class = "col-md-7">
+
+        </div>
+      </div>
+        
+      </div>
+      <div class = 'container p-4'>
+        <div class="table-responsive">
+      <table class="table table-dark table-striped table-border table-sm ">
+        <thead>           
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">especie</th>
+                <th scope="col">c_compra</th>
+                <th scope="col">p_compra</th>
+                <th scope="col">p_venta</th>
+                <th scope="col">c_venta</th>
+                <th scope="col">ultimo</th>
+                <th scope="col">var</th>
+                <th scope="col">apertura</th>
+                <th scope="col">minimo</th>
+                <th scope="col">maximo</th>                
+                <th scope="col">cierre_anterior</th>
+                <th scope="col">volumen</th>
+                <th scope="col">vol_monto</th>
+                <th scope="col">vwap</th>
+                <th scope="col">idsegmento</th>
+                <th scope="col">idmarket</th>
+                <th scope="col">Operaciones</th>
+            </tr>            
+        </thead>
+        <tbody>
+         
+          {% for dato in datos%}
+          
+            <tr>
+                <th scope="row">{{dato.id}}</th>               
+                <td>{{dato.especie}}</td>
+                <td>{{dato.c_compra}}</td>
+                <td>{{dato.p_compra}}</td>
+                <td>{{dato.p_venta}}</td>
+                <td>{{dato.c_venta}}</td>
+                <td>{{dato.ultimo}}</td>
+                <td>{{dato.var}}</td>
+                <td>{{dato.apertura}}</td>
+                <td>{{dato.minimo}}</td>
+                <td>{{dato.maximo}}</td>                
+                <td>{{dato.cierre_anterior}}</td>
+                <td>{{dato.volumen}}</td>
+                <td>{{dato.vol_monto}}</td>
+                <td>{{dato.vwap}}</td>
+                <td>{{dato.idsegmento}}</td>
+                <td>{{dato.idmarket}}</td>
+                <td>
+                  <div class="d-grid gap-2 d-md-block">
+              <!--<a href="/editar/{{dato.id}}" class="btn btn-secondary btn-sm">EDITAR</a>  -->  
+              <!--<a href="/delete/{{dato.id}}" class="btn btn-danger btn-sm btn-delete">ELIMINAR</a>-->  
+              <!--<a href="/comprar/{{dato.id}}" class="btn btn-primary btn-sm">COMPRAR</a>--> 
+              <a href="{{url_for('instrumentos.get_instrumento',id=dato.id)}}" class="btn btn-secondary btn-sm btn-editar">EDITAR</a> 
+              <a href="{{url_for('instrumentos.eliminar', id=dato.id)}}" class="btn btn-danger btn-sm btn-delete">ELIMINAR</a>  
+              <a href="{{url_for('comprar.compraInstrumento', id=dato.id)}}" class="btn btn-primary btn-sm">COMPRAR</a> 
+              </div>
+                </td>
+            </tr>           
+               
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+    <nav aria-label="...">
+        <ul class="pagination">
+          <li class="page-item disabled">
+            <a class="page-link">Previous</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">2</a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="#">Next</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+</body> 
+
+</html>
+{%endblock%}

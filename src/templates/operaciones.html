@@ -1,0 +1,63 @@
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% extends 'layout.html'%}
+{% block content%}
+<div class = 'container p-4'>
+    <div class = "col-md-4 offset-md-4">
+        <h1>COMPRAR</H1>
+            <form action="/comprar" method="POST">       
+                <div class="form-group"><input type="text" name="instrumento" placeholder="escribe instrumento" class="form-control"> </div>
+                <div class="form-group"><input type="text" name="cantidad" placeholder="escribe cantidad"  class="form-control"> </div>
+                <div class="form-group"><input type="text" name="precio" placeholder="escribe precio" class="form-control"> </div>
+                <div class="form-group"><input type="text" name="tipoOrden" placeholder="escribe tipoOrden"  class="form-control"> </div>
+                
+                <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
+            </form>
+    </div> 
+    <div >
+        <h1>VENDER</H1>
+            <form action="/vender" method="POST">       
+                <div class="form-group"><input type="text" name="instrumento" placeholder="escribe instrumento" class="form-control"> </div>
+                <div class="form-group"><input type="text" name="cantidad" placeholder="escribe cantidad"  class="form-control"> </div>
+                <div class="form-group"><input type="text" name="precio" placeholder="escribe precio" class="form-control"> </div>
+                <div class="form-group"><input type="text" name="tipoOrden" placeholder="escribe tipoOrden"  class="form-control"> </div>
+                
+                <div 
+                class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
+            </form> 
+    </div> 
+    <div >
+        <h1>MODIFICAR ORDEN</H1>
+            <form action="/vender" method="POST">       
+                <div class="form-group"><input type="text" name="instrumento" placeholder="escribe instrumento" class="form-control"> </div>
+                <div class="form-group"><input type="text" name="cantidad" placeholder="escribe cantidad"  class="form-control"> </div>
+                <div class="form-group"><input type="text" name="precio" placeholder="escribe precio" class="form-control"> </div>
+                <div class="form-group"><input type="text" name="tipoOrden" placeholder="escribe tipoOrden"  class="form-control"> </div>
+                
+                <div 
+                class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
+            </form> 
+    </div> 
+    <div>
+        <h1>CANCELAR ORDEN</H1>
+            <form action="/cancelarOrden" method="POST">       
+                <div class="form-group"><input type="text" name="clientId" placeholder="escribe instrumento" class="form-control"> </div>
+                
+                <div 
+                class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
+            </form> 
+
+
+    </div> 
+</div>
+</div>
+{%endblock%}
+       

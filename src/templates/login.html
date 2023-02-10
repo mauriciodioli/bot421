@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+<html lang="es">
+  
+<body> 
+
+  <div class = 'container p-4'>
+    <h1 name = "mensaje" id = "mensaje " >LOGEO EN PRYMARI API</h1>
+    <div class = "col-md-4 offset-md-4">
+    
+
+    <!--<meta http-equiv="refresh" content="1;url=http://localhost:5000/cargar" />-->
+
+    <form  name="logeo" action="/loginExt" method="post" class="btn-guardar_inst">
+      <input type="hidden" name="fecha" id="fecha"> 
+      <input type="hidden" name="environment" id="environment"> 
+      <input type="text" name="usuario" placeholder="mauriciodioli6603" >  
+      <input type="text" name="contraseña" placeholder="zbwitW5#"  >
+      <input type="text" name="cuenta" placeholder="REM6603"  >     
+      <select class="form-select"aria-label="Default select example" name = "selctorEnvironment" id="selctorEnvironment">
+        <option selected>Open this select menu</option>
+        <option value="1">Simulacion</option>
+        <option value="2">Produccion</option>     
+      </select>     
+      <input type='submit' value='Logear'>
+    </form>
+  
+      <script>
+        let guardada = localStorage.getItem("date")  
+        console.log("entraaaaaaaaaaaaaaaaaaaaaaaaa en scripttttttttttttttttt",guardada)//muestra localStorage    
+        if(!guardada)
+        {
+          // token = document.getElementsByName("tokens")[0].value;
+          let fecha = new Date()
+          fecha = fecha.getDate() +" "+fecha.getMonth() +" "+fecha.getYear();
+          console.log("entra en if = null")
+          localStorage.setItem('date', fecha);//guardo en localStorage
+        }else{
+          document.getElementById("fecha").value = guardada;//aqui guardo la fecha en input fecha
+          console.log(guardada)
+        } 
+      
+        
+      </script>
+
+    {%if fechas%}       
+     <meta http-equiv="refresh" content="1;url=http://localhost:5000/mostrar" />
+     <!-- <meta http-equiv="refresh" content="1;url=https://blooming-escarpment-18800.herokuapp.com/mostrar" />-->
+    {%endif%}
+    </div>
+  </div>
+</body>
+</html>
+
+{% endblock%}

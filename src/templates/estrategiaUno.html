@@ -1,0 +1,25 @@
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% extends 'layout.html'%}
+{% block content%}
+            <div class = 'container p-4'>
+                <div class = "col-md-4 offset-md-4"> 
+                     <form  action="/cargaDatosEstrategyUno/" method="post" class="btn-estrategiaUno">
+                        <div class="form-group"><input type="text" name="Ticker" placeholder="DLR/MAR22">  </div>            
+                        <div class="form-group"><input type="text" name="cantidad" placeholder="12"> </div> 
+                        <div class="form-group"><input type="text" name="spread" placeholder="0.05"> </div> 
+                        <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button> </div> 
+                                                   
+                     </form>       
+                </div> 
+            </div>
+{%endblock%}
+       
