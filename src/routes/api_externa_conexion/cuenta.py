@@ -14,6 +14,7 @@ cuenta = Blueprint('cuenta',__name__)
 
 @cuenta.route("/cuentas",  methods=["GET"])
 def cuentas():
+   
    try:
       if request.method == 'GET': 
    ####   AQUI TENGO QUE COMPARA LA FECHA ####     

@@ -22,8 +22,7 @@
                             <th scope="col">precio Compra</th>
                             <th scope="col">precio Venta</th>
                             <th scope="col"> Vol. Venta</th>                           
-                            <th scope="col">Ult. Precio Operado</th>
-                            <th scope="col">Quitar</th>
+                            <th scope="col">Ult. Precio Operado</th>                           
                                                     
                         </tr>            
                     </thead>
@@ -38,12 +37,7 @@
                             <td>{{dato.offer.0.price}}</td>
                             <td></td>
                             <td>{{dato.last}}</td> 
-                            <td>
-                              <form action="/webSocket/" method="POST">
-                                <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" class="form-control"> </div> 
-                                <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Quitar Susc</Button>
-                              </form>
-                            </td>
+                            
                           </tr>  
                        
                       {% endfor %}

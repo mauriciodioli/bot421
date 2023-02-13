@@ -38,8 +38,8 @@ def suscriptos():
         #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
         #### aqui se subscribe   
         print("entries instrumento_suscriptio",entries)         
-        instrumento_suscriptio =  get.pyRofexInicializada.market_data_subscription(instrumentos_existentes,entries)
-        print("instrumento_suscriptio",instrumento_suscriptio)
+        instrumento_suscripto =  get.pyRofexInicializada.market_data_subscription(instrumentos_existentes,entries)
+        print("instrumento_suscriptio",instrumento_suscripto)
         # Subscribes to an Invalid Instrument (Error Message Handler should be call)
         get.pyRofexInicializada.market_data_subscription(tickers=["InvalidInstrument"],
                                  entries=entries)
@@ -82,12 +82,13 @@ def webSocket():
          
         ###asi puedo llamar otra funcion para manejar los datos del ws#####      
         #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
-         #### aqui se subscribe            
+         #### aqui se subscribe
+             
         instrumento_suscriptio =  get.pyRofexInicializada.market_data_subscription(instrumentos_existentes,entries)
         print("instrumento_suscriptio",instrumento_suscriptio)
         get.pyRofexInicializada.order_report_subscription(snapshot=True)
        
-        actualizarTablaMD()
+        #actualizarTablaMD()
         
         return render_template('suscripcion.html', datos =  get.market_data_recibida)
 
@@ -121,6 +122,7 @@ def market_data_handler(message):
   timestamp = message['timestamp']
   objeto_md = {'ticker':ticker,'bid':bid,'offer':offer,'last':last,'dateLA':dateLA,'timestamp':timestamp}
   get.market_data_recibida.append(objeto_md)
+ 
   print("Mensaje de MarketData en market_data_handler: {0}".format(message))
   
   
