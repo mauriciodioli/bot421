@@ -57,11 +57,15 @@ def comprar():
           if  tipoOrder == 'LIMIT':
             print("saldo cuenta ",saldo)      
             nuevaOrden = get.pyRofexInicializada.send_order(ticker=instrumento,side=get.pyRofexInicializada.Side.BUY,size=cantidad,price=precio,order_type=get.pyRofexInicializada.OrderType.LIMIT)
-            orden = nuevaOrden['description']
+            orden = nuevaOrden
             print("Orden de compra enviada ",orden)
             
-            estadoOperacion()
-            return print("Orden de compra enviada ")
+            repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+        
+            operaciones = repuesta_operacion['orders']
+            print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+            return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+           
         else:
           print("No hay suficiente saldo para enviar la orden de compra")
         #actualizarTablaOR()
@@ -89,7 +93,7 @@ def vender():
              print("Orden de compra enviada {0}".format(nuevaOrden))
         else:
           print("No hay suficiente saldo para enviar la orden de compra")
-        actualizarTablaOR()
+        #actualizarTablaOR()
         return render_template('operaciones.html')
  
 @operaciones.route("/modificar", methods = ['POST'])
