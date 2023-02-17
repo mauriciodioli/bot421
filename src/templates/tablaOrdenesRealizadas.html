@@ -12,7 +12,21 @@
 {% block content%}
 
 <table border="1" class="dataframe">
+
+
   <div class = 'container p-4'>
+      <div class = 'container p-4'>
+        <form action="/get_trade_history_by_symbol/" method="POST">
+          <input type="text" name="symbol" placeholder="symbol">
+        <!-- <select class="form-select"aria-label="Default select example" name = "selctorEnvironment" id="selctorEnvironment">
+            <option selected>Open this select menu</option>
+            {% for dato in lsymbolos%}
+              <option value="1">{{lsymbolos.instrumentId.symbol}}</option>                        
+            {% endfor %}    
+          </select>-->
+          <Button type="submit">Submit</Button>
+        </form>  
+      </div>
     <table class="table table-dark table-striped">
       <thead>           
           <tr>
@@ -25,7 +39,7 @@
               <th scope="col"> Vol. Venta</th>                           
               <th scope="col">Ult. Precio Operado</th>
           -->   
-              <th scope="col">orderId</th>
+              <th scope="col">clOrdId</th>
               <th scope="col">symbol</th>
               <th scope="col">accountId</th>
               <th scope="col">ordType</th>
@@ -33,13 +47,16 @@
               <th scope="col"> orderQty</th>                           
               <th scope="col">side</th>
               <th scope="col">text</th>
-              <th scope="col">Modif</th>                            
+              <th scope="col">proprietary</th>
+              <th scope="col">Cancel</th>
+              <th scope="col">Modif</th>
+              <th scope="col">Vender</th>                            
           </tr>            
       </thead>
       <tbody>
         {% for dato in datos%}
           <tr>
-              <th scope="row">{{dato.orderId}}</th>
+              <th scope="row">{{dato.clOrdId}}</th>
               <th>{{dato.instrumentId.symbol}}</th>
               <th>{{dato.accountId.id}}</th>
               <th>{{dato.ordType}}</th>
@@ -47,10 +64,42 @@
               <th>{{dato.orderQty}}</th>
               <th>{{dato.side}}</th>
               <th>{{dato.text}}</th>
+              <th>{{dato.proprietary}}</th>
              <!-- <td><a href="/webSocket/{{dato.instrumentId.symbol}}" class="btn btn-primary btn-sm">Suscribir</a></td>-->                            
               <td>
-                <form action="/SuscripcionWs/" method="POST">
-                  <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "*")}} class="form-control"> </div> 
+                <form action="/cancelarOrden/" method="POST">
+                  <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="clOrdId" placeholder="escribe simbolo" value = {{dato.clOrdId.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="price" placeholder="escribe simbolo" value = {{dato.price}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="proprietary" placeholder="escribe simbolo" value = {{dato.proprietary.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="estado" placeholder="escribe simbolo" value = {{dato.text.replace(" ", "")}} class="form-control"> </div> 
+                  
+                  <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
+                </form>
+              </td>
+              <td>
+                <form action="/modificar/" method="POST">
+                  <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="clOrdId" placeholder="escribe simbolo" value = {{dato.clOrdId.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="price" placeholder="escribe simbolo" value = {{dato.price}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="proprietary" placeholder="escribe simbolo" value = {{dato.proprietary.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="estado" placeholder="escribe simbolo" value = {{dato.text.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="accountId" placeholder="escribe simbolo" value = {{dato.accountId.id.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="orderQty" placeholder="escribe simbolo" value = {{dato.orderQty}} class="form-control"> </div> 
+                
+                  <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
+                </form>
+              </td>
+              <td>
+                <form action="/vender/" method="POST">
+                  <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="clOrdId" placeholder="escribe simbolo" value = {{dato.clOrdId.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="price" placeholder="escribe simbolo" value = {{dato.price}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="proprietary" placeholder="escribe simbolo" value = {{dato.proprietary.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="estado" placeholder="escribe simbolo" value = {{dato.text.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="accountId" placeholder="escribe simbolo" value = {{dato.accountId.id.replace(" ", "")}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="orderQty" placeholder="escribe simbolo" value = {{dato.orderQty}} class="form-control"> </div> 
+                
                   <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
                 </form>
               </td>
