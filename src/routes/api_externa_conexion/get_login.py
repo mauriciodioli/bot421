@@ -69,7 +69,7 @@ def loginExt():
         first_date = datetime.strptime(hoy,'%d-%m-%Y')# fecha de hoy        
         #second_date = datetime.strptime(hoy,'%d-%m-%Y')
         print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa en get_login.py first_date',first_date)
-        second_date = datetime.strptime('05-02-2023','%d-%m-%Y')#para probar logeo diario   
+        second_date = datetime.strptime('13-02-2023','%d-%m-%Y')#para probar logeo diario   
         print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa en get_login.py second_date',second_date)     
         result = first_date > second_date#comparo las fechas si la de hoy es mayor que la de ayer no vuelvo a loguear
         #result = first_date < fecha#comparo las fechas
