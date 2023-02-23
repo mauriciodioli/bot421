@@ -97,21 +97,37 @@ def webSocket():
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
+
+def exception_handler(e):
+    print("Exception Occurred: {0}".format(e.msg))
   
 def exception_error(message):
   print("Mensaje de excepción: {0}".format(message))  
   {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic23"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 
 def order_report_handler(message):
+  
   print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
   
-  
+ # 2-Defines the handlers that will process the messages and exceptions.
+def order_report_handler_cancel(message):
+    print("Order Report Message Received: {0}".format(message))
+    # 6-Handler will validate if the order is in the correct state (pending_new)
+    if message["orderReport"]["status"] == "NEW":
+        # 6.1-We cancel the order using the websocket connection
+        print("Send to Cancel Order with clOrdID: {0}".format(message["orderReport"]["clOrdId"]))
+        pyRofex.cancel_order_via_websocket(message["orderReport"]["clOrdId"])
+
+    # 7-Handler will receive an Order Report indicating that the order is cancelled (will print it)
+    if message["orderReport"]["status"] == "CANCELLED":
+        print("Order with ClOrdID '{0}' is Cancelled.".format(message["orderReport"]["clOrdId"])) 
   
   ###########tabla de market data
   #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 
 def market_data_handler(message):
+  
   print("message",message)
   ticker = message["instrumentId"]["symbol"]
   bid = message["marketData"]["BI"] if len(message["marketData"]["BI"]) != 0 else [{'price': "-", 'size': "-"}]

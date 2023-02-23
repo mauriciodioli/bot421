@@ -13,6 +13,7 @@ import re
 import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
 import routes.instrumentos as inst
+import ssl
 
 
 
@@ -38,6 +39,7 @@ market_data_recibida = []
 reporte_de_ordenes = []
 
 pyRofexInicializada = pyRofex
+
 # Creating simple Routes
 @get_login.route("/loginApi")
 def loginApi(): 
@@ -46,8 +48,8 @@ def loginApi():
  
 @get_login.route("/loginExt" , methods=['POST'])
 def loginExt():
-    
-    
+     
+     
      #print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa en get_login.py hoy = datetime.today().strftime()',hoy)
      if request.method == 'POST':
         selector = request.form['selctorEnvironment']
@@ -85,11 +87,14 @@ def loginExt():
                     return render_template("login.html" )
             if int(selector) < 2:
                try:
+                
                 pyRofexInicializada.initialize(user=user, 
                     password=password, 
                     account=account, 
                     environment=pyRofexInicializada.Environment.REMARKET)
-                #print("paso por aquiiii")
+                
+                
+                print("está logueado en simulado en REMARKET")
                except:  
                     print("contraseña o usuario incorrecto")  
                     flash('Loggin Incorrect')    
@@ -99,6 +104,14 @@ def loginExt():
                     password=password, 
                     account=account, 
                     environment=pyRofexInicializada.Environment.LIVE) 
+                print("está logueado en produccion en LIVE")
+        return render_template('home.html')
+
+
+
+
+
+
        #ws.webSocket() ### AQUI FALTA HACER LA PANTALLA EN DONDE ELIJO LOS INSTRUMENTOS PARA SUSCRIBIRME 
        # repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments()
        # listado_instrumentos = repuesta_listado_instrumento['instruments']
@@ -124,8 +137,7 @@ def loginExt():
         #vender('DLR/NOV22',25,108.25,pyRofex.OrderType.LIMIT)
       # actualizarTablaMD()
         
-        return render_template('home.html')
-
+        
 
 
 
