@@ -62,14 +62,18 @@ def estadoOperacion():
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():
   try:  
+   
    if request.method == 'POST':
         instrumento = request.form['instrumento']
         cantidad = request.form['cantidad']
         precio = request.form['precio']  
         tipoOrder = request.form.getlist('tipoOrder')[0] 
+        tipoTrafico = request.form.getlist('tipoTrafico')[0] 
+        
+   if tipoTrafico == 'REST':
         
         print("tipoOrder ",tipoOrder)
-        
+   
         saldo = cuenta.obtenerSaldoCuenta()
         
         
@@ -95,10 +99,12 @@ def comprar():
         estadoOperacion()
         flash('No hay suficiente saldo para enviar la orden de compra')
         return render_template("errorOperacion.html" )
+   else:
+    sendOrderWS()
   except:        
     flash('Datos Incorrect')  
     return render_template("operaciones.html" )
- 
+  
 @operaciones.route("/vender/" , methods = ['POST'])
 def vender():
   if request.method == 'POST':
@@ -120,28 +126,52 @@ def vender():
      print("escribiendooooooooooooooooooo la liiiiiiiiiiiiiiiiiistaa ")
      
      order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
-     print("order_status ",order_status)  
-     if order_status["order"]["status"] == "Operada":
+     print("order_status operaciones.py /vender/ ",order_status)  
+     if order_status["order"]["status"] == "FILLED":#aqui debo cambiar el estado
         # aqui debo vender
-        
-        return render_template('operaciones.html', datos = lista )
+        saldo = cuenta.obtenerSaldoCuenta()
+        print("saldo ",saldo)
+        if saldo >= int(orderQty) * float(price):
+          print("saldo despues de if ",saldo)
+          
+          # 3-Initialize Websocket Connection with the handlers
+          get.pyRofexInicializada.init_websocket_connection(getFunction.order_report_handler,
+                                  getFunction.error_handler,
+                                  getFunction.exception_handler)
+          # 4-Subscribes to receive order report for the default account
+          get.pyRofexInicializada.order_report_subscription()
+          
+          # 5-Send an order via websocket message then check that order_report_handler is called
+          get.pyRofexInicializada.send_order_via_websocket(symbol,
+                                            get.pyRofexInicializada.Side.SELL,
+                                            1,
+                                            get.pyRofexInicializada.OrderType.LIMIT,
+                                            price)  # validate correct price
+          # 8-Wait 5 sec then close the connection
+          
+          time.sleep(5)
+          get.pyRofexInicializada.close_websocket_connection()
+          estadoOperacion()
+        else:
+           print("No hay suficiente saldo para enviar la orden de compra")
+           return render_template('operaciones.html', datos = lista )
      else:
             flash('No se puede vender la Orden')  
-           
-     instrumento = request.form['instrumento']
-     cantidad = request.form['cantidad']
-     tipoOrden = request.form['tipoOrden']
-     precio = request.form['precio']   
+            return render_template('operaciones.html', datos = lista )
+   #  instrumento = request.form['instrumento']
+   #  cantidad = request.form['cantidad']
+   #  tipoOrden = request.form['tipoOrden']
+   #  precio = request.form['precio']   
        
-     saldo = cuenta.obtenerSaldoCuenta()
+   #  saldo = cuenta.obtenerSaldoCuenta()
         
-     if saldo >= int(cantidad) * float(precio):
-       if   tipoOrden == 'LIMIT':      
-             nuevaOrden = get.pyRofexInicializada.send_order(ticker=instrumento,side=get.pyRofexInicializada.Side.SELL,size=cantidad,price=precio,order_type=get.pyRofexInicializada.OrderType.LIMIT)
-             print("Orden de compra enviada {0}".format(nuevaOrden))
-     else:
-          print("No hay suficiente saldo para enviar la orden de compra")
-        #actualizarTablaOR()
+   #  if saldo >= int(cantidad) * float(precio):
+   #    if   tipoOrden == 'LIMIT':      
+   #          nuevaOrden = get.pyRofexInicializada.send_order(ticker=instrumento,side=get.pyRofexInicializada.Side.SELL,size=cantidad,price=precio,order_type=get.pyRofexInicializada.OrderType.LIMIT)
+   #          print("Orden de compra enviada {0}".format(nuevaOrden))
+   #  else:
+   #       print("No hay suficiente saldo para enviar la orden de compra")
+   #     #actualizarTablaOR()
   return render_template('operaciones.html')
  
 @operaciones.route("/modificar/", methods = ['POST'])
@@ -217,8 +247,118 @@ def cancelarOrden():
           #print("cancel_order ")
     return  estadoOperacion()     
    # return render_template('tablaOrdenesRealizadas.html')  
-  except:        
+  except:      
+    flash('No se puede cancelar la Orden error de datos')    
     return render_template("tablaOrdenesRealizadas.html" )
- 
+    
+    
+@operaciones.route("/sendOrderWS/", methods = ['POST'] )
+def sendOrderWS():
+   try:
+    if request.method == 'POST':
+        instrumento = request.form['instrumento']
+        cantidad = request.form['cantidad']
+        precio = request.form['precio']  
+        tipoOrder = request.form.getlist('tipoOrder')[0] 
+        
+        print("tipoOrder WWWWWWWWWWWWWWWWWssssssssssssssssss",tipoOrder)
+        
+        saldo = cuenta.obtenerSaldoCuenta()
+        
+        
+        if saldo >= int(cantidad) * float(precio):
+          
+          print("tipoOrder ",tipoOrder)
+          if  tipoOrder == 'LIMIT':
+            print("saldo cuenta ",saldo)      
+         
+            
+          # 3-Initialize Websocket Connection with the handlers
+            get.pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
+                                  error_handler=error_handler,
+                                  exception_handler=exception_handler)
 
+            # 4-Subscribes to receive order report for the default account
+            get.pyRofexInicializada.order_report_subscription()
+
+            # 5-Send an order via websocket message then check that order_report_handler is called
+            get.pyRofexInicializada.send_order_via_websocket(ticker=instrumento, side=get.pyRofexInicializada.Side.BUY, size=cantidad, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=precio)  
+            # validate correct price
+           
+            # 8-Wait 5 sec then close the connection
+            time.sleep(5)
+            get.pyRofexInicializada.close_websocket_connection()
+            
+            
+            repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+        
+            operaciones = repuesta_operacion['orders']
+            print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+            return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+          else:
+            print("No hay suficiente saldo para enviar la orden de compra")
+             
+            estadoOperacion()
+            flash('No hay suficiente saldo para enviar la orden de compra')
+            return render_template("errorOperacion.html" )
+   except:        
+    flash('Datos Incorrect')  
+    print('datos incorrectos')
+    return render_template("errorOperacion.html" )
+
+def error_handler(message):
+  print("Mensaje de error: {0}".format(message))
+  
+def exception_error(message):
+  print("Mensaje de excepción: {0}".format(message))  
+  {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic23"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
+
+def order_report_handler(message):
+  
+  
+  
+  print("Mensaje de OrderRouting: {0}".format(message))
+  get.reporte_de_ordenes.append(message)
+  
+ # 2-Defines the handlers that will process the messages and exceptions.
+def order_report_handler_cancel(message):
+    print("Order Report Message Received: {0}".format(message))
+    # 6-Handler will validate if the order is in the correct state (pending_new)
+    if message["orderReport"]["status"] == "NEW":
+        # 6.1-We cancel the order using the websocket connection
+        print("Send to Cancel Order with clOrdID: {0}".format(message["orderReport"]["clOrdId"]))
+        get.pyRofexInicializada.cancel_order_via_websocket(message["orderReport"]["clOrdId"])
+
+    # 7-Handler will receive an Order Report indicating that the order is cancelled (will print it)
+    if message["orderReport"]["status"] == "CANCELLED":
+        print("Order with ClOrdID '{0}' is Cancelled.".format(message["orderReport"]["clOrdId"])) 
+  
+  ###########tabla de market data
+  #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
+
+def market_data_handler(message):
+  
+  
+  print("message",message)
+  ticker = message["instrumentId"]["symbol"]
+  bid = message["marketData"]["BI"] if len(message["marketData"]["BI"]) != 0 else [{'price': "-", 'size': "-"}]
+  offer = message["marketData"]["OF"] if len(message["marketData"]["OF"]) != 0 else [{'price': "-", 'size': "-"}]
+  last = message["marketData"]["LA"]["price"] if message["marketData"]["LA"] != None else 0
+  dateLA = message['marketData']['LA']['date'] if message["marketData"]["LA"] != None else 0
+
+  timestamp = message['timestamp']
+  objeto_md = {'ticker':ticker,'bid':bid,'offer':offer,'last':last,'dateLA':dateLA,'timestamp':timestamp}
+  get.market_data_recibida.append(objeto_md)
+ 
+  print("Mensaje de MarketData en market_data_handler: {0}".format(message))
+  
+  
+  #{"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
+
+def order_report_handler(message):
+  print("Mensaje de OrderRouting: {0}".format(message))
+  get.reporte_de_ordenes.append(message)
+  
+def exception_handler(e):
+    print("Exception Occurred: {0}".format(e.msg))
  

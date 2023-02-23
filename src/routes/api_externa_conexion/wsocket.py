@@ -97,6 +97,9 @@ def webSocket():
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
+
+def exception_handler(e):
+    print("Exception Occurred: {0}".format(e.msg))
   
 def exception_error(message):
   print("Mensaje de excepción: {0}".format(message))  
