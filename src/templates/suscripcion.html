@@ -22,7 +22,8 @@
                             <th scope="col">precio Compra</th>
                             <th scope="col">precio Venta</th>
                             <th scope="col"> Vol. Venta</th>                           
-                            <th scope="col">Ult. Precio Operado</th>                           
+                            <th scope="col">Ult. Precio Operado</th>  
+                                                  
                                                     
                         </tr>            
                     </thead>
@@ -34,9 +35,9 @@
                             <td>{{dato.timestamp}}</td>
                             <td>{{dato.dateLA}}</td>  
                             <td>{{dato.bid.0.price}}</td>
-                            <td>{{dato.offer.0.price}}</td>
-                            <td></td>
+                            <td>{{dato.offer.0.price}}</td>                           
                             <td>{{dato.last}}</td> 
+                           
                             
                           </tr>  
                        
@@ -45,6 +46,13 @@
                     </tbody>
                 </table>
             </div>
+            <div>
+             
+            </div>
+          <div>
+            <input type="text" name="ws" id="fecha">
+          </div>
         </div>
+        
 {%endblock%}
  

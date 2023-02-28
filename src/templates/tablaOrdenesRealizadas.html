@@ -91,7 +91,7 @@
                 </form>
               </td>
               <td>
-                <form action="/vender/" method="POST">
+                <form action="/mostrarLaVenta/" method="POST">
                   <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "")}} class="form-control"> </div> 
                   <div class="form-group"><input type="hidden" name="clOrdId" placeholder="escribe simbolo" value = {{dato.clOrdId.replace(" ", "")}} class="form-control"> </div> 
                   <div class="form-group"><input type="hidden" name="price" placeholder="escribe simbolo" value = {{dato.price}} class="form-control"> </div> 
@@ -99,6 +99,7 @@
                   <div class="form-group"><input type="hidden" name="estado" placeholder="escribe simbolo" value = {{dato.text.replace(" ", "")}} class="form-control"> </div> 
                   <div class="form-group"><input type="hidden" name="accountId" placeholder="escribe simbolo" value = {{dato.accountId.id.replace(" ", "")}} class="form-control"> </div> 
                   <div class="form-group"><input type="hidden" name="orderQty" placeholder="escribe simbolo" value = {{dato.orderQty}} class="form-control"> </div> 
+                  <div class="form-group"><input type="hidden" name="ordType" placeholder="escribe simbolo" value = {{dato.ordType}} class="form-control"> </div> 
                 
                   <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
                 </form>

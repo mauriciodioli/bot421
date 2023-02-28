@@ -101,10 +101,39 @@ def comprar():
         return render_template("errorOperacion.html" )
    else:
     sendOrderWS()
+    flash('Operacion enviada exitosamente')
+    repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+    operaciones = repuesta_operacion['orders']
+    print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+    return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
   except:        
     flash('Datos Incorrect')  
     return render_template("operaciones.html" )
-  
+################# AQUI SE MUESTRAN LOS VALORES QUE SE QUIEREN VENDER#########
+@operaciones.route("/mostrarLaVenta/" , methods = ['POST'])
+def mostrarLaVenta(): 
+  if request.method == 'POST':
+     clOrdId = request.form.get('clOrdId') 
+     symbol = request.form.get('symbol') 
+     price = request.form.get('price') 
+     proprietary= request.form.get('proprietary') 
+     estado= request.form.get('estado') 
+     accountId= request.form.get('accountId') 
+     orderQty = request.form.get('orderQty') 
+     ordType = request.form.get('ordType')  
+     print("clOrdId ", clOrdId)
+     print("symbol ", symbol)
+     print("price ", price)
+     print("proprietary ", proprietary)
+     print("estado ", estado)
+     print("accountId ", accountId)
+     print("orderQty ", orderQty)
+     print("ordType ", ordType)
+     lista = [{'clOrdId' : clOrdId, 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty,'proprietary' : proprietary, 'estado' : estado, 'accountId' : accountId, 'ordType' : ordType}]
+     print("escribiendooooooooooooooooooo la liiiiiiiiiiiiiiiiiistaa /mostrarLaVenta/", lista)
+     return render_template('operaciones.html', datos = lista )
+    
+############# aqui se realiza la operacion de vender ###############################    
 @operaciones.route("/vender/" , methods = ['POST'])
 def vender():
   if request.method == 'POST':
@@ -115,6 +144,7 @@ def vender():
      estado= request.form.get('estado') 
      accountId= request.form.get('accountId') 
      orderQty = request.form.get('orderQty') 
+     ordType = request.form.get('ordType') 
      print("clOrdId ", clOrdId)
      print("symbol ", symbol)
      print("price ", price)
@@ -122,12 +152,14 @@ def vender():
      print("estado ", estado)
      print("accountId ", accountId)
      print("orderQty ", orderQty)
-     lista = [{'clOrdId' : clOrdId, 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty,'proprietary' : proprietary, 'estado' : estado, 'accountId' : accountId }]
-     print("escribiendooooooooooooooooooo la liiiiiiiiiiiiiiiiiistaa ")
+     print("ordType ", ordType)
+     lista = [{'clOrdId' : clOrdId, 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty,'proprietary' : proprietary, 'estado' : estado, 'accountId' : accountId, 'ordType' : ordType }]
+     print("escribiendooooooooooooooooooo la liiiiiiiiiiiiiiiiiistaa en /vender/ ")
+    
      
      order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
      print("order_status operaciones.py /vender/ ",order_status)  
-     if order_status["order"]["status"] == "FILLED":#aqui debo cambiar el estado
+     if order_status["order"]["status"] == "PARTIALLY_FILLED":#aqui debo cambiar el estado
         # aqui debo vender
         saldo = cuenta.obtenerSaldoCuenta()
         print("saldo ",saldo)
@@ -135,20 +167,18 @@ def vender():
           print("saldo despues de if ",saldo)
           
           # 3-Initialize Websocket Connection with the handlers
-          get.pyRofexInicializada.init_websocket_connection(getFunction.order_report_handler,
-                                  getFunction.error_handler,
-                                  getFunction.exception_handler)
+          get.pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
+                                  error_handler=error_handler,
+                                  exception_handler=exception_handler)
+
           # 4-Subscribes to receive order report for the default account
           get.pyRofexInicializada.order_report_subscription()
-          
+
           # 5-Send an order via websocket message then check that order_report_handler is called
-          get.pyRofexInicializada.send_order_via_websocket(symbol,
-                                            get.pyRofexInicializada.Side.SELL,
-                                            1,
-                                            get.pyRofexInicializada.OrderType.LIMIT,
-                                            price)  # validate correct price
-          # 8-Wait 5 sec then close the connection
-          
+          get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.SELL, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
+           # validate correct price
+           
+            # 8-Wait 5 sec then close the connection
           time.sleep(5)
           get.pyRofexInicializada.close_websocket_connection()
           estadoOperacion()
@@ -172,7 +202,7 @@ def vender():
    #  else:
    #       print("No hay suficiente saldo para enviar la orden de compra")
    #     #actualizarTablaOR()
-  return render_template('operaciones.html')
+  return render_template('operaciones.html', datos = lista )
  
 @operaciones.route("/modificar/", methods = ['POST'])
 def modificar():
@@ -194,12 +224,14 @@ def modificar():
         
        
        lista = [{'clOrdId' : clOrdId, 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty,'proprietary' : proprietary, 'estado' : estado, 'accountId' : accountId }]
-       print("escribiendooooooooooooooooooo la liiiiiiiiiiiiiiiiiistaa ")
-       cancelarOrden()
+       print("escribiendooooooooooooooooooo la orden ")       
        order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
        print("order_status ",order_status)  
        if order_status["order"]["status"] == "NEW":
             # Modifi Order
+          
+            cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
+         
             return render_template('operaciones.html', datos = lista )
        else:
             flash('No se puede modificar la Orden, ya fue OPERADA')  
@@ -314,6 +346,7 @@ def exception_error(message):
   {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic23"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 
 def order_report_handler(message):
+  
   
   
   
