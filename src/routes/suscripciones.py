@@ -28,10 +28,11 @@ def suscripcion_instrumentos():
 @suscripciones.route("/suscripcionDb/" )
 def suscripcionDb():
     try:
+         get.pyRofexInicializada.get_detailed_instruments()
          all_ins = db.session.query(InstrumentoSuscriptos).all()
          return render_template("suscripciones_db.html", datos =  all_ins)
     except:        
-        return render_template("login.html" )
+        return render_template("errorLogueo.html" )
     
 @suscripciones.route("/suscDelete/", methods = ['POST'] )
 def suscDelete():
