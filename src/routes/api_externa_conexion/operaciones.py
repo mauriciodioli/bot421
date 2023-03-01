@@ -52,7 +52,7 @@ def estadoOperacion():
         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
         
         operaciones = repuesta_operacion['orders']
-        print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
         return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
    except:  
         print("contraseña o usuario incorrecto")  
@@ -64,11 +64,16 @@ def comprar():
   try:  
    
    if request.method == 'POST':
-        instrumento = request.form['instrumento']
-        cantidad = request.form['cantidad']
-        precio = request.form['precio']  
+        symbol = request.form['symbol']
+        orderQty = request.form['orderQty']
+        price = request.form['price']  
         tipoOrder = request.form.getlist('tipoOrder')[0] 
         tipoTrafico = request.form.getlist('tipoTrafico')[0] 
+        print("symbol ",symbol)
+        print("orderQty ",orderQty)
+        print("price ",price)
+        print("tipoOrder ",tipoOrder)
+        print("tipoTrafico ",tipoTrafico)
         
    if tipoTrafico == 'REST':
         
@@ -77,12 +82,12 @@ def comprar():
         saldo = cuenta.obtenerSaldoCuenta()
         
         
-        if saldo >= int(cantidad) * float(precio):
+        if saldo >= int(orderQty) * float(price):
           
           print("tipoOrder ",tipoOrder)
           if  tipoOrder == 'LIMIT':
             print("saldo cuenta ",saldo)      
-            nuevaOrden = get.pyRofexInicializada.send_order(ticker=instrumento,side=get.pyRofexInicializada.Side.BUY,size=cantidad,price=precio,order_type=get.pyRofexInicializada.OrderType.LIMIT)
+            nuevaOrden = get.pyRofexInicializada.send_order(ticker=symbol,side=get.pyRofexInicializada.Side.BUY,size=orderQty,price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
             orden = nuevaOrden
             print("Orden de compra enviada ",orden)
             
@@ -159,7 +164,8 @@ def vender():
      
      order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
      print("order_status operaciones.py /vender/ ",order_status)  
-     if order_status["order"]["status"] == "PARTIALLY_FILLED":#aqui debo cambiar el estado
+     print("order_status operaciones.py /vender/ ",order_status["order"]["status"])  
+     if order_status["order"]["status"] == "FILLED":#aqui debo cambiar el estado
         # aqui debo vender
         saldo = cuenta.obtenerSaldoCuenta()
         print("saldo ",saldo)
@@ -170,18 +176,24 @@ def vender():
           get.pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
                                   error_handler=error_handler,
                                   exception_handler=exception_handler)
-
+          print("<<<-------init_websocket_connection------>>>>> ")
           # 4-Subscribes to receive order report for the default account
           get.pyRofexInicializada.order_report_subscription()
-
+          print("<<<-------order_report_subscription------>>>>> ")
           # 5-Send an order via websocket message then check that order_report_handler is called
           get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.SELL, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
            # validate correct price
-           
+          print("<<<-------send_order_via_websocketttttttttt------>>>>> ")
             # 8-Wait 5 sec then close the connection
           time.sleep(5)
           get.pyRofexInicializada.close_websocket_connection()
-          estadoOperacion()
+          #estadoOperacion()
+          repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+        
+          operaciones = repuesta_operacion['orders']
+          #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+          return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+        
         else:
            print("No hay suficiente saldo para enviar la orden de compra")
            return render_template('operaciones.html', datos = lista )
@@ -288,9 +300,9 @@ def cancelarOrden():
 def sendOrderWS():
    try:
     if request.method == 'POST':
-        instrumento = request.form['instrumento']
-        cantidad = request.form['cantidad']
-        precio = request.form['precio']  
+        symbol = request.form['symbol']
+        orderQty = request.form['orderQty']
+        price = request.form['price']  
         tipoOrder = request.form.getlist('tipoOrder')[0] 
         
         print("tipoOrder WWWWWWWWWWWWWWWWWssssssssssssssssss",tipoOrder)
@@ -298,7 +310,7 @@ def sendOrderWS():
         saldo = cuenta.obtenerSaldoCuenta()
         
         
-        if saldo >= int(cantidad) * float(precio):
+        if saldo >= int(orderQty) * float(price):
           
           print("tipoOrder ",tipoOrder)
           if  tipoOrder == 'LIMIT':
@@ -314,7 +326,7 @@ def sendOrderWS():
             get.pyRofexInicializada.order_report_subscription()
 
             # 5-Send an order via websocket message then check that order_report_handler is called
-            get.pyRofexInicializada.send_order_via_websocket(ticker=instrumento, side=get.pyRofexInicializada.Side.BUY, size=cantidad, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=precio)  
+            get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
             # validate correct price
            
             # 8-Wait 5 sec then close the connection
