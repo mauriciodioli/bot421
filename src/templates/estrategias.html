@@ -12,14 +12,23 @@
 {% block content%}
             <div class = 'container p-4'>
                 <div class = "col-md-4 offset-md-4"> 
-                     <form  action="/cargaDatosEstrategyUno/" method="post" class="btn-estrategiaUno">
+                 <!--   <form  action="/cargaDatosEstrategyUno/" method="post" class="btn-estrategiaUno">
                         <div class="form-group"><input type="text" name="Ticker" placeholder="DLR/MAR22">  </div>            
                         <div class="form-group"><input type="text" name="cantidad" placeholder="12"> </div> 
                         <div class="form-group"><input type="text" name="spread" placeholder="0.05"> </div> 
                         <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button> </div> 
                                                    
-                     </form>       
+                     </form>  
+                  -->         
                 </div> 
+                <div>
+                    <p>Para iniciar estrategia que gana por spread presionar el boton.</p>
+                    <a class="btn btn-primary btn-lg" href="/estrategyUno/" role="button">Estrategia </a>
+                </div>
+                <div>
+                    <p>Para iniciar estrategia presionar el boton.</p>
+                    <a class="btn btn-primary btn-lg" href="/estrategyDos/" role="button">Estrategia </a>
+                </div>
             </div>
 {%endblock%}
        

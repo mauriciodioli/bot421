@@ -22,7 +22,7 @@ from routes.api_externa_conexion.validaInstrumentos import validaInstrumentos
 from routes.api_externa_conexion.cuenta import cuenta
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
-from strategies.estrategiaUno import estrategiaUno
+from strategies.estrategias import estrategias
 
 
 
@@ -39,7 +39,7 @@ app.register_blueprint(operaciones)
 app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
-app.register_blueprint(estrategiaUno)
+app.register_blueprint(estrategias)
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'

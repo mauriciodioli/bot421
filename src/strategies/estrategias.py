@@ -10,7 +10,7 @@ from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 
 
-estrategiaUno = Blueprint('estrategiaUno',__name__)
+estrategias = Blueprint('estrategias',__name__)
 
        
 class States(enum.Enum):
@@ -19,9 +19,24 @@ class States(enum.Enum):
     WAITING_ORDERS = 2
 
 
-
-
-@estrategiaUno.route('/cargaDatosEstrategyUno/', methods = ['POST'])
+#primera estrategia de practica
+@estrategias.route('/inicioEstrategias/')
+def inicioEstrategias():
+ try:
+   get.pyRofexInicializada.get_account_position()
+   return render_template('/estrategias.html')
+ except:  
+     print("contraseña o usuario incorrecto")  
+     flash('Loggin Incorrect')    
+     return render_template("login.html" )    
+   
+@estrategias.route('/detenerWS/')   
+def detenerWS():
+     get.pyRofexInicializada.close_websocket_connection()
+     return render_template("estrategias.html" )
+ 
+ 
+@estrategias.route('/cargaDatosEstrategyUno/', methods = ['POST'])
 def cargaDatosEstrategyUno():   
     if request.method == 'POST':         
         Ticker = request.form["Ticker"]   
@@ -43,14 +58,15 @@ def cargaDatosEstrategyUno():
         print(inst.instrument)
         # Subscribes to receive order report for the default account
         get.pyRofexInicializada.order_report_subscription(snapshot=True)
-        return render_template('/estrategiaUno.html')
+        return render_template('/estrategiaOperando.html')
     
     
-@estrategiaUno.route('/estrategyUno/')
-def estrategyUno(): 
+@estrategias.route('/estrategyUno/')
+def estrategyUno():     
+    
     try:
-        inst = InstrumentoEstrategiaUno("WTI/MAY22", 12, 0.05) 
-         
+        inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
+        print("<<<--------estrategyUno-------->>>>>")
         get.pyRofexInicializada.init_websocket_connection (market_data_handler,order_report_handler,error_handler,exception_error)
         tickers=[inst.instrument]
         print("tickers",tickers)
@@ -63,14 +79,42 @@ def estrategyUno():
         print(inst.instrument)
         # Subscribes to receive order report for the default account
         get.pyRofexInicializada.order_report_subscription(snapshot=True)
-        return render_template('/estrategiaUno.html')
+        return render_template('/estrategiaOperando.html')
     except:  
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
         return render_template("errorLogueo.html" ) 
     
+    
+    
+@estrategias.route('/estrategyDos/')
+def estrategyDos():     
+    
+    try:
+        inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
+        print("<<<--------estrategyDoooooooooooooooooooosssssss-------->>>>>")
+        get.pyRofexInicializada.init_websocket_connection (market_data_handler,order_report_handler,error_handler,exception_error)
+        tickers=[inst.instrument]
+        print("tickers",tickers)
+        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                    get.pyRofexInicializada.MarketDataEntry.OFFERS
+                    ]   
+        print("entries",entries)     
+        instrumento_suscriptio = get.pyRofexInicializada.market_data_subscription(tickers,entries)
+        print(instrumento_suscriptio)
+        print(inst.instrument)
+        # Subscribes to receive order report for the default account
+        get.pyRofexInicializada.order_report_subscription(snapshot=True)
+        return render_template('/estrategiaOperando.html')
+    except:  
+        print("contraseña o usuario incorrecto")  
+        flash('Loggin Incorrect')    
+        return render_template("errorLogueo.html" ) 
+ 
+ 
     # Defines the handlers that will process the messages.
 def market_data_handler( message):
+    
        # mensaje = Ticker+','+cantidad+','+spread
         print("Processing Market Data Message Received: {0}".format(message))
        # clientesocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
