@@ -15,6 +15,7 @@ cuenta = Blueprint('cuenta',__name__)
 @cuenta.route("/cuentas",  methods=["GET"])
 def cuentas():
    
+   
    try:
       if request.method == 'GET': 
    ####   AQUI TENGO QUE COMPARA LA FECHA ####     
@@ -68,13 +69,13 @@ def detalleCuenta():
 
 @cuenta.route("/reporteCuenta")
 def reporteCuenta():
-   #try:        
+   try:        
         repuesta_cuenta = get.pyRofexInicializada.get_account_report()
         reporte = repuesta_cuenta['accountData']
         
         print("detalle cuentaaaaaaaaaaaaaaaaaaaaaa ",reporte)
         return render_template("cuenta.html",datos = reporte)
-   #except:  
-    #    print("contraseña o usuario incorrecto")  
-   #     flash('Loggin Incorrect')    
-  # return render_template("login.html" )
+   except:  
+      print("contraseña o usuario incorrecto")  
+      flash('Loggin Incorrect')    
+      return render_template("login.html" )

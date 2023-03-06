@@ -196,12 +196,6 @@ def actualizarTablaMD():
       )
    #return  render_template("suscripcion.html")
 
-#primera estrategia de practica
-@wsocket.route('/estrategia/')
-def estrategia():
-  return redirect('/estrategyUno')
-    
-
 async def muestraTabla(webSocket,path):
   name = await webSocket.recv()
   print(f"< {name}")
