@@ -14,6 +14,10 @@ import websockets
 wsocket = Blueprint('wsocket',__name__)
 
 reporte_de_instrumentos = []
+@wsocket.route('/detenerWSSuscripcionInstrumentos/')   
+def detenerWSSuscripcionInstrumentos():
+     get.pyRofexInicializada.close_websocket_connection()
+     return render_template("home.html" )
 
 @wsocket.route('/suscriptos/')
 def suscriptos():
