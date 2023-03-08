@@ -89,6 +89,7 @@ def estrategyUno():
 @estrategias.route('/estrategyDos/')
 def estrategyDos():     
     
+    
     try:
         inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
         print("<<<--------estrategyDoooooooooooooooooooosssssss-------->>>>>")
@@ -111,14 +112,47 @@ def estrategyDos():
         return render_template("errorLogueo.html" ) 
  
  
+@estrategias.route('/estrategyPcDaniel/')
+def estrategyPcDaniel(): 
+    print("<<<<<<--------estrategyPcDaniel----->>>>>>>A")
+    return render_template('/estrategiaOperando.html')
+ 
     # Defines the handlers that will process the messages.
 #<<<<<<<<<<<<<<<<<<-------------------AQUI SE DEFINE LA COMPRA Y VENTA AUTOMATICA DIRECTA -------------------->>>>>>>>>>>>>
-def handler_estrategyDos(message):
+
+
+@estrategias.route('/Estrategia_001/')
+def Estrategia_001():
+    try:
+        inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
+        print("_____________________Estrategia_001:...")
+        get.pyRofexInicializada.init_websocket_connection (handler_Estrategia_001,o_r_handler_Estrategia_001,error_handler,exception_error)
+        tickers=[inst.instrument]
+        print("tickers",tickers)
+        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                    get.pyRofexInicializada.MarketDataEntry.OFFERS
+                    ]   
+        print("entries",entries)     
+        instrumento_suscriptio = get.pyRofexInicializada.market_data_subscription(tickers,entries)
+        print(instrumento_suscriptio)
+        print(inst.instrument)
+        
+        # Subscribes to receive order report for the default account
+        get.pyRofexInicializada.order_report_subscription(snapshot=True)
+        return render_template('/estrategiaOperando.html')
+    except:  
+        print("contraseña o usuario incorrecto")  
+        flash('Loggin Incorrect')    
+        return render_template("errorLogueo.html" ) 
+
+    
+
+def handler_Estrategia_001(message):
     # mensaje = Ticker+','+cantidad+','+spread
+        print("_____________________Estrategia_001:...")
         print("Processing ddddddddddddddddddMarket Data Message Received: ",message)
         
-        
-            
+                   
         last_md = None
         bid = message["marketData"]["BI"]
         offer = message["marketData"]["OF"]
@@ -133,12 +167,45 @@ def handler_estrategyDos(message):
          
         else:
           InstrumentoEstrategiaUno._cancel_if_orders()
+      
+
+
+def o_r_handler_Estrategia_001(message):
+  print("_____________________Estrategia_001:...")
+  print("Mensaje de OrderRouting: {0}".format(message))
+  get.reporte_de_ordenes.append(message)
+
+
+
+def handler_estrategyDos(message):
+    # mensaje = Ticker+','+cantidad+','+spread
+        print("Processing ddddddddddddddddddMarket Data Message Received: ",message)
         
+                   
+        last_md = None
+        bid = message["marketData"]["BI"]
+        offer = message["marketData"]["OF"]
+        symbol =  message["instrumentId"]["symbol"]
+        price = message["marketData"]["BI"][0]["price"]
+        orderQty = "3"
+        if bid and offer:
+           bid_px = bid[0]["price"]
+           offer_px = offer[0]["price"]
+           print("bid_px: ",bid_px," offer_px ",offer_px," symbol ",symbol," orderQty ",orderQty," price ",price)
+           get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
+         
+        else:
+          InstrumentoEstrategiaUno._cancel_if_orders()
+
+
+
 
 def o_r_handler_estrategyDos(message):
   
   print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
+      
+
   
     
 def market_data_handler( message):
