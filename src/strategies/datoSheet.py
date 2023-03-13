@@ -9,6 +9,7 @@ import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import requests
+import time
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -58,10 +59,7 @@ def estrategiaSheet():
     try:
         listado = leerSheet()
         cont = 0 
-        mepAl30 = calcularMepAl30()
-        
-        
-        print("_____________calcula mep ",mepAl30)
+       
         for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
             
                 if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
@@ -70,27 +68,34 @@ def estrategiaSheet():
                         if senial == 'OPEN.':
                             if Symbol != '':
                                 
-                                print("__________________size ________________")
                                 if cedear =='CEDEAR':
-               
-                                        print("entra a Operar____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
+                                        print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
+                                        ####Calcula dolar MEP
+                                        mepAl30 = calcularMepAl30() 
+                                        print("_____________calculó mep ",mepAl30)
                                         mepCedear = calcularMepCedears(Symbol)
+                                        print("_____________calculó mepCedear ",mepCedear)
                                         print(mepCedear[0])
+                                        # si el porcentaje de diferencia es menor compra
                                         porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
-                                        print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
+                                        #print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
                                         #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
                                         if porcentaje_de_diferencia <= 1:
+                                            #comprueba la liquidez
                                             cantidad = compruebaLiquidez(ut,mepCedear[1])
-                                            if cantidad <= 0:                                                
-                                               compraWs(Symbol,cedear,trade_en_curso,ut,senial)
-                                            if cantidad > 0:
-                                                  
-                                                 compraWs(Symbol,cedear,trade_en_curso,ut,senial)
-                                         
+                                            print(cantidad[0]," cantidad____________________ut ",cantidad[1])
+                                            
+                                            compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
+                                                #time.sleep(900) # Sleep for 15 minutos
+                                            time.sleep(3) # Sleep for 15 minutos
                                         
                                             
                                 else:            
-                                    compraWs(Symbol,cedear,trade_en_curso,ut,senial)
+                                     #comprueba la liquidez
+                                     cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                     print(cantidad[0]," cantidad____________________ut ",cantidad[1])
+                                            
+                                     compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
                         #else
 
         
@@ -103,7 +108,7 @@ def estrategiaSheet():
 def compraWs(Symbol,cedear,trade_en_curso,ut,senial):
      cont = 0 
      cont +=1
-     inst = InstrumentoEstrategiaUno(Symbol, 12, 0.05) 
+     inst = InstrumentoEstrategiaUno(Symbol, ut, 0.05) 
      print("entra a Operar compraWs____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)
                      
                                    
@@ -266,10 +271,18 @@ def calcularMepCedears(Symbol):
      return dato
 
 def compruebaLiquidez(ut,size):
-    print(ut,"________comprobando liquidez____________",size) 
-    liquidez = ut -  size 
-    print("_____________liquidez____________",liquidez)
-    return liquidez
+    #print(ut,"________comprobando liquidez____________",size) 
+    liquidez = int(ut) - int(size) # 100 - 3 = 97 // 4 - 10 = -6 
+    #print("_____________liquidez____________",liquidez)
+    if liquidez >= 0:    
+       cantidadAComprar = size
+       vecesAOperar =int(liquidez/size)
+    if liquidez < 0:
+        cantidadAComprar = ut
+        vecesAOperar=0
+    dato = [vecesAOperar,cantidadAComprar]
+    #print("_____________vecesAOperar____________",vecesAOperar)
+    return dato
        
     
 ##########################AQUI LLAMO A UN INSTRUMENTO####################
