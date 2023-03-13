@@ -51,7 +51,9 @@ def delete_mer(id):
 ##########################AQUI LLAMO A UN INSTRUMENTO####################
 @instrumentos.route("/instrument_by_symbol/",methods=['POST'])
 def instrument_by_symbol():
+         
       try:
+        
         if request.method == 'POST': 
             symbol = request.form.get('symbol')
             marketId = request.form.get('selctorEnvironment')
@@ -103,33 +105,7 @@ def instrument_by_symbol():
       except:       
         flash('Symbol Incorrect')   
         return render_template("instrumentos.html" )
-    
-    
-   #     especie = request.form['especie']
-   #     c_compra = request.form['c_compra']
-   #     p_compra = request.form['p_compra']
-   #     p_venta = request.form['p_venta']   
-   #     c_venta = "0.00"
-   #     ultimo = "0.00"
-   #     var = "0.00"
-   #     apertura = "0.00"
-   #     minimo = "0.00"
-   #     maximo = "0.00"
-   #     cierre_anterior = "0.00"
-   #     volumen = "0.00"
-   #     vol_monto = "0.00"
-   #     vwap = "0.00"
-   #     idsegmento = "0.00"
-   #     idmarket = "0.00"
-   #     print(especie)
-   #     print(c_compra)
-   #     print(p_compra)
-       
-        new_mer = Instrumento(especie,c_compra,p_compra,p_venta,c_venta,ultimo,var,apertura,minimo,maximo,cierre_anterior,volumen,vol_monto,vwap,idsegmento,idmarket)
-        db.session.add(new_mer)
-        db.session.commit()
-        flash('Operation Added successfully')
-        return redirect('/')
+   
 ########################################################################
 
 @instrumentos.route("/add_instrumento/<string>" )
@@ -259,3 +235,4 @@ def obtener_array_tickers(listado):
   for inst in listado:
     listado_final.append(inst['instrumentId']['symbol'])
   return listado_final
+

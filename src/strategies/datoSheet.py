@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-import routes.instrumentosGet as instrumentosGet
+import routes.instrumentos as instrumentos
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
@@ -8,6 +8,7 @@ from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
+import requests
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -39,10 +40,11 @@ def leerSheet():
      
      sheet = client.open_by_key(SPREADSHEET_ID).sheet1   
      symbol = sheet.col_values(1)
+     cedear = sheet.col_values(16)
      trade_en_curso = sheet.col_values(19)
      ut = sheet.col_values(20)
      senial = sheet.col_values(21)
-     union = zip(symbol,trade_en_curso,ut,senial)
+     union = zip(symbol,cedear,trade_en_curso,ut,senial)
      
      #for Symbol,trade_en_curso,ut,senial  in union:
       #print(Symbol,trade_en_curso,ut,senial)
@@ -55,31 +57,41 @@ def estrategiaSheet():
     
     try:
         listado = leerSheet()
-        cont =0 
-        for Symbol,trade_en_curso,ut,senial  in listado:         
-           
+        cont = 0 
+        mepAl30 = calcularMepAl30()
+        
+        
+        print("_____________calcula mep ",mepAl30)
+        for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
             
-            if Symbol != 'Symbol':
-                #if trade_en_curso == 'LONG_':
-                    if senial == 'OPEN.':
-                        if Symbol != '':
-                                cont +=1
-                                inst = InstrumentoEstrategiaUno(Symbol, 12, 0.05) 
-                                print("entra a Operar____",cont,"____",Symbol,"______________",trade_en_curso,"__________________",senial)
-                               
+                if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
+                    
+                    #if trade_en_curso == 'LONG_':
+                        if senial == 'OPEN.':
+                            if Symbol != '':
                                 
-                                get.pyRofexInicializada.init_websocket_connection (market_data_handler,order_report_handler,error_handler,exception_error)
-                                tickers=[inst.instrument]
-                               
-                                entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-                                            get.pyRofexInicializada.MarketDataEntry.OFFERS
-                                            ]   
-                                    
-                                instrumento_suscriptio = get.pyRofexInicializada.market_data_subscription(tickers,entries)
-                                
-                                # Subscribes to receive order report for the default account
-                                get.pyRofexInicializada.order_report_subscription(snapshot=True)
-                    #else
+                                print("__________________size ________________")
+                                if cedear =='CEDEAR':
+               
+                                        print("entra a Operar____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
+                                        mepCedear = calcularMepCedears(Symbol)
+                                        print(mepCedear[0])
+                                        porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
+                                        print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
+                                        #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
+                                        if porcentaje_de_diferencia <= 1:
+                                            cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                            if cantidad <= 0:                                                
+                                               compraWs(Symbol,cedear,trade_en_curso,ut,senial)
+                                            if cantidad > 0:
+                                                  
+                                                 compraWs(Symbol,cedear,trade_en_curso,ut,senial)
+                                         
+                                        
+                                            
+                                else:            
+                                    compraWs(Symbol,cedear,trade_en_curso,ut,senial)
+                        #else
 
         
         return render_template('/estrategiaOperando.html')
@@ -87,6 +99,26 @@ def estrategiaSheet():
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
         return render_template("errorLogueo.html" )
+################ AQUI DEFINO LA COMPRA POR WS ################
+def compraWs(Symbol,cedear,trade_en_curso,ut,senial):
+     cont = 0 
+     cont +=1
+     inst = InstrumentoEstrategiaUno(Symbol, 12, 0.05) 
+     print("entra a Operar compraWs____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)
+                     
+                                   
+     get.pyRofexInicializada.init_websocket_connection (market_data_handler,order_report_handler,error_handler,exception_error)
+     tickers=[inst.instrument]
+                                
+     entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                get.pyRofexInicializada.MarketDataEntry.OFFERS
+               ]   
+                                        
+     instrumento_suscriptio = get.pyRofexInicializada.market_data_subscription(tickers,entries)
+                                    
+     # Subscribes to receive order report for the default account
+     get.pyRofexInicializada.order_report_subscription(snapshot=True)
+     return Symbol
     
 def market_data_handler( message):
     
@@ -189,3 +221,105 @@ def exception_error(message):
   print("Mensaje de excepción: {0}".format(message))  
   {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 
+def calcularMepAl30():
+    
+    #resultado = requests.post('http://127.0.0.1:5000/instrument_by_symbol_para_CalculoMep/', data ={'symbol':symbol})
+    
+    #traer los precios del al30
+    #print("____traer los precios del al30")
+    resultado = instrument_by_symbol_para_CalculoMep("WTI/MAY23")
+    resultado2 = instrument_by_symbol_para_CalculoMep("MERV - XMEV - GGAL - 48hs")    
+   
+    al30_ci = resultado['OF'][0]['price'] #vendedora OF
+    al30D_ci =resultado2['BI'][0]['price'] #compradora BI
+    #print("__________al30_ci____________",al30_ci)
+    #print("__________al30D_ci____________",al30D_ci)
+    
+    # simulo compra de bono      
+    #print("____simulo compra de bono ")  
+    al30ci_unitaria = al30_ci/100
+    cantidad_al30ci=int(10000/al30ci_unitaria)
+    #print("__________cantidad_al30ci_________",cantidad_al30ci)
+    
+    # ahora simulo la venta de los bonos D
+    #print("ahora simulo la venta de los bonos D")
+    al30D_ci_unitaria = al30D_ci/100
+    dolaresmep = al30D_ci_unitaria * cantidad_al30ci
+    mep = 10000 / dolaresmep
+    #print("____________mep_____________",mep)
+    return mep
+
+##########################AQUI SE REALIZA CALCULO DE MEP CEDEARS####################
+def calcularMepCedears(Symbol):
+     #traer los precios del cedear
+     resultado = instrument_by_symbol_para_CalculoMep("WTI/MAY23")
+     resultado2 = instrument_by_symbol_para_CalculoMep("MERV - XMEV - GGAL - 48hs") 
+     
+     ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
+     koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
+     size = resultado2['BI'][0]['size']
+     print("__________ko_ci____________",ko_ci)
+     print("__________koD_ci____________",koD_ci)
+     print("__________size____________",size)
+     mep= ko_ci / koD_ci
+     dato = [mep,size]
+     return dato
+
+def compruebaLiquidez(ut,size):
+    print(ut,"________comprobando liquidez____________",size) 
+    liquidez = ut -  size 
+    print("_____________liquidez____________",liquidez)
+    return liquidez
+       
+    
+##########################AQUI LLAMO A UN INSTRUMENTO####################
+
+def instrument_by_symbol_para_CalculoMep(symbol):
+         
+      try:
+        
+            entries =  [ get.pyRofexInicializada.MarketDataEntry.BIDS,
+                        get.pyRofexInicializada.MarketDataEntry.OFFERS,
+                        get.pyRofexInicializada.MarketDataEntry.LAST,
+                        get.pyRofexInicializada.MarketDataEntry.CLOSING_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.OPENING_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.HIGH_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.LOW_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.SETTLEMENT_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.NOMINAL_VOLUME,
+                        get.pyRofexInicializada.MarketDataEntry.TRADE_EFFECTIVE_VOLUME,
+                        get.pyRofexInicializada.MarketDataEntry.TRADE_VOLUME,
+                        get.pyRofexInicializada.MarketDataEntry.OPEN_INTEREST]
+            print("symbolllllllllllllllllllllll ",symbol)
+           #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
+            repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+           
+            
+            #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)
+            #for repuesta_instrumento in repuesta_instrumento:        
+            objeto = repuesta_instrumento['marketData']   
+           # for objeto in objeto:     
+            
+            print("instrumentooooooooooooooooooooooooooooo LA ",objeto['LA'])
+            print("instrumentooooooooooooooooooooooooooooo BI ",objeto['BI'])            
+            print("instrumentooooooooooooooooooooooooooooo OF ",objeto['OF'])
+            jdato = str(objeto['LA'])
+            jdato1 = str(objeto['BI'])
+            jdato2 = str(objeto['OF'])
+            if jdato.find('price')==-1:
+                print("no tiene nada LA ",jdato1.find('price'))
+                
+            elif jdato1.find('price')==-1:
+                print("no tiene nada BI ",jdato1.find('price'))
+                
+            
+            elif jdato2.find('price')==-1:
+                print("no tiene nada OF",jdato2.find('price'))
+           
+            return objeto
+        
+      except:       
+        flash('Symbol Incorrect')   
+        return render_template("instrumentos.html" )
+   
+########################################################################
