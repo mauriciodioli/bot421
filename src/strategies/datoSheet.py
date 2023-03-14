@@ -59,7 +59,7 @@ def estrategiaSheet():
     try:
         listado = leerSheet()
         cont = 0 
-       
+        mepAl30 = calcularMepAl30() ####Calcula dolar MEP
         for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
             
                 if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
@@ -70,10 +70,8 @@ def estrategiaSheet():
                                 
                                 if cedear =='CEDEAR':
                                         print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
-                                        ####Calcula dolar MEP
-                                        mepAl30 = calcularMepAl30() 
                                         print("_____________calculó mep ",mepAl30)
-                                        mepCedear = calcularMepCedears(Symbol)
+                                        mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
                                         print("_____________calculó mepCedear ",mepCedear)
                                         print(mepCedear[0]) 
                                         # si el porcentaje de diferencia es menor compra
