@@ -11,6 +11,7 @@ import socket
 import requests
 import time
 
+import routes.api_externa_conexion.cuenta as cuenta
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os #obtener el directorio de trabajo actual
@@ -61,7 +62,9 @@ def estrategiaSheet():
         cont = 0 
         mepAl30 = calcularMepAl30() ####Calcula dolar MEP
         for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
-            
+                ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
+                saldo = cuenta.obtenerSaldoCuenta()        
+                ##if saldo >= int(ut) * float(price):
                 if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                     
                     #if trade_en_curso == 'LONG_':
