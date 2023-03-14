@@ -279,7 +279,7 @@ def order_report_handler( order_report):
                         return
                 InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
                 if InstrumentoEstrategiaUno.last_md:
-                    InstrumentoEstrategiaUno.market_data_handler(self.last_md)
+                    InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
                     
                     
                     
