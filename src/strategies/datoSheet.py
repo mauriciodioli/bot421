@@ -75,7 +75,7 @@ def estrategiaSheet():
                                         print("_____________calculó mep ",mepAl30)
                                         mepCedear = calcularMepCedears(Symbol)
                                         print("_____________calculó mepCedear ",mepCedear)
-                                        print(mepCedear[0])
+                                        print(mepCedear[0]) 
                                         # si el porcentaje de diferencia es menor compra
                                         porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
                                         #print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
@@ -272,7 +272,7 @@ def calcularMepCedears(Symbol):
 
 def compruebaLiquidez(ut,size):
     #print(ut,"________comprobando liquidez____________",size) 
-    liquidez = int(ut) - int(size) # 100 - 3 = 97 // 4 - 10 = -6 
+    liquidez = int(ut) - int(size) # 100 - 3 = 97 /////// 4 - 10 = -6 
     #print("_____________liquidez____________",liquidez)
     if liquidez >= 0:    
        cantidadAComprar = size
