@@ -80,8 +80,8 @@ def leerSheet():
      senial = sheet.col_values(21)
      union = zip(symbol,cedear,trade_en_curso,ut,senial)
      
-     for Symbol,cedear,trade_en_curso,ut,senial  in union:
-      print(Symbol,cedear,trade_en_curso,ut,senial)
+     #for Symbol,cedear,trade_en_curso,ut,senial  in union:
+      #print(Symbol,cedear,trade_en_curso,ut,senial)
     
      
      return union
@@ -90,54 +90,65 @@ def leerSheet():
 def estrategiaSheet():     
     
     #try:
-        listado = leerSheet()
+        
+        
+        listadoContarUt = leerSheet()   
+        cantidadUtaOperar = CuentaCantidadUT(listadoContarUt)# cuenta cantidad de UT a operar [0] Cedear [1] otros
+        
         cont = 0 
         mepAl30 = calcularMepAl30() ####Calcula dolar MEP
-        for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
-                ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
-                saldo = cuenta.obtenerSaldoCuenta()      
-                #### CONSULTAR INSTRUMENTO DETALLADO ################  
-               # if saldo >= int(ut) * float(price):
-                if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                    
-                    #if trade_en_curso == 'LONG_':
-                        if senial == 'OPEN.':
-                            if Symbol != '':
-                                
-                                if cedear =='CEDEAR':
-                                        print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
-                                        print("_____________calculó mep ",mepAl30)
-                                        mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
-                                        print("_____________calculó mepCedear ",mepCedear)
-                                        print(mepCedear[0]) 
-                                        # si el porcentaje de diferencia es menor compra
-                                        porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
-                                        #print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
-                                        #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
-                                        if porcentaje_de_diferencia <= 1:
-                                            #comprueba la liquidez
-                                            cantidad = compruebaLiquidez(ut,mepCedear[1])
-                                            print(cantidad[0]," cantidad____________________ut ",cantidad[1])
+        suma = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
+        while suma>0:
+            listado = leerSheet() 
+            print(" ENTRA WHILLEEEEEE cantidadUtaOperar[0] ",cantidadUtaOperar[0]," suma ",suma)
+            for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
+                    ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
+                    saldo = cuenta.obtenerSaldoCuenta()      
+                    #### CONSULTAR INSTRUMENTO DETALLADO ################  
+                # if saldo >= int(ut) * float(price):
+                    if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
+                        if Symbol != '':
+                        #if trade_en_curso == 'LONG_':
+                            if senial == 'OPEN.':
+                                if senial != '':
+                                    
+                                    if cedear =='CEDEAR':
+                                            #print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
+                                            #print("_____________calculó mep ",mepAl30)
+                                            mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
+                                            #print("_____________calculó mepCedear ",mepCedear)
+                                            #print(mepCedear[0]) 
+                                            # si el porcentaje de diferencia es menor compra
+                                            porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
+                                            #print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
+                                            #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
+                                            if porcentaje_de_diferencia <= 1:
+                                                #comprueba la liquidez
+                                                cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                                suma = int(cantidadUtaOperar[0]) - int(cantidad[1])
+                                                #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
+                                                
+                                                compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
+                                                    #time.sleep(900) # Sleep for 15 minutos
+                                                time.sleep(3) # Sleep for 15 minutos
                                             
-                                            compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
-                                                #time.sleep(900) # Sleep for 15 minutos
-                                            time.sleep(3) # Sleep for 15 minutos
-                                        
-                                            
-                                else:            
-                                     #comprueba la liquidez
-                                     cantidad = compruebaLiquidez(ut,mepCedear[1])
-                                     print(cantidad[0]," cantidad____________________ut ",cantidad[1])
-                                            
-                                     compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
-                        #else
-
+                                                
+                                    else:            
+                                        #comprueba la liquidez
+                                        cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                        suma = int(cantidadUtaOperar[1]) - int(cantidad[1])
+                                        #print(cantidad[0]," cantidad____________________ut ",cantidad[1])
+                                                
+                                        compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
+                            #else
+        
+        time.sleep(30)
         
         return render_template('/estrategiaOperando.html')
    # except:  
-    #    print("contraseña o usuario incorrecto")  
-    #    flash('Loggin Incorrect')    
-    #    return render_template("errorLogueo.html" )
+   #     print("contraseña o usuario incorrecto")  
+   #     flash('Loggin Incorrect')    
+   #     return render_template("errorLogueo.html" )
 ################ AQUI DEFINO LA COMPRA POR WS ################
 def compraWs(Symbol,cedear,trade_en_curso,ut,senial):
      cont = 0 
@@ -370,3 +381,29 @@ def instrument_by_symbol_para_CalculoMep(symbol):
         return render_template("instrumentos.html" )
    
 ########################################################################
+def CuentaCantidadUT(listado):
+    bandera = True
+    countCedear =0
+    countResto =0
+    
+    for Symbol,cedear,trade_en_curso,ut,senial  in listado: 
+       # print("________________________2222222222222222")   
+        if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
+                if Symbol != '':
+                        #if trade_en_curso == 'LONG_':
+                            if senial == 'OPEN.':
+                                if senial != '':
+                                    if cedear =='CEDEAR':
+                                        countCedear +=1
+                                        #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
+                                    else:
+                                        countResto +=1
+                                        #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
+                                        
+      
+        dato = [countCedear,countResto]
+       # print("countCedear ",dato[0]," countResto ",dato[1])
+       
+       
+       
+    return dato
