@@ -11,6 +11,8 @@ import socket
 import requests
 import time
 
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 import routes.api_externa_conexion.cuenta as cuenta
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -22,18 +24,48 @@ import os #obtener el directorio de trabajo actual
 
 datoSheet = Blueprint('datoSheet',__name__)
 
+newPath = os.path.join(os.getcwd(), 'strategies\\credentials_module.json') 
+directorio_credenciales = newPath 
+
 SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
 
 class States(enum.Enum):
     WAITING_MARKET_DATA = 0
     WAITING_CANCEL = 1
     WAITING_ORDERS = 2
-
-def leerSheet():         
+    
+  
+    
+def login():
+    GoogleAuth.DEFAULT_SETTINGS['client_config_file'] = directorio_credenciales
+    gauth = GoogleAuth()
+    gauth.LoadCredentialsFile(directorio_credenciales)
+    
+    if gauth.credentials is None:
+        gauth.LocalWebserverAuth(port_numbers=[8092])
+    elif gauth.access_token_expired:
+        gauth.Refresh()
+    else:
+        gauth.Authorize()
+        
+    gauth.SaveCredentialsFile(directorio_credenciales)
+    credenciales = GoogleDrive(gauth)
+    return credenciales
+def leerSheet():   
+    # gauth = GoogleAuth()
+     ##gauth.LocalWebserverAuth() # Autenticación mediante un servidor local
+    # drive = GoogleDrive(gauth)
+     # Obtener metadatos de un archivo por su ID
+    # file_id = 'drpiBot2'
+    # file = drive.CreateFile({'id': file_id})
+    # print('File name: %s' % file['title'])
+    
+    # credenciales = login()  
      scope = ['https://spreadsheets.google.com/feeds',
          'https://www.googleapis.com/auth/drive']
     
      newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')  
+    # creds = ServiceAccountCredentials.from_json_keyfile_name('pruebasheetpython.json', scope)
      print(newPath)
      creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
      
@@ -48,8 +80,8 @@ def leerSheet():
      senial = sheet.col_values(21)
      union = zip(symbol,cedear,trade_en_curso,ut,senial)
      
-     #for Symbol,trade_en_curso,ut,senial  in union:
-      #print(Symbol,trade_en_curso,ut,senial)
+     for Symbol,cedear,trade_en_curso,ut,senial  in union:
+      print(Symbol,cedear,trade_en_curso,ut,senial)
     
      
      return union
@@ -57,14 +89,15 @@ def leerSheet():
 @datoSheet.route('/estrategiaSheet/')
 def estrategiaSheet():     
     
-    try:
+    #try:
         listado = leerSheet()
         cont = 0 
         mepAl30 = calcularMepAl30() ####Calcula dolar MEP
         for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
                 ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
-                saldo = cuenta.obtenerSaldoCuenta()        
-                ##if saldo >= int(ut) * float(price):
+                saldo = cuenta.obtenerSaldoCuenta()      
+                #### CONSULTAR INSTRUMENTO DETALLADO ################  
+               # if saldo >= int(ut) * float(price):
                 if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                     
                     #if trade_en_curso == 'LONG_':
@@ -101,10 +134,10 @@ def estrategiaSheet():
 
         
         return render_template('/estrategiaOperando.html')
-    except:  
-        print("contraseña o usuario incorrecto")  
-        flash('Loggin Incorrect')    
-        return render_template("errorLogueo.html" )
+   # except:  
+    #    print("contraseña o usuario incorrecto")  
+    #    flash('Loggin Incorrect')    
+    #    return render_template("errorLogueo.html" )
 ################ AQUI DEFINO LA COMPRA POR WS ################
 def compraWs(Symbol,cedear,trade_en_curso,ut,senial):
      cont = 0 
