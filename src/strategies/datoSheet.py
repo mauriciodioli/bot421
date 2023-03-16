@@ -74,11 +74,11 @@ def leerSheet():
      
      sheet = client.open_by_key(SPREADSHEET_ID).sheet1   
      symbol = sheet.col_values(1)
-     cedear = sheet.col_values(16)
+     tipo_de_activo = sheet.col_values(16)
      trade_en_curso = sheet.col_values(19)
      ut = sheet.col_values(20)
      senial = sheet.col_values(21)
-     union = zip(symbol,cedear,trade_en_curso,ut,senial)
+     union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
      
      #for Symbol,cedear,trade_en_curso,ut,senial  in union:
       #print(Symbol,cedear,trade_en_curso,ut,senial)
@@ -95,14 +95,22 @@ def estrategiaSheet():
         listadoContarUt = leerSheet()   
         cantidadUtaOperar = CuentaCantidadUT(listadoContarUt)# cuenta cantidad de UT a operar [0] Cedear [1] otros
         
-        cont = 0 
+        cont = 0 #//**22
         mepAl30 = calcularMepAl30() ####Calcula dolar MEP
-        suma = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
-        banderaAOperarPrimeraVez = 1
-        while suma>0:
+        sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
+        listadoCargaDiccionario = leerSheet() 
+        for Symbol,cedear,trade_en_curso,ut,senial  in listadoCargaDiccionario:
+            listaSaldossinOperar=dict(zip(Symbol, '0'))
+        
+        print(listaSaldossinOperar)
+        
+        
+        
+        
+        while sumaUT>0:
             listado = leerSheet() 
-            print(" ENTRA WHILLEEEEEE cantidadUtaOperar[0] ",cantidadUtaOperar[0]," suma ",suma)
-            for Symbol,cedear,trade_en_curso,ut,senial  in listado:  
+            print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
+            for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in listado:  
                     ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
                     saldo = cuenta.obtenerSaldoCuenta()      
                     #### CONSULTAR INSTRUMENTO DETALLADO ################  
@@ -110,14 +118,9 @@ def estrategiaSheet():
                     if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                         if Symbol != '':
                         #if trade_en_curso == 'LONG_':
-                            if senial == 'OPEN.':
-                                if senial != '':
-                                            if banderaAOperarPrimeraVez==0 :                                     
-                                              print('__listadoSinOperar________',listadoSinOperar[0],'____ banderaAOperarPrimeraVez____',banderaAOperarPrimeraVez)
-                                              if listadoSinOperar[0] == Symbol :#si el symbolo es igual a los que no se operaron totalmente entra 
-                                                ut = int(ut) - int(listadoSinOperar[1])# pone la cantidad que debe operar en esta vuelta
-                                                
-                                            if cedear =='CEDEAR':
+                            if senial != '':
+                                if senial == 'OPEN.':
+                                            if tipo_de_activo =='CEDEAR':
                                                     
                                                             #print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
                                                             #print("_____________calculó mep ",mepAl30)
@@ -130,11 +133,22 @@ def estrategiaSheet():
                                                             #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
                                                             if porcentaje_de_diferencia <= 1:
                                                                 #comprueba la liquidez
-                                                                #cantidad = compruebaLiquidez(ut,mepCedear[1])
-                                                                cantidad = 10 #para probar
-                                                                suma = int(cantidadUtaOperar[0]) - int(cantidad[1])
-                                                                if ut == cantidadUtaOperar[0]:#comparo si la cantidad a operar es igual que la ut
-                                                                    listadoSinOperar = [Symbol,cantidadUtaOperar[0]]#guardo el symbolo y la cantidad que se operaron
+                                                                #Liquidez_ahora_cedear = compruebaLiquidez(ut,mepCedear[1])
+                                                                Liquidez_ahora_cedear = 10 #para probar **33
+                                                                
+                                                                # sumaUT es para que itere el while
+                                                                sumaUT = int(cantidadUtaOperar[0]) - int (Liquidez_ahora_cedear)
+                                                                
+                                                                #listaSaldossinOperar es un diccionario 
+                                                                #comparo la cantidad que necesito operar (ut) con liquidez del momento.
+                                                                if listaSaldossinOperar[Symbol]==0:
+                                                                        UT_a_operar = ut
+                                                                else:
+                                                                        UT_a_operar = listaSaldossinOperar[Symbol]
+                                                                
+                                                                if Liquidez_ahora_cedear < UT_a_operar : 
+                                                                # si entro aca me falta liquidez, anoto lo que falta
+                                                                    listaSaldossinOperar[Symbol] = UT_a_operar-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
                                                                              #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
                                                                 
                                                                 #compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
@@ -142,10 +156,16 @@ def estrategiaSheet():
                                                                 time.sleep(3) # Sleep for 15 minutos
                                                         
                                                             
-                                            else:            
+                                            if tipo_de_activo =='ARG':
                                                     #comprueba la liquidez
-                                                    cantidad = compruebaLiquidez(ut,mepCedear[1])
-                                                    suma = int(cantidadUtaOperar[1]) - int(cantidad[1])
+                                                    #Liquidez_ahora_arg = compruebaLiquidez(ut,mepCedear[1])
+                                                    Liquidez_ahora_arg = 10 #para probar
+                                                    sumaUT = int(cantidadUtaOperar[1]) - int(Liquidez_ahora_arg)
+                                                    #comparo la cantidad que necesito operar (ut) con liquidez del momento.
+                                                    if Liquidez_ahora_arg < ut : 
+                                                    # si entro aca me falta liquidez, anoto lo que falta
+                                                        listaSaldossinOperar = [Symbol,ut-Liquidez_ahora_arg]#guardo el symbolo y la cantidad que se operaron
+                                                    #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
                                                     #print(cantidad[0]," cantidad____________________ut ",cantidad[1])
                                                             
                                                     #compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)   
@@ -402,12 +422,12 @@ def CuentaCantidadUT(listado):
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                 if Symbol != '':
                         #if trade_en_curso == 'LONG_':
-                            if senial == 'OPEN.':
-                                if senial != '':
+                            if senial != '':
+                                if senial == 'OPEN.' or senial == 'closed.':
                                     if cedear =='CEDEAR':
                                         countCedear +=1
                                         #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
-                                    else:
+                                    if cedear =='ARG':
                                         countResto +=1
                                         #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
                                         
