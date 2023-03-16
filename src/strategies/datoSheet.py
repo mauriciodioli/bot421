@@ -98,6 +98,7 @@ def estrategiaSheet():
         cont = 0 
         mepAl30 = calcularMepAl30() ####Calcula dolar MEP
         suma = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
+        banderaAOperarPrimeraVez = 1
         while suma>0:
             listado = leerSheet() 
             print(" ENTRA WHILLEEEEEE cantidadUtaOperar[0] ",cantidadUtaOperar[0]," suma ",suma)
@@ -110,36 +111,43 @@ def estrategiaSheet():
                         if Symbol != '':
                         #if trade_en_curso == 'LONG_':
                             if senial == 'OPEN.':
-                                if senial != '':
-                                    
-                                    if cedear =='CEDEAR':
-                                            #print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
-                                            #print("_____________calculó mep ",mepAl30)
-                                            mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
-                                            #print("_____________calculó mepCedear ",mepCedear)
-                                            #print(mepCedear[0]) 
-                                            # si el porcentaje de diferencia es menor compra
-                                            porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
-                                            #print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
-                                            #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
-                                            if porcentaje_de_diferencia <= 1:
-                                                #comprueba la liquidez
-                                                cantidad = compruebaLiquidez(ut,mepCedear[1])
-                                                suma = int(cantidadUtaOperar[0]) - int(cantidad[1])
-                                                #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
+                                if senial != '':                                        
+                                            if listadoSinOperar[0] == Symbol and banderaAOperarPrimeraVez==0 :#si el symbolo es igual a los que no se operaron totalmente entra 
+                                                ut = int(ut) - int(listadoSinOperar[1])# pone la cantidad que debe operar en esta vuelta
                                                 
-                                                compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
-                                                    #time.sleep(900) # Sleep for 15 minutos
-                                                time.sleep(3) # Sleep for 15 minutos
-                                            
-                                                
-                                    else:            
-                                        #comprueba la liquidez
-                                        cantidad = compruebaLiquidez(ut,mepCedear[1])
-                                        suma = int(cantidadUtaOperar[1]) - int(cantidad[1])
-                                        #print(cantidad[0]," cantidad____________________ut ",cantidad[1])
-                                                
-                                        compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
+                                            if cedear =='CEDEAR':
+                                                    
+                                                            #print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",cedear,"_____",trade_en_curso,"__________________",senial)                                
+                                                            #print("_____________calculó mep ",mepAl30)
+                                                            mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
+                                                            #print("_____________calculó mepCedear ",mepCedear)
+                                                            #print(mepCedear[0]) 
+                                                            # si el porcentaje de diferencia es menor compra
+                                                            porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
+                                                            #print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
+                                                            #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
+                                                            if porcentaje_de_diferencia <= 1:
+                                                                #comprueba la liquidez
+                                                                cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                                                suma = int(cantidadUtaOperar[0]) - int(cantidad[1])
+                                                                if ut == cantidadUtaOperar[0]:#comparo si la cantidad a operar es igual que la ut
+                                                                    listadoSinOperar = [Symbol,cantidadUtaOperar[0]]#guardo el symbolo y la cantidad que se operaron
+                                                                             #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
+                                                                
+                                                                compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
+                                                                    #time.sleep(900) # Sleep for 15 minutos
+                                                                time.sleep(3) # Sleep for 15 minutos
+                                                        
+                                                            
+                                            else:            
+                                                    #comprueba la liquidez
+                                                    cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                                    suma = int(cantidadUtaOperar[1]) - int(cantidad[1])
+                                                    #print(cantidad[0]," cantidad____________________ut ",cantidad[1])
+                                                            
+                                                    compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)   
+            banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
+                                                      
                             #else
         
         time.sleep(30)
