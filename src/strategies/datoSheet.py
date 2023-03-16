@@ -111,8 +111,10 @@ def estrategiaSheet():
                         if Symbol != '':
                         #if trade_en_curso == 'LONG_':
                             if senial == 'OPEN.':
-                                if senial != '':                                        
-                                            if listadoSinOperar[0] == Symbol and banderaAOperarPrimeraVez==0 :#si el symbolo es igual a los que no se operaron totalmente entra 
+                                if senial != '':
+                                            if banderaAOperarPrimeraVez==0 :                                     
+                                              print('__listadoSinOperar________',listadoSinOperar[0],'____ banderaAOperarPrimeraVez____',banderaAOperarPrimeraVez)
+                                              if listadoSinOperar[0] == Symbol :#si el symbolo es igual a los que no se operaron totalmente entra 
                                                 ut = int(ut) - int(listadoSinOperar[1])# pone la cantidad que debe operar en esta vuelta
                                                 
                                             if cedear =='CEDEAR':
@@ -128,13 +130,14 @@ def estrategiaSheet():
                                                             #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
                                                             if porcentaje_de_diferencia <= 1:
                                                                 #comprueba la liquidez
-                                                                cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                                                #cantidad = compruebaLiquidez(ut,mepCedear[1])
+                                                                cantidad = 10 #para probar
                                                                 suma = int(cantidadUtaOperar[0]) - int(cantidad[1])
                                                                 if ut == cantidadUtaOperar[0]:#comparo si la cantidad a operar es igual que la ut
                                                                     listadoSinOperar = [Symbol,cantidadUtaOperar[0]]#guardo el symbolo y la cantidad que se operaron
                                                                              #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
                                                                 
-                                                                compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
+                                                                #compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)
                                                                     #time.sleep(900) # Sleep for 15 minutos
                                                                 time.sleep(3) # Sleep for 15 minutos
                                                         
@@ -145,7 +148,7 @@ def estrategiaSheet():
                                                     suma = int(cantidadUtaOperar[1]) - int(cantidad[1])
                                                     #print(cantidad[0]," cantidad____________________ut ",cantidad[1])
                                                             
-                                                    compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)   
+                                                    #compraWs(Symbol,cedear,trade_en_curso,cantidad[1],senial)   
             banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
                                                       
                             #else
