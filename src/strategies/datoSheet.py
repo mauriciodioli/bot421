@@ -99,8 +99,10 @@ def estrategiaSheet():
         mepAl30 = calcularMepAl30() ####Calcula dolar MEP
         sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
         listadoCargaDiccionario = leerSheet() 
+        listaSaldossinOperar = {}
         for Symbol,cedear,trade_en_curso,ut,senial  in listadoCargaDiccionario:
-            listaSaldossinOperar=dict(zip(Symbol, '0'))
+            listaSaldossinOperar[Symbol]=ut
+           
         
         print(listaSaldossinOperar)
         
@@ -146,7 +148,7 @@ def estrategiaSheet():
                                                                 else:
                                                                         UT_a_operar = listaSaldossinOperar[Symbol]
                                                                 
-                                                                if Liquidez_ahora_cedear < UT_a_operar : 
+                                                                if int(Liquidez_ahora_cedear) < int(UT_a_operar) : 
                                                                 # si entro aca me falta liquidez, anoto lo que falta
                                                                     listaSaldossinOperar[Symbol] = UT_a_operar-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
                                                                              #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
@@ -162,7 +164,7 @@ def estrategiaSheet():
                                                     Liquidez_ahora_arg = 10 #para probar
                                                     sumaUT = int(cantidadUtaOperar[1]) - int(Liquidez_ahora_arg)
                                                     #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                    if Liquidez_ahora_arg < ut : 
+                                                    if int(Liquidez_ahora_arg) < int(UT_a_operar) : 
                                                     # si entro aca me falta liquidez, anoto lo que falta
                                                         listaSaldossinOperar = [Symbol,ut-Liquidez_ahora_arg]#guardo el symbolo y la cantidad que se operaron
                                                     #print("cantidadUtaOperar[0] ",cantidad[0]," cantidad____________________ut ",cantidad[1])
