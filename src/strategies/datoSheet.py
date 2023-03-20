@@ -101,7 +101,7 @@ def estrategiaSheet():
         listadoCargaDiccionario = leerSheet() 
         listaSaldossinOperar = {}
         for Symbol,cedear,trade_en_curso,ut,senial  in listadoCargaDiccionario:
-            listaSaldossinOperar[Symbol]=ut
+            listaSaldossinOperar[Symbol]='0'
            
         
         print(listaSaldossinOperar)
