@@ -115,6 +115,10 @@ def estrategyDos():
 @estrategias.route('/estrategyPcDaniel/')
 def estrategyPcDaniel(): 
     print("<<<<<<--------estrategyPcDaniel----->>>>>>>A")
+    variable1=123
+    variable2=456
+    variable3=789
+    variable4=12458.21444
     return render_template('/estrategiaOperando.html')
  
     # Defines the handlers that will process the messages.
