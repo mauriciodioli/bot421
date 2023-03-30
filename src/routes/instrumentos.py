@@ -26,7 +26,7 @@ def index():
 ##########################AQUI ES LA ENTRADA A LA PAGINA INSTRUMENTOS####################
 
 def Getinstrumentos(): 
-     repuesta_listado_instrumento = get.pyRofexInicializada.get_all_instruments()    
+     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()    
      listado_instrumento = repuesta_listado_instrumento["instruments"]
      
      #for listado_instrumento in listado_instrumento:     
@@ -206,12 +206,13 @@ def instrumentos_existentes(listado):
 @instrumentos.route("/instrumentos_detalles/" )
 def instrumentos_detalles():
     try:
-        listadoSymbolos = Getinstrumentos()#aqui consulto los instrumentos pero no los estoy cargando
+        #listadoSymbolos = Getinstrumentos()#aqui consulto los instrumentos pero no los estoy cargando
+        #11
         #for listadoSymbolos in listadoSymbolos:
      #   print(listadoSymbolos)
    
+        
         repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
-        #repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
         listado_instrumentos = repuesta_listado_instrumento['instruments']
         #for listado_instrumentos in listado_instrumentos:
        # print("listado_instrumentos en instrumentos_detalles en intrumentos.py",listado_instrumentos)#aqui muestro los instrumentos por pantalla

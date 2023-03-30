@@ -10,6 +10,7 @@ import pandas as pd
 import time
 
 import routes.api_externa_conexion.get_login as get
+import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 
 import routes.api_externa_conexion as getFunction
@@ -298,7 +299,7 @@ def cancelarOrden():
     
 @operaciones.route("/sendOrderWS/", methods = ['POST'] )
 def sendOrderWS():
-   try:
+   #try:
     if request.method == 'POST':
         symbol = request.form['symbol']
         orderQty = request.form['orderQty']
@@ -318,23 +319,20 @@ def sendOrderWS():
          
             
           # 3-Initialize Websocket Connection with the handlers
-            get.pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
-                                  error_handler=error_handler,
-                                  exception_handler=exception_handler)
-
+      
+           
             # 4-Subscribes to receive order report for the default account
-            get.pyRofexInicializada.order_report_subscription()
+           # get.pyRofexInicializada.order_report_subscription()
 
             # 5-Send an order via websocket message then check that order_report_handler is called
-            get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
+            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
             # validate correct price
            
             # 8-Wait 5 sec then close the connection
-            time.sleep(5)
-            get.pyRofexInicializada.close_websocket_connection()
+            time.sleep(5)         
             
             
-            repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+            repuesta_operacion = get.pyConectionWebSocketInicializada.get_all_orders_status()
         
             operaciones = repuesta_operacion['orders']
             print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
@@ -345,10 +343,10 @@ def sendOrderWS():
             estadoOperacion()
             flash('No hay suficiente saldo para enviar la orden de compra')
             return render_template("errorOperacion.html" )
-   except:        
-    flash('Datos Incorrect')  
-    print('datos incorrectos')
-    return render_template("errorOperacion.html" )
+   #except:        
+   # flash('Datos Incorrect')  
+   # print('datos incorrectos')
+   # return render_template("errorOperacion.html" )
 
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
