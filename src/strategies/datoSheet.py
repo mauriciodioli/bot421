@@ -93,17 +93,18 @@ def estrategiaSheet():
     #try:
         
         
-        listadoContarUt = leerSheet()   
-        cantidadUtaOperar = CuentaCantidadUT(listadoContarUt)# cuenta cantidad de UT a operar [0] Cedear [1] otros
+        ContenidoSheet = leerSheet()   #**22
+        ContenidoSheet_list = list(ContenidoSheet)
+        cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# cuenta cantidad de UT a operar [0] Cedear [1] otros
         
         cont = 0 #//**22
         contadorMep=0
         
         mepAl30 = calcularMepAl30() ####Calcula dolar MEP
         sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
-        listadoCargaDiccionario = leerSheet() 
+        #listadoCargaDiccionario = leerSheet()
         listaSaldossinOperar = {}
-        for Symbol,cedear,trade_en_curso,ut,senial  in listadoCargaDiccionario:
+        for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list:
             listaSaldossinOperar[Symbol]=ut
             contadorMep +=1
             if contadorMep < 21:
@@ -114,12 +115,14 @@ def estrategiaSheet():
         
         
         
-        sumaUT = 4 
+        #sumaUT = 4 # **borrar esto se calcula peropor ahora se fija.
         while sumaUT>0:
-            listado = leerSheet() 
+            #listado = leerSheet() 
             print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
-            for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in listado:  
+            for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
                     ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
+                    #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
+                    #print(" #_________ Obtener Saldo Cuenta ________:  ",Saldo_cuenta )
                     cont +=1
                     
                     
@@ -130,21 +133,20 @@ def estrategiaSheet():
                         #if trade_en_curso == 'LONG_':
                             if senial != '':
                                         if tipo_de_activo =='CEDEAR':
-                                                            saldo = cuenta.obtenerSaldoCuenta()      
-                                                            print("________________cont ",cont,"__________________saldo CEDEAR",saldo)
-                                                            print("entra a Operar CEDEAR____",cont,"____",Symbol,"_________",tipo_de_activo,"_____",trade_en_curso,"__________________",senial)                                
-                                                            #print("_____________calculó mep ",mepAl30)
+                                                            saldo = cuenta.obtenerSaldoCuenta("REM6603")      
+                                                            print("________________contador ",cont,"__________________saldo cta:",saldo)
+                                                            print("__Operando CEDEAR____: __Symbol_:",Symbol,"__tipo_de_activo_:",tipo_de_activo,"__trade_en_curso_:",trade_en_curso,"______senial_:",senial)                                
+                                                            print("__Entramos al Calculo de mep del CEDEAR, mepAL30 es_: ",mepAl30)
                                                             mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
-                                                            #print("_____________calculó mepCedear ",mepCedear)
-                                                            #print(mepCedear[0]) 
+                                                            print("__Resultado mepCedear_: ",mepCedear) # devuelve 10 como
                                                             # si el porcentaje de diferencia es menor compra
                                                             porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
                                                             porcentaje_de_diferencia = -1
-                                                            #print("______________porcentaje_de_diferencia_______________",porcentaje_de_diferencia)
+                                                            print("__Comparacion mepCedear y mepAL30__________",porcentaje_de_diferencia)# por ahora no importa
                                                             #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
-                                                            if porcentaje_de_diferencia <= 1:
+                                                            if porcentaje_de_diferencia <= 1:  
                                                                 #comprueba la liquidez
-                                                                Liquidez_ahora_cedear = compruebaLiquidez(ut,mepCedear[1])
+                                                                Liquidez_ahora_cedear = compruebaLiquidez(ut,mepCedear[1])#**44
                                                                # Liquidez_ahora_cedear = 10 #para probar **33
                                                                 
                                                                 # sumaUT es para que itere el while
@@ -197,23 +199,21 @@ def estrategiaSheet():
    #     return render_template("errorLogueo.html" )
 ################ AQUI DEFINO LA COMPRA POR WS ################
 def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial):
-     cont = 0 
-     cont +=1
+     #cont +=1
      Symbol="ORO/MAR23"
      inst = InstrumentoEstrategiaUno(Symbol, ut, 0.05) 
-     print("entra a Operar compraWs____",cont,"____",Symbol,"_________",tipo_de_activo,"_____",trade_en_curso,"__________________",senial)
+     print("__Funcion OperacionWs______Symbol_",Symbol,"__tipo_de_activo__",tipo_de_activo,"___trade_en_curso__",trade_en_curso,"____senial__",senial)
                      
-     if senial == 'OPEN.':                              
+     if senial == 'OPEN.':                    #**66          
         get.pyRofexInicializada.init_websocket_connection (market_data_handlerCompra,order_report_handler,error_handler,exception_error)
      if senial == 'closed.':
         get.pyRofexInicializada.init_websocket_connection (market_data_handlerVenta,order_report_handler,error_handler,exception_error)
      tickers=[inst.instrument]
                                 
      entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-                get.pyRofexInicializada.MarketDataEntry.OFFERS
-               ]   
+                get.pyRofexInicializada.MarketDataEntry.OFFERS]   
                                         
-     instrumento_suscriptio = get.pyRofexInicializada.market_data_subscription(tickers,entries)
+     get.pyRofexInicializada.market_data_subscription(tickers,entries)
                                     
      # Subscribes to receive order report for the default account
      get.pyRofexInicializada.order_report_subscription(snapshot=True)
@@ -222,8 +222,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial):
 def market_data_handlerCompra( message):
     
         # mensaje = Ticker+','+cantidad+','+spread
-        print("_____________________Estrategia_001:...")
-        print("Processing ddddddddddddddddddMarket Data Message Received: ",message)
+        print("__market_data_handlerCompra ___:  Data Message Received____: ",message)
         
                    
         last_md = None
@@ -248,8 +247,8 @@ def market_data_handlerCompra( message):
 def market_data_handlerVenta( message):
     
         # mensaje = Ticker+','+cantidad+','+spread
-        print("_____________________Estrategia_001:...")
-        print("Processing ddddddddddddddddddMarket Data Message Received: ",message)
+        
+        print("__market_data_handlerVenta ___:  Data Message Received____: ",message)
         
                    
         last_md = None
@@ -335,7 +334,7 @@ def _send_order( side, px, size):
         
         
         
-##########################esto es para ws#############################
+########################## esto es para ws #############################
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
@@ -393,7 +392,7 @@ def calcularMepCedears(Symbol):
      return dato
 
 def compruebaLiquidez(ut,size):
-    print(ut,"________comprobando liquidez____________",size) 
+    print(ut,"___Funcion_compruebaLiquidez____________",size) 
     liquidez = int(ut) - int(size) # 100 - 3 = 97 /////// 4 - 10 = -6 
     #print("_____________liquidez____________",liquidez)
     if liquidez >= 0:    
