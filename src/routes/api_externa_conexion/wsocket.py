@@ -10,21 +10,29 @@ import pyRofex #lo utilizo para test
 import time    #lo utilizo para test
 import asyncio
 import websockets
+import websocket
+import json
+
 
 wsocket = Blueprint('wsocket',__name__)
+
+
 
 reporte_de_instrumentos = []
 @wsocket.route('/detenerWSSuscripcionInstrumentos/')   
 def detenerWSSuscripcionInstrumentos():
      get.pyRofexInicializada.close_websocket_connection()
      return render_template("home.html" )
+   
+
 
 @wsocket.route('/suscriptos/')
 def suscriptos():
       try:
         #traigo los instrumentos para suscribirme
         mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
-        print("<<<<<---------------------mis_instrumentos --------------------------->>>>>> ",mis_instrumentos)
+        longitudLista = len(mis_instrumentos)
+        print(len(mis_instrumentos),"<<<<<---------------------mis_instrumentos --------------------------->>>>>> ",mis_instrumentos)
         repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
       # print("repuesta_listado_instrumento repuesta_listado_instrumento ",repuesta_listado_instrumento)
         listado_instrumentos = repuesta_listado_instrumento['instruments']   
@@ -52,17 +60,16 @@ def suscriptos():
         print("instrumento_suscriptio",mensaje)
           # Subscribes to an Invalid Instrument (Error Message Handler should be call)
         # get.pyRofexInicializada.market_data_subscription(tickers=["InvalidInstrument"],entries=entries)
-        
-        
-        report = get.pyRofexInicializada.order_report_subscription(snapshot=True)
+       
         #print("report encontrado ",report) 
        # time.sleep(100)
        # time.sleep(1)  
      # except KeyboardInterrupt:
       #  pass
-       # get.pyRofexInicializada.close_websocket_connection()
-        
-        return render_template('suscripcion.html', datos =  get.market_data_recibida)
+       # get.pyRofexInicializad ºa.close_websocket_connection()
+       
+       
+        return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
       except:  
            print("contraseña o usuario incorrecto")  
            flash('Loggin Incorrect')    
@@ -70,7 +77,9 @@ def suscriptos():
 
 @wsocket.route('/SuscripcionWs/', methods = ['POST'])
 def SuscripcionWs():
-     if request.method == "POST":         
+  
+     if request.method == "POST":     
+     
         Ticker = request.form["symbol"]                 
         Ticker = Ticker.replace("*", " ")
        # print("websoooooooooooooooooketttt en wsocket.py ",Ticker)
@@ -79,36 +88,34 @@ def SuscripcionWs():
         #traigo los instrumentos para suscribirme
         mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
        
-        print("llega aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiii mis_instrumentos ",mis_instrumentos)
-        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+        #print("llega aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiii mis_instrumentos ",mis_instrumentos)
+        repuesta_listado_instrumento = get.pyConectionWebSocketInicializada.get_detailed_instruments()
         listado_instrumentos = repuesta_listado_instrumento['instruments']   
         tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-        
+        longitudLista = len(mis_instrumentos)
         instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
         print("instrumentos_existentes ",instrumentos_existentes)    
     ##aqui se conecta al ws
        
-        get.pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler,
-                                  error_handler=error_handler,
-                                  exception_handler=exception_handler)
+        
         
         #### aqui define el MarketDataEntry
-        print("siiiiiiiiiiiiiiiiiiiiii paaaaaaaaaaaaaaaaaasaaaaaaaaaaaaaaaaa conexion")
-        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-                    get.pyRofexInicializada.MarketDataEntry.OFFERS,
-                    get.pyRofexInicializada.MarketDataEntry.LAST]
+      #  print("siiiiiiiiiiiiiiiiiiiiii paaaaaaaaaaaaaaaaaasaaaaaaaaaaaaaaaaa conexion")
+        entries = [get.pyConectionWebSocketInicializada.MarketDataEntry.BIDS,
+                    get.pyConectionWebSocketInicializada.MarketDataEntry.OFFERS,
+                    get.pyConectionWebSocketInicializada.MarketDataEntry.LAST]
          
         ###asi puedo llamar otra funcion para manejar los datos del ws#####      
         #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
          #### aqui se subscribe
        
-        get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
+        get.pyConectionWebSocketInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
         #print("instrumento_suscriptio",instrumento_suscriptio)
-        get.pyRofexInicializada.order_report_subscription(snapshot=True)
-       
+        get.pyConectionWebSocketInicializada.order_report_subscription(snapshot=True)
+        diccionario ={}
         #actualizarTablaMD()
-        
-        return render_template('suscripcion.html', datos =  get.market_data_recibida)
+        #diccionario.update(get.market_data_recibida)
+        return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
 
 
 ##########################esto es para ws#############################
@@ -141,7 +148,7 @@ def order_report_handler_cancel(message):
     # 7-Handler will receive an Order Report indicating that the order is cancelled (will print it)
     if message["orderReport"]["status"] == "CANCELLED":
         print("Order with ClOrdID '{0}' is Cancelled.".format(message["orderReport"]["clOrdId"])) 
-  
+   
   ###########tabla de market data
   #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 
@@ -149,18 +156,18 @@ def market_data_handler(message):
   
   
   print("message",message)
-  ticker = message["instrumentId"]["symbol"]
+  symbol = message["instrumentId"]["symbol"]
   bid = message["marketData"]["BI"] if len(message["marketData"]["BI"]) != 0 else [{'price': "-", 'size': "-"}]
   offer = message["marketData"]["OF"] if len(message["marketData"]["OF"]) != 0 else [{'price': "-", 'size': "-"}]
   last = message["marketData"]["LA"]["price"] if message["marketData"]["LA"] != None else 0
   dateLA = message['marketData']['LA']['date'] if message["marketData"]["LA"] != None else 0
 
   timestamp = message['timestamp']
-  objeto_md = {'ticker':ticker,'bid':bid,'offer':offer,'last':last,'dateLA':dateLA,'timestamp':timestamp}
+  objeto_md = {'symbol':symbol,'bid':bid,'offer':offer,'last':last,'dateLA':dateLA,'timestamp':timestamp}
   get.market_data_recibida.append(objeto_md)
  
-  print("Mensaje de MarketData en market_data_handler: {0}".format(message))
-  
+  #print("Mensaje de MarketData en market_data_handler: {0}".format(message))
+ 
   
   #{"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 def order_report_handler(message):
@@ -212,3 +219,17 @@ async def muestraTabla(webSocket,path):
   start_server = websockets.serve(muestraTabla,"localhost",8765)
   asyncio.get_event_loop().run_untill_complete(start_server)
   asyncio.get_event_loop().run_forever()
+
+
+def on_message(message):
+  # Se conecta al servidor local WebSocket
+    local_websocket = websocket.WebSocket()
+    local_websocket.connect("ws://localhost:8765/")
+    # Convierte el mensaje de cadena JSON a un objeto Python
+    market_data = json.loads(message)
+
+    # Envía el mensaje al servidor local WebSocket
+    print(json.dumps(market_data))
+    local_websocket.send(json.dumps(market_data))
+    
+    
