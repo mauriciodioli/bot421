@@ -94,7 +94,9 @@ def estrategiaSheet():
         
         
         ContenidoSheet = leerSheet()   #**22
+        
         ContenidoSheet_list = list(ContenidoSheet)
+        suscribirInstrumentosPorWS(ContenidoSheet_list)
         cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# cuenta cantidad de UT a operar [0] Cedear [1] otros
         
         cont = 0 #//**22
@@ -483,3 +485,8 @@ def CuentaCantidadUT(listado):
        
        
     return dato
+
+
+def suscribirInstrumentosPorWS(listadoInstrumentosSheet):
+    
+    return True
