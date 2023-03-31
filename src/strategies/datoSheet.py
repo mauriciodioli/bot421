@@ -132,6 +132,7 @@ def estrategiaSheet():
                         if Symbol != '':
                         #if trade_en_curso == 'LONG_':
                             if senial != '':
+                                        suscribir(ContenidoSheet_list)
                                         if tipo_de_activo =='CEDEAR':
                                                             saldo = cuenta.obtenerSaldoCuenta("REM6603")      
                                                             print("________________contador ",cont,"__________________saldo cta:",saldo)
@@ -483,3 +484,39 @@ def CuentaCantidadUT(listado):
        
        
     return dato
+
+
+def suscribir(ContenidoSheet_list):
+      print("__________entra a instrument_by_symbol____________") 
+      try:
+        
+            entries =  [ get.pyRofexInicializada.MarketDataEntry.BIDS,
+                        get.pyRofexInicializada.MarketDataEntry.OFFERS,
+                        get.pyRofexInicializada.MarketDataEntry.LAST,
+                        get.pyRofexInicializada.MarketDataEntry.CLOSING_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.OPENING_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.HIGH_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.LOW_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.SETTLEMENT_PRICE,
+                        get.pyRofexInicializada.MarketDataEntry.NOMINAL_VOLUME,
+                        get.pyRofexInicializada.MarketDataEntry.TRADE_EFFECTIVE_VOLUME,
+                        get.pyRofexInicializada.MarketDataEntry.TRADE_VOLUME,
+                        get.pyRofexInicializada.MarketDataEntry.OPEN_INTEREST]
+            #print("symbolllllllllllllllllllllll ",symbol)
+           #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
+            get.pyConectionWebSocketInicializada.market_data_subscription(tickers=ContenidoSheet_list,
+                                                                          entries=entries)
+            mensaje = get.pyWsSuscriptionInicializada(tickers=instrumentos_existentes,entries=entries)
+            print("instrumento_suscriptio",mensaje)
+            datos = get.market_data_recibida
+            
+            #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)
+            #for repuesta_instrumento in repuesta_instrumento:        
+           
+           
+            return True
+        
+      except:       
+        flash('Symbol Incorrect')   
+        return render_template("instrumentos.html" )
+   
