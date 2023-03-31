@@ -94,7 +94,9 @@ def estrategiaSheet():
         
         
         ContenidoSheet = leerSheet()   #**22
+        
         ContenidoSheet_list = list(ContenidoSheet)
+        suscribirInstrumentosPorWS(ContenidoSheet_list)
         cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# cuenta cantidad de UT a operar [0] Cedear [1] otros
         
         cont = 0 #//**22
@@ -486,6 +488,7 @@ def CuentaCantidadUT(listado):
     return dato
 
 
+<<<<<<< HEAD
 def suscribir(ContenidoSheet_list):
       print("__________entra a instrument_by_symbol____________") 
       try:
@@ -520,3 +523,8 @@ def suscribir(ContenidoSheet_list):
         flash('Symbol Incorrect')   
         return render_template("instrumentos.html" )
    
+=======
+def suscribirInstrumentosPorWS(listadoInstrumentosSheet):
+    
+    return True
+>>>>>>> 446e45c301303b63f5903f08fd7d048164d89639
