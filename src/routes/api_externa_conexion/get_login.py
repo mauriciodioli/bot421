@@ -97,7 +97,11 @@ def loginExt():
                 pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
                                                                                                  error_handler=error_handler,
                                                                                                  exception_handler=exception_handler)
+<<<<<<< HEAD
                 #pyWsSuscriptionInicializada = pyRofexInicializada.market_data_subscription()
+=======
+               # pyWsSuscriptionInicializada = pyRofexInicializada.market_data_subscription()
+>>>>>>> pcDaniel
                 print("está logueado en simulado en REMARKET")
                except:  
                     print("contraseña o usuario incorrecto")  
@@ -111,6 +115,10 @@ def loginExt():
                 pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
                                                                                                  error_handler=error_handler,
                                                                                                  exception_handler=exception_handler)
+<<<<<<< HEAD
+=======
+              #  pyWsSuscriptionInicializada = pyRofexInicializada.market_data_subscription()
+>>>>>>> pcDaniel
               
                 print("está logueado en produccion en LIVE")
             
