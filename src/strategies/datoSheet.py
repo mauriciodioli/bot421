@@ -488,43 +488,6 @@ def CuentaCantidadUT(listado):
     return dato
 
 
-<<<<<<< HEAD
-def suscribir(ContenidoSheet_list):
-      print("__________entra a instrument_by_symbol____________") 
-      try:
-        
-            entries =  [ get.pyRofexInicializada.MarketDataEntry.BIDS,
-                        get.pyRofexInicializada.MarketDataEntry.OFFERS,
-                        get.pyRofexInicializada.MarketDataEntry.LAST,
-                        get.pyRofexInicializada.MarketDataEntry.CLOSING_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.OPENING_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.HIGH_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.LOW_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.SETTLEMENT_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.NOMINAL_VOLUME,
-                        get.pyRofexInicializada.MarketDataEntry.TRADE_EFFECTIVE_VOLUME,
-                        get.pyRofexInicializada.MarketDataEntry.TRADE_VOLUME,
-                        get.pyRofexInicializada.MarketDataEntry.OPEN_INTEREST]
-            #print("symbolllllllllllllllllllllll ",symbol)
-           #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
-            get.pyConectionWebSocketInicializada.market_data_subscription(tickers=ContenidoSheet_list,
-                                                                          entries=entries)
-            mensaje = get.pyWsSuscriptionInicializada(tickers=instrumentos_existentes,entries=entries)
-            print("instrumento_suscriptio",mensaje)
-            datos = get.market_data_recibida
-            
-            #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)
-            #for repuesta_instrumento in repuesta_instrumento:        
-           
-           
-            return True
-        
-      except:       
-        flash('Symbol Incorrect')   
-        return render_template("instrumentos.html" )
-   
-=======
 def suscribirInstrumentosPorWS(listadoInstrumentosSheet):
     
     return True
->>>>>>> 446e45c301303b63f5903f08fd7d048164d89639
