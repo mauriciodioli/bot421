@@ -39,6 +39,8 @@ market_data_recibida = []
 reporte_de_ordenes = []
 
 pyRofexInicializada = pyRofex
+pyConectionWebSocketInicializada = pyRofex
+pyWsSuscriptionInicializada = pyRofex
 
 # Creating simple Routes
 @get_login.route("/loginApi")
@@ -92,8 +94,10 @@ def loginExt():
                     password=password, 
                     account=account, 
                     environment=pyRofexInicializada.Environment.REMARKET)
-                
-                
+                pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
+                                                                                                 error_handler=error_handler,
+                                                                                                 exception_handler=exception_handler)
+               # pyWsSuscriptionInicializada = pyRofexInicializada.market_data_subscription()
                 print("está logueado en simulado en REMARKET")
                except:  
                     print("contraseña o usuario incorrecto")  
@@ -104,12 +108,26 @@ def loginExt():
                     password=password, 
                     account=account, 
                     environment=pyRofexInicializada.Environment.LIVE) 
+                pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
+                                                                                                 error_handler=error_handler,
+                                                                                                 exception_handler=exception_handler)
+              #  pyWsSuscriptionInicializada = pyRofexInicializada.market_data_subscription()
+              
                 print("está logueado en produccion en LIVE")
+            
+            #ws.activarWebSocketConexion
+            
         return render_template('home.html')
 
+def order_report_handler(message):
+  print("Mensaje de OrderRouting: {0}".format(message))
+  reporte_de_ordenes.append(message)
+  
+def error_handler(message):
+  print("Mensaje de error: {0}".format(message))
 
-
-
+def exception_handler(e):
+    print("Exception Occurred: {0}".format(e.msg))
 
 
        #ws.webSocket() ### AQUI FALTA HACER LA PANTALLA EN DONDE ELIJO LOS INSTRUMENTOS PARA SUSCRIBIRME 

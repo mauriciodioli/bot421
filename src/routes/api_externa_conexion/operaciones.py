@@ -172,21 +172,16 @@ def vender():
         if saldo >= int(orderQty) * float(price):
           print("saldo despues de if ",saldo)
           
-          # 3-Initialize Websocket Connection with the handlers
-          get.pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
-                                  error_handler=error_handler,
-                                  exception_handler=exception_handler)
           print("<<<-------init_websocket_connection------>>>>> ")
           # 4-Subscribes to receive order report for the default account
-          get.pyRofexInicializada.order_report_subscription()
+       
           print("<<<-------order_report_subscription------>>>>> ")
           # 5-Send an order via websocket message then check that order_report_handler is called
-          get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.SELL, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
+          get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.SELL, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
            # validate correct price
           print("<<<-------send_order_via_websocketttttttttt------>>>>> ")
             # 8-Wait 5 sec then close the connection
           time.sleep(5)
-          get.pyRofexInicializada.close_websocket_connection()
           #estadoOperacion()
           repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
         
@@ -317,14 +312,12 @@ def sendOrderWS():
             print("saldo cuenta ",saldo)      
          
             
-          # 3-Initialize Websocket Connection with the handlers
-            get.pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,error_handler=error_handler,exception_handler=exception_handler)
-
+            
             # 4-Subscribes to receive order report for the default account
-            get.pyRofexInicializada.order_report_subscription()
+            get.pyConectionWebSocketInicializada.order_report_subscription()
 
             # 5-Send an order via websocket message then check that order_report_handler is called
-            get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
+            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
             # validate correct price
             # print("______pasaaaaaa sa send_order_via_websocket")
             # 8-Wait 5 sec then close the connection
@@ -333,7 +326,6 @@ def sendOrderWS():
             
             
             repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-            get.pyRofexInicializada.close_websocket_connection()
             operaciones = repuesta_operacion['orders']
             print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
             return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
@@ -360,7 +352,7 @@ def order_report_handler(message):
   
   
   
-  print("Mensaje de OrderRouting: {0}".format(message))
+  #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
   
  # 2-Defines the handlers that will process the messages and exceptions.
@@ -399,7 +391,7 @@ def market_data_handler(message):
   #{"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 
 def order_report_handler(message):
-  print("Mensaje de OrderRouting: {0}".format(message))
+  #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
   
 def exception_handler(e):
