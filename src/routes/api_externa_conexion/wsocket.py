@@ -133,7 +133,7 @@ def exception_error(message):
 def order_report_handler(message):
   
   
-  print("Mensaje de OrderRouting: {0}".format(message))
+  #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
   
  # 2-Defines the handlers that will process the messages and exceptions.
@@ -155,8 +155,13 @@ def order_report_handler_cancel(message):
 def market_data_handler(message):
   
   
+<<<<<<< HEAD
   print("message",message)
   symbol = message["instrumentId"]["symbol"]
+=======
+ # print("message",message)
+  ticker = message["instrumentId"]["symbol"]
+>>>>>>> pcDaniel
   bid = message["marketData"]["BI"] if len(message["marketData"]["BI"]) != 0 else [{'price': "-", 'size': "-"}]
   offer = message["marketData"]["OF"] if len(message["marketData"]["OF"]) != 0 else [{'price': "-", 'size': "-"}]
   last = message["marketData"]["LA"]["price"] if message["marketData"]["LA"] != None else 0
@@ -167,11 +172,15 @@ def market_data_handler(message):
   get.market_data_recibida.append(objeto_md)
  
   #print("Mensaje de MarketData en market_data_handler: {0}".format(message))
+<<<<<<< HEAD
  
+=======
+  
+>>>>>>> pcDaniel
   
   #{"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 def order_report_handler(message):
-  print("Mensaje de OrderRouting: {0}".format(message))
+  #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
   
   

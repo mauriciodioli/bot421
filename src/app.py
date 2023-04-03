@@ -56,6 +56,8 @@ ma = Marshmallow(app)
 
 @app.route("/")
 def entrada():
+  a=1
+  b=2
   return redirect("loginApi")
 
 
