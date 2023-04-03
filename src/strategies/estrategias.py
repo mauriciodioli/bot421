@@ -65,23 +65,27 @@ def cargaDatosEstrategyUno():
 def estrategyUno():     
     
     try:
+        print()
+        print()
+        print("<<<--------EstrategyUno-------->>>>>")
         inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
-        print("<<<--------estrategyUno-------->>>>>")
         get.pyRofexInicializada.init_websocket_connection (market_data_handler,order_report_handler,error_handler,exception_error)
         tickers=[inst.instrument]
-        print("tickers",tickers)
+        print("_EstrategyUno_tickers_",tickers)
         entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
                     get.pyRofexInicializada.MarketDataEntry.OFFERS
                     ]   
-        print("entries",entries)     
-        instrumento_suscriptio = get.pyRofexInicializada.market_data_subscription(tickers,entries)
-        print(instrumento_suscriptio)
-        print(inst.instrument)
+        print("_EstrategyUno_entries_",entries)     
+        print()
+        instrumento_suscription = get.pyRofexInicializada.market_data_subscription(tickers,entries)
+        print()
+        print("_EstrategyUno_instrumento_suscriptio_",instrumento_suscription)
+        print("_EstrategyUno_inst.instrument_",inst.instrument)
         # Subscribes to receive order report for the default account
         get.pyRofexInicializada.order_report_subscription(snapshot=True)
         return render_template('/estrategiaOperando.html')
     except:  
-        print("contraseña o usuario incorrecto")  
+        print("_EstrategyUno_contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
         return render_template("errorLogueo.html" ) 
     
@@ -176,7 +180,7 @@ def handler_Estrategia_001(message):
 
 def o_r_handler_Estrategia_001(message):
   print("_____________________Estrategia_001:...")
-  print("Mensaje de OrderRouting: {0}".format(message))
+  #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
 
 
@@ -206,7 +210,7 @@ def handler_estrategyDos(message):
 
 def o_r_handler_estrategyDos(message):
   
-  print("Mensaje de OrderRouting: {0}".format(message))
+  #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
       
 
