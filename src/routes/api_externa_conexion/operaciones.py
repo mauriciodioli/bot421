@@ -313,36 +313,20 @@ def sendOrderWS():
             print("saldo cuenta ",saldo)      
          
             
-<<<<<<< HEAD
-          # 3-Initialize Websocket Connection with the handlers
-      
-           
-            # 4-Subscribes to receive order report for the default account
-           # get.pyRofexInicializada.order_report_subscription()
-=======
             
             # 4-Subscribes to receive order report for the default account
             get.pyConectionWebSocketInicializada.order_report_subscription()
->>>>>>> pcDaniel
 
             # 5-Send an order via websocket message then check that order_report_handler is called
             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
             # validate correct price
             # print("______pasaaaaaa sa send_order_via_websocket")
             # 8-Wait 5 sec then close the connection
-<<<<<<< HEAD
-            time.sleep(5)         
-            
-            
-            repuesta_operacion = get.pyConectionWebSocketInicializada.get_all_orders_status()
-        
-=======
             time.sleep(5)
            
             
             
             repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
->>>>>>> pcDaniel
             operaciones = repuesta_operacion['orders']
             print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
             return render_template('tablaOrdenesRealizadas.html', datos = operaciones)

@@ -96,12 +96,7 @@ def estrategiaSheet():      #**11
         ContenidoSheet = leerSheet()   #**22
         
         ContenidoSheet_list = list(ContenidoSheet)
-<<<<<<< HEAD
-        suscribirInstrumentosPorWS(ContenidoSheet_list)
-        cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# cuenta cantidad de UT a operar [0] Cedear [1] otros
-=======
         cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# **77
->>>>>>> pcDaniel
         
         cont = 0 #//**22
         contadorMep=0
@@ -138,7 +133,7 @@ def estrategiaSheet():      #**11
                         if Symbol != '':
                         #if trade_en_curso == 'LONG_':
                             if senial != '':
-                                        suscribir(ContenidoSheet_list)
+                                       
                                         if tipo_de_activo =='CEDEAR':
                                                             #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
                                                             #if saldo >= int(orderQty) * float(price):    
@@ -488,6 +483,4 @@ def CuentaCantidadUT(listado):
     return dato
 
 
-def suscribirInstrumentosPorWS(listadoInstrumentosSheet):
-    
-    return True
+
