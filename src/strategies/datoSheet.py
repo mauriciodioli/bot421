@@ -417,7 +417,7 @@ def instrument_by_symbol_para_CalculoMep(symbol):
             
             #print("symbolllllllllllllllllllllll ",symbol)
            #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
-            repuesta_instrumento = get.pyWsSuscriptionInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+            repuesta_instrumento = get.pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
            
             
             #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)
