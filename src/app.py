@@ -1,4 +1,4 @@
-from re import template
+#from re import template
 from flask import (
     Flask,
     Blueprint,
@@ -24,11 +24,14 @@ from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
 from strategies.estrategias import estrategias
 from strategies.datoSheet import datoSheet
+from usuarios.autenticacion import autenticacion, user_loader, request_loader
+from flask_login import LoginManager
 
 
 
 # desde aqui se llama la aplicacion al inicio
 app = Flask(__name__)
+
 
 ##### BLUEPRINT ES EL ENRUTADOR####
 app.register_blueprint(instrumentos)
@@ -42,6 +45,7 @@ app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
 app.register_blueprint(estrategias)
 app.register_blueprint(datoSheet)
+app.register_blueprint(autenticacion)
 
 
 print(DATABASE_CONNECTION_URI)
@@ -53,6 +57,15 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
+# Creación de la instancia del objeto LoginManager
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+# Registrar los métodos user_loader y request_loader
+login_manager.user_loader(user_loader)
+login_manager.request_loader(request_loader)
 
 @app.route("/")
 def entrada():
