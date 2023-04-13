@@ -12,18 +12,31 @@ usuario = Blueprint('usuario',__name__)
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    correo_electronico = db.Column(db.String(255), unique=True, nullable=False)
-    token = db.Column(db.String(255), nullable=False)
-    refresh_token = db.Column(db.String(255), nullable=False)
-    activo = db.Column(db.Boolean, nullable=False, default=False)
+    activo = db.Column(db.Boolean, nullable=False, default=False)    
+    correo_electronico = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.LargeBinary(128), nullable=False)
+    token = db.Column(db.String(500), nullable=True)
+    refresh_token = db.Column(db.String(500), nullable=True)
  # constructor
-    def __init__(self, id,correo_electronico,token,refresh_token,activo):
+    def __init__(self, id,correo_electronico,token,refresh_token,activo,password):
         self.id = id
         self.correo_electronico = correo_electronico
         self.token = token
         self.refresh_token = refresh_token
-        self.activo = activo
+        self.activo = activo        
+        self.password = password
 
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return self.activo
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
 
 
     def crear_tabla(serlf):
@@ -34,7 +47,7 @@ class Usuario(db.Model):
         
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id",  "correo_electronico","token","refresh_token","activo")
+        fields = ("id",  "correo_electronico","token","refresh_token","activo","password")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)

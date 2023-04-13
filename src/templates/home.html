@@ -8,5 +8,50 @@
   <p>Para ir a operaciones puedes presionar el boton.</p>
   <a class="btn btn-primary btn-lg" href="/operar" role="button">Operaciones</a>
 </div>
+<script>
+// Acceder a los tokens desde el diccionario de contexto de Flask
+  var access_token = "{{ tokens[0] }}";
+  var refresh_token = "{{ tokens[1] }}";
 
+  // Almacenar los tokens en el localStorage
+  localStorage.setItem("access_token", access_token);
+  localStorage.setItem("refresh_token", refresh_token);
+ 
+
+  // Obtener los tokens de localStorage
+  function obtenerTokens() {
+    var access_token = localStorage.getItem('access_token');
+    var refresh_token = localStorage.getItem('refresh_token');
+    return {access_token, refresh_token};
+  }
+
+  // Enviar los tokens al endpoint de registro de usuario
+  $("#registro-usuario-form").submit(function(event) {
+    event.preventDefault();
+    var correo_electronico = $("#correo_electronico").val();
+    var password = $("#password").val();
+    var confirm_password = $("#confirm_password").val();
+    var access_token = obtenerTokens().access_token;
+    var refresh_token = obtenerTokens().refresh_token;
+    $.ajax({
+      url: "{{ url_for('autenticacion.login') }}",
+      method: "POST",
+      data: {
+        correo_electronico: correo_electronico,
+        password: password,
+        confirm_password: confirm_password,
+        access_token: access_token,
+        refresh_token: refresh_token
+      },
+      success: function(response) {
+        almacenarTokens(response.access_token, response.refresh_token);
+        window.location.href = "{{ url_for('autenticacion.loginBroker') }}";
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.log(jqXHR.responseText);
+      }
+    });
+  });
+
+</script>
 {% endblock%}

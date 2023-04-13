@@ -15,14 +15,6 @@ instrumentos = Blueprint('instrumentos',__name__)
 
 
 
-# Creating  Routes
-@instrumentos.route("/index")
-def index(): 
-  
-   all_mer = Instrumento.query.all()
-   print("all_mer",all_mer)  
-   return render_template('index.html', datos = all_mer)
-
 ##########################AQUI ES LA ENTRADA A LA PAGINA INSTRUMENTOS####################
 
 def Getinstrumentos(): 
