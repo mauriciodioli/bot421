@@ -13,6 +13,7 @@ import re
 import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
 import routes.instrumentos as inst
+from models.instrumento import Instrumento
 import ssl
 
 
@@ -42,11 +43,25 @@ pyRofexInicializada = pyRofex
 pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
 
+
+
+# Creating  Routes
+#@get_login.route("/index")
+#def index(): 
+  
+#   all_mer = Instrumento.query.all()
+#   print("all_mer",all_mer)  
+#   return render_template('index.html', datos = all_mer)
+
+
 # Creating simple Routes
 @get_login.route("/loginApi")
 def loginApi(): 
-   
+ print("________________llegaaaaa loginApi")
  return render_template("login.html")
+
+
+
  
 @get_login.route("/loginExt" , methods=['POST'])
 def loginExt():
