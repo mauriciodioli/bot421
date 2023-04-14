@@ -1,6 +1,7 @@
 
 from ast import Return
 from http.client import UnimplementedFileMode
+from flask import current_app
 import json
 from datetime import datetime
 from re import template
@@ -9,13 +10,15 @@ import pyRofex
 # datetime.date.today()
 import websocket
 import requests
+import jwt
 import re
 import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import ssl
-
+from models.usuario import Usuario
+from utils.db import db
 
 
 from flask import (
@@ -62,76 +65,85 @@ def loginApi():
 
 
  
-@get_login.route("/loginExt" , methods=['POST'])
+from flask import request, render_template, redirect, url_for, flash
+from datetime import datetime
+from app import get_login, db, pyRofexInicializada, order_report_handler, error_handler, exception_handler
+from app.models import Usuario
+
+@get_login.route("/loginExt", methods=['POST'])
 def loginExt():
-     
-     
-     #print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa en get_login.py hoy = datetime.today().strftime()',hoy)
-     if request.method == 'POST':
+    if request.method == 'POST':
         selector = request.form['selctorEnvironment']
-        
-        hoy = datetime.today().strftime('%d-%m-20%y')   
-        ####   AQUI TENGO QUE COMPARAR LA FECHA ####
-        fecha = request.form['fecha']#aqui traigo dato de localstorage
-        #print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa de localstorage',fecha)
-        dia = fecha.split()[0]#saco el dia
-        mes = int(fecha.split()[1])+1#saco el mes
-        a = re.sub("1","",fecha.split()[2])#saco el año
-        fecha =  "20"+str(a)+"-"+ str(mes)+"-"+str(dia)#convierto a string
-        #print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa de ayer',fecha)
-       
-        
-       
-        first_date = datetime.strptime(hoy,'%d-%m-%Y')# fecha de hoy        
-        #second_date = datetime.strptime(hoy,'%d-%m-%Y')
-        print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa en get_login.py first_date',first_date)
-        second_date = datetime.strptime('13-02-2023','%d-%m-%Y')#para probar logeo diario   
-        print('fechaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa en get_login.py second_date',second_date)     
-        result = first_date > second_date#comparo las fechas si la de hoy es mayor que la de ayer no vuelvo a loguear
-        #result = first_date < fecha#comparo las fechas
-        print(result)
-        if result:#si es false se queda pidiendo el logeo y si es true pasa a mostrar
+        hoy = datetime.today().strftime('%d-%m-20%y')
+        fecha = request.form['fecha']  # aquí traigo dato de localstorage
+        dia = fecha.split()[0]
+        mes = int(fecha.split()[1]) + 1
+        a = re.sub("1", "", fecha.split()[2])
+        fecha = "20" + str(a) + "-" + str(mes) + "-" + str(dia)
+
+        first_date = datetime.strptime(hoy, '%d-%m-%Y')
+        second_date = datetime.strptime('13-02-2023', '%d-%m-%Y')
+        result = first_date > second_date
+
+        if result:
             try:
                 user = request.form['usuario']
                 password = request.form['contraseña']
-                account = request.form['cuenta']            
-                print(user)
-                print(password)
-                print(result)
-            except:  
-                    print("no posee datos")      
-                    return render_template("login.html" )
-            if int(selector) < 2:
-               try:
-                
-                pyRofexInicializada.initialize(user=user, 
-                    password=password, 
-                    account=account, 
-                    environment=pyRofexInicializada.Environment.REMARKET)
-                pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
-                                                                                                 error_handler=error_handler,
-                                                                                                 exception_handler=exception_handler)
-               # pyWsSuscriptionInicializada = pyRofexInicializada.market_data_subscription()
-                print("está logueado en simulado en REMARKET")
-               except:  
-                    print("contraseña o usuario incorrecto")  
-                    flash('Loggin Incorrect')    
-                    return render_template("errorLogueo.html" )          
-            else: 
-                pyRofexInicializada.initialize(user=user, 
-                    password=password, 
-                    account=account, 
-                    environment=pyRofexInicializada.Environment.LIVE) 
-                pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(order_report_handler=order_report_handler,
-                                                                                                 error_handler=error_handler,
-                                                                                                 exception_handler=exception_handler)
-              #  pyWsSuscriptionInicializada = pyRofexInicializada.market_data_subscription()
-              
-                print("está logueado en produccion en LIVE")
-            
-            #ws.activarWebSocketConexion
-            
+                account = request.form['cuenta']
+                token = request.json.get('token')
+
+                if token:
+                    app = current_app._get_current_object()
+
+                    try:
+                        user_id = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                         # Add user data to the database
+                        usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
+                        usuario.userCuenta = user  # Modificar la propiedad nombre
+                        usuario.passwordCuenta = password
+                        usuario.accountCuenta = account
+                        
+                        db.session.commit()
+                    except:
+                        print("no posee datos")
+                        return render_template("login.html")
+
+                    if int(selector) < 2:
+                        try:
+                            pyRofexInicializada.initialize(user=user,
+                                                           password=password,
+                                                           account=account,
+                                                           environment=pyRofexInicializada.Environment.REMARKET)
+                            pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                                order_report_handler=order_report_handler,
+                                error_handler=error_handler,
+                                exception_handler=exception_handler)
+                            print("está logueado en simulado en REMARKET")
+                        except:
+                            print("contraseña o usuario incorrecto")
+                            flash('Loggin Incorrect')
+                            return render_template("errorLogueo.html")
+                    else:
+                        pyRofexInicializada.initialize(user=user,
+                                                       password=password,
+                                                       account=account,
+                                                       environment=pyRofexInicializada.Environment.LIVE)
+                        pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                            order_report_handler=order_report_handler,
+                            error_handler=error_handler,
+                            exception_handler=exception_handler)
+                        print("está logueado en produccion en LIVE")
+                        
+                   
+                        
+            except jwt.ExpiredSignatureError:
+                print("El token ha expirado")
+                return redirect(url_for('autenticacion.index'))
+            except jwt.InvalidTokenError:
+                print("El token es inválido")
+
         return render_template('operaciones.html')
+
 
 def order_report_handler(message):
   print("Mensaje de OrderRouting: {0}".format(message))
