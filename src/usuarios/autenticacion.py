@@ -143,8 +143,8 @@ def loginIndex():
                 print("user ___________",user)
                 print("userid ________________",user_id)
                 # Si el usuario existe, redirigirlo a la página de inicio
-                if user:                   
-                     return redirect(url_for('get_login.loginApi'))
+                if user:
+                     return jsonify({'redirect': url_for('get_login.loginApi')})
             except jwt.ExpiredSignatureError:
                 # Si el token ha expirado, redirigirlo a la página de inicio de sesión
                 print("El token ha expirado")
@@ -152,8 +152,8 @@ def loginIndex():
                 # Si hay un error decodificando el token, redirigirlo a la página de inicio de sesión
                 print("El token es inválido")
 
-        # Si no hay token o el token no es válido, renderizar la plantilla de inicio de sesión
-        return render_template('login.html')
+        # Si no hay token o el token no es válido, devolver la dirección a la que se debe redirigir
+        return jsonify({'redirect': url_for('get_login.loginApi')})
 
 
 

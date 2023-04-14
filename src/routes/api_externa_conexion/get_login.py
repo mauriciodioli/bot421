@@ -56,8 +56,7 @@ pyWsSuscriptionInicializada = pyRofex
 
 # Creating simple Routes
 @get_login.route("/loginApi")
-def loginApi(): 
- print("________________llegaaaaa loginApi")
+def loginApi():  
  return render_template("login.html")
 
 

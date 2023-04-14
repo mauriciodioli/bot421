@@ -85,10 +85,18 @@
 
   <!-- Aquí se agrega el script -->  
   <script>
+    function showError(message) {
+      // muestra un mensaje de error al usuario
+      alert(message);
+      // o agrega un elemento HTML con el mensaje de error a la página
+      // por ejemplo, con jQuery:
+      // $('body').append('<div class="alert alert-danger">' + message + '</div>');
+    }
+  
     $(document).ready(function() {
       // Obtener el token del localStorage
       var token = localStorage.getItem('access_token');
-    
+  
       if (token) { // Verificar si el token existe en el localStorage
         // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
         $.ajax({
@@ -97,15 +105,21 @@
           contentType: "application/json",
           data: JSON.stringify({'token': token}),
           success: function(response) {
-            // Manejar la respuesta de la ruta Flask
             if (response.redirect) {
-              // Si la respuesta contiene una propiedad 'redirect', redirigir a la página de destino
               window.location.href = response.redirect;
+            } else {
+              // handle error
+              showError("No se pudo redirigir al usuario");
             }
+          },
+          error: function(error) {
+            // handle error
+            showError("Hubo un error en la solicitud AJAX");
           }
         });
       }
     });
   </script>
+  
 
 {% endblock %}
