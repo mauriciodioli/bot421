@@ -131,7 +131,7 @@ def loginExt():
             
             #ws.activarWebSocketConexion
             
-        return render_template('home.html')
+        return render_template('operaciones.html')
 
 def order_report_handler(message):
   print("Mensaje de OrderRouting: {0}".format(message))
