@@ -14,11 +14,13 @@
     <!--<meta http-equiv="refresh" content="1;url=http://localhost:5000/cargar" />-->
 
     <form  name="logeo" action="/loginExt" method="post" class="btn-guardar_inst">
-      <input type="hidden" name="fecha" id="fecha"> 
+      <input type="hidden" name="fecha" id="fecha">
+      <input type="hidden" name="token" id="token"> 
       <input type="hidden" name="environment" id="environment"> 
       <input type="text" name="usuario" placeholder="mauriciodioli6603" >  
       <input type="text" name="contraseña" placeholder="zbwitW5#"  >
-      <input type="text" name="cuenta" placeholder="REM6603"  >     
+      <input type="text" name="cuenta" placeholder="REM6603"  >
+        
       <select class="form-select"aria-label="Default select example" name = "selctorEnvironment" id="selctorEnvironment">
         <option selected>Open this select menu</option>
         <option value="1">Simulacion</option>
@@ -28,8 +30,20 @@
     </form>
   
       <script>
-        let guardada = localStorage.getItem("date")  
-        console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage    
+        let guardada = localStorage.getItem("date")
+        let tokenGuardado = localStorage.getItem("access_token")  
+        console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage
+       // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
+        if(!tokenGuardado)
+        {
+          console.log("entra if tokenGuardado pero no contiene token en el archivo login.html")
+        }
+        else{
+          console.log("entra if tokenGuardado")
+          document.getElementById("token").value = tokenGuardado;//aqui guardo token en el input token 
+          console.log(tokenGuardado)
+        } 
+        
         if(!guardada)
         {
           // token = document.getElementsByName("tokens")[0].value;
@@ -39,7 +53,9 @@
           localStorage.setItem('date', fecha);//guardo en localStorage
         }else{
           document.getElementById("fecha").value = guardada;//aqui guardo la fecha en input fecha
+          
           console.log(guardada)
+         
         } 
       
         

@@ -204,6 +204,8 @@ def protegido():
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
+#aqui se logea el usuario de manera manual y se genera el token y el refresh token y luego se envia para
+# ser almacenado en localStorage y en cookies
 @autenticacion.route('/loginUsuario', methods=['GET', 'POST'])
 def loginUsuario():
     if request.method == 'POST':
