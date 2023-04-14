@@ -48,7 +48,7 @@
               {% endif %}
             {% endwith %}
 
-            <form method="POST" action="{{ url_for('autenticacion.login') }}">
+            <form method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
               <div class="form-group">
                 <label for="correo_electronico" class="text-white">Correo electrónico:</label>
                 <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" required>
@@ -83,22 +83,28 @@
     <div class="card card-body"></div>
   </div>
 
-  <!-- Aquí se agrega el script -->
-  
+  <!-- Aquí se agrega el script -->  
   <script>
     $(document).ready(function() {
-        // Obtener el token del localStorage
-        var token = localStorage.getItem('access_token');
+      // Obtener el token del localStorage
+      var token = localStorage.getItem('access_token');
+    
+      if (token) { // Verificar si el token existe en el localStorage
         // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
         $.ajax({
-            type: "POST",
-            url: "{{ url_for('autenticacion.loginIndex') }}",
-            contentType: "application/json",
-            data: JSON.stringify({'token': token}),
-            success: function(response) {
-                // Manejar la respuesta de la ruta Flask
+          type: "POST",
+          url: "{{ url_for('autenticacion.loginIndex') }}",
+          contentType: "application/json",
+          data: JSON.stringify({'token': token}),
+          success: function(response) {
+            // Manejar la respuesta de la ruta Flask
+            if (response.redirect) {
+              // Si la respuesta contiene una propiedad 'redirect', redirigir a la página de destino
+              window.location.href = response.redirect;
             }
+          }
         });
+      }
     });
   </script>
 
