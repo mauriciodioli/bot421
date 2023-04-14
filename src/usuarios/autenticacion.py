@@ -125,41 +125,36 @@ def authorized():
 
 @autenticacion.route("/index")
 def index(): 
+    
     return render_template('index.html')
-
 
      
 @autenticacion.route("/loginIndex", methods=['POST'])
-def loginIndex(): 
+def loginIndex():
     if request.method == 'POST':
         token = request.json.get('token')
         print("___________________todken   ",token)
         if token:
-            # Decodificar el token y obtener el id del usuario
-            
             app = current_app._get_current_object()
-            
             try:
-                # Cargar el usuario desde la base de datos
-               
-                
+                # Decodificar el token y obtener el id del usuario
                 user_id = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 user = Usuario.query.get(user_id)
                 print("user ___________",user)
                 print("userid ________________",user_id)
                 # Si el usuario existe, redirigirlo a la página de inicio
-                if user:
-                    return  redirect(url_for('autenticacion.loginBroker'))
+                if user:                   
+                     return redirect(url_for('get_login.loginApi'))
             except jwt.ExpiredSignatureError:
                 # Si el token ha expirado, redirigirlo a la página de inicio de sesión
                 print("El token ha expirado")
-                pass
             except jwt.InvalidTokenError:
                 # Si hay un error decodificando el token, redirigirlo a la página de inicio de sesión
                 print("El token es inválido")
-                pass
-        # Renderizar la plantilla de inicio de sesión
+
+        # Si no hay token o el token no es válido, renderizar la plantilla de inicio de sesión
         return render_template('login.html')
+
 
 
  
@@ -204,8 +199,8 @@ def protegido():
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
-@autenticacion.route('/login', methods=['GET', 'POST'])
-def login():
+@autenticacion.route('/loginUsuario', methods=['GET', 'POST'])
+def loginUsuario():
     if request.method == 'POST':
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
@@ -233,7 +228,8 @@ def login():
 
 @autenticacion.route('/loginBroker', methods=['GET', 'POST'])
 def loginBroker():
-    return render_template('login.html')
+    
+    return render_template('errorLogueo.html')
 
 # Creamos una clase de usuario que hereda de UserMixin
 class User(UserMixin):

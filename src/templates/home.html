@@ -34,7 +34,7 @@
     var access_token = obtenerTokens().access_token;
     var refresh_token = obtenerTokens().refresh_token;
     $.ajax({
-      url: "{{ url_for('autenticacion.login') }}",
+      url: "{{ url_for('autenticacion.loginUsuario') }}",
       method: "POST",
       data: {
         correo_electronico: correo_electronico,
