@@ -109,7 +109,7 @@
               window.location.href = response.redirect;
             } else {
               // handle error
-              showError("No se pudo redirigir al usuario");
+              showError("No se pudo redirigir al usuario se puede haber vencido el token loguee nuevamente");
             }
           },
           error: function(error) {
