@@ -39,8 +39,9 @@ autenticacion = Blueprint("autenticacion", __name__)
 SECRET_KEY = 'supersecreto'
 
 # Duración de los tokens
-TOKEN_DURATION = 30  # minutos
-REFRESH_TOKEN_DURATION = 60  # minutos
+TOKEN_DURATION =   1440 #  24 hs en minutos
+#REFRESH_TOKEN_DURATION = 16  # minutos
+REFRESH_TOKEN_DURATION = 43200  # minutos
 
 # Inicializar el objeto login_manager
 login_manager = LoginManager()
@@ -144,10 +145,14 @@ def loginIndex():
                 print("userid ________________",user_id)
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
-                     return jsonify({'redirect': url_for('get_login.loginApi')})
+                   #  return redirect(url_for('get_login.loginApi'))
+                   return jsonify({'redirect': url_for('get_login.loginApi')})
+
+                 
             except jwt.ExpiredSignatureError:
                 # Si el token ha expirado, redirigirlo a la página de inicio de sesión
                 print("El token ha expirado")
+                return redirect(url_for('autenticacion.index'))
             except jwt.InvalidTokenError:
                 # Si hay un error decodificando el token, redirigirlo a la página de inicio de sesión
                 print("El token es inválido")
@@ -224,6 +229,7 @@ def loginUsuario():
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
         return resp
+     
     return render_template('home.html',tokens=[access_token,refresh_token])
 
 @autenticacion.route('/loginBroker', methods=['GET', 'POST'])
