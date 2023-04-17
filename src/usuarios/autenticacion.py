@@ -129,24 +129,32 @@ def index():
     
     return render_template('index.html')
 
-     
+ # esta es la autenticacion cuando ingresa por app si en caso ya existe el token##################    
 @autenticacion.route("/loginIndex", methods=['POST'])
 def loginIndex():
     if request.method == 'POST':
-        token = request.json.get('token')
-        print("___________________todken   ",token)
-        if token:
+        access_token = request.json.get('token')
+        refresh_token  = request.json.get('refresh_token')
+        print("___________________todken   ",access_token)
+        if access_token:
             app = current_app._get_current_object()
             try:
                 # Decodificar el token y obtener el id del usuario
-                user_id = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 user = Usuario.query.get(user_id)
                 print("user ___________",user)
                 print("userid ________________",user_id)
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
                    #  return redirect(url_for('get_login.loginApi'))
-                   return jsonify({'redirect': url_for('get_login.loginApi')})
+                    # Crear una respuesta que redirige a la ruta autenticacion.loginBroker y enviar el token como parámetro
+                    resp = make_response(render_template('login.html'))
+                    set_access_cookies(resp, access_token)
+                    set_refresh_cookies(resp, refresh_token)
+                   
+                    #return resp
+                   #resp = make_response('login.html', tokens=[token,refresh_token])
+                    return jsonify({'redirect': url_for('get_login.loginApi')})
 
                  
             except jwt.ExpiredSignatureError:
@@ -160,7 +168,7 @@ def loginIndex():
         # Si no hay token o el token no es válido, devolver la dirección a la que se debe redirigir
         return jsonify({'redirect': url_for('get_login.loginApi')})
 
-
+##################################################################################################
 
  
 
@@ -227,17 +235,23 @@ def loginUsuario():
         db.session.add(usuario)
         db.session.commit()
         # Configurar las cookies de JWT
-        resp = make_response(render_template('home.html', tokens=[access_token,refresh_token]))
+        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token]))
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
+        # Guardar tokens en localStorage
+       
         return resp
      
     return render_template('home.html',tokens=[access_token,refresh_token])
 
-@autenticacion.route('/loginBroker', methods=['GET', 'POST'])
+@autenticacion.route('/loginBroker', methods=['POST'])
 def loginBroker():
-    
-    return render_template('errorLogueo.html')
+    access_token = request.form['token']
+    resp = make_response(render_template('login.html', tokens=[access_token]))
+    set_access_cookies(resp, access_token)
+    return resp
+
+
 
 # Creamos una clase de usuario que hereda de UserMixin
 class User(UserMixin):

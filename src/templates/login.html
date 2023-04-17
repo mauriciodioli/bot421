@@ -37,6 +37,19 @@
         if(!tokenGuardado)
         {
           console.log("entra if tokenGuardado pero no contiene token en el archivo login.html")
+          // Acceder a los tokens desde el diccionario de contexto de Flask
+          {% if tokens is defined %}
+   
+
+            var access_token = "{{ tokens[0] }}";
+            var refresh_token = "{{ tokens[1] }}";
+
+            // Almacenar los tokens en el localStorage
+            localStorage.setItem("access_token", access_token);
+            localStorage.setItem("refresh_token", refresh_token);
+          
+          {% endif %}
+
         }
         else{
           console.log("entra if tokenGuardado")
