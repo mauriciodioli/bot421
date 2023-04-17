@@ -21,6 +21,8 @@ from models.usuario import Usuario
 from utils.db import db
 
 
+
+
 from flask import (
     Flask,
     Blueprint,
@@ -63,12 +65,6 @@ def loginApi():
  return render_template("login.html")
 
 
-
- 
-from flask import request, render_template, redirect, url_for, flash
-from datetime import datetime
-from app import get_login, db, pyRofexInicializada, order_report_handler, error_handler, exception_handler
-from app.models import Usuario
 
 @get_login.route("/loginExt", methods=['POST'])
 def loginExt():
