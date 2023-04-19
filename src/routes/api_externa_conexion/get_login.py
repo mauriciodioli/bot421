@@ -18,6 +18,7 @@ import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import ssl
 from models.usuario import Usuario
+from models.cuentas import Cuenta
 from utils.db import db
 
 
@@ -64,20 +65,34 @@ pyWsSuscriptionInicializada = pyRofex
 def loginApi():  
  return render_template("login.html")
 
+
 @get_login.route("/loginExtAutomatico", methods=['POST'])
 def loginExtAutomatico():
     print('loginExtAutomatico ')
     if request.method == 'POST':
         try:
-            token = request.json.get('token')
-            print('token ',token)
-            if token:
+            access_token = request.json['access_token']
+            refresh_token = request.json['refresh_token']
+            correo_electronico = request.json['correo_electronico']
+            cuenta = request.json['cuenta']
+            usuario = request.json['usuario']
+            selector = request.json['selector']
+           # print('access_token ',access_token)
+           # print('refresh_token ',refresh_token)
+           # print('correo_electronico ',correo_electronico)
+            print('cuenta ',cuenta)
+            print('usuario ',usuario)
+            print('selector ',selector)
+            if access_token:
                 app = current_app._get_current_object()
                 try:
-                    user_id = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                     # Add user data to the database
-                    # usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
-                    # usuario.userCuenta = user  # Modificar la propiedad nombre
+                    print("user_id ",user_id)
+                    cuentas = db.query(Cuenta).filter_by(usuario_id=user_id).all()
+
+                    usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
+                    usuario.userCuenta = user  # Modificar la propiedad nombre
                     # usuario.passwordCuenta = password
                     # usuario.accountCuenta = account
                     # Crear una orden asociada al usuario creado anteriormente
@@ -126,30 +141,18 @@ def loginExtAutomatico():
 @get_login.route("/loginExt", methods=['POST'])
 def loginExt():
     if request.method == 'POST':
-        selector = request.form['selctorEnvironment']
-        hoy = datetime.today().strftime('%d-%m-20%y')
-        fecha = request.form['fecha']  # aquí traigo dato de localstorage
-        dia = fecha.split()[0]
-        mes = int(fecha.split()[1]) + 1
-        a = re.sub("1", "", fecha.split()[2])
-        fecha = "20" + str(a) + "-" + str(mes) + "-" + str(dia)
-
-        first_date = datetime.strptime(hoy, '%d-%m-%Y')
-        second_date = datetime.strptime('13-02-2023', '%d-%m-%Y')
-        result = first_date > second_date
-
-        if result:
+            selector = request.form['selctorEnvironment']
             try:
                 user = request.form['usuario']
                 password = request.form['contraseña']
                 account = request.form['cuenta']
-                token = request.json.get('token')
+                access_token = request.form['access_token']
 
-                if token:
+                if access_token:
                     app = current_app._get_current_object()
 
                     try:
-                        user_id = jwt.decode(token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                        user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                          # Add user data to the database
                         usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
                         usuario.userCuenta = user  # Modificar la propiedad nombre
@@ -195,7 +198,7 @@ def loginExt():
             except jwt.InvalidTokenError:
                 print("El token es inválido")
 
-        return render_template('operaciones.html')
+            return render_template('home.html', cuenta=[account,user,selector])
 
 
 def order_report_handler(message):
