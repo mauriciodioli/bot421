@@ -65,77 +65,76 @@ pyWsSuscriptionInicializada = pyRofex
 def loginApi():  
  return render_template("login.html")
 
+@get_login.route('/home')
+def home():
+    return render_template('home.html')
 
 @get_login.route("/loginExtAutomatico", methods=['POST'])
 def loginExtAutomatico():
     print('loginExtAutomatico ')
     if request.method == 'POST':
         try:
-            access_token = request.json['access_token']
-            refresh_token = request.json['refresh_token']
-            correo_electronico = request.json['correo_electronico']
-            cuenta = request.json['cuenta']
-            usuario = request.json['usuario']
-            selector = request.json['selector']
+            access_token = request.json.get('access_token')
+            refresh_token = request.json.get('refresh_token')
+            correo_electronico = request.json.get('correo_electronico')
+            user = request.json.get('usuario')
+            password = request.json.get('contraseña')
+            account = request.json.get('cuenta')
+            simuladoOproduccion = request.json.get('simuladoOproduccion')
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
            # print('correo_electronico ',correo_electronico)
-            print('cuenta ',cuenta)
-            print('usuario ',usuario)
-            print('selector ',selector)
+            
+            print('usuario ',user)
+            print('selector ',account)
             if access_token:
-                app = current_app._get_current_object()
-                try:
+                    app = current_app._get_current_object()
+            
                     user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                     # Add user data to the database
                     print("user_id ",user_id)
-                    cuentas = db.query(Cuenta).filter_by(usuario_id=user_id).all()
+                    cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
+                    
+                    print("______............._______",cuentas.userCuenta) 
+                  
+                    print("cuentas.userCuenta ",cuentas.passwordCuenta)
+                    print("cuentas.accountCuenta ",cuentas.accountCuenta)
+          
+             
+            if int(simuladoOproduccion) < 2:
+                  # try:
+                                pyRofexInicializada.initialize(user=cuentas.userCuenta,
+                                                                password=cuentas.passwordCuenta,
+                                                                account=cuentas.accountCuenta,
+                                                                environment=pyRofexInicializada.Environment.REMARKET)
+                                pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                                    order_report_handler=order_report_handler,
+                                    error_handler=error_handler,
+                                    exception_handler=exception_handler)
+                                print("está logueado en simulado en REMARKET")
+                                return jsonify({'redirect': url_for('get_login.home')})
 
-                    usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
-                    usuario.userCuenta = user  # Modificar la propiedad nombre
-                    # usuario.passwordCuenta = password
-                    # usuario.accountCuenta = account
-                    # Crear una orden asociada al usuario creado anteriormente
-                    # order = Order(product='Laptop', user=user)
-                    # session.add(order)
-                    # print(usuario.userCuenta )
-                    # print(usuario.passwordCuenta )
-                    # print(usuario.accountCuenta )
-                    # db.session.commit()
-                except:
-                    print("no posee datos")
-                #   return render_template("operaciones.html")
-                # if int(selector) < 2:
-                #   try:
-                #       pyRofexInicializada.initialize(user=user,
-                #                                      password=password,
-                #                                      account=account,
-                #                                      environment=pyRofexInicializada.Environment.REMARKET)
-                #       pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                #           order_report_handler=order_report_handler,
-                #           error_handler=error_handler,
-                #           exception_handler=exception_handler)
-                #       print("está logueado en simulado en REMARKET")
-                #   except:
-                #       print("contraseña o usuario incorrecto")
-                #       flash('Loggin Incorrect')
-                #       return render_template("errorLogueo.html")
-                #else:
-                #   pyRofexInicializada.initialize(user=user,
-                #                                 password=password,
-                #                                 account=account,
-                #                                 environment=pyRofexInicializada.Environment.LIVE)
-                #   pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                #       order_report_handler=order_report_handler,
-                #       error_handler=error_handler,
-                #       exception_handler=exception_handler)
-                #   print("está logueado en produccion en LIVE")
+                                #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
+                  # except:
+                     #  print("contraseña o usuario incorrecto")
+                     #  flash('Loggin Incorrect')
+                     #  return render_template("errorLogueo.html")
+            else:
+                    pyRofexInicializada.initialize(user=cuentas.userCuenta,
+                                                   password=cuentas.passwordCuenta,
+                                                   account=cuentas.accountCuenta,
+                                                 environment=pyRofexInicializada.Environment.LIVE)
+                    pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                       order_report_handler=order_report_handler,
+                       error_handler=error_handler,
+                       exception_handler=exception_handler)
+                    print("está logueado en produccion en LIVE")
         except jwt.ExpiredSignatureError:
             print("El token ha expirado")
             return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
-    return render_template('operaciones.html')
+        return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
 
 
 @get_login.route("/loginExt", methods=['POST'])
