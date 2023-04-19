@@ -5,3 +5,6 @@ body {
 container {
   background: #0f0;
 }
+#mensaje_correo_electronico {
+  font-size: small;
+}

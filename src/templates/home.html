@@ -9,16 +9,19 @@
   <a class="btn btn-primary btn-lg" href="/operar" role="button">Operaciones</a>
 </div>
 <script>
-// Acceder a los tokens desde el diccionario de contexto de Flask
-  var cuenta = "{{ cuenta[0] }}";
-  var usuario = "{{ cuenta[1] }}";
- 
+  let cuenta = localStorage.getItem("cuenta") 
+  {% if cuenta is defined %}
+  // Acceder a los tokens desde el diccionario de contexto de Flask
+    var cuenta = "{{ cuenta[0] }}";
+    var usuario = "{{ cuenta[1] }}";
+    var selector = "{{ cuenta[2] }}";
+  
 
-  // Almacenar los tokens en el localStorage
-  localStorage.setItem("cuenta", cuenta);
-  localStorage.setItem("usuario", usuario);
-  localStorage.setItem("selector",selector);
- 
+    // Almacenar los tokens en el localStorage
+    localStorage.setItem("cuenta", cuenta);
+    localStorage.setItem("usuario", usuario);
+    localStorage.setItem("selector",selector);
+  {% endif %}
  
 
   // Obtener los tokens de localStorage
