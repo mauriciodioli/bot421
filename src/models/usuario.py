@@ -2,6 +2,8 @@ from flask_marshmallow import Marshmallow
 from flask import Blueprint
 from utils.db import db
 from sqlalchemy import inspect
+from sqlalchemy.orm import relationship
+
 
 ma = Marshmallow()
 
@@ -17,6 +19,8 @@ class Usuario(db.Model):
     password = db.Column(db.LargeBinary(128), nullable=False)
     token = db.Column(db.String(500), nullable=True)
     refresh_token = db.Column(db.String(500), nullable=True)
+    cuentas = relationship("Cuenta", back_populates="usuarios")
+    
  # constructor
     def __init__(self, id,correo_electronico,token,refresh_token,activo,password):
         self.id = id

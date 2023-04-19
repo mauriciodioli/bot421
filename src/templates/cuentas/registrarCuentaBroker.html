@@ -1,0 +1,65 @@
+{% extends 'layouts/layout_without_navbar.html' %}
+{% block content %}
+
+
+  
+<body> 
+
+  <div class = 'container p-4'>
+    <h1 name = "mensaje" id = "mensaje " >AGREGAR CUENTA PARA LOGEO EN PRIMARY API</h1>
+    <h1 name = "mensaje_correo_electronico" id = "mensaje_correo_electronico" ></h1>
+    <div class = "col-md-4 offset-md-4">
+    
+
+    <!--<meta http-equiv="refresh" content="1;url=http://localhost:5000/cargar" />-->
+
+    <form  name="registrar_cuenta" action="/registrar_cuenta" method="post" class="btn-guardar_inst">
+      <input type="hidden" name="fecha" id="fecha">
+      <input type="hidden" name="access_token" id="access_token">
+      <input type="hidden" name = "correo_electronico" id = "correo_electronico" >
+      <input type="hidden" name="environment" id="environment"> 
+      <input type="text" name="usuario" placeholder="mauriciodioli6603" >  
+      <input type="text" name="contraseña" placeholder="zbwitW5#"  >
+      <input type="text" name="cuenta" placeholder="REM6603"  >
+        
+      <select class="form-select"aria-label="Default select example" name = "selctorEnvironment" id="selctorEnvironment">
+        <option selected>Open this select menu</option>
+        <option value="1">Simulacion</option>
+        <option value="2">Produccion</option>     
+      </select>  
+      <div class="col">           
+        <button type="submit" class="btn btn-primary my-2">Agregar cuenta</button>
+      </div>
+      
+    </form>
+    <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
+      <input type="hidden" name="access_token_get_cuentas_usuario_broker" id="access_token_get_cuentas_usuario_broker">
+      <div class="col">  
+          <button type="submit" class="btn btn-secondary my-2">Cuentas existentes</button> 
+    </div>
+    </form>
+    <script>     
+      //en este script cargo el correo electronico almacenado en el localStorage 
+      let access_token = localStorage.getItem("access_token") 
+      let correo_electronico = localStorage.getItem("correo_electronico")  
+      console.log(correo_electronico)
+      let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
+      document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+      document.getElementById("correo_electronico").value = correo_electronico;
+      document.getElementById("access_token").value = access_token;
+      document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+    </script>
+    
+
+
+    
+
+
+
+
+    </div>
+  </div>
+</body>
+
+
+{% endblock%}

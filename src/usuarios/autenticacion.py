@@ -16,6 +16,7 @@ from flask import (
 import bcrypt
 from datetime import datetime, timedelta
 
+
 from flask_login import LoginManager, login_required, login_user, UserMixin
 from flask_dance.contrib.google import make_google_blueprint, google
 from flask_jwt_extended import (
@@ -29,6 +30,7 @@ from flask_jwt_extended import (
     
 )
 from models.usuario import Usuario
+from models.cuentas import Cuenta
 from utils.db import db
 import jwt
 
@@ -40,6 +42,7 @@ SECRET_KEY = 'supersecreto'
 
 # Duración de los tokens
 TOKEN_DURATION =   1440 #  24 hs en minutos
+
 #REFRESH_TOKEN_DURATION = 16  # minutos
 REFRESH_TOKEN_DURATION = 43200  # minutos
 
@@ -59,7 +62,7 @@ def crea_tabla_usuario():
     )
     usuario.crear_tabla()
     print("Tabla creada!")
-
+    
 
 # Crear las rutas
 @autenticacion.route("/usuarios-listado")
@@ -142,7 +145,7 @@ def loginIndex():
                 # Decodificar el token y obtener el id del usuario
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 user = Usuario.query.get(user_id)
-                print("user ___________",user)
+                print("user ___________",user.correo_electronico)
                 print("userid ________________",user_id)
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
@@ -151,6 +154,7 @@ def loginIndex():
                     resp = make_response(render_template('login.html'))
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
+                    
                    
                     #return resp
                    #resp = make_response('login.html', tokens=[token,refresh_token])
@@ -228,21 +232,22 @@ def loginUsuario():
         # Iniciar sesión de usuario
         login_user(usuario)
         # Generar el token de acceso
-        access_token = create_access_token(identity=usuario.id, expires_delta=timedelta(minutes=TOKEN_DURATION))
+        expiry_timestamp = timedelta(minutes=TOKEN_DURATION)
+        access_token = create_access_token(identity=usuario.id, expires_delta=expiry_timestamp)
         refresh_token = create_refresh_token(identity=usuario.id, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
         # Almacenar el refresh token en la base de datos
         usuario.refresh_token = refresh_token       
         db.session.add(usuario)
         db.session.commit()
         # Configurar las cookies de JWT
-        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token]))
+        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico]))
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
         # Guardar tokens en localStorage
        
         return resp
      
-    return render_template('home.html',tokens=[access_token,refresh_token])
+    return render_template('home.html',tokens=[access_token,refresh_token,expiry_timestamp])
 
 @autenticacion.route('/loginBroker', methods=['POST'])
 def loginBroker():
@@ -250,23 +255,6 @@ def loginBroker():
     resp = make_response(render_template('login.html', tokens=[access_token]))
     set_access_cookies(resp, access_token)
     return resp
-
-
-
-# Creamos una clase de usuario que hereda de UserMixin
-class User(UserMixin):
-    def __init__(self, id, email, token, refresh_token, active=True):
-        self.id = id
-        self.email = email
-        self.token = token
-        self.refresh_token = refresh_token
-        self.active = active
-
-# Creamos la función de carga de usuario
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(120))
 
 
 @login_manager.unauthorized_handler

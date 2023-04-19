@@ -25,8 +25,15 @@
         <option selected>Open this select menu</option>
         <option value="1">Simulacion</option>
         <option value="2">Produccion</option>     
-      </select>     
-      <input type='submit' value='Logear'>
+      </select>  
+      <div class="col">           
+        <button type="submit" class="btn btn-primary my-2">Loguear</button>
+      </div>
+      <div class="col">    
+          <a href="/registrar_cuenta_broker">    
+            <button type="button" class="btn btn-secondary my-2">Agregar cuenta</button> 
+          </a>       
+      </div>
     </form>
   
       <script>
@@ -34,50 +41,92 @@
         let tokenGuardado = localStorage.getItem("access_token")  
         console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage
        // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
-        if(!tokenGuardado)
-        {
-          console.log("entra if tokenGuardado pero no contiene token en el archivo login.html")
-          // Acceder a los tokens desde el diccionario de contexto de Flask
-          {% if tokens is defined %}
-   
-
-            var access_token = "{{ tokens[0] }}";
-            var refresh_token = "{{ tokens[1] }}";
-
-            // Almacenar los tokens en el localStorage
-            localStorage.setItem("access_token", access_token);
-            localStorage.setItem("refresh_token", refresh_token);
-          
-          {% endif %}
-
-        }
-        else{
-          console.log("entra if tokenGuardado")
-          document.getElementById("token").value = tokenGuardado;//aqui guardo token en el input token 
-          console.log(tokenGuardado)
-        } 
-        
-        if(!guardada)
-        {
-          // token = document.getElementsByName("tokens")[0].value;
-          let fecha = new Date()
-          fecha = fecha.getDate() +" "+fecha.getMonth() +" "+fecha.getYear();
-          console.log("entra en if = null")
-          localStorage.setItem('date', fecha);//guardo en localStorage
-        }else{
-          document.getElementById("fecha").value = guardada;//aqui guardo la fecha en input fecha
-          
-          console.log(guardada)
-         
-        } 
+       if (!tokenGuardado || tokenExpirado(tokenGuardado)) {
+        // Obtener los tokens desde el diccionario de contexto de Flask
+        {% if tokens is defined %}
+          const access_token = "{{ tokens[0] }}";
+          const refresh_token = "{{ tokens[1] }}";
+          const correo_electronico = "{{ tokens[2] }}";
+          const expiry_timestamp = "{{ tokens[3] }}";  // Marca de tiempo de expiración
       
-        
+          // Almacenar los tokens y la marca de tiempo de expiración en el localStorage
+          localStorage.setItem("access_token", access_token);
+          localStorage.setItem("refresh_token", refresh_token);
+          localStorage.setItem("correo_electronico", correo_electronico);
+          localStorage.setItem("expiry_timestamp", expiry_timestamp);
+        {% endif %}
+      }
+      else {
+        // Token válido, usarlo para la solicitud AJAX
+        document.getElementById("token").value = tokenGuardado;
+      }
+      
+      // Función para verificar si el token ha expirado
+      function tokenExpirado(token) {
+        const expiry_timestamp = localStorage.getItem("expiry_timestamp");
+        if (!expiry_timestamp) {
+          return true;  // No se encontró la marca de tiempo de expiración, considerar expirado
+        }
+        const now_timestamp = new Date().getTime() / 1000;  // Convertir a segundos
+        return now_timestamp >= expiry_timestamp;
+      }
+      /////////////////////// en esta seccion llama para ver
+      if (tokenExpirado(tokenGuardado)) {
+        // Almacenar los nuevos tokens en el localStorage
+        localStorage.setItem("access_token", response.access_token);
+        localStorage.setItem("refresh_token", response.refresh_token);
+        localStorage.setItem("expiry_timestamp", response.expiry_timestamp);
+        // Usar el nuevo access_token para la solicitud AJAX
+        document.getElementById("token").value = response.access_token;
+        console.log("Se ha obtenido un nuevo token exitosamente.");
+      }
+      else {
+        showError("No se pudo obtener un nuevo token.");
+      }
+      ///////////////////// en esta parte se llama para el logeo autmatico en el broker////////////////
+      
+         
+            // Obtener el token del localStorage
+            var token = localStorage.getItem('access_token');
+            var refresh_token = localStorage.getItem('refresh_token');
+            var correo_electronico = localStorage.getItem('correo_electronico');
+          
+            if (token) { // Verificar si el token existe en el localStorage
+              // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
+              $.ajax({
+                type: "POST",
+                url: "{{ url_for('get_login.loginExtAutomatico') }}",
+                contentType: "application/json",
+                data: JSON.stringify({'token': token,'refresh_token':refresh_token,'correo_electronico':correo_electronico}),
+                success: function(response) {
+                  if (response.redirect) {
+                    window.location.href = response.redirect;
+                  } else {
+                    // handle error
+                    showError("No se pudo redirigir al usuario se puede haber vencido el token loguee nuevamente");
+                  }
+                },
+                error: function(error) {
+                  // handle error
+                  showError("Hubo un error en la solicitud AJAX");
+                }
+              });
+            }
+          
+       
+
+
+
       </script>
 
-    {%if fechas%}       
-     <meta http-equiv="refresh" content="1;url=http://localhost:5000/mostrar" />
-     <!-- <meta http-equiv="refresh" content="1;url=https://blooming-escarpment-18800.herokuapp.com/mostrar" />-->
-    {%endif%}
+    
+
+
+    
+
+
+
+
     </div>
   </div>
 </body>
