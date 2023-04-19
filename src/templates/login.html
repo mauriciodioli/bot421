@@ -15,7 +15,7 @@
 
     <form  name="logeo" action="/loginExt" method="post" class="btn-guardar_inst">
       <input type="hidden" name="fecha" id="fecha">
-      <input type="hidden" name="token" id="token"> 
+      <input type="hidden" name="access_token" id="access_token"> 
       <input type="hidden" name="environment" id="environment"> 
       <input type="text" name="usuario" placeholder="mauriciodioli6603" >  
       <input type="text" name="contraseña" placeholder="zbwitW5#"  >
@@ -38,10 +38,10 @@
   
       <script>
         let guardada = localStorage.getItem("date")
-        let tokenGuardado = localStorage.getItem("access_token")  
+        let access_token = localStorage.getItem("access_token")  
         console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage
        // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
-       if (!tokenGuardado || tokenExpirado(tokenGuardado)) {
+       if (!access_token || tokenExpirado(access_token)) {
         // Obtener los tokens desde el diccionario de contexto de Flask
         {% if tokens is defined %}
           const access_token = "{{ tokens[0] }}";
@@ -58,7 +58,7 @@
       }
       else {
         // Token válido, usarlo para la solicitud AJAX
-        document.getElementById("token").value = tokenGuardado;
+        document.getElementById("access_token").value = access_token;
       }
       
       // Función para verificar si el token ha expirado
@@ -71,33 +71,45 @@
         return now_timestamp >= expiry_timestamp;
       }
       /////////////////////// en esta seccion llama para ver
-      if (tokenExpirado(tokenGuardado)) {
+      var token = localStorage.getItem('access_token');
+      if (tokenExpirado(token)) {
         // Almacenar los nuevos tokens en el localStorage
-        localStorage.setItem("access_token", response.access_token);
+        
         localStorage.setItem("refresh_token", response.refresh_token);
+        localStorage.setItem("correo_electronico", correo_electronico);
         localStorage.setItem("expiry_timestamp", response.expiry_timestamp);
         // Usar el nuevo access_token para la solicitud AJAX
         document.getElementById("token").value = response.access_token;
         console.log("Se ha obtenido un nuevo token exitosamente.");
       }
       else {
-        showError("No se pudo obtener un nuevo token.");
+        console.log("No se pudo obtener un nuevo token.");
       }
       ///////////////////// en esta parte se llama para el logeo autmatico en el broker////////////////
       
          
             // Obtener el token del localStorage
-            var token = localStorage.getItem('access_token');
+           
             var refresh_token = localStorage.getItem('refresh_token');
             var correo_electronico = localStorage.getItem('correo_electronico');
+            var cuenta = localStorage.getItem("cuenta");
+            var usuario = localStorage.getItem("usuario");
+            var simuladoOproduccion = localStorage.getItem("selector");
           
-            if (token) { // Verificar si el token existe en el localStorage
+            if (access_token) { // Verificar si el token existe en el localStorage
               // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
               $.ajax({
                 type: "POST",
                 url: "{{ url_for('get_login.loginExtAutomatico') }}",
                 contentType: "application/json",
-                data: JSON.stringify({'token': token,'refresh_token':refresh_token,'correo_electronico':correo_electronico}),
+                data: JSON.stringify({'access_token': access_token,
+                                      'refresh_token':refresh_token,
+                                      'correo_electronico':correo_electronico,
+                                      'cuenta':cuenta,
+                                      'usuario':usuario,
+                                      'selector':simuladoOproduccion
+
+                                    }),
                 success: function(response) {
                   if (response.redirect) {
                     window.location.href = response.redirect;

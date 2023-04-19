@@ -218,7 +218,7 @@ def load_user(user_id):
 
 #aqui se logea el usuario de manera manual y se genera el token y el refresh token y luego se envia para
 # ser almacenado en localStorage y en cookies
-@autenticacion.route('/loginUsuario', methods=['GET', 'POST'])
+@autenticacion.route('/loginUsuario', methods=['POST'])
 def loginUsuario():
     if request.method == 'POST':
         correo_electronico = request.form['correo_electronico']
@@ -240,14 +240,14 @@ def loginUsuario():
         db.session.add(usuario)
         db.session.commit()
         # Configurar las cookies de JWT
-        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico]))
+        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp]))
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
         # Guardar tokens en localStorage
        
         return resp
      
-    return render_template('home.html',tokens=[access_token,refresh_token,expiry_timestamp])
+    
 
 @autenticacion.route('/loginBroker', methods=['POST'])
 def loginBroker():
