@@ -93,9 +93,12 @@
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/reporteCuenta">Reporte</a></li>      
                           <li><hr class="dropdown-divider"></li>
-                          <form  name="logeo" action="/reporte_cuentas_de_broker" method="post" class="btn-guardar_inst">
-                            <input type="hidden" name="access_token" id="access_token"> 
-                            <li><a  type="submit" class="dropdown-item" >Ver Cuentas</a></li>                         
+                          <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
+                            <input type="hidden" name="access_token_get_cuentas_usuario_broker" id="access_token_get_cuentas_usuario_broker">
+                            <div class="col">  
+                                <li><button type="submit" class="dropdown-item">Ver Cuentas</button></li>   
+                                 
+                          </div>
                           </form>
                         </ul>
                     </li>
@@ -127,6 +130,7 @@
         let correo_electronico = localStorage.getItem("correo_electronico");  
         let cuentaBroker = localStorage.getItem("cuenta");  
         let simulado = localStorage.getItem("selector");  
+        let access_token = localStorage.getItem("access_token")
 
 
         console.log(correo_electronico);
@@ -135,12 +139,12 @@
         
         
        
-
+        document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
         
         if (simulado == '1') {
             let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
-            document.getElementById("access_token").value = access_token;
+          
             let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
             document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 

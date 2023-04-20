@@ -34,8 +34,13 @@
                 <th scope="row">{{ dato.accountCuenta }}</th>
                 <th scope="row">{{ dato.passwordCuenta }}</th> 
                 <td>
-                <form action="/seleccionar_cuenta_usuario_broker" method="POST">
-                    <div class="form-group"><input type="hidden" name="id" placeholder="escribe cuenta" value="{{ dato.id }}" class="form-control"></div>                               
+                <form action="/loginExt" method="POST">
+                    <div class="form-group"><input type="hidden" name="selctorEnvironment" id="selctorEnvironment" placeholder="selctorEnvironment" value="1" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="usuario" id="usuario"placeholder="usuario" value="{{ dato.userCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"placeholder="contraseña" value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="cuenta" id="cuenta" placeholder="cuenta" value="{{ dato.accountCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="access_token"  id="access_token" placeholder="access_token" class="form-control"></div>                               
+                   
                     <div class="form-group"><button type="submit" class="btn btn-primary btn-sm btn-block form-control">This</button></div>
                 </form>
                 </td> 

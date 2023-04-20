@@ -150,6 +150,7 @@ def loginExt():
                 password = request.form['contraseña']
                 account = request.form['cuenta']
                 access_token = request.form['access_token']
+                #print("selctorEnvironment",selector)
 
                 if access_token:
                     app = current_app._get_current_object()
@@ -163,6 +164,8 @@ def loginExt():
                         usuario.accountCuenta = account
                         
                         db.session.commit()
+                        db.session.close()
+                        
                     except:
                         print("no posee datos")
                         return render_template("login.html")
