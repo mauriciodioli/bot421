@@ -226,7 +226,6 @@ def get_cuentas_de_broker_usuario():
                      print("No se pudo registrar la cuenta.")
                      db.session.rollback()  # Hacer rollback de la sesión
                      return render_template("operaciones.html")
-     #mis_instrumentos = ["DLR/NOV22", "SOJ.ROS/MAY22","DLR/JUN22", "MERV - XMEV - TSLA - 48hs"]
      return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
   
 @cuenta.route("/delete_cuenta_usuario_broker",  methods=["POST"])   
@@ -246,3 +245,9 @@ def delete_cuenta_usuario_broker():
             all_ins = db.session.query(Cuenta).all()
             
             return render_template('cuentas/cuentasDeUsuario.html', datos=all_cuenta) 
+         
+@cuenta.route("/logOutAccount")   
+def logOutAccount():
+   
+   return render_template('cuentas/logOutAccount.html')
+

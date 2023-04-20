@@ -48,7 +48,7 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                    
                     <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/loginApi">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/home">Home</a>
                     </li>
                    <!-- 
                     <li class="nav-item">
@@ -91,11 +91,22 @@
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/detalleCuenta">Detalle</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/reporteCuenta">Reporte</a></li>                         
+                          <li><a class="dropdown-item" href="/reporteCuenta">Reporte</a></li>      
+                          <li><hr class="dropdown-divider"></li>
+                          <form  name="logeo" action="/reporte_cuentas_de_broker" method="post" class="btn-guardar_inst">
+                            <input type="hidden" name="access_token" id="access_token"> 
+                            <li><a  type="submit" class="dropdown-item" >Ver Cuentas</a></li>                         
+                          </form>
                         </ul>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link disabled">Salir</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
+                        <ul class="dropdown-menu">                        
+                          <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>                        
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/logOutAccount">get out of account</a></li>
+                                                
+                        </ul>
                     </li>
                     <li class="nav-item ">
                         <a class="nav-link active" aria-current="page" href="/registrar_usuario">Registrarse</a>
@@ -129,7 +140,7 @@
         if (simulado == '1') {
             let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
-
+            document.getElementById("access_token").value = access_token;
             let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
             document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 

@@ -134,6 +134,10 @@ def loginExtAutomatico():
             return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
+        except:
+           print("contraseña o usuario incorrecto")
+           
+                  
         return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
 
 
