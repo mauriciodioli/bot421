@@ -7,4 +7,17 @@ container {
 }
 #mensaje_correo_electronico {
   font-size: small;
+  
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+#mensaje_cuentaBroker {
+  font-size: small;  
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+#mensaje_simulado {
+  font-size: small; 
+  margin-bottom: 20px;
+  margin-right: 20px;
 }
