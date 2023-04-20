@@ -37,6 +37,7 @@ class Cuenta(db.Model):
          insp = inspect(db.engine)
          if not insp.has_table("cuentas"):
               db.create_all()
+             
     
         
 class MerShema(ma.Schema):
