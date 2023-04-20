@@ -65,7 +65,7 @@ def logout():
 
 @registrarUsuario.route("/registrar_usuario")
 def registrar_usuario():
-    return render_template("registrarUsuario.html")
+    return render_template("usuarios/registrarUsuario.html")
 
 from flask import jsonify
 

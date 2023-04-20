@@ -63,8 +63,13 @@ def crea_tabla_usuario():
     usuario.crear_tabla()
     print("Tabla creada!")
     
+#sale del sistema completo
+@autenticacion.route("/logOutSystem")   
+def logOutSystem():
+   
+   return render_template('usuarios/logOutSystem.html')
 
-# Crear las rutas
+# muestra todos los usuarios
 @autenticacion.route("/usuarios-listado")
 def usuarios_listado():
     print("_______________lletaaaaaaaaaaaaaaaa______")
@@ -133,6 +138,7 @@ def index():
     return render_template('index.html')
 
  # esta es la autenticacion cuando ingresa por app si en caso ya existe el token##################    
+
 @autenticacion.route("/loginIndex", methods=['POST'])
 def loginIndex():
     if request.method == 'POST':

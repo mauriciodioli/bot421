@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "layouts/layout.html" %}
 {% block content %}
 
 <div class="jumbotron">
@@ -9,8 +9,10 @@
   <a class="btn btn-primary btn-lg" href="/operar" role="button">Operaciones</a>
 </div>
 <script>
-  let cuenta = localStorage.getItem("cuenta") 
-  {% if cuenta is defined %}
+  
+
+ 
+  //{% if cuenta is defined %}
   // Acceder a los tokens desde el diccionario de contexto de Flask
     var cuenta = "{{ cuenta[0] }}";
     var usuario = "{{ cuenta[1] }}";
@@ -21,7 +23,7 @@
     localStorage.setItem("cuenta", cuenta);
     localStorage.setItem("usuario", usuario);
     localStorage.setItem("selector",selector);
-  {% endif %}
+  //{% endif %}
  
 
   // Obtener los tokens de localStorage
@@ -31,33 +33,7 @@
     return {access_token, refresh_token};
   }
 
-  // Enviar los tokens al endpoint de registro de usuario
-  $("#registro-usuario-form").submit(function(event) {
-    event.preventDefault();
-    var correo_electronico = $("#correo_electronico").val();
-    var password = $("#password").val();
-    var confirm_password = $("#confirm_password").val();
-    var access_token = obtenerTokens().access_token;
-    var refresh_token = obtenerTokens().refresh_token;
-    $.ajax({
-      url: "{{ url_for('autenticacion.loginUsuario') }}",
-      method: "POST",
-      data: {
-        correo_electronico: correo_electronico,
-        password: password,
-        confirm_password: confirm_password,
-        access_token: access_token,
-        refresh_token: refresh_token
-      },
-      success: function(response) {
-        almacenarTokens(response.access_token, response.refresh_token);
-        window.location.href = "{{ url_for('autenticacion.loginBroker') }}";
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.log(jqXHR.responseText);
-      }
-    });
-  });
+ 
 
 </script>
 {% endblock%}
