@@ -27,6 +27,7 @@ from routes.api_externa_conexion.cuenta import cuenta
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
 from strategies.estrategias import estrategias
+from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
@@ -69,6 +70,7 @@ app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
 app.register_blueprint(estrategias)
+app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)

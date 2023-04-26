@@ -45,7 +45,7 @@ def cargaDatosEstrategyUno():
         mensaje = Ticker+','+cantidad+','+spread
         
         inst = InstrumentoEstrategiaUno(Ticker, cantidad, spread)
-       
+       #00
         get.pyRofexInicializada.init_websocket_connection (market_data_handler,order_report_handler,error_handler,exception_error)
         tickers=[inst.instrument]
         print("tickers",tickers)
