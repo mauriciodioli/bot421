@@ -112,7 +112,7 @@ def estrategiaSheet():      #**11
                print("____________contador mep __________ ",contadorMep)
                mepAl30 = calcularMepAl30() ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
         
-        print(listaSaldossinOperar)
+        #print(listaSaldossinOperar)
         
         
         
@@ -218,7 +218,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
      print("__Funcion Operacion_WebSoket______Symbol_",Symbol,"__tipo_de_activo__",tipo_de_activo,"___trade_en_curso__",trade_en_curso,"____senial__",senial)
                      
       # 4-Subscribes to receive order report for the default account
-     get.pyConectionWebSocketInicializada.order_report_subscription()
+     #get.pyConectionWebSocketInicializada.order_report_subscription()
      if senial == 'OPEN.':
          if(mepCedear[2]>0 and ut>0 ):
              ut=abs(ut)

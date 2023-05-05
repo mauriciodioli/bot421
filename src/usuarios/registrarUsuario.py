@@ -34,6 +34,7 @@ from requests.exceptions import HTTPError
 from models.usuario import Usuario
 from datetime import datetime, timedelta
 from utils.db import db
+from usuarios.autenticacion import autenticacion
 
 # Configuración del Blueprint para el registro de usuarios
 registrarUsuario = Blueprint("registrarUsuario", __name__)
@@ -73,7 +74,7 @@ from flask import jsonify
 def registro_usuario():
     correo_electronico = request.form['correo_electronico']
     password = request.form['password']
-
+    
     # Verificar si el usuario ya está registrado
     usuario_existente = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
 
@@ -91,7 +92,7 @@ def registro_usuario():
 
     db.session.add(usuario)
     db.session.commit()
-
+    db.session.close()
     # Crear una respuesta
     response = make_response(render_template("index.html"))
 

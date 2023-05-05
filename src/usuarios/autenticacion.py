@@ -142,6 +142,8 @@ def index():
 @autenticacion.route("/loginIndex", methods=['POST'])
 def loginIndex():
     if request.method == 'POST':
+        print("intenta crear tablaaaaaaaaaaaaa_____________________   ")
+        
         access_token = request.json.get('token')
         refresh_token  = request.json.get('refresh_token')
         print("___________________todken   ",access_token)
@@ -230,12 +232,14 @@ def loginUsuario():
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
         # Buscar el usuario en la base de datos
+       # crea_tabla_usuario()
         usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
-        print("Valor de password: ", password," usuario.password ",usuario.password)
+       # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
             flash('Correo electrónico o contraseña incorrectos', 'danger')
             return redirect(url_for('usuarios/autenticacion.login'))
         # Iniciar sesión de usuario
+       
         login_user(usuario)
         # Generar el token de acceso
         expiry_timestamp = timedelta(minutes=TOKEN_DURATION)
@@ -245,12 +249,13 @@ def loginUsuario():
         usuario.refresh_token = refresh_token       
         db.session.add(usuario)
         db.session.commit()
+        
         # Configurar las cookies de JWT
         resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp]))
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
         # Guardar tokens en localStorage
-       
+        db.session.close()
         return resp
      
     

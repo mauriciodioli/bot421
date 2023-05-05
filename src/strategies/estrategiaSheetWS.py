@@ -21,27 +21,30 @@ class States(enum.Enum):
     WAITING_ORDERS = 2
 
 @estrategiaSheetWS.route('/estrategia_sheet_WS/')
-def estrategyUno():     
+def estrategia_sheet_WS():     
     
    # try:
         
         inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
         SuscripcionDeSheet()
-        get.pyRofexInicializada.init_websocket_connection (
+        
+        pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
                                 market_data_handler=market_data_handler_estrategia,
-                                order_report_handler=market_data_handler_estrategia,
+                                order_report_handler= order_report_handler,
                                 error_handler=error_handler,
                                 exception_handler=exception_handler
                                 )
         
         tickers=[inst.instrument]
-        print("_EstrategyUno_tickers_",tickers)
+        print("_estrategia_sheet_WS_",tickers)
         
       
         
-        print("_EstrategyUno_inst.instrument_",inst.instrument)
+        print("_estrategia_sheet_WS inst.instrument_",inst.instrument)
         # Subscribes to receive order report for the default account
-        get.pyRofexInicializada.order_report_subscription(snapshot=True)
+        get.pyConectionWebSocketInicializada.order_report_subscription(snapshot=True,handler= order_report_handler)
+  
+        #get.pyRofexInicializada.order_report_subscription(snapshot=True)
         return render_template('/estrategiaOperando.html')
   #  except:  
   #      print("_EstrategyUno_contraseña o usuario incorrecto")  
@@ -69,7 +72,7 @@ def SuscripcionDeSheet():
       
     ##aqui se conecta al ws
     #get.pyRofexInicializada.init_websocket_connection(market_data_handler2,order_report_handler,error_handler,exception_error)
-    print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")
+    #print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")
       
     #### aqui define el MarketDataEntry
     entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
@@ -124,7 +127,24 @@ def market_data_handler_estrategia( message):
 
 
     # Defines the handlers that will process the Order Reports.
+
+
+@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+def botonPanico():
+    respuesta = botonPanicoRH('true')
+    get.pyRofexInicializada.close_websocket_connection()
+    return render_template("home.html" ) 
+
+def botonPanicoRH(message):
+    # Llamada al método /botonPanico utilizando la referencia a wsConnection
+        print("esta dentro del boton de panico ",message)
+        
+        return message
+    
 def order_report_handler( order_report):
+         
+        response = botonPanicoRH('false') 
+        print("respuesta desde el boton", response)
         print("Order Report Message Received: {0}".format(order_report))
         if order_report["orderReport"]["clOrdId"] in InstrumentoEstrategiaUno.my_order.keys():
             InstrumentoEstrategiaUno._update_size(order_report)
@@ -176,7 +196,7 @@ def estrategiaSheetNuevaWS(message):      #**11
                print("____________contador mep __________ ",contadorMep)
                mepAl30 = calcularMepAl30WS() ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
         
-        print(listaSaldossinOperar)
+       # print(listaSaldossinOperar)
         
         
         
@@ -328,7 +348,7 @@ def calcularMepAl30WS(message):
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
-      print("__________entra a instrument_by_symbol____________",message) 
+      #print("__________entra a instrument_by_symbol____________",message) 
       try:
         
                 
