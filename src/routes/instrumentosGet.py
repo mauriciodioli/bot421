@@ -40,6 +40,7 @@ def guarda_instrumento():
         new_mer = InstrumentoGet(especie,c_compra,p_compra,p_venta,c_venta,ultimo,var,apertura,minimo,maximo,cierre_anterior,volumen,vol_monto,vwap,idsegmento,idmarket)
         db.session.add(new_mer)
         db.session.commit()
+        db.session.close()
     # jsonify puede devolver datos en lista, dict y otros formatos
     # print json content
     
@@ -59,6 +60,7 @@ def guarda_instrumento_para_suscripcion_ws(message):
         print(new_ins)
         db.session.add(new_ins)
         db.session.commit()
+        db.session.close()
       
   
 def get_instrumento_para_suscripcion_ws():

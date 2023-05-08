@@ -10,6 +10,7 @@ import pandas as pd
 import time
 
 import routes.api_externa_conexion.get_login as get
+import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 
 import routes.api_externa_conexion as getFunction
@@ -293,7 +294,7 @@ def cancelarOrden():
     
 @operaciones.route("/sendOrderWS/", methods = ['POST'] )
 def sendOrderWS():
-   try:
+   #try:
     if request.method == 'POST':
         symbol = request.form['symbol']
         orderQty = request.form['orderQty']
@@ -335,10 +336,10 @@ def sendOrderWS():
             estadoOperacion()
             flash('No hay suficiente saldo para enviar la orden de compra')
             return render_template("errorOperacion.html" )
-   except:        
-    flash('Datos Incorrect')  
-    print('datos incorrectos')
-    return render_template("errorOperacion.html" )
+   #except:        
+   # flash('Datos Incorrect')  
+   # print('datos incorrectos')
+   # return render_template("errorOperacion.html" )
 
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))

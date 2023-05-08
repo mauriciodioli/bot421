@@ -1,0 +1,69 @@
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+{% extends 'layouts/layout_without_navbar.html' %}
+
+{% block content %}
+  <div class="container p-4">
+    <h1 name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
+    <table class="table table-dark table-striped">
+      <thead>           
+        <tr>
+          <th scope="col">id</th>
+          <th scope="col">Usuario</th>
+          <th scope="col">Cuenta</th>  
+          <th scope="col">Password</th>                                                      
+          <th scope="col">Select Account</th>
+          <th scope="col">Quitar</th>                                                                         
+        </tr>            
+      </thead>
+      <tbody>
+        {% for dato in datos %}
+         {% if dato.userCuenta %}
+            <tr class="table-row">
+                <th scope="row">{{ dato.id }}</th>
+                <th scope="row">{{ dato.userCuenta }}</th> 
+                <th scope="row">{{ dato.accountCuenta }}</th>
+                <th scope="row">{{ dato.passwordCuenta }}</th> 
+                <td>
+                <form action="/loginExt" method="POST">
+                    <div class="form-group"><input type="hidden" name="selctorEnvironment" id="selctorEnvironment" placeholder="selctorEnvironment" value="1" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="usuario" id="usuario"placeholder="usuario" value="{{ dato.userCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"placeholder="contraseña" value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="cuenta" id="cuenta" placeholder="cuenta" value="{{ dato.accountCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="access_token"  id="access_token" placeholder="access_token" class="form-control"></div>                               
+                   
+                    <div class="form-group"><button type="submit" class="btn btn-primary btn-sm btn-block form-control">This</button></div>
+                </form>
+                </td> 
+                <td>
+                <form action="/delete_cuenta_usuario_broker" method="POST">
+                    <div class="form-group"><input type="hidden" name="id" placeholder="escribe cuenta" value="{{ dato.id }}" class="form-control"></div>                               
+                    <div class="form-group"><button type="submit" class="btn btn-secondary btn-sm btn-block form-control">Quitar</button></div>
+                </form>
+                </td>
+            </tr>  
+          {% endif %}
+        {% endfor %}
+        <script>     
+          //en este script cargo el correo electronico almacenado en el localStorage 
+          let access_token = localStorage.getItem("access_token");
+          let correo_electronico = localStorage.getItem("correo_electronico");  
+          console.log(correo_electronico);
+          let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
+          document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+          document.getElementById("correo_electronico").value = correo_electronico;
+          document.getElementById("access_token").value = access_token;
+        </script>
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

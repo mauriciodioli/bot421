@@ -8,7 +8,7 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-{% extends 'layout.html'%}
+{% extends 'layouts/layout.html'%}
 {% block content%}
 
             <div class = 'container p-4'>     
@@ -17,42 +17,61 @@
                     <a class="btn btn-primary btn-lg" href="/detenerWSSuscripcionInstrumentos/" role="button">DETENER </a>
                 </div>           
                   <div class = 'container p-4'>
-                  <table class="table table-dark table-striped">
-                    <thead>           
-                        <tr>
-                            <th scope="col">Ticker</th>
-                            <th scope="col">Timestamp</th>
-                            <th scope="col">vol. Compra</th>
-                            <th scope="col">precio Compra</th>
-                            <th scope="col">precio Venta</th>
-                            <th scope="col"> Vol. Venta</th>                           
-                            <th scope="col">Ult. Precio Operado</th>  
-                                                  
-                                                    
-                        </tr>            
-                    </thead>
-                    <tbody>
-                      
-                      {% for dato in datos%}
-                        <tr>
-                            <th scope="row">{{dato.ticker}}</th>
-                            <td>{{dato.timestamp}}</td>
-                            <td>{{dato.dateLA}}</td>  
-                            <td>{{dato.bid.0.price}}</td>
-                            <td>{{dato.offer.0.price}}</td>                           
-                            <td>{{dato.last}}</td> 
-                           
-                            
-                          </tr>  
+                  <table class="table table-dark table-striped" id="tabla-cotizaciones">                  
+                      <thead>
                        
-                      {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
-            <div>
-             
-            </div>
+                        <tr>
+                          <th>Instrumento</th>
+                          <th>Último precio</th>
+                          <th>Bid</th>
+                          <th>size</th>
+                          <th>Ask</th>
+                          <th>size</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for dato in datos[0] %}
+                          
+                            <tr id="{{ dato.ticker }}">
+                              <th>{{ dato.ticker }}</th>
+                              <td>{{ dato.last }}</td>
+                              <td>{{ dato.bid.0.price }}</td>
+                              <td>{{ dato.bid.0.size }}</td>
+                              <td>{{ dato.offer.0.price}}</td>
+                              <td>{{ dato.offer.0.size}}</td>
+                              
+                            </tr>
+                         
+                        {% endfor %}
+                        
+                      </tbody>
+                      <table id="market-data">
+                        <thead>
+                            <tr>
+                                <th>Instrumento</th>
+                                <th>Bid</th>
+                                <th>Ask</th>
+                                <th>Último Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                   
+                    
+                    <script>
+                      // Establecer la conexión WebSocket
+                      const ws = new WebSocket("ws://localhost:8765");
+                      ws.onopen = function() {
+                          console.log("Conexión establecida.");
+                      };
+              
+                     
+                  </script>
+                      
+                      
+                    
+            
           <div>
             <input type="text" name="ws" id="fecha">
           </div>

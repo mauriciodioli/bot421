@@ -1,4 +1,4 @@
-from re import template
+#from re import template
 from flask import (
     Flask,
     Blueprint,
@@ -8,6 +8,10 @@ from flask import (
     url_for,
     flash,
     jsonify,
+)
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
 )
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -23,13 +27,38 @@ from routes.api_externa_conexion.cuenta import cuenta
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
 from strategies.estrategias import estrategias
+from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
+from usuarios.autenticacion import autenticacion
+from usuarios.registrarUsuario import registrarUsuario
+from models.usuario import Usuario
+from flask_login import LoginManager
+from flask_oauthlib.client import OAuth
+from flask_cors import CORS
+from flask_dance.contrib.google import make_google_blueprint, google
+
 
 
 
 # desde aqui se llama la aplicacion al inicio
 app = Flask(__name__)
+login_manager = LoginManager(app)
+CORS(app)
 
+# Configura el manejo de autenticación JWT
+app.config['JWT_SECRET_KEY'] = '621289'
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
+app.config['JWT_REFRESH_COOKIE_PATH'] = '/refresh/'
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+jwt = JWTManager(app)
+
+
+# Configura el blueprint de Google OAuth
+blueprint = make_google_blueprint(client_id='client_id',
+                                   client_secret='client_secret',
+                                   scope=['profile', 'email'])
+app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
 app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
@@ -41,7 +70,10 @@ app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
 app.register_blueprint(estrategias)
+app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(datoSheet)
+app.register_blueprint(autenticacion)
+app.register_blueprint(registrarUsuario)
 
 
 print(DATABASE_CONNECTION_URI)
@@ -54,13 +86,24 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
+# Creación de la instancia del objeto LoginManager
+#login_manager = LoginManager()
+#login_manager.init_app(app)
+
+
+# Registrar los métodos user_loader y request_loader
+#login_manager.user_loader(user_loader)
+#login_manager.request_loader(request_loader)
+
 @app.route("/")
 def entrada():
   a=1
   b=2
-  return redirect("loginApi")
+  return redirect("index")
 
-
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
 
 
 

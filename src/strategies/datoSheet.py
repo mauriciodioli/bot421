@@ -94,6 +94,7 @@ def estrategiaSheet():      #**11
         
         
         ContenidoSheet = leerSheet()   #**22
+        
         ContenidoSheet_list = list(ContenidoSheet)
         cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# **77
         
@@ -112,7 +113,7 @@ def estrategiaSheet():      #**11
                print("____________contador mep __________ ",contadorMep)
                mepAl30 = calcularMepAl30() ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
         
-        print(listaSaldossinOperar)
+        #print(listaSaldossinOperar)
         
         
         
@@ -133,6 +134,7 @@ def estrategiaSheet():      #**11
                         if Symbol != '':
                         #if trade_en_curso == 'LONG_':
                             if senial != '':
+                                       
                                         if tipo_de_activo =='CEDEAR':
                                                             #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
                                                             #if saldo >= int(orderQty) * float(price):    
@@ -217,7 +219,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
      print("__Funcion Operacion_WebSoket______Symbol_",Symbol,"__tipo_de_activo__",tipo_de_activo,"___trade_en_curso__",trade_en_curso,"____senial__",senial)
                      
       # 4-Subscribes to receive order report for the default account
-     get.pyConectionWebSocketInicializada.order_report_subscription()
+     #get.pyConectionWebSocketInicializada.order_report_subscription()
      if senial == 'OPEN.':
          if(mepCedear[2]>0 and ut>0 ):
              ut=abs(ut)
@@ -416,7 +418,7 @@ def instrument_by_symbol_para_CalculoMep(symbol):
             
             #print("symbolllllllllllllllllllllll ",symbol)
            #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
-            repuesta_instrumento = get.pyWsSuscriptionInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+            repuesta_instrumento = get.pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
            
             
             #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)
@@ -480,3 +482,6 @@ def CuentaCantidadUT(listado):
        
        
     return dato
+
+
+
