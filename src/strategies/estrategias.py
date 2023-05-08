@@ -160,7 +160,7 @@ def handler_Estrategia_001(message):
         print("_____________________Estrategia_001:...")
         print("Processing ddddddddddddddddddMarket Data Message Received: ",message)
         
-                   
+                
         last_md = None
         bid = message["marketData"]["BI"]
         offer = message["marketData"]["OF"]
@@ -171,8 +171,11 @@ def handler_Estrategia_001(message):
            bid_px = bid[0]["price"]
            offer_px = offer[0]["price"]
            print("bid_px: ",bid_px," offer_px ",offer_px," symbol ",symbol," orderQty ",orderQty," price ",price)
+           #datos = saaoperacionGral(bid,offer)
+           #datos = saaoperacionGral(bid,offer)
+           #datos = saaoperacionGral(bid,offer)
            get.pyRofexInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
-         
+        
         else:
           InstrumentoEstrategiaUno._cancel_if_orders()
       

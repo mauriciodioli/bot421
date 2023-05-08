@@ -100,7 +100,8 @@ def estrategiaSheet():      #**11
         cont = 0 #//**22
         contadorMep=0
         
-        mepAl30 = calcularMepAl30() ####Calcula dolar MEP
+       # mepAl30 = calcularMepAl30() ####Calcula dolar MEP
+        mepAl30 = calcularMepAl30()
         sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
         #listadoCargaDiccionario = leerSheet()
         listaSaldossinOperar = {}
