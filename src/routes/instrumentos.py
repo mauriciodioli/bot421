@@ -15,18 +15,10 @@ instrumentos = Blueprint('instrumentos',__name__)
 
 
 
-# Creating  Routes
-@instrumentos.route("/index")
-def index(): 
-  
-   all_mer = Instrumento.query.all()
-   print("all_mer",all_mer)  
-   return render_template('index.html', datos = all_mer)
-
 ##########################AQUI ES LA ENTRADA A LA PAGINA INSTRUMENTOS####################
 
 def Getinstrumentos(): 
-     repuesta_listado_instrumento = get.pyRofexInicializada.get_all_instruments()    
+     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()    
      listado_instrumento = repuesta_listado_instrumento["instruments"]
      
      #for listado_instrumento in listado_instrumento:     
@@ -43,6 +35,7 @@ def delete_mer(id):
     dato = Instrumento.query.get(id)
     db.session.delete(dato)
     db.session.commit()
+    db.session.close()
     flash('Operation Removed successfully')
     return redirect('/')
 
@@ -131,6 +124,7 @@ def add_instrumento(string):
     new_mer = Instrumento(especie,c_compra,p_compra,p_venta,c_venta,ultimo,var,apertura,minimo,maximo,cierre_anterior,volumen,vol_monto,vwap,idsegmento,idmarket)
     db.session.add(new_mer)
     db.session.commit()
+    db.session.close()
     flash('Operation Added successfully')
     return redirect('/')
 
@@ -150,6 +144,7 @@ def eliminar(id):
     dato = Instrumento.query.get(id)
     db.session.delete(dato)
     db.session.commit()
+    db.session.close()
     flash('Operation Removed successfully')
     ###url_for('index') redirecciona a la funcion index
     return redirect('index')    
@@ -181,13 +176,14 @@ def get_instrumento(id):
         instrumento.idmarket = request.form["idmarket"]
        
         db.session.commit()
+        db.session.close()
         flash('Operation successfully')
         return redirect('index')
    
    
     
     registroAEditar = db.session.query(Instrumento).get(dato.id)
-    
+    db.session.close()
     return render_template("editarInstrumento.html", dato = registroAEditar)
   
  
@@ -206,10 +202,12 @@ def instrumentos_existentes(listado):
 @instrumentos.route("/instrumentos_detalles/" )
 def instrumentos_detalles():
     try:
-        listadoSymbolos = Getinstrumentos()#aqui consulto los instrumentos pero no los estoy cargando
+        #listadoSymbolos = Getinstrumentos()#aqui consulto los instrumentos pero no los estoy cargando
+        #11
         #for listadoSymbolos in listadoSymbolos:
      #   print(listadoSymbolos)
    
+        
         repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
         #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
         listado_instrumentos = repuesta_listado_instrumento['instruments']
