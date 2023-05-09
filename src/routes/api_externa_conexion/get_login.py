@@ -20,9 +20,7 @@ import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from utils.db import db
-
-
-
+from datetime import datetime
 
 from flask import (
     Flask,
@@ -44,7 +42,7 @@ password = "{{contraseña}}"
 account = "{{cuenta}}"  
 market_data_recibida = []
 reporte_de_ordenes = []
-
+ahora=0
 pyRofexInicializada = pyRofex
 pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
