@@ -120,11 +120,13 @@ def market_data_handler_estrategia( message):
         #print(f'El instrumento en market_data_handler {message}')
         # Llamando al método estrategiaSheet() desde market_data_handler_estrategia
      
-    print( "marca de tiempo:",  get.VariableParaTiemposMDHandler)
+    print( "marca de tpo seteada:",  get.VariableParaTiemposMDHandler)
     marca_de_tiempo = message["timestamp"]
+    print( "marca_de_tiempo:",  marca_de_tiempo, "dif:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+    
     #if  message["timestamp"] - ahora >= 600000: # 10 minutos
-    if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 30000: # 30 segundos
-            print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler  )
+    if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos
+            #print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler  )
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
             estrategiaSheetNuevaWS(message)
         
