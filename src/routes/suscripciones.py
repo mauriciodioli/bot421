@@ -45,6 +45,7 @@ def suscripcionDb():
     try:
          get.pyRofexInicializada.get_detailed_instruments()
          all_ins = db.session.query(InstrumentoSuscriptos).all()
+         db.session.close()
          return render_template("suscripciones_db.html", datos =  all_ins)
     except:        
         return render_template("errorLogueo.html" )
@@ -58,12 +59,15 @@ def suscDelete():
             print(dato)
             db.session.delete(dato)
             db.session.commit()
+            
             flash('Operation Removed successfully')
             all_ins = db.session.query(InstrumentoSuscriptos).all()
+            db.session.close()
             return render_template("suscripciones_db.html", datos =  all_ins)
     except: 
             flash('Operation No Removed')       
             all_ins = db.session.query(InstrumentoSuscriptos).all()
+            db.session.close()
             return render_template("suscripciones_db.html", datos =  all_ins)
 
 @suscripciones.route('/ajax', methods=['POST'])

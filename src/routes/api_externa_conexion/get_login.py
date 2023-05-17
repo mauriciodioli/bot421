@@ -94,7 +94,7 @@ def loginExtAutomatico():
                     # Add user data to the database
                     print("user_id ",user_id)
                     cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
-                    
+                    db.session.close()
                     print("______............._______",cuentas.userCuenta) 
                   
                     print("cuentas.userCuenta ",cuentas.passwordCuenta)
@@ -112,6 +112,7 @@ def loginExtAutomatico():
                                     error_handler=error_handler,
                                     exception_handler=exception_handler)
                                 print("está logueado en simulado en REMARKET")
+                                
                                 return jsonify({'redirect': url_for('get_login.home')})
 
                                 #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])

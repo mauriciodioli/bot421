@@ -35,6 +35,7 @@ def delete_mer(id):
     dato = Instrumento.query.get(id)
     db.session.delete(dato)
     db.session.commit()
+    db.session.close()
     flash('Operation Removed successfully')
     return redirect('/')
 
@@ -123,6 +124,7 @@ def add_instrumento(string):
     new_mer = Instrumento(especie,c_compra,p_compra,p_venta,c_venta,ultimo,var,apertura,minimo,maximo,cierre_anterior,volumen,vol_monto,vwap,idsegmento,idmarket)
     db.session.add(new_mer)
     db.session.commit()
+    db.session.close()
     flash('Operation Added successfully')
     return redirect('/')
 
@@ -142,6 +144,7 @@ def eliminar(id):
     dato = Instrumento.query.get(id)
     db.session.delete(dato)
     db.session.commit()
+    db.session.close()
     flash('Operation Removed successfully')
     ###url_for('index') redirecciona a la funcion index
     return redirect('index')    
@@ -173,13 +176,14 @@ def get_instrumento(id):
         instrumento.idmarket = request.form["idmarket"]
        
         db.session.commit()
+        db.session.close()
         flash('Operation successfully')
         return redirect('index')
    
    
     
     registroAEditar = db.session.query(Instrumento).get(dato.id)
-    
+    db.session.close()
     return render_template("editarInstrumento.html", dato = registroAEditar)
   
  
