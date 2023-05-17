@@ -150,7 +150,7 @@ def registrar_cuenta():
                cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
                db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
                db.session.commit()  # Confirmar los cambios
-
+               db.session.close()
                print("Cuenta registrada exitosamente!")
                print("Cuenta registrada usuario id !",usuario.id)
                todasLasCuentas = get_cuentas_de_broker(user_id)
@@ -160,6 +160,7 @@ def registrar_cuenta():
 
             except:               
                 db.session.rollback()  # Hacer rollback de la sesión
+                db.session.close()
                 print("No se pudo registrar la cuenta.")
     
    return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
@@ -184,7 +185,7 @@ def get_cuentas_de_broker(user_id):
             print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
     except:
         print("No se pudo obtener las cuentas del usuario.")
-     
+    db.session.close()
     return todasCuentas
 
 
@@ -226,6 +227,7 @@ def get_cuentas_de_broker_usuario():
                      print("No se pudo registrar la cuenta.")
                      db.session.rollback()  # Hacer rollback de la sesión
                      return render_template("operaciones.html")
+     db.session.close()
      return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
   
 @cuenta.route("/delete_cuenta_usuario_broker",  methods=["POST"])   
@@ -239,10 +241,12 @@ def delete_cuenta_usuario_broker():
             db.session.commit()
             flash('Operation Removed successfully')
             all_cuenta = db.session.query(Cuenta).all()
+            db.session.close()
             return render_template("cuentas/cuentasDeUsuario.html", datos =  all_cuenta)
     except: 
             flash('Operation No Removed')       
             all_ins = db.session.query(Cuenta).all()
+            db.session.close()
             
             return render_template('cuentas/cuentasDeUsuario.html', datos=all_cuenta) 
          
