@@ -31,6 +31,7 @@ from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
+from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from models.usuario import Usuario
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -41,7 +42,8 @@ from flask_dance.contrib.google import make_google_blueprint, google
 
 
 # desde aqui se llama la aplicacion al inicio
-app = Flask(__name__)
+#app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 login_manager = LoginManager(app)
 CORS(app)
 
@@ -74,6 +76,7 @@ app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
+app.register_blueprint(imagenesOperaciones)
 
 
 print(DATABASE_CONNECTION_URI)
@@ -82,6 +85,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # no cache
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
