@@ -2,6 +2,40 @@
 {% block content%}
 <!-- Modal -->
 <style>
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-dialog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    border: 1px solid #888;
+    padding: 20px;
+    max-width: 80%;
+    width: 500px;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
   .modal-title {
     text-align: center;
     margin: 0 auto;
@@ -9,76 +43,44 @@
     color: black;
   }
 
-  .dz-preview {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    max-height: 300px; /* Establece una altura máxima para las imágenes */
-    border: 2px dashed #ccc;
-    background-color: #f9f9f9;
-    margin-bottom: 10px;
-    padding: 10px;
-    box-sizing: border-box;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .dz-preview img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: cover;
-  }
-  
-  .description-block {
-    text-align: center;
+  .modal-body {
     margin-bottom: 20px;
   }
-  .description-block {
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+
+  .modal-footer {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
+    justify-content: flex-end;
   }
-  .container {
-    padding: 20px;
-    color: black;
-  }
-  #file-description {
-    width: 100%;
-    height: 100%;
-    resize: none;
+
+  #my-dropzone {
+    max-height: 300px;
+    overflow-y: auto;
   }
 </style>
-<div  id="modUpImage" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+<div id="miModal" class="modal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title " id="exampleModalLabel" style="color: black;">Cargar Imagen o Video</h5>
+        <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Cargar Imagen o Video</h5>
         <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <!-- Contenido del modal -->
         <div id="popup">
           <div class="container">
-          <div class="description-block">          
-            <textarea id="file-description" rows="3" ></textarea>
+            <div class="description-block">
+              <textarea id="file-description" rows="3"></textarea>
+            </div>
           </div>
-        </div>
           <form id="my-dropzone" action="/cargarImagen" class="dropzone">
-            <div class="dz-message" style="text-align: center; margin: 20px 0; color: black;">
+           
+            <div class="dz-message">
               Arrastra y suelta aquí tus archivos (imagen o video)
             </div>
+           
+             
+            
           </form>
         </div>
       </div>
@@ -91,36 +93,18 @@
 
 
 <script>
-  $(document).ready(function() {
-    // Configuración de Dropzone.js
-    Dropzone.options.myDropzone = {
-      acceptedFiles: 'image/*,video/*',
-      maxFiles: 1,
-      success: function(file, response) {
-        // Lógica adicional después de cargar el archivo (por ejemplo, mostrar una vista previa)
-        console.log(response);
-        // Ajustar el tamaño de la imagen después de que se carga
-        ajustarTamanioImagen();
-      }
-    };
+  const miModal = document.getElementById("miModal");
 
-    // Función para ajustar el tamaño de la imagen al tamaño del contenedor
-    function ajustarTamanioImagen() {
-      var contenedor = $('.dz-preview');
-      var imagen = contenedor.find('img');
-      imagen.css('max-width', '100%');
-      imagen.css('max-height', '100%');
+  window.addEventListener("load", function() {
+    miModal.style.display = "block";
+    document.body.style.overflow = "hidden"; // Deshabilitar el desplazamiento del fondo
+  });
+
+  miModal.addEventListener("click", function(event) {
+    if (event.target === miModal || event.target.className === "btn-close") {
+      miModal.style.display = "none";
+      document.body.style.overflow = "auto"; // Habilitar el desplazamiento del fondo
     }
-
-    // Llamar a la función cuando se redimensiona la ventana
-    $(window).resize(function() {
-      ajustarTamanioImagen();
-    });
-    
-    // Enviar el formulario al hacer clic en el botón "Subir Archivo"
-    $('#open-popup').click(function() {
-      $('#my-dropzone').submit();
-    });
   });
 </script>
 
