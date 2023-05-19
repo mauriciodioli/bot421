@@ -220,8 +220,9 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
                      
       # 4-Subscribes to receive order report for the default account
      #get.pyConectionWebSocketInicializada.order_report_subscription()
+     
      if senial == 'OPEN.':
-         if(mepCedear[2]>0 and ut>0 ):
+         if(mepCedear[0]>0 and ut>0 ):
              ut=abs(ut)
              if(saldocta>ut*mepCedear[2]):
                     get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.BUY, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=mepCedear[2])
