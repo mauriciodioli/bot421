@@ -1,7 +1,7 @@
 
 from ast import Return
 from http.client import UnimplementedFileMode
-from flask import current_app
+from flask import current_app,g
 import json
 from datetime import datetime
 from re import template
@@ -78,6 +78,7 @@ def loginExtAutomatico():
             user = request.json.get('usuario')
             password = request.json.get('contraseña')
             account = request.json.get('cuenta')
+            g.account = account
             simuladoOproduccion = request.json.get('simuladoOproduccion')
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
@@ -125,10 +125,11 @@ def market_data_handler_estrategia( message):
     print( "marca_de_tiempo:",  marca_de_tiempo, "dif:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
     
 
-    if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 60 segundos
-            print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler  )
+    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 60 segundos
+    if  (1): # 60 segundos
+            print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler ,' account: ' )
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
-            #estrategiaSheetNuevaWS(message)
+            estrategiaSheetNuevaWS(message)
         
     
         
@@ -203,105 +204,107 @@ def estrategiaSheetNuevaWS(message):      #**11
         sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
         #listadoCargaDiccionario = leerSheet()
         listaSaldossinOperar = {}
-        for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list:
+        for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list[2:]:
             listaSaldossinOperar[Symbol]=ut
             contadorMep +=1
             if contadorMep < 21:
                print("____________contador mep __________ ",contadorMep)
-               mepAl30 = calcularMepAl30WS() ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
+               mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
         
        # print(listaSaldossinOperar)
         
         
         
         #sumaUT = 4 # **borrar esto se calcula pero por ahora se fija.
-        while sumaUT>0:
-            #listado = leerSheet() 
-            print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
-            for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
-                    ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
-                    #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
-                    #print(" __Obtener Saldo Cuenta ________:  ",Saldo_cuenta )
-                    cont +=1
-                    
-                    
-                    #### CONSULTAR INSTRUMENTO DETALLADO ################  
-                # if saldo >= int(ut) * float(price):
-                    if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                        if Symbol != '':
-                        #if trade_en_curso == 'LONG_':
-                            if senial != '':
-                                       
-                                        if tipo_de_activo =='CEDEAR':
-                                                            #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
-                                                            #if saldo >= int(orderQty) * float(price):    
-                                                            #print("________________contador ",cont,"__________________saldo cta:",saldo)
-                                                            print("__Operando CEDEAR____: __Symbol_:",Symbol,"__tipo_de_activo_:",tipo_de_activo,"__trade_en_curso_:",trade_en_curso,"______senial_:",senial)                                
-                                                            print("__Entramos al Calculo de mep del CEDEAR, mepAL30 es_: ",mepAl30)
-                                                            mepCedear = calcularMepCedearsWS(Symbol)####Calcula dolar MEP CEDEAR
-                                                            print("__Resultado mepCedear_: ",mepCedear) # devuelve 10 como
-                                                            # si el porcentaje de diferencia es menor compra
-                                                            porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
-                                                            porcentaje_de_diferencia = -1
-                                                            print("__Comparacion mepCedear y mepAL30__________",porcentaje_de_diferencia)# por ahora no importa
-                                                            #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
-                                                            if porcentaje_de_diferencia <= 1:
-                                                                # Liquidez es la cantidad presente a operar 
-                                                                Liquidez_ahora_cedear = datoSheet.compruebaLiquidez(ut,mepCedear[1]) #**44
-                                                                # Liquidez_ahora_cedear = 10 #para probar **33
-                                                                
-                                                                # sumaUT es para que itere el while
-                                                                sumaUT = int(cantidadUtaOperar[0]) - Liquidez_ahora_cedear
-                                                                
-                                                                #listaSaldossinOperar es un diccionario 
-                                                                #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                                
-                                                                UT_a_operar = listaSaldossinOperar[Symbol]
-                                                                
-                                                                if Liquidez_ahora_cedear < int(UT_a_operar) : 
-                                                                # si entro aca me falta liquidez, anoto lo que falta
-                                                                    listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
-                                                                    
-                                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
-                                                                else:
-                                                                    listaSaldossinOperar[Symbol] = 0
-                                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
-                                                                
-                                                                
-                                                                
-                                                                    #time.sleep(900) # Sleep for 15 minutos
-                                                            #time.sleep(2) # Sleep for 15 minutos
-                                                        
+        #while sumaUT>0:
+        #listado = leerSheet() 
+        print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
+        for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
+                ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
+                #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
+                #print(" __Obtener Saldo Cuenta ________:  ",Saldo_cuenta )
+                cont +=1
+                
+                
+                #### CONSULTAR INSTRUMENTO DETALLADO ################  
+            # if saldo >= int(ut) * float(price):
+                if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
+                    if Symbol != '':
+                    #if trade_en_curso == 'LONG_':
+                        if senial != '':
+                                    
+                                    if tipo_de_activo =='CEDEAR':
+                                                        #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
+                                                        #if saldo >= int(orderQty) * float(price):    
+                                                        #print("________________contador ",cont,"__________________saldo cta:",saldo)
+                                                        print("__Operando CEDEAR____: __Symbol_:",Symbol,"__tipo_de_activo_:",tipo_de_activo,"__trade_en_curso_:",trade_en_curso,"______senial_:",senial)                                
+                                                        print("__Entramos al Calculo de mep del CEDEAR, mepAL30 es_: ",mepAl30)
+                                                        mepCedear = calcularMepCedearsWS(message)####Calcula dolar MEP CEDEAR
+                                                        print("__Resultado mepCedear_: ",mepCedear) # devuelve 10 como
+                                                        # si el porcentaje de diferencia es menor compra
+                                                        porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
+                                                        porcentaje_de_diferencia = -1
+                                                        print("__Comparacion mepCedear y mepAL30__________",porcentaje_de_diferencia)# por ahora no importa
+                                                        #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
+                                                        if porcentaje_de_diferencia <= 1:
+                                                            # Liquidez es la cantidad presente a operar 
+                                                            Liquidez_ahora_cedear = datoSheet.compruebaLiquidez(ut,mepCedear[1]) #**44
+                                                            # Liquidez_ahora_cedear = 10 #para probar **33
                                                             
-                                        if tipo_de_activo =='ARG':
-                                                    saldo = datoSheet.cuenta.obtenerSaldoCuenta()      
-                                                    print("________________cont ",cont,"__________________saldo ARG",saldo)
-                                                    #comprueba la liquidez
-                                                    Liquidez_ahora_arg = datoSheet.compruebaLiquidez(ut,mepCedear[1])
-                                                    #Liquidez_ahora_arg = 10 #para probar
-                                                    sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
-                                                    UT_a_operar = listaSaldossinOperar[Symbol]
-                                                    #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                    if Liquidez_ahora_arg < int(UT_a_operar) : 
-                                                        listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
-                                                        datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
-                                                    else:
-                                                        listaSaldossinOperar[Symbol] = 0
-                                                        datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
-            banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
-                                                      
-                            #else
-            cont=0
-            for Symbol  in listaSaldossinOperar: 
-                if (Symbol != '' and  Symbol != 'Symbol'):
-                    cont = cont + listaSaldossinOperar[Symbol]
-                
-                
-            sumaUT=cont
-        
-            print("________________sumaUT________________ ",sumaUT)
-            #time.sleep(2)#segundos
-        
+                                                            # sumaUT es para que itere el while
+                                                            sumaUT = int(cantidadUtaOperar[0]) - Liquidez_ahora_cedear
+                                                            
+                                                            #listaSaldossinOperar es un diccionario 
+                                                            #comparo la cantidad que necesito operar (ut) con liquidez del momento.
+                                                            
+                                                            print(listaSaldossinOperar[Symbol])                                                                
+                                                            UT_a_operar = listaSaldossinOperar[Symbol]
+                                                            
+                                                            
+                                                            if Liquidez_ahora_cedear < int(UT_a_operar) : 
+                                                            # si entro aca me falta liquidez, anoto lo que falta
+                                                                listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
+                                                                
+                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
+                                                            else:
+                                                                listaSaldossinOperar[Symbol] = 0
+                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
+                                                            
+                                                            
+                                                            
+                                                                #time.sleep(900) # Sleep for 15 minutos
+                                                        #time.sleep(2) # Sleep for 15 minutos
+                                                    
+                                                        
+                                    if tipo_de_activo =='ARG':
+                                                saldo = datoSheet.cuenta.obtenerSaldoCuenta()      
+                                                print("________________cont ",cont,"__________________saldo ARG",saldo)
+                                                #comprueba la liquidez
+                                                Liquidez_ahora_arg = datoSheet.compruebaLiquidez(ut,mepCedear[1])
+                                                #Liquidez_ahora_arg = 10 #para probar
+                                                sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
+                                                UT_a_operar = listaSaldossinOperar[Symbol]
+                                                #comparo la cantidad que necesito operar (ut) con liquidez del momento.
+                                                if Liquidez_ahora_arg < int(UT_a_operar) : 
+                                                    listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
+                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
+                                                else:
+                                                    listaSaldossinOperar[Symbol] = 0
+                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
+        banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
+                                                    
+                        #else
+        cont=0
+        for Symbol  in listaSaldossinOperar: 
+            if (Symbol != '' and  Symbol != 'Symbol'):
+                cont = cont + listaSaldossinOperar[Symbol]
+            
+            
+        sumaUT=cont
+    
+        print("________________sumaUT________________ ",sumaUT)
+        #time.sleep(2)#segundos
+    
         return render_template('/estrategiaOperando.html')
 
 ##########################AQUI SE REALIZA CALCULO DE MEP CEDEARS####################
@@ -318,6 +321,8 @@ def calcularMepCedearsWS(message):
    #  print("__________koD_ci____________",koD_ci)
    #  print("__________size____________",size)
      #mep= ko_ci / koD_ci
+     
+     """"
      if len(resultado['OF']) > 0:
         offer_price = resultado['OF'][0]['price'] #vendedora OF
      else:
@@ -327,8 +332,10 @@ def calcularMepCedearsWS(message):
         bid_price =resultado['BI'][0]['price'] #compradora BI
      else:
         bid_price=0
-     
-     mep=380
+     """
+     offer_price=0      # borrar y programar bien
+     bid_price=0        # borrar y programar bien
+     mep=380            # borrar y programar bien
      size=10
      dato = [mep,size,offer_price,bid_price]
      return dato
@@ -338,11 +345,16 @@ def calcularMepCedearsWS(message):
 def calcularMepAl30WS(message):
      
      
-    resultado = instrument_by_symbol_para_CalculoMep(message)    
-    resultado2 = instrument_by_symbol_para_CalculoMep(message)    
+  #  resultado = instrument_by_symbol_para_CalculoMep(message)    
+  #  resultado2 = instrument_by_symbol_para_CalculoMep(message) 
     
-    # al30_ci = resultado['OF'][0]['price'] #vendedora OF
-    # al30D_ci =resultado2['BI'][0]['price'] #compradora BI
+    #print( message['marketData']['OF'][0]['price'])   
+    if len( message['marketData']['OF']) == 0:
+        print("La clave 'OF' está vacía.")
+    else:
+        print("La clave 'OF' no está vacía.", message['marketData']['OF'][0]['price'])
+        al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
+        al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
         #print("__________al30_ci____________",al30_ci)
         #print("__________al30D_ci____________",al30D_ci)
         
@@ -362,28 +374,28 @@ def calcularMepAl30WS(message):
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
-     # print("__________entra a instrument_by_symbol____________",message) 
+      print("__________entra a instrument_by_symbol____________",message) 
       try:
         
                 
             objeto = message 
            # for objeto in objeto:     
             
-           # print("instrumentooooooooooooooooooooooooooooo LA ",objeto['LA'])
+           # print("instrumentooooooooooooooooooooooooooooo LA ",objeto['marketData']['LA'])
            # print("instrumentooooooooooooooooooooooooooooo BI ",objeto['BI'])            
            # print("instrumentooooooooooooooooooooooooooooo OF ",objeto['OF'])
-            #jdato = str(objeto['LA'])
-            #jdato1 = str(objeto['BI'])
-            #jdato2 = str(objeto['OF'])
-            #if jdato.find('price')==-1:
-            #    print("no tiene nada LA ",jdato.find('price'))
+            jdato = str(objeto['marketData']['LA'])
+            jdato1 = str(objeto['marketData']['BI'])
+            jdato2 = str(objeto['marketData']['OF'])
+            if jdato.find('price')==-1:
+                print("no tiene nada LA ",jdato.find('price'))
                 
-            #elif jdato1.find('price')==-1:
-            #    print("no tiene nada BI ",jdato1.find('price'))
+            elif jdato1.find('price')==-1:
+                print("no tiene nada BI ",jdato1.find('price'))
                 
             
-            #elif jdato2.find('price')==-1:
-            #    print("no tiene nada OF",jdato2.find('price'))
+            elif jdato2.find('price')==-1:
+                print("no tiene nada OF",jdato2.find('price'))
            
             return objeto
         
