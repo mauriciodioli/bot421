@@ -237,7 +237,7 @@ def loginUsuario():
        # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
             flash('Correo electrónico o contraseña incorrectos', 'danger')
-            return redirect(url_for('usuarios/autenticacion.login'))
+            return redirect(url_for('autenticacion.index'))
         # Iniciar sesión de usuario
        
         login_user(usuario)

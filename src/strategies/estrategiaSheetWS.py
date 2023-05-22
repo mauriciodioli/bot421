@@ -31,7 +31,8 @@ def estrategia_sheet_WS():
         
         #inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
         SuscripcionDeSheet()#**55
-        
+        #get.pyRofexInicializada.init_websocket_connection(order_report_handler = order_report_handler)
+        get.pyRofexInicializada.order_report_subscription(account="REM6603", snapshot=True,handler = order_report_handler)
         pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
                                 market_data_handler=market_data_handler_estrategia,
                                 order_report_handler= order_report_handler,
@@ -46,7 +47,7 @@ def estrategia_sheet_WS():
         
         #print("_estrategia_sheet_WS inst.instrument_",inst.instrument)
         # Subscribes to receive order report for the default account
-        get.pyConectionWebSocketInicializada.order_report_subscription(snapshot=True,handler= order_report_handler)
+        
   
         #get.pyRofexInicializada.order_report_subscription(snapshot=True)
         return render_template('/estrategiaOperando.html')
@@ -157,7 +158,11 @@ def botonPanicoRH(message):
         return message
     
 def order_report_handler( order_report):
-         
+    
+        print("Recibido reporte de orden:")#**88
+        print(" - Clave: ", order_report["clOrdID"])
+        print(" - Estado: ", order_report["status"])
+        print(" - Descripción: ", order_report["text"])
         response = botonPanicoRH('false') 
         print("respuesta desde el boton", response)
         print("Order Report Message Received: {0}".format(order_report))
@@ -208,7 +213,7 @@ def estrategiaSheetNuevaWS(message):      #**11
             listaSaldossinOperar[Symbol]=ut
             contadorMep +=1
             if contadorMep < 21:
-               print("____________contador mep __________ ",contadorMep)
+               #print("____________contador mep __________ ",contadorMep)
                mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
         
        # print(listaSaldossinOperar)
@@ -218,7 +223,7 @@ def estrategiaSheetNuevaWS(message):      #**11
         #sumaUT = 4 # **borrar esto se calcula pero por ahora se fija.
         #while sumaUT>0:
         #listado = leerSheet() 
-        print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
+        #print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
         for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
                 ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
                 #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
@@ -237,14 +242,14 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                         #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
                                                         #if saldo >= int(orderQty) * float(price):    
                                                         #print("________________contador ",cont,"__________________saldo cta:",saldo)
-                                                        print("__Operando CEDEAR____: __Symbol_:",Symbol,"__tipo_de_activo_:",tipo_de_activo,"__trade_en_curso_:",trade_en_curso,"______senial_:",senial)                                
-                                                        print("__Entramos al Calculo de mep del CEDEAR, mepAL30 es_: ",mepAl30)
+                                                        #print("__Operando CEDEAR____: __Symbol_:",Symbol,"__tipo_de_activo_:",tipo_de_activo,"__trade_en_curso_:",trade_en_curso,"______senial_:",senial)                                
+                                                        #print("__Entramos al Calculo de mep del CEDEAR, mepAL30 es_: ",mepAl30)
                                                         mepCedear = calcularMepCedearsWS(message)####Calcula dolar MEP CEDEAR
-                                                        print("__Resultado mepCedear_: ",mepCedear) # devuelve 10 como
+                                                        #print("__Resultado mepCedear_: ",mepCedear) # devuelve 10 como
                                                         # si el porcentaje de diferencia es menor compra
                                                         porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
                                                         porcentaje_de_diferencia = -1
-                                                        print("__Comparacion mepCedear y mepAL30__________",porcentaje_de_diferencia)# por ahora no importa
+                                                        #print("__Comparacion mepCedear y mepAL30__________",porcentaje_de_diferencia)# por ahora no importa
                                                         #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
                                                         if porcentaje_de_diferencia <= 1:
                                                             # Liquidez es la cantidad presente a operar 
@@ -278,7 +283,7 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                         
                                     if tipo_de_activo =='ARG':
                                                 saldo = datoSheet.cuenta.obtenerSaldoCuenta()      
-                                                print("________________cont ",cont,"__________________saldo ARG",saldo)
+                                                #print("________________cont ",cont,"__________________saldo ARG",saldo)
                                                 #comprueba la liquidez
                                                 Liquidez_ahora_arg = datoSheet.compruebaLiquidez(ut,mepCedear[1])
                                                 #Liquidez_ahora_arg = 10 #para probar
@@ -310,7 +315,7 @@ def estrategiaSheetNuevaWS(message):      #**11
 ##########################AQUI SE REALIZA CALCULO DE MEP CEDEARS####################
 def calcularMepCedearsWS(message):
      #traer los precios del cedear
-     print("_calcularMepCedears_______ le da 380")
+    # print("_calcularMepCedears_______ le da 380")
      resultado = instrument_by_symbol_para_CalculoMep(message) 
      #resultado2 = instrument_by_symbol_para_CalculoMep("MERV - XMEV - GGAL - 48hs") 
      
@@ -352,7 +357,7 @@ def calcularMepAl30WS(message):
     if len( message['marketData']['OF']) == 0:
         print("La clave 'OF' está vacía.")
     else:
-        print("La clave 'OF' no está vacía.", message['marketData']['OF'][0]['price'])
+        #print("La clave 'OF' no está vacía.", message['marketData']['OF'][0]['price'])
         al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
         al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
         #print("__________al30_ci____________",al30_ci)
@@ -370,11 +375,11 @@ def calcularMepAl30WS(message):
         #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
         #mep = 10000 / dolaresmep
     mep = 380
-    print("____________calcularMepAl30_____________")
+    #print("____________calcularMepAl30_____________")
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
-      print("__________entra a instrument_by_symbol____________",message) 
+     # print("__________entra a instrument_by_symbol____________",message) 
       try:
         
                 

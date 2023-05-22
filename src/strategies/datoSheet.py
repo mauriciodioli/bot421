@@ -258,8 +258,13 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
 
 
     # Defines the handlers that will process the Order Reports.
+
 def order_report_handler( order_report):
-   
+    
+    print("Recibido reporte de orden:")
+    print(" - Clave: ", order_report["clOrdID"])
+    print(" - Estado: ", order_report["status"])
+    print(" - Descripción: ", order_report["text"])
     print("Order Report Message Received: {0}".format(order_report))
     """
         if order_report["orderReport"]["clOrdId"] in InstrumentoEstrategiaUno.my_order.keys():
@@ -394,7 +399,7 @@ def calcularMepCedears(Symbol):
      return dato
 
 def compruebaLiquidez(ut,size):
-    print(ut,"_CompruebaLiquidez____________",size) 
+    #print(ut,"_CompruebaLiquidez____________",size) 
     liquidez = int(ut) - int(size) # 100 - 3 = 97 /////// 4 - 10 = -6 
     #print("_____________liquidez____________",liquidez)
     if liquidez >= 0:    
