@@ -87,136 +87,15 @@ def leerSheet():
      
      return union
  
-@datoSheet.route('/estrategiaSheet/')
-def estrategiaSheet():      #**11 
-    
-    #try:
-        
-        
-        ContenidoSheet = leerSheet()   #**22
-        
-        ContenidoSheet_list = list(ContenidoSheet)
-        cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# **77
-        
-        cont = 0 #//**22
-        contadorMep=0
-        
-       # mepAl30 = calcularMepAl30() ####Calcula dolar MEP
-        mepAl30 = calcularMepAl30()
-        sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
-        #listadoCargaDiccionario = leerSheet()
-        listaSaldossinOperar = {}
-        for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list:
-            listaSaldossinOperar[Symbol]=ut
-            contadorMep +=1
-            if contadorMep < 21:
-               print("____________contador mep __________ ",contadorMep)
-               mepAl30 = calcularMepAl30() ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
-        
-        #print(listaSaldossinOperar)
-        
-        
-        
-        #sumaUT = 4 # **borrar esto se calcula pero por ahora se fija.
-        while sumaUT>0:
-            #listado = leerSheet() 
-            print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
-            for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
-                    ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
-                    #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
-                    #print(" __Obtener Saldo Cuenta ________:  ",Saldo_cuenta )
-                    cont +=1
-                    
-                    
-                    #### CONSULTAR INSTRUMENTO DETALLADO ################  
-                # if saldo >= int(ut) * float(price):
-                    if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                        if Symbol != '':
-                        #if trade_en_curso == 'LONG_':
-                            if senial != '':
-                                       
-                                        if tipo_de_activo =='CEDEAR':
-                                                            #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
-                                                            #if saldo >= int(orderQty) * float(price):    
-                                                            #print("________________contador ",cont,"__________________saldo cta:",saldo)
-                                                            print("__Operando CEDEAR____: __Symbol_:",Symbol,"__tipo_de_activo_:",tipo_de_activo,"__trade_en_curso_:",trade_en_curso,"______senial_:",senial)                                
-                                                            print("__Entramos al Calculo de mep del CEDEAR, mepAL30 es_: ",mepAl30)
-                                                            mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
-                                                            print("__Resultado mepCedear_: ",mepCedear) # devuelve 10 como
-                                                            # si el porcentaje de diferencia es menor compra
-                                                            porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
-                                                            porcentaje_de_diferencia = -1
-                                                            print("__Comparacion mepCedear y mepAL30__________",porcentaje_de_diferencia)# por ahora no importa
-                                                            #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
-                                                            if porcentaje_de_diferencia <= 1:
-                                                                # Liquidez es la cantidad presente a operar 
-                                                                Liquidez_ahora_cedear = compruebaLiquidez(ut,mepCedear[1]) #**44
-                                                                # Liquidez_ahora_cedear = 10 #para probar **33
-                                                                
-                                                                # sumaUT es para que itere el while
-                                                                sumaUT = int(cantidadUtaOperar[0]) - Liquidez_ahora_cedear
-                                                                
-                                                                #listaSaldossinOperar es un diccionario 
-                                                                #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                                
-                                                                UT_a_operar = listaSaldossinOperar[Symbol]
-                                                                
-                                                                if Liquidez_ahora_cedear < int(UT_a_operar) : 
-                                                                # si entro aca me falta liquidez, anoto lo que falta
-                                                                    listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
-                                                                    
-                                                                    OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
-                                                                else:
-                                                                    listaSaldossinOperar[Symbol] = 0
-                                                                    OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
-                                                                
-                                                                
-                                                                
-                                                                    #time.sleep(900) # Sleep for 15 minutos
-                                                            time.sleep(2) # Sleep for 15 minutos
-                                                        
-                                                            
-                                        if tipo_de_activo =='ARG':
-                                                    saldo = cuenta.obtenerSaldoCuenta()      
-                                                    print("________________cont ",cont,"__________________saldo ARG",saldo)
-                                                    #comprueba la liquidez
-                                                    Liquidez_ahora_arg = compruebaLiquidez(ut,mepCedear[1])
-                                                    #Liquidez_ahora_arg = 10 #para probar
-                                                    sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
-                                                    UT_a_operar = listaSaldossinOperar[Symbol]
-                                                    #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                    if Liquidez_ahora_arg < int(UT_a_operar) : 
-                                                        listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
-                                                        OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
-                                                    else:
-                                                        listaSaldossinOperar[Symbol] = 0
-                                                        OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
-            banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
-                                                      
-                            #else
-            cont=0
-            for Symbol  in listaSaldossinOperar: 
-                if (Symbol != '' and  Symbol != 'Symbol'):
-                    cont = cont + listaSaldossinOperar[Symbol]
-                
-                
-            sumaUT=cont
-        
-            print("________________sumaUT________________ ",sumaUT)
-            time.sleep(2)#segundos
-        
-        return render_template('/estrategiaOperando.html')
-   # except:  
-    #    print("contraseña o usuario incorrecto")  
-    #    flash('Loggin Incorrect')    
-    #    return render_template("errorLogueo.html" )
+
 ################ AQUI DEFINO LA COMPRA POR WS ################
-def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
+def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message):
      #cont +=1
      #Symbol="ORO/MAR23"
      #inst = InstrumentoEstrategiaUno(Symbol, ut, 0.05) #**55
      saldocta=cuenta.obtenerSaldoCuenta("REM6603")
-     print("__Funcion Operacion_WebSoket______Symbol_",Symbol,"__tipo_de_activo__",tipo_de_activo,"___trade_en_curso__",trade_en_curso,"____senial__",senial)
+     #print("_Fun: OperacionWs__Sym_",Symbol,"__tpo_act_",tipo_de_activo,"__trade_",trade_en_curso,"__senial__",senial)
+     print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial," price ",message["marketData"]["LA"]["price"])
                      
       # 4-Subscribes to receive order report for the default account
      #get.pyConectionWebSocketInicializada.order_report_subscription()
@@ -225,14 +104,14 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
          if(mepCedear[0]>0 and ut>0 ):
              ut=abs(ut)
              if(saldocta>ut*mepCedear[2]):
-                    get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.BUY, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=mepCedear[2])
+                    get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.BUY, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=message["marketData"]["LA"]["price"])
        
      # 5-Send an order via websocket message then check that order_report_handler is called
      if senial == 'closed.':
          # traer el bid
          if(mepCedear[3]>0 and ut>0 ):
              ut=abs(ut)
-             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.SELL, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=mepCedear[3])
+             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.SELL, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=message["marketData"]["LA"]["price"])
         # validate correct price
         # print("______pasaaaaaa sa send_order_via_websocket")
         # 8-Wait 5 sec then close the connection

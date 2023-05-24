@@ -6,6 +6,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
 import strategies.datoSheet as datoSheet 
 
+
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
@@ -26,31 +27,19 @@ class States(enum.Enum):
 
 @estrategiaSheetWS.route('/estrategia_sheet_WS/')
 def estrategia_sheet_WS():     
+       
+   
+    SuscripcionDeSheet()#**22
+    get.pyRofexInicializada.order_report_subscription(account="REM6603", snapshot=True,handler = order_report_handler)
+    pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
+                            market_data_handler=market_data_handler_estrategia,
+                            order_report_handler= order_report_handler,
+                            error_handler=error_handler,
+                            exception_handler=exception_handler
+                            )
     
-   # try:
-        
-        #inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
-        SuscripcionDeSheet()#**55
-        #get.pyRofexInicializada.init_websocket_connection(order_report_handler = order_report_handler)
-        get.pyRofexInicializada.order_report_subscription(account="REM6603", snapshot=True,handler = order_report_handler)
-        pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
-                                market_data_handler=market_data_handler_estrategia,
-                                order_report_handler= order_report_handler,
-                                error_handler=error_handler,
-                                exception_handler=exception_handler
-                                )
-        
-        #tickers=[inst.instrument]
-        #print("_estrategia_sheet_WS_",tickers)
-        
-      
-        
-        #print("_estrategia_sheet_WS inst.instrument_",inst.instrument)
-        # Subscribes to receive order report for the default account
-        
-  
-        #get.pyRofexInicializada.order_report_subscription(snapshot=True)
-        return render_template('/estrategiaOperando.html')
+    
+    return render_template('/estrategiaOperando.html')
   #  except:  
   #      print("_EstrategyUno_contraseña o usuario incorrecto")  
   #      flash('Loggin Incorrect')    
@@ -74,10 +63,6 @@ def SuscripcionDeSheet():
     #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
     instrumentos_existentes = val.validar_existencia_instrumentos(ContenidoSheet_list_solo_symbol,tickers_existentes)
-      
-    ##aqui se conecta al ws
-    #get.pyRofexInicializada.init_websocket_connection(market_data_handler2,order_report_handler,error_handler,exception_error)
-    #print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")
       
     #### aqui define el MarketDataEntry
     entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
@@ -117,7 +102,7 @@ def get_instrumento_para_suscripcion_ws():
     
 def market_data_handler_estrategia( message):
         ## mensaje = Ticker+','+cantidad+','+spread
-        #print("Processing Market Data Message Received: {0}".format(message))
+    print("Processing Market Data Message Received: {0}".format(message))
         ##print(f'El instrumento en market_data_handler {message}')
         ## Llamando al método estrategiaSheet() desde market_data_handler_estrategia
      
@@ -148,48 +133,78 @@ def market_data_handler_estrategia( message):
 @estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
-    get.pyRofexInicializada.close_websocket_connection()
-    return render_template("home.html" ) 
+    #get.pyRofexInicializada.close_websocket_connection()
+    return render_template("utils/bottonPanic.html" ) 
 
 def botonPanicoRH(message):
     # Llamada al método /botonPanico utilizando la referencia a wsConnection
-        print("esta dentro del boton de panico ",message)
+        if message == 'true':
+         get.VariableParaBotonPanico = 1
+        print("esta dentro del boton de panico ",get.VariableParaBotonPanico)
         
-        return message
+        return get.VariableParaBotonPanico
     
 def order_report_handler( order_report):
     
-        print("Recibido reporte de orden:")#**88
-        print(" - Clave: ", order_report["clOrdID"])
-        print(" - Estado: ", order_report["status"])
-        print(" - Descripción: ", order_report["text"])
+       
+       
+        print(order_report["orderReport"]["status"])
+        print(order_report["orderReport"]["text"])
+        print(order_report["orderReport"]["clOrdId"])#**55 
+        #if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
+        #    print(order_report["orderReport"]["clOrdId"])
+       
+       ###### BOTON DE PANICO        
         response = botonPanicoRH('false') 
         print("respuesta desde el boton", response)
-        print("Order Report Message Received: {0}".format(order_report))
-        if order_report["orderReport"]["clOrdId"] in InstrumentoEstrategiaUno.my_order.keys():
-            InstrumentoEstrategiaUno._update_size(order_report)
-            if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
-                print("processing new order")
-                InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]] = order_report
-            elif order_report["orderReport"]["status"] == "FILLED":
+        if response == 1: ### si es 1 el boton de panico fue activado 
+        #if order_report["orderReport"]["clOrdId"] in InstrumentoEstrategiaUno.my_order.keys():
+      #      InstrumentoEstrategiaUno._update_size(order_report)
+         if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
+               print("processing new order")
+               cancel_response = get.pyRofexInicializada.cancel_order_via_websocket(order_report["orderReport"]["clOrdId"])
+               if cancel_response["status"] == "OK":
+                    print("La orden se canceló exitosamente.")
+               else:
+                    print("Error al cancelar la orden:", cancel_response["description"])
+         elif order_report["orderReport"]["status"] == "FILLED":
                 print("processing filled")
-                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
-            elif order_report["orderReport"]["status"] == "CANCELLED":
+                cancel_response = get.pyRofexInicializada.cancel_order_via_websocket(order_report["orderReport"]["clOrdId"])
+                if cancel_response["status"] == "OK":
+                    print("La orden se canceló exitosamente.")
+                else:
+                    print("Error al cancelar la orden:", cancel_response["description"])
+         elif order_report["orderReport"]["status"] == "CANCELLED":
                 print("processing cancelled")
-                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
-
-            if InstrumentoEstrategiaUno.state is States.WAITING_CANCEL:
-                if not InstrumentoEstrategiaUno.my_order:
-                    InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-                    if InstrumentoEstrategiaUno.last_md:
-                        InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
-            elif InstrumentoEstrategiaUno.state is States.WAITING_ORDERS:
-                for order in InstrumentoEstrategiaUno.my_order.values():
-                    if not order:
-                        return
-                InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-                if InstrumentoEstrategiaUno.last_md:
-                    InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
+                cancel_response = get.pyRofexInicializada.cancel_order_via_websocket(order_report["orderReport"]["clOrdId"])
+                if cancel_response["status"] == "OK":
+                    print("La orden se canceló exitosamente.")
+                else:
+                    print("Error al cancelar la orden:", cancel_response["description"])
+         elif order_report["orderReport"]["status"] == "PENDING_NEW":
+                print("processing pending_new")
+                cancel_response = get.pyRofexInicializada.cancel_order_via_websocket(order_report["orderReport"]["clOrdId"])
+                print("processing pending_new: ",cancel_response)
+                if cancel_response["status"] == "OK":
+                    print("La orden se canceló exitosamente.")
+                else:
+                    print("Error al cancelar la orden:", cancel_response["description"])
+        ###### FIN  BOTON DE PANICO 
+        
+        
+        
+        #    if InstrumentoEstrategiaUno.state is States.WAITING_CANCEL:
+        #        if not InstrumentoEstrategiaUno.my_order:
+        #            InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
+        #            if InstrumentoEstrategiaUno.last_md:
+        #               InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
+        #    elif InstrumentoEstrategiaUno.state is States.WAITING_ORDERS:
+        #        for order in InstrumentoEstrategiaUno.my_order.values():
+        #            if not order:
+        #                return
+        #        InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
+        #        if InstrumentoEstrategiaUno.last_md:
+        #            InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
 
 
 def estrategiaSheetNuevaWS(message):      #**11 
@@ -197,12 +212,12 @@ def estrategiaSheetNuevaWS(message):      #**11
     #try:
         
         
-        ContenidoSheet = datoSheet.leerSheet()   #**22
+        ContenidoSheet = datoSheet.leerSheet()   
         
         ContenidoSheet_list = list(ContenidoSheet)
         cantidadUtaOperar = datoSheet.CuentaCantidadUT(ContenidoSheet_list)# **77
         
-        cont = 0 #//**22
+        cont = 0 
         contadorMep=0
         
         mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
@@ -262,7 +277,7 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                             #listaSaldossinOperar es un diccionario 
                                                             #comparo la cantidad que necesito operar (ut) con liquidez del momento.
                                                             
-                                                            print(listaSaldossinOperar[Symbol])                                                                
+                                                            print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
                                                             UT_a_operar = listaSaldossinOperar[Symbol]
                                                             
                                                             
@@ -270,10 +285,10 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                             # si entro aca me falta liquidez, anoto lo que falta
                                                                 listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
                                                                 
-                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
+                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear,message)
                                                             else:
                                                                 listaSaldossinOperar[Symbol] = 0
-                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
+                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear,message)
                                                             
                                                             
                                                             
@@ -288,14 +303,15 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                 Liquidez_ahora_arg = datoSheet.compruebaLiquidez(ut,mepCedear[1])
                                                 #Liquidez_ahora_arg = 10 #para probar
                                                 sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
+                                                print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
                                                 UT_a_operar = listaSaldossinOperar[Symbol]
                                                 #comparo la cantidad que necesito operar (ut) con liquidez del momento.
                                                 if Liquidez_ahora_arg < int(UT_a_operar) : 
                                                     listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
-                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
+                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear,message)
                                                 else:
                                                     listaSaldossinOperar[Symbol] = 0
-                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
+                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear,message)
         banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
                                                     
                         #else
