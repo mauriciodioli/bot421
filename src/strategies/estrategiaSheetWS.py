@@ -12,6 +12,8 @@ from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 
 
+
+
 estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
 
 
@@ -20,13 +22,15 @@ class States(enum.Enum):
     WAITING_CANCEL = 1
     WAITING_ORDERS = 2
 
+
+
 @estrategiaSheetWS.route('/estrategia_sheet_WS/')
 def estrategia_sheet_WS():     
     
    # try:
         
-        inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
-        SuscripcionDeSheet()
+        #inst = InstrumentoEstrategiaUno("WTI/MAY23", 12, 0.05) 
+        SuscripcionDeSheet()#**55
         
         pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
                                 market_data_handler=market_data_handler_estrategia,
@@ -35,12 +39,12 @@ def estrategia_sheet_WS():
                                 exception_handler=exception_handler
                                 )
         
-        tickers=[inst.instrument]
-        print("_estrategia_sheet_WS_",tickers)
+        #tickers=[inst.instrument]
+        #print("_estrategia_sheet_WS_",tickers)
         
       
         
-        print("_estrategia_sheet_WS inst.instrument_",inst.instrument)
+        #print("_estrategia_sheet_WS inst.instrument_",inst.instrument)
         # Subscribes to receive order report for the default account
         get.pyConectionWebSocketInicializada.order_report_subscription(snapshot=True,handler= order_report_handler)
   
@@ -55,7 +59,7 @@ def estrategia_sheet_WS():
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
-    ContenidoSheet = get_instrumento_para_suscripcion_ws()
+    ContenidoSheet = get_instrumento_para_suscripcion_ws()#**66
     ContenidoSheet_list = list(ContenidoSheet)
     
     
@@ -66,7 +70,7 @@ def SuscripcionDeSheet():
     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
-    
+    #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
     instrumentos_existentes = val.validar_existencia_instrumentos(ContenidoSheet_list_solo_symbol,tickers_existentes)
       
@@ -83,7 +87,7 @@ def SuscripcionDeSheet():
     #### aqui se subscribe   
     mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
    
-    print("instrumento_suscriptio",mensaje)
+    #print("instrumento_suscriptio",mensaje)
     datos = [get.market_data_recibida,longitudLista]
     
    
@@ -111,12 +115,22 @@ def get_instrumento_para_suscripcion_ws():
       return ContenidoSheet
     
 def market_data_handler_estrategia( message):
-    
-       # mensaje = Ticker+','+cantidad+','+spread
+        ## mensaje = Ticker+','+cantidad+','+spread
         #print("Processing Market Data Message Received: {0}".format(message))
-        #print(f'El instrumento en market_data_handler {message}')
-        # Llamando al método estrategiaSheet() desde market_data_handler_estrategia
-       estrategiaSheetNuevaWS(message)
+        ##print(f'El instrumento en market_data_handler {message}')
+        ## Llamando al método estrategiaSheet() desde market_data_handler_estrategia
+     
+    print( "marca de tpo seteada:",  get.VariableParaTiemposMDHandler)
+    marca_de_tiempo = message["timestamp"]
+    print( "marca_de_tiempo:",  marca_de_tiempo, "dif:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+    
+
+    if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 60 segundos
+            print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler  )
+            get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
+            #estrategiaSheetNuevaWS(message)
+        
+    
         
         
         
@@ -348,7 +362,7 @@ def calcularMepAl30WS(message):
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
-      #print("__________entra a instrument_by_symbol____________",message) 
+     # print("__________entra a instrument_by_symbol____________",message) 
       try:
         
                 
