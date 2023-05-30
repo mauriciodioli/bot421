@@ -13,7 +13,7 @@ import time
 
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-import routes.api_externa_conexion.cuenta as cuenta
+#import routes.api_externa_conexion.cuenta as cuenta
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os #obtener el directorio de trabajo actual
@@ -35,7 +35,15 @@ class States(enum.Enum):
     WAITING_CANCEL = 1
     WAITING_ORDERS = 2
     
-  
+class Ordenes(enum.Enum):
+    WAITING_MARKET_DATA = 0
+    WAITING_CANCEL = 1
+    WAITING_ORDERS = 2 
+    #NEW  
+    #PENDING_NEW
+    #TIMESTAMP_ENVIO
+    
+    
     
 def login():
     GoogleAuth.DEFAULT_SETTINGS['client_config_file'] = directorio_credenciales
@@ -92,29 +100,69 @@ def leerSheet():
 def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message):
      #cont +=1
      #Symbol="ORO/MAR23"
-     #inst = InstrumentoEstrategiaUno(Symbol, ut, 0.05) #**55
-     saldocta=cuenta.obtenerSaldoCuenta("REM6603")
-     #print("_Fun: OperacionWs__Sym_",Symbol,"__tpo_act_",tipo_de_activo,"__trade_",trade_en_curso,"__senial__",senial)
-     print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial," price ",message["marketData"]["LA"]["price"])
-                     
-      # 4-Subscribes to receive order report for the default account
-     #get.pyConectionWebSocketInicializada.order_report_subscription()
+     saldocta=get.VariableParaSaldoCta
+     ut=abs(int(ut))
      
-     if senial == 'OPEN.':
-         if(mepCedear[0]>0 and ut>0 ):
-             ut=abs(ut)
-             if(saldocta>ut*mepCedear[2]):
-                    get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.BUY, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=message["marketData"]["LA"]["price"])
+     if senial == 'OPEN.':# por ahora el open es siempre long ajajajajaja
+        #print(message["marketData"]["OF"][0]["price"])
+        if isinstance(message["marketData"]["OF"][0]["price"],float):
+            precio = message["marketData"]["OF"][0]["price"]
+            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
+                side=get.pyRofexInicializada.Side.BUY, size=ut, 
+                order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                price=precio, ws_client_order_id=6969)
+                
+            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
+        elif isinstance(message["marketData"]["LA"][0]["price"],float):
+            precio = message["marketData"]["LA"][0]["price"]
+            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
+                side=get.pyRofexInicializada.Side.BUY, size=ut, 
+                order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                price=precio, ws_client_order_id=6969)
+                
+            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+        else:
+            precio = 0
+            print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+
+
+
+        
+        
+            
        
      # 5-Send an order via websocket message then check that order_report_handler is called
-     if senial == 'closed.':
-         # traer el bid
-         if(mepCedear[3]>0 and ut>0 ):
-             ut=abs(ut)
-             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.SELL, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=message["marketData"]["LA"]["price"])
+     if senial == 'closed.':# por ahora el closed es siempre cerrar un long jajaj
+        if isinstance(message["marketData"]["BI"][0]["price"],float):
+            precio = message["marketData"]["BI"][0]["price"]
+            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
+            side=get.pyRofexInicializada.Side.SELL, size=ut, 
+            order_type=get.pyRofexInicializada.OrderType.LIMIT,
+            price=precio, ws_client_order_id=6969)
+            
+            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
+        elif isinstance(message["marketData"]["LA"][0]["price"],float):
+            precio = message["marketData"]["LA"][0]["price"]
+            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,
+            side=get.pyRofexInicializada.Side.SELL, size=ut,
+            order_type=get.pyRofexInicializada.OrderType.LIMIT,
+            price=precio, ws_client_order_id=6969)
+            
+            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+        else:
+            precio = 0
+            print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+
+         #if(mepCedear[3]>0 and ut>0 ):
+          #   ut=abs(ut)
+             #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.SELL, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=message["marketData"]["BI"]["price"])
         # validate correct price
         # print("______pasaaaaaa sa send_order_via_websocket")
         # 8-Wait 5 sec then close the connection
+     
+     
+     
+     
      time.sleep(2)
            
             
@@ -344,8 +392,8 @@ def instrument_by_symbol_para_CalculoMep(symbol):
 def CuentaCantidadUT(listado):
     bandera = True
     countCedear =0
-    countResto =0
-    print("_____________CuentaCantidadUT___________")   
+    countArg =0
+    print("FUN: CuentaCantidadUT: contamos las ut desde la sheet.")   
     for Symbol,cedear,trade_en_curso,ut,senial  in listado: 
        
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
@@ -357,14 +405,14 @@ def CuentaCantidadUT(listado):
                                         countCedear =countCedear + int(ut)
                                         #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
                                     if cedear =='ARG':
-                                        countResto = countResto + int(ut)
+                                        countArg = countArg + int(ut)
                                         #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
                                         
       
-        dato = [countCedear,countResto]
-       # print("countCedear ",dato[0]," countResto ",dato[1])
-       
-       
+        dato = [countCedear,countArg]
+        
+    dato = [countCedear,countArg]
+    print("FUN: CuentaCantidadUT: countCedear ",dato[0]," countArg ",dato[1]," Total",dato[0]+dato[1] )
        
     return dato
 

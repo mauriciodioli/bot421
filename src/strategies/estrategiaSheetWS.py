@@ -6,6 +6,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
 import strategies.datoSheet as datoSheet 
 
+import routes.api_externa_conexion.cuenta as cuenta
 
 from datetime import datetime
 import enum
@@ -55,8 +56,11 @@ def SuscripcionDeSheet():
     
     longitudLista = len(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
-    
-    print(len(ContenidoSheet_list_solo_symbol),"<<<<<---------------------mis_instrumentos --------------------------->>>>>> ",ContenidoSheet_list_solo_symbol)
+    print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
+    print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
+    for item in ContenidoSheet_list_solo_symbol:
+        print(item)
+
     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
@@ -100,22 +104,28 @@ def get_instrumento_para_suscripcion_ws():
       ContenidoSheet = datoSheet.leerSheet()  
       return ContenidoSheet
     
-def market_data_handler_estrategia( message):
+def market_data_handler_estrategia(message):
         ## mensaje = Ticker+','+cantidad+','+spread
-    print("Processing Market Data Message Received: {0}".format(message))
-        ##print(f'El instrumento en market_data_handler {message}')
-        ## Llamando al método estrategiaSheet() desde market_data_handler_estrategia
+    #print(" FUN: market_data_handler_estrategia: {0}".format(message))
+    print(" FUN: market_data_handler_estrategia: _")
      
-    print( "marca de tpo seteada:",  get.VariableParaTiemposMDHandler)
+    print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
     marca_de_tiempo = message["timestamp"]
-    print( "marca_de_tiempo:",  marca_de_tiempo, "dif:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
     
-
-    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 60 segundos
-    if  (1): # 60 segundos
-            print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler ,' account: ' )
+    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
+    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
+    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
+    if  (1): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
+            # esto hay que hacerlo aca, solo cada x segundos
+            banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
+            get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta("REM6603")# cada mas de 5 segundos
+            #print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler ,' account: ' )
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
-            estrategiaSheetNuevaWS(message)
+    
+    # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
+    # para cumplir con el evento de mercado market data
+    estrategiaSheetNuevaWS(message,banderaLecturaSheet)
         
     
         
@@ -145,15 +155,83 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def order_report_handler( order_report):
+    # El campo wsClOrdId se utiliza para identificar la orden envíada.
+    # Este campo va a venir solamente en el primer Execution Report (con estado PENDING_NEW o REJECT).
+    """
+    En el primer Execution Report recibido el campo wsClOrdId se debe referenciar con el campo clOrdId
+        para poder seguir los diferentes estados de la orden.
     
+    El campo wsClOrdId es opcional. 
+        Si no se envía se debe tomar el primer clOrdId recibido en el Execution
+        Report para identificar la orden.
+        El usuario debe asegurarse que el ID ingresado le permita identificar la orden. 
+        La API no valida que el ID sea único.
+    
+    client_order_ID (clOrdId): 
+        Es el id de request al mercado de alta de una orden
+        Request de cancelacion de orden tiene clOrdId distinto. Pero ambos request pueden ser sobre la
+        misma orden con su Order_ID.
+    orderId :  
+        ID de la orden en mercado. Si la orden fue rechazada o todavía no llegó al
+        mercado, este campo es null.
+        
+    API: la api de ingreso de orden y la api de cancelacion de orden devuelven clOrdId, con el qe se va
+    poder consultar el estado de las ordenes
+    En una orden, especifica el estado de la misma.
+    Valores posibles de status: NEW, PENDING_NEW, PENDING_REPLACE, PENDING_CANCEL, REJECTED, PENDING_APPROVAL, CANCELLED y 
+    REPLACED
+    
+    ordType: Tipo de orden. Valores posibles:
+        ● LIMIT        ● MARKET        ● MARKET        ● STOP_LIMIT        ● STOP_LIMIT_MERVAL
+    
+    "clientId":"user14473450286174Cnl5"
+    "proprietary":"PBCP"
+    
+    """   
+    #orderId: ID de la orden. 
+    # Si la orden fue rechazada o todavía no llegó al mercado, este campo es null.
+    print(order_report["orderReport"]["orderId"])
+    
+    #clOrdId: 
+    # ID del request de una orden.
+    print(order_report["orderReport"]["clOrdId"])
+    
+    # proprietary:  
+    # Si las órdenes se envían vía API REST/WS, el propietario de la orden puede ser “PBCP” o “ISV_PBCP”.
+    print(order_report["orderReport"]["proprietary"])
+    
+    # id. nombre de la cuenta
+    print(order_report["orderReport"]["accountId"]["id"])
+    
+    print(order_report["orderReport"]["instrumentId"]["marketId"])
+    print(order_report["orderReport"]["instrumentId"]["symbol"])
+
+    #accountName: Nombre de la Cuenta
+    #print(order_report["orderReport"]["accountName"])
+
+    #accountId: 
+    print(order_report["orderReport"]["accountId"]["Id"])
+
+    
+    print(order_report["orderReport"]["price"])
+    print(order_report["orderReport"]["orderQty"])
+    print(order_report["orderReport"]["ordType"])
+    print(order_report["orderReport"]["side"])
+    print(order_report["orderReport"]["timeInForce"])
+    print(order_report["orderReport"]["transactTime"])
+    
+    # status
+    # En una orden, especifica el estado de la misma. Valores posibles:
+    # NEW, PENDING_NEW, PENDING_REPLACE, PENDING_CANCEL, REJECTED, PENDING_APPROVAL, CANCELLED, REPLACED
+    print(order_report["orderReport"]["status"])
+    
+    # text -->> refiere el motivo del estado de la orden.
+    print(order_report["orderReport"]["text"])
+    
+        
        
-       
-        print(order_report["orderReport"]["status"])
-        print(order_report["orderReport"]["text"])
-        print(order_report["orderReport"]["clOrdId"])#**55 
-        #if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
-        #    print(order_report["orderReport"]["clOrdId"])
-       
+
+"""
        ###### BOTON DE PANICO        
         response = botonPanicoRH('false') 
         print("respuesta desde el boton", response)
@@ -190,65 +268,54 @@ def order_report_handler( order_report):
                 else:
                     print("Error al cancelar la orden:", cancel_response["description"])
         ###### FIN  BOTON DE PANICO 
+"""     
         
         
-        
-        #    if InstrumentoEstrategiaUno.state is States.WAITING_CANCEL:
-        #        if not InstrumentoEstrategiaUno.my_order:
-        #            InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-        #            if InstrumentoEstrategiaUno.last_md:
-        #               InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
-        #    elif InstrumentoEstrategiaUno.state is States.WAITING_ORDERS:
-        #        for order in InstrumentoEstrategiaUno.my_order.values():
-        #            if not order:
-        #                return
-        #        InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-        #        if InstrumentoEstrategiaUno.last_md:
-        #            InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
 
 
-def estrategiaSheetNuevaWS(message):      #**11 
+
+def estrategiaSheetNuevaWS(message, banderaLecturaSheet):      #**11 
     
     #try:
         
+        if banderaLecturaSheet == 0:#esto es para que lea el sheet solo una vez
+            ContenidoSheet = datoSheet.leerSheet() 
+            banderaLecturaSheet = 1  
         
-        ContenidoSheet = datoSheet.leerSheet()   
+            ContenidoSheet_list = list(ContenidoSheet)
+            cantidadUtaOperar = datoSheet.CuentaCantidadUT(ContenidoSheet_list)# **77
         
-        ContenidoSheet_list = list(ContenidoSheet)
-        cantidadUtaOperar = datoSheet.CuentaCantidadUT(ContenidoSheet_list)# **77
+            cont = 0 
+            contadorMep=0
         
-        cont = 0 
-        contadorMep=0
-        
-        mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
-        sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
-        #listadoCargaDiccionario = leerSheet()
-        listaSaldossinOperar = {}
+            #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
+            mepAl30 = 460 ####Calcula dolar MEP
+            sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
+            #listadoCargaDiccionario = leerSheet()
+            listaSaldossinOperar = {}
+            listaOperacionesEnCurso = {}
         for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list[2:]:
             listaSaldossinOperar[Symbol]=ut
+            listaOperacionesEnCurso[Symbol] = 0
             contadorMep +=1
             if contadorMep < 21:
                #print("____________contador mep __________ ",contadorMep)
-               mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
+               #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
+               mepAl30 = 460
         
        # print(listaSaldossinOperar)
         
         
-        
-        #sumaUT = 4 # **borrar esto se calcula pero por ahora se fija.
-        #while sumaUT>0:
-        #listado = leerSheet() 
-        #print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
+        #cont = 0 
         for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
                 ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
                 #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
                 #print(" __Obtener Saldo Cuenta ________:  ",Saldo_cuenta )
-                cont +=1
-                
                 
                 #### CONSULTAR INSTRUMENTO DETALLADO ################  
-            # if saldo >= int(ut) * float(price):
-                if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
+                # message["instrumentId"]["symbol"]
+                #if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
+                if Symbol == message["instrumentId"]["symbol"]:
                     if Symbol != '':
                     #if trade_en_curso == 'LONG_':
                         if senial != '':
@@ -268,13 +335,27 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                         #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
                                                         if porcentaje_de_diferencia <= 1:
                                                             # Liquidez es la cantidad presente a operar 
-                                                            Liquidez_ahora_cedear = datoSheet.compruebaLiquidez(ut,mepCedear[1]) #**44
-                                                            # Liquidez_ahora_cedear = 10 #para probar **33
+                                                            #Liquidez_ahora_cedear = datoSheet.compruebaLiquidez(ut,mepCedear[1]) #**44
+                                                            if senial=='OPEN.':
+                                                                if isinstance(message["marketData"]["OF"][0]["size"],int):
+                                                                    Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
+                                                                elif isinstance(message["marketData"]["LA"][0]["size"],int):
+                                                                    Liquidez_ahora_cedear = message["marketData"]["LA"][0]["size"]
+                                                                else:
+                                                                    Liquidez_ahora_cedear = 0
+
+                                                            if senial=='closed.':
+                                                                if isinstance(message["marketData"]["BI"][0]["size"],int):
+                                                                    Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
+                                                                elif isinstance(message["marketData"]["LA"][0]["size"],int):
+                                                                    Liquidez_ahora_cedear = message["marketData"]["LA"][0]["size"]
+                                                                else:
+                                                                    Liquidez_ahora_cedear = 0
+                                                                
                                                             
-                                                            # sumaUT es para que itere el while
+                                                            # sumaUT es para que itere el while. obsoleto se saca 
                                                             sumaUT = int(cantidadUtaOperar[0]) - Liquidez_ahora_cedear
                                                             
-                                                            #listaSaldossinOperar es un diccionario 
                                                             #comparo la cantidad que necesito operar (ut) con liquidez del momento.
                                                             
                                                             print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
@@ -283,12 +364,22 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                             
                                                             if Liquidez_ahora_cedear < int(UT_a_operar) : 
                                                             # si entro aca me falta liquidez, anoto lo que falta
+                                                                # en realidad tengo que actualizar la lista si se opero bien solamente
+                                                                # aca la actualizamos de prepo pero hayque cambiar esto
                                                                 listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
                                                                 
-                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear,message)
+                                                                if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
+                                                                    datoSheet.OperacionWs(Symbol, tipo_de_activo, trade_en_curso, Liquidez_ahora_cedear, senial, mepCedear, message)
+                                                                else:
+                                                                    print("*1 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
+                                                                
                                                             else:
                                                                 listaSaldossinOperar[Symbol] = 0
-                                                                datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear,message)
+                                                                
+                                                                if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and UT_a_operar != 0 and senial != '' and mepCedear != 0 and message != '':
+                                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear,message)
+                                                                else:
+                                                                    print("*2 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
                                                             
                                                             
                                                             
@@ -297,28 +388,53 @@ def estrategiaSheetNuevaWS(message):      #**11
                                                     
                                                         
                                     if tipo_de_activo =='ARG':
-                                                saldo = datoSheet.cuenta.obtenerSaldoCuenta()      
+                                                #saldo = datoSheet.cuenta.obtenerSaldoCuenta()      
                                                 #print("________________cont ",cont,"__________________saldo ARG",saldo)
                                                 #comprueba la liquidez
-                                                Liquidez_ahora_arg = datoSheet.compruebaLiquidez(ut,mepCedear[1])
-                                                #Liquidez_ahora_arg = 10 #para probar
+                                                if senial=='OPEN.':
+                                                    #print (type(message))
+                                                    #print (message["marketData"]["OF"][0]["price"])
+                                                    if isinstance(message["marketData"]["OF"][0]["size"],int):
+                                                        Liquidez_ahora_arg = message["marketData"]["OF"][0]["size"]
+                                                    elif isinstance(message["marketData"]["LA"][0]["size"],int):
+                                                        Liquidez_ahora_arg = message["marketData"]["LA"][0]["size"]
+                                                    else:
+                                                        Liquidez_ahora_arg = 0
+                                                    
+                                                if senial=='closed.':
+                                                    if isinstance(message["marketData"]["BI"][0]["size"],int):
+                                                        Liquidez_ahora_arg = message["marketData"]["BI"][0]["size"]
+                                                    elif isinstance(message["marketData"]["LA"][0]["size"],int):
+                                                        Liquidez_ahora_arg = message["marketData"]["LA"][0]["size"]
+                                                    else:
+                                                        Liquidez_ahora_arg = 0
+
                                                 sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
                                                 print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
                                                 UT_a_operar = listaSaldossinOperar[Symbol]
                                                 #comparo la cantidad que necesito operar (ut) con liquidez del momento.
                                                 if Liquidez_ahora_arg < int(UT_a_operar) : 
                                                     listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
-                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear,message)
+                                                    
+                                                    if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and Liquidez_ahora_arg != 0 and senial != '' and message != '':
+                                                        mepCedear=0
+                                                        datoSheet.OperacionWs(Symbol, tipo_de_activo, trade_en_curso, Liquidez_ahora_arg, senial, mepCedear, message)
+                                                    else:
+                                                        print("*3 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
+
                                                 else:
                                                     listaSaldossinOperar[Symbol] = 0
-                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear,message)
-        banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
+                                                    if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and UT_a_operar != 0 and senial != '' and message != '':
+                                                        mepCedear=0
+                                                        datoSheet.OperacionWs(Symbol, tipo_de_activo, trade_en_curso, UT_a_operar, senial, mepCedear, message)
+                                                    else:
+                                                        print("*4 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
                                                     
-                        #else
+
         cont=0
         for Symbol  in listaSaldossinOperar: 
             if (Symbol != '' and  Symbol != 'Symbol'):
-                cont = cont + listaSaldossinOperar[Symbol]
+                cont = cont + int(listaSaldossinOperar[Symbol])
             
             
         sumaUT=cont
@@ -327,6 +443,9 @@ def estrategiaSheetNuevaWS(message):      #**11
         #time.sleep(2)#segundos
     
         return render_template('/estrategiaOperando.html')
+
+
+
 
 ##########################AQUI SE REALIZA CALCULO DE MEP CEDEARS####################
 def calcularMepCedearsWS(message):
@@ -369,11 +488,19 @@ def calcularMepAl30WS(message):
   #  resultado = instrument_by_symbol_para_CalculoMep(message)    
   #  resultado2 = instrument_by_symbol_para_CalculoMep(message) 
     
-    #print( message['marketData']['OF'][0]['price'])   
-    if len( message['marketData']['OF']) == 0:
-        print("La clave 'OF' está vacía.")
+    
+    #if isinstance(message["marketData"]["OF"][0]["price"],float):
+    #precio = message["marketData"]["OF"][0]["price"]
+    #if isinstance(message["marketData"]["OF"][0]["size"],int):
+    #Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
+
+
+    #if len( message['marketData']['OF']) == 0:
+    if not isinstance(message["marketData"]["OF"][0]["size"],int):# entra si el offer esta vacio
+        # entra si el offer esta vacio
+        print(" FUN calcularMepAl30WS: La clave 'OF' está vacía.")
     else:
-        #print("La clave 'OF' no está vacía.", message['marketData']['OF'][0]['price'])
+
         al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
         al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
         #print("__________al30_ci____________",al30_ci)
@@ -381,7 +508,7 @@ def calcularMepAl30WS(message):
         
         # simulo compra de bono      
         #print("____simulo compra de bono ")  
-    # al30ci_unitaria = al30_ci/100
+        # al30ci_unitaria = al30_ci/100
         #cantidad_al30ci=int(10000/al30ci_unitaria)
         #print("__________cantidad_al30ci_________",cantidad_al30ci)
         
@@ -391,7 +518,7 @@ def calcularMepAl30WS(message):
         #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
         #mep = 10000 / dolaresmep
     mep = 380
-    #print("____________calcularMepAl30_____________")
+    #print(" FUN calcularMepAl30WS: .")
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
@@ -428,13 +555,12 @@ def instrument_by_symbol_para_CalculoMep(message):
 
                     
 ##########################esto es para ws#############################
-#Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
+
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
   
 def exception_error(message):
   print("Mensaje de excepción: {0}".format(message))  
-  {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 
 def exception_handler(e):
     print("Exception Occurred: {0}".format(e.msg))
