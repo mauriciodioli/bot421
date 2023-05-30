@@ -42,8 +42,10 @@ password = "{{contraseña}}"
 account = "{{cuenta}}"  
 market_data_recibida = []
 reporte_de_ordenes = []
+
 VariableParaTiemposMDHandler = 0
 VariableParaBotonPanico = 0
+VariableParaSaldoCta = 0
 pyRofexInicializada = pyRofex
 pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
