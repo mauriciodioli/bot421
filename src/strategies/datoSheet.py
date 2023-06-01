@@ -45,8 +45,7 @@ class Ordenes(enum.Enum):
     
    # Crear la tabla usuarios si no existe
 def crea_tabla_orden():
-    orden = Orden(
-         id = 1,
+    orden = Orden(        
          user_id =1,
          userCuenta ="mdioli",
          accountCuenta =1,
@@ -66,7 +65,7 @@ def crea_tabla_orden():
          status = "0"    
     )
     orden.crear_tabla()
-    print("Tabla creada!") 
+    
     
 def login():
     GoogleAuth.DEFAULT_SETTINGS['client_config_file'] = directorio_credenciales

@@ -14,7 +14,7 @@ class Orden(db.Model):
     __tablename__ = 'orden'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('usuarios.id'))  
-    userCuenta = db.Column(db.String(120), unique=True, nullable=False) 
+    userCuenta = db.Column(db.String(120), nullable=False) 
     accountCuenta = db.Column(db.Integer)    
     clOrdId_alta = db.Column(db.String(120))
     clOrdId_baja = db.Column(db.String(120))
@@ -36,7 +36,7 @@ class Orden(db.Model):
 
     
  # constructor
-    def __init__(self, id,user_id,userCuenta,accountCuenta,
+    def __init__(self, user_id,userCuenta,accountCuenta,
                  clOrdId_alta,
                  clOrdId_baja,
                  clientId,
@@ -51,7 +51,7 @@ class Orden(db.Model):
                  ut,   
                  senial,
                  status):
-        self.id = id
+       
         self.user_id = user_id
         self.userCuenta = userCuenta        
         self.accountCuenta = accountCuenta
