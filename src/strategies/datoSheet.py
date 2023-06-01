@@ -10,7 +10,7 @@ from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import requests
 import time
-
+from models.orden import Orden
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 #import routes.api_externa_conexion.cuenta as cuenta
@@ -43,7 +43,30 @@ class Ordenes(enum.Enum):
     #PENDING_NEW
     #TIMESTAMP_ENVIO
     
-    
+   # Crear la tabla usuarios si no existe
+def crea_tabla_orden():
+    orden = Orden(
+         id = 1,
+         user_id =1,
+         userCuenta ="mdioli",
+         accountCuenta =1,
+         clOrdId_alta ="0",
+         clOrdId_baja ="0",
+         clientId =1,
+         wsClOrdId_timestamp =datetime.now,
+         clOrdId_alta_timestamp = datetime.now,
+         clOrdId_baja_timestamp = datetime.now,
+         proprietary = True,
+         marketId = "0",
+         symbol = "0",   
+         tipo = "0",
+         tradeEnCurso = "0",
+         ut = 1,   
+         senial = "0",
+         status = "0"    
+    )
+    orden.crear_tabla()
+    print("Tabla creada!") 
     
 def login():
     GoogleAuth.DEFAULT_SETTINGS['client_config_file'] = directorio_credenciales

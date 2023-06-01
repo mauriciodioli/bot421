@@ -32,6 +32,7 @@ from strategies.datoSheet import datoSheet
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from models.usuario import Usuario
+from models.orden import orden
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
 from flask_cors import CORS
@@ -64,6 +65,7 @@ app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
 app.register_blueprint(get_login)
 app.register_blueprint(cuenta)
+app.register_blueprint(orden)
 app.register_blueprint(comprar)
 app.register_blueprint(operaciones)
 app.register_blueprint(validaInstrumentos)

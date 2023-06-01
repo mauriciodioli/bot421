@@ -1,11 +1,14 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
+from models.orden import Orden
+import jwt
+import json
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
 import strategies.datoSheet as datoSheet 
-
+import requests
 import routes.api_externa_conexion.cuenta as cuenta
 
 from datetime import datetime
@@ -26,40 +29,56 @@ class States(enum.Enum):
 
 
 
-@estrategiaSheetWS.route('/estrategia_sheet_WS/')
-def estrategia_sheet_WS():     
-       
-   
-    SuscripcionDeSheet()#**22
-    get.pyRofexInicializada.order_report_subscription(account="REM6603", snapshot=True,handler = order_report_handler)
-    pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
-                            market_data_handler=market_data_handler_estrategia,
-                            order_report_handler= order_report_handler,
-                            error_handler=error_handler,
-                            exception_handler=exception_handler
-                            )
+
+@estrategiaSheetWS.route('/estrategia_sheet_WS/', methods=['POST'])
+def estrategia_sheet_WS():
     
+    if request.method == 'POST':
+        try:
+            usuario = request.form['usuario']
+            cuenta = request.form['cuenta']
+            access_token = request.form['access_token']
+            correo_electronico = request.form['correo_electronico']
+            
     
+            ContenidoSheet_list = SuscripcionDeSheet()#**22
+            carga_operaciones(ContenidoSheet_list[0],cuenta,usuario,correo_electronico,ContenidoSheet_list[1])
+            get.pyRofexInicializada.order_report_subscription(account=cuenta, snapshot=True,handler = order_report_handler)
+            pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
+                                    market_data_handler=market_data_handler_estrategia,
+                                    order_report_handler= order_report_handler,
+                                    error_handler=error_handler,
+                                    exception_handler=exception_handler
+                                    )
+            
+            
+            
+    #  except:  
+    #      print("_EstrategyUno_contraseña o usuario incorrecto")  
+    #      flash('Loggin Incorrect')    
+    #      return render_template("errorLogueo.html" ) 
+    
+        except jwt.ExpiredSignatureError:
+                print("El token ha expirado")
+                return redirect(url_for('autenticacion.index'))
+        except jwt.InvalidTokenError:
+            print("El token es inválido")
+        except:
+           print("contraseña o usuario incorrecto")
     return render_template('/estrategiaOperando.html')
-  #  except:  
-  #      print("_EstrategyUno_contraseña o usuario incorrecto")  
-  #      flash('Loggin Incorrect')    
-  #      return render_template("errorLogueo.html" ) 
-    
-    
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
     ContenidoSheet = get_instrumento_para_suscripcion_ws()#**66
-    ContenidoSheet_list = list(ContenidoSheet)
-    
-    
+    ContenidoSheet_list = list(ContenidoSheet)   
+   
+  
     longitudLista = len(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
-    print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
-    print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
-    for item in ContenidoSheet_list_solo_symbol:
-        print(item)
+   # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
+   # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
+   # for item in ContenidoSheet_list_solo_symbol:
+   #     print(item)
 
     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
     
@@ -78,11 +97,12 @@ def SuscripcionDeSheet():
     mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
    
     #print("instrumento_suscriptio",mensaje)
-    datos = [get.market_data_recibida,longitudLista]
+    datos = ContenidoSheet_list
     
    
     
-    return datos
+    return [ContenidoSheet_list,instrumentos_existentes]
+
 def cargaSymbolParaValidar(message):
     listado_final = []
     for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in message: 
@@ -101,7 +121,8 @@ def cargaSymbolParaValidar(message):
     return listado_final
   
 def get_instrumento_para_suscripcion_ws():
-      ContenidoSheet = datoSheet.leerSheet()  
+      ContenidoSheet = datoSheet.leerSheet()
+      datoSheet.crea_tabla_orden()  
       return ContenidoSheet
     
 def market_data_handler_estrategia(message):
@@ -155,17 +176,20 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def order_report_handler( order_report):
-    # El campo wsClOrdId se utiliza para identificar la orden envíada.
-    # Este campo va a venir solamente en el primer Execution Report (con estado PENDING_NEW o REJECT).
+    # Este es el Execution Report y se envía al cliente cada vez que hay un cambio en el estado de una orden. 
     """
+    El campo wsClOrdId se utiliza para identificar la orden envíada.
+    Este campo va a venir solamente en el primer Execution Report (con estado PENDING_NEW o REJECT).
+    
     En el primer Execution Report recibido el campo wsClOrdId se debe referenciar con el campo clOrdId
         para poder seguir los diferentes estados de la orden.
     
-    El campo wsClOrdId es opcional. 
-        Si no se envía se debe tomar el primer clOrdId recibido en el Execution
-        Report para identificar la orden.
+    El campo wsClOrdId es un campo general alfanumerico de hasta 20 caracteres que nosotros elegimos
         El usuario debe asegurarse que el ID ingresado le permita identificar la orden. 
         La API no valida que el ID sea único.
+        
+    Para saber qué sucedió con la orden
+    Verificar: ID de cuenta, el ID de ejecución y el estado de la orden. 
     
     client_order_ID (clOrdId): 
         Es el id de request al mercado de alta de una orden
@@ -175,9 +199,6 @@ def order_report_handler( order_report):
         ID de la orden en mercado. Si la orden fue rechazada o todavía no llegó al
         mercado, este campo es null.
         
-    API: la api de ingreso de orden y la api de cancelacion de orden devuelven clOrdId, con el qe se va
-    poder consultar el estado de las ordenes
-    En una orden, especifica el estado de la misma.
     Valores posibles de status: NEW, PENDING_NEW, PENDING_REPLACE, PENDING_CANCEL, REJECTED, PENDING_APPROVAL, CANCELLED y 
     REPLACED
     
@@ -189,28 +210,39 @@ def order_report_handler( order_report):
     
     """   
     #orderId: ID de la orden. 
-    # Si la orden fue rechazada o todavía no llegó al mercado, este campo es null.
-    print(order_report["orderReport"]["orderId"])
+    # Si la orden fue rechazada o todavía no llegó al mercado, este campo es none.
+    # verificar si es none, si lo es, recien preguntar por wsClOrdId
+    # si este campo existe, wsClOrdId ya no existe !!!
+    #print(order_report["orderReport"]["orderId"])
+    if order_report["orderReport"]["orderId"] is None:
+        print("OR: no hay orderId, chequeando wsClOrdId ... ")
+    else    :
+        print("OR: orderId :", order_report["orderReport"]["orderId"])
+        
     
     #clOrdId: 
     # ID del request de una orden.
     print(order_report["orderReport"]["clOrdId"])
-    
+    # wsClOrdId: 
+    # ID de validacion nuestra
+    print(order_report["orderReport"]["wsClOrdId"])
+    # status
+    # En una orden, especifica el estado de la misma. Valores posibles:
+    # NEW, PENDING_NEW, PENDING_REPLACE, PENDING_CANCEL, REJECTED, PENDING_APPROVAL, CANCELLED, REPLACED
+    print(order_report["orderReport"]["status"])
+    # text -->> refiere el motivo del estado de la orden.
+    print(order_report["orderReport"]["text"])
+
+
     # proprietary:  
     # Si las órdenes se envían vía API REST/WS, el propietario de la orden puede ser “PBCP” o “ISV_PBCP”.
     print(order_report["orderReport"]["proprietary"])
     
-    # id. nombre de la cuenta
+    # id. nombre de la cuenta: REM6603
     print(order_report["orderReport"]["accountId"]["id"])
     
-    print(order_report["orderReport"]["instrumentId"]["marketId"])
+    print(order_report["orderReport"]["instrumentId"]["marketId"])#ROFX
     print(order_report["orderReport"]["instrumentId"]["symbol"])
-
-    #accountName: Nombre de la Cuenta
-    #print(order_report["orderReport"]["accountName"])
-
-    #accountId: 
-    print(order_report["orderReport"]["accountId"]["Id"])
 
     
     print(order_report["orderReport"]["price"])
@@ -220,13 +252,7 @@ def order_report_handler( order_report):
     print(order_report["orderReport"]["timeInForce"])
     print(order_report["orderReport"]["transactTime"])
     
-    # status
-    # En una orden, especifica el estado de la misma. Valores posibles:
-    # NEW, PENDING_NEW, PENDING_REPLACE, PENDING_CANCEL, REJECTED, PENDING_APPROVAL, CANCELLED, REPLACED
-    print(order_report["orderReport"]["status"])
     
-    # text -->> refiere el motivo del estado de la orden.
-    print(order_report["orderReport"]["text"])
     
         
        
@@ -551,9 +577,20 @@ def instrument_by_symbol_para_CalculoMep(message):
         flash('instrument_by_symbol_para_CalculoMep__: Symbol Incorrect')   
         return render_template("instrumentos.html" )
 
+def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):
+    
+     #filtrar las coincidencias entre las dos listas
+     coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
 
+     print(coincidencias)
+     for elemento  in coincidencias:  
+         print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
+         
+         
+    # nueva_orden = Orden(1,usuario,account,account+usuario,)
+    #db.session.query(Orden).all()#query
 
-                    
+                 
 ##########################esto es para ws#############################
 
 def error_handler(message):

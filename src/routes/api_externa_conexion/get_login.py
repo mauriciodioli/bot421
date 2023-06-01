@@ -52,6 +52,7 @@ pyWsSuscriptionInicializada = pyRofex
 
 
 
+
 # Creating  Routes
 #@get_login.route("/index")
 #def index(): 
@@ -81,7 +82,7 @@ def loginExtAutomatico():
             user = request.json.get('usuario')
             password = request.json.get('contraseña')
             account = request.json.get('cuenta')
-            g.account = account
+          
             simuladoOproduccion = request.json.get('simuladoOproduccion')
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
