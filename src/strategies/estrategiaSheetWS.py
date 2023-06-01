@@ -2,8 +2,10 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
+from models.usuario import Usuario
 import jwt
 import json
+import random
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
@@ -34,7 +36,7 @@ class States(enum.Enum):
 def estrategia_sheet_WS():
     
     if request.method == 'POST':
-        try:
+     #   try:
             usuario = request.form['usuario']
             cuenta = request.form['cuenta']
             access_token = request.form['access_token']
@@ -58,13 +60,13 @@ def estrategia_sheet_WS():
     #      flash('Loggin Incorrect')    
     #      return render_template("errorLogueo.html" ) 
     
-        except jwt.ExpiredSignatureError:
-                print("El token ha expirado")
-                return redirect(url_for('autenticacion.index'))
-        except jwt.InvalidTokenError:
-            print("El token es inválido")
-        except:
-           print("contraseña o usuario incorrecto")
+    #    except jwt.ExpiredSignatureError:
+    #            print("El token ha expirado")
+    #            return redirect(url_for('autenticacion.index'))
+    #    except jwt.InvalidTokenError:
+    #        print("El token es inválido")
+    #    except:
+    #       print("contraseña o usuario incorrecto")
     return render_template('/estrategiaOperando.html')
      
 def SuscripcionDeSheet():
@@ -577,18 +579,39 @@ def instrument_by_symbol_para_CalculoMep(message):
         flash('instrument_by_symbol_para_CalculoMep__: Symbol Incorrect')   
         return render_template("instrumentos.html" )
 
-def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):
+def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
     
      #filtrar las coincidencias entre las dos listas
      coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
 
-     print(coincidencias)
+    # print(coincidencias)
+    
+     usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
      for elemento  in coincidencias:  
          print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
-         
-         
-    # nueva_orden = Orden(1,usuario,account,account+usuario,)
-    #db.session.query(Orden).all()#query
+         nueva_orden = Orden(
+                                user_id=usuariodb.id,
+                                userCuenta=usuario,
+                                accountCuenta=account,
+                                clOrdId_alta=random.randint(1,1000),
+                                clOrdId_baja='',
+                                clientId='',
+                                wsClOrdId_timestamp=datetime.now(),
+                                clOrdId_alta_timestamp=None,
+                                clOrdId_baja_timestamp=None,  # Campo vacío
+                                proprietary=True,
+                                marketId='',  # Campo vacío
+                                symbol=elemento[0],
+                                tipo=elemento[1],
+                                tradeEnCurso=elemento[2],
+                                ut=elemento[3],
+                                senial=elemento[4],
+                                status='0'
+                            )
+
+         db.session.add(nueva_orden)
+         db.session.commit()  
+     db.session.close()
 
                  
 ##########################esto es para ws#############################
