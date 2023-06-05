@@ -44,11 +44,13 @@ market_data_recibida = []
 reporte_de_ordenes = []
 
 VariableParaTiemposMDHandler = 0
+accountLocalStorage = ""
 VariableParaBotonPanico = 0
 VariableParaSaldoCta = 0
 pyRofexInicializada = pyRofex
 pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
+diccionario_global_operaciones = {}
 
 
 

@@ -124,69 +124,83 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
      #Symbol="ORO/MAR23"
      saldocta=get.VariableParaSaldoCta
      ut=abs(int(ut))
-     
-     if senial == 'OPEN.':# por ahora el open es siempre long ajajajajaja
-        #print(message["marketData"]["OF"][0]["price"])
-        if isinstance(message["marketData"]["OF"][0]["price"],float):
-            precio = message["marketData"]["OF"][0]["price"]
-            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
-                side=get.pyRofexInicializada.Side.BUY, size=ut, 
-                order_type=get.pyRofexInicializada.OrderType.LIMIT,
-                price=precio, ws_client_order_id=6969)
-                
-            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
-        elif isinstance(message["marketData"]["LA"][0]["price"],float):
-            precio = message["marketData"]["LA"][0]["price"]
-            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
-                side=get.pyRofexInicializada.Side.BUY, size=ut, 
-                order_type=get.pyRofexInicializada.OrderType.LIMIT,
-                price=precio, ws_client_order_id=6969)
-                
-            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
-        else:
-            precio = 0
-            print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
-
-
-
-        
-        
-            
+     try:
+        for clave, valor in get.diccionario_global_operaciones.items():
+            if Symbol == clave:
+                client_order_id = valor["clOrdId_alta"]
+                print(f'Clave: {clave}, Valor: {valor["clOrdId_alta"]} , client_order_id: {client_order_id}')
        
-     # 5-Send an order via websocket message then check that order_report_handler is called
-     if senial == 'closed.':# por ahora el closed es siempre cerrar un long jajaj
-        if isinstance(message["marketData"]["BI"][0]["price"],float):
-            precio = message["marketData"]["BI"][0]["price"]
-            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
-            side=get.pyRofexInicializada.Side.SELL, size=ut, 
-            order_type=get.pyRofexInicializada.OrderType.LIMIT,
-            price=precio, ws_client_order_id=6969)
-            
-            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
-        elif isinstance(message["marketData"]["LA"][0]["price"],float):
-            precio = message["marketData"]["LA"][0]["price"]
-            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,
-            side=get.pyRofexInicializada.Side.SELL, size=ut,
-            order_type=get.pyRofexInicializada.OrderType.LIMIT,
-            price=precio, ws_client_order_id=6969)
-            
-            print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
-        else:
-            precio = 0
-            print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+       # orden = db.session.query(Orden.clOrdId_alta).filter(Orden.symbol==Symbol, Orden.status=='0', Orden.accountCuenta==get.accountLocalStorage)
+       # valor = orden.first()
+       # print(":::::::_________ ",valor.clOrdId_alta)
+        # ob = Orden.query.filter_by(id=1).first()    
+       # print(":::::::_________ ",ob.clOrdId_alta)
+        if senial == 'OPEN.':# por ahora el open es siempre long ajajajajaja
+            #print(message["marketData"]["OF"][0]["price"])
+            if isinstance(message["marketData"]["OF"][0]["price"],float):
+                precio = message["marketData"]["OF"][0]["price"]
+                get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
+                    side=get.pyRofexInicializada.Side.BUY, size=ut, 
+                    order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                    ws_client_order_id=client_order_id,
+                    price=precio)
+                    
+                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
+            elif isinstance(message["marketData"]["LA"][0]["price"],float):
+                precio = message["marketData"]["LA"][0]["price"]
+                get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
+                    side=get.pyRofexInicializada.Side.BUY, size=ut, 
+                    order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                    ws_client_order_id=client_order_id,
+                    price=precio)
+                    
+                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+            else:
+                precio = 0
+                print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
 
-         #if(mepCedear[3]>0 and ut>0 ):
-          #   ut=abs(ut)
-             #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.SELL, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=message["marketData"]["BI"]["price"])
-        # validate correct price
-        # print("______pasaaaaaa sa send_order_via_websocket")
-        # 8-Wait 5 sec then close the connection
-     
-     
-     
-     
-     time.sleep(2)
-           
+
+
+            
+            
+                
+        
+        # 5-Send an order via websocket message then check that order_report_handler is called
+        if senial == 'closed.':# por ahora el closed es siempre cerrar un long jajaj
+            if isinstance(message["marketData"]["BI"][0]["price"],float):
+                precio = message["marketData"]["BI"][0]["price"]
+                get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
+                side=get.pyRofexInicializada.Side.SELL, size=ut, 
+                order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                ws_client_order_id=client_order_id,
+                price=precio)
+                
+                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
+            elif isinstance(message["marketData"]["LA"][0]["price"],float):
+                precio = message["marketData"]["LA"][0]["price"]
+                get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,
+                side=get.pyRofexInicializada.Side.SELL, size=ut,
+                order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                ws_client_order_id=client_order_id,
+                price=precio)
+                
+                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+            else:
+                precio = 0
+                print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+
+            #if(mepCedear[3]>0 and ut>0 ):
+            #   ut=abs(ut)
+                #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.SELL, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=message["marketData"]["BI"]["price"])
+            # validate correct price
+            # print("______pasaaaaaa sa send_order_via_websocket")
+            # 8-Wait 5 sec then close the connection
+        
+        
+        
+        
+     except Exception as e : 
+            flash('falla . ',e)       
             
             
   
@@ -210,12 +224,12 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
 
 def order_report_handler( order_report):
     
-    print("Recibido reporte de orden:")
-    print(" - Clave: ", order_report["clOrdID"])
-    print(" - Estado: ", order_report["status"])
-    print(" - Descripción: ", order_report["text"])
-    print("Order Report Message Received: {0}".format(order_report))
-    """
+        print("Recibido reporte de orden:")
+        print(" - Clave: ", order_report["clOrdID"])
+        print(" - Estado: ", order_report["status"])
+        print(" - Descripción: ", order_report["text"])
+        print("Order Report Message Received: {0}".format(order_report))
+    
         if order_report["orderReport"]["clOrdId"] in InstrumentoEstrategiaUno.my_order.keys():
             InstrumentoEstrategiaUno._update_size(order_report)
             if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
@@ -241,7 +255,7 @@ def order_report_handler( order_report):
                 if InstrumentoEstrategiaUno.last_md:
                     InstrumentoEstrategiaUno.market_data_handler(self.last_md)
                     
-     """
+     
                     
                     
 
