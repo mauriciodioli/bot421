@@ -21,6 +21,7 @@ import socket
 
 
 
+
 estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
 
 
@@ -36,23 +37,25 @@ class States(enum.Enum):
 def estrategia_sheet_WS():
     
     if request.method == 'POST':
-     #   try:
+        try:
             usuario = request.form['usuario']
-            cuenta = request.form['cuenta']
+            get.accountLocalStorage = request.form['cuenta']
             access_token = request.form['access_token']
             correo_electronico = request.form['correo_electronico']
             
-    
             ContenidoSheet_list = SuscripcionDeSheet()#**22
-            carga_operaciones(ContenidoSheet_list[0],cuenta,usuario,correo_electronico,ContenidoSheet_list[1])
-            get.pyRofexInicializada.order_report_subscription(account=cuenta, snapshot=True,handler = order_report_handler)
+            listadoCompleto=ContenidoSheet_list
+            get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
                                     market_data_handler=market_data_handler_estrategia,
                                     order_report_handler= order_report_handler,
                                     error_handler=error_handler,
                                     exception_handler=exception_handler
                                     )
+            carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,ContenidoSheet_list[1])
+            # Crear una instancia de RofexMarketDataHandler
             
+
             
             
     #  except:  
@@ -60,13 +63,13 @@ def estrategia_sheet_WS():
     #      flash('Loggin Incorrect')    
     #      return render_template("errorLogueo.html" ) 
     
-    #    except jwt.ExpiredSignatureError:
-    #            print("El token ha expirado")
-    #            return redirect(url_for('autenticacion.index'))
-    #    except jwt.InvalidTokenError:
-    #        print("El token es inválido")
-    #    except:
-    #       print("contraseña o usuario incorrecto")
+        except jwt.ExpiredSignatureError:
+                print("El token ha expirado")
+                return redirect(url_for('autenticacion.index'))
+        except jwt.InvalidTokenError:
+            print("El token es inválido")
+        except:
+           print("no pudo leer la base de datos")
     return render_template('/estrategiaOperando.html')
      
 def SuscripcionDeSheet():
@@ -135,6 +138,8 @@ def market_data_handler_estrategia(message):
     print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
     marca_de_tiempo = message["timestamp"]
     print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+   # print( message["instrumentId"]["symbol"])
+   # symbolo = message["instrumentId"]["symbol"]
     
     #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
     #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
@@ -142,13 +147,15 @@ def market_data_handler_estrategia(message):
     if  (1): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
             # esto hay que hacerlo aca, solo cada x segundos
             banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
-            get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta("REM6603")# cada mas de 5 segundos
+            get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
             #print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler ,' account: ' )
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
     
     # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
     # para cumplir con el evento de mercado market data
-    estrategiaSheetNuevaWS(message,banderaLecturaSheet)
+   
+   
+   # estrategiaSheetNuevaWS(message,banderaLecturaSheet)
         
     
         
@@ -178,8 +185,10 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def order_report_handler( order_report):
+    for clave, valor in get.diccionario_global_operaciones.items():
+         print(f'Clave: {clave}, Valor: {valor["clOrdId_alta"]}')
     # Este es el Execution Report y se envía al cliente cada vez que hay un cambio en el estado de una orden. 
-    """
+    """ **11
     El campo wsClOrdId se utiliza para identificar la orden envíada.
     Este campo va a venir solamente en el primer Execution Report (con estado PENDING_NEW o REJECT).
     
@@ -302,7 +311,7 @@ def order_report_handler( order_report):
 
 
 
-def estrategiaSheetNuevaWS(message, banderaLecturaSheet):      #**11 
+def estrategiaSheetNuevaWS(message, banderaLecturaSheet):      
     
     #try:
         
@@ -580,20 +589,22 @@ def instrument_by_symbol_para_CalculoMep(message):
         return render_template("instrumentos.html" )
 
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
-    
+      
      #filtrar las coincidencias entre las dos listas
      coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
 
     # print(coincidencias)
     
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
+     
      for elemento  in coincidencias:  
          print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
+         print(":::::::::::::::::::::::________ print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])")
          nueva_orden = Orden(
                                 user_id=usuariodb.id,
                                 userCuenta=usuario,
                                 accountCuenta=account,
-                                clOrdId_alta=random.randint(1,1000),
+                                clOrdId_alta=random.randint(1,100000),
                                 clOrdId_baja='',
                                 clientId='',
                                 wsClOrdId_timestamp=datetime.now(),
@@ -608,13 +619,113 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
                                 senial=elemento[4],
                                 status='0'
                             )
+         # Cargar los valores del objeto en el diccionario global
+         nueva_orden_para_dic = {
+            'user_id': usuariodb.id,
+            'userCuenta': usuario,
+            'accountCuenta': account,
+            'clOrdId_alta': random.randint(1, 100000),
+            'clOrdId_baja': '',
+            'clientId': '',
+            'wsClOrdId_timestamp': datetime.now(),
+            'clOrdId_alta_timestamp': None,
+            'clOrdId_baja_timestamp': None,
+            'proprietary': True,
+            'marketId': '',
+            'symbol': elemento[0],
+            'tipo': elemento[1],
+            'tradeEnCurso': elemento[2],
+            'ut': elemento[3],
+            'senial': elemento[4],
+            'status': '0'
+        }
+    # Cargar cada objeto Orden en el diccionario global con una clave única
+         get.diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
 
+        
+        
+    # Acceder al diccionario global y a los objetos Orden
+     
          db.session.add(nueva_orden)
-         db.session.commit()  
+         db.session.commit() 
+     #get.current_session = db.session
+     #for clave, valor in get.diccionario_global_operaciones.items():
+     #     print(f'Clave: {clave}, Valor: {valor}')
+        
      db.session.close()
+     print("sale de cargar operaciones")
 
-                 
+
+def order_report_handler( order_report):
+    
+        print("Recibido reporte de orden:")
+        print(" - Clave: ", order_report["clOrdID"])
+        print(" - Estado: ", order_report["status"])
+        print(" - Descripción: ", order_report["text"])
+        print("Order Report Message Received: {0}".format(order_report))
+        print(get.diccionario_global_operaciones[order_report["symbol"]].clOrdId_alta)
+    
+        if order_report["orderReport"]["clOrdId"] in get.diccionario_global_operaciones[order_report["symbol"]]["clOrdId_alta"]:
+            InstrumentoEstrategiaUno._update_size(order_report)
+            if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
+                print("processing new order")
+                InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]] = order_report
+            elif order_report["orderReport"]["status"] == "FILLED":
+                print("processing filled")
+                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
+            elif order_report["orderReport"]["status"] == "CANCELLED":
+                print("processing cancelled")
+                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
+
+            if InstrumentoEstrategiaUno.state is States.WAITING_CANCEL:
+                if not InstrumentoEstrategiaUno.my_order:
+                    InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
+                    if InstrumentoEstrategiaUno.last_md:
+                        InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
+            elif InstrumentoEstrategiaUno.state is States.WAITING_ORDERS:
+                for order in InstrumentoEstrategiaUno.my_order.values():
+                    if not order:
+                        return
+                InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
+                if InstrumentoEstrategiaUno.last_md:
+                    InstrumentoEstrategiaUno.market_data_handler(self.last_md)
+                    
+     
+                    
+                    
+
+def _update_size(order):
+        if order["orderReport"]["status"] in ("PARTIALLY_FILLED", "FILLED"):
+            if order["orderReport"]["side"] == "BUY":
+                InstrumentoEstrategiaUno.buy_size -= round(order["orderReport"]["lastQty"])
+            if order["orderReport"]["side"] == "SELL":
+                InstrumentoEstrategiaUno.sell_size -= round(order["orderReport"]["lastQty"])
+            if InstrumentoEstrategiaUno.sell_size == InstrumentoEstrategiaUno.buy_size == 0:
+                InstrumentoEstrategiaUno.sell_size = InstrumentoEstrategiaUno.buy_size = InstrumentoEstrategiaUno.initial_size
+
+def _cancel_if_orders():
+        if InstrumentoEstrategiaUno.my_order:
+            InstrumentoEstrategiaUno.state = States.WAITING_CANCEL
+            for order in InstrumentoEstrategiaUno.my_order.values():
+                get.pyRofexInicializada.cancel_order(order["orderReport"]["clOrdId"])
+                print("canceling order %s" % order["orderReport"]["clOrdId"])
+
+def _send_order( side, px, size):
+        InstrumentoEstrategiaUno.state = States.WAITING_ORDERS
+        order = get.pyRofexInicializada.send_order(
+            ticker=InstrumentoEstrategiaUno.instrument,
+            side=side,
+            size=size,
+            price=round(px, 6),
+            order_type=get.pyRofexInicializada.OrderType.LIMIT,
+            cancel_previous=True
+        )
+        InstrumentoEstrategiaUno.my_order[order["order"]["clientId"]] = None
+        print("sending %s order %s@%s - id: %s" % (side, size, px, order["order"]["clientId"]))                
+
+
 ##########################esto es para ws#############################
+
 
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
