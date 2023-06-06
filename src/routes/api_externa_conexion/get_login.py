@@ -51,6 +51,7 @@ pyRofexInicializada = pyRofex
 pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
 diccionario_global_operaciones = {}
+diccionario_operaciones_enviadas = {}
 
 
 

@@ -125,18 +125,21 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
      saldocta=get.VariableParaSaldoCta
      ut=abs(int(ut))
      try:
-        for clave, valor in get.diccionario_global_operaciones.items():
-            if Symbol == clave:
-                client_order_id = valor["clOrdId_alta"]
-                print(f'Clave: {clave}, Valor: {valor["clOrdId_alta"]} , client_order_id: {client_order_id}')
+        if Symbol in get.diccionario_global_operaciones:
+            client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta']
+            #print(client_order_id)
+       # for clave, valor in get.diccionario_global_operaciones.items():
+       #     if Symbol == clave:
+       #         client_order_id = valor["clOrdId_alta"]
+       #         print(f'Clave: {clave}, Valor: {valor["clOrdId_alta"]} , client_order_id: {client_order_id}')
        
        # orden = db.session.query(Orden.clOrdId_alta).filter(Orden.symbol==Symbol, Orden.status=='0', Orden.accountCuenta==get.accountLocalStorage)
        # valor = orden.first()
        # print(":::::::_________ ",valor.clOrdId_alta)
-        # ob = Orden.query.filter_by(id=1).first()    
+       # ob = Orden.query.filter_by(id=1).first()    
        # print(":::::::_________ ",ob.clOrdId_alta)
-        if senial == 'OPEN.':# por ahora el open es siempre long ajajajajaja
-            #print(message["marketData"]["OF"][0]["price"])
+        if senial == 'OPEN.':# por ahora el open es siempre long. Hay que agregar el chequeo de que trade es
+            #es OPEN la señal pero es open long o open short. por ahora el open es solamente long
             if isinstance(message["marketData"]["OF"][0]["price"],float):
                 precio = message["marketData"]["OF"][0]["price"]
                 get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
@@ -144,8 +147,45 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                     order_type=get.pyRofexInicializada.OrderType.LIMIT,
                     ws_client_order_id=client_order_id,
                     price=precio)
-                    
-                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
+            if Symbol in get.diccionario_global_operaciones:
+                client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta'] 
+                timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']  
+                user_id=get.diccionario_global_operaciones[Symbol]['user_id']
+                userCuenta=get.diccionario_global_operaciones[Symbol]['userCuenta']
+                accountCuenta=get.diccionario_global_operaciones[Symbol]['accountCuenta']   
+                print("_Fun: OperacionWs__Sym_",Symbol,
+                      "_t_",tipo_de_activo,
+                      "_tr_",trade_en_curso,
+                      "_s_",senial,
+                      "_ut_",ut,
+                      " precio Offer ",precio,
+                      "client_order_id",client_order_id,
+                      "timestamp",timestamp,
+                      "status","1",
+                      "user_id", user_id,
+                      "userCuenta", userCuenta,
+                      "accountCuenta",accountCuenta,
+                      )
+                # Crear el diccionario
+                diccionario = {
+                        "_Fun": "OperacionWs__Sym_",
+                        "Symbol": Symbol,
+                        "_t_": tipo_de_activo,
+                        "_tr_": trade_en_curso,
+                        "_s_": senial,
+                        "_ut_": ut,
+                        "precio Offer": precio,
+                        "client_order_id": client_order_id,
+                        "timestamp": timestamp,
+                        "status": "1",
+                        "user_id": user_id,
+                        "userCuenta": userCuenta,
+                        "accountCuenta": accountCuenta
+                    }
+                if not hasattr(get, 'operacionesEnviadas'):
+                        get.diccionario_operaciones_enviadas = []                    
+                get.diccionario_operaciones_enviadas.append(diccionario)
+                   
             elif isinstance(message["marketData"]["LA"][0]["price"],float):
                 precio = message["marketData"]["LA"][0]["price"]
                 get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, 
@@ -153,8 +193,46 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                     order_type=get.pyRofexInicializada.OrderType.LIMIT,
                     ws_client_order_id=client_order_id,
                     price=precio)
-                    
-                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+                  
+                if Symbol in get.diccionario_global_operaciones:
+                    client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta'] 
+                    timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']  
+                    user_id=get.diccionario_global_operaciones[Symbol]['user_id']
+                    userCuenta=get.diccionario_global_operaciones[Symbol]['userCuenta']
+                    accountCuenta=get.diccionario_global_operaciones[Symbol]['accountCuenta']   
+                    print("_Fun: OperacionWs__Sym_",Symbol,
+                        "_t_",tipo_de_activo,
+                        "_tr_",trade_en_curso,
+                        "_s_",senial,
+                        "_ut_",ut,
+                        " precio Offer ",precio,
+                        "client_order_id",client_order_id,
+                        "timestamp",timestamp,
+                        "status","1",
+                        "user_id", user_id,
+                        "userCuenta", userCuenta,
+                        "accountCuenta",accountCuenta,
+                        )
+                    # Crear el diccionario
+                    diccionario = {
+                        "_Fun": "OperacionWs__Sym_",
+                        "Symbol": Symbol,
+                        "_t_": tipo_de_activo,
+                        "_tr_": trade_en_curso,
+                        "_s_": senial,
+                        "_ut_": ut,
+                        "precio Offer": precio,
+                        "client_order_id": client_order_id,
+                        "timestamp": timestamp,
+                        "status": "1",
+                        "user_id": user_id,
+                        "userCuenta": userCuenta,
+                        "accountCuenta": accountCuenta
+                    }
+                    if not hasattr(get, 'operacionesEnviadas'):
+                        get.diccionario_operaciones_enviadas = []
+                    get.diccionario_operaciones_enviadas.append(diccionario)
+                       
             else:
                 precio = 0
                 print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
@@ -165,7 +243,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
             
                 
         
-        # 5-Send an order via websocket message then check that order_report_handler is called
+        # Por ahora siempre es close long. 
         if senial == 'closed.':# por ahora el closed es siempre cerrar un long jajaj
             if isinstance(message["marketData"]["BI"][0]["price"],float):
                 precio = message["marketData"]["BI"][0]["price"]
@@ -175,7 +253,45 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                 ws_client_order_id=client_order_id,
                 price=precio)
                 
-                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Offer ",precio)
+                if Symbol in get.diccionario_global_operaciones:
+                    client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta'] 
+                    timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']  
+                    user_id=get.diccionario_global_operaciones[Symbol]['user_id']
+                    userCuenta=get.diccionario_global_operaciones[Symbol]['userCuenta']
+                    accountCuenta=get.diccionario_global_operaciones[Symbol]['accountCuenta']   
+                    print("_Fun: OperacionWs__Sym_",Symbol,
+                        "_t_",tipo_de_activo,
+                        "_tr_",trade_en_curso,
+                        "_s_",senial,
+                        "_ut_",ut,
+                        " precio Offer ",precio,
+                        "client_order_id",client_order_id,
+                        "timestamp",timestamp,
+                        "status","1",
+                        "user_id", user_id,
+                        "userCuenta", userCuenta,
+                        "accountCuenta",accountCuenta,
+                        )
+                    # Crear el diccionario
+                    diccionario = {
+                        "_Fun": "OperacionWs__Sym_",
+                        "Symbol": Symbol,
+                        "_t_": tipo_de_activo,
+                        "_tr_": trade_en_curso,
+                        "_s_": senial,
+                        "_ut_": ut,
+                        "precio Offer": precio,
+                        "client_order_id": client_order_id,
+                        "timestamp": timestamp,
+                        "status": "1",
+                        "user_id": user_id,
+                        "userCuenta": userCuenta,
+                        "accountCuenta": accountCuenta
+                    }
+                    if not hasattr(get, 'operacionesEnviadas'):
+                        get.diccionario_operaciones_enviadas = []
+                    get.diccionario_operaciones_enviadas.append(diccionario)
+                    
             elif isinstance(message["marketData"]["LA"][0]["price"],float):
                 precio = message["marketData"]["LA"][0]["price"]
                 get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,
@@ -184,7 +300,46 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                 ws_client_order_id=client_order_id,
                 price=precio)
                 
-                print("_Fun: OperacionWs__Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
+                if Symbol in get.diccionario_global_operaciones:
+                    client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta'] 
+                    timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']  
+                    user_id=get.diccionario_global_operaciones[Symbol]['user_id']
+                    userCuenta=get.diccionario_global_operaciones[Symbol]['userCuenta']
+                    accountCuenta=get.diccionario_global_operaciones[Symbol]['accountCuenta']   
+                    print("_Fun: OperacionWs__Sym_",Symbol,
+                        "_t_",tipo_de_activo,
+                        "_tr_",trade_en_curso,
+                        "_s_",senial,
+                        "_ut_",ut,
+                        " precio Offer ",precio,
+                        "client_order_id",client_order_id,
+                        "timestamp",timestamp,
+                        "status","1",
+                        "user_id", user_id,
+                        "userCuenta", userCuenta,
+                        "accountCuenta",accountCuenta,
+                        )
+                    # Crear el diccionario
+                    diccionario = {
+                        "_Fun": "OperacionWs__Sym_",
+                        "Symbol": Symbol,
+                        "_t_": tipo_de_activo,
+                        "_tr_": trade_en_curso,
+                        "_s_": senial,
+                        "_ut_": ut,
+                        "precio Offer": precio,
+                        "client_order_id": client_order_id,
+                        "timestamp": timestamp,
+                        "status": "1",
+                        "user_id": user_id,
+                        "userCuenta": userCuenta,
+                        "accountCuenta": accountCuenta
+                    }
+                    if not hasattr(get, 'operacionesEnviadas'):
+                        get.diccionario_operaciones_enviadas = []
+                    get.diccionario_operaciones_enviadas.append(diccionario)
+                    
+                  
             else:
                 precio = 0
                 print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
@@ -210,6 +365,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
 
 
 
+    
 
 
 

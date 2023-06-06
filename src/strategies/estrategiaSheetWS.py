@@ -153,9 +153,17 @@ def market_data_handler_estrategia(message):
     
     # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
     # para cumplir con el evento de mercado market data
+    
+    #symbol = message["instrumentId"]["symbol"]
+    #print(symbol)
+    #print(get.diccionario_global_operaciones.items())
+    #lista = list(get.diccionario_global_operaciones.items())
+    #print(lista[0][1]['clOrdId_alta'])
    
+    
+      
    
-   # estrategiaSheetNuevaWS(message,banderaLecturaSheet)
+    estrategiaSheetNuevaWS(message,banderaLecturaSheet)
         
     
         
@@ -185,8 +193,7 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def order_report_handler( order_report):
-    for clave, valor in get.diccionario_global_operaciones.items():
-         print(f'Clave: {clave}, Valor: {valor["clOrdId_alta"]}')
+    
     # Este es el Execution Report y se envía al cliente cada vez que hay un cambio en el estado de una orden. 
     """ **11
     El campo wsClOrdId se utiliza para identificar la orden envíada.
@@ -657,14 +664,41 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
 
 
 def order_report_handler( order_report):
-    
-        print("Recibido reporte de orden:")
-        print(" - Clave: ", order_report["clOrdID"])
-        print(" - Estado: ", order_report["status"])
-        print(" - Descripción: ", order_report["text"])
-        print("Order Report Message Received: {0}".format(order_report))
-        print(get.diccionario_global_operaciones[order_report["symbol"]].clOrdId_alta)
-    
+        # Obtener el diccionario de datos del reporte de orden
+        order_data = order_report['orderReport']
+        
+        #for clave, valor in order_data.items():
+        #    print(clave,":", valor)
+        
+        #if order_data['orderId'] == 'NONE':
+
+        # Leer un valor específico del diccionario
+        clOrdId = order_data['clOrdId']
+        symbol = order_data['instrumentId']['symbol']
+        status = order_data['status']
+        
+        
+       
+
+        # Imprimir los valores obtenidos
+        #print("clOrdId:", clOrdId)
+        print("symbol:", symbol)
+       # print("status:", status)
+        #if symbol in get.diccionario_global_operaciones:
+          #    for clave, valor in get.diccionario_global_operaciones.items():
+              #    print(clave,":",valor)
+        for diccionario in get.diccionario_operaciones_enviadas:
+             for clave, valor in diccionario.items():
+                 if clave == "Symbol":
+                      print("symbol:", symbol)
+                      if symbol == clave:
+                         print(clave, ":", valor)  
+                         print("clOrdId:", clOrdId)  
+                         print("status:", status)             
+             
+              
+        
+        """
         if order_report["orderReport"]["clOrdId"] in get.diccionario_global_operaciones[order_report["symbol"]]["clOrdId_alta"]:
             InstrumentoEstrategiaUno._update_size(order_report)
             if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
@@ -689,7 +723,7 @@ def order_report_handler( order_report):
                 InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
                 if InstrumentoEstrategiaUno.last_md:
                     InstrumentoEstrategiaUno.market_data_handler(self.last_md)
-                    
+        """              
      
                     
                     
