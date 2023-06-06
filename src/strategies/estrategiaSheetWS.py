@@ -17,6 +17,7 @@ from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
+import pprint
 
 
 
@@ -666,64 +667,33 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
         order_data = order_report['orderReport']
-        
-        #for clave, valor in order_data.items():
-        #    print(clave,":", valor)
-        
-        #if order_data['orderId'] == 'NONE':
-
+      
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']
-        
-        
-       
-
-        # Imprimir los valores obtenidos
-        #print("clOrdId:", clOrdId)
-        print("symbol:", symbol)
-       # print("status:", status)
+        orderid = order_data['orderid']
+    
         #if symbol in get.diccionario_global_operaciones:
           #    for clave, valor in get.diccionario_global_operaciones.items():
               #    print(clave,":",valor)
-        for diccionario in get.diccionario_operaciones_enviadas:
-             for clave, valor in diccionario.items():
-                 if clave == "Symbol":
-                      print("symbol:", symbol)
-                      if symbol == clave:
-                         print(clave, ":", valor)  
-                         print("clOrdId:", clOrdId)  
-                         print("status:", status)             
-             
-              
+        pprint.pprint(get.diccionario_operaciones_enviadas)
+        symbolo =  get.diccionario_operaciones_enviadas[0]["Symbol"]
+        print(symbolo)
+        if symbolo == symbol:
+            print("symbol:", symbol," symbolo: ",symbolo," status " ,status)
+            _cancel_if_orders(symbol,orderid,clOrdId,status)
+            if status == 'EXECUTED':
+              _operada(order_report) 
         
-        """
-        if order_report["orderReport"]["clOrdId"] in get.diccionario_global_operaciones[order_report["symbol"]]["clOrdId_alta"]:
-            InstrumentoEstrategiaUno._update_size(order_report)
-            if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
-                print("processing new order")
-                InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]] = order_report
-            elif order_report["orderReport"]["status"] == "FILLED":
-                print("processing filled")
-                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
-            elif order_report["orderReport"]["status"] == "CANCELLED":
-                print("processing cancelled")
-                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
-
-            if InstrumentoEstrategiaUno.state is States.WAITING_CANCEL:
-                if not InstrumentoEstrategiaUno.my_order:
-                    InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-                    if InstrumentoEstrategiaUno.last_md:
-                        InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
-            elif InstrumentoEstrategiaUno.state is States.WAITING_ORDERS:
-                for order in InstrumentoEstrategiaUno.my_order.values():
-                    if not order:
-                        return
-                InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-                if InstrumentoEstrategiaUno.last_md:
-                    InstrumentoEstrategiaUno.market_data_handler(self.last_md)
-        """              
+         ###### BOTON DE PANICO        
+        response = botonPanicoRH('false') 
+        print("respuesta desde el boton", response)
+        
+        if response == 1: ### si es 1 el boton de panico fue activado
+             _cancel_if_orders(symbol,orderid,clOrdId,status)
+        
+        
      
                     
                     
@@ -736,13 +706,58 @@ def _update_size(order):
                 InstrumentoEstrategiaUno.sell_size -= round(order["orderReport"]["lastQty"])
             if InstrumentoEstrategiaUno.sell_size == InstrumentoEstrategiaUno.buy_size == 0:
                 InstrumentoEstrategiaUno.sell_size = InstrumentoEstrategiaUno.buy_size = InstrumentoEstrategiaUno.initial_size
+def _operada(order_report):
+    order_data = order_report['orderReport']
+    clOrdId = order_data['clOrdId']
+    symbol = order_data['instrumentId']['symbol']
+    status = order_data['status']
+    timestamp = order_data['timestamp']
 
-def _cancel_if_orders():
-        if InstrumentoEstrategiaUno.my_order:
-            InstrumentoEstrategiaUno.state = States.WAITING_CANCEL
-            for order in InstrumentoEstrategiaUno.my_order.values():
-                get.pyRofexInicializada.cancel_order(order["orderReport"]["clOrdId"])
-                print("canceling order %s" % order["orderReport"]["clOrdId"])
+    if status not in ['CANCELLED', 'FILLED']:
+        if symbol in get.diccionario_global_operaciones:
+            global_order = get.diccionario_global_operaciones[symbol]
+            operacion_enviada = None
+            for operacion in get.diccionario_operaciones_enviadas:
+                if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
+                    operacion_enviada = operacion
+                    break
+
+            if operacion_enviada:
+                if global_order['ut'] > 0:
+                    global_order['ut'] -= operacion_enviada['ut']
+                    operacion_enviada['status'] = 'OPERATED'
+                    operacion_enviada['timestamp'] = timestamp
+                else:
+                    global_order['status'] = '1'
+                    operacion_enviada['status'] = 'OPERATED'
+                    operacion_enviada['timestamp'] = timestamp
+
+    
+
+def _cancel_if_orders(symbol,orderid,clOrdId,order_status):
+    #debe sumar de la lista de orden general
+    #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
+     # Obtener el estado de la orden
+    if order_status in ['PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
+        get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+        print("Orden cancelada:", clOrdId)
+    else:
+        print("La orden no se puede cancelar en el estado actual:", order_status)
+     
+     # Eliminar la orden de get.diccionario_operaciones_enviadas
+    for orden in get.diccionario_operaciones_enviadas:
+        if orden["Symbol"] == symbol and orden["client_order_id"] == clOrdId:
+            get.diccionario_operaciones_enviadas.remove(orden)
+            break
+
+    # Aumentar el valor de ut en get.diccionario_global_operaciones
+    for clave, valor in get.diccionario_global_operaciones.items():
+        if valor["Symbol"] == symbol and valor["client_order_id"] == clOrdId:
+            ut_actual = int(valor["ut"])
+            ut_enviada = int(get.diccionario_operaciones_enviadas[0]["ut"])
+            incremento = ut_actual * (ut_enviada / ut_actual)
+            valor["ut"] = str(ut_actual + incremento)
+            break 
 
 def _send_order( side, px, size):
         InstrumentoEstrategiaUno.state = States.WAITING_ORDERS
