@@ -283,19 +283,19 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
             banderaLecturaSheet = 1  
         
             ContenidoSheet_list = list(ContenidoSheet)
-            cantidadUtaOperar = datoSheet.CuentaCantidadUT(ContenidoSheet_list)# **77
+           # cantidadUtaOperar = datoSheet.CuentaCantidadUT(ContenidoSheet_list)# **77
         
             cont = 0 
             contadorMep=0
         
             #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
             mepAl30 = 460 ####Calcula dolar MEP
-            sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
+        #    sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
             #listadoCargaDiccionario = leerSheet()
-            listaSaldossinOperar = {}
+           
             listaOperacionesEnCurso = {}
         for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list[2:]:
-            listaSaldossinOperar[Symbol]=ut
+        #    listaSaldossinOperar[Symbol]=ut
             listaOperacionesEnCurso[Symbol] = 0
             contadorMep +=1
             if contadorMep < 21:
@@ -354,19 +354,19 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                                                 
                                                             
                                                             # sumaUT es para que itere el while. obsoleto se saca 
-                                                            sumaUT = int(cantidadUtaOperar[0]) - Liquidez_ahora_cedear
+                                               #             sumaUT = int(cantidadUtaOperar[0]) - Liquidez_ahora_cedear
                                                             
                                                             #comparo la cantidad que necesito operar (ut) con liquidez del momento.
                                                             
-                                                            print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
-                                                            UT_a_operar = listaSaldossinOperar[Symbol]
+                                                          #  print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
+                                                          #  UT_a_operar = listaSaldossinOperar[Symbol]
                                                             
                                                             
-                                                            if Liquidez_ahora_cedear < int(UT_a_operar) : 
+                                                            if Liquidez_ahora_cedear < ut : 
                                                             # si entro aca me falta liquidez, anoto lo que falta
                                                                 # en realidad tengo que actualizar la lista si se opero bien solamente
                                                                 # aca la actualizamos de prepo pero hayque cambiar esto
-                                                                listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
+                                                               # listaSaldossinOperar[Symbol] = int(ut)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
                                                                 
                                                                 if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
                                                                     datoSheet.OperacionWs(Symbol, tipo_de_activo, trade_en_curso, Liquidez_ahora_cedear, senial, mepCedear, message)
@@ -374,10 +374,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                                                     print("*1 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
                                                                 
                                                             else:
-                                                                listaSaldossinOperar[Symbol] = 0
+                                                    #            listaSaldossinOperar[Symbol] = 0
                                                                 
-                                                                if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and UT_a_operar != 0 and senial != '' and mepCedear != 0 and message != '':
-                                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear,message)
+                                                                if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and ut != 0 and senial != '' and mepCedear != 0 and message != '':
+                                                                    datoSheet.OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message)
                                                                 else:
                                                                     print("*2 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
                                                             
@@ -409,12 +409,12 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                                     else:
                                                         Liquidez_ahora_arg = 0
 
-                                                sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
-                                                print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
-                                                UT_a_operar = listaSaldossinOperar[Symbol]
+                                             #   sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
+                                            #    print("   listaSaldossinOperar[",Symbol,"] = ",listaSaldossinOperar[Symbol])
+                                              #  UT_a_operar = listaSaldossinOperar[Symbol]
                                                 #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                if Liquidez_ahora_arg < int(UT_a_operar) : 
-                                                    listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
+                                              #  if Liquidez_ahora_arg < int(UT_a_operar) : 
+                                               #     listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
                                                     
                                                     if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and Liquidez_ahora_arg != 0 and senial != '' and message != '':
                                                         mepCedear=0
@@ -423,23 +423,23 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                                         print("*3 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
 
                                                 else:
-                                                    listaSaldossinOperar[Symbol] = 0
-                                                    if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and UT_a_operar != 0 and senial != '' and message != '':
+                                                 #   listaSaldossinOperar[Symbol] = 0
+                                                    if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and ut != 0 and senial != '' and message != '':
                                                         mepCedear=0
-                                                        datoSheet.OperacionWs(Symbol, tipo_de_activo, trade_en_curso, UT_a_operar, senial, mepCedear, message)
+                                                        datoSheet.OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, message)
                                                     else:
                                                         print("*4 FUN: estrategiaSheetNuevaWS -->> datoSheet.OperacionWs No se pudo hacer -->> un argumento llega vacio.")
                                                     
 
         cont=0
-        for Symbol  in listaSaldossinOperar: 
-            if (Symbol != '' and  Symbol != 'Symbol'):
-                cont = cont + int(listaSaldossinOperar[Symbol])
+        #for Symbol  in listaSaldossinOperar: 
+        #    if (Symbol != '' and  Symbol != 'Symbol'):
+        #        cont = cont + int(listaSaldossinOperar[Symbol])
             
             
-        sumaUT=cont
+        #sumaUT=cont
     
-        print("________________sumaUT________________ ",sumaUT)
+      #  print("________________sumaUT________________ ",sumaUT)
         #time.sleep(2)#segundos
     
         return render_template('/estrategiaOperando.html')
@@ -662,6 +662,7 @@ def _update_size(order):
                 InstrumentoEstrategiaUno.sell_size -= round(order["orderReport"]["lastQty"])
             if InstrumentoEstrategiaUno.sell_size == InstrumentoEstrategiaUno.buy_size == 0:
                 InstrumentoEstrategiaUno.sell_size = InstrumentoEstrategiaUno.buy_size = InstrumentoEstrategiaUno.initial_size
+
 def _operada(order_report):
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']
