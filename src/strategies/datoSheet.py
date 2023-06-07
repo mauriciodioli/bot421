@@ -164,6 +164,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                         "_ut_": ut,
                         "precio Offer": precio,
                         "_ws_client_order_id": _ws_client_order_id,
+                        "_cliOrderId" : 0,
                         "timestamp": timestamp,
                         "status": "1",
                         "user_id": user_id,
@@ -193,14 +194,14 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
             
                     # Crear el diccionario
                     diccionario = {
-                        "_Fun": "OperacionWs__Sym_",
                         "Symbol": Symbol,
                         "_t_": tipo_de_activo,
                         "_tr_": trade_en_curso,
                         "_s_": senial,
                         "_ut_": ut,
                         "precio Offer": precio,
-                        "client_order_id": client_order_id,
+                        "_ws_client_order_id": _ws_client_order_id,
+                        "_cliOrderId" : 0,
                         "timestamp": timestamp,
                         "status": "1",
                         "user_id": user_id,
@@ -210,7 +211,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                    
                     get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas)+1] = diccionario
                                   
-                    pprint.pprint(get.diccionario_operaciones_enviadas)
+                   # pprint.pprint(get.diccionario_operaciones_enviadas)
             else:
                 precio = 0
                 print("_Fun: OperacionWs ALERT NO SE OPERO __Sym_",Symbol,"_t_",tipo_de_activo,"_tr_",trade_en_curso,"_s_",senial,"_ut_",ut," precio Last ",precio)
@@ -241,14 +242,14 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
             
                     # Crear el diccionario
                     diccionario = {
-                        "_Fun": "OperacionWs__Sym_",
                         "Symbol": Symbol,
                         "_t_": tipo_de_activo,
                         "_tr_": trade_en_curso,
                         "_s_": senial,
                         "_ut_": ut,
                         "precio Offer": precio,
-                        "client_order_id": client_order_id,
+                        "_ws_client_order_id": _ws_client_order_id,
+                        "_cliOrderId" : 0,
                         "timestamp": timestamp,
                         "status": "1",
                         "user_id": user_id,
@@ -258,7 +259,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                
                     get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas)+1] = diccionario
                
-                    pprint.pprint(get.diccionario_operaciones_enviadas)
+                   # pprint.pprint(get.diccionario_operaciones_enviadas)
             elif isinstance(message["marketData"]["LA"][0]["price"],float):
                 precio = message["marketData"]["LA"][0]["price"]
                 #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,
@@ -277,14 +278,14 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
             
                     # Crear el diccionario
                     diccionario = {
-                        "_Fun": "OperacionWs__Sym_",
                         "Symbol": Symbol,
                         "_t_": tipo_de_activo,
                         "_tr_": trade_en_curso,
                         "_s_": senial,
                         "_ut_": ut,
                         "precio Offer": precio,
-                        "client_order_id": client_order_id,
+                        "_ws_client_order_id": _ws_client_order_id,
+                        "_cliOrderId" : 0,
                         "timestamp": timestamp,
                         "status": "1",
                         "user_id": user_id,
@@ -296,7 +297,7 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear,message
                     get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas)+1] = diccionario
                
                     # Imprimir la lista actualizada
-                    pprint.pprint(get.diccionario_operaciones_enviadas)
+                   # pprint.pprint(get.diccionario_operaciones_enviadas)
                   
             else:
                 precio = 0

@@ -627,50 +627,20 @@ def order_report_handler( order_report):
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
-        status = order_data['status']
-        orderid = order_data['orderid']
-        wsClOrdId = order_data['wsClOrdId']
+        status = order_data['status']      
         
     
-        #if symbol in get.diccionario_global_operaciones:
-          #    for clave, valor in get.diccionario_global_operaciones.items():
-              #    print(clave,":",valor)
-        pprint.pprint(get.diccionario_operaciones_enviadas)
-        symbolo =  get.diccionario_operaciones_enviadas[0]["Symbol"]
-        print(symbolo)
-        
             #orderId: ID de la orden. 
     # Si la orden fue rechazada o todavía no llegó al mercado, este campo es none.
     # verificar si es none, si lo es, recien preguntar por wsClOrdId
     # si este campo existe, wsClOrdId ya no existe !!!
     #print(order_report["orderReport"]["orderId"])
-        if orderid is None:
-            # la orden esta pendiente. 
-            # si el status es PENDING_NEW, anotar en el diccionario, el orderid = order_data['orderid'] en el correspondiente wsClOrdId
-            
-            if status == 'PENDING_NEW':
-                for _ws_client_order_id in get.diccionario_operaciones_enviadas.items():
-                
-                 get.diccionario_operaciones_enviadas[0]["clOrdId_alta"] = _ws_client_order_id
-            
-            # 1) Leer la hora en order_report y comparar con el wsClOrdId_timestamp
-            # si hace mas de 5 min que la ord esta pendiente se cancela, sino seguimos.
-            # 2) 
-            
-            print("OR: no hay orderId, chequeando wsClOrdId ... ")
-            
-        else    :
-            print("OR: orderId :", orderid)
-            # restar del diccionario correspondiente las ut operadas
+      
 
-        
-        
-        
-        if symbolo == symbol:
-            print("symbol:", symbol," symbolo: ",symbolo," status " ,status)
-            _cancel_if_orders(symbol,clOrdId,status)
-            if status == 'EXECUTED':
-              _operada(order_report) 
+        _cancela_orden(order_report)
+          
+        if status == 'EXECUTED':
+            _operada(order_report) 
         
          ###### BOTON DE PANICO        
         response = botonPanicoRH('false') 
@@ -719,10 +689,37 @@ def _operada(order_report):
                     operacion_enviada['timestamp'] = timestamp
 
     
+def _cancela_orden(order_report):
+    
+    order_data = order_report['orderReport']
+    clOrdId = order_data['clOrdId']
+    symbol = order_data['instrumentId']['symbol']
+    status = order_data['status']
+    timestamp = order_data['timestamp']
+    # Recorrer los elementos del diccionario_enviados
+    for valor in get.diccionario_operaciones_enviadas.items():
+        if valor["Symbol"] == symbol:           
+            if valor["status"] == 1:
+                if  valor["_ws_client_order_id"] == order_report['wsOrderClId'] :
+                    valor["_cliOrderId"] = order_report['ClOrderId']
+                    valor["status"] = 2
+                break
 
+             
+            timestamp_order_report = timestamp
+            tiempo_diccionario = valor["timestamp"]
+            tiempo_order_report = datetime.strptime(timestamp_order_report, "%Y-%m-%d %H:%M:%S.%f")
+            tiempo_diferencia = tiempo_order_report - tiempo_diccionario
+           
+            if tiempo_diferencia >= 5:
+               _cancel_if_orders(symbol,clOrdId,status)            
+    
+    
+     
 def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
+    print("Orden order_status:", order_status)
      # Obtener el estado de la orden
     if order_status in ['PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
