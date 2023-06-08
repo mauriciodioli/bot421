@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 import routes.instrumentos as instrumentos
-from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
