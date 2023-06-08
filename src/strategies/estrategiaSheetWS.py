@@ -139,8 +139,6 @@ def market_data_handler_estrategia(message):
     print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
     marca_de_tiempo = message["timestamp"]
     print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
-   # print( message["instrumentId"]["symbol"])
-   # symbolo = message["instrumentId"]["symbol"]
     
     #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
     #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
@@ -284,7 +282,16 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
         
             ContenidoSheet_list = list(ContenidoSheet)
            # cantidadUtaOperar = datoSheet.CuentaCantidadUT(ContenidoSheet_list)# **77
-        
+           #aqui comprueba si cambió de señal y carga en el diccionario dicho cambio para luego
+           #operarlo
+            for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list[2:]:                
+             for symbol in get.diccionario_global_operaciones[Symbol]['senial']:
+                 print(get.diccionario_global_operaciones[Symbol]['senial'])
+                 if  get.diccionario_global_operaciones[Symbol] == Symbol:
+                     if senial !=  get.diccionario_global_operaciones[Symbol]['senial']:
+                         if  get.diccionario_global_operaciones[Symbol]['status'] == 0:
+                          get.diccionario_global_operaciones[Symbol]['senial'] = senial
+                   
             cont = 0 
             contadorMep=0
         
@@ -303,10 +310,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
                mepAl30 = 460
         
-       # print(listaSaldossinOperar)
-        
-        
-        #cont = 0 
+      
         for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
                 ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
                 #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
@@ -314,11 +318,13 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                 
                 #### CONSULTAR INSTRUMENTO DETALLADO ################  
                 # message["instrumentId"]["symbol"]
-                #if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                if Symbol == message["instrumentId"]["symbol"]:
-                    if Symbol != '':
+                #if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores               
+                  if Symbol != '':
+                      if Symbol == message["instrumentId"]["symbol"]:
+                          if get.diccionario_global_operaciones[Symbol]['status'] != 0:
+                              if get.diccionario_global_operaciones[Symbol]['ut'] != 0:
                     #if trade_en_curso == 'LONG_':
-                        if senial != '':
+                                if senial != '':
                                     
                                     if tipo_de_activo =='CEDEAR':
                                                         #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
@@ -561,8 +567,8 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
      
      for elemento  in coincidencias:  
-         print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
-         print(":::::::::::::::::::::::________ print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])")
+         print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
+         #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
          nueva_orden = Orden(
                                 user_id=usuariodb.id,
                                 userCuenta=usuario,
