@@ -300,9 +300,9 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
 
     if Symbol in get.diccionario_global_operaciones:
         if Symbol == message["instrumentId"]["symbol"]:
-            if get.diccionario_global_operaciones[Symbol]['status'] != "0":
+            if get.diccionario_global_operaciones[Symbol]['status'] == "0":
                 if get.diccionario_global_operaciones[Symbol]['ut'] != 0:
-                    if get.diccionario_global_operaciones[Symbol]['trade_en_curso'] == 'LONG_':
+                    if get.diccionario_global_operaciones[Symbol]['tradeEnCurso'] == 'LONG_':
                         if get.diccionario_global_operaciones[Symbol]['senial'] != '':
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
                                 mepCedear = calcularMepCedearsWS(message)
@@ -326,8 +326,9 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                             Liquidez_ahora_cedear = 0
 
                                     if Liquidez_ahora_cedear < ut:
-                                        if Symbol != '' and tipo_de_activo != '' and trade_en_curso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, trade_en_curso, Liquidez_ahora_cedear, senial, mepCedear, message)
+                                        if Symbol != '' and tipo_de_activo != '' and get.diccionario_global_operaciones[Symbol]['tradeEnCurso'] != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
+                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                         print("*1 FUN: estrategiaSheetNuevaWS -->> dato.")
                                         else:
                                             print("*1 FUN: estrategiaSheetNuevaWS -->> dato.")
 
