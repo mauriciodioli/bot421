@@ -167,8 +167,10 @@ def market_data_handler_estrategia(message):
    
     
       
-   
-    estrategiaSheetNuevaWS(message,banderaLecturaSheet)
+    if message["marketData"]["BI"] != None:
+        if  message["marketData"]["OF"] != None:
+            if  message["marketData"]["LA"] != None:  
+                estrategiaSheetNuevaWS(message,banderaLecturaSheet)
         
     
         
@@ -284,8 +286,9 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
 
-        for Symbol, cedear, trade_en_curso, ut, senial in ContenidoSheet_list[2:]:
+        for Symbol,tipo, TradeEnCurso,ut,senial in ContenidoSheet_list[2:]:
             if Symbol in get.diccionario_global_operaciones:
+                print(senial)
                 if senial != '':
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
@@ -297,41 +300,63 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
             mepAl30 = 460 ####Calcula dolar MEP
     Symbol = message["instrumentId"]["symbol"]
     tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
-
+    senial = get.diccionario_global_operaciones[Symbol]['senial']
+    TradeEnCurso =  get.diccionario_global_operaciones[Symbol]['tradeEnCurso']
     if Symbol in get.diccionario_global_operaciones:
-        if Symbol == message["instrumentId"]["symbol"]:
+       # if get.diccionario_global_operaciones[Symbol] == message["instrumentId"]["symbol"]:
             if get.diccionario_global_operaciones[Symbol]['status'] == "0":
-                if get.diccionario_global_operaciones[Symbol]['ut'] != 0:
-                    if get.diccionario_global_operaciones[Symbol]['tradeEnCurso'] == 'LONG_':
-                        if get.diccionario_global_operaciones[Symbol]['senial'] != '':
+                if get.diccionario_global_operaciones[Symbol]['ut'] !="0":                                
+                    if TradeEnCurso == 'LONG_':                        
+                        if senial != "":
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
                                 mepCedear = calcularMepCedearsWS(message)
-                                porcentaje_de_diferencia = -1
-                                
+                                porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30                                
                                 if porcentaje_de_diferencia <= 1:
-                                    if get.diccionario_global_operaciones[Symbol]['senial'] == 'OPEN.':
-                                        if isinstance(message["marketData"]["OF"][0]["size"], int):
+                                    if senial == 'OPEN.':
+                                        if message["marketData"]["OF"] != None:                                         
                                             Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
-                                        elif isinstance(message["marketData"]["LA"][0]["size"], int):
-                                            Liquidez_ahora_cedear = message["marketData"]["LA"][0]["size"]
-                                        else:
-                                            Liquidez_ahora_cedear = 0
+                                        if message["marketData"]["LA"] != None:                                         
+                                            Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                            
 
-                                    if get.diccionario_global_operaciones[Symbol]['senial'] == 'closed.':
-                                        if isinstance(message["marketData"]["BI"][0]["size"], int):
+                                    if senial == 'closed.':  
+                                        if message["marketData"]["BI"] != None: 
                                             Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        elif isinstance(message["marketData"]["LA"][0]["size"], int):
-                                            Liquidez_ahora_cedear = message["marketData"]["LA"][0]["size"]
-                                        else:
-                                            Liquidez_ahora_cedear = 0
+                                        if message["marketData"]["LA"] != None:
+                                            Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                       
+                                    if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
+                                         datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                         print("*1 FUN: estrategiaSheetNuevaWS -->> dato.")
+                                        else:                                          
+                                          datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                          print("*1 FUN: estrategiaSheetNuevaWS -->> dato.")
+                            if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
+                                    
+                                    if senial == 'OPEN.':
+                                        if message["marketData"]["OF"] != None:                                       
+                                            Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
+                                        if message["marketData"]["LA"] != None: 
+                                            Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                        
 
-                                    if Liquidez_ahora_cedear < ut:
-                                        if Symbol != '' and tipo_de_activo != '' and get.diccionario_global_operaciones[Symbol]['tradeEnCurso'] != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
+                                    if senial == 'closed.':  
+                                        if message["marketData"]["BI"] != None: 
+                                             Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
+                                        if message["marketData"]["LA"] != None:
+                                             Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                        
+
+                                    if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                        print(Symbol," ",tipo_de_activo," ",TradeEnCurso," ",Liquidez_ahora_cedear," ",senial," ",mepCedear,message)
+                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
                                             #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
                                          print("*1 FUN: estrategiaSheetNuevaWS -->> dato.")
                                         else:
-                                            print("*1 FUN: estrategiaSheetNuevaWS -->> dato.")
-
+                                          
+                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                          print("*1 FUN: estrategiaSheetNuevaWS -->> dato.")
 
 
 
