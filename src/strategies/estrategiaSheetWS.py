@@ -139,9 +139,9 @@ def market_data_handler_estrategia(message):
     
     print(" FUN: market_data_handler_estrategia: _")
      
-    print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
+    #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
     marca_de_tiempo = message["timestamp"]
-    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+    #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
     
     #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
     #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
@@ -149,9 +149,15 @@ def market_data_handler_estrategia(message):
     if  (1): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
             # esto hay que hacerlo aca, solo cada x segundos
             banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-            print("marca_de_tiempo - get.VariableParaTiemposMDHandler :",marca_de_tiempo - get.VariableParaTiemposMDHandler)
+            print("Tiempo Transcurrido :",marca_de_tiempo - get.VariableParaTiemposMDHandler)
             if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000:#para testear luego eliminar
              banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
+
+            # pedir el listado de instrumentos existentes en la cta, para verificar
+            # antes de hacer un close. deberia coincidir lo que quiero cerrar con lo que
+            # hay efectivamente para cerrar
+
+            
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
             #print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler ,' account: ' )
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
@@ -166,13 +172,23 @@ def market_data_handler_estrategia(message):
     #print(lista[0][1]['clOrdId_alta'])
    
     
-      
+    
+    """
+    Estos if serian reundantes puesto que el BI y el OF son listas
+    y aunque vengan sin datos de precio no son none, LA es un dic y lo mismo.
+    O sea entra siempre traigan o no precios.
+    En todo caso se verifica mas adelante la validez de los precios.
     if message["marketData"]["BI"] != None:
         if  message["marketData"]["OF"] != None:
             if  message["marketData"]["LA"] != None:  
                 estrategiaSheetNuevaWS(message,banderaLecturaSheet)
-        
+    """    
     
+    # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
+    # o porque es fin de semana o fuera de horario de negociacion
+    # mejor que no entre a hacer cosas que generen errores
+    # ahora es domingo y me da cero el saldo
+    estrategiaSheetNuevaWS(message,banderaLecturaSheet)
         
         
         
@@ -182,7 +198,7 @@ def market_data_handler_estrategia(message):
 
 
 
-    # Defines the handlers that will process the Order Reports.
+    
 
 
 @estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
@@ -199,86 +215,6 @@ def botonPanicoRH(message):
         
         return get.VariableParaBotonPanico
     
-def order_report_handler( order_report):
-    
-    # Este es el Execution Report y se envía al cliente cada vez que hay un cambio en el estado de una orden. 
-    """ **11
-    El campo wsClOrdId se utiliza para identificar la orden envíada.
-    Este campo va a venir solamente en el primer Execution Report (con estado PENDING_NEW o REJECT).
-    
-    En el primer Execution Report recibido el campo wsClOrdId se debe referenciar con el campo clOrdId
-        para poder seguir los diferentes estados de la orden.
-    
-    El campo wsClOrdId es un campo general alfanumerico de hasta 20 caracteres que nosotros elegimos
-        El usuario debe asegurarse que el ID ingresado le permita identificar la orden. 
-        La API no valida que el ID sea único.
-        
-    Para saber qué sucedió con la orden
-    Verificar: ID de cuenta, el ID de ejecución y el estado de la orden. 
-    
-    client_order_ID (clOrdId): 
-        Es el id de request al mercado de alta de una orden
-        Request de cancelacion de orden tiene clOrdId distinto. Pero ambos request pueden ser sobre la
-        misma orden con su Order_ID.
-    orderId :  
-        ID de la orden en mercado. Si la orden fue rechazada o todavía no llegó al
-        mercado, este campo es null.
-        
-    Valores posibles de status: NEW, PENDING_NEW, PENDING_REPLACE, PENDING_CANCEL, REJECTED, PENDING_APPROVAL, CANCELLED y 
-    REPLACED
-    
-    ordType: Tipo de orden. Valores posibles:
-        ● LIMIT        ● MARKET        ● MARKET        ● STOP_LIMIT        ● STOP_LIMIT_MERVAL
-    
-    "clientId":"user14473450286174Cnl5"
-    "proprietary":"PBCP"
-    
-    """   
-    #orderId: ID de la orden. 
-    # Si la orden fue rechazada o todavía no llegó al mercado, este campo es none.
-    # verificar si es none, si lo es, recien preguntar por wsClOrdId
-    # si este campo existe, wsClOrdId ya no existe !!!
-    #print(order_report["orderReport"]["orderId"])
-    if order_report["orderReport"]["orderId"] is None:
-        print("OR: no hay orderId, chequeando wsClOrdId ... ")
-    else    :
-        print("OR: orderId :", order_report["orderReport"]["orderId"])
-        
-    
-    #clOrdId: 
-    # ID del request de una orden.
-    print(order_report["orderReport"]["clOrdId"])
-    # wsClOrdId: 
-    # ID de validacion nuestra
-    print(order_report["orderReport"]["wsClOrdId"])
-    # status
-    # En una orden, especifica el estado de la misma. Valores posibles:
-    # NEW, PENDING_NEW, PENDING_REPLACE, PENDING_CANCEL, REJECTED, PENDING_APPROVAL, CANCELLED, REPLACED
-    print(order_report["orderReport"]["status"])
-    # text -->> refiere el motivo del estado de la orden.
-    print(order_report["orderReport"]["text"])
-
-
-    # proprietary:  
-    # Si las órdenes se envían vía API REST/WS, el propietario de la orden puede ser “PBCP” o “ISV_PBCP”.
-    print(order_report["orderReport"]["proprietary"])
-    
-    # id. nombre de la cuenta: REM6603
-    print(order_report["orderReport"]["accountId"]["id"])
-    
-    print(order_report["orderReport"]["instrumentId"]["marketId"])#ROFX
-    print(order_report["orderReport"]["instrumentId"]["symbol"])
-
-    
-    print(order_report["orderReport"]["price"])
-    print(order_report["orderReport"]["orderQty"])
-    print(order_report["orderReport"]["ordType"])
-    print(order_report["orderReport"]["side"])
-    print(order_report["orderReport"]["timeInForce"])
-    print(order_report["orderReport"]["transactTime"])
-    
-    
-
 
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
     if banderaLecturaSheet == 0:
@@ -288,7 +224,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
 
         for Symbol,tipo, TradeEnCurso,ut,senial in ContenidoSheet_list[2:]:
             if Symbol in get.diccionario_global_operaciones:
-                print(senial)
+                print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
@@ -313,45 +249,58 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                 porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30                                
                                 if porcentaje_de_diferencia <= 1:
                                     if senial == 'OPEN.':
-                                        if message["marketData"]["OF"] != None:                                         
+                                        #if message["marketData"]["OF"] != None:
+                                        if isinstance(message["marketData"]["OF"][0]["size"], int):
                                             Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
-                                        if message["marketData"]["LA"] != None:                                         
-                                            Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                        else:
+                                            #if message["marketData"]["LA"] != None:                                         
+                                            if isinstance(message["marketData"]["LA"]["size"], int):
+                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                             
 
                                     if senial == 'closed.':  
-                                        if message["marketData"]["BI"] != None: 
+                                        #if message["marketData"]["BI"] != None: 
+                                        if isinstance(message["marketData"]["BI"][0]["size"], int):
                                             Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        if message["marketData"]["LA"] != None:
-                                            Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                        else:
+                                            #if message["marketData"]["LA"] != None:
+                                            if isinstance(message["marketData"]["LA"]["size"], int):
+                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                        
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
-                                         datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
-                                        
-                                        else:                                          
-                                          datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                    else:                                          
+                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
                                          
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
                                     
                                     if senial == 'OPEN.':
-                                        if message["marketData"]["OF"] != None:                                       
+                                        #if message["marketData"]["OF"] != None:     
+                                        if isinstance(message["marketData"]["OF"][0]["size"], int):                                  
                                             Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
-                                        if message["marketData"]["LA"] != None: 
-                                            Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                        else:
+                                            #if message["marketData"]["LA"] != None: 
+                                            if isinstance(message["marketData"]["LA"]["size"], int):                                  
+                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                         
 
                                     if senial == 'closed.':  
-                                        if message["marketData"]["BI"] != None: 
+                                        #if message["marketData"]["BI"] != None: 
+                                        if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
                                              Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        if message["marketData"]["LA"] != None:
-                                             Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                        else:
+                                            #if message["marketData"]["LA"] != None:
+                                            if isinstance(message["marketData"]["LA"]["size"], int):                                  
+                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                         
 
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
                                             datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
-                                        else:                                          
+                                    else:                                          
+                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
                                             datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
                                         
 
@@ -433,33 +382,29 @@ def calcularMepAl30WS(message):
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
-     # print("__________entra a instrument_by_symbol____________",message) 
+      #print("__________FUN instrument_by_symbol_para_CalculoMep:____________",message) 
+      print("__________FUN instrument_by_symbol_para_CalculoMep:____________") 
       try:
         
                 
             objeto = message 
-           # for objeto in objeto:     
-            
-           # print("instrumentooooooooooooooooooooooooooooo LA ",objeto['marketData']['LA'])
-           # print("instrumentooooooooooooooooooooooooooooo BI ",objeto['BI'])            
-           # print("instrumentooooooooooooooooooooooooooooo OF ",objeto['OF'])
             jdato = str(objeto['marketData']['LA'])
             jdato1 = str(objeto['marketData']['BI'])
             jdato2 = str(objeto['marketData']['OF'])
             if jdato.find('price')==-1:
-                print("no tiene nada LA ",jdato.find('price'))
+                print("FUN instrument_by_symbol_para_CalculoMep: no existe LA ",jdato.find('price'))
                 
             elif jdato1.find('price')==-1:
-                print("no tiene nada BI ",jdato1.find('price'))
+                print("FUN instrument_by_symbol_para_CalculoMep: no existe BI ",jdato1.find('price'))
                 
             
             elif jdato2.find('price')==-1:
-                print("no tiene nada OF",jdato2.find('price'))
+                print("FUN instrument_by_symbol_para_CalculoMep: no existe OF",jdato2.find('price'))
            
             return objeto
         
       except:       
-        flash('instrument_by_symbol_para_CalculoMep__: Symbol Incorrect')   
+        flash('FUN instrument_by_symbol_para_CalculoMep: Symbol Incorrecto')   
         return render_template("instrumentos.html" )
 
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
@@ -548,10 +493,10 @@ def order_report_handler( order_report):
     #print(order_report["orderReport"]["orderId"])
       
 
-        _cancela_orden(order_report)
+       # _cancela_orden(order_report)
           
-        if status == 'EXECUTED':
-            _operada(order_report) 
+       # if status == 'EXECUTED':
+        _operada(order_report) 
         
          ###### BOTON DE PANICO        
         response = botonPanicoRH('false') 
@@ -560,19 +505,7 @@ def order_report_handler( order_report):
         if response == 1: ### si es 1 el boton de panico fue activado
              _cancel_if_orders(symbol,clOrdId,status)
         
-        
-     
-                    
-                    
-
-def _update_size(order):
-        if order["orderReport"]["status"] in ("PARTIALLY_FILLED", "FILLED"):
-            if order["orderReport"]["side"] == "BUY":
-                InstrumentoEstrategiaUno.buy_size -= round(order["orderReport"]["lastQty"])
-            if order["orderReport"]["side"] == "SELL":
-                InstrumentoEstrategiaUno.sell_size -= round(order["orderReport"]["lastQty"])
-            if InstrumentoEstrategiaUno.sell_size == InstrumentoEstrategiaUno.buy_size == 0:
-                InstrumentoEstrategiaUno.sell_size = InstrumentoEstrategiaUno.buy_size = InstrumentoEstrategiaUno.initial_size
+   
 
 def _operada(order_report):
     order_data = order_report['orderReport']
@@ -607,15 +540,18 @@ def _cancela_orden(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
-    timestamp = order_data['timestamp']
+    timestamp = order_data['transactTime']    
+    
     # Recorrer los elementos del diccionario_enviados
-    for valor in get.diccionario_operaciones_enviadas.items():
-        if valor["Symbol"] == symbol:           
-            if valor["status"] == 1:
-                if  valor["_ws_client_order_id"] == order_report['wsOrderClId'] :
-                    valor["_cliOrderId"] = order_report['ClOrderId']
-                    valor["status"] = "2"
-                break
+    for key, valor in get.diccionario_operaciones_enviadas.items():
+        if valor["Symbol"] == symbol:                  
+            if valor["status"] == '1':
+                # pasa que llegamos aca y wsOrderClId puede no existir mas 
+                if 'wsOrderClId' in order_data:
+                    if  valor["_ws_client_order_id"] == int(order_data['wsOrderClId']):
+                        valor["_cliOrderId"] = int(order_data['ClOrderId'])
+                        valor["status"] = "2"
+                
 
              
             timestamp_order_report = timestamp
@@ -653,22 +589,6 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     else:
         print("La orden no se puede cancelar en el estado actual:", order_status)
         
-   
-
-   
-
-def _send_order( side, px, size):
-        InstrumentoEstrategiaUno.state = States.WAITING_ORDERS
-        order = get.pyRofexInicializada.send_order(
-            ticker=InstrumentoEstrategiaUno.instrument,
-            side=side,
-            size=size,
-            price=round(px, 6),
-            order_type=get.pyRofexInicializada.OrderType.LIMIT,
-            cancel_previous=True
-        )
-        InstrumentoEstrategiaUno.my_order[order["order"]["clientId"]] = None
-        print("sending %s order %s@%s - id: %s" % (side, size, px, order["order"]["clientId"]))                
 
 
 ##########################esto es para ws#############################

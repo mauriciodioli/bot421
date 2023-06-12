@@ -125,8 +125,58 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
     saldoExiste = False
     
     try:
-        if saldocta > ut * message["marketData"]["OF"][0]["price"] or saldocta > ut * message["marketData"]["BI"][0]["price"] or saldocta > ut * message["marketData"]["LA"]["price"]:
+        # La clave "price" existe en message["marketData"]["OF"][0]  ???
+        if "OF" in message["marketData"]:
+            if isinstance(message["marketData"]["OF"], list) and len(message["marketData"]["OF"]) > 0:
+                if "price" in message["marketData"]["OF"][0]:
+                    plataoperacion1=ut*message["marketData"]["OF"][0]["price"]
+                else:
+                    plataoperacion1=0
+            else:
+                plataoperacion1=0
+        else:
+            plataoperacion1=0
+                
+                
+        # La clave "price" existe en message["marketData"]["BI"][0] ???
+        if "BI" in message["marketData"]:
+            if isinstance(message["marketData"]["BI"], list) and len(message["marketData"]["BI"]) > 0:
+                if "price" in message["marketData"]["BI"][0]:
+                    plataoperacion2=ut*message["marketData"]["OF"][0]["price"]
+                else:
+                    plataoperacion2=0
+            else:
+                plataoperacion2=0
+        else:
+            plataoperacion2=0
+
+        # La clave "price" existe en message["marketData"]["LA"]
+        if "LA" in message["marketData"]:
+            if "price" in message["marketData"]["LA"]:
+                    plataoperacion3=ut*message["marketData"]["LA"]["price"]
+            else:
+                plataoperacion3=0
+        else:
+            plataoperacion3=0
+
+
+        
+        #if saldocta > ut * message["marketData"]["OF"][0]["price"] or saldocta > ut * message["marketData"]["BI"][0]["price"] or saldocta > ut * message["marketData"]["LA"]["price"]:
+        #if saldocta > plataoperacion1 or saldocta > plataoperacion2 or saldocta > plataoperacion3:
+        # aca comprobamos que existan el bid, el offer y el last. si alguno no existe, no tiene 
+        # liquidez el instrumento. Si los tres valores existen, comprobamos
+        # que el spread sea coherente (no difieran mas del 1%), si el spread es muy amplio, 
+        # no hay liquidez y podemos llegar a pagar cualquier cosa.
+        if (saldocta > plataoperacion1 and
+            saldocta > plataoperacion2 and
+            saldocta > plataoperacion3 and
+            abs(plataoperacion1 - plataoperacion2) <= 0.01 * max(plataoperacion1, plataoperacion2) and
+            abs(plataoperacion1 - plataoperacion3) <= 0.01 * max(plataoperacion1, plataoperacion3) and
+            abs(plataoperacion2 - plataoperacion3) <= 0.01 * max(plataoperacion2, plataoperacion3)            
+            ):
             saldoExiste = True
+        else:
+            print("FUN: OperacionWs__ No se puede operar Saldo Insuficiente, o no hay liquidez. El Saldo es: ",saldocta)
             
         if saldoExiste == True: 
             if Symbol in get.diccionario_global_operaciones:
@@ -134,16 +184,16 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
             
                 if senial == 'OPEN.':
                     if isinstance(message["marketData"]["OF"][0]["price"], float):
-                        precio = message["marketData"]["OF"][0]["price"]
-                        print(Symbol," ",ut," ",_ws_client_order_id," ",precio)
-                    # get.pyConectionWebSocketInicializada.send_order_via_websocket(
-                    #     ticker=Symbol,
-                    #     side=get.pyRofexInicializada.Side.BUY,
-                    #     size=ut,
-                    #     order_type=get.pyRofexInicializada.OrderType.LIMIT,
-                    #     ws_client_order_id=_ws_client_order_id,
-                    #     price=precio
-                    # )
+                        precio = float(message["marketData"]["OF"][0]["price"])
+                        print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio)
+                        get.pyConectionWebSocketInicializada.send_order_via_websocket(
+                            ticker=Symbol,
+                            side=get.pyRofexInicializada.Side.BUY,
+                            size=ut,
+                            order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                            ws_client_order_id=_ws_client_order_id,
+                            price=precio
+                        )
 
                         _ws_client_order_id = get.diccionario_global_operaciones[Symbol]['wsClOrdId']
                         timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
@@ -167,7 +217,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "accountCuenta": accountCuenta
                             }
                         get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-                        pprint.pprint(get.diccionario_operaciones_enviadas)
+                        #pprint.pprint(get.diccionario_operaciones_enviadas)
                     
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                         precio = message["marketData"]["LA"]["price"]
@@ -206,7 +256,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
 
                 elif senial == 'CLOSE.':
                     if isinstance(message["marketData"]["OF"][0]["price"], float):
-                        precio = message["marketData"]["OF"][0]["price"]
+                        precio = float(message["marketData"]["OF"][0]["price"])
                         if Symbol in get.diccionario_global_operaciones:
                             _ws_client_order_id = get.diccionario_global_operaciones[Symbol]['wsClOrdId']
                             print(Symbol," ",ut," ",_ws_client_order_id," ",precio)
@@ -243,7 +293,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                             pprint.pprint(get.diccionario_operaciones_enviadas)
                     
                     elif isinstance(message["marketData"]["LA"]["price"], float):
-                        precio = message["marketData"]["LA"]["price"]
+                        precio = float(message["marketData"]["LA"]["price"])
                         if Symbol in get.diccionario_global_operaciones:
                             client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta']
                             print(Symbol," ",ut," ",_ws_client_order_id," ",precio)
