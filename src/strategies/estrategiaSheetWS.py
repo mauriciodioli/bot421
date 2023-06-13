@@ -178,17 +178,20 @@ def market_data_handler_estrategia(message):
     y aunque vengan sin datos de precio no son none, LA es un dic y lo mismo.
     O sea entra siempre traigan o no precios.
     En todo caso se verifica mas adelante la validez de los precios.
+    """
     if message["marketData"]["BI"] != None:
         if  message["marketData"]["OF"] != None:
             if  message["marketData"]["LA"] != None:  
                 estrategiaSheetNuevaWS(message,banderaLecturaSheet)
-    """    
+    
     
     # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
     # o porque es fin de semana o fuera de horario de negociacion
     # mejor que no entre a hacer cosas que generen errores
     # ahora es domingo y me da cero el saldo
-    estrategiaSheetNuevaWS(message,banderaLecturaSheet)
+    
+    
+    #estrategiaSheetNuevaWS(message,banderaLecturaSheet)
         
         
         
@@ -250,7 +253,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                 if porcentaje_de_diferencia <= 1:
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:
-                                        if isinstance(message["marketData"]["OF"][0]["size"], int):
+                                        if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar
                                             Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
                                         else:
                                             #if message["marketData"]["LA"] != None:                                         
@@ -442,8 +445,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
          nueva_orden_para_dic = {
             'user_id': usuariodb.id,
             'userCuenta': usuario,
-            'accountCuenta': account,
-            'wsClOrdId' : random.randint(1, 100000),
+            'accountCuenta': account,           
             'clOrdId_alta': '',
             'clOrdId_baja': '',
             'orderId': '',
@@ -493,7 +495,7 @@ def order_report_handler( order_report):
     #print(order_report["orderReport"]["orderId"])
       
 
-       # _cancela_orden(order_report)
+        _cancela_orden(order_report)
           
        # if status == 'EXECUTED':
         _operada(order_report) 
@@ -512,27 +514,53 @@ def _operada(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
-    timestamp = order_data['timestamp']
+    timestamp_order_report = order_data['transactTime']
+    _ws_client_order_id = order_data['wsClOrdId'] 
+    timestamp_order_data= datetime.strptime(timestamp_order_report, "%Y-%m-%d %H:%M:%S.%f")
+    if status not in ['CANCELLED', 'FILLED']:  
+            if status != ['PENDING_NEW']:      
+                if symbol in get.diccionario_global_operaciones:
+                    global_order = get.diccionario_global_operaciones[symbol]
+                    operacion_enviada = None
+                    for operacion in get.diccionario_operaciones_enviadas:
+                        if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
+                            operacion_enviada = operacion
+                            break
 
-    if status not in ['CANCELLED', 'FILLED']:
-        if symbol in get.diccionario_global_operaciones:
-            global_order = get.diccionario_global_operaciones[symbol]
-            operacion_enviada = None
-            for operacion in get.diccionario_operaciones_enviadas:
-                if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
-                    operacion_enviada = operacion
-                    break
-
-            if operacion_enviada:
-                if global_order['ut'] > 0:
-                    global_order['ut'] -= operacion_enviada['ut']
-                    operacion_enviada['status'] = 'OPERATED'
-                    operacion_enviada['timestamp'] = timestamp
-                else:
-                    global_order['status'] = '1'
-                    operacion_enviada['status'] = 'OPERATED'
-                    operacion_enviada['timestamp'] = timestamp
-
+                    if operacion_enviada:
+                        if global_order['ut'] > 0:
+                            global_order['ut'] -= operacion_enviada['ut']
+                            operacion_enviada['status'] = 'OPERATED'
+                            operacion_enviada['timestamp'] = timestamp_order_data
+                        else:
+                            global_order['status'] = '1'
+                            operacion_enviada['status'] = 'OPERATED'
+                            operacion_enviada['timestamp'] = timestamp_order_data
+            
+            if status == ['PENDING_NEW']: 
+                    if symbol in get.diccionario_global_operaciones:
+                        global_order = get.diccionario_global_operaciones[symbol]
+                        operacion_enviada = None
+                        for operacion in get.diccionario_operaciones_enviadas:
+                            if operacion['Symbol'] == symbol and operacion['_cliOrderId']==clOrdId:
+                                operacion_enviada = operacion
+                                tiempo_diccionario = operacion["timestamp"]
+                                tiempo_diferencia = timestamp_order_data - tiempo_diccionario
+                                if tiempo_diferencia >= 5:
+                                     _cancel_if_orders(operacion_enviada,clOrdId,status) 
+                               
+                                else:
+                                            if global_order['ut'] > 0:
+                                                global_order['ut'] -= operacion_enviada['ut']
+                                                operacion_enviada['status'] = 'PENDING_NEW'
+                                                operacion_enviada['_cliOrderId'] = clOrdId                                  
+                                            else:
+                                                global_order['ut'] -= operacion_enviada['ut']
+                                                global_order['status'] = '1'
+                                                ##ELEMINAR DE ENVIADAS
+                                               
+                               
+                            
     
 def _cancela_orden(order_report):
     
@@ -541,26 +569,24 @@ def _cancela_orden(order_report):
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
     timestamp = order_data['transactTime']    
-    
+   
     # Recorrer los elementos del diccionario_enviados
     for key, valor in get.diccionario_operaciones_enviadas.items():
         if valor["Symbol"] == symbol:                  
             if valor["status"] == '1':
                 # pasa que llegamos aca y wsOrderClId puede no existir mas 
-                if 'wsOrderClId' in order_data:
-                    if  valor["_ws_client_order_id"] == int(order_data['wsOrderClId']):
-                        valor["_cliOrderId"] = int(order_data['ClOrderId'])
+                if 'wsClOrdId' in order_data:
+                    if  valor["_ws_client_order_id"] == int(order_data['wsClOrdId']):
+                        valor["_cliOrderId"] = int(order_data['clOrdId'])
                         valor["status"] = "2"
-                
 
-             
             timestamp_order_report = timestamp
-            tiempo_diccionario = valor["timestamp"]
+            tiempo_diccionario =valor["timestamp"]
             tiempo_order_report = datetime.strptime(timestamp_order_report, "%Y-%m-%d %H:%M:%S.%f")
             tiempo_diferencia = tiempo_order_report - tiempo_diccionario
-           
+
             if tiempo_diferencia >= 5:
-               _cancel_if_orders(symbol,clOrdId,status)            
+                _cancel_if_orders(symbol,clOrdId,status)            
     
     
      
@@ -569,7 +595,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
     print("Orden order_status:", order_status)
      # Obtener el estado de la orden
-    if order_status in ['PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
+    if order_status in ['PENDING_NEW','PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones
