@@ -189,7 +189,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                 if senial == 'OPEN.':
                     if isinstance(message["marketData"]["OF"][0]["price"], float):
                         precio = float(message["marketData"]["OF"][0]["price"])
-                        print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio)
+                        print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio," _ws_client_order_id ",_ws_client_order_id)
                         get.pyConectionWebSocketInicializada.send_order_via_websocket(
                             ticker=Symbol,
                             side=get.pyRofexInicializada.Side.BUY,
@@ -223,7 +223,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
                         #restar del diccionario global
                         #get.diccionario_global_operaciones[Symbol]['ut'] -=ut
-                        get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+                       # get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
 
                         
                         #pprint.pprint(get.diccionario_operaciones_enviadas)
@@ -262,8 +262,8 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                             }
                         get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
                         #pprint.pprint(get.diccionario_operaciones_enviadas)
-                        get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
-
+                       # get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+                        
                 elif senial == 'closed.':
                     if isinstance(message["marketData"]["OF"][0]["price"], float):
                             precio = float(message["marketData"]["OF"][0]["price"])
@@ -299,7 +299,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                             }
                             get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
                             #pprint.pprint(get.diccionario_operaciones_enviadas)
-                            get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+                       #     get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
                     
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                             precio = float(message["marketData"]["LA"]["price"])
@@ -336,7 +336,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                             }
                             get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
                             #pprint.pprint(get.diccionario_operaciones_enviadas)
-                            get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+                        #   get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
                             
     except Exception as e:
             print("Error en OperacionWs:", e)
@@ -395,18 +395,6 @@ def _send_order( side, px, size):
         
         
         
-########################## esto es para ws #############################
-#Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
-def exception_handler(e):
-    print("Exception Occurred: ")
-    
- 
-def error_handler(message):
-  print("Mensaje de error: {0}")
-  
-def exception_error(message):
-  print("Mensaje de excepción: {0}".format(message))  
-  {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 
 def calcularMepAl30():
     print("____________calcularMepAl30_____________")
@@ -529,33 +517,6 @@ def instrument_by_symbol_para_CalculoMep(symbol):
 
 
 
-########################################################################
-def CuentaCantidadUT(listado):
-    bandera = True
-    countCedear =0
-    countArg =0
-    print("FUN: CuentaCantidadUT: contamos las ut desde la sheet.")   
-    for Symbol,cedear,trade_en_curso,ut,senial  in listado: 
-       
-        if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                if Symbol != '':
-                        #if trade_en_curso == 'LONG_':
-                            if senial != '':
-                                if senial == 'OPEN.' or senial == 'closed.':
-                                    if cedear =='CEDEAR':
-                                        countCedear =countCedear + int(ut)
-                                        #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
-                                    if cedear =='ARG':
-                                        countArg = countArg + int(ut)
-                                        #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
-                                        
-      
-        dato = [countCedear,countArg]
-        
-    dato = [countCedear,countArg]
-    print("FUN: CuentaCantidadUT: countCedear ",dato[0]," countArg ",dato[1]," Total",dato[0]+dato[1] )
-       
-    return dato
 
 
 
