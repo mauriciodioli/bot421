@@ -171,29 +171,25 @@ def market_data_handler_estrategia(message):
     #lista = list(get.diccionario_global_operaciones.items())
     #print(lista[0][1]['clOrdId_alta'])
    
-    
-    
-    """
-    Estos if serian reundantes puesto que el BI y el OF son listas
-    y aunque vengan sin datos de precio no son none, LA es un dic y lo mismo.
-    O sea entra siempre traigan o no precios.
-    En todo caso se verifica mas adelante la validez de los precios.
-    """
+
     if message["marketData"]["BI"] != None:
         if  message["marketData"]["OF"] != None:
             if  message["marketData"]["LA"] != None:  
                 estrategiaSheetNuevaWS(message,banderaLecturaSheet)
-    
+            else:
+                print("FUN market_data_handler_estrategia: message[marketData][LA]: es none ",get.VariableParaTiemposMDHandler)
+        else:
+            print("FUN market_data_handler_estrategia: message[marketData][OF]: es none ",get.VariableParaTiemposMDHandler)
+    else:
+        print("FUN market_data_handler_estrategia: message[marketData][BI]: es none ",get.VariableParaTiemposMDHandler)
     
     # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
     # o porque es fin de semana o fuera de horario de negociacion
     # mejor que no entre a hacer cosas que generen errores
-    # ahora es domingo y me da cero el saldo
+    # ahora es domingo y me da cero el saldo    
+
     
     
-    #estrategiaSheetNuevaWS(message,banderaLecturaSheet)
-        
-        
         
 
 
@@ -229,6 +225,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
             if Symbol in get.diccionario_global_operaciones:
                 print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
+                    #aqui entra en caso que tenga que cambiar la señal del stock de operaciones 
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
                             print(get.diccionario_global_operaciones[Symbol]['senial'])
@@ -494,8 +491,10 @@ def order_report_handler( order_report):
     # si este campo existe, wsClOrdId ya no existe !!!
     #print(order_report["orderReport"]["orderId"])
       
-
-        _cancela_orden(order_report)
+        order_data = order_report['orderReport']    
+        status = order_data['status'] 
+        if status != 'FILLED': 
+          _cancela_orden(order_report)
           
        # if status == 'EXECUTED':
         _operada(order_report) 
@@ -568,24 +567,53 @@ def _cancela_orden(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
-    timestamp = order_data['transactTime']    
-   
+    timestamp_order_report = order_data['transactTime']    
+    
     # Recorrer los elementos del diccionario_enviados
     for key, valor in get.diccionario_operaciones_enviadas.items():
         if valor["Symbol"] == symbol:                  
             if valor["status"] == '1':
-                # pasa que llegamos aca y wsOrderClId puede no existir mas 
-                if 'wsClOrdId' in order_data:
-                    if  valor["_ws_client_order_id"] == int(order_data['wsClOrdId']):
-                        valor["_cliOrderId"] = int(order_data['clOrdId'])
-                        valor["status"] = "2"
+                # pasa que llegamos aca y wsOrderClId puede no existir mas
+                if status in ['PENDING_NEW','REJECT']:                    
+                        wsClOrdId = order_data['wsClOrdId']
+                        if  valor["ws_client_order_id"] == int(wsClOrdId):
+                            valor["_cliOrderId"] = int(order_data['clOrdId'])
+                            valor["status"] = "2"
+                else:
+                    valor["_cliOrderId"] = int(order_data['clOrdId']) 
+           
+            tiempo_diccionario = valor["timestamp"]
+            # Verificar y ajustar el formato de cadena de fecha si es necesario
 
-            timestamp_order_report = timestamp
-            tiempo_diccionario =valor["timestamp"]
-            tiempo_order_report = datetime.strptime(timestamp_order_report, "%Y-%m-%d %H:%M:%S.%f")
-            tiempo_diferencia = tiempo_order_report - tiempo_diccionario
+            if isinstance(tiempo_diccionario, str):
+                tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")
+           
+            # Convertir el timestamp en milisegundos a objeto datetime
+          # Convertir las cadenas de texto en objetos datetime
+            
+            fecha2_obj = datetime.strptime(timestamp_order_report, "%Y%m%d-%H:%M:%S.%f%z")
+            fecha_comun_enviada = tiempo_diccionario.strftime("%Y%m%d-%H:%M:%S")
+            fecha_comun_orh = fecha2_obj.strftime("%Y%m%d-%H:%M:%S")
+            print("FUN _cancela_orden: fecha_enviada",fecha_comun_enviada)
+            print("FUN _cancela_orden: fecha_ORH",fecha_comun_orh)
+            # Restar los dos objetos datetime
+            fecha_obj1 = datetime.strptime(fecha_comun_enviada, "%Y%m%d-%H:%M:%S")
+            fecha_obj2 = datetime.strptime(fecha_comun_orh, "%Y%m%d-%H:%M:%S")
 
-            if tiempo_diferencia >= 5:
+            diferencia = fecha_obj2 - fecha_obj1
+            diferencia_segundos = abs(diferencia.total_seconds())
+
+            print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
+            
+            
+            #diferencia = fecha2_obj - tiempo_diccionario
+            #print("FUN _cancela_orden: Diferencia",diferencia)
+
+            
+            
+            #if diferencia >= 300:
+            if diferencia_segundos >= 1:
+            
                 _cancel_if_orders(symbol,clOrdId,status)            
     
     
@@ -600,12 +628,13 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         print("Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones
         for clave, valor in get.diccionario_global_operaciones.items():
-            if valor["Symbol"] == symbol and valor["client_order_id"] == clOrdId:
-                ut_actual = int(valor["ut"])
-                ut_enviada = int(get.diccionario_operaciones_enviadas[0]["ut"])
-                incremento = ut_actual * (ut_enviada / ut_actual)
-                valor["ut"] = str(ut_actual + incremento)
-                break  
+            for operacion_enviada in get.diccionario_operaciones_enviadas.values():
+                if valor["symbol"] == operacion_enviada["Symbol"] and operacion_enviada["_cliOrderId"] == clOrdId:
+                    ut_actual = int(valor["ut"])
+                    ut_enviada = int(operacion_enviada["ut"])
+                    incremento = ut_actual * (ut_enviada / ut_actual)
+                    valor["ut"] = str(ut_actual + incremento)
+                    break
         
         # Eliminar la orden de get.diccionario_operaciones_enviadas
         for orden in get.diccionario_operaciones_enviadas:
