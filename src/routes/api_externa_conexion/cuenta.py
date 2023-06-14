@@ -50,7 +50,7 @@ def cuentas():
         return render_template("errorLogueo.html" ) 
      ##~######datos de la cuenta
 def obtenerSaldoCuenta(cuenta=None):
-   print("_______________obtenerSaldoCuenta__________________")
+  # print("_______________obtenerSaldoCuenta__________________")
    resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
    return resumenCuenta["accountData"]["availableToCollateral"]
 

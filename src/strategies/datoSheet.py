@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 import routes.instrumentos as instrumentos
-from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
@@ -10,12 +9,14 @@ from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import requests
 import time
-
+from models.orden import Orden
+import random
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
-import routes.api_externa_conexion.cuenta as cuenta
+#import routes.api_externa_conexion.cuenta as cuenta
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import pprint
 import os #obtener el directorio de trabajo actual
 #import drive
 #drive.mount('/content/gdrive')
@@ -35,7 +36,37 @@ class States(enum.Enum):
     WAITING_CANCEL = 1
     WAITING_ORDERS = 2
     
-  
+class Ordenes(enum.Enum):
+    WAITING_MARKET_DATA = 0
+    WAITING_CANCEL = 1
+    WAITING_ORDERS = 2 
+    #NEW  
+    #PENDING_NEW
+    #TIMESTAMP_ENVIO
+    
+   # Crear la tabla usuarios si no existe
+def crea_tabla_orden():
+    orden = Orden(        
+         user_id =1,
+         userCuenta ="mdioli",
+         accountCuenta =1,
+         clOrdId_alta ="0",
+         clOrdId_baja ="0",
+         clientId =1,
+         wsClOrdId_timestamp =datetime.now,
+         clOrdId_alta_timestamp = datetime.now,
+         clOrdId_baja_timestamp = datetime.now,
+         proprietary = True,
+         marketId = "0",
+         symbol = "0",   
+         tipo = "0",
+         tradeEnCurso = "0",
+         ut = 1,   
+         senial = "0",
+         status = "0"    
+    )
+    orden.crear_tabla()
+    
     
 def login():
     GoogleAuth.DEFAULT_SETTINGS['client_config_file'] = directorio_credenciales
@@ -87,165 +118,234 @@ def leerSheet():
      
      return union
  
-@datoSheet.route('/estrategiaSheet/')
-def estrategiaSheet():      #**11 
-    
-    #try:
-        
-        
-        ContenidoSheet = leerSheet()   #**22
-        
-        ContenidoSheet_list = list(ContenidoSheet)
-        cantidadUtaOperar = CuentaCantidadUT(ContenidoSheet_list)# **77
-        
-        cont = 0 #//**22
-        contadorMep=0
-        
-       # mepAl30 = calcularMepAl30() ####Calcula dolar MEP
-        mepAl30 = calcularMepAl30()
-        sumaUT = int(cantidadUtaOperar[0]) + int(cantidadUtaOperar[1])
-        #listadoCargaDiccionario = leerSheet()
-        listaSaldossinOperar = {}
-        for Symbol,cedear,trade_en_curso,ut,senial  in ContenidoSheet_list:
-            listaSaldossinOperar[Symbol]=ut
-            contadorMep +=1
-            if contadorMep < 21:
-               print("____________contador mep __________ ",contadorMep)
-               mepAl30 = calcularMepAl30() ####Calcula dolar MEP de prueba esto hay que quitar en la realidad
-        
-        #print(listaSaldossinOperar)
-        
-        
-        
-        #sumaUT = 4 # **borrar esto se calcula pero por ahora se fija.
-        while sumaUT>0:
-            #listado = leerSheet() 
-            print(" ENTRA WHILLEEEEEE cantidad UT cedears: ",cantidadUtaOperar[0]," cantidad UT ARG: ",cantidadUtaOperar[1])
-            for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in ContenidoSheet_list:  
-                    ##### CALCULAR MARGEN DE LA CUENTA PARA VER SI SE PUEDE OPERAR #######
-                    #Saldo_cuenta = cuenta.obtenerSaldoCuenta("REM6603")
-                    #print(" __Obtener Saldo Cuenta ________:  ",Saldo_cuenta )
-                    cont +=1
-                    
-                    
-                    #### CONSULTAR INSTRUMENTO DETALLADO ################  
-                # if saldo >= int(ut) * float(price):
-                    if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                        if Symbol != '':
-                        #if trade_en_curso == 'LONG_':
-                            if senial != '':
-                                       
-                                        if tipo_de_activo =='CEDEAR':
-                                                            #saldo = cuenta.obtenerSaldoCuenta("REM6603")  
-                                                            #if saldo >= int(orderQty) * float(price):    
-                                                            #print("________________contador ",cont,"__________________saldo cta:",saldo)
-                                                            print("__Operando CEDEAR____: __Symbol_:",Symbol,"__tipo_de_activo_:",tipo_de_activo,"__trade_en_curso_:",trade_en_curso,"______senial_:",senial)                                
-                                                            print("__Entramos al Calculo de mep del CEDEAR, mepAL30 es_: ",mepAl30)
-                                                            mepCedear = calcularMepCedears(Symbol)####Calcula dolar MEP CEDEAR
-                                                            print("__Resultado mepCedear_: ",mepCedear) # devuelve 10 como
-                                                            # si el porcentaje de diferencia es menor compra
-                                                            porcentaje_de_diferencia = 1 - (mepCedear[0] / mepAl30)
-                                                            porcentaje_de_diferencia = -1
-                                                            print("__Comparacion mepCedear y mepAL30__________",porcentaje_de_diferencia)# por ahora no importa
-                                                            #if ese % es > al 1% no se puede compara el cedear por se muy caro el mep
-                                                            if porcentaje_de_diferencia <= 1:
-                                                                # Liquidez es la cantidad presente a operar 
-                                                                Liquidez_ahora_cedear = compruebaLiquidez(ut,mepCedear[1]) #**44
-                                                                # Liquidez_ahora_cedear = 10 #para probar **33
-                                                                
-                                                                # sumaUT es para que itere el while
-                                                                sumaUT = int(cantidadUtaOperar[0]) - Liquidez_ahora_cedear
-                                                                
-                                                                #listaSaldossinOperar es un diccionario 
-                                                                #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                                
-                                                                UT_a_operar = listaSaldossinOperar[Symbol]
-                                                                
-                                                                if Liquidez_ahora_cedear < int(UT_a_operar) : 
-                                                                # si entro aca me falta liquidez, anoto lo que falta
-                                                                    listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_cedear #guardo el symbolo y la cantidad que se operaron
-                                                                    
-                                                                    OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
-                                                                else:
-                                                                    listaSaldossinOperar[Symbol] = 0
-                                                                    OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
-                                                                
-                                                                
-                                                                
-                                                                    #time.sleep(900) # Sleep for 15 minutos
-                                                            time.sleep(2) # Sleep for 15 minutos
-                                                        
-                                                            
-                                        if tipo_de_activo =='ARG':
-                                                    saldo = cuenta.obtenerSaldoCuenta()      
-                                                    print("________________cont ",cont,"__________________saldo ARG",saldo)
-                                                    #comprueba la liquidez
-                                                    Liquidez_ahora_arg = compruebaLiquidez(ut,mepCedear[1])
-                                                    #Liquidez_ahora_arg = 10 #para probar
-                                                    sumaUT = int(cantidadUtaOperar[1]) - Liquidez_ahora_arg
-                                                    UT_a_operar = listaSaldossinOperar[Symbol]
-                                                    #comparo la cantidad que necesito operar (ut) con liquidez del momento.
-                                                    if Liquidez_ahora_arg < int(UT_a_operar) : 
-                                                        listaSaldossinOperar[Symbol] = int(UT_a_operar)-Liquidez_ahora_arg #guardo el symbolo y la cantidad que se operaron
-                                                        OperacionWs(Symbol,tipo_de_activo,trade_en_curso,Liquidez_ahora_cedear,senial,mepCedear)
-                                                    else:
-                                                        listaSaldossinOperar[Symbol] = 0
-                                                        OperacionWs(Symbol,tipo_de_activo,trade_en_curso,UT_a_operar,senial,mepCedear)
-            banderaAOperarPrimeraVez = 0 #pone la bandera a 0 para que entre a operar los no operados
-                                                      
-                            #else
-            cont=0
-            for Symbol  in listaSaldossinOperar: 
-                if (Symbol != '' and  Symbol != 'Symbol'):
-                    cont = cont + listaSaldossinOperar[Symbol]
-                
-                
-            sumaUT=cont
-        
-            print("________________sumaUT________________ ",sumaUT)
-            time.sleep(2)#segundos
-        
-        return render_template('/estrategiaOperando.html')
-   # except:  
-    #    print("contraseña o usuario incorrecto")  
-    #    flash('Loggin Incorrect')    
-    #    return render_template("errorLogueo.html" )
+
 ################ AQUI DEFINO LA COMPRA POR WS ################
-def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
-     #cont +=1
-     #Symbol="ORO/MAR23"
-     #inst = InstrumentoEstrategiaUno(Symbol, ut, 0.05) #**55
-     saldocta=cuenta.obtenerSaldoCuenta("REM6603")
-     print("__Funcion Operacion_WebSoket______Symbol_",Symbol,"__tipo_de_activo__",tipo_de_activo,"___trade_en_curso__",trade_en_curso,"____senial__",senial)
-                     
-      # 4-Subscribes to receive order report for the default account
-     #get.pyConectionWebSocketInicializada.order_report_subscription()
-     if senial == 'OPEN.':
-         if(mepCedear[2]>0 and ut>0 ):
-             ut=abs(ut)
-             if(saldocta>ut*mepCedear[2]):
-                    get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.BUY, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=mepCedear[2])
-       
-     # 5-Send an order via websocket message then check that order_report_handler is called
-     if senial == 'closed.':
-         # traer el bid
-         if(mepCedear[3]>0 and ut>0 ):
-             ut=abs(ut)
-             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol, side=get.pyRofexInicializada.Side.SELL, size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=mepCedear[3])
-        # validate correct price
-        # print("______pasaaaaaa sa send_order_via_websocket")
-        # 8-Wait 5 sec then close the connection
-     time.sleep(2)
+def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, message):
+    saldocta = get.VariableParaSaldoCta### preguntar si existe el saldo de cuanta para recien operar
+    ut = abs(int(ut))
+    saldoExiste = False
+    
+    try:
+        # La clave "price" existe en message["marketData"]["OF"][0]  ???
+        if "OF" in message["marketData"]:
+            if isinstance(message["marketData"]["OF"], list) and len(message["marketData"]["OF"]) > 0:
+                if "price" in message["marketData"]["OF"][0]:
+                    plataoperacion1=ut*message["marketData"]["OF"][0]["price"]
+                else:
+                    plataoperacion1=0
+            else:
+                plataoperacion1=0
+        else:
+            plataoperacion1=0
+                
+                
+        # La clave "price" existe en message["marketData"]["BI"][0] ???
+        if "BI" in message["marketData"]:
+            if isinstance(message["marketData"]["BI"], list) and len(message["marketData"]["BI"]) > 0:
+                if "price" in message["marketData"]["BI"][0]:
+                    plataoperacion2=ut*message["marketData"]["OF"][0]["price"]
+                else:
+                    plataoperacion2=0
+            else:
+                plataoperacion2=0
+        else:
+            plataoperacion2=0
+
+        # La clave "price" existe en message["marketData"]["LA"]
+        if "LA" in message["marketData"]:
+            if "price" in message["marketData"]["LA"]:
+                    plataoperacion3=ut*message["marketData"]["LA"]["price"]
+            else:
+                plataoperacion3=0
+        else:
+            plataoperacion3=0
+
+
+        
+        #if saldocta > ut * message["marketData"]["OF"][0]["price"] or saldocta > ut * message["marketData"]["BI"][0]["price"] or saldocta > ut * message["marketData"]["LA"]["price"]:
+        #if saldocta > plataoperacion1 or saldocta > plataoperacion2 or saldocta > plataoperacion3:
+        # aca comprobamos que existan el bid, el offer y el last. si alguno no existe, no tiene 
+        # liquidez el instrumento. Si los tres valores existen, comprobamos
+        # que el spread sea coherente (no difieran mas del 1%), si el spread es muy amplio, 
+        # no hay liquidez y podemos llegar a pagar cualquier cosa.
+        if (saldocta > plataoperacion1 and  
+            saldocta > plataoperacion2 and 
+            saldocta > plataoperacion3):
+                saldoExiste = True
+            #abs(plataoperacion1 - plataoperacion2) <= 0.01 * max(plataoperacion1, plataoperacion2) and
+            #abs(plataoperacion1 - plataoperacion3) <= 0.01 * max(plataoperacion1, plataoperacion3) and
+            #abs(plataoperacion2 - plataoperacion3) <= 0.01 * max(plataoperacion2, plataoperacion3)            
+            #):
+                
+        else:
+            print("FUN: OperacionWs__ No se puede operar Saldo Insuficiente, o no hay liquidez. El Saldo es: ",saldocta)
+            
+        if saldoExiste == True: 
            
+                
+            if int(get.diccionario_global_operaciones[Symbol]['ut']) > 0 :
+                _ws_client_order_id =  random.randint(1, 100000)
             
-            
-  
+                if senial == 'OPEN.':
+                    if isinstance(message["marketData"]["OF"][0]["price"], float):
+                        precio = float(message["marketData"]["OF"][0]["price"])
+                        print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio," _ws_client_order_id ",_ws_client_order_id)
+                        get.pyConectionWebSocketInicializada.send_order_via_websocket(
+                            ticker=Symbol,
+                            side=get.pyRofexInicializada.Side.BUY,
+                            size=ut,
+                            order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                            ws_client_order_id=_ws_client_order_id,
+                            price=precio
+                        )
+
+                        ws_client_order_id = _ws_client_order_id
+                        timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                        user_id = get.diccionario_global_operaciones[Symbol]['user_id']
+                        userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
+                        accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
+
+                        diccionario = {
+                                "Symbol": Symbol,
+                                "_t_": tipo_de_activo,
+                                "_tr_": trade_en_curso,
+                                "_s_": senial,
+                                "_ut_": ut,
+                                "precio Offer": precio,
+                                "ws_client_order_id": ws_client_order_id,
+                                "_cliOrderId": 0,
+                                "timestamp": timestamp,
+                                "status": "1",
+                                "user_id": user_id,
+                                "userCuenta": userCuenta,
+                                "accountCuenta": accountCuenta
+                            }
+                        get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+                        #restar del diccionario global
+                        #get.diccionario_global_operaciones[Symbol]['ut'] -=ut
+                       # get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+
+                        
+                        #pprint.pprint(get.diccionario_operaciones_enviadas)
+                    
+                    elif isinstance(message["marketData"]["LA"]["price"], float):
+                        precio = message["marketData"]["LA"]["price"]
+                        print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio)
+                    # get.pyConectionWebSocketInicializada.send_order_via_websocket(
+                    #     ticker=Symbol,
+                    #     side=get.pyRofexInicializada.Side.BUY,
+                    #     size=ut,
+                    #     order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                    #     ws_client_order_id=client_order_id,
+                    #     price=precio
+                    # )
+
+                        client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta']
+                        timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                        user_id = get.diccionario_global_operaciones[Symbol]['user_id']
+                        userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
+                        accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
+                        diccionario = {
+                                "Symbol": Symbol,
+                                "_t_": tipo_de_activo,
+                                "_tr_": trade_en_curso,
+                                "_s_": senial,
+                                "_ut_": ut,
+                                "precio Last": precio,
+                                "_ws_client_order_id": client_order_id,
+                                "_cliOrderId": 0,
+                                "timestamp": timestamp,
+                                "status": "1",
+                                "user_id": user_id,
+                                "userCuenta": userCuenta,
+                                "accountCuenta": accountCuenta
+                            }
+                        get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+                        #pprint.pprint(get.diccionario_operaciones_enviadas)
+                       # get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+                        
+                elif senial == 'closed.':
+                    if isinstance(message["marketData"]["OF"][0]["price"], float):
+                            precio = float(message["marketData"]["OF"][0]["price"])
+                            print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio)
+                            #get.pyConectionWebSocketInicializada.send_order_via_websocket(
+                            #    ticker=Symbol,
+                            #    side=get.pyRofexInicializada.Side.SELL,
+                            #    size=ut,
+                            #    order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                            #    ws_client_order_id=_ws_client_order_id,
+                            #    price=precio
+                            #)
+
+                            timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                            user_id = get.diccionario_global_operaciones[Symbol]['user_id']
+                            userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
+                            accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
+
+                            diccionario = {
+                                "Symbol": Symbol,
+                                "_t_": tipo_de_activo,
+                                "_tr_": trade_en_curso,
+                                "_s_": senial,
+                                "_ut_": ut,
+                                "precio Offer": precio,
+                                "_ws_client_order_id": _ws_client_order_id,
+                                "_cliOrderId": 0,
+                                "timestamp": timestamp,
+                                "status": "1",
+                                "user_id": user_id,
+                                "userCuenta": userCuenta,
+                                "accountCuenta": accountCuenta
+                            }
+                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+                            #pprint.pprint(get.diccionario_operaciones_enviadas)
+                       #     get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+                    
+                    elif isinstance(message["marketData"]["LA"]["price"], float):
+                            precio = float(message["marketData"]["LA"]["price"])
+                            client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta']
+                            print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio)
+                            #get.pyConectionWebSocketInicializada.send_order_via_websocket(
+                            #    ticker=Symbol,
+                            #    side=get.pyRofexInicializada.Side.SELL,
+                            #    size=ut,
+                            #    order_type=get.pyRofexInicializada.OrderType.LIMIT,
+                            #    ws_client_order_id=client_order_id,
+                            #    price=precio
+                            #)
+
+                            timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                            user_id = get.diccionario_global_operaciones[Symbol]['user_id']
+                            userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
+                            accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
+
+                            diccionario = {
+                                "Symbol": Symbol,
+                                "_t_": tipo_de_activo,
+                                "_tr_": trade_en_curso,
+                                "_s_": senial,
+                                "_ut_": ut,
+                                "precio Last": precio,
+                                "_ws_client_order_id": client_order_id,
+                                "_cliOrderId": 0,
+                                "timestamp": timestamp,
+                                "status": "1",
+                                "user_id": user_id,
+                                "userCuenta": userCuenta,
+                                "accountCuenta": accountCuenta
+                            }
+                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+                            #pprint.pprint(get.diccionario_operaciones_enviadas)
+                        #   get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
+                            
+    except Exception as e:
+            print("Error en OperacionWs:", e)
+
     
-     return Symbol
+
+
+
     
-
-
-
 
 
 
@@ -257,36 +357,10 @@ def OperacionWs(Symbol,tipo_de_activo,trade_en_curso,ut,senial,mepCedear):
 
 
     # Defines the handlers that will process the Order Reports.
-def order_report_handler( order_report):
-   
-    print("Order Report Message Received: {0}".format(order_report))
-    """
-        if order_report["orderReport"]["clOrdId"] in InstrumentoEstrategiaUno.my_order.keys():
-            InstrumentoEstrategiaUno._update_size(order_report)
-            if order_report["orderReport"]["status"] in ("NEW", "PARTIALLY_FILLED"):
-                print("processing new order")
-                InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]] = order_report
-            elif order_report["orderReport"]["status"] == "FILLED":
-                print("processing filled")
-                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
-            elif order_report["orderReport"]["status"] == "CANCELLED":
-                print("processing cancelled")
-                del InstrumentoEstrategiaUno.my_order[order_report["orderReport"]["clOrdId"]]
 
-            if InstrumentoEstrategiaUno.state is States.WAITING_CANCEL:
-                if not InstrumentoEstrategiaUno.my_order:
-                    InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-                    if InstrumentoEstrategiaUno.last_md:
-                        InstrumentoEstrategiaUno.market_data_handler(InstrumentoEstrategiaUno.last_md)
-            elif InstrumentoEstrategiaUno.state is States.WAITING_ORDERS:
-                for order in InstrumentoEstrategiaUno.my_order.values():
-                    if not order:
-                        return
-                InstrumentoEstrategiaUno.state = States.WAITING_MARKET_DATA
-                if InstrumentoEstrategiaUno.last_md:
-                    InstrumentoEstrategiaUno.market_data_handler(self.last_md)
+       
                     
-     """
+     
                     
                     
 
@@ -321,18 +395,6 @@ def _send_order( side, px, size):
         
         
         
-########################## esto es para ws #############################
-#Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
-def exception_handler(e):
-    print("Exception Occurred: ")
-    
- 
-def error_handler(message):
-  print("Mensaje de error: {0}")
-  
-def exception_error(message):
-  print("Mensaje de excepción: {0}".format(message))  
-  {"type":"or","orderReport":{"orderId":"1128056","clOrdId":"user14545967430231","proprietary":"api","execId":"160127155448-fix1-1368","accountId":{"id":"30"},"instrumentId":{"marketId":"ROFX","symbol":"DODic21"},"price":18.000,"orderQty":10,"ordType":"LIMIT","side":"BUY","timeInForce":"DAY","transactTime":"20160204-11:41:54","avgPx":0,"lastPx":0,"lastQty":0,"cumQty":0,"leavesQty":10,"status":"CANCELLED","text":"Reemplazada"}}
 
 def calcularMepAl30():
     print("____________calcularMepAl30_____________")
@@ -393,7 +455,7 @@ def calcularMepCedears(Symbol):
      return dato
 
 def compruebaLiquidez(ut,size):
-    print(ut,"_CompruebaLiquidez____________",size) 
+    #print(ut,"_CompruebaLiquidez____________",size) 
     liquidez = int(ut) - int(size) # 100 - 3 = 97 /////// 4 - 10 = -6 
     #print("_____________liquidez____________",liquidez)
     if liquidez >= 0:    
@@ -455,33 +517,6 @@ def instrument_by_symbol_para_CalculoMep(symbol):
 
 
 
-########################################################################
-def CuentaCantidadUT(listado):
-    bandera = True
-    countCedear =0
-    countResto =0
-    print("_____________CuentaCantidadUT___________")   
-    for Symbol,cedear,trade_en_curso,ut,senial  in listado: 
-       
-        if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                if Symbol != '':
-                        #if trade_en_curso == 'LONG_':
-                            if senial != '':
-                                if senial == 'OPEN.' or senial == 'closed.':
-                                    if cedear =='CEDEAR':
-                                        countCedear =countCedear + int(ut)
-                                        #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
-                                    if cedear =='ARG':
-                                        countResto = countResto + int(ut)
-                                        #print(countCedear,Symbol,cedear,trade_en_curso,ut,senial)
-                                        
-      
-        dato = [countCedear,countResto]
-       # print("countCedear ",dato[0]," countResto ",dato[1])
-       
-       
-       
-    return dato
 
 
 
