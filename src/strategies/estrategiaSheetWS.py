@@ -172,17 +172,15 @@ def market_data_handler_estrategia(message):
     #print(lista[0][1]['clOrdId_alta'])
    
 
-    if message["marketData"]["BI"] != None:
-        if  message["marketData"]["OF"] != None:
-            if  message["marketData"]["LA"] != None:  
-                estrategiaSheetNuevaWS(message,banderaLecturaSheet)
-            else:
-                print("FUN market_data_handler_estrategia: message[marketData][LA]: es none ",get.VariableParaTiemposMDHandler)
-        else:
-            print("FUN market_data_handler_estrategia: message[marketData][OF]: es none ",get.VariableParaTiemposMDHandler)
+    if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
+        print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+    elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
+        print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+    elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
+        print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
     else:
-        print("FUN market_data_handler_estrategia: message[marketData][BI]: es none ",get.VariableParaTiemposMDHandler)
-    
+        estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+        
     # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
     # o porque es fin de semana o fuera de horario de negociacion
     # mejor que no entre a hacer cosas que generen errores
@@ -493,7 +491,7 @@ def order_report_handler( order_report):
       
         order_data = order_report['orderReport']    
         status = order_data['status'] 
-        if status != 'FILLED': 
+        if status != 'NEW': 
           _cancela_orden(order_report)
           
        # if status == 'EXECUTED':
@@ -513,50 +511,31 @@ def _operada(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
-    timestamp_order_report = order_data['transactTime']
-    _ws_client_order_id = order_data['wsClOrdId'] 
-    timestamp_order_data= datetime.strptime(timestamp_order_report, "%Y-%m-%d %H:%M:%S.%f")
-    if status not in ['CANCELLED', 'FILLED']:  
-            if status != ['PENDING_NEW']:      
-                if symbol in get.diccionario_global_operaciones:
-                    global_order = get.diccionario_global_operaciones[symbol]
-                    operacion_enviada = None
-                    for operacion in get.diccionario_operaciones_enviadas:
-                        if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
-                            operacion_enviada = operacion
-                            break
-
-                    if operacion_enviada:
-                        if global_order['ut'] > 0:
-                            global_order['ut'] -= operacion_enviada['ut']
-                            operacion_enviada['status'] = 'OPERATED'
-                            operacion_enviada['timestamp'] = timestamp_order_data
-                        else:
-                            global_order['status'] = '1'
-                            operacion_enviada['status'] = 'OPERATED'
-                            operacion_enviada['timestamp'] = timestamp_order_data
-            
-            if status == ['PENDING_NEW']: 
-                    if symbol in get.diccionario_global_operaciones:
-                        global_order = get.diccionario_global_operaciones[symbol]
-                        operacion_enviada = None
-                        for operacion in get.diccionario_operaciones_enviadas:
-                            if operacion['Symbol'] == symbol and operacion['_cliOrderId']==clOrdId:
-                                operacion_enviada = operacion
-                                tiempo_diccionario = operacion["timestamp"]
-                                tiempo_diferencia = timestamp_order_data - tiempo_diccionario
-                                if tiempo_diferencia >= 5:
-                                     _cancel_if_orders(operacion_enviada,clOrdId,status) 
-                               
-                                else:
-                                            if global_order['ut'] > 0:
-                                                global_order['ut'] -= operacion_enviada['ut']
-                                                operacion_enviada['status'] = 'PENDING_NEW'
-                                                operacion_enviada['_cliOrderId'] = clOrdId                                  
-                                            else:
-                                                global_order['ut'] -= operacion_enviada['ut']
-                                                global_order['status'] = '1'
-                                                ##ELEMINAR DE ENVIADAS
+    timestamp_order_report = order_data['transactTime']   
+   
+    if status != ['PENDING_NEW']:
+        if status == 'CANCELLED':  
+              if symbol in get.diccionario_global_operaciones:
+                  
+                for operacion in get.diccionario_operaciones_enviadas:
+                            if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
+                                ut_a_devolver = operacion['ut']
+                                get.diccionario_operaciones_enviadas.pop(clOrdId)
+                                for operacionGlobal in get.diccionario_global_operaciones:
+                                    if operacionGlobal['Symbol'] == symbol :
+                                        operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
+                                        if operacionGlobal['status'] != '0':
+                                            operacionGlobal['status']== '0'
+        if status ==  'NEW':    
+            for operacion in get.diccionario_operaciones_enviadas:
+                if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
+                   ut_a_devolver = operacion['ut']
+                   get.diccionario_operaciones_enviadas.pop(clOrdId)
+            for operacionGlobal in get.diccionario_global_operaciones:   
+                if operacionGlobal['Symbol'] == symbol and operacionGlobal['ut'] == '0':
+                   operacionGlobal['status']== '1'
+                 
+       
                                                
                                
                             
