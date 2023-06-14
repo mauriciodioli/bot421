@@ -23,16 +23,20 @@
                 </div> 
                 <div>
                     <p>Para iniciar estrategia que gana por spread presionar el boton.</p>
-                    <a class="btn btn-primary btn-lg" href="/estrategia_sheet_WS/" role="button">Estrategia Sheet Ws</a>
+                    <form action="/estrategia_sheet_WS/" method="POST">
+                       
+                        <input type="hidden" name="access_token" id="access_token">                       
+                        <input type="hidden" name="usuario" id = "usuario" >  
+                        <input type="hidden" name="correo_electronico" id = "correo_electronico"  >
+                        <input type="hidden" name="cuenta" id ="cuenta" >
+                     <button type="submit" class="btn btn-primary btn-block my-2">Estrategia Sheet Ws</button>    
+                </form>
                 </div>
                 <div>
                     <p>Para iniciar estrategia presionar el boton.</p>
                     <a class="btn btn-primary btn-lg" href="/estrategyDos/" role="button">Estrategia </a>
                 </div>
-                <div>
-                    <p>Para iniciar estrategia presionar el boton.</p>
-                    <a class="btn btn-primary btn-lg" href="/estrategiaSheet/" role="button">Sheet </a>
-                </div>
+                
                 <div>
                     <p>Para iniciar estrategia presionar el boton.</p>
                     <a class="btn btn-primary btn-lg" href="/estrategyPcDaniel/" role="button">Estrategia PcDaniel </a>
@@ -41,6 +45,19 @@
                     <p>Para iniciar Estrategia001 presionar el boton.</p>
                     <a class="btn btn-primary btn-lg" href="/Estrategia_001/" role="button">Estrategia_001 </a>
                 </div>
-            </div>
+            
+
+        <script>
+            var refresh_token = localStorage.getItem('access_token');
+            var correo_electronico = localStorage.getItem('correo_electronico');
+            var cuenta = localStorage.getItem("cuenta");
+            var usuario = localStorage.getItem("usuario");
+            document.getElementById("cuenta").value = cuenta
+            document.getElementById("usuario").value = usuario
+            document.getElementById("correo_electronico").value = correo_electronico
+            document.getElementById("access_token").value = access_token
+            
+        </script>
+    </div>
 {%endblock%}
        

@@ -1,7 +1,7 @@
 
 from ast import Return
 from http.client import UnimplementedFileMode
-from flask import current_app
+from flask import current_app,g
 import json
 from datetime import datetime
 from re import template
@@ -20,9 +20,7 @@ import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from utils.db import db
-
-
-
+from datetime import datetime
 
 from flask import (
     Flask,
@@ -45,9 +43,16 @@ account = "{{cuenta}}"
 market_data_recibida = []
 reporte_de_ordenes = []
 
+VariableParaTiemposMDHandler = 0
+accountLocalStorage = ""
+VariableParaBotonPanico = 0
+VariableParaSaldoCta = 0
 pyRofexInicializada = pyRofex
 pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
+diccionario_global_operaciones = {}
+diccionario_operaciones_enviadas = {}
+
 
 
 
@@ -80,6 +85,7 @@ def loginExtAutomatico():
             user = request.json.get('usuario')
             password = request.json.get('contraseña')
             account = request.json.get('cuenta')
+          
             simuladoOproduccion = request.json.get('simuladoOproduccion')
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
@@ -107,10 +113,10 @@ def loginExtAutomatico():
                                                                 password=cuentas.passwordCuenta,
                                                                 account=cuentas.accountCuenta,
                                                                 environment=pyRofexInicializada.Environment.REMARKET)
-                                pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                                    order_report_handler=order_report_handler,
-                                    error_handler=error_handler,
-                                    exception_handler=exception_handler)
+                               # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                               #     order_report_handler=order_report_handler,
+                               #     error_handler=error_handler,
+                               #     exception_handler=exception_handler)
                                 print("está logueado en simulado en REMARKET")
                                 
                                 return jsonify({'redirect': url_for('get_login.home')})
@@ -125,10 +131,10 @@ def loginExtAutomatico():
                                                    password=cuentas.passwordCuenta,
                                                    account=cuentas.accountCuenta,
                                                  environment=pyRofexInicializada.Environment.LIVE)
-                    pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                       order_report_handler=order_report_handler,
-                       error_handler=error_handler,
-                       exception_handler=exception_handler)
+                    #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                      # order_report_handler=order_report_handler,
+                      # error_handler=error_handler,
+                      # exception_handler=exception_handler)
                     print("está logueado en produccion en LIVE")
         except jwt.ExpiredSignatureError:
             print("El token ha expirado")
@@ -177,10 +183,10 @@ def loginExt():
                                                            password=password,
                                                            account=account,
                                                            environment=pyRofexInicializada.Environment.REMARKET)
-                            pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                                order_report_handler=order_report_handler,
-                                error_handler=error_handler,
-                                exception_handler=exception_handler)
+                          #  pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                          #      order_report_handler=order_report_handler,
+                          #      error_handler=error_handler,
+                          #      exception_handler=exception_handler)
                             print("está logueado en simulado en REMARKET")
                         except:
                             print("contraseña o usuario incorrecto")
@@ -191,10 +197,10 @@ def loginExt():
                                                        password=password,
                                                        account=account,
                                                        environment=pyRofexInicializada.Environment.LIVE)
-                        pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                            order_report_handler=order_report_handler,
-                            error_handler=error_handler,
-                            exception_handler=exception_handler)
+                        #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                        #    order_report_handler=order_report_handler,
+                        #    error_handler=error_handler,
+                        #    exception_handler=exception_handler)
                         print("está logueado en produccion en LIVE")
                         
                    
@@ -208,15 +214,15 @@ def loginExt():
             return render_template('home.html', cuenta=[account,user,selector])
 
 
-def order_report_handler(message):
-  print("Mensaje de OrderRouting: {0}".format(message))
-  reporte_de_ordenes.append(message)
+#def order_report_handler(message):
+#  print("Mensaje de OrderRouting: {0}".format(message))
+#  reporte_de_ordenes.append(message)
   
-def error_handler(message):
-  print("Mensaje de error: {0}".format(message))
+#def error_handler(message):
+#  print("Mensaje de error: {0}".format(message))
 
-def exception_handler(e):
-    print("Exception Occurred: {0}".format(e.msg))
+#def exception_handler(e):
+#    print("Exception Occurred: {0}".format(e.msg))
 
 
        #ws.webSocket() ### AQUI FALTA HACER LA PANTALLA EN DONDE ELIJO LOS INSTRUMENTOS PARA SUSCRIBIRME 
