@@ -16,8 +16,7 @@
     <!--CSS PERSONALIZADO -->
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/main.css')}}>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@1.7.0/dist/themes/classic.min.css">
-
+   
     
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -27,7 +26,12 @@
     <meta name="google-signin-client_id" content="TU_CLIENTE_ID_DE_GOOGLE">
     <script src="https://apis.google.com/js/platform.js" async defer></script>    
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>  
-    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@1.7.0/dist/pickr.min.js"></script>  
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@1.7.0/dist/pickr.min.js"></script>
+    <!--esto es para los colores-->
+     <!-- Include the Pickr library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.7.0/dist/themes/classic.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.7.0/dist/pickr.min.js"></script>
+    
 </head>
 
 <body>

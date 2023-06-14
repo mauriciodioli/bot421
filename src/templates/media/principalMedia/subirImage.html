@@ -1,202 +1,228 @@
 {% extends 'layouts/layout.html' %}
 
 {% block content %}
-<!-- Modal -->
-<style>
- 
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
+  <!-- Modal -->
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
 
-  .modal-dialog {
-    
-    justify-content: center;
-    align-items: center;
-    height: 500px; /* Cambia el valor de la altura según tus necesidades */
-  }
+    .modal-dialog {
+      justify-content: center;
+      align-items: center;
+      height: 500px; /* Cambia el valor de la altura según tus necesidades */
+    }
 
+    .modal-content {
+      background-color: #F0F0F0; /* Utiliza un valor hexadecimal para un gris claro */
+      border: 1px solid #888;
+      padding: 20px;
+      width: 500px;
+    }
 
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
 
-  .modal-content {
-    background-color: #fefefe;
-    border: 1px solid #888;
-    padding: 20px;    
-    width: 500px;
-  }
-  
+    .modal-title {
+      text-align: center;
+      margin: 0 auto;
+      width: 100%;
+      color: black;
+    }
 
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
+    .modal-body {
+      margin-bottom: 20px;
+    }
 
-  .modal-title {
-    text-align: center;
-    margin: 0 auto;
-    width: 100%;
-    color: black;
-  }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
 
-  .modal-body {
-    margin-bottom: 20px;
-  }
+    #my-dropzone {
+      max-height: 100%;
+      overflow-y: auto;
+      color: black;
+    }
 
-  .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-  }
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
 
-  #my-dropzone {
-    max-height: 100%;
-    overflow-y: auto; 
-    color: black; 
-  
-    
-  }
+    #file-description {
+      border: 0px solid;
+      padding: 1px;
+      width: 100%;
+      resize: both;
+      overflow: auto;
+    }
 
-  .close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-  }
-  #file-description{
-    border: 0px solid;
-    padding: 1px; 
-    width: 100%;
-    resize: both;
-    overflow: auto;
-    
-  }
-</style>
-<div id="miModal" class="modal">
-  <div class="modal-dialog  modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Publicar</h5>
-        <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <!-- Contenido del modal -->
-        <div class="description-block" id="description-block" style="max-width: 100%;">
-          <textarea id="file-description" style="max-width: 100%;" rows="3"></textarea>
-          <div>
-            <button id="color-picker-btn" class="btn btn-primary">Seleccionar Color</button>
-            <div id="selected-color"></div>
-          </div>
+    /* Aquí se desactiva la parte principal del panel de control de picker */
+    .pcr-color-palette {
+      display: none !important;
+    }
+  </style>
+
+  <div id="miModal" class="modal">
+    <div class="modal-dialog  modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Publicar</h5>
+          <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
         </div>
-          <form id="my-dropzone" action="/cargarImagen" class="dropzone"></form>
+        <div class="modal-body">
+          <!-- Contenido del modal -->
+          <div class="description-block" id="description-block" style="max-width: 100%;">
+            <textarea id="file-description" style="max-width: 100%; " rows="3" placeholder="Ingrese su descripción aquí"></textarea>
+            <div>
+              <button id="color-picker-btn" class="btn btn-primary">Seleccionar Color</button>
+              <div id="selected-color"></div>
+            </div>
+          </div>
+          <h8 class="modal-title" id="modal-title">Cargar Imagen o Video</h8>
+          <form id="my-dropzone" action="/cargarImagen" class="dropzone">
+            <input type="hidden" name="nombreUsuario" id="nombreUsuario" value="">
+            <input type="hidden" name="numeroAleatorio" id="numeroAleatorio" value="">
+
+          </form>
+          
+        </div>
         
-      </div>
-      <h8 class="modal-title" id="modal-title" >Cargar Imagen o Video</h8>
-      <div class="modal-footer">
-        <button class="btn btn-primary" id="open-popup">Subir Archivo</button>
+        <div class="modal-footer">
+          <button class="btn btn-primary" id="open-popup">Subir Archivo</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
+  <script>
+    const miModal = document.getElementById("miModal");
+    let myDropzone;
+    let dropzoneInitialized = false;
+    var nombreUsuario = localStorage.getItem("usuario");
+    var randomNumber = Math.round(Math.random() * 1000000);
 
 
-  const miModal = document.getElementById("miModal");
-  let myDropzone;
-  let dropzoneInitialized = false;
+    window.addEventListener("load", function () {
+      miModal.style.display = "block";
+      document.body.style.overflow = "hidden"; // Deshabilitar el desplazamiento del fondo
 
-  window.addEventListener("load", function() {
-    miModal.style.display = "block";
-    document.body.style.overflow = "hidden"; // Deshabilitar el desplazamiento del fondo
-
-    const dropzoneContainer = document.querySelector('#my-dropzone');
-    
-    if (!dropzoneInitialized) {
+      const dropzoneContainer = document.querySelector('#my-dropzone');
       const parentContainer = dropzoneContainer.parentNode;
       const maxHeight = parentContainer.clientHeight * 0.8;
       dropzoneContainer.style.maxHeight = `${maxHeight}px`;
 
-      myDropzone = new Dropzone(dropzoneContainer, {
-        url: "/cargarImagen",
-        autoProcessQueue: false,
-        paramName: "file",
-        maxFilesize: 2,
-        addRemoveLinks: true,
-        dictDefaultMessage: ""
-      });
-
-      // Escuchar el evento removedfile
-      myDropzone.on("removedfile", function(file) {
-        console.log("Archivo eliminado del display de Dropzone");
-      });
-
-      // Resto del código relacionado con Dropzone
-      // ...
-
-      // Agregar evento de clic al botón "Subir Archivo"
-      document.getElementById("open-popup").addEventListener("click", function() {
-        myDropzone.processQueue(); // Procesar la cola de archivos para cargarlos
-      });
-
+      if (!dropzoneContainer.classList.contains("dz-clickable")) {
+        
+        myDropzone = new Dropzone(dropzoneContainer, {
+          url: "/cargarImagen",
+          autoProcessQueue: false,
+          paramName: "file",
+          maxFilesize: 2,
+          addRemoveLinks: true,
+          dictDefaultMessage: "",
+          clickable: true,
+          
+          init: function() {
+            console.log("randomNumber______________ ",randomNumber);
+            this.on("addedfile", function(file) {
+              file.previewElement.querySelector(".dz-details").appendChild(removeButton);
+              document.getElementById("nombreUsuario").value = nombreUsuario;
+              document.getElementById("numeroAleatorio").value = randomNumber;
+            });
+            var removeButton = Dropzone.createElement("<button class='dz-remove-btn'>Eliminar</button>");
+            var _this = this;
       
-    }
-  });
-
-  miModal.addEventListener("click", function(event) {
-    if (event.target === miModal || event.target.className === "btn-close") {
-      miModal.style.display = "none";
-      document.body.style.overflow = "auto"; // Habilitar el desplazamiento del fondo
-    }
-  });
-
-  // Agregar evento de eliminación de imagen al hacer clic en la cruz
-  function addDeleteEvent(imageElement) {
-    const closeButton = document.createElement("span");
-    closeButton.className = "close-button";
-    closeButton.innerHTML = "&#x2715;"; // Icono de cruz
-    closeButton.addEventListener("click", function() {
-      const imageWrapper = imageElement.parentNode;
-      imageWrapper.parentNode.removeChild(imageWrapper);
+            removeButton.addEventListener("click", function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              var file = _this.files.find(function(f) {
+                return f.previewElement === removeButton.parentNode.parentNode;
+              });
+      
+              if (file) {
+                _this.removeFile(file);
+                console.log("Archivo eliminado:", file);
+              }
+            });
+      
+           
+          }
+        });
+      } 
+      
+      
+      
     });
 
-    imageElement.appendChild(closeButton);
-  }
+    const closeButton = document.querySelector(".btn-close");
 
-   // Crea una instancia de pickr y configura los colores disponibles
-   const pickr = Pickr.create({
-    el: '#color-picker-btn',
-    theme: 'classic',
-    default: '#ffffff',
-    swatches: [
-      '#ffffff', '#000000', '#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'
-    ],
-    components: {
-      preview: true,
-      opacity: true,
-      hue: true,
-      interaction: {
-        input: true,
-        clear: true,
-        save: true
-      }
+    closeButton.addEventListener("click", function (event) {
+      console.log("Se hizo clic en miModal o en el botón de cerrar");
+      miModal.style.display = "none";
+      document.body.style.overflow = "auto"; // Habilitar el desplazamiento del fondo
+    });
+
+    // Agregar evento de eliminación de imagen al hacer clic en la cruz
+    function addDeleteEvent(imageElement) {
+      const closeButton = document.createElement("span");
+      closeButton.className = "close-button";
+      closeButton.innerHTML = "&#x2715;"; // Icono de cruz
+      closeButton.addEventListener("click", function () {
+        const imageWrapper = imageElement.parentNode;
+        imageWrapper.parentNode.removeChild(imageWrapper);
+      });
+
+      imageElement.appendChild(closeButton);
     }
-  });
 
-  // Maneja el evento "save" de pickr para obtener el color seleccionado
-  pickr.on('save', (color) => {
-    const selectedColor = color.toHEXA().toString();
-    document.getElementById('selected-color').style.backgroundColor = selectedColor;
-    document.getElementById('file-description').style.backgroundColor = selectedColor;
-  });
-</script>
+    const pickr = Pickr.create({
+      el: '#color-picker-btn',
+      theme: 'classic',
+      default: '#0000FF8C',
+      swatches: [
+        '#FFFFFF73', '#0000007A', '#FF000094', '#00FF006B', '#0000FF5C', '#FFFF0069', '#FE02FE59', '#0CDBDBB3'
+      ],
+      components: {
+        preview: false,
+        opacity: false,
+        hue: true,
+        interaction: {
+          input: false,
+          clear: true,
+          save: true,
+          interaction: false
+        }
+      },
+      i18n: {
+        'btn:save': 'Guardar',
+        'btn:clear': 'Salir'
+      },
+      preview: {
+        label: 'Color seleccionado:',
+      }
+    });
 
+    // Maneja el evento "save" de pickr para obtener el color seleccionado
+    pickr.on('save', (color) => {
+      const selectedColor = color.toHEXA().toString();
+      document.getElementById('selected-color').style.backgroundColor = selectedColor;
+      document.getElementById('file-description').style.backgroundColor = selectedColor;
+    });
+  </script>
 {% endblock %}
