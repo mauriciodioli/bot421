@@ -24,34 +24,36 @@
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-$(document).ready(function() {
-  // Validación del nombre
-  var nombre = document.getElementById("correo_electronico");
-  function validateNombre(event) {
-    if (nombre.value.indexOf(' ') >= 0) {
-      nombre.setCustomValidity("El correo_electronico no debe contener espacios en blanco");
-      event.preventDefault();
-    } else {
-      nombre.setCustomValidity("");
+  localStorage.clear();
+  $(document).ready(function() {
+    // Validación del nombre
+    var nombre = document.getElementById("correo_electronico");
+    function validateNombre(event) {
+      if (nombre.value.indexOf(' ') >= 0) {
+        nombre.setCustomValidity("El correo_electronico no debe contener espacios en blanco");
+        event.preventDefault();
+      } else {
+        nombre.setCustomValidity("");
+      }
     }
-  }
-
-  // Validación de la confirmación de contraseña
-  var password = document.getElementById("password");
-  var confirm_password = document.getElementById("confirm_password");
-
-  function validatePassword() {
-    if (password.value != confirm_password.value) {
-      confirm_password.setCustomValidity("Las contraseñas no coinciden");
-    } else {
-      confirm_password.setCustomValidity("");
-    }
-  }
-
-  nombre.onchange = validateNombre;
-  password.onchange = validatePassword;
-  confirm_password.onkeyup = validatePassword;
   
-</script>
+    // Validación de la confirmación de contraseña
+    var password = document.getElementById("password");
+    var confirm_password = document.getElementById("confirm_password");
+  
+    function validatePassword() {
+      if (password.value != confirm_password.value) {
+        confirm_password.setCustomValidity("Las contraseñas no coinciden");
+      } else {
+        confirm_password.setCustomValidity("");
+      }
+    }
+  
+    nombre.onchange = validateNombre;
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+  });
+  </script>
+  
 {% endblock %}
 

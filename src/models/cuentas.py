@@ -42,7 +42,7 @@ class Cuenta(db.Model):
         
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id" "userCuenta","passwordCuenta","accountCuenta")
+        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
