@@ -517,21 +517,27 @@ def _operada(order_report):
         if status == 'CANCELLED':  
               if symbol in get.diccionario_global_operaciones:
                   
-                for operacion in get.diccionario_operaciones_enviadas:
+                for key, operacion in get.diccionario_operaciones_enviadas:
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId:
-                                ut_a_devolver = operacion['ut']
-                                get.diccionario_operaciones_enviadas.pop(clOrdId)
+                                ut_a_devolver = operacion['_ut_']                                
+                                del get.diccionario_operaciones_enviadas[key]
                                 for operacionGlobal in get.diccionario_global_operaciones:
                                     if operacionGlobal['Symbol'] == symbol :
                                         operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
-        if status in  ['NEW','FILLED']:    
-            for operacion in get.diccionario_operaciones_enviadas:
-                if operacion['status']!='PENDING_CANCEL' and operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
-                   ut_a_devolver = operacion['ut']
-                   get.diccionario_operaciones_enviadas.pop(clOrdId)
-            for operacionGlobal in get.diccionario_global_operaciones:   
+        if status in  ['NEW','FILLED']:          
+            for key, operacion in get.diccionario_operaciones_enviadas.items():
+                print(operacion['status'], operacion['Symbol'], operacion['_cliOrderId'], clOrdId)
+                if operacion['status'] != 'PENDING_CANCEL' and operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
+                   
+                    ut_a_devolver = operacion['_ut_']
+                    print(ut_a_devolver)
+                    del get.diccionario_operaciones_enviadas[key]
+                    break  # Salir del bucle después de eliminar el elemento encontrado
+
+                   
+            for key, operacionGlobal in get.diccionario_global_operaciones.items():   
                 if operacionGlobal['Symbol'] == symbol and operacionGlobal['ut'] == '0':
                    operacionGlobal['status']== '1'
                  
@@ -546,20 +552,13 @@ def _cancela_orden(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
-    timestamp_order_report = order_data['transactTime']    
+    timestamp_order_report = order_data['transactTime'] 
+    wsClOrdIdAsignar = order_data['wsClOrdId']   
+    asignarClOrId(symbol,status,clOrdId,wsClOrdIdAsignar)
     
     # Recorrer los elementos del diccionario_enviados
-    for key, valor in get.diccionario_operaciones_enviadas.items():
-        if valor["Symbol"] == symbol:                  
-            if valor["status"] == '1':
-                # pasa que llegamos aca y wsOrderClId puede no existir mas
-                if status in ['PENDING_NEW','REJECT']:                    
-                        wsClOrdId = order_data['wsClOrdId']
-                        if  valor["ws_client_order_id"] == int(wsClOrdId):
-                            valor["_cliOrderId"] = int(order_data['clOrdId'])
-                            valor["status"] = "2"
-                else:
-                    valor["_cliOrderId"] = int(order_data['clOrdId']) 
+    for key, valor in get.diccionario_operaciones_enviadas.items():       
+        if valor["Symbol"] == symbol: 
            
             tiempo_diccionario = valor["timestamp"]
             # Verificar y ajustar el formato de cadena de fecha si es necesario
@@ -618,6 +617,21 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         
 
 
+
+
+def asignarClOrId(symbol,status,clOrdId,wsClOrdIdAsignar):
+    
+      for key, valor in get.diccionario_operaciones_enviadas.items():       
+        if valor["Symbol"] == symbol and valor["_cliOrderId"] == 0:                  
+            if valor["status"] == '1':                
+                # pasa que llegamos aca y wsOrderClId puede no existir mas
+                if status in ['PENDING_NEW','REJECT']:                    
+                        wsClOrdId = wsClOrdIdAsignar
+                        if  valor["ws_client_order_id"] == int(wsClOrdId):
+                            valor["_cliOrderId"] = int(clOrdId)
+                            valor["status"] = "2"                            
+                else:
+                    valor["_cliOrderId"] = int(clOrdId) 
 ##########################esto es para ws#############################
 
 
