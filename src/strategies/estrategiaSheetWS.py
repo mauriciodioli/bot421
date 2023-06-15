@@ -478,33 +478,32 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
         order_data = order_report['orderReport']
-
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
-        status = order_data['status']      
+        status = order_data['status']    
+        order_data = order_report['orderReport']
+        wsClOrdIdAsignar = order_data['wsClOrdId']   
+     
         
-    
-            #orderId: ID de la orden. 
-    # Si la orden fue rechazada o todavía no llegó al mercado, este campo es none.
-    # verificar si es none, si lo es, recien preguntar por wsClOrdId
-    # si este campo existe, wsClOrdId ya no existe !!!
-    #print(order_report["orderReport"]["orderId"])
-         
-        if status != 'FILLED': 
-            _cancela_orden(order_report)
-            
-        # if status == 'EXECUTED':
-        _operada(order_report) 
-            
-            ###### BOTON DE PANICO        
+            ###### BOTON DE PANICO #########        
         response = botonPanicoRH('false') 
         print("respuesta desde el boton", response)
             
         if response == 1: ### si es 1 el boton de panico fue activado
+            asignarClOrId(symbol,status,clOrdId,wsClOrdIdAsignar) 
             _cancel_if_orders(symbol,clOrdId,status)
         
-   
+        else:  
+         
+            if status != 'FILLED': 
+                _cancela_orden(order_report)
+                
+            # if status == 'EXECUTED':
+            _operada(order_report) 
+            
+        
+            
 
 def _operada(order_report):
     order_data = order_report['orderReport']
@@ -601,7 +600,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
     print("FUN _cancel_if_orders:  Orden order_status:", order_status)
      # Obtener el estado de la orden
-    if order_status in ['PENDING_NEW','NEW','PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
+    if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED']:
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
