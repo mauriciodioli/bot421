@@ -490,19 +490,25 @@ def order_report_handler( order_report):
     #print(order_report["orderReport"]["orderId"])
       
         order_data = order_report['orderReport']    
-        status = order_data['status'] 
-        if status != 'NEW': 
-          _cancela_orden(order_report)
-          
-       # if status == 'EXECUTED':
-        _operada(order_report) 
+        status = order_data['status']
+        idOrden = order_data['clOrdId'] 
         
-         ###### BOTON DE PANICO        
+        
+        
+        
+         
+        if status != 'FILLED': 
+            _cancela_orden(order_report)
+            
+        # if status == 'EXECUTED':
+        _operada(order_report) 
+            
+            ###### BOTON DE PANICO        
         response = botonPanicoRH('false') 
         print("respuesta desde el boton", response)
-        
+            
         if response == 1: ### si es 1 el boton de panico fue activado
-             _cancel_if_orders(symbol,clOrdId,status)
+            _cancel_if_orders(symbol,clOrdId,status)
         
    
 
@@ -518,7 +524,7 @@ def _operada(order_report):
               if symbol in get.diccionario_global_operaciones:
                   
                 for operacion in get.diccionario_operaciones_enviadas:
-                            if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
+                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId:
                                 ut_a_devolver = operacion['ut']
                                 get.diccionario_operaciones_enviadas.pop(clOrdId)
                                 for operacionGlobal in get.diccionario_global_operaciones:
@@ -526,9 +532,9 @@ def _operada(order_report):
                                         operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
-        if status ==  'NEW':    
+        if status in  ['NEW','FILLED']:    
             for operacion in get.diccionario_operaciones_enviadas:
-                if operacion['Symbol'] == symbol and operacion['client_order_id'] == clOrdId:
+                if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId:
                    ut_a_devolver = operacion['ut']
                    get.diccionario_operaciones_enviadas.pop(clOrdId)
             for operacionGlobal in get.diccionario_global_operaciones:   
@@ -600,28 +606,20 @@ def _cancela_orden(order_report):
 def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
-    print("Orden order_status:", order_status)
+    print("FUN _cancel_if_orders:  Orden order_status:", order_status)
      # Obtener el estado de la orden
-    if order_status in ['PENDING_NEW','PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
+    if order_status in ['PENDING_NEW','NEW','PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
-        print("Orden cancelada:", clOrdId)
-          # Aumentar el valor de ut en get.diccionario_global_operaciones
-        for clave, valor in get.diccionario_global_operaciones.items():
-            for operacion_enviada in get.diccionario_operaciones_enviadas.values():
-                if valor["symbol"] == operacion_enviada["Symbol"] and operacion_enviada["_cliOrderId"] == clOrdId:
-                    ut_actual = int(valor["ut"])
-                    ut_enviada = int(operacion_enviada["ut"])
-                    incremento = ut_actual * (ut_enviada / ut_actual)
-                    valor["ut"] = str(ut_actual + incremento)
-                    break
-        
-        # Eliminar la orden de get.diccionario_operaciones_enviadas
-        for orden in get.diccionario_operaciones_enviadas:
-            if orden["Symbol"] == symbol and orden["client_order_id"] == clOrdId:
-                get.diccionario_operaciones_enviadas.remove(orden)
-                break
+        print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
+          # Aumentar el valor de ut en get.diccionario_global_operaciones        
+        for operacion_enviada in get.diccionario_operaciones_enviadas.values():          
+            if operacion_enviada["symbol"] == symbol and operacion_enviada["_cliOrderId"] == clOrdId:
+                if operacion_enviada["status"] != 'PENDING_CANCEL':
+                    operacion_enviada["status"] = 'PENDING_CANCEL'
+                 
+       
     else:
-        print("La orden no se puede cancelar en el estado actual:", order_status)
+        print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
         
 
 
