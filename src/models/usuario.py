@@ -20,12 +20,9 @@ class Usuario(db.Model):
     token = db.Column(db.String(500), nullable=True)
     refresh_token = db.Column(db.String(500), nullable=True)
     cuentas = relationship("Cuenta", back_populates="usuarios")
-<<<<<<< HEAD
-    imagenes = relationship("Image", back_populates="usuario")
-=======
     orden = relationship("Orden", back_populates="usuarios")
+    imagenes = relationship("Image", back_populates="usuarios")
    
->>>>>>> origin/pcDaniel
     
  # constructor
     def __init__(self, id,correo_electronico,token,refresh_token,activo,password):

@@ -20,7 +20,7 @@ class Image(db.Model):
     filepath  = db.Column(db.String(500), nullable=True)
     #created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
-    usuario = relationship("Usuario", back_populates="imagenes")
+    usuarios = relationship("Usuario", back_populates="imagenes")
 
     
  # constructor

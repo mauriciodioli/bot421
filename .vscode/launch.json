@@ -17,16 +17,8 @@
                 "run"
             ],
             "jinja": true,
-<<<<<<< HEAD
             "justMyCode": true,
-<<<<<<< HEAD
-            "cwd": "C:\\Users\\dpuntillovirtual01\\Documents\\bot421\\src"            
-=======
-=======
-            "justMyCode": false,
->>>>>>> origin/pcDaniel
-            "cwd": "C:\\Users\\dpuntillovirtual01\\Documents\\ITCOR\\bot421\\src"            
->>>>>>> origin/pcDaniel
+            "cwd": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\src"
         }
     ]
 }
