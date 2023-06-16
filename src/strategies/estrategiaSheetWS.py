@@ -170,7 +170,6 @@ def market_data_handler_estrategia(message):
     #print(get.diccionario_global_operaciones.items())
     #lista = list(get.diccionario_global_operaciones.items())
     #print(lista[0][1]['clOrdId_alta'])
-   
 
     if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
         print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
@@ -179,7 +178,8 @@ def market_data_handler_estrategia(message):
     elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
         print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
     else:
-        estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+       estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+      
         
     # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
     # o porque es fin de semana o fuera de horario de negociacion
@@ -268,12 +268,11 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
                                            # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], '1', senial, mepCedear, message)
-                                         
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                     else:                                          
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], '1', senial, mepCedear, message)
+                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                          
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
                                     
@@ -479,41 +478,32 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
         order_data = order_report['orderReport']
-
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
-        status = order_data['status']      
+        status = order_data['status']    
+        order_data = order_report['orderReport']
+        wsClOrdIdAsignar = order_data['wsClOrdId']   
+     
         
-    
-            #orderId: ID de la orden. 
-    # Si la orden fue rechazada o todavía no llegó al mercado, este campo es none.
-    # verificar si es none, si lo es, recien preguntar por wsClOrdId
-    # si este campo existe, wsClOrdId ya no existe !!!
-    #print(order_report["orderReport"]["orderId"])
-      
-        order_data = order_report['orderReport']    
-        status = order_data['status']
-        
-        
-        
-        
-        
-         
-        if status != 'FILLED': 
-            _cancela_orden(order_report)
-            
-        # if status == 'EXECUTED':
-        _operada(order_report) 
-            
-            ###### BOTON DE PANICO        
+            ###### BOTON DE PANICO #########        
         response = botonPanicoRH('false') 
         print("respuesta desde el boton", response)
             
         if response == 1: ### si es 1 el boton de panico fue activado
+            asignarClOrId(symbol,status,clOrdId,wsClOrdIdAsignar) 
             _cancel_if_orders(symbol,clOrdId,status)
         
-   
+        else:  
+         
+            if status != 'FILLED': 
+                _cancela_orden(order_report)
+                
+            # if status == 'EXECUTED':
+            _operada(order_report) 
+            
+        
+            
 
 def _operada(order_report):
     order_data = order_report['orderReport']
@@ -522,25 +512,31 @@ def _operada(order_report):
     status = order_data['status']
     timestamp_order_report = order_data['transactTime']   
    
-    if status != ['PENDING_NEW']:
+    if status != 'PENDING_NEW':
         if status == 'CANCELLED':  
               if symbol in get.diccionario_global_operaciones:
                   
-                for operacion in get.diccionario_operaciones_enviadas:
+                for key, operacion in get.diccionario_operaciones_enviadas:
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId:
-                                ut_a_devolver = operacion['ut']
-                                get.diccionario_operaciones_enviadas.pop(clOrdId)
+                                ut_a_devolver = operacion['_ut_']                                
+                                del get.diccionario_operaciones_enviadas[key]
                                 for operacionGlobal in get.diccionario_global_operaciones:
                                     if operacionGlobal['Symbol'] == symbol :
                                         operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
-        if status in  ['NEW','FILLED']:    
-            for operacion in get.diccionario_operaciones_enviadas:
-                if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId:
-                   ut_a_devolver = operacion['ut']
-                   get.diccionario_operaciones_enviadas.pop(clOrdId)
-            for operacionGlobal in get.diccionario_global_operaciones:   
+        if status in  ['NEW','FILLED']:          
+            for key, operacion in get.diccionario_operaciones_enviadas.items():
+                print(operacion['status'], operacion['Symbol'], operacion['_cliOrderId'], clOrdId)
+                if operacion['status'] != 'PENDING_CANCEL' and operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
+                   
+                    ut_a_devolver = operacion['_ut_']
+                    print(ut_a_devolver)
+                    del get.diccionario_operaciones_enviadas[key]
+                    break  # Salir del bucle después de eliminar el elemento encontrado
+
+                   
+            for key, operacionGlobal in get.diccionario_global_operaciones.items():   
                 if operacionGlobal['Symbol'] == symbol and operacionGlobal['ut'] == '0':
                    operacionGlobal['status']== '1'
                  
@@ -555,20 +551,13 @@ def _cancela_orden(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
-    timestamp_order_report = order_data['transactTime']    
+    timestamp_order_report = order_data['transactTime'] 
+    wsClOrdIdAsignar = order_data['wsClOrdId']   
+    asignarClOrId(symbol,status,clOrdId,wsClOrdIdAsignar)
     
     # Recorrer los elementos del diccionario_enviados
-    for key, valor in get.diccionario_operaciones_enviadas.items():
-        if valor["Symbol"] == symbol:                  
-            if valor["status"] == '1':
-                # pasa que llegamos aca y wsOrderClId puede no existir mas
-                if status in ['PENDING_NEW','REJECT']:                    
-                        wsClOrdId = order_data['wsClOrdId']
-                        if  valor["ws_client_order_id"] == int(wsClOrdId):
-                            valor["_cliOrderId"] = int(order_data['clOrdId'])
-                            valor["status"] = "2"
-                else:
-                    valor["_cliOrderId"] = int(order_data['clOrdId']) 
+    for key, valor in get.diccionario_operaciones_enviadas.items():       
+        if valor["Symbol"] == symbol: 
            
             tiempo_diccionario = valor["timestamp"]
             # Verificar y ajustar el formato de cadena de fecha si es necesario
@@ -600,7 +589,7 @@ def _cancela_orden(order_report):
             
             
             #if diferencia >= 300:
-            if diferencia_segundos >= 1:
+            if diferencia_segundos >= 300:
             
                 _cancel_if_orders(symbol,clOrdId,status)            
     
@@ -611,12 +600,13 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
     print("FUN _cancel_if_orders:  Orden order_status:", order_status)
      # Obtener el estado de la orden
-    if order_status in ['PENDING_NEW','NEW','PENDING', 'ACTIVE', 'PARTIALLY_EXECUTED', 'SENT', 'ROUTED', 'ACCEPTED']:
+    if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED']:
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
-        for operacion_enviada in get.diccionario_operaciones_enviadas.values():          
-            if operacion_enviada["symbol"] == symbol and operacion_enviada["_cliOrderId"] == clOrdId:
+        for operacion_enviada in get.diccionario_operaciones_enviadas.values():   
+            print(operacion_enviada)      
+            if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
                     operacion_enviada["status"] = 'PENDING_CANCEL'
                  
@@ -626,6 +616,21 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         
 
 
+
+
+def asignarClOrId(symbol,status,clOrdId,wsClOrdIdAsignar):
+    
+      for key, valor in get.diccionario_operaciones_enviadas.items():       
+        if valor["Symbol"] == symbol and valor["_cliOrderId"] == 0:                  
+            if valor["status"] == '1':                
+                # pasa que llegamos aca y wsOrderClId puede no existir mas
+                if status in ['PENDING_NEW','REJECT']:                    
+                        wsClOrdId = wsClOrdIdAsignar
+                        if  valor["ws_client_order_id"] == int(wsClOrdId):
+                            valor["_cliOrderId"] = int(clOrdId)
+                            valor["status"] = "2"                            
+                else:
+                    valor["_cliOrderId"] = int(clOrdId) 
 ##########################esto es para ws#############################
 
 
