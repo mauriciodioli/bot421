@@ -525,14 +525,17 @@ def _operada(order_report):
                                         operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
+                                pprint.pprint(get.diccionario_global_operaciones)
+                                pprint.pprint(get.diccionario_operaciones_enviadas)            
         if status in  ['NEW','FILLED']:          
             for key, operacion in get.diccionario_operaciones_enviadas.items():
                 print(operacion['status'], operacion['Symbol'], operacion['_cliOrderId'], clOrdId)
                 if operacion['status'] != 'PENDING_CANCEL' and operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
                    
                     ut_a_devolver = operacion['_ut_']
-                    print(ut_a_devolver)
+                    pprint.pprint(get.diccionario_operaciones_enviadas)
                     del get.diccionario_operaciones_enviadas[key]
+                    pprint.pprint(get.diccionario_operaciones_enviadas)
                     break  # Salir del bucle después de eliminar el elemento encontrado
 
                    
