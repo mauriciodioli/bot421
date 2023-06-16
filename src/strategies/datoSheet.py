@@ -200,7 +200,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         )
 
                         ws_client_order_id = _ws_client_order_id
-                        timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                        
                         user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                         userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
                         accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
@@ -214,7 +214,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "precio Offer": precio,
                                 "ws_client_order_id": ws_client_order_id,
                                 "_cliOrderId": 0,
-                                "timestamp": timestamp,
+                                "timestamp": datetime.now(),
                                 "status": "1",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
@@ -240,9 +240,8 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         #    ws_client_order_id=client_order_id,
                         #    price=precio
                         #)
-                        ws_client_order_id = _ws_client_order_id
-                        client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta']
-                        timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                        ws_client_order_id = _ws_client_order_id                       
+                        
                         user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                         userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
                         accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
@@ -255,7 +254,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "precio Last": precio,
                                 "_ws_client_order_id": ws_client_order_id,
                                 "_cliOrderId": 0,
-                                "timestamp": timestamp,
+                                "timestamp": datetime.now(),
                                 "status": "1",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
@@ -278,7 +277,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                            #     price=precio
                            # )
                             ws_client_order_id = _ws_client_order_id
-                            timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                            
                             user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                             userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
                             accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
@@ -292,7 +291,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "precio Offer": precio,
                                 "_ws_client_order_id": ws_client_order_id,
                                 "_cliOrderId": 0,
-                                "timestamp": timestamp,
+                                "timestamp": datetime.now(),
                                 "status": "1",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
@@ -304,7 +303,6 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                     
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                             precio = float(message["marketData"]["LA"]["price"])
-                            client_order_id = get.diccionario_global_operaciones[Symbol]['clOrdId_alta']
                             print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio)
                             #get.pyConectionWebSocketInicializada.send_order_via_websocket(
                             #    ticker=Symbol,
@@ -315,7 +313,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                             #    price=precio
                             #)
                             ws_client_order_id = _ws_client_order_id
-                            timestamp = get.diccionario_global_operaciones[Symbol]['wsClOrdId_timestamp']
+                           
                             user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                             userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
                             accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
@@ -329,7 +327,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "precio Last": precio,
                                 "_ws_client_order_id": ws_client_order_id,
                                 "_cliOrderId": 0,
-                                "timestamp": timestamp,
+                                "timestamp": datetime.now(),
                                 "status": "1",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
