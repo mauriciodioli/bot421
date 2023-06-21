@@ -136,7 +136,8 @@ def get_instrumento_para_suscripcion_ws():
     
 def market_data_handler_estrategia(message):
         ## mensaje = Ticker+','+cantidad+','+spread
-    
+    message = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 1}], 'LA': {'price': 72.44, 'size': 2, 'date': 1684504670967}}}
+
     print(" FUN: market_data_handler_estrategia: _")
      
     #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
@@ -221,7 +222,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
 
         for Symbol,tipo, TradeEnCurso,ut,senial in ContenidoSheet_list[2:]:
             if Symbol in get.diccionario_global_operaciones:
-                print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
+                #print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
                     #aqui entra en caso que tenga que cambiar la señal del stock de operaciones 
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
@@ -607,13 +608,12 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
-        for operacion_enviada in get.diccionario_operaciones_enviadas.values():   
-            print(operacion_enviada)      
+        for operacion_enviada in get.diccionario_operaciones_enviadas.values():
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
                     operacion_enviada["status"] = 'PENDING_CANCEL'
                  
-       
+            break  
     else:
         print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
         
