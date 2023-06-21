@@ -569,9 +569,11 @@ def _operada(order_report):
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId and  operacion['status'] != 'TERMINADA':
                                 ut_a_devolver = operacion['_ut_']                                
                                 operacion['status'] = 'TERMINADA'
-                                for operacionGlobal in get.diccionario_global_operaciones.items():
-                                    if operacionGlobal['Symbol'] == symbol :
+                                for key, operacionGlobal in get.diccionario_global_operaciones.items():
+                                    if operacionGlobal['symbol'] == symbol :
+                                        pprint.pprint(get.diccionario_global_operaciones)
                                         operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
+                                        pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
                                 pprint.pprint(get.diccionario_global_operaciones)
