@@ -184,13 +184,13 @@ def market_data_handler_estrategia(message):
     else:
        estrategiaSheetNuevaWS(message, banderaLecturaSheet)
        """"
-        NEW
+        * NEW
         PARTIALLY_FILLED
-        FILLED
-        CANCELED
+       * FILLED
+       * CANCELLED
         REJECTED
         EXPIRED
-        PENDING_CANCEL
+        * PENDING_CANCEL
         PENDING_REPLACE
         REPLACED
         CALCULATED
@@ -217,7 +217,7 @@ def market_data_handler_estrategia(message):
                         'lastQty' : 0,
                         'cumQty' : 0,
                         'leavesQty' : 15,
-                        'status' : 'CANCELLED',
+                        'status' : 'NEW',
                         'text' : 'ME_ACCEPTED',
                         'originatingUsername' : 'PBCP'                        
                         }
@@ -545,7 +545,8 @@ def order_report_handler( order_report):
                 _cancela_orden(order_report)
                 
             # if status == 'EXECUTED':
-            _operada(order_report) 
+            if status != 'NEW' and status != 'PENDING_NEW':  
+               _operada(order_report) 
             
         
             
@@ -561,10 +562,9 @@ def _operada(order_report):
     status = order_data['status']
     timestamp_order_report = order_data['transactTime']   
    
-    if status != 'PENDING_NEW':
-        if status == 'CANCELLED':  
-              if symbol in get.diccionario_global_operaciones:
-                  
+   
+    if status == 'CANCELLED':  
+              if symbol in get.diccionario_global_operaciones:                  
                 for key, operacion in get.diccionario_operaciones_enviadas.items():
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId and  operacion['status'] != 'TERMINADA':
                                 ut_a_devolver = operacion['_ut_']                                
@@ -577,23 +577,9 @@ def _operada(order_report):
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
                                 pprint.pprint(get.diccionario_global_operaciones)
-                                pprint.pprint(get.diccionario_operaciones_enviadas)            
-        
-        if status == 'NEW':          
-            for key, operacion in get.diccionario_operaciones_enviadas.items():
-                tiempo_diccionario = operacion['timestamp']
-                diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)
-                if diferencia_segundos >= 300:
-                    print(operacion['status'], operacion['Symbol'], operacion['_cliOrderId'], clOrdId)
-                    if operacion['status'] != 'PENDING_CANCEL' and operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
-                    
-                        ut_a_devolver = operacion['_ut_']
-                        pprint.pprint(get.diccionario_operaciones_enviadas)
-                        del get.diccionario_operaciones_enviadas[key]
-                        pprint.pprint(get.diccionario_operaciones_enviadas)
-                        break  # Salir del bucle después de eliminar el elemento encontrado
+                                pprint.pprint(get.diccionario_operaciones_enviadas) 
 
-        if status == 'FILLED':     
+    if status == 'FILLED':     
             for operacion_enviada in get.diccionario_operaciones_enviadas.values():  
                 if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA':
                     operacion_enviada['status'] = 'TERMINADA'
@@ -664,7 +650,8 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
             print(operacion_enviada)      
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
-                    operacion_enviada["status"] = 'PENDING_CANCEL'
+                    operacion_enviada["status"] = 'PENDING_CANCEL'                     
+                    break  # Salir del bucle después de eliminar el elemento encontrado    
                  
        
     else:
