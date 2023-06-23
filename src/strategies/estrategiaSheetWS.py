@@ -159,7 +159,8 @@ def market_data_handler_estrategia(message):
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
         banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-        if  (60000): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
+        #if  (60000): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
+        if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
             # esto hay que hacerlo aca, solo cada x segundos
             banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
 
