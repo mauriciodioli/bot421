@@ -140,7 +140,7 @@ def market_data_handler_estrategia(message):
     timeuno = int(time.timestamp())*1000
    # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
    # message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-   # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
+    message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
    
 
     print(" FUN: market_data_handler_estrategia: _")
@@ -216,7 +216,7 @@ def market_data_handler_estrategia(message):
                         'proprietary' : "PBCP",
                         "execId" : 1685959201352046,
                         "accountId" : {'id': 'REM6603'},
-                        "instrumentId" : {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'},
+                        "instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},
                         'price' : 71.67,
                         'orderQty' : 15,
                         'ordType' : 'LIMIT',
@@ -232,7 +232,7 @@ def market_data_handler_estrategia(message):
                         'text' : 'ME_ACCEPTED',
                         'originatingUsername' : 'PBCP'                        
                         }
-      # order_report_handler( order_report)
+       order_report_handler( order_report)
         
     # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
     # o porque es fin de semana o fuera de horario de negociacion
@@ -530,11 +530,11 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
 
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
-        order_data = order_report['orderReport']
+       # order_data = order_report['orderReport']
         #################################################
         ###### cambiar esto finalizado el test ##########
         #################################################
-        #order_data = order_report
+        order_data = order_report
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
@@ -563,11 +563,11 @@ def order_report_handler( order_report):
             
 
 def _operada(order_report):
-    order_data = order_report['orderReport']
+    #order_data = order_report['orderReport']
      #################################################
      ###### cambiar esto finalizado el test ##########
      #################################################
-    #order_data = order_report
+    order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
@@ -591,38 +591,33 @@ def _operada(order_report):
                                 pprint.pprint(get.diccionario_operaciones_enviadas) 
 
     if status == 'FILLED': 
-            ending = 'SI'    
+            endingEnviadas = 'SI'
+            endingGlobal = 'SI'  
+              
             for operacion_enviada in get.diccionario_operaciones_enviadas.values():  
                 if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA':
                     operacion_enviada['status'] = 'TERMINADA'
                 if  operacion_enviada['status'] != 'TERMINADA':
-                    ending = 'NO'
+                    endingEnviadas = 'NO'
                  
             for key, operacionGlobal in get.diccionario_global_operaciones.items():   
                 if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':
-                   operacionGlobal['status']== '1'
+                   operacionGlobal['status'] = '1'
                    pprint.pprint(get.diccionario_global_operaciones)
-                if  operacionGlobal['status'] != '1':
-                    ending = 'NO'
-            if ending == 'NO':
-               print("#########################################") 
-               print("#########################################") 
-               print("#########################################")  
-               print("FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO") 
-               print("#########################################") 
-               print("#########################################") 
-               print("#########################################") 
-          #      return render_template('home.html')                                  
+                if  operacionGlobal['status'] == '0':
+                    endingGlobal = 'NO'
+            
+            endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
                             
     
 def _cancela_orden(order_report):
     
-    order_data = order_report['orderReport']
+    #order_data = order_report['orderReport']
      #################################################
      ###### cambiar esto finalizado el test ##########
      #################################################
-   # order_data = order_report
+    order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
@@ -723,6 +718,17 @@ def asignarClOrId(order_report):
                     valor["_cliOrderId"] = int(clOrdId) 
 ##########################esto es para ws#############################
 
+def endingOperacionBot (endingGlobal,endingEnviadas):
+     if endingGlobal == 'SI' and endingEnviadas == 'SI':
+        get.diccionario_operaciones_enviadas.clear()
+        print("###############################################") 
+        print("###############################################") 
+        print("###############################################")  
+        print("FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO") 
+        print("###############################################") 
+        print("###############################################") 
+        print("###############################################") 
+          #      return render_template('home.html')    
 
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
