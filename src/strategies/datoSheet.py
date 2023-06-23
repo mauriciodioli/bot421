@@ -122,7 +122,7 @@ def leerSheet():
 ################ AQUI DEFINO LA COMPRA POR WS ################
 def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, message):
     saldocta = get.VariableParaSaldoCta### preguntar si existe el saldo de cuanta para recien operar
-    saldocta = 1000000
+    #saldocta = 1000000
     ut = abs(int(ut))
     saldoExiste = False
     
@@ -192,9 +192,13 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         precio = float(message["marketData"]["OF"][0]["price"])
                         print("FUN: OperacionWs__Symbol: ",Symbol," ut:",ut," _ws_client_order_id:",_ws_client_order_id," precio:",precio," _ws_client_order_id ",_ws_client_order_id)
 <<<<<<< HEAD
+<<<<<<< HEAD
                         get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.BUY,size=ut, order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 =======
                         #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+>>>>>>> origin/pcDaniel
+=======
+                        get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 >>>>>>> origin/pcDaniel
 
                         ws_client_order_id = _ws_client_order_id
