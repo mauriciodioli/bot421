@@ -137,11 +137,19 @@ def get_instrumento_para_suscripcion_ws():
 def market_data_handler_estrategia(message):
         ## mensaje = Ticker+','+cantidad+','+spread
 <<<<<<< HEAD
+<<<<<<< HEAD
     message = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 1}], 'LA': {'price': 72.44, 'size': 2, 'date': 1684504670967}}}
 =======
     message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
     message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
     message = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
+=======
+    time = datetime.now()
+    timeuno = int(time.timestamp())*1000
+   # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
+   # message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
+   # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
+>>>>>>> origin/pcDaniel
    
 >>>>>>> origin/pcDaniel
 
@@ -186,23 +194,32 @@ def market_data_handler_estrategia(message):
     elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
         print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
     else:
+       
+       tiempoAhora = datetime.now()
        estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+       tiempoDespues = datetime.now()
+       teimporAhoraInt = tiempoDespues - tiempoAhora
+       tiempomili =  teimporAhoraInt.total_seconds() * 1000
+       print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+       
        """"
-        * NEW
-        PARTIALLY_FILLED
+       * NEW
+       * PARTIALLY_FILLED
        * FILLED
        * CANCELLED
-        REJECTED
-        EXPIRED
-        * PENDING_CANCEL
-        PENDING_REPLACE
+       * REJECTED
+       * EXPIRED
+       * PENDING_CANCEL
+       * PENDING_REPLACE
         REPLACED
         CALCULATED
         ACCEPTED_FOR_BIDDING
-        PENDING_NEW
-        PARTIALLY_FILLED_CANCELED
-        PARTIALLY_FILLED_REPLACED
-        UNKNOWN
+        * PENDING_NEW
+        * PARTIALLY_FILLED_CANCELED
+        * PARTIALLY_FILLED_REPLACED
+        * UNKNOWN
+        * ERROR
+        * OK
        """ 
        order_report = { 'orderId' : 1686061963452333,
                         'clOrdId' : 424621963526655,
@@ -221,11 +238,11 @@ def market_data_handler_estrategia(message):
                         'lastQty' : 0,
                         'cumQty' : 0,
                         'leavesQty' : 15,
-                        'status' : 'NEW',
+                        'status' : 'FILLED',
                         'text' : 'ME_ACCEPTED',
                         'originatingUsername' : 'PBCP'                        
                         }
-       order_report_handler( order_report)
+      # order_report_handler( order_report)
         
     # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
     # o porque es fin de semana o fuera de horario de negociacion
@@ -313,12 +330,12 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                        
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                     else:                                          
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                          
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
                                     
@@ -523,11 +540,11 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
 
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
-        #order_data = order_report['orderReport']
+        order_data = order_report['orderReport']
         #################################################
         ###### cambiar esto finalizado el test ##########
         #################################################
-        order_data = order_report
+        #order_data = order_report
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
@@ -545,29 +562,29 @@ def order_report_handler( order_report):
         
         else:  
          
-            if status != 'FILLED' and status !='CANCELLED': 
+            if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
                 _cancela_orden(order_report)
                 
             # if status == 'EXECUTED':
-            if status != 'NEW' and status != 'PENDING_NEW':  
+            if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
                _operada(order_report) 
             
         
             
 
 def _operada(order_report):
-    # order_data = order_report['orderReport']
+    order_data = order_report['orderReport']
      #################################################
      ###### cambiar esto finalizado el test ##########
      #################################################
-    order_data = order_report
+    #order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
     timestamp_order_report = order_data['transactTime']   
    
    
-    if status == 'CANCELLED':  
+    if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
                 for key, operacion in get.diccionario_operaciones_enviadas.items():
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId and  operacion['status'] != 'TERMINADA':
@@ -583,28 +600,39 @@ def _operada(order_report):
                                 pprint.pprint(get.diccionario_global_operaciones)
                                 pprint.pprint(get.diccionario_operaciones_enviadas) 
 
-    if status == 'FILLED':     
+    if status == 'FILLED': 
+            ending = 'SI'    
             for operacion_enviada in get.diccionario_operaciones_enviadas.values():  
                 if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA':
                     operacion_enviada['status'] = 'TERMINADA'
-                     
+                if  operacion_enviada['status'] != 'TERMINADA':
+                    ending = 'NO'
                  
             for key, operacionGlobal in get.diccionario_global_operaciones.items():   
-                if operacionGlobal['Symbol'] == symbol and operacionGlobal['ut'] == '0':
+                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':
                    operacionGlobal['status']== '1'
                    pprint.pprint(get.diccionario_global_operaciones)
-       
-                                               
+                if  operacionGlobal['status'] != '1':
+                    ending = 'NO'
+            if ending == 'NO':
+               print("#########################################") 
+               print("#########################################") 
+               print("#########################################")  
+               print("FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO") 
+               print("#########################################") 
+               print("#########################################") 
+               print("#########################################") 
+          #      return render_template('home.html')                                  
                                
                             
     
 def _cancela_orden(order_report):
     
-   # order_data = order_report['orderReport']
+    order_data = order_report['orderReport']
      #################################################
      ###### cambiar esto finalizado el test ##########
      #################################################
-    order_data = order_report
+   # order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
@@ -646,7 +674,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
     print("FUN _cancel_if_orders:  Orden order_status:", order_status)
      # Obtener el estado de la orden
-    if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED']:
+    if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
         #get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
