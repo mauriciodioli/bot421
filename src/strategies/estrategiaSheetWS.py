@@ -136,108 +136,108 @@ def get_instrumento_para_suscripcion_ws():
     
 def market_data_handler_estrategia(message):
         ## mensaje = Ticker+','+cantidad+','+spread
-    time = datetime.now()
-    timeuno = int(time.timestamp())*1000
-   # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-   # message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-    message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
-   
-
-    print(" FUN: market_data_handler_estrategia: _")
-     
-    #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
-    marca_de_tiempo = message["timestamp"]
-    #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+        time = datetime.now()
+        timeuno = int(time.timestamp())*1000
+    # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
+    # message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
+    # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
     
-    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
-    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
-    #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
-    if  (1): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
+
+        print(" FUN: market_data_handler_estrategia: _")
+        
+        #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
+        marca_de_tiempo = message["timestamp"]
+        #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+        #contador = 0
+        #while contador < 100:
+        #    contador +=1
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
+        banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
+        if  (60000): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
             # esto hay que hacerlo aca, solo cada x segundos
-            banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-            print("Tiempo Transcurrido :",marca_de_tiempo - get.VariableParaTiemposMDHandler)
-            if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000:#para testear luego eliminar
-             banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
+            banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
 
-            # pedir el listado de instrumentos existentes en la cta, para verificar
-            # antes de hacer un close. deberia coincidir lo que quiero cerrar con lo que
-            # hay efectivamente para cerrar
+           # pedir el listado de instrumentos existentes en la cta, para verificar
+           # antes de hacer un close. deberia coincidir lo que quiero cerrar con lo que
+           # hay efectivamente para cerrar
 
-            
+                
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
             #print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler ,' account: ' )
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
-    
-    # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
-    # para cumplir con el evento de mercado market data
-    
-    #symbol = message["instrumentId"]["symbol"]
-    #print(symbol)
-    #print(get.diccionario_global_operaciones.items())
-    #lista = list(get.diccionario_global_operaciones.items())
-    #print(lista[0][1]['clOrdId_alta'])
-
-    if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
-        print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
-    elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
-        print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
-    elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
-        print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
-    else:
-       
-       tiempoAhora = datetime.now()
-       estrategiaSheetNuevaWS(message, banderaLecturaSheet)
-       tiempoDespues = datetime.now()
-       teimporAhoraInt = tiempoDespues - tiempoAhora
-       tiempomili =  teimporAhoraInt.total_seconds() * 1000
-       print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
-       
-       """"
-       * NEW
-       * PARTIALLY_FILLED
-       * FILLED
-       * CANCELLED
-       * REJECTED
-       * EXPIRED
-       * PENDING_CANCEL
-       * PENDING_REPLACE
-        REPLACED
-        CALCULATED
-        ACCEPTED_FOR_BIDDING
-        * PENDING_NEW
-        * PARTIALLY_FILLED_CANCELED
-        * PARTIALLY_FILLED_REPLACED
-        * UNKNOWN
-        * ERROR
-        * OK
-       """ 
-       order_report = { 'orderId' : 1686061963452333,
-                        'clOrdId' : 424621963526655,
-                        'proprietary' : "PBCP",
-                        "execId" : 1685959201352046,
-                        "accountId" : {'id': 'REM6603'},
-                        "instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},
-                        'price' : 71.67,
-                        'orderQty' : 15,
-                        'ordType' : 'LIMIT',
-                        'side' : 'BUY',
-                        'timeInForce' : 'DAY',
-                        'transactTime' : '20230606-11:32:43.452-0300',
-                        'avgPx' : 0,
-                        'lastPx' : 0,
-                        'lastQty' : 0,
-                        'cumQty' : 0,
-                        'leavesQty' : 15,
-                        'status' : 'FILLED',
-                        'text' : 'ME_ACCEPTED',
-                        'originatingUsername' : 'PBCP'                        
-                        }
-       order_report_handler( order_report)
         
-    # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
-    # o porque es fin de semana o fuera de horario de negociacion
-    # mejor que no entre a hacer cosas que generen errores
-    # ahora es domingo y me da cero el saldo    
+        # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
+        # para cumplir con el evento de mercado market data
+        
+        #symbol = message["instrumentId"]["symbol"]
+        #print(symbol)
+        #print(get.diccionario_global_operaciones.items())
+        #lista = list(get.diccionario_global_operaciones.items())
+        #print(lista[0][1]['clOrdId_alta'])
+
+        if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
+            print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+        elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
+            print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
+            print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+        else:
+        
+            tiempoAhora = datetime.now()
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            tiempoDespues = datetime.now()
+            teimporAhoraInt = tiempoDespues - tiempoAhora
+            tiempomili =  teimporAhoraInt.total_seconds() * 1000
+            print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+        
+            """"
+            * NEW
+            * PARTIALLY_FILLED
+            * FILLED
+            * CANCELLED
+            * REJECTED
+            * EXPIRED
+            * PENDING_CANCEL
+            * PENDING_REPLACE
+                REPLACED
+                CALCULATED
+                ACCEPTED_FOR_BIDDING
+                * PENDING_NEW
+                * PARTIALLY_FILLED_CANCELED
+                * PARTIALLY_FILLED_REPLACED
+                * UNKNOWN
+                * ERROR
+                * OK
+            """ 
+            order_report = { 'orderId' : 1686061963452333,
+                                'clOrdId' : 424621963526655,
+                                'proprietary' : "PBCP",
+                                "execId" : 1685959201352046,
+                                "accountId" : {'id': 'REM6603'},
+                                "instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},
+                                'price' : 71.67,
+                                'orderQty' : 15,
+                                'ordType' : 'LIMIT',
+                                'side' : 'BUY',
+                                'timeInForce' : 'DAY',
+                                'transactTime' : '20230606-11:32:43.452-0300',
+                                'avgPx' : 0,
+                                'lastPx' : 0,
+                                'lastQty' : 0,
+                                'cumQty' : 0,
+                                'leavesQty' : 15,
+                                'status' : 'FILLED',
+                                'text' : 'ME_ACCEPTED',
+                                'originatingUsername' : 'PBCP'                        
+                                }
+           # order_report_handler( order_report)
+                
+            # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
+            # o porque es fin de semana o fuera de horario de negociacion
+            # mejor que no entre a hacer cosas que generen errores
+            # ahora es domingo y me da cero el saldo    
 
     
     
@@ -530,11 +530,11 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
 
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
-       # order_data = order_report['orderReport']
+        order_data = order_report['orderReport']
         #################################################
         ###### cambiar esto finalizado el test ##########
         #################################################
-        order_data = order_report
+        #order_data = order_report
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
@@ -563,11 +563,11 @@ def order_report_handler( order_report):
             
 
 def _operada(order_report):
-    #order_data = order_report['orderReport']
+    order_data = order_report['orderReport']
      #################################################
      ###### cambiar esto finalizado el test ##########
      #################################################
-    order_data = order_report
+    #order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
@@ -600,10 +600,11 @@ def _operada(order_report):
                 if  operacion_enviada['status'] != 'TERMINADA':
                     endingEnviadas = 'NO'
                  
-            for key, operacionGlobal in get.diccionario_global_operaciones.items():   
+            for key, operacionGlobal in get.diccionario_global_operaciones.items():  
+                print(operacionGlobal['ut'])
                 if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':
                    operacionGlobal['status'] = '1'
-                   pprint.pprint(get.diccionario_global_operaciones)
+                   
                 if  operacionGlobal['status'] == '0':
                     endingGlobal = 'NO'
             
@@ -613,11 +614,11 @@ def _operada(order_report):
     
 def _cancela_orden(order_report):
     
-    #order_data = order_report['orderReport']
+    order_data = order_report['orderReport']
      #################################################
      ###### cambiar esto finalizado el test ##########
      #################################################
-    order_data = order_report
+    #order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
@@ -660,7 +661,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     print("FUN _cancel_if_orders:  Orden order_status:", order_status)
      # Obtener el estado de la orden
     if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
-        #get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+        get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
         for operacion_enviada in get.diccionario_operaciones_enviadas.values():   
@@ -692,11 +693,11 @@ def tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionar
      return diferencia_segundos
 
 def asignarClOrId(order_report):
-       # order_data = order_report['orderReport']
+      order_data = order_report['orderReport']
         #################################################
         ###### cambiar esto finalizado el test ##########
         #################################################
-      order_data = order_report
+      #order_data = order_report
         # Leer un valor específico del diccionario
       clOrdId = order_data['clOrdId']
       symbol = order_data['instrumentId']['symbol']
@@ -719,7 +720,8 @@ def asignarClOrId(order_report):
 ##########################esto es para ws#############################
 
 def endingOperacionBot (endingGlobal,endingEnviadas):
-     if endingGlobal == 'SI' and endingEnviadas == 'SI':
+     if endingGlobal == 'SI' and endingEnviadas == 'SI' and get.diccionario_operaciones_enviadas:
+         
         get.diccionario_operaciones_enviadas.clear()
         print("###############################################") 
         print("###############################################") 
