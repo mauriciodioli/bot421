@@ -43,7 +43,7 @@ def estrategia_sheet_WS():
             get.accountLocalStorage = request.form['cuenta']
             access_token = request.form['access_token']
             correo_electronico = request.form['correo_electronico']
-            
+            get.VariableParaBotonPanico = 0
             ContenidoSheet_list = SuscripcionDeSheet()#**22
            
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
@@ -75,6 +75,7 @@ def estrategia_sheet_WS():
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
+   
     ContenidoSheet = get_instrumento_para_suscripcion_ws()#**66
     ContenidoSheet_list = list(ContenidoSheet)   
    
