@@ -693,16 +693,15 @@ def asignarClOrId(order_report):
       symbol = order_data['instrumentId']['symbol']
       status = order_data['status']   
        
-      if 'wsClOrdId' in order_report:
-         wsClOrdIdAsignar = order_data['wsClOrdId'] 
       pprint.pprint(get.diccionario_operaciones_enviadas) 
       for key, valor in get.diccionario_operaciones_enviadas.items():  
            
         if valor["Symbol"] == symbol and valor["_cliOrderId"] == 0:                  
             if valor["status"] == '1':                
                 # pasa que llegamos aca y wsOrderClId puede no existir mas
-                if status in ['PENDING_NEW','REJECT']:                    
-                        wsClOrdId = wsClOrdIdAsignar
+                if status in ['PENDING_NEW','REJECT']: 
+                    if 'wsClOrdId' in order_report:                
+                        wsClOrdId = order_data['wsClOrdId'] 
                         if  valor["ws_client_order_id"] == int(wsClOrdId):
                             valor["_cliOrderId"] = int(clOrdId)
                             valor["status"] = "2"                            
