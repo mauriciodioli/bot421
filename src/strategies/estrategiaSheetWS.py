@@ -1,6 +1,3 @@
-# exepciones
-#'Working outside of application context.\n\nThis typically means that you attempted to use functionality that needed\nthe current application. To solve this, set up an application context\nwith app.app_context(). See the documentation for more information.'
-
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
@@ -136,15 +133,16 @@ def get_instrumento_para_suscripcion_ws():
     
 def market_data_handler_estrategia(message):
         ## mensaje = Ticker+','+cantidad+','+spread
+    print(message)
     time = datetime.now()
     timeuno = int(time.timestamp())*1000
     # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
     # message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-    # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
+    #message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 68.92, 'size': 100}], 'BI': [{'price': 68.83, 'size': 100}], 'LA': {'price': 68.82, 'size': 3, 'date': 1687786000759}}}    
         ###### BOTON DE PANICO #########        
     response = botonPanicoRH('false') 
     print("respuesta desde el boton", response)
-            
+    #puse uno para probar cuando termino de testear poner != 1        
     if response != 1: ### si es 1 el boton de panico fue activado
 
         print(" FUN: market_data_handler_estrategia: _")
@@ -168,9 +166,9 @@ def market_data_handler_estrategia(message):
            # antes de hacer un close. deberia coincidir lo que quiero cerrar con lo que
            # hay efectivamente para cerrar
 
-                
+        if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos        
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
-            #print ( "ENTROOOO ahora:",  get.VariableParaTiemposMDHandler ,' account: ' )
+            
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
         
         # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
@@ -216,27 +214,11 @@ def market_data_handler_estrategia(message):
                 * ERROR
                 * OK
             """ 
-            order_report = { 'orderId' : 1686061963452333,
-                                'clOrdId' : 424621963526655,
-                                'proprietary' : "PBCP",
-                                "execId" : 1685959201352046,
-                                "accountId" : {'id': 'REM6603'},
-                                "instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},
-                                'price' : 71.67,
-                                'orderQty' : 15,
-                                'ordType' : 'LIMIT',
-                                'side' : 'BUY',
-                                'timeInForce' : 'DAY',
-                                'transactTime' : '20230606-11:32:43.452-0300',
-                                'avgPx' : 0,
-                                'lastPx' : 0,
-                                'lastQty' : 0,
-                                'cumQty' : 0,
-                                'leavesQty' : 15,
-                                'status' : 'FILLED',
-                                'text' : 'ME_ACCEPTED',
-                                'originatingUsername' : 'PBCP'                        
-                                }
+            order_report = { 'orderId' : 1686061963452333,'clOrdId' : 424621963526655,'proprietary' : "PBCP","execId" : 1685959201352046,"accountId" : {'id': 'REM6603'},"instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},'price' : 71.67,'orderQty' : 15,'ordType' : 'LIMIT','side' : 'BUY','timeInForce' : 'DAY','transactTime' : '20230606-11:32:43.452-0300','avgPx' : 0,'lastPx' : 0,'lastQty' : 0,'cumQty' : 0,'leavesQty' : 15,
+                            'status' : 'FILLED',
+                            'text' : 'ME_ACCEPTED',
+                            'originatingUsername' : 'PBCP'                        
+                            }
            # order_report_handler( order_report)
                 
             # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
@@ -266,7 +248,7 @@ def botonPanicoRH(message):
     # Llamada al método /botonPanico utilizando la referencia a wsConnection
         if message == 'true':
          get.VariableParaBotonPanico = 1
-        print("esta dentro del boton de panico ",get.VariableParaBotonPanico)
+        print("Se accionó el Boton de Panico ",get.VariableParaBotonPanico)
         
         return get.VariableParaBotonPanico
     
@@ -544,26 +526,30 @@ def order_report_handler( order_report):
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']   
-        asignarClOrId(order_report)
-     
+        # se fija que cuando venga el reporte el diccionario tenga elementos
+        if len(get.diccionario_operaciones_enviadas) != 0:
+            asignarClOrId(order_report)
         
-            ###### BOTON DE PANICO #########        
-        response = botonPanicoRH('false') 
-        print("respuesta desde el boton", response)
             
-        if response == 1: ### si es 1 el boton de panico fue activado
-            
-            _cancel_if_orders(symbol,clOrdId,status)
-        
-        else:  
-         
-            if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
-                _cancela_orden(order_report)
+                ###### BOTON DE PANICO #########        
+            response = botonPanicoRH('false') 
+            print("respuesta desde el boton", response)
                 
-            # if status == 'EXECUTED':
-            if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-               _operada(order_report) 
+            if response == 1: ### si es 1 el boton de panico fue activado
+                
+                _cancel_if_orders(symbol,clOrdId,status)
+                if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
+                  _operada(order_report) 
             
+            else:  
+            
+                if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
+                    _cancela_orden(order_report)
+                    
+                # if status == 'EXECUTED':
+                if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
+                    _operada(order_report) 
+             
         
             
 
@@ -575,8 +561,7 @@ def _operada(order_report):
     #order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
-    status = order_data['status']
-    timestamp_order_report = order_data['transactTime']   
+    status = order_data['status']   
    
    
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
@@ -606,7 +591,7 @@ def _operada(order_report):
                     endingEnviadas = 'NO'
                  
             for key, operacionGlobal in get.diccionario_global_operaciones.items():  
-                print(operacionGlobal['ut'])
+                print(key," : ",operacionGlobal['ut'])
                 if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':
                    operacionGlobal['status'] = '1'
                    
@@ -669,7 +654,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
-        for operacion_enviada in get.diccionario_operaciones_enviadas.values():   
+        for key, operacion_enviada in get.diccionario_operaciones_enviadas.values():   
             print(operacion_enviada)      
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
@@ -746,4 +731,3 @@ def exception_error(message):
 def exception_handler(e):
     print("Exception Occurred: {0}".format(e.msg))
 
-#'Working outside of application context.\n\nThis typically means that you attempted to use functionality that needed\nthe current application. To solve this, set up an application context\nwith app.app_context(). See the documentation for more information.'
