@@ -133,7 +133,7 @@ def get_instrumento_para_suscripcion_ws():
     
 def market_data_handler_estrategia(message):
         ## mensaje = Ticker+','+cantidad+','+spread
-    print(message)
+    #print(message)
     time = datetime.now()
     timeuno = int(time.timestamp())*1000
     # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
@@ -567,7 +567,7 @@ def _operada(order_report):
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
                 for key, operacion in get.diccionario_operaciones_enviadas.items():
-                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == clOrdId and  operacion['status'] != 'TERMINADA':
+                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA':
                                 ut_a_devolver = operacion['_ut_']                                
                                 operacion['status'] = 'TERMINADA'
                                 for key, operacionGlobal in get.diccionario_global_operaciones.items():
@@ -654,7 +654,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
-        for key, operacion_enviada in get.diccionario_operaciones_enviadas.values():   
+        for key, operacion_enviada in get.diccionario_operaciones_enviadas.items():   
             print(operacion_enviada)      
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
@@ -695,8 +695,9 @@ def asignarClOrId(order_report):
        
       if 'wsClOrdId' in order_report:
          wsClOrdIdAsignar = order_data['wsClOrdId'] 
-    
-      for key, valor in get.diccionario_operaciones_enviadas.items():       
+      pprint.pprint(get.diccionario_operaciones_enviadas) 
+      for key, valor in get.diccionario_operaciones_enviadas.items():  
+           
         if valor["Symbol"] == symbol and valor["_cliOrderId"] == 0:                  
             if valor["status"] == '1':                
                 # pasa que llegamos aca y wsOrderClId puede no existir mas
