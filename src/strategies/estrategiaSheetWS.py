@@ -136,22 +136,11 @@ def get_instrumento_para_suscripcion_ws():
     
 def market_data_handler_estrategia(message):
         ## mensaje = Ticker+','+cantidad+','+spread
-<<<<<<< HEAD
-<<<<<<< HEAD
-    message = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 1}], 'LA': {'price': 72.44, 'size': 2, 'date': 1684504670967}}}
-=======
+
     message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
     message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
     message = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
-=======
-    time = datetime.now()
-    timeuno = int(time.timestamp())*1000
-   # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-   # message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-   # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}    
->>>>>>> origin/pcDaniel
-   
->>>>>>> origin/pcDaniel
+
 
     print(" FUN: market_data_handler_estrategia: _")
      
@@ -221,12 +210,13 @@ def market_data_handler_estrategia(message):
         * ERROR
         * OK
        """ 
+       simbolo =  message['instrumentId']['symbol']
        order_report = { 'orderId' : 1686061963452333,
                         'clOrdId' : 424621963526655,
                         'proprietary' : "PBCP",
                         "execId" : 1685959201352046,
                         "accountId" : {'id': 'REM6603'},
-                        "instrumentId" : {'marketId': 'ROFX', 'symbol': 'MERV - XMEV - GGAL - 48hs'},
+                        "instrumentId" : {'marketId': 'ROFX','symbol':simbolo},
                         'price' : 71.67,
                         'orderQty' : 15,
                         'ordType' : 'LIMIT',
@@ -242,7 +232,7 @@ def market_data_handler_estrategia(message):
                         'text' : 'ME_ACCEPTED',
                         'originatingUsername' : 'PBCP'                        
                         }
-      # order_report_handler( order_report)
+       order_report_handler( order_report)
         
     # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
     # o porque es fin de semana o fuera de horario de negociacion
@@ -675,7 +665,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     print("FUN _cancel_if_orders:  Orden order_status:", order_status)
      # Obtener el estado de la orden
     if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
-        #get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+        get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
         for operacion_enviada in get.diccionario_operaciones_enviadas.values():
