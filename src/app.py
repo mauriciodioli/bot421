@@ -32,6 +32,7 @@ from strategies.datoSheet import datoSheet
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
+from social.media_e_mail import media_e_mail
 from models.usuario import Usuario
 from models.orden import orden
 from flask_login import LoginManager
@@ -79,6 +80,7 @@ app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
 app.register_blueprint(imagenesOperaciones)
+app.register_blueprint(media_e_mail)
 
 
 print(DATABASE_CONNECTION_URI)

@@ -9,31 +9,73 @@
   <a class="btn btn-primary btn-lg" href="/operar" role="button">Operaciones</a>
 </div>
 <script>
-  
+// Definir la función showError
+function showError(message) {
+  console.error(message);
+  // Aquí puedes agregar el código para mostrar el error al usuario, como una alerta o una notificación en la página.
+}
+//{% if cuenta is defined %}
+// Acceder a los tokens desde el diccionario de contexto de Flask
+var cuenta = "{{ cuenta[0] }}";
+var usuario = "{{ cuenta[1] }}";
+var selector = "{{ cuenta[2] }}";
 
- 
-  //{% if cuenta is defined %}
-  // Acceder a los tokens desde el diccionario de contexto de Flask
-    var cuenta = "{{ cuenta[0] }}";
-    var usuario = "{{ cuenta[1] }}";
-    var selector = "{{ cuenta[2] }}";
-  
 
-    // Almacenar los tokens en el localStorage
-    localStorage.setItem("cuenta", cuenta);
-    localStorage.setItem("usuario", usuario);
-    localStorage.setItem("selector",selector);
-  //{% endif %}
- 
+// Almacenar los tokens en el localStorage
+localStorage.setItem("cuenta", cuenta);
+localStorage.setItem("usuario", usuario);
+localStorage.setItem("selector", selector);
+//{% endif %}
 
-  // Obtener los tokens de localStorage
-  function obtenerTokens() {
-    var access_token = localStorage.getItem('access_token');
-    var refresh_token = localStorage.getItem('refresh_token');
-    return {access_token, refresh_token};
-  }
+var accesstoken;
+var refreshtoken;
+var usuario1;
 
- 
+// Obtener los tokens de localStorage y realizar la solicitud fetch
+function obtenerTokens() {
+  accesstoken = localStorage.getItem('access_token');
+  correo_electronico = localStorage.getItem('correo_electronico');
+  refreshtoken = localStorage.getItem('refresh_token');
+  usuario1 = localStorage.getItem('usuario');
+
+  fetch('https://ipapi.co/json/')
+    .then(response => response.json())
+    .then(data => {
+      const ip = data.ip;
+      console.log(ip);
+      console.log(correo_electronico);
+      console.log(usuario1);
+      localStorage.setItem('ip', ip);
+
+      if (ip) {
+        try {
+          // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
+          $.ajax({
+            type: "POST",
+            url: "{{ url_for('media_e_mail.save_ip') }}",
+            contentType: "application/json",
+            data: JSON.stringify({ 'ip': ip, 'accesstoken': access_token, 'correo_electronico': correo_electronico, 'usuario1': usuario1 }),
+            success: function (response) {
+              
+                showError("envio correctamente");
+             
+            },
+            error: function (error) {
+              // handle error
+              showError("Hubo un error en la solicitud AJAX");
+            }
+          });
+        } catch (error) {
+          showError("Se produjo un error inesperado");
+        }
+      }
+    })
+    .catch(error => console.error(error));
+}
+
+// Llamar a la función obtenerTokens
+obtenerTokens();
+
 
 </script>
 {% endblock%}
