@@ -39,14 +39,15 @@
               <th scope="col"> Vol. Venta</th>                           
               <th scope="col">Ult. Precio Operado</th>
           -->   
-              <th scope="col">clOrdId</th>
+              <th scope="col">orderId</th>  
+              <th scope="col">clOrdId</th>             
               <th scope="col">symbol</th>
               <th scope="col">accountId</th>
               <th scope="col">ordType</th>
               <th scope="col">price</th>
               <th scope="col"> orderQty</th>                           
               <th scope="col">side</th>
-              <th scope="col">text</th>
+              <th scope="col">status</th>
               <th scope="col">proprietary</th>
               <th scope="col">Cancel</th>
               <th scope="col">Modif</th>
@@ -56,14 +57,15 @@
       <tbody>
         {% for dato in datos%}
           <tr>
-              <th scope="row">{{dato.clOrdId}}</th>
+              <th scope="row">{{dato.orderId}}</th>
+              <th>{{dato.clOrdId}}</th>
               <th>{{dato.instrumentId.symbol}}</th>
               <th>{{dato.accountId.id}}</th>
               <th>{{dato.ordType}}</th>
               <th>{{dato.price}}</th>
               <th>{{dato.orderQty}}</th>
               <th>{{dato.side}}</th>
-              <th>{{dato.text}}</th>
+              <th>{{dato.status}}</th>
               <th>{{dato.proprietary}}</th>
              <!-- <td><a href="/webSocket/{{dato.instrumentId.symbol}}" class="btn btn-primary btn-sm">Suscribir</a></td>-->                            
               <td>
