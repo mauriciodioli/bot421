@@ -758,7 +758,7 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
                         "accountCuenta": accountCuenta
                             }
             get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-       # pprint.pprint( get.diccionario_operaciones_enviadas)
+        pprint.pprint( get.diccionario_operaciones_enviadas)
         return diccionario
    except:  
         print("contraseña o usuario incorrecto")  
