@@ -501,7 +501,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
         }
     # Cargar cada objeto Orden en el diccionario global con una clave única
          get.diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
-
+         estadoOperacionAnterioCargaDiccionarioEnviadas(account,usuario,correo_electronico)
         
         
     # Acceder al diccionario global y a los objetos Orden
@@ -568,7 +568,7 @@ def _operada(order_report):
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
                 for key, operacion in get.diccionario_operaciones_enviadas.items():
-                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA':
+                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
                                 ut_a_devolver = operacion['_ut_']                                
                                 operacion['status'] = 'TERMINADA'
                                 for key, operacionGlobal in get.diccionario_global_operaciones.items():
@@ -578,6 +578,8 @@ def _operada(order_report):
                                         pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
+                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and operacion['status'] == 'CANCELLED':                
+                                operacion['status'] = 'TERMINADA'
                                 pprint.pprint(get.diccionario_global_operaciones)
                                 pprint.pprint(get.diccionario_operaciones_enviadas) 
 
@@ -708,6 +710,60 @@ def asignarClOrId(order_report):
                             valor["status"] = "2"                            
                 else:
                     valor["_cliOrderId"] = int(clOrdId) 
+                    
+def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
+   try:        
+        repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+        
+        datos = repuesta_operacion['orders']
+        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
+        diccionario = {}
+
+        for dato in datos:
+            orderId = dato['orderId']
+            clOrdId = dato['clOrdId']
+            proprietary = dato['proprietary']
+            execId = dato['execId']
+            accountId = dato['accountId']
+            Symbol = dato['instrumentId']['symbol']
+            price = dato['price']
+            orderQty = dato['orderQty']
+            ordType = dato['ordType']
+            side = dato['side']
+            timeInForce = dato['timeInForce']
+            transactTime = dato['transactTime']
+            avgPx = dato['avgPx']
+            lastPx = dato['lastPx']
+            lastQty = dato['lastQty']
+            cumQty = dato['cumQty']
+            leavesQty = dato['leavesQty']
+            status = dato['status']
+            text = dato['text']
+            originatingUsername = dato['originatingUsername']
+
+            
+            diccionario = {
+                        "Symbol": Symbol,
+                        "_t_": 'None',
+                        "_tr_": 'None',
+                        "_s_": 'None',
+                        "_ut_": orderQty,
+                        "precio Offer": 'None',
+                        "ws_client_order_id": 'None',
+                        "_cliOrderId": int(clOrdId),
+                        "timestamp": datetime.now(),
+                        "status": "status",
+                        "user_id": user_id,
+                        "userCuenta": userCuenta,
+                        "accountCuenta": accountCuenta
+                            }
+            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+       # pprint.pprint( get.diccionario_operaciones_enviadas)
+        return diccionario
+   except:  
+        print("contraseña o usuario incorrecto")  
+        flash('Loggin Incorrect')    
+   return render_template("login.html" )                    
 ##########################esto es para ws#############################
 
 def endingOperacionBot (endingGlobal,endingEnviadas):
