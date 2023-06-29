@@ -658,8 +658,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId)
           # Aumentar el valor de ut en get.diccionario_global_operaciones        
-        for key, operacion_enviada in get.diccionario_operaciones_enviadas.items():   
-            print(operacion_enviada)      
+        for key, operacion_enviada in get.diccionario_operaciones_enviadas.items(): 
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
                     operacion_enviada["status"] = 'PENDING_CANCEL'                     
@@ -697,7 +696,7 @@ def asignarClOrId(order_report):
       symbol = order_data['instrumentId']['symbol']
       status = order_data['status']   
        
-      pprint.pprint(get.diccionario_operaciones_enviadas) 
+      #pprint.pprint(get.diccionario_operaciones_enviadas) 
       for key, valor in get.diccionario_operaciones_enviadas.items():  
            
         if valor["Symbol"] == symbol and valor["_cliOrderId"] == 0:                  
@@ -761,8 +760,8 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
                             }
             get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
             #pprint.pprint( get.diccionario_operaciones_enviadas)
-        for key, valor in get.diccionario_operaciones_enviadas.items():
-            print(key," : ",valor['_cliOrderId'])
+        #for key, valor in get.diccionario_operaciones_enviadas.items():
+        #    print(key," : ",valor['_cliOrderId'])
         return 'ok'
    except:  
         print("contraseña o usuario incorrecto")  
