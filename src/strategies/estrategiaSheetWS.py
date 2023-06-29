@@ -578,6 +578,7 @@ def _operada(order_report):
                                         pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
+                             # aqui termina las ordenes canceladas que se cargaron inicalmente               
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and operacion['status'] == 'CANCELLED':                
                                 operacion['status'] = 'TERMINADA'
                                 pprint.pprint(get.diccionario_global_operaciones)
@@ -758,7 +759,7 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
                         "accountCuenta": accountCuenta
                             }
             get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-       # pprint.pprint( get.diccionario_operaciones_enviadas)
+        pprint.pprint( get.diccionario_operaciones_enviadas)
         return diccionario
    except:  
         print("contraseña o usuario incorrecto")  
