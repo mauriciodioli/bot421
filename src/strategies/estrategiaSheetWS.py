@@ -215,11 +215,11 @@ def market_data_handler_estrategia(message):
                 * ERROR
                 * OK
             """ 
-            order_report = { 'orderId' : 1686061963452333,'clOrdId' : 424621963526655,'proprietary' : "PBCP","execId" : 1685959201352046,"accountId" : {'id': 'REM6603'},"instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},'price' : 71.67,'orderQty' : 15,'ordType' : 'LIMIT','side' : 'BUY','timeInForce' : 'DAY','transactTime' : '20230606-11:32:43.452-0300','avgPx' : 0,'lastPx' : 0,'lastQty' : 0,'cumQty' : 0,'leavesQty' : 15,
-                            'status' : 'FILLED',
-                            'text' : 'ME_ACCEPTED',
-                            'originatingUsername' : 'PBCP'                        
-                            }
+          #  order_report = { 'orderId' : 1686061963452333,'clOrdId' : 424621963526655,'proprietary' : "PBCP","execId" : 1685959201352046,"accountId" : {'id': 'REM6603'},"instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},'price' : 71.67,'orderQty' : 15,'ordType' : 'LIMIT','side' : 'BUY','timeInForce' : 'DAY','transactTime' : '20230606-11:32:43.452-0300','avgPx' : 0,'lastPx' : 0,'lastQty' : 0,'cumQty' : 0,'leavesQty' : 15,
+          #                  'status' : 'FILLED',
+          #                  'text' : 'ME_ACCEPTED',
+          #                  'originatingUsername' : 'PBCP'                        
+          #                  }
            # order_report_handler( order_report)
                 
             # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
@@ -249,7 +249,7 @@ def botonPanicoRH(message):
     # Llamada al método /botonPanico utilizando la referencia a wsConnection
         if message == 'true':
          get.VariableParaBotonPanico = 1
-        print("Se accionó el Boton de Panico ",get.VariableParaBotonPanico)
+        print("Se accionó el Boton de Panico ?",get.VariableParaBotonPanico)
         
         return get.VariableParaBotonPanico
     
@@ -424,7 +424,7 @@ def calcularMepAl30WS(message):
 
 def instrument_by_symbol_para_CalculoMep(message):
       #print("__________FUN instrument_by_symbol_para_CalculoMep:____________",message) 
-      print("__________FUN instrument_by_symbol_para_CalculoMep:____________") 
+      #print("_FUN CalculoMep:_") 
       try:
         
                 
