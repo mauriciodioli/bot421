@@ -45,7 +45,7 @@ def estrategia_sheet_WS():
             correo_electronico = request.form['correo_electronico']
             get.VariableParaBotonPanico = 0
             ContenidoSheet_list = SuscripcionDeSheet()#**22
-           
+            estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
                                     market_data_handler=market_data_handler_estrategia,
@@ -190,7 +190,7 @@ def market_data_handler_estrategia(message):
         else:
         
             tiempoAhora = datetime.now()
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             tiempoDespues = datetime.now()
             teimporAhoraInt = tiempoDespues - tiempoAhora
             tiempomili =  teimporAhoraInt.total_seconds() * 1000
@@ -501,7 +501,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
         }
     # Cargar cada objeto Orden en el diccionario global con una clave única
          get.diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
-         estadoOperacionAnterioCargaDiccionarioEnviadas(account,usuario,correo_electronico)
+       
         
         
     # Acceder al diccionario global y a los objetos Orden
@@ -718,9 +718,11 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
         datos = repuesta_operacion['orders']
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
         diccionario = {}
-
-        for dato in datos:
-            orderId = dato['orderId']
+        get.diccionario_operaciones_enviadas.clear()
+       
+        for dato in datos: 
+          if dato['orderId'] is not None:
+            pprint.pprint(dato)          
             clOrdId = dato['clOrdId']
             proprietary = dato['proprietary']
             execId = dato['execId']
@@ -752,18 +754,25 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
                         "ws_client_order_id": 'None',
                         "_cliOrderId": int(clOrdId),
                         "timestamp": datetime.now(),
-                        "status": "status",
+                        "status": status,
                         "user_id": user_id,
                         "userCuenta": userCuenta,
                         "accountCuenta": accountCuenta
                             }
+            
+           
             get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-        pprint.pprint( get.diccionario_operaciones_enviadas)
-        return diccionario
+            #pprint.pprint(get.diccionario_operaciones_enviadas)
+       
+        print("______________________estadoOperacionAnterioCargaDiccionarioEnviadas_________________")
+        
+           
+        for key,valor in get.diccionario_operaciones_enviadas.items():
+            print(key," : ",valor['_cliOrderId'])
+        return 'ok'
    except:  
-        print("contraseña o usuario incorrecto")  
-        flash('Loggin Incorrect')    
-   return render_template("login.html" )                    
+        print("no carga correctamente el diccionario")         
+   return 'ok'                  
 ##########################esto es para ws#############################
 
 def endingOperacionBot (endingGlobal,endingEnviadas):
