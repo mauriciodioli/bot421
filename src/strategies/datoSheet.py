@@ -127,7 +127,7 @@ def datetime_encoder(obj):
 
 
 ################ AQUI DEFINO LA COMPRA POR WS ################
-def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, message):
+def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, mepCedear, message):
     saldocta = get.VariableParaSaldoCta### preguntar si existe el saldo de cuanta para recien operar
     #saldocta = 1000000
     ut = abs(int(ut))
@@ -258,67 +258,92 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
                         get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
                         print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
-                elif senial == 'closed.':
+                
+                elif senial == 'closed.' and trade_en_curso == 'None': 
+                
                     if isinstance(message["marketData"]["OF"][0]["price"], float):
                             precio = float(message["marketData"]["OF"][0]["price"])
                             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
-                            ws_client_order_id = _ws_client_order_id
                             
-                            user_id = get.diccionario_global_operaciones[Symbol]['user_id']
-                            userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
-                            accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
-
-                            diccionario = {
-                                "Symbol": Symbol,
-                                "_t_": tipo_de_activo,
-                                "_tr_": trade_en_curso,
-                                "_s_": senial,
-                                "_ut_": ut,
-                                "precio Offer": precio,
-                                "_ws_client_order_id": ws_client_order_id,
-                                "_cliOrderId": 0,
-                                "timestamp": datetime.now(),
-                                "status": "1",
-                                "user_id": user_id,
-                                "userCuenta": userCuenta,
-                                "accountCuenta": accountCuenta
-                            }
-                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-                            pprint.pprint(get.diccionario_operaciones_enviadas)                            
-                            print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
-                            print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
-                            get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
-                            print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
+                           
+                           
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                             precio = float(message["marketData"]["LA"]["price"])
                             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
-                            ws_client_order_id = _ws_client_order_id
+                            
                            
+                    #AQUI PONE COMO TERMINADA CUANDO MANDA LA OPERACION
+                    for key, valor in get.diccionario_operaciones_enviadas.items():
+                        if  valor['Symbol'] == message["instrumentId"]["symbol"] and valor['_cliOrderId'] == cliOrderId:
+                             valor["status"] = 'TERMINADA'
+                
+                
+            #debe estar aqui por que puede ser que get.diccionario_global_operaciones[Symbol]['ut'] == 0
+            elif senial == 'closed.' and trade_en_curso == 'operar' : 
+                    if isinstance(message["marketData"]["OF"][0]["price"], float):
+                            precio = float(message["marketData"]["OF"][0]["price"])
+                            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
                             user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                             userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
                             accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
-
                             diccionario = {
-                                "Symbol": Symbol,
-                                "_t_": tipo_de_activo,
-                                "_tr_": trade_en_curso,
-                                "_s_": senial,
-                                "_ut_": ut,
-                                "precio Last": precio,
-                                "_ws_client_order_id": ws_client_order_id,
-                                "_cliOrderId": 0,
-                                "timestamp": datetime.now(),
-                                "status": "1",
-                                "user_id": user_id,
-                                "userCuenta": userCuenta,
-                                "accountCuenta": accountCuenta
-                            }
-                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario                           
-                            print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")                        
+                                    "Symbol": Symbol,
+                                    "_t_": tipo_de_activo,
+                                    "_tr_": trade_en_curso,
+                                    "_s_": senial,
+                                    "_ut_": ut,
+                                    "precio Last": precio,
+                                    "_ws_client_order_id": ws_client_order_id,
+                                    "_cliOrderId": 0,
+                                    "timestamp": datetime.now(),
+                                    "status": "1",
+                                    "user_id": user_id,
+                                    "userCuenta": userCuenta,
+                                    "accountCuenta": accountCuenta
+                                }
+                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario                       
+                            print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
                             pprint.pprint(get.diccionario_operaciones_enviadas)
-                            print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
-                            get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
-                            print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
+                                                        
+                            if  get.diccionario_operaciones_enviadas[Symbol] == message["instrumentId"]["symbol"] and get.diccionario_operaciones_enviadas[Symbol]['_cliOrderId'] == cliOrderId:
+                                    get.diccionario_operaciones_enviadas[Symbol]['_ut_'] = str(int(get.diccionario_operaciones_enviadas[Symbol]['_ut_']) - ut)
+                                    print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_operaciones_enviadas[Symbol]['ut'])
+                                    if get.diccionario_operaciones_enviadas[Symbol]['_ut_'] == 0 :
+                                         valor["status"] = 'TERMINADA'
+                           
+                    elif isinstance(message["marketData"]["LA"]["price"], float):
+                            precio = float(message["marketData"]["LA"]["price"])
+                            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+                            user_id = get.diccionario_global_operaciones[Symbol]['user_id']
+                            userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
+                            accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
+                            diccionario = {
+                                    "Symbol": Symbol,
+                                    "_t_": tipo_de_activo,
+                                    "_tr_": trade_en_curso,
+                                    "_s_": senial,
+                                    "_ut_": ut,
+                                    "precio Last": precio,
+                                    "_ws_client_order_id": ws_client_order_id,
+                                    "_cliOrderId": 0,
+                                    "timestamp": datetime.now(),
+                                    "status": "1",
+                                    "user_id": user_id,
+                                    "userCuenta": userCuenta,
+                                    "accountCuenta": accountCuenta
+                                }
+                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario                       
+                            print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
+                            pprint.pprint(get.diccionario_operaciones_enviadas)
+                                                         
+                            if  get.diccionario_operaciones_enviadas[Symbol] == message["instrumentId"]["symbol"] and get.diccionario_operaciones_enviadas[Symbol]['_cliOrderId'] == cliOrderId:
+                                    get.diccionario_operaciones_enviadas[Symbol]['_ut_'] = str(int(get.diccionario_operaciones_enviadas[Symbol]['_ut_']) - ut)
+                                    print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_operaciones_enviadas[Symbol]['ut'])
+                                    if get.diccionario_operaciones_enviadas[Symbol]['_ut_']== 0 :
+                                         valor["status"] = 'TERMINADA'
+                       
+                            
+                            
     except Exception as e:
             print("Error en OperacionWs:", e)
 
