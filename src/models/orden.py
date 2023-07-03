@@ -74,7 +74,7 @@ class Orden(db.Model):
    
 
 
-    def crear_tabla(serlf):
+    def crear_tabla(self):
          insp = inspect(db.engine)
          if not insp.has_table("orden"):
               db.create_all()

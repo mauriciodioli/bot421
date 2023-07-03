@@ -31,9 +31,10 @@ class Cuenta(db.Model):
         
 
    
+    def __repr__(self):
+        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta})"
 
-
-    def crear_tabla_cuentas(serlf):
+    def crear_tabla_cuentas(self):
          insp = inspect(db.engine)
          if not insp.has_table("cuentas"):
               db.create_all()
@@ -46,3 +47,4 @@ class MerShema(ma.Schema):
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
+

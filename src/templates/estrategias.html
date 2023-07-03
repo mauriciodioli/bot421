@@ -22,15 +22,16 @@
                   -->         
                 </div> 
                 <div>
-                    <p>Para iniciar estrategia que gana por spread presionar el boton.</p>
+                    <p>INICIO MANUAL DE LA ESTRATEGIA.</p>
                     <form action="/estrategia_sheet_WS/" method="POST">
-                       
                         <input type="hidden" name="access_token" id="access_token">                       
-                        <input type="hidden" name="usuario" id = "usuario" >  
-                        <input type="hidden" name="correo_electronico" id = "correo_electronico"  >
-                        <input type="hidden" name="cuenta" id ="cuenta" >
-                     <button type="submit" class="btn btn-primary btn-block my-2">Estrategia Sheet Ws</button>    
-                </form>
+                        <input type="hidden" name="usuario" id="usuario">  
+                        <input type="hidden" name="correo_electronico" id="correo_electronico">
+                        <input type="hidden" name="cuenta" id="cuenta">
+                        <button type="submit" class="btn btn-primary btn-block my-2" onclick="setLocalStorageValue('MANUAL')">Estrategia Sheet Ws</button>    
+                    </form>
+                    <p>INICIO AUTOMATICO DE LA ESTRATEGIA</p>
+                    <a class="btn btn-danger btn-lg d-inline-block"  role="button" onclick="setLocalStorageValue('AUTOMATICO')">RUN</a>
                 </div>
                 <div>
                     <p>Para iniciar estrategia presionar el boton.</p>
@@ -56,7 +57,9 @@
             document.getElementById("usuario").value = usuario
             document.getElementById("correo_electronico").value = correo_electronico
             document.getElementById("access_token").value = access_token
-            
+            function setLocalStorageValue(value) {
+                localStorage.setItem('inicio_automatico', value);
+            }
         </script>
     </div>
 {%endblock%}
