@@ -22,6 +22,7 @@ class Usuario(db.Model):
     cuentas = relationship("Cuenta", back_populates="usuarios")
     orden = relationship("Orden", back_populates="usuarios")
     imagenes = relationship("Image", back_populates="usuarios")
+    triggerEstrategia = relationship("TriggerEstrategia", back_populates="usuarios")
    
     
  # constructor

@@ -33,13 +33,16 @@ from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
+from automatizacion.programar_trigger import programar_trigger
 from models.usuario import Usuario
+from models.triggerEstrategia import triggerEstrategia
 from models.orden import orden
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
 from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
-
+import schedule
+import time
 
 
 
@@ -81,6 +84,8 @@ app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
 app.register_blueprint(imagenesOperaciones)
 app.register_blueprint(media_e_mail)
+app.register_blueprint(programar_trigger)
+app.register_blueprint(triggerEstrategia)
 
 
 print(DATABASE_CONNECTION_URI)
@@ -95,6 +100,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
+
 # Creación de la instancia del objeto LoginManager
 #login_manager = LoginManager()
 #login_manager.init_app(app)
@@ -105,10 +111,9 @@ ma = Marshmallow(app)
 #login_manager.request_loader(request_loader)
 
 @app.route("/")
-def entrada():
-  a=1
-  b=2
-  return redirect("index")
+def entrada():  
+      
+    return redirect("index")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -119,3 +124,7 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
     app.run(debug=True)
+    # Ciclo para ejecutar las tareas programadas
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

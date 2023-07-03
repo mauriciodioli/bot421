@@ -1,0 +1,83 @@
+{% extends 'layouts/layout.html' %}
+{% block content %}
+
+    <title>Programar Trigger</title>
+
+    <style>
+        .custom-btn {
+            font-size: 12px;
+            padding: 5px 10px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            width: 80px;
+            height: 30px;
+        }
+    </style>
+
+    <div class="container p-4">
+        <h1>Programar Trigger</h1>
+
+        <!-- Agregar la tabla para mostrar la hora programada -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Hora de inicio</th>
+                    <th scope="col">Hora de finalización</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="horaInicioProgramada"></td>
+                    <td id="horaFinProgramada"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form id="formulario">
+            <label for="horaInicio">Hora de inicio:</label>
+            <input type="time" id="horaInicio" name="horaInicio" required>
+            <label for="horaFin">Hora de finalización:</label>
+            <input type="time" id="horaFin" name="horaFin" required>
+            <button type="submit" class="btn btn-primary btn-sm btn-block form-control custom-btn">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("formulario").addEventListener("submit", function(event) {
+            event.preventDefault();
+    
+            // Obtener las horas ingresadas por el usuario
+            var horaInicio = document.getElementById("horaInicio").value;
+            var horaFin = document.getElementById("horaFin").value;
+    
+            // Obtener los datos adicionales del localStorage
+            var usuario = localStorage.getItem("usuario");
+            var correoElectronico = localStorage.getItem("correo_electronico");
+            var cuenta = localStorage.getItem("cuenta");
+            var tokenAcceso = localStorage.getItem("access_token"); 
+            var accesoManualAutomatico = localStorage.getItem("inicio_automatico"); 
+            
+            // Crear un objeto con los datos a enviar al servidor Flask
+            var datos = {
+                horaInicio: horaInicio,
+                horaFin: horaFin,
+                usuario: usuario,
+                correoElectronico: correoElectronico,
+                cuenta: cuenta,
+                tokenAcceso: tokenAcceso,
+                accesoManualAutomatico: accesoManualAutomatico
+            };
+    
+            // Enviar los datos al servidor Flask utilizando Axios
+            axios.post("/programador_trigger", datos)
+                .then(function(response) {
+                    console.log(response.data);
+                })
+                .catch(function(error) {
+                    console.error(error);
+                });
+        });
+    </script>
+
+{% endblock %}

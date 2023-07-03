@@ -35,7 +35,7 @@ class Image(db.Model):
    
 
 
-    def crear_tabla_image(serlf):
+    def crear_tabla_image(self):
          insp = inspect(db.engine)
          if not insp.has_table("image"):
               db.create_all()
