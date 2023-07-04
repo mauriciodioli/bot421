@@ -26,23 +26,20 @@
       </thead>
       <tbody>
         <!-- Aquí se mostrarán los usuarios -->
-        {% for usuario in datos %}
+        {% for estrategia in datos %}
         <tr>
-          <td>{{ usuario.id }}</td>
-          <td>{{ usuario.correo_electronico }}</td>          
-          <td>{{ usuario.roll }}</td>
+          <td>{{ estrategia.id }}</td>
+          <td>{{ estrategia.user_id }}</td>          
+          <td>{{ estrategia.userCuenta }}</td>
+          <td>{{ estrategia.accountCuenta }}</td>
+          <td>{{ estrategia.horaInicio }}</td>          
+          <td>{{ estrategia.horaFin }}</td>
+          <td>{{ estrategia.ManualAutomatico }}</td>
           <td class="d-flex">
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" data-usuario-id="{{ usuario.id }}"  data-usuario-email="{{ usuario.correo_electronico }}" data-usuario-rol="{{ usuario.roll }}">Editar</button>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal" data-usuario-id="{{ usuario.id }}">Eliminar</button>
+            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" data-usuario-id="{{ estrategia.id }}"  data-usuario-email="{{ estrategia.ManualAutomatico }}" data-usuario-horaInicio="{{ estrategia.horaInicio }}" data-usuario-horaFin="{{ estrategia.horaFin }}">Editar</button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal" data-usuario-id="{{ estrategia.id }}">Eliminar</button>
                        
-            <form action="/estrategias-usuario" method="POST">
-                <div class="form-group">
-                    <input type="hidden" name="usuario_id" placeholder="escribe cuenta" value="{{ usuario.id }}" class="form-control">
-                </div>                               
-                <div class="form-group">
-                    <button type="submit" class="btn btn-secondary btn-sm btn-block form-control mx-2">Estrategias</button>
-                </div>
-            </form>
+            
         </td>
         
         </tr>
@@ -68,7 +65,7 @@
       <div class="form-group">
         <div class="g-recaptcha my-2" data-sitekey="TU_CLAVE_DE_SITIO"></div>
       </div>
-      <button type="submit" class="btn btn-primary my-2">Registrarse como usuario</button>
+      <button type="submit" class="btn btn-primary my-2">Registrar estrategia</button>
     </form>
   </div>
 
@@ -76,7 +73,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Usuario</h5>
+          <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Estrategia</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="editarUsuarioForm" action="/editar-usuario" method="POST">
@@ -107,7 +104,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="eliminarUsuarioModalLabel">Eliminar Usuario</h5>
+          <h5 class="modal-title" id="eliminarUsuarioModalLabel">Eliminar Estrategia</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form action="/eliminar-usuario" method="POST">

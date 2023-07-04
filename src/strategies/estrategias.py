@@ -8,7 +8,7 @@ from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
-
+from models.triggerEstrategia import TriggerEstrategia
 
 estrategias = Blueprint('estrategias',__name__)
 
@@ -19,7 +19,19 @@ class States(enum.Enum):
     WAITING_ORDERS = 2
 
 
-#primera estrategia de practica
+
+@estrategias.route("/estrategias-usuario",  methods=["POST"])
+def estrategias_usuario():
+    try:
+      if request.method == 'POST': 
+            usuario_id = request.form['usuario_id']
+            print(usuario_id)
+            estrategias = TriggerEstrategia.query.get(usuario_id)
+            return render_template("/estrategias/estrategiasUsuarios.html",datos = estrategias)
+    
+    except:
+       print('no hay estrategias') 
+    return  render_template("/estrategias/errorEstrategiaVacia.html")
 @estrategias.route('/inicioEstrategias/')
 def inicioEstrategias():
  try:

@@ -14,6 +14,7 @@ from models.usuario import Usuario
 
 
 
+
 usuario = Blueprint('usuario',__name__)
 
 @usuario.route("/usuarios/",  methods=["GET"])
@@ -34,7 +35,8 @@ def eliminar_usuario():
     db.session.delete(usuario)
     db.session.commit()
     flash('Usuario eliminado correctamente.')
-    return redirect(url_for('usuarios'))
+    usuarios = db.session.query(Usuario).all()
+    return render_template("/usuarios/usuarios.html",datos = usuarios)
 
 @usuario.route("/editar-usuario",  methods=["POST"])
 def editar_usuario():
@@ -44,4 +46,6 @@ def editar_usuario():
     usuario.roll = request.form['rol']
     db.session.commit()
     flash('Usuario editado correctamente.')
-    return redirect(url_for('usuarios'))
+    usuarios = db.session.query(Usuario).all()
+    return render_template("/usuarios/usuarios.html",datos = usuarios)
+
