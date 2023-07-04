@@ -48,12 +48,14 @@
           const refresh_token = "{{ tokens[1] }}";
           const correo_electronico = "{{ tokens[2] }}";
           const expiry_timestamp = "{{ tokens[3] }}";  // Marca de tiempo de expiración
+          const roll = "{{ tokens[4] }}";
       
           // Almacenar los tokens y la marca de tiempo de expiración en el localStorage
           localStorage.setItem("access_token", access_token);
           localStorage.setItem("refresh_token", refresh_token);
           localStorage.setItem("correo_electronico", correo_electronico);
           localStorage.setItem("expiry_timestamp", expiry_timestamp);
+          localStorage.setItem("roll",roll);
         {% endif %}
       }
       else {
@@ -78,6 +80,7 @@
         localStorage.setItem("refresh_token", response.refresh_token);
         localStorage.setItem("correo_electronico", correo_electronico);
         localStorage.setItem("expiry_timestamp", response.expiry_timestamp);
+        
         // Usar el nuevo access_token para la solicitud AJAX
         document.getElementById("token").value = response.access_token;
         console.log("Se ha obtenido un nuevo token exitosamente.");

@@ -21,7 +21,7 @@ container {
   margin-bottom: 20px;
   margin-right: 20px;
 }
-.modal {
+#modal {
   display: none; /* Ocultar el modal de forma predeterminada */
   position: fixed;
   z-index: 1;

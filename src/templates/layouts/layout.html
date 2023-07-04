@@ -54,6 +54,20 @@
             <div class="collapse navbar-collapse " id="navbarNav" >
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">
+                      
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Administracion</a>
+                        <ul class="dropdown-menu">            
+                          <li><a class="dropdown-item" href="/usuarios/" >Usuarios</a></li>  
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/SuscripcionPorWebSocket/">Cuentas</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/SuscripcionPorWebSocket/">Estrategias</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/SuscripcionPorWebSocket/">Procesos</a></li>                          
+                        </ul>
+                        
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Subir</a>
                         <ul class="dropdown-menu">              
                                      
@@ -156,6 +170,7 @@
         let cuentaBroker = localStorage.getItem("cuenta");  
         let simulado = localStorage.getItem("selector");  
         let access_token = localStorage.getItem("access_token")
+        let rol = localStorage.getItem('roll');
 
 
         console.log(correo_electronico);
@@ -191,6 +206,12 @@
             }
 
 
+                // Verificar si el rol es "administrador"
+        if (rol == 'administrador') {
+            // Ocultar el enlace del menú de administración
+            var adminLink = document.querySelector('.nav-link.dropdown-toggle');
+            adminLink.style.display = 'none';
+        }
 
 
 
