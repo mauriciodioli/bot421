@@ -99,7 +99,9 @@ def programador_trigger():
             print("Auomatico registrada exitosamente!")
             print("automatico registrada usuario id !",triggerEstrategia_id)
          #   todasLasCuentas = get_cuentas_de_broker(user_id)
-            triggerEstrategia1 = TriggerEstrategia.query.filter_by(id=triggerEstrategia_id).first()   
+            triggerEstrategia1 = TriggerEstrategia.query.filter_by(id=triggerEstrategia_id).first() 
+            render_template("/")
+              
           #  for cuenta in todasLasCuentas:
            #       print(cuenta['accountCuenta'])
 

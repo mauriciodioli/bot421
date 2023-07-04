@@ -15,9 +15,10 @@ class TriggerEstrategia(db.Model):
     userCuenta = db.Column(db.String(120), nullable=False)
     passwordCuenta = db.Column(db.LargeBinary(128), nullable=False)
     accountCuenta = db.Column(db.String(500), nullable=True)
-    horaInicio = db.Column(Time)  # Nuevo atributo de tiempo
-    horaFin = db.Column(Time)  # Nuevo atributo de tiempo
-    ManualAutomatico = accountCuenta = db.Column(db.String(500), nullable=False)
+    horaInicio = db.Column(db.Time)  # Nuevo atributo de tiempo
+    horaFin = db.Column(db.Time)  # Nuevo atributo de tiempo
+    ManualAutomatico = db.Column(db.String(500), nullable=False)
+    
     
     usuarios = relationship("Usuario", back_populates="triggerEstrategia")
     
