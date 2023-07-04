@@ -72,8 +72,10 @@ from flask import jsonify
 
 @registrarUsuario.route('/registro-usuario', methods=['POST'])
 def registro_usuario():
-    correo_electronico = request.form['correo_electronico']
-    password = request.form['password']
+    correo_electronico = request.form['correo_electronico']   
+    password = request.form['password']   
+   
+    print('password:', password)
     
     # Verificar si el usuario ya está registrado
     usuario_existente = Usuario.query.filter_by(correo_electronico=correo_electronico).first()

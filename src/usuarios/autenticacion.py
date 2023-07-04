@@ -251,7 +251,7 @@ def loginUsuario():
         db.session.commit()
         
         # Configurar las cookies de JWT
-        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp]))
+        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
         # Guardar tokens en localStorage
