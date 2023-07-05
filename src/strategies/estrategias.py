@@ -9,6 +9,7 @@ import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 from models.triggerEstrategia import TriggerEstrategia
+from models.usuario import Usuario
 
 estrategias = Blueprint('estrategias',__name__)
 
@@ -24,10 +25,14 @@ class States(enum.Enum):
 def estrategias_usuario():
     try:
       if request.method == 'POST': 
-            usuario_id = request.form['usuario_id']
-            print(usuario_id)
-            estrategias = TriggerEstrategia.query.get(usuario_id)
-            return render_template("/estrategias/estrategiasUsuarios.html",datos = estrategias)
+            usuario_id = request.form['usuario_id']                      
+            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            for estrategia in estrategias:
+                print("ID:", estrategia.id)
+                print("Name:", estrategia.userCuenta)
+                # Print other attributes as needed
+                print()
+            return render_template("/estrategias/estrategiaUsuarios.html",datos = estrategias)
     
     except:
        print('no hay estrategias') 
