@@ -22,7 +22,7 @@ def usuarios():
    try:
       if request.method == 'GET': 
            usuarios = db.session.query(Usuario).all()
-           
+           db.session.close()
            return render_template("/usuarios/usuarios.html",datos = usuarios)
    except:
        print('no hay usuarios') 
@@ -36,6 +36,7 @@ def eliminar_usuario():
     db.session.commit()
     flash('Usuario eliminado correctamente.')
     usuarios = db.session.query(Usuario).all()
+    db.session.close()
     return render_template("/usuarios/usuarios.html",datos = usuarios)
 
 @usuario.route("/editar-usuario",  methods=["POST"])

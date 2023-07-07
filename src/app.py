@@ -24,6 +24,7 @@ from routes.api_externa_conexion.comprar import comprar
 from routes.api_externa_conexion.operaciones import operaciones
 from routes.api_externa_conexion.validaInstrumentos import validaInstrumentos
 from routes.api_externa_conexion.cuenta import cuenta
+from cuentas.cuentaUsuarioBroker import cuentas
 
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
@@ -73,6 +74,7 @@ app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
 app.register_blueprint(get_login)
 app.register_blueprint(cuenta)
+app.register_blueprint(cuentas)
 app.register_blueprint(orden)
 app.register_blueprint(comprar)
 app.register_blueprint(operaciones)
