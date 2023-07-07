@@ -97,11 +97,12 @@ def programador_trigger():
             db.session.commit()  # Confirmar los cambios
             db.session.refresh(triggerEstrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
             triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
-            db.session.close()
+           
             print("Auomatico registrada exitosamente!")
             print("automatico registrada usuario id !",triggerEstrategia_id)
          #   todasLasCuentas = get_cuentas_de_broker(user_id)
             triggerEstrategia1 = TriggerEstrategia.query.filter_by(id=triggerEstrategia_id).first() 
+            db.session.close()
             render_template("/")
               
           #  for cuenta in todasLasCuentas:

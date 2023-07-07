@@ -165,7 +165,57 @@ def registrar_cuenta():
     
    return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
 
+@cuenta.route("/registro-Cuenta-administracion/",  methods=["POST"])
+def registrar_cuenta_administracion():
+   if request.method == 'POST':
+         todasLasCuentas = []
+         correo_electronico = request.form['userSistema']
+         userCuenta = request.form['userCuentaBroker']
+         passwordCuenta = request.form['passwordCuentaBroker']
+         accountCuenta = request.form['accountCuentaBroker']
+         print("___________cuentas___________userCuenta",userCuenta)
+        
+         print("___________cuentas___________accountCuenta",accountCuenta)
+         print("___________cuentas___________correo_electronico",correo_electronico)
+         # Codificar las cadenas usando UTF-8
+         userCuenta_encoded = userCuenta.encode('utf-8')
+         passwordCuenta_encoded = passwordCuenta.encode('utf-8')
+         accountCuenta_encoded = accountCuenta.encode('utf-8')
 
+         crea_tabla_cuenta()
+         try:     
+            usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()  # Obtener el objeto Usuario correspondiente al user_id
+
+            cuenta = Cuenta( 
+                        id=None,   
+                        user_id=usuario.id,
+                        userCuenta=userCuenta_encoded,
+                        passwordCuenta=passwordCuenta_encoded,
+                        accountCuenta=accountCuenta_encoded                
+                        )
+          
+            db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
+            db.session.commit()  # Confirmar los cambios
+            db.session.refresh(cuenta)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+            cuenta_id = cuenta.id  # Obtener el ID generado
+           
+            print("Auomatico registrada exitosamente!")
+            print("automatico registrada usuario id !",cuenta_id)
+         #   todasLasCuentas = get_cuentas_de_broker(user_id)
+            
+            cuentasBroker = db.session.query(Cuenta).all()
+            
+            db.session.close()
+            print("Cuenta registrada exitosamente!")            
+
+            return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentasBroker)
+             
+         except:               
+                db.session.rollback()  # Hacer rollback de la sesión
+                db.session.close()
+                print("No se pudo registrar la cuenta.")
+                return 'problemas con la base de datos'
+  
 
 def get_cuentas_de_broker(user_id):
     

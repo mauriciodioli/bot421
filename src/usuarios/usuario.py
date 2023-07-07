@@ -5,7 +5,7 @@ from flask import current_app
 
 import requests
 import json
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,abort    
 from models.instrumento import Instrumento
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
@@ -16,6 +16,18 @@ from models.usuario import Usuario
 
 
 usuario = Blueprint('usuario',__name__)
+
+@usuario.route("/usuariosModal/", methods=['GET'])
+def obtener_usuarios_modal():
+    try:
+        usuarios = db.session.query(Usuario).all()
+        db.session.close()
+        # Crear una lista de diccionarios para cada usuario
+        usuarios_json = [{'id': usuario.id, 'nombre': usuario.correo_electronico} for usuario in usuarios]
+        return jsonify(usuarios=usuarios_json)
+    except Exception as e:
+        print('Error al obtener usuarios:', str(e))
+        abort(500)  # Devuelve un código de estado de error 500 si hay problemas con la base de datos
 
 @usuario.route("/usuarios/",  methods=["GET"])
 def usuarios():
