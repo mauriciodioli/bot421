@@ -26,3 +26,16 @@ def cuentas_Usuario_Broker():
    except:
        print('no hay usuarios') 
    return 'problemas con la base de datos'
+
+@cuentas.route("/eliminar-Cuenta-broker-administracion/",  methods=["POST"])
+def eliminar_cuenta_broker_administracion():
+
+    cuenta_id = request.form['eliminarCuentaId']
+    cuenta = Cuenta.query.get(cuenta_id)
+    db.session.delete(cuenta)
+    db.session.commit()
+    flash('Cuenta eliminada correctamente.')
+    cuentas = db.session.query(Cuenta).all()
+    db.session.close()
+    return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentas)
+
