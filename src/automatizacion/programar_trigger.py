@@ -34,7 +34,8 @@ def crea_tabla_triggerEstrategia():
         accountCuenta="REM6603",  
         horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
         horaFin=hora_fin,  # Ejemplo de hora de fin (17:00) 
-        ManualAutomatico = "MANUAL"       
+        ManualAutomatico = "MANUAL",  
+        nombreEstrategia = "sheet"     
     )
     triggerEstrategia.crear_tabla_triggerEstrategia()
     print("Tabla creada!")
@@ -87,7 +88,8 @@ def programador_trigger():
                      accountCuenta=cuenta.accountCuenta, 
                      horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
                      horaFin=hora_fin,  # Ejemplo de hora de fin (17:00)     
-                     ManualAutomatico = accesoManualAutomatico                
+                     ManualAutomatico = accesoManualAutomatico         
+                            
                      )
             
            

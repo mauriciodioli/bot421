@@ -11,34 +11,37 @@
 {% extends 'layouts/layout.html'%}
 {% block content%}
 
- 
+  
   <div>
-    <h2>Lista de Usuarios</h2>
+    <h2>Cuentas de Usuarios</h2>
     <table class="table table-dark table-striped">
       <thead>           
         <tr>
-          <th scope="col">Id</th>          
-          <th scope="col">Email</th>
-          <th scope="col">Rol</th>
+          <th scope="col">id</th>          
+          <th scope="col">user_id</th>
+          <th scope="col">userCuenta</th>
+          <th scope="col">accountCuenta</th>
           <th scope="col">Acciones</th>
         </tr>            
       </thead>
       <tbody>
         <!-- Aquí se mostrarán los usuarios -->
-        {% for usuario in datos %}
+        {% for Cuenta in datos %}
         <tr>
-          <td>{{ usuario.id }}</td>
-          <td>{{ usuario.correo_electronico }}</td>          
-          <td>{{ usuario.roll }}</td>
+          <td>{{ Cuenta.id }}</td>
+          <td>{{ Cuenta.user_id }}</td>          
+          <td>{{ Cuenta.userCuenta }}</td>
+          <td>{{ Cuenta.accountCuenta }}</td>          
+         
           <td class="d-flex">
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" data-usuario-id="{{ usuario.id }}"  data-usuario-email="{{ usuario.correo_electronico }}" data-usuario-rol="{{ usuario.roll }}">Editar</button>
-            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal" data-usuario-id="{{ usuario.id }}" onclick="setUserData(this.getAttribute('data-usuario-id'))">Eliminar</button>
+            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarCuentaModal" data-Cuenta-id="{{ Cuenta.id }}"  data-Cuenta-email="{{ Cuenta.correo_electronico }}" data-Cuenta-rol="{{ Cuenta.roll }}">Editar</button>
+            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarCuentaModal" data-Cuenta-id="{{ Cuenta.id }}" onclick="setUserData(this.getAttribute('data-Cuenta-id'))">Eliminar</button>
 
            
                        
-            <form action="/estrategias-usuario" method="POST">
+            <form action="/estrategias-Cuenta" method="POST">
                 <div class="form-group">
-                    <input type="hidden" name="usuario_id" placeholder="escribe cuenta" value="{{ usuario.id }}" class="form-control">
+                    <input type="hidden" name="Cuenta_id" placeholder="escribe cuenta" value="{{ Cuenta.id }}" class="form-control">
                 </div>                               
                 <div class="form-group">
                     <button type="submit" class="btn btn-secondary btn-sm btn-block form-control mx-2">Estrategias</button>
@@ -53,7 +56,7 @@
   </div>
 
   <div>
-    <form id="registro-usuario-form" action="/registro-usuario" method="POST">
+    <form id="registro-Cuenta-form" action="/registro-Cuenta" method="POST">
       <div class="form-group">
         <label for="correo_electronico">Correo electrónico:</label>
         <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" required>
@@ -69,28 +72,28 @@
       <div class="form-group">
         <div class="g-recaptcha my-2" data-sitekey="TU_CLAVE_DE_SITIO"></div>
       </div>
-      <button type="submit" class="btn btn-primary my-2">Registrarse como usuario</button>
+      <button type="submit" class="btn btn-primary my-2">Registrarse como Cuenta</button>
     </form>
   </div>
 
-  <div class="modal fade" id="editarUsuarioModal" tabindex="-1" aria-labelledby="editarUsuarioModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editarCuentaModal" tabindex="-1" aria-labelledby="editarCuentaModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Usuario</h5>
+          <h5 class="modal-title" id="editarCuentaModalLabel">Editar Cuenta</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form id="editarUsuarioForm" action="/editar-usuario" method="POST">
+        <form id="editarCuentaForm" action="/editar-Cuenta" method="POST">
           <div class="modal-body">
-            <input type="hidden" id="editarUsuarioId" name="id">
+            <input type="hidden" id="editarCuentaId" name="id">
             <div class="form-group">
-              <label for="editarUsuarioEmail">Email:</label>
-              <input type="email" class="form-control" id="editarUsuarioEmail" name="email" required>
+              <label for="editarCuentaEmail">Email:</label>
+              <input type="email" class="form-control" id="editarCuentaEmail" name="email" required>
             </div>
             <div class="form-group">
-              <label for="editarUsuarioRol">Rol:</label>
-              <select class="form-control" id="editarUsuarioRol" name="rol">
-                <option value="USUARIO">Usuario</option>
+              <label for="editarCuentaRol">Rol:</label>
+              <select class="form-control" id="editarCuentaRol" name="rol">
+                <option value="Cuenta">Cuenta</option>
                 <option value="ADMINISTRADOR">Administrador</option>
               </select>
             </div>
@@ -104,17 +107,17 @@
     </div>
   </div>
 
-  <div class="modal fade" id="eliminarUsuarioModal" tabindex="-1" aria-labelledby="eliminarUsuarioModalLabel" aria-hidden="true">
+  <div class="modal fade" id="eliminarCuentaModal" tabindex="-1" aria-labelledby="eliminarCuentaModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="eliminarUsuarioModalLabel">Eliminar Usuario</h5>
+          <h5 class="modal-title" id="eliminarCuentaModalLabel">Eliminar Cuenta</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form action="/eliminar-usuario" method="POST">
+        <form action="/eliminar-Cuenta" method="POST">
           <div class="modal-body">
-            <input type="hidden" id="eliminarUsuarioId" name="usuario_id">
-            <p class="fw-bold text-dark">¿Está seguro de que desea eliminar este usuario?</p>
+            <input type="hidden" id="eliminarCuentaId" name="Cuenta_id">
+            <p class="fw-bold text-dark">¿Está seguro de que desea eliminar este Cuenta?</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -157,21 +160,21 @@
     confirm_password.onkeyup = validatePassword;
   });
 
-  const editButtons = document.querySelectorAll('[data-bs-target="#editarUsuarioModal"]');
+  const editButtons = document.querySelectorAll('[data-bs-target="#editarCuentaModal"]');
   editButtons.forEach(button => {
     button.addEventListener('click', () => {
-      const userId = button.dataset.usuarioId;
-      const userEmail = button.dataset.usuarioEmail;
-      const userRol = button.dataset.usuarioRol;
-      document.querySelector('#editarUsuarioId').value = userId;
-      document.querySelector('#editarUsuarioEmail').value = userEmail;
-      document.querySelector('#editarUsuarioRol').value = userRol;
+      const userId = button.dataset.CuentaId;
+      const userEmail = button.dataset.CuentaEmail;
+      const userRol = button.dataset.CuentaRol;
+      document.querySelector('#editarCuentaId').value = userId;
+      document.querySelector('#editarCuentaEmail').value = userEmail;
+      document.querySelector('#editarCuentaRol').value = userRol;
     });
   });
 
 
   function setUserData(userId) {
-    document.getElementById('eliminarUsuarioId').value = userId;
+    document.getElementById('eliminarCuentaId').value = userId;
   
   }
 

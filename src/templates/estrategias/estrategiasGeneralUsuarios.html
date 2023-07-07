@@ -33,7 +33,7 @@
       </thead>
       <tbody>
         <!-- Aquí se mostrarán los usuarios -->
-        {% for estrategia in datos[1] %}
+        {% for estrategia in datos %}
         <tr>
           <td>{{ estrategia.id }}</td>
           <td>{{ estrategia.user_id }}</td>          
@@ -46,7 +46,7 @@
           <td class="d-flex">
             <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.cuenta }}">Editar</button>
             <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-id="{{ estrategia.id }}">RUN EDIT</button>
             
           </td>
         </tr>
@@ -143,12 +143,10 @@
             
               <label for="horaFin" style="color: black;  margin-bottom: 10px;">Hora de finalización:</label>
               <input type="time" id="horaFin" name="horaFin" required>
-              
-              <input type="hidden" id="editarIdTrigger" name="IdTrigger" value="">
-              <input type="hidden" id="editarUserId" name="user_id" value="">
+              <input type="hidden" id="editarUsuarioId" name="id">
                     
                          
-              <select class="form-control" id="ManualAutomatico" name="ManualAutomatico">
+              <select class="form-control" id="editarManualAutomaticol" name="ManualAutomatico">
                 <option value="MANUAL">Manual</option>
                 <option value="ADAUTOMATICO">Automatico</option>
               </select>
@@ -221,12 +219,6 @@
     function setUserData(userId, triggerId) {
       document.getElementById('eliminarEstrategiaUserId').value = userId;
       document.getElementById('eliminarEstrategiaIdTrigger').value = triggerId;
-    }
-
-    function setTriggerData(userId,triggerId) {
-      document.getElementById('editarIdTrigger').value = triggerId;   
-      document.getElementById('editarUserId').value = userId;   
-     
     }
  
   
