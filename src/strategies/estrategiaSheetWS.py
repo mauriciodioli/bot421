@@ -168,6 +168,7 @@ def market_data_handler_estrategia(message):
 
         if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos        
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
+            #VariableParaSaldoCta
             banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
         
@@ -334,7 +335,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                                         # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                          
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
-                                    
+                                    mepCe = 0   
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:     
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):                                  
@@ -344,12 +345,13 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                             if isinstance(message["marketData"]["LA"]["size"], int):                                  
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                         if Liquidez_ahora_cedear < int(get.diccionario_global_operaciones[Symbol]['ut']):
-                                            if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                                datoSheet.OperacionWs(Symbol, tipo_de_activo,0, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                            if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo,0, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCe, message)
                                             # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
-                                        else:                                          
-                                            if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                                    datoSheet.OperacionWs(Symbol, tipo_de_activo,0, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                        else:   
+                                                                              
+                                            if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
+                                                    datoSheet.OperacionWs(Symbol, tipo_de_activo,0, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCe, message)
                                            
 
                                     if senial == 'closed.':  
@@ -668,9 +670,9 @@ def _cancela_orden(order_report):
             
             
             #if diferencia >= 300:
-            if diferencia_segundos >= 300:
+            #if diferencia_segundos >= 300:
             
-                _cancel_if_orders(symbol,clOrdId,status)            
+            _cancel_if_orders(symbol,clOrdId,status)            
     
     
      
@@ -781,8 +783,8 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
                             timeInForce = dato['timeInForce']
                             transactTime = dato['transactTime']
                             avgPx = dato['avgPx']
-                            lastPx = dato['lastPx']
-                            lastQty = dato['lastQty']
+                            #lastPx = dato['lastPx']
+                            #lastQty = dato['lastQty']
                             cumQty = dato['cumQty']
                             leavesQty = dato['leavesQty']
                             status = dato['status']
