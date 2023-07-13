@@ -46,7 +46,7 @@ def crea_tabla_triggerEstrategia():
 @programar_trigger.route('/trigger/')
 def trigger():
     
-    return render_template("/automatizacion/trigger.html" )
+    return render_template("/automatizacion/trigger.html")
 
 @programar_trigger.route('/programador_trigger/', methods=['POST'])
 def programador_trigger():

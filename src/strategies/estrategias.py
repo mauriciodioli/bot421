@@ -38,6 +38,7 @@ def estrategias_usuario():
       if request.method == 'POST': 
             usuario_id = request.form['usuario_id']                      
             estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            db.session.close()
             for estrategia in estrategias:
                 print("ID:", estrategia.id)
                 print("Name:", estrategia.userCuenta)

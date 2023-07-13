@@ -207,7 +207,7 @@
 
 
                 // Verificar si el rol es "administrador"
-        if (rol == 'administrador') {
+        if (rol != 'ADMINISTRADOR') {
             // Ocultar el enlace del menú de administración
             var adminLink = document.querySelector('.nav-link.dropdown-toggle');
             adminLink.style.display = 'none';

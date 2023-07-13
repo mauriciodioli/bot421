@@ -60,5 +60,6 @@ def editar_usuario():
     db.session.commit()
     flash('Usuario editado correctamente.')
     usuarios = db.session.query(Usuario).all()
+    db.session.close()
     return render_template("/usuarios/usuarios.html",datos = usuarios)
 
