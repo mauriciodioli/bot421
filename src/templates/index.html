@@ -97,10 +97,13 @@
       // Obtener el token del localStorage
       var token = localStorage.getItem('access_token');
       var refresh_token = localStorage.getItem('refresh_token');
+      selctorEnvironment = localStorage.getItem('selector')
+      cuenta = localStorage.getItem('cuenta')
       const payload = JSON.parse(atob(token.split('.')[1]));
       const tokenExpirationDate = new Date(payload.exp * 1000);
       const currentDateTime = new Date();
       vencimiento_access_token = currentDateTime.getTime() > tokenExpirationDate.getTime();
+      
       //console.log("tokenExpirationDate: ",tokenExpirationDate," currentDateTime: ",currentDateTime," vencimiento: ",vencimiento_access_token)
       
       if (token) { // Verificar si el token existe en el localStorage
@@ -109,7 +112,7 @@
           type: "POST",
           url: "{{ url_for('autenticacion.loginIndex') }}",
           contentType: "application/json",
-          data: JSON.stringify({'token': token,'refresh_token':refresh_token}),
+          data: JSON.stringify({'token': token,'refresh_token':refresh_token,'selctorEnvironment':selctorEnvironment,'cuenta':cuenta}),
           success: function(response) {
             if (response.redirect) {
               window.location.href = response.redirect;

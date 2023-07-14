@@ -146,6 +146,8 @@ def loginIndex():
         
         access_token = request.json.get('token')
         refresh_token  = request.json.get('refresh_token')
+        selector =request.json.get('selctorEnvironment')
+        account = request.json.get('cuenta')
         print("___________________todken   ",access_token)
         if access_token:
             app = current_app._get_current_object()
@@ -155,18 +157,21 @@ def loginIndex():
                 user = Usuario.query.get(user_id)
                 print("user ___________",user.correo_electronico)
                 print("userid ________________",user_id)
+                print("user ________________",user.cuentas[0].userCuenta)
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
                    #  return redirect(url_for('get_login.loginApi'))
                     # Crear una respuesta que redirige a la ruta autenticacion.loginBroker y enviar el token como parámetro
-                    resp = make_response(render_template('login.html'))
+                    resp = make_response(render_template('home.html', cuenta=[account,user.cuentas[0].userCuenta,selector]))
+                    #resp = make_response(render_template('login.html'))
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
                     
                    
                     #return resp
                    #resp = make_response('login.html', tokens=[token,refresh_token])
-                    return jsonify({'redirect': url_for('get_login.loginApi')})
+                    return render_template('home.html', cuenta=[account,user,selector])
+                #    return jsonify({'redirect': url_for('get_login.loginApi')})
 
                  
             except jwt.ExpiredSignatureError:
@@ -178,7 +183,8 @@ def loginIndex():
                 print("El token es inválido")
 
         # Si no hay token o el token no es válido, devolver la dirección a la que se debe redirigir
-        return jsonify({'redirect': url_for('get_login.loginApi')})
+        return render_template('home.html', cuenta=[account,user,selector])
+        #return jsonify({'redirect': url_for('get_login.loginApi')})
 
 ##################################################################################################
 
