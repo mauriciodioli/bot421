@@ -16,6 +16,9 @@ from flask_jwt_extended import (
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
+# Importar create_engine y NullPool
+from sqlalchemy import create_engine
+from sqlalchemy.pool import NullPool
 
 from routes.instrumentos import instrumentos
 from routes.instrumentosGet import instrumentosGet
@@ -84,8 +87,12 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # no cache
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-
+engine = create_engine(DATABASE_CONNECTION_URI, poolclass=NullPool)
 db = SQLAlchemy(app)
+# Configurar el pool de conexiones para SQLAlchemy
+db.init_app(app)
+db.session.configure(bind=engine)
+
 ma = Marshmallow(app)
 
 # Creación de la instancia del objeto LoginManager

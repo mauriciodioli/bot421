@@ -44,12 +44,12 @@ def estrategia_sheet_WS():
             access_token = request.form['access_token']
             correo_electronico = request.form['correo_electronico']
             get.VariableParaBotonPanico = 0
-            ContenidoSheet_list = SuscripcionDeSheet()#**22
+            ContenidoSheet_list = SuscripcionDeSheet()
             estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
                                     market_data_handler=market_data_handler_estrategia,
-                                    order_report_handler= order_report_handler,
+                                    order_report_handler=order_report_handler,
                                     error_handler=error_handler,
                                     exception_handler=exception_handler
                                     )
@@ -76,7 +76,7 @@ def estrategia_sheet_WS():
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
    
-    ContenidoSheet = get_instrumento_para_suscripcion_ws()#**66
+    ContenidoSheet = get_instrumento_para_suscripcion_ws()
     ContenidoSheet_list = list(ContenidoSheet)   
    
   
@@ -138,23 +138,19 @@ def market_data_handler_estrategia(message):
     time = datetime.now()
     timeuno = int(time.timestamp())*1000
     # message1 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-    # message2 = {'type': 'Md', 'timestamp': 1684504693780, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 72.44, 'size': 100}], 'BI': [{'price': 72.4, 'size': 100}], 'LA': {'price': 72.44, 'size': 200, 'date': 1684504670967}}}
-    #message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 68.92, 'size': 100}], 'BI': [{'price': 68.83, 'size': 100}], 'LA': {'price': 68.82, 'size': 3, 'date': 1687786000759}}}    
+    # message2 = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 1960, 'size': 100}], 'BI': [{'price': 1955, 'size': 100}], 'LA': {'price': 1956, 'size': 200, 'date': 1684504670967}}}
+    # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 76, 'size': 100}], 'BI': [{'price': 75, 'size': 100}], 'LA': {'price': 75.5, 'size': 3, 'date': 1687786000759}}}    
         ###### BOTON DE PANICO #########        
     response = botonPanicoRH('false') 
-    print("respuesta desde el boton", response)
+    print("MDH respuesta desde el boton de panico", response)
     #puse uno para probar cuando termino de testear poner != 1        
-    if response != 1: ### si es 1 el boton de panico fue activado
+    if response == 1: ### si es 1 el boton de panico fue activado
 
         print(" FUN: market_data_handler_estrategia: _")
         
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
         marca_de_tiempo = message["timestamp"]
         #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
-        #contador = 0
-        #while contador < 100:
-        #    contador +=1
-        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
         banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
@@ -169,17 +165,10 @@ def market_data_handler_estrategia(message):
 
         if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos        
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
-            
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
         
         # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
         # para cumplir con el evento de mercado market data
-        
-        #symbol = message["instrumentId"]["symbol"]
-        #print(symbol)
-        #print(get.diccionario_global_operaciones.items())
-        #lista = list(get.diccionario_global_operaciones.items())
-        #print(lista[0][1]['clOrdId_alta'])
 
         if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
             print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
@@ -316,7 +305,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                            # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                          
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
-                                    
+                                    mepCe =0
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:     
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):                                  
@@ -381,7 +370,7 @@ def calcularMepCedearsWS(message):
      dato = [mep,size,offer_price,bid_price]
      return dato
  
- 
+#gpt01 
  
 def calcularMepAl30WS(message):
      
@@ -526,7 +515,8 @@ def order_report_handler( order_report):
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
-        status = order_data['status']   
+        status = order_data['status']  
+        timestamp_order_report = order_data['transactTime']  
         # se fija que cuando venga el reporte el diccionario tenga elementos
         if len(get.diccionario_operaciones_enviadas) != 0:
             asignarClOrId(order_report)
@@ -534,13 +524,14 @@ def order_report_handler( order_report):
             
                 ###### BOTON DE PANICO #########        
             response = botonPanicoRH('false') 
-            print("respuesta desde el boton", response)
+            print("ORH respuesta desde el boton de panico", response)
                 
             if response == 1: ### si es 1 el boton de panico fue activado
-                
-                _cancel_if_orders(symbol,clOrdId,status)
-                if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                  _operada(order_report) 
+                 
+                 _cancela_orden_boton_panico(order_report)
+               
+                 if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
+                   _operada(order_report) 
             
             else:  
             
@@ -605,6 +596,45 @@ def _operada(order_report):
             endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
                             
+def _cancela_orden_boton_panico(order_report):
+     
+    order_data = order_report['orderReport']
+     #################################################
+     ###### cambiar esto finalizado el test ##########
+     #################################################
+    #order_data = order_report
+    clOrdId = order_data['clOrdId']
+    symbol = order_data['instrumentId']['symbol']
+    status = order_data['status']
+    timestamp_order_report = order_data['transactTime'] 
+    
+    
+    # Recorrer los elementos del diccionario_enviados
+    for key, valor in get.diccionario_operaciones_enviadas.items():       
+        if valor["Symbol"] == symbol and valor['_cliOrderId'] == int(clOrdId): 
+           
+            tiempo_diccionario = valor["timestamp"]
+            # Verificar y ajustar el formato de cadena de fecha si es necesario
+
+            if isinstance(tiempo_diccionario, str):
+                tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")
+           
+            # Convertir el timestamp en milisegundos a objeto datetime
+            # Convertir las cadenas de texto en objetos datetime
+            diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
+           
+
+            print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
+            
+            
+            #diferencia = fecha2_obj - tiempo_diccionario
+            #print("FUN _cancela_orden: Diferencia",diferencia)
+
+            
+            
+            #if diferencia >= 300:
+            #if diferencia_segundos >= 10:
+            _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])            
     
 def _cancela_orden(order_report):
     
@@ -643,9 +673,9 @@ def _cancela_orden(order_report):
             
             
             #if diferencia >= 300:
-            if diferencia_segundos >= 300:
+            #if diferencia_segundos >= 300:
             
-                _cancel_if_orders(symbol,clOrdId,status)            
+            _cancel_if_orders(symbol,clOrdId,status)            
     
     
      
@@ -710,7 +740,10 @@ def asignarClOrId(order_report):
                             valor["status"] = "2"                            
                 else:
                     valor["_cliOrderId"] = int(clOrdId) 
-                    
+        else : 
+             valor["statusActualBotonPanico"] = status
+                   
+                   
 def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
    try:        
         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
@@ -734,8 +767,8 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
             timeInForce = dato['timeInForce']
             transactTime = dato['transactTime']
             avgPx = dato['avgPx']
-            lastPx = dato['lastPx']
-            lastQty = dato['lastQty']
+            #lastPx = dato['lastPx']
+            #lastQty = dato['lastQty']
             cumQty = dato['cumQty']
             leavesQty = dato['leavesQty']
             status = dato['status']
@@ -764,8 +797,8 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
         #    print(key," : ",valor['_cliOrderId'])
         return 'ok'
    except:  
-        print("contraseña o usuario incorrecto")  
-        flash('Loggin Incorrect')    
+        print("error de carga de diccionario de enviados")  
+        flash(' error de carga de diccionario de enviados')    
    return 'ok'                   
 ##########################esto es para ws#############################
 
@@ -791,3 +824,4 @@ def exception_error(message):
 def exception_handler(e):
     print("Exception Occurred: {0}".format(e.msg))
 
+#gpt02

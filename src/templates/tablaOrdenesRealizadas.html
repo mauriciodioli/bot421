@@ -49,9 +49,11 @@
               <th scope="col">side</th>
               <th scope="col">status</th>
               <th scope="col">proprietary</th>
+              <th scope="col">Timestamp</th>
               <th scope="col">Cancel</th>
               <th scope="col">Modif</th>
-              <th scope="col">Vender</th>                            
+              <th scope="col">Vender</th>    
+                                       
           </tr>            
       </thead>
       <tbody>
@@ -67,6 +69,7 @@
               <th>{{dato.side}}</th>
               <th>{{dato.status}}</th>
               <th>{{dato.proprietary}}</th>
+              <th>{{dato.transactTime}}</th>
              <!-- <td><a href="/webSocket/{{dato.instrumentId.symbol}}" class="btn btn-primary btn-sm">Suscribir</a></td>-->                            
               <td>
                 <form action="/cancelarOrden/" method="POST">

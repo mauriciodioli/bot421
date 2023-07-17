@@ -203,7 +203,8 @@ def refresh():
     token = generate_token(username)
     with db.cursor() as cursor:
         cursor.execute('UPDATE usuarios SET token=%s WHERE username=%s', (token, username))
-        db.commit()
+        db.session.commit()
+        db.session.close()
 
     response = make_response(jsonify({'mensaje': 'Token refrescado'}))
     response.set_cookie('token', token, httponly=True)
@@ -249,13 +250,14 @@ def loginUsuario():
         usuario.refresh_token = refresh_token       
         db.session.add(usuario)
         db.session.commit()
-        
+       
         # Configurar las cookies de JWT
         resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp]))
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
         # Guardar tokens en localStorage
         db.session.close()
+       
         return resp
      
     
