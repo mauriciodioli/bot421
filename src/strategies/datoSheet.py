@@ -197,6 +197,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                 if senial == 'OPEN.':
                     if isinstance(message["marketData"]["OF"][0]["price"], float):
                         precio = float(message["marketData"]["OF"][0]["price"])
+                        #precio = float(message["marketData"]["BI"][0]["price"])#
                         get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 
                         ws_client_order_id = _ws_client_order_id
@@ -216,6 +217,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "_cliOrderId": 0,
                                 "timestamp": datetime.now(),
                                 "status": "1",
+                                "statusActualBotonPanico": "",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta
@@ -247,6 +249,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "_cliOrderId": 0,
                                 "timestamp": datetime.now(),
                                 "status": "1",
+                                "statusActualBotonPanico": "",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta
@@ -278,6 +281,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "_cliOrderId": 0,
                                 "timestamp": datetime.now(),
                                 "status": "1",
+                                "statusActualBotonPanico": "",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta
@@ -308,6 +312,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "_cliOrderId": 0,
                                 "timestamp": datetime.now(),
                                 "status": "1",
+                                "statusActualBotonPanico": "",
                                 "user_id": user_id,
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta
