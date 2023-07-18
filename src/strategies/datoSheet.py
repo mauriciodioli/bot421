@@ -195,8 +195,8 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                 _ws_client_order_id =  1001+random.randint(1, 100000)
             
                 if senial == 'OPEN.':
-                    if isinstance(message["marketData"]["OF"][0]["price"], float):
-                        precio = float(message["marketData"]["OF"][0]["price"])
+                    if isinstance(message["marketData"]["BI"][0]["price"], float):
+                        precio = float(message["marketData"]["BI"][0]["price"])
                         #precio = float(message["marketData"]["BI"][0]["price"])#
                         get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 
@@ -213,7 +213,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "_s_": senial,
                                 "_ut_": ut,
                                 "precio Offer": precio,
-                                "ws_client_order_id": ws_client_order_id,
+                                "_ws_client_order_id": ws_client_order_id,
                                 "_cliOrderId": 0,
                                 "timestamp": datetime.now(),
                                 "status": "1",
