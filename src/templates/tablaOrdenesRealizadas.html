@@ -1,116 +1,121 @@
-{% with messages = get_flashed_messages()%}
-{% if messages %}
-{% for message in messages%}  
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{message}}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-{% endfor %}
-{% endif %}
+    {% endfor %}
+  {% endif %}
 {% endwith %}
-{% extends 'layouts/layout.html'%}
-{% block content%}
 
-<table border="1" class="dataframe">
+{% extends 'layouts/layout.html' %}
 
-
-  <div class = 'container p-4'>
-      <div class = 'container p-4'>
-        <form action="/get_trade_history_by_symbol/" method="POST">
-          <input type="text" name="symbol" placeholder="symbol">
-        <!-- <select class="form-select"aria-label="Default select example" name = "selctorEnvironment" id="selctorEnvironment">
-            <option selected>Open this select menu</option>
-            {% for dato in lsymbolos%}
-              <option value="1">{{lsymbolos.instrumentId.symbol}}</option>                        
-            {% endfor %}    
-          </select>-->
-          <Button type="submit">Submit</Button>
-        </form>  
-      </div>
-    <table class="table table-dark table-striped">
-      <thead>           
-          <tr>
-          <!--
-              <th scope="col">Ticker</th>
-              <th scope="col">Timestamp</th>
-              <th scope="col">vol. Compra</th>
-              <th scope="col">precio Compra</th>
-              <th scope="col">precio Venta</th>
-              <th scope="col"> Vol. Venta</th>                           
-              <th scope="col">Ult. Precio Operado</th>
-          -->   
-              <th scope="col">orderId</th>  
-              <th scope="col">clOrdId</th>             
-              <th scope="col">symbol</th>
-              <th scope="col">accountId</th>
-              <th scope="col">ordType</th>
-              <th scope="col">price</th>
-              <th scope="col"> orderQty</th>                           
-              <th scope="col">side</th>
-              <th scope="col">status</th>
-              <th scope="col">proprietary</th>
-              <th scope="col">Cancel</th>
-              <th scope="col">Modif</th>
-              <th scope="col">Vender</th>                            
-          </tr>            
-      </thead>
-      <tbody>
-        {% for dato in datos%}
-          <tr>
-              <th scope="row">{{dato.orderId}}</th>
-              <th>{{dato.clOrdId}}</th>
-              <th>{{dato.instrumentId.symbol}}</th>
-              <th>{{dato.accountId.id}}</th>
-              <th>{{dato.ordType}}</th>
-              <th>{{dato.price}}</th>
-              <th>{{dato.orderQty}}</th>
-              <th>{{dato.side}}</th>
-              <th>{{dato.status}}</th>
-              <th>{{dato.proprietary}}</th>
-             <!-- <td><a href="/webSocket/{{dato.instrumentId.symbol}}" class="btn btn-primary btn-sm">Suscribir</a></td>-->                            
-              <td>
-                <form action="/cancelarOrden/" method="POST">
-                  <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="clOrdId" placeholder="escribe simbolo" value = {{dato.clOrdId.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="price" placeholder="escribe simbolo" value = {{dato.price}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="proprietary" placeholder="escribe simbolo" value = {{dato.proprietary.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="estado" placeholder="escribe simbolo" value = {{dato.text.replace(" ", "")}} class="form-control"> </div> 
-                  
-                  <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
-                </form>
-              </td>
-              <td>
-                <form action="/modificar/" method="POST">
-                  <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="clOrdId" placeholder="escribe simbolo" value = {{dato.clOrdId.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="price" placeholder="escribe simbolo" value = {{dato.price}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="proprietary" placeholder="escribe simbolo" value = {{dato.proprietary.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="estado" placeholder="escribe simbolo" value = {{dato.text.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="accountId" placeholder="escribe simbolo" value = {{dato.accountId.id.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="orderQty" placeholder="escribe simbolo" value = {{dato.orderQty}} class="form-control"> </div> 
-                
-                  <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
-                </form>
-              </td>
-              <td>
-                <form action="/mostrarLaVenta/" method="POST">
-                  <div class="form-group"><input type="hidden" name="symbol" placeholder="escribe simbolo" value = {{dato.instrumentId.symbol.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="clOrdId" placeholder="escribe simbolo" value = {{dato.clOrdId.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="price" placeholder="escribe simbolo" value = {{dato.price}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="proprietary" placeholder="escribe simbolo" value = {{dato.proprietary.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="estado" placeholder="escribe simbolo" value = {{dato.text.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="accountId" placeholder="escribe simbolo" value = {{dato.accountId.id.replace(" ", "")}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="orderQty" placeholder="escribe simbolo" value = {{dato.orderQty}} class="form-control"> </div> 
-                  <div class="form-group"><input type="hidden" name="ordType" placeholder="escribe simbolo" value = {{dato.ordType}} class="form-control"> </div> 
-                
-                  <div class="form-group"><Button type="submit" class="btn btn-primary btn-sm btn-block form-control" >Submit</Button>
-                </form>
-              </td>
-            </tr>  
-         
-        {% endfor %}
-
-      </tbody>
+{% block content %}
+<div class="container p-4">
+  <div class="container p-4">
+    <form action="/get_trade_history_by_symbol/" method="POST">
+      <input type="text" name="symbol" placeholder="symbol">
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  
+  <table id="tabla-datos" class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th scope="col">orderId</th>
+        <th scope="col">clOrdId</th>
+        <th scope="col">symbol</th>
+        <th scope="col">accountId</th>
+        <th scope="col">ordType</th>
+        <th scope="col">price</th>
+        <th scope="col">orderQty</th>
+        <th scope="col">side</th>
+        <th scope="col">status</th>
+        <th scope="col">proprietary</th>
+        <th scope="col">Timestamp</th>
+        <th scope="col">Cancel</th>
+        <th scope="col">Modif</th>
+        <th scope="col">Vender</th>
+       
+      </tr>
+    </thead>
+    <tbody>
+      {% for dato in datos %}
+        <tr>
+          <td>{{ dato.orderId }}</td>
+          <td>{{ dato.clOrdId }}</td>
+          <td>{{ dato.instrumentId.symbol }}</td>
+          <td>{{ dato.accountId.id }}</td>
+          <td>{{ dato.ordType }}</td>
+          <td>{{ dato.price }}</td>
+          <td>{{ dato.orderQty }}</td>
+          <td>{{ dato.side }}</td>
+          <td>{{ dato.status }}</td>
+          <td>{{ dato.proprietary }}</td>
+          <td>{{ dato.transactTime }}</td>
+          <td>
+            <form action="/cancelarOrden/" method="POST">
+              <!-- Campos ocultos -->
+              <input type="hidden" name="symbol" value="{{ dato.instrumentId.symbol.replace(" ", "") }}">
+              <input type="hidden" name="clOrdId" value="{{ dato.clOrdId.replace(" ", "") }}">
+              <input type="hidden" name="price" value="{{ dato.price }}">
+              <input type="hidden" name="proprietary" value="{{ dato.proprietary.replace(" ", "") }}">
+              <input type="hidden" name="estado" value="{{ dato.text.replace(" ", "") }}">
+              <button type="submit" class="btn btn-primary btn-sm btn-block form-control">Submit</button>
+            </form>
+          </td>
+          <td>
+            <form action="/modificar/" method="POST">
+              <!-- Campos ocultos -->
+              <input type="hidden" name="symbol" value="{{ dato.instrumentId.symbol.replace(" ", "") }}">
+              <input type="hidden" name="clOrdId" value="{{ dato.clOrdId.replace(" ", "") }}">
+              <input type="hidden" name="price" value="{{ dato.price }}">
+              <input type="hidden" name="proprietary" value="{{ dato.proprietary.replace(" ", "") }}">
+              <input type="hidden" name="estado" value="{{ dato.text.replace(" ", "") }}">
+              <input type="hidden" name="accountId" value="{{ dato.accountId.id.replace(" ", "") }}">
+              <input type="hidden" name="orderQty" value="{{ dato.orderQty }}">
+              <button type="submit" class="btn btn-primary btn-sm btn-block form-control">Submit</button>
+            </form>
+          </td>
+          <td>
+            <form action="/mostrarLaVenta/" method="POST">
+              <!-- Campos ocultos -->
+              <input type="hidden" name="symbol" value="{{ dato.instrumentId.symbol.replace(" ", "") }}">
+              <input type="hidden" name="clOrdId" value="{{ dato.clOrdId.replace(" ", "") }}">
+              <input type="hidden" name="price" value="{{ dato.price }}">
+              <input type="hidden" name="proprietary" value="{{ dato.proprietary.replace(" ", "") }}">
+              <input type="hidden" name="estado" value="{{ dato.text.replace(" ", "") }}">
+              <input type="hidden" name="accountId" value="{{ dato.accountId.id.replace(" ", "") }}">
+              <input type="hidden" name="orderQty" value="{{ dato.orderQty }}">
+              <input type="hidden" name="ordType" value="{{ dato.ordType }}">
+              <button type="submit" class="btn btn-primary btn-sm btn-block form-control">Submit</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
-{%endblock%}
+
+<script>
+function ordenarDatos(campo) {
+  var tabla = document.getElementById("tabla-datos");
+  var filas = Array.from(tabla.rows).slice(1);
+  
+  filas.sort(function(a, b) {
+    var valorA = a.cells[campo].innerHTML.trim();
+    var valorB = b.cells[campo].innerHTML.trim();
+    return valorA.localeCompare(valorB);
+  });
+  
+  while (tabla.rows.length > 1) {
+    tabla.deleteRow(1);
+  }
+  
+  filas.forEach(function(fila) {
+    tabla.appendChild(fila);
+  });
+}
+</script>
+{% endblock %}

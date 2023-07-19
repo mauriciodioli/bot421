@@ -251,7 +251,9 @@ def get_cuentas_de_broker_usuario():
             app = current_app._get_current_object()
             
             try:
-               user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+               user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+
+              # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Obtener el objeto Usuario correspondiente al user_id
                usuario = Usuario.query.get(user_id)         
               # Buscar todas las cuentas asociadas a ese usuario
@@ -276,7 +278,7 @@ def get_cuentas_de_broker_usuario():
             except:
                      print("No se pudo registrar la cuenta.")
                      db.session.rollback()  # Hacer rollback de la sesión
-                     return render_template("operaciones.html")
+                     return render_template("errorLogueo.html")
      db.session.close()
      return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
   
