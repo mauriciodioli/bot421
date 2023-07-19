@@ -44,7 +44,7 @@ def estrategia_sheet_WS():
             access_token = request.form['access_token']
             correo_electronico = request.form['correo_electronico']
             get.VariableParaBotonPanico = 0
-            ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al 
+            ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
             estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
@@ -101,7 +101,7 @@ def SuscripcionDeSheet():
     
       
     #### aqui se subscribe   
-    mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
+    mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=5)
    
     #print("instrumento_suscriptio",mensaje)
     datos = ContenidoSheet_list
@@ -528,7 +528,7 @@ def order_report_handler( order_report):
                 
             if response == 1: ### si es 1 el boton de panico fue activado
                  
-                 _cancela_orden_boton_panico()
+                 _cancela_orden_boton_panico(order_report)
                
                  if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
                    _operada(order_report) 
@@ -596,12 +596,19 @@ def _operada(order_report):
             endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
                             
-def _cancela_orden_boton_panico():
-   
+def _cancela_orden_boton_panico(order_report):
+    order_data = order_report['orderReport']
+    timestamp_order_report = order_data['transactTime'] 
     # Recorrer los elementos del diccionario_enviados
-    for key, valor in get.diccionario_operaciones_enviadas.items():       
+    for key, valor in get.diccionario_operaciones_enviadas.items():
+        tiempo_diccionario = valor["timestamp"]     
+        if isinstance(tiempo_diccionario, str):
+           tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
+        diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
+        print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
+       # if diferencia_segundos >= 9:              
         _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])            
-    
+        
 def _cancela_orden(order_report):
     
     order_data = order_report['orderReport']
@@ -657,7 +664,8 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         for key, operacion_enviada in get.diccionario_operaciones_enviadas.items(): 
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
-                    operacion_enviada["status"] = 'PENDING_CANCEL'                     
+                    operacion_enviada["status"] = 'PENDING_CANCEL'  
+                    operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL'                   
                     break  # Salir del bucle después de eliminar el elemento encontrado    
                  
        
@@ -702,7 +710,7 @@ def asignarClOrId(order_report):
                 if status in ['PENDING_NEW','REJECT']: 
                     if 'wsClOrdId' in order_report:                
                         wsClOrdId = order_data['wsClOrdId'] 
-                        if  valor["ws_client_order_id"] == int(wsClOrdId):
+                        if  valor["_ws_client_order_id"] == int(wsClOrdId):
                             valor["_cliOrderId"] = int(clOrdId)
                             valor["status"] = "2"  
                             valor["statusActualBotonPanico"] = status                          
@@ -710,10 +718,11 @@ def asignarClOrId(order_report):
                     valor["_cliOrderId"] = int(clOrdId)
             
         if valor["Symbol"] == symbol and valor["_cliOrderId"] ==  int(clOrdId): #carga el estado para el boton te panico                     
+            if valor['statusActualBotonPanico'] != 'PENDING_CANCEL': 
                 if isinstance(tiempo_diccionario, str):
                    tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
                 diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
-                print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
+                print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
                 if diferencia_segundos >= 9:            
                     valor["statusActualBotonPanico"] = status
                    
