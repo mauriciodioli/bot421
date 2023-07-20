@@ -196,7 +196,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
             
                 if senial == 'OPEN.':#*55
                     if isinstance(message["marketData"]["BI"][0]["price"], float):
-                        precio = float(message["marketData"]["BI"][2]["price"])
+                        precio = float(message["marketData"]["BI"][0]["price"])
                         precio1 = float(message["marketData"]["BI"][1]["price"])
                         precio2 = float(message["marketData"]["BI"][2]["price"])
                         #precio = float(message["marketData"]["OF"][0]["price"])#
