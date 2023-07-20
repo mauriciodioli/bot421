@@ -45,7 +45,7 @@ def estrategia_sheet_WS():
             correo_electronico = request.form['correo_electronico']
             get.VariableParaBotonPanico = 0
             ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
-            estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
+            #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
                                     market_data_handler=market_data_handler_estrategia,
@@ -53,6 +53,7 @@ def estrategia_sheet_WS():
                                     error_handler=error_handler,
                                     exception_handler=exception_handler
                                     )
+            #get.pyRofexInicializada.run_websocket()
             carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,ContenidoSheet_list[1])
             # Crear una instancia de RofexMarketDataHandler
             
@@ -100,8 +101,8 @@ def SuscripcionDeSheet():
                get.pyRofexInicializada.MarketDataEntry.LAST]
     
       
-    #### aqui se subscribe   
-    mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=5)
+    #### aqui se subscribe   **55
+    mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=4)
    
     #print("instrumento_suscriptio",mensaje)
     datos = ContenidoSheet_list
