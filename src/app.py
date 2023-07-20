@@ -35,6 +35,7 @@ from routes.suscripciones import suscripciones
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
+from strategies.utils.testWS import testWS
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from usuarios.usuario import usuario
@@ -95,7 +96,7 @@ app.register_blueprint(media_e_mail)
 app.register_blueprint(programar_trigger)
 app.register_blueprint(triggerEstrategia)
 app.register_blueprint(usuario)
-
+app.register_blueprint(testWS)
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
@@ -112,7 +113,6 @@ db = SQLAlchemy(app)
 # Configurar el pool de conexiones para SQLAlchemy
 db.init_app(app)
 db.session.configure(bind=engine)
-
 
 ma = Marshmallow(app)
 
