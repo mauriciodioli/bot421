@@ -45,6 +45,19 @@
                     <p>Para iniciar Estrategia001 presionar el boton.</p>
                     <a class="btn btn-primary btn-lg" href="/Estrategia_001/" role="button">Estrategia_001 </a>
                 </div>
+                <hr style="border-color: white;">
+                <div>
+                <!-- Formulario oculto para enviar los datos mediante POST -->
+                  <form id="ruta_de_test_ws" action="/ruta_de_test_ws" method="POST">
+                    <input type="hidden" name="access_token1" id="access_token1">
+                    <input type="hidden" name="usuario1" id="usuario1">
+                    <input type="hidden" name="correo_electronico1" id="correo_electronico1">
+                    <input type="hidden" name="cuenta1" id="cuenta1">
+                    <!-- Agregar el botón de Bootstrap que dice TEST -->
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">TEST</button>
+                   </form>
+                </div>    
+
             
 
         <script>
@@ -56,7 +69,13 @@
             document.getElementById("usuario").value = usuario
             document.getElementById("correo_electronico").value = correo_electronico
             document.getElementById("access_token").value = access_token
-            
+            document.getElementById("cuenta1").value = cuenta
+            document.getElementById("usuario1").value = usuario
+            document.getElementById("correo_electronico1").value = correo_electronico
+            document.getElementById("access_token1").value = access_token
+            function submitForm() {
+                document.getElementById("ruta_de_test_ws").submit();
+            }
         </script>
     </div>
 {%endblock%}

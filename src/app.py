@@ -32,6 +32,7 @@ from routes.suscripciones import suscripciones
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
+from strategies.utils.testWS import testWS
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from models.usuario import Usuario
@@ -79,7 +80,7 @@ app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
-
+app.register_blueprint(testWS)
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
