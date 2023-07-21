@@ -43,6 +43,7 @@ def ruta_de_test_ws():
             ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
           
             get.pyRofexInicializada.order_report_subscription(account=get.accountLocalStorage, snapshot=True, handler=order_report_handler_test)
+            
             pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(
                 market_data_handler=market_data_handler_test,
                 order_report_handler=order_report_handler_test,
@@ -73,12 +74,14 @@ def get_instrumento_para_suscripcion_ws():
     
 def market_data_handler_test(message):
    
-        if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
-        elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
-        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+    if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
+        print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+    elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
+        print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+    elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
+        print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+    else:
+        print("FUN market_data_handler_estrategia: SI HAY DATOS. ")
         
         
         
@@ -97,8 +100,10 @@ def order_report_handler_test( order_report):
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']  
         timestamp_order_report = order_data['transactTime']  
+        
+        print("FUN order_report_handler_test: web soket mando un reporte. ")
      
-             
+            
         
               
     

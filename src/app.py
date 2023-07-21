@@ -91,11 +91,14 @@ app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
+<<<<<<< HEAD
 app.register_blueprint(imagenesOperaciones)
 app.register_blueprint(media_e_mail)
 app.register_blueprint(programar_trigger)
 app.register_blueprint(triggerEstrategia)
 app.register_blueprint(usuario)
+=======
+>>>>>>> origin/pcDaniel
 app.register_blueprint(testWS)
 
 print(DATABASE_CONNECTION_URI)
