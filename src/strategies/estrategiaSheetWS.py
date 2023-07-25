@@ -46,17 +46,6 @@ def estrategia_sheet_WS():
             access_token = request.form['access_token']
             correo_electronico = request.form['correo_electronico']
             get.VariableParaBotonPanico = 0
-<<<<<<< HEAD
-            ContenidoSheet_list = SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
-            estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage, usuario, correo_electronico)
-            get.pyRofexInicializada.order_report_subscription(account=get.accountLocalStorage, snapshot=True, handler=order_report_handler)
-            pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(
-                market_data_handler=market_data_handler_estrategia,
-                order_report_handler=order_report_handler,
-                error_handler=error_handler,
-                exception_handler=exception_handler
-            )
-=======
             ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
             #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
@@ -70,7 +59,6 @@ def estrategia_sheet_WS():
             carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,ContenidoSheet_list[1])
             # Crear una instancia de RofexMarketDataHandler
             
->>>>>>> origin/pcDaniel
 
          
             carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage, usuario, correo_electronico, ContenidoSheet_list[1])
@@ -154,6 +142,7 @@ def market_data_handler_estrategia(message):
         ###### BOTON DE PANICO #########        
     response = botonPanicoRH('false') 
     print("MDH respuesta desde el boton de panico", response)
+    
     #puse uno para probar cuando termino de testear poner != 1        
     if response != 1: ### si es 1 el boton de panico fue activado
 
@@ -195,7 +184,9 @@ def market_data_handler_estrategia(message):
             teimporAhoraInt = tiempoDespues - tiempoAhora
             tiempomili =  teimporAhoraInt.total_seconds() * 1000
             print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
-        
+    else:
+            print(" FUN: market_data_handler_estrategia: BOTON DE PANICO ACTIVADO_")
+            _cancela_orden_boton_panico()    
             """"
             * NEW
             * PARTIALLY_FILLED
@@ -532,26 +523,12 @@ def order_report_handler( order_report):
         if len(get.diccionario_operaciones_enviadas) != 0:
             asignarClOrId(order_report)#__
         
-            
-                ###### BOTON DE PANICO #########        
-            response = botonPanicoRH('false') 
-            print("ORH respuesta desde el boton de panico", response)
-                
-            if response == 1: ### si es 1 el boton de panico fue activado
-                 
-                 _cancela_orden_boton_panico(order_report)
-               
-                 if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                   _operada(order_report) 
-            
-            else:  
-            
-                if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
-                    _cancela_orden(order_report)
+            if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
+                _cancela_orden(order_report)
                     
                 # if status == 'EXECUTED':
-                if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                    _operada(order_report) 
+            if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
+                _operada(order_report) 
              
         
             
@@ -606,18 +583,22 @@ def _operada(order_report):
             
             endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
+def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status): 
+        #carga el estado para el boton te panico           
+        if valor["Symbol"] == symbol and valor["_cliOrderId"] ==  int(clOrdId):               
+            if valor['statusActualBotonPanico'] != 'PENDING_CANCEL': 
+                if isinstance(tiempo_diccionario, str):
+                   tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
+                diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
+                print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
+               # if diferencia_segundos >= 9:            
+                valor["statusActualBotonPanico"] = status
                             
-def _cancela_orden_boton_panico(order_report):
-    order_data = order_report['orderReport']
-    timestamp_order_report = order_data['transactTime'] 
+def _cancela_orden_boton_panico():
+ 
     # Recorrer los elementos del diccionario_enviados
     for key, valor in get.diccionario_operaciones_enviadas.items():
-        tiempo_diccionario = valor["timestamp"]     
-        if isinstance(tiempo_diccionario, str):
-           tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
-        diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
-        print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
-       # if diferencia_segundos >= 9:              
+               
         _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])            
         
 def _cancela_orden(order_report):
@@ -676,12 +657,8 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
                     operacion_enviada["status"] = 'PENDING_CANCEL'  
-<<<<<<< HEAD
-                    operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL'                   
-=======
                     operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL' 
                     print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId," PENDING_CANCEL")                  
->>>>>>> origin/pcDaniel
                     break  # Salir del bucle después de eliminar el elemento encontrado    
                  
        
@@ -732,20 +709,9 @@ def asignarClOrId(order_report):
                             valor["statusActualBotonPanico"] = status                          
                 else:
                     valor["_cliOrderId"] = int(clOrdId)
-            
-        if valor["Symbol"] == symbol and valor["_cliOrderId"] ==  int(clOrdId): #carga el estado para el boton te panico                     
-            if valor['statusActualBotonPanico'] != 'PENDING_CANCEL': 
-                if isinstance(tiempo_diccionario, str):
-                   tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
-                diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
-                print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
-<<<<<<< HEAD
-                if diferencia_segundos >= 9:            
-                    valor["statusActualBotonPanico"] = status
-=======
-               # if diferencia_segundos >= 9:            
-                valor["statusActualBotonPanico"] = status
->>>>>>> origin/pcDaniel
+        
+        cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status) 
+       
                    
                    
 def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
