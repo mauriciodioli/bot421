@@ -275,14 +275,25 @@ def cancelarOrden():
           #                       error_handler=getFunction.error_handler,
           #                       exception_handler=getFunction.exception_handler)
         
-          order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
-          print("order_status ",order_status)          
-          if order_status["order"]["status"] == "NEW":
+          
+          # ojo se comento por compromiso con la homologacion restaurar **66
+          
+          #order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
+          #print("order_status ",order_status)          
+          #if order_status["order"]["status"] == "NEW":
             # Cancel Order
+<<<<<<< HEAD
             get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId)
             #cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
           else:
             flash('No se puede cancelar la Orden, ya fue OPERADA')  
+=======
+          cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
+          #get.pyRofexInicializada.cancel_order
+          #get.pyRofexInicializada.cancel_order_via_websocket
+          #else:
+           # flash('No se puede cancelar la Orden, ya fue OPERADA')  
+>>>>>>> origin/pcDaniel
            
        
           #print("cancel_order ")
