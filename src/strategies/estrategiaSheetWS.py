@@ -14,7 +14,8 @@ import strategies.datoSheet as datoSheet
 import requests
 import routes.api_externa_conexion.cuenta as cuenta
 
-from datetime import datetime
+from datetime import datetime,timedelta, timezone
+from pytz import timezone as pytz_timezone
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
@@ -141,12 +142,12 @@ def market_data_handler_estrategia(message):
     # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 76, 'size': 100}], 'BI': [{'price': 75, 'size': 100}], 'LA': {'price': 75.5, 'size': 3, 'date': 1687786000759}}}    
         ###### BOTON DE PANICO #########        
     response = botonPanicoRH('false') 
-    print("MDH respuesta desde el boton de panico", response)
-    
+   # print("MDH respuesta desde el boton de panico", response)
+   
     #puse uno para probar cuando termino de testear poner != 1        
     if response != 1: ### si es 1 el boton de panico fue activado
-
-        print(" FUN: market_data_handler_estrategia: _")
+        _cancela_orden(60)
+      #  print(" FUN: market_data_handler_estrategia: _")
         
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
         marca_de_tiempo = message["timestamp"]
@@ -183,49 +184,11 @@ def market_data_handler_estrategia(message):
             tiempoDespues = datetime.now()
             teimporAhoraInt = tiempoDespues - tiempoAhora
             tiempomili =  teimporAhoraInt.total_seconds() * 1000
-            print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+          #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
     else:
-            print(" FUN: market_data_handler_estrategia: BOTON DE PANICO ACTIVADO_")
-            _cancela_orden_boton_panico()    
-            """"
-            * NEW
-            * PARTIALLY_FILLED
-            * FILLED
-            * CANCELLED
-            * REJECTED
-            * EXPIRED
-            * PENDING_CANCEL
-            * PENDING_REPLACE
-                REPLACED
-                CALCULATED
-                ACCEPTED_FOR_BIDDING
-                * PENDING_NEW
-                * PARTIALLY_FILLED_CANCELED
-                * PARTIALLY_FILLED_REPLACED
-                * UNKNOWN
-                * ERROR
-                * OK
-            """ 
-          #  order_report = { 'orderId' : 1686061963452333,'clOrdId' : 424621963526655,'proprietary' : "PBCP","execId" : 1685959201352046,"accountId" : {'id': 'REM6603'},"instrumentId" : {'marketId': 'ROFX', 'symbol': message['instrumentId']['symbol']},'price' : 71.67,'orderQty' : 15,'ordType' : 'LIMIT','side' : 'BUY','timeInForce' : 'DAY','transactTime' : '20230606-11:32:43.452-0300','avgPx' : 0,'lastPx' : 0,'lastQty' : 0,'cumQty' : 0,'leavesQty' : 15,
-          #                  'status' : 'FILLED',
-          #                  'text' : 'ME_ACCEPTED',
-          #                  'originatingUsername' : 'PBCP'                        
-          #                  }
-           # order_report_handler( order_report)
-                
-            # aca iria un if del saldo, si el saldo da cero porque el sistema anda mal
-            # o porque es fin de semana o fuera de horario de negociacion
-            # mejor que no entre a hacer cosas que generen errores
-            # ahora es domingo y me da cero el saldo    
-
-    
-    
-        
-
-
-
-
-
+           # print(" FUN: market_data_handler_estrategia: BOTON DE PANICO ACTIVADO_")
+             _cancela_orden(9)
+               
 
     
 
@@ -240,7 +203,7 @@ def botonPanicoRH(message):
     # Llamada al método /botonPanico utilizando la referencia a wsConnection
         if message == 'true':
          get.VariableParaBotonPanico = 1
-        print("Se accionó el Boton de Panico ?",get.VariableParaBotonPanico)
+        #print("Se accionó el Boton de Panico ?",get.VariableParaBotonPanico)
         
         return get.VariableParaBotonPanico
     
@@ -253,14 +216,14 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
 
         for Symbol,tipo, TradeEnCurso,ut,senial in ContenidoSheet_list[2:]:
             if Symbol in get.diccionario_global_operaciones:
-                print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
+                #print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
                     #aqui entra en caso que tenga que cambiar la señal del stock de operaciones 
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
-                            print(get.diccionario_global_operaciones[Symbol]['senial'])
+                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
                             get.diccionario_global_operaciones[Symbol]['senial'] = senial
-                            print(get.diccionario_global_operaciones[Symbol]['senial'])
+                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
 
             #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
             mepAl30 = 460 ####Calcula dolar MEP
@@ -523,13 +486,12 @@ def order_report_handler( order_report):
         if len(get.diccionario_operaciones_enviadas) != 0:
             asignarClOrId(order_report)#__
         
-            if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
-                _cancela_orden(order_report)
+            #if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
+            #    _cancela_orden(order_report)
                     
                 # if status == 'EXECUTED':
             if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                _operada(order_report) 
-             
+                _operada(order_report)             
         
             
 
@@ -552,16 +514,16 @@ def _operada(order_report):
                                 operacion['status'] = 'TERMINADA'
                                 for key, operacionGlobal in get.diccionario_global_operaciones.items():
                                     if operacionGlobal['symbol'] == symbol :
-                                        pprint.pprint(get.diccionario_global_operaciones)
+                                        #pprint.pprint(get.diccionario_global_operaciones)
                                         operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
-                                        pprint.pprint(get.diccionario_global_operaciones)
+                                        #pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
                              # aqui termina las ordenes canceladas que se cargaron inicalmente               
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and operacion['status'] == 'CANCELLED':                
                                 operacion['status'] = 'TERMINADA'
-                                pprint.pprint(get.diccionario_global_operaciones)
-                                pprint.pprint(get.diccionario_operaciones_enviadas) 
+                               # pprint.pprint(g et.diccionario_global_operaciones_)
+                               # pprint.pprint(g et.diccionario_operaciones_enviadas) 
 
     if status == 'FILLED': 
             endingEnviadas = 'SI'
@@ -574,7 +536,7 @@ def _operada(order_report):
                     endingEnviadas = 'NO'
                  
             for key, operacionGlobal in get.diccionario_global_operaciones.items():  
-                print(key," : ",operacionGlobal['ut'])
+               # print(key," : ",operacionGlobal['ut'])
                 if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':
                    operacionGlobal['status'] = '1'
                    
@@ -583,40 +545,46 @@ def _operada(order_report):
             
             endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
-def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status): 
-        #carga el estado para el boton te panico           
-        if valor["Symbol"] == symbol and valor["_cliOrderId"] ==  int(clOrdId):               
-            if valor['statusActualBotonPanico'] != 'PENDING_CANCEL': 
-                if isinstance(tiempo_diccionario, str):
-                   tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
-                diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
-                print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
-               # if diferencia_segundos >= 9:            
-                valor["statusActualBotonPanico"] = status
-                            
-def _cancela_orden_boton_panico():
  
-    # Recorrer los elementos del diccionario_enviados
-    for key, valor in get.diccionario_operaciones_enviadas.items():
-               
-        _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])            
-        
-def _cancela_orden(order_report):
+
+def convert_datetime(original_datetime_str, desired_timezone_str):
+    # Convertir la cadena a un objeto datetime
+    original_datetime = datetime.strptime(original_datetime_str, "%Y%m%d-%H:%M:%S.%f")
+
+    # Definir la zona horaria deseada
+    desired_timezone = pytz_timezone(desired_timezone_str)
+
+    # Convertir el objeto datetime a la zona horaria deseada
+    desired_datetime = original_datetime.astimezone(desired_timezone)
+
+    # Convertir el objeto datetime a una cadena en el formato deseado
+    desired_datetime_str = desired_datetime.strftime("%Y%m%d-%H:%M:%S.%f")[:-3] + desired_datetime.strftime("%z")
+
+    return desired_datetime_str
+
+
+
+def _cancela_orden(delay):
     
-    order_data = order_report['orderReport']
+   # order_data = order_report['orderReport']
      #################################################
      ###### cambiar esto finalizado el test ##########
      #################################################
     #order_data = order_report
-    clOrdId = order_data['clOrdId']
-    symbol = order_data['instrumentId']['symbol']
-    status = order_data['status']
-    timestamp_order_report = order_data['transactTime'] 
+   # clOrdId = order_data['clOrdId']
+   # symbol = order_data['instrumentId']['symbol']
+   # status = order_data['status']
     
-    
+    time = datetime.now()
+    timestamp_order_report = time.strftime("%Y%m%d-%H:%M:%S.%f%z")
+   # example_datetime_str = "20230724-13:23:12.071198"
+    example_timezone_str = 'Etc/GMT+3'
+    timestamp_order_report = convert_datetime(timestamp_order_report, example_timezone_str)
+     
+    timestamp_order_report = str(timestamp_order_report)
+  
     # Recorrer los elementos del diccionario_enviados
-    for key, valor in get.diccionario_operaciones_enviadas.items():       
-        if valor["Symbol"] == symbol and valor['_cliOrderId'] == int(clOrdId): 
+    for key, valor in get.diccionario_operaciones_enviadas.items():    
            
             tiempo_diccionario = valor["timestamp"]
             # Verificar y ajustar el formato de cadena de fecha si es necesario
@@ -629,18 +597,20 @@ def _cancela_orden(order_report):
             diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
            
 
-            print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
+          #  print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
             
             
             #diferencia = fecha2_obj - tiempo_diccionario
-            #print("FUN _cancela_orden: Diferencia",diferencia)
+            #print("FUN _c ancela_orden: Diferencia",diferencia)
 
             
             
             #if diferencia >= 300:
-            if diferencia_segundos >= 300:
+            if diferencia_segundos >= delay:
             
-              _cancel_if_orders(symbol,clOrdId,status)            
+               _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])       
+      
+                   
     
     
      
@@ -648,7 +618,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
     print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
-     # Obtener el estado de la orden
+    # Obtener el estado de la orden
     if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
        
@@ -658,12 +628,12 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
                 if operacion_enviada["status"] != 'PENDING_CANCEL':
                     operacion_enviada["status"] = 'PENDING_CANCEL'  
                     operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL' 
-                    print("FUN _cancel_if_orders:  Orden cancelada:", clOrdId," PENDING_CANCEL")                  
+                    
                     break  # Salir del bucle después de eliminar el elemento encontrado    
-                 
+            print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
        
-    else:
-        print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
+   # else:
+    #    print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
         
 
 
@@ -671,8 +641,8 @@ def tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionar
      fecha2_obj = datetime.strptime(timestamp_order_report, "%Y%m%d-%H:%M:%S.%f%z")
      fecha_comun_enviada = tiempo_diccionario.strftime("%Y%m%d-%H:%M:%S")
      fecha_comun_orh = fecha2_obj.strftime("%Y%m%d-%H:%M:%S")
-     print("FUN tiempoDeEsperaOperacioncalculaTiempo: fecha_enviada",fecha_comun_enviada)
-     print("FUN tiempoDeEsperaOperacioncalculaTiempo: fecha_ORH",fecha_comun_orh)
+     #print("FUN tiempoDeEsperaOperacioncalculaTiempo: fecha_enviada",fecha_comun_enviada)
+     #print("FUN tiempoDeEsperaOperacioncalculaTiempo: fecha_ORH",fecha_comun_orh)
      # Restar los dos objetos datetime
      fecha_obj1 = datetime.strptime(fecha_comun_enviada, "%Y%m%d-%H:%M:%S")
      fecha_obj2 = datetime.strptime(fecha_comun_orh, "%Y%m%d-%H:%M:%S")
@@ -693,8 +663,8 @@ def asignarClOrId(order_report):
       symbol = order_data['instrumentId']['symbol']
       status = order_data['status']   
       timestamp_order_report = order_data['transactTime'] 
-      print("symbol ",symbol, " clOrdId ",clOrdId, " status ",status)
-      #pprint.pprint(get.diccionario_operaciones_enviadas) 
+    #  print("FUNC_asignarClOrId  symbol ",symbol, " clOrdId ",clOrdId, " status ",status," timestamp_order_report ",timestamp_order_report)
+      #pprint.pprint(g et.diccionario_operaciones_enviadas) 
       for key, valor in get.diccionario_operaciones_enviadas.items():  
         tiempo_diccionario = valor["timestamp"]  
         if valor["Symbol"] == symbol and valor["_cliOrderId"] == 0:                  
@@ -709,10 +679,24 @@ def asignarClOrId(order_report):
                             valor["statusActualBotonPanico"] = status                          
                 else:
                     valor["_cliOrderId"] = int(clOrdId)
+
+      
+      
+        cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status,tiempo_diccionario)
         
-        cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status) 
-       
                    
+
+def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status,tiempo_diccionario): 
+        #carga el estado para el boton te panico           
+        if valor["Symbol"] == symbol and valor["_cliOrderId"] ==  int(clOrdId):               
+            if valor['statusActualBotonPanico'] != 'PENDING_CANCEL': 
+                if isinstance(tiempo_diccionario, str):
+                   tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
+                diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
+                print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
+                #if diferencia_segundos >= 3:      #**33      
+                valor["statusActualBotonPanico"] = status
+                print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
 def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
    try:        
@@ -763,8 +747,8 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
                         "accountCuenta": accountCuenta
                             }
             get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-            #pprint.pprint( get.diccionario_operaciones_enviadas)
-        #for key, valor in get.diccionario_operaciones_enviadas.items():
+            #pprint.pprint( g et.diccionario_operaciones_enviadas)
+        #for key, valor in g et.diccionario_operaciones_enviadas.items():
         #    print(key," : ",valor['_cliOrderId'])
         return 'ok'
    except:  
