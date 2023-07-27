@@ -194,12 +194,12 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
             if int(get.diccionario_global_operaciones[Symbol]['ut']) > 0 :
                 _ws_client_order_id =  1001+random.randint(1, 100000)
             
-                if senial == 'OPEN.':#*55
+                if senial == 'OPEN.':#    **55
                     if isinstance(message["marketData"]["BI"][0]["price"], float):
-                        precio = float(message["marketData"]["OF"][0]["price"])
-                        #precio = float(message["marketData"]["BI"][0]["price"])
-                        precio1 = float(message["marketData"]["BI"][1]["price"])
-                        precio2 = float(message["marketData"]["BI"][2]["price"])
+                        #precio = float(message["marketData"]["OF"][0]["price"])
+                        precio = float(message["marketData"]["BI"][0]["price"])
+                        #precio1 = float(message["marketData"]["BI"][1]["price"])
+                        #precio2 = float(message["marketData"]["BI"][2]["price"])
                         #precio = float(message["marketData"]["OF"][0]["price"])#
                         get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 
@@ -263,9 +263,12 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                        # print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
                         get.diccionario_global_operaciones[Symbol]['ut'] = str(int(get.diccionario_global_operaciones[Symbol]['ut']) - ut)
                         #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
-                elif senial == 'closed.':
+                elif senial == 'closed.':# **66
                     if isinstance(message["marketData"]["OF"][0]["price"], float):
                             precio = float(message["marketData"]["OF"][0]["price"])
+                            #precio = float(message["marketData"]["BI"][0]["price"])# agresivo
+                            #precio = float(message["marketData"]["OF"][0]["price"])
+                            #precio = float(message["marketData"]["OF"][0]["price"])
                             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
                             ws_client_order_id = _ws_client_order_id
                             
