@@ -12,6 +12,7 @@ import routes.instrumentos as inst
 import strategies.datoSheet as datoSheet 
 import requests
 import routes.api_externa_conexion.cuenta as cuenta
+import routes.api_externa_conexion.operaciones as operaciones
 
 from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
@@ -143,7 +144,7 @@ def market_data_handler_estrategia(message):
     # message2 = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'ORO/JUL23'}, 'marketData': {'OF': [{'price': 1960, 'size': 100}], 'BI': [{'price': 1955, 'size': 100}], 'LA': {'price': 1956, 'size': 200, 'date': 1684504670967}}}
     # message = {'type': 'Md', 'timestamp': timeuno, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'WTI/JUL23'}, 'marketData': {'OF': [{'price': 76, 'size': 100}], 'BI': [{'price': 75, 'size': 100}], 'LA': {'price': 75.5, 'size': 3, 'date': 1687786000759}}}    
         ###### BOTON DE PANICO #########        
-    response = botonPanicoRH('false') 
+    response = botonPanicoRH('None') 
    # print("MDH respuesta desde el boton de panico", response)
    
     #puse uno para probar cuando termino de testear poner != 1        
@@ -187,17 +188,35 @@ def market_data_handler_estrategia(message):
             teimporAhoraInt = tiempoDespues - tiempoAhora
             tiempomili =  teimporAhoraInt.total_seconds() * 1000
           #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
-    else:
-           # print(" FUN: market_data_handler_estrategia: BOTON DE PANICO ACTIVADO_")
-             _cancela_orden(9)
+ 
                
 
     
-
+@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+def boton_panico_portfolio():
+     if request.method == 'POST':
+        try:
+            usuario = request.form['usuario_portfolio']
+            get.accountLocalStorage = request.form['account']
+            access_token = request.form['access_token_portfolio']
+            correo_electronico = request.form['correo_electronico_portfolio']
+            respuesta = botonPanicoRH('true')
+            estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
+            #get.pyRofexInicializada.close_websocket_connection()
+            respuesta = botonPanicoRH('true')
+            _cancela_orden(9)
+            respuesta = botonPanicoRH('false')
+            return  operaciones.estadoOperacion()
+        except:
+           print("no pudo leer los datos de local storage")
+     return operaciones.estadoOperacion()
+   
 
 @estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
+    _cancela_orden(9)
+    respuesta = botonPanicoRH('false')
     #get.pyRofexInicializada.close_websocket_connection()
     return render_template("utils/bottonPanic.html" ) 
 
@@ -206,7 +225,9 @@ def botonPanicoRH(message):
         if message == 'true':
          get.VariableParaBotonPanico = 1
         #print("Se accionó el Boton de Panico ?",get.VariableParaBotonPanico)
-        
+        elif message == 'false':
+            get.VariableParaBotonPanico = 0
+       
         return get.VariableParaBotonPanico
     
 
@@ -487,10 +508,7 @@ def order_report_handler( order_report):
         # se fija que cuando venga el reporte el diccionario tenga elementos
         if len(get.diccionario_operaciones_enviadas) != 0:
             asignarClOrId(order_report)#__
-        
-            #if status != 'FILLED' and status !='CANCELLED'and  status != 'ERROR' and status != 'REJECTED' and status != 'EXPIRED' and status != 'UNKNOWN': 
-            #    _cancela_orden(order_report)
-                    
+                   
                 # if status == 'EXECUTED':
             if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
                 _operada(order_report)             
@@ -619,7 +637,9 @@ def _cancela_orden(delay):
 def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
-    print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
+
+    #print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
+
     # Obtener el estado de la orden
     if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
         get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
