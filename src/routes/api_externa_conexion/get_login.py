@@ -162,20 +162,26 @@ def loginExt():
                 if access_token:
                     app = current_app._get_current_object()
 
-                    try:
-                        user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                         # Add user data to the database
-                        usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
-                        usuario.userCuenta = user  # Modificar la propiedad nombre
-                        usuario.passwordCuenta = password
-                        usuario.accountCuenta = account
+                   # try:
+                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                       # Add user data to the database
+                    usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
+                    usuario.userCuenta = user  # Modificar la propiedad nombre
+                    usuario.passwordCuenta = password
+                    usuario.accountCuenta = account
                         
-                        db.session.commit()
-                        db.session.close()
-                        
-                    except:
-                        print("no posee datos")
-                        return render_template("login.html")
+                    db.session.commit()
+                    db.session.close()
+                    
+                   # except jwt.ExpiredSignatureError:
+                   #     print("El token ha expirado.")
+                   # except jwt.InvalidTokenError:
+                   #     print("El token es inválido.")
+                   # except Exception as e:
+                   #     print("Ocurrió un error no esperado:", e)    
+                   # except:
+                   #     print("no posee datos")
+                   #     return render_template("login.html")
 
                     if int(selector) < 2:
                         try:
