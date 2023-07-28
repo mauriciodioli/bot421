@@ -149,7 +149,7 @@ def market_data_handler_estrategia(message):
    
     #puse uno para probar cuando termino de testear poner != 1        
     if response != 1: ### si es 1 el boton de panico fue activado
-        _cancela_orden(60)
+        _cancela_orden(300)
       #  print(" FUN: market_data_handler_estrategia: _")
         
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
@@ -189,9 +189,6 @@ def market_data_handler_estrategia(message):
             tiempomili =  teimporAhoraInt.total_seconds() * 1000
           #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
  
-               
-
-    
 @estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
@@ -204,14 +201,13 @@ def boton_panico_portfolio():
             estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             #get.pyRofexInicializada.close_websocket_connection()
             respuesta = botonPanicoRH('true')
-            _cancela_orden(9)
+            _cancela_orden(0)
             respuesta = botonPanicoRH('false')
             return  operaciones.estadoOperacion()
         except:
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-
 @estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
@@ -230,7 +226,6 @@ def botonPanicoRH(message):
        
         return get.VariableParaBotonPanico
     
-
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
     if banderaLecturaSheet == 0:
         ContenidoSheet = datoSheet.leerSheet()
@@ -321,11 +316,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and message != '':
                                             datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
                                         
-
-
-
-
-##########################AQUI SE REALIZA CALCULO DE MEP CEDEARS####################
 def calcularMepCedearsWS(message):
      #traer los precios del cedear
     # print("_calcularMepCedears_______ le da 380")
@@ -357,8 +347,6 @@ def calcularMepCedearsWS(message):
      size=10
      dato = [mep,size,offer_price,bid_price]
      return dato
- 
-#gpt01 
  
 def calcularMepAl30WS(message):
      
@@ -492,7 +480,13 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
     # db.session.close()
     # print("sale de cargar operaciones")
 
-
+def es_numero(numero):
+    try:
+          int(numero)
+          return True
+    except:
+        return False
+  
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
         order_data = order_report['orderReport']
@@ -501,20 +495,19 @@ def order_report_handler( order_report):
         #################################################
         #order_data = order_report
         # Leer un valor específico del diccionario
-        clOrdId = order_data['clOrdId']
+        clOrdId = order_data['clOrdId']        
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']  
         timestamp_order_report = order_data['transactTime']  
         # se fija que cuando venga el reporte el diccionario tenga elementos
-        if len(get.diccionario_operaciones_enviadas) != 0:
-            asignarClOrId(order_report)#__
-                   
-                # if status == 'EXECUTED':
-            if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                _operada(order_report)             
+        if es_numero(clOrdId):#esto se pone por que el clOrdId puede traer basura
+            if len(get.diccionario_operaciones_enviadas) != 0:
+                asignarClOrId(order_report)#__
+                    
+                    # if status == 'EXECUTED':
+                if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
+                    _operada(order_report)             
         
-            
-
 def _operada(order_report):
     order_data = order_report['orderReport']
      #################################################
@@ -565,8 +558,6 @@ def _operada(order_report):
             
             endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
- 
-
 def convert_datetime(original_datetime_str, desired_timezone_str):
     # Convertir la cadena a un objeto datetime
     original_datetime = datetime.strptime(original_datetime_str, "%Y%m%d-%H:%M:%S.%f")
@@ -581,8 +572,6 @@ def convert_datetime(original_datetime_str, desired_timezone_str):
     desired_datetime_str = desired_datetime.strftime("%Y%m%d-%H:%M:%S.%f")[:-3] + desired_datetime.strftime("%z")
 
     return desired_datetime_str
-
-
 
 def _cancela_orden(delay):
     
@@ -630,35 +619,30 @@ def _cancela_orden(delay):
             
                _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])       
       
-                   
-    
-    
-     
 def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
 
     #print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
-
-    # Obtener el estado de la orden
-    if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
-        get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+    try:
+        # Obtener el estado de la orden
+        if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
+            get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+        
+            # Aumentar el valor de ut en get.diccionario_global_operaciones        
+            for key, operacion_enviada in get.diccionario_operaciones_enviadas.items(): 
+                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
+                    if operacion_enviada["status"] != 'PENDING_CANCEL':
+                        operacion_enviada["status"] = 'PENDING_CANCEL'  
+                        operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL' 
+                        
+                        break  # Salir del bucle después de eliminar el elemento encontrado    
+                print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
        
-          # Aumentar el valor de ut en get.diccionario_global_operaciones        
-        for key, operacion_enviada in get.diccionario_operaciones_enviadas.items(): 
-            if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
-                if operacion_enviada["status"] != 'PENDING_CANCEL':
-                    operacion_enviada["status"] = 'PENDING_CANCEL'  
-                    operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL' 
-                    
-                    break  # Salir del bucle después de eliminar el elemento encontrado    
-            print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
-       
-   # else:
+    except Exception as e:
+        print("Error en Envio de Cancelacion de orden:", e)
     #    print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
         
-
-
 def tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario):
      fecha2_obj = datetime.strptime(timestamp_order_report, "%Y%m%d-%H:%M:%S.%f%z")
      fecha_comun_enviada = tiempo_diccionario.strftime("%Y%m%d-%H:%M:%S")
@@ -681,10 +665,12 @@ def asignarClOrId(order_report):
         #################################################
       #order_data = order_report
         # Leer un valor específico del diccionario
+     
       clOrdId = order_data['clOrdId']
       symbol = order_data['instrumentId']['symbol']
       status = order_data['status']   
       timestamp_order_report = order_data['transactTime'] 
+      
     #  print("FUNC_asignarClOrId  symbol ",symbol, " clOrdId ",clOrdId, " status ",status," timestamp_order_report ",timestamp_order_report)
       #pprint.pprint(g et.diccionario_operaciones_enviadas) 
       for key, valor in get.diccionario_operaciones_enviadas.items():  
@@ -706,8 +692,6 @@ def asignarClOrId(order_report):
       
         cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status,tiempo_diccionario)
         
-                   
-
 def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,status,tiempo_diccionario): 
         #carga el estado para el boton te panico           
         if valor["Symbol"] == symbol and valor["_cliOrderId"] ==  int(clOrdId):               
@@ -730,54 +714,54 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
         get.diccionario_operaciones_enviadas.clear()
         for dato in datos:
           if dato['orderId'] is not None:
-            orderId = dato['orderId']
-            clOrdId = dato['clOrdId']
-            proprietary = dato['proprietary']
-            execId = dato['execId']
-            accountId = dato['accountId']
-            Symbol = dato['instrumentId']['symbol']
-            price = dato['price']
-            orderQty = dato['orderQty']
-            ordType = dato['ordType']
-            side = dato['side']
-            timeInForce = dato['timeInForce']
-            transactTime = dato['transactTime']
-            avgPx = dato['avgPx']
-            #lastPx = dato['lastPx']
-            #lastQty = dato['lastQty']
-            cumQty = dato['cumQty']
-            leavesQty = dato['leavesQty']
-            status = dato['status']
-            text = dato['text']
-            originatingUsername = dato['originatingUsername']
+            if es_numero(dato['clOrdId']):  
+                orderId = dato['orderId']
+                clOrdId = dato['clOrdId']
+                proprietary = dato['proprietary']
+                execId = dato['execId']
+                accountId = dato['accountId']
+                Symbol = dato['instrumentId']['symbol']
+                price = dato['price']
+                orderQty = dato['orderQty']
+                ordType = dato['ordType']
+                side = dato['side']
+                timeInForce = dato['timeInForce']
+                transactTime = dato['transactTime']
+                avgPx = dato['avgPx']
+                #lastPx = dato['lastPx']
+                #lastQty = dato['lastQty']
+                cumQty = dato['cumQty']
+                leavesQty = dato['leavesQty']
+                status = dato['status']
+                text = dato['text']
+                originatingUsername = dato['originatingUsername']
 
-            
-            diccionario = {
-                        "Symbol": Symbol,
-                        "_t_": 'None',
-                        "_tr_": 'None',
-                        "_s_": 'None',
-                        "_ut_": orderQty,
-                        "precio Offer": 'None',
-                        "_ws_client_order_id": 'None',
-                        "_cliOrderId": int(clOrdId),
-                        "timestamp": datetime.now(),
-                        "status": status,
-                        "statusActualBotonPanico":status,
-                        "user_id": user_id,
-                        "userCuenta": userCuenta,
-                        "accountCuenta": accountCuenta
-                            }
-            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-            #pprint.pprint( g et.diccionario_operaciones_enviadas)
-        #for key, valor in g et.diccionario_operaciones_enviadas.items():
-        #    print(key," : ",valor['_cliOrderId'])
+                
+                diccionario = {
+                            "Symbol": Symbol,
+                            "_t_": 'None',
+                            "_tr_": 'None',
+                            "_s_": 'None',
+                            "_ut_": orderQty,
+                            "precio Offer": 'None',
+                            "_ws_client_order_id": 'None',
+                            "_cliOrderId": int(clOrdId),
+                            "timestamp": datetime.now(),
+                            "status": status,
+                            "statusActualBotonPanico":status,
+                            "user_id": user_id,
+                            "userCuenta": userCuenta,
+                            "accountCuenta": accountCuenta
+                                }
+                get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+                #pprint.pprint( g et.diccionario_operaciones_enviadas)
+            #for key, valor in g et.diccionario_operaciones_enviadas.items():
+            #    print(key," : ",valor['_cliOrderId'])
         return 'ok'
    except:  
         print("error de carga de diccionario de enviados")  
         flash(' error de carga de diccionario de enviados')    
    return 'ok'                   
-##########################esto es para ws#############################
 
 def endingOperacionBot (endingGlobal,endingEnviadas):
      if endingGlobal == 'SI' and endingEnviadas == 'SI' and get.diccionario_operaciones_enviadas:
@@ -800,5 +784,3 @@ def exception_error(message):
 
 def exception_handler(e):
     print("Exception Occurred: {0}".format(e.msg))
-
-#gpt02
