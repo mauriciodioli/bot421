@@ -11,18 +11,23 @@
 
   <p>Para detener todas las operaciones PRESIONE EL BOTON DE PANICO.</p>
   <form  name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">    
-      <input type="hidden" name="account" id="account">
+     
       <div class="col">           
         <button type="submit" class="btn btn-primary my-2">TERMINAR TODO</button>
       </div>
-      
   </form>
+
+  <hr class="my-4">
+  <p>Para ir a estrategias puedes presionar el boton.</p>  
+  <a class="btn btn-primary btn-lg" href="/inicioEstrategias" role="button">Estrategias</a>
+
+
     <script>
-      let account = localStorage.getItem("cuenta");
-      
+      cuenta = localStorage.getItem("cuenta");
+     
       document.getElementById("account").value = account;
 
     </script>
-    </div>
+</div>
 
 {% endblock%}

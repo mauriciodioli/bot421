@@ -13,18 +13,34 @@
 
 
   <div class = 'container p-4'>
-      <div class = 'container p-4'>
-        <form action="/get_trade_history_by_symbol/" method="POST">
-          <input type="text" name="symbol" placeholder="symbol">
-        <!-- <select class="form-select"aria-label="Default select example" name = "selctorEnvironment" id="selctorEnvironment">
-            <option selected>Open this select menu</option>
-            {% for dato in lsymbolos%}
-              <option value="1">{{lsymbolos.instrumentId.symbol}}</option>                        
-            {% endfor %}    
-          </select>-->
-          <Button type="submit">Submit</Button>
-        </form>  
+    <div class="container p-4">
+      <div class="row">
+        <div class="col-md-4">
+          <form action="/get_trade_history_by_symbol/" method="POST">
+            <input type="text" name="symbol" placeholder="symbol">
+            <!-- <select class="form-select" aria-label="Default select example" name="selctorEnvironment" id="selctorEnvironment">
+              <option selected>Open this select menu</option>
+              {% for dato in lsymbolos%}
+              <option value="1">{{lsymbolos.instrumentId.symbol}}</option>
+              {% endfor %}
+            </select> -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+        <div class="col-md-4">
+          <form name="logeo" action="/botonPanicoPortfolio/" method="post" class="btn-guardar_inst">          
+            <input type="hidden" name="account" id="account">
+            <input type="hidden" name="access_token_portfolio" id="access_token_portfolio">
+            <input type="hidden" name="usuario_portfolio" id="usuario_portfolio">
+            <input type="hidden" name="correo_electronico_portfolio" id="correo_electronico_portfolio">
+            
+            <button type="submit" class="btn btn-danger my-2">TERMINAR TODO</button>
+          </form>
+        </div>
       </div>
+    </div>
+    
+      
     <table class="table table-dark table-striped">
       <thead>           
           <tr>
@@ -113,6 +129,21 @@
 
       </tbody>
   </table>
+  <script>
+  
+      cuenta = localStorage.getItem("cuenta");
+      refresh_token = localStorage.getItem('access_token');
+      correo_electronico = localStorage.getItem('correo_electronico');
+      usuario = localStorage.getItem("usuario");
+     
+      document.getElementById("usuario_portfolio").value = usuario
+      document.getElementById("correo_electronico_portfolio").value = correo_electronico
+      document.getElementById("access_token_portfolio").value = access_token
+      document.getElementById("account").value = account;
+
+  
+
+  </script>
 </div>
 
 <script>
