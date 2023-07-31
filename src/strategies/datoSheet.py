@@ -84,40 +84,47 @@ def login():
     gauth.SaveCredentialsFile(directorio_credenciales)
     credenciales = GoogleDrive(gauth)
     return credenciales
-def leerSheet():   
-    # gauth = GoogleAuth()
-     ##gauth.LocalWebserverAuth() # Autenticación mediante un servidor local
-    # drive = GoogleDrive(gauth)
-     # Obtener metadatos de un archivo por su ID
-    # file_id = 'drpiBot2'
-    # file = drive.CreateFile({'id': file_id})
-    # print('File name: %s' % file['title'])
-    
-     #credenciales = login()  
-     scope = ['https://spreadsheets.google.com/feeds',
-         'https://www.googleapis.com/auth/drive']
-    
-     newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')  
-    # creds = ServiceAccountCredentials.from_json_keyfile_name('pruebasheetpython.json', scope)
-     print(newPath)
-     creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
+
+def autenticar_y_abrir_sheet():
+    scope = ['https://spreadsheets.google.com/feeds', 
+             'https://www.googleapis.com/auth/drive']
+    newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')
+    creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
+    client = gspread.authorize(creds)
+    sheet = client.open_by_key(SPREADSHEET_ID).sheet1   
+    return sheet
+
+def leerSheet(): 
+     sheet = autenticar_y_abrir_sheet()
      
-     #creds = ServiceAccountCredentials.from_json_keyfile_name('/Users/mDioli/Documents/ITCOR/bot421/src/strategies/pruebasheetpython.json', scope)
-     client = gspread.authorize(creds)
-     
-     sheet = client.open_by_key(SPREADSHEET_ID).sheet1   
      symbol = sheet.col_values(1)
      tipo_de_activo = sheet.col_values(16)
      trade_en_curso = sheet.col_values(19)
      ut = sheet.col_values(20)
      senial = sheet.col_values(21)
      union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-     
+     modificar_columna_ut('ORO/SEP23',8)
      #for Symbol,cedear,trade_en_curso,ut,senial  in union:
       #print(Symbol,cedear,trade_en_curso,ut,senial)
     
-     
      return union
+ 
+def modificar_columna_ut(Symbol,new_ut_values):
+    # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
+    sheet = autenticar_y_abrir_sheet()
+    cell =  sheet.find(Symbol) 
+    row = cell.row
+    valores_de_la_fila = sheet.row_values(row)
+    current_ut_values = valores_de_la_fila[19]
+   
+        # Leer la columna "ut" actual
+    if current_ut_values != new_ut_values:  
+         sheet.update_cell(row,20,str(new_ut_values)) 
+   
+   
+
+    # Opcionalmente, puedes retornar las listas leídas si necesitas usarlas en otra parte del código
+    return "current_ut_values"
  
 
 # Función de codificación personalizada para datetime
@@ -201,7 +208,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         #precio1 = float(message["marketData"]["BI"][1]["price"])
                         #precio2 = float(message["marketData"]["BI"][2]["price"])
                         #precio = float(message["marketData"]["OF"][0]["price"])#
-                        get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+                       # get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 
                         ws_client_order_id = _ws_client_order_id
                         
