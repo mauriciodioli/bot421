@@ -529,6 +529,7 @@ def _operada(order_report):
                                     if operacionGlobal['symbol'] == symbol :
                                         #pprint.pprint(get.diccionario_global_operaciones)
                                         operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
+                                        #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
                                         #pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
                                             operacionGlobal['status']== '0'
