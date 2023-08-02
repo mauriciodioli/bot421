@@ -32,6 +32,24 @@ def estrategias_usuario_general():
        print('no hay usuarios') 
     return 'problemas con la base de datos'
 
+@estrategias.route("/estrategias-usuario-nadmin",  methods=["POST"])
+def estrategias_usuario_nadmin():
+    try:
+      if request.method == 'POST': 
+            usuario_id = request.form['usuario_id']                      
+            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            db.session.close()
+            for estrategia in estrategias:
+                print("ID:", estrategia.id)
+                print("Name:", estrategia.userCuenta)
+                # Print other attributes as needed
+                print()
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+    
+    except:
+       print('no hay estrategias') 
+    return  render_template("/estrategias/errorEstrategiaVacia.html")
+
 @estrategias.route("/estrategias-usuario",  methods=["POST"])
 def estrategias_usuario():
     try:
