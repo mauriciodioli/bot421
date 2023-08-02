@@ -40,7 +40,7 @@
                     <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"placeholder="contraseña" value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="cuenta" id="cuenta" placeholder="cuenta" value="{{ dato.accountCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="access_token"  id="access_token" placeholder="access_token" class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="idusuario" placeholder="escribe usuario" value="{{ dato.id }}" class="form-control"></div> 
+                    <div class="form-group"><input type="hidden" name="idusuario" placeholder="escribe usuario" value="{{ current_user.id }}" class="form-control"></div> 
                     <div class="form-group"><button type="submit" class="btn btn-primary btn-sm btn-block form-control">This</button></div>
                 </form>
                 </td> 
@@ -75,6 +75,7 @@
               event.preventDefault();
               const form = target.closest('form'); // Encuentra el formulario que contiene el botón clicado
               const usuarioIDInput = form.querySelector('input[name="idusuario"]'); // Busca el campo 'idusuario' dentro del formulario
+              console.log(usuarioIDInput)
               if (usuarioIDInput) {
                 const usuarioID = usuarioIDInput.value;
                 localStorage.setItem('usuario_id', usuarioID);

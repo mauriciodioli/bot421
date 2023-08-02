@@ -222,7 +222,7 @@ def loginExt():
 @get_login.route("/loginExtCuentaSeleccionadaBroker", methods=['POST'])
 def loginExtCuentaSeleccionadaBroker():
     if request.method == 'POST':
-            selector = request.form['selctorEnvironment']
+            selector = request.form['selectorEnvironment']
             try:
                 user = request.form['usuario']
                 password = request.form['contraseña']
