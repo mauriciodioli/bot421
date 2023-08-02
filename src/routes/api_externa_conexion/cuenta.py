@@ -245,7 +245,7 @@ def get_cuentas_de_broker(user_id):
 def get_cuentas_de_broker_usuario():
      if request.method == 'POST':
        
-         access_token = request.form['access_token_get_cuentas_usuario_broker']
+         access_token = request.form['access_token_form2']
          todasLasCuentas = []
          if access_token:
             app = current_app._get_current_object()
