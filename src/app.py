@@ -91,6 +91,7 @@ app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
+app.register_blueprint(usuario)
 app.register_blueprint(testWS)
 
 print(DATABASE_CONNECTION_URI)
