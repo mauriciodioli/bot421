@@ -157,7 +157,8 @@ def loginIndex():
                 # Decodificar el token y obtener el id del usuario
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 user = Usuario.query.get(user_id)
-                print("user ___________", user.correo_electronico)
+                
+                print("user ___________", user.id)
                 print("userid ________________", user_id)
                 print("userCuenta ________________", user.cuentas[0].userCuenta)
                 

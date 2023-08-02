@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<htm lang="en">
+<html lang="en">
 <head>
     <meta charset = "UTF-8">
     <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.7.0/dist/themes/classic.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.7.0/dist/pickr.min.js"></script>
     <!--CSS PERSONALIZADO -->
-    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
 </head>
 
 <body>
@@ -70,6 +70,16 @@
                         
                     </li>
                     <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Tokens</a>
+                        <ul class="dropdown-menu">              
+                                     
+                          <li><a class="dropdown-item" href="/" >Generar</a></li>  
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/">Listar</a></li>
+                                              
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Subir</a>
                         <ul class="dropdown-menu">              
                                      
@@ -101,9 +111,9 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Estrategias</a>
                         <ul class="dropdown-menu ">                        
                           <li class="w-auto">
-                             <form action="/estrategias-usuario" method="POST">
+                             <form action="/estrategias-usuario-nadmin" method="POST">
                                 <div class="form-group">
-                                    <input type="hidden" name="usuario_id" placeholder="escribe cuenta" class="form-control">
+                                    <input type="hidden" name="usuario_id" id = "usuario_id" class="form-control">
                                 </div>                               
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-secondary btn-sm btn-block form-control w-auto mx-2">Estrategias</button>
@@ -182,15 +192,20 @@
         let simulado = localStorage.getItem("selector");  
         let access_token = localStorage.getItem("access_token")
         let rol = localStorage.getItem('roll');
-
+      
 
         console.log(correo_electronico);
         console.log(cuentaBroker);
         console.log(simulado);
+       
         
         
        
         document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+        document.addEventListener('DOMContentLoaded', function() {
+            let usuario_id = localStorage.getItem('usuario_id');
+            document.getElementById("usuario_id").value = usuario_id;
+          });
         
         if (simulado == '1') {
             let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
