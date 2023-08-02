@@ -31,6 +31,7 @@
      <!-- Include the Pickr library -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/themes/classic.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/pickr.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
 </head>
 
 <body>
@@ -96,7 +97,7 @@
                           <li><a class="dropdown-item" href="/suscripcionDb">List Instruments</a></li>                          
                         </ul>
                     </li>
-                     --> 
+                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Estrategias</a>
                         <ul class="dropdown-menu">                        
@@ -106,7 +107,7 @@
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/trigger/">Automatización</a></li>                          
                         </ul>
-                    </li>
+                    </li> 
                     
                     <li class="nav-item">
                         <a class="nav-link" href="/estadoOperacion">Portfolio</a>
@@ -136,14 +137,14 @@
                           </div>
                           </form>
                         </ul>
-                    </li>
+                    </li>--> 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
                         <ul class="dropdown-menu">                        
                           <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>                        
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/logOutAccount">get out of account</a></li>
-                                                
+                          <input type="hidden" name="access_token_get_cuentas_usuario_broker" id="access_token_get_cuentas_usuario_broker">                   
                         </ul>
                     </li>
                     <li class="nav-item ">

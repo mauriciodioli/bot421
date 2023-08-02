@@ -21,7 +21,7 @@ import smtplib
 
 media_e_mail = Blueprint('media_e_mail',__name__)
 
-@media_e_mail.route('/save_ip', methods=['POST'])
+@media_e_mail.route('/save-ip', methods=['POST'])
 def save_ip():
     if request.method == 'POST':
         try:
