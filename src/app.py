@@ -93,6 +93,7 @@ app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
 app.register_blueprint(usuario)
 app.register_blueprint(testWS)
+app.register_blueprint(imagenesOperaciones)
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'

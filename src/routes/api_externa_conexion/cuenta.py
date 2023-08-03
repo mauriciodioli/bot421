@@ -271,6 +271,8 @@ def get_cuentas_de_broker_usuario():
                 
                else:
                   print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
+                  flash('No registra cuenta para el usuario: ',usuario.nombre)
+                  return render_template("cuentas/registrarCuentaBroker.html")
                   
          
     
