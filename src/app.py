@@ -94,6 +94,7 @@ app.register_blueprint(registrarUsuario)
 app.register_blueprint(usuario)
 app.register_blueprint(testWS)
 app.register_blueprint(imagenesOperaciones)
+app.register_blueprint(media_e_mail)
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
