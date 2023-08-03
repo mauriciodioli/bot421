@@ -36,6 +36,41 @@ function obtenerTokens() {
   correo_electronico = localStorage.getItem('correo_electronico');
   refreshtoken = localStorage.getItem('refresh_token');
   usuario1 = localStorage.getItem('usuario');
+  fetch('https://ipapi.co/json/')
+    .then(response => response.json())
+    .then(data => {
+      const ip = data.ip;
+      console.log(ip);
+      console.log(correo_electronico);
+      console.log(usuario1);
+      localStorage.setItem('ip', ip);
+
+      if (ip) {
+        try {
+          // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
+          $.ajax({
+            type: "POST",
+            url: "{{ url_for('media_e_mail.save_ip') }}",
+            contentType: "application/json",
+            data: JSON.stringify({ 'ip': ip, 'accesstoken': accesstoken, 'correo_electronico': correo_electronico, 'usuario1': usuario1 }),
+            success: function (response) {
+              if (response.redirect) {
+                window.location.href = response.redirect;
+              } else {
+                showError("No se pudo redirigir media_e_mail.save_ip");
+              }
+            },
+            error: function (error) {
+              // handle error
+              showError("Hubo un error en la solicitud AJAX");
+            }
+          });
+        } catch (error) {
+          showError("Se produjo un error inesperado");
+        }
+      }
+    })
+    .catch(error => console.error(error));
 
 }
 
