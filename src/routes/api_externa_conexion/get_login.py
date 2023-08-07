@@ -225,7 +225,7 @@ def loginExtCuentaSeleccionadaBroker():
             selector = request.form['selectorEnvironment']
             try:
                 user = request.form['usuario']
-                password = request.form['contraseña']
+                password = request.form['contraseña']              
                 account = request.form['cuenta']
                 access_token = request.form['access_token']
                 #print("selctorEnvironment",selector)
@@ -236,13 +236,13 @@ def loginExtCuentaSeleccionadaBroker():
                    # try:
                     user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                        # Add user data to the database
-                    usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
-                    usuario.userCuenta = user  # Modificar la propiedad nombre
-                    usuario.passwordCuenta = password
-                    usuario.accountCuenta = account
+                  #  usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
+                  #  usuario.userCuenta = user  # Modificar la propiedad nombre
+                  #  usuario.passwordCuenta = password
+                  #  usuario.accountCuenta = account
                         
-                    db.session.commit()
-                    db.session.close()
+                  #  db.session.commit()
+                  #  db.session.close()
                     
                    # except jwt.ExpiredSignatureError:
                    #     print("El token ha expirado.")

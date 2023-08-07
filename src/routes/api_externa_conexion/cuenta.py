@@ -64,8 +64,11 @@ def posicionCuenta():
         
         repuesta_cuenta = get.pyRofexInicializada.get_account_position()
         reporte = repuesta_cuenta['positions']
-        print("posicion cuentaaaaaaaaaaaaaaaaaaaaaa ",reporte)
-        return render_template("cuentaPosicion.html",datos = reporte)
+        if len(reporte)!=0:
+          print("posicion cuentaaaaaaaaaaaaaaaaaaaaaa ",reporte)
+          return render_template("cuentaPosicion.html",datos = reporte)
+        else:
+          return render_template("notificaciones/noPoseeDatos.html")
      except:  
         print("contraseña o usuario incorrecto")  
         flash('No registra posicion')    
@@ -151,12 +154,15 @@ def registrar_cuenta():
                db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
                db.session.commit()  # Confirmar los cambios
                db.session.close()
-               print("Cuenta registrada exitosamente!")
-               print("Cuenta registrada usuario id !",usuario.id)
+              
                todasLasCuentas = get_cuentas_de_broker(user_id)
-               
+               print("Cuenta registrada exitosamente!")
+               print("Cuenta registrada usuario id !",user_id)
                for cuenta in todasLasCuentas:
                   print(cuenta['accountCuenta'])
+                  passwordCuenta = cuenta['passwordCuenta']
+                  passwordCuenta_decoded = passwordCuenta.decode('utf-8')
+                  print(passwordCuenta_decoded)
 
             except:               
                 db.session.rollback()  # Hacer rollback de la sesión
@@ -229,7 +235,8 @@ def get_cuentas_de_broker(user_id):
         if cuentas:
             print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
             for cuenta in cuentas:
-                todasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':cuenta.passwordCuenta})
+                password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                todasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta})
                 print(cuenta.accountCuenta)    
         else:
             print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
@@ -264,7 +271,8 @@ def get_cuentas_de_broker_usuario():
                   
                   for cuenta in cuentas:
                    todasLasCuentas.append(cuenta.accountCuenta)
-                   todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':cuenta.passwordCuenta})
+                   password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                   todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta})
      
                    print(cuenta.accountCuenta)	
                   
