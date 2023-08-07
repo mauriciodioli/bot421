@@ -9,7 +9,7 @@
   {% endif %}
 {% endwith %}
 
-{% extends 'layouts/layout_without_navbar.html' %}
+{% extends 'layouts/layout.html' %}
 
 {% block content %}
   <div class="container p-4">
@@ -35,12 +35,12 @@
                 <th scope="row">{{ dato.passwordCuenta }}</th> 
                 <td>
                 <form action="/loginExtCuentaSeleccionadaBroker" method="POST">
-                    <div class="form-group"><input type="hidden" name="selectorEnvironment" id="selectorEnvironment" placeholder="selectorEnvironment" value="1" class="form-control"></div>                    
-                    <div class="form-group"><input type="hidden" name="usuario" id="usuario"placeholder="usuario" value="{{ dato.userCuenta }}" class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"placeholder="contraseña" value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="selectorEnvironment" id="selectorEnvironment"  value="1" class="form-control"></div>                    
+                    <div class="form-group"><input type="hidden" name="usuario" id="usuario" value="{{ dato.userCuenta }}" class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="cuenta" id="cuenta" placeholder="cuenta" value="{{ dato.accountCuenta }}" class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="access_token"  id="access_token" placeholder="access_token" class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="idusuario" id="idusuario" placeholder="escribe usuario" value="{{ current_user.id }}" class="form-control"></div> 
+                    <div class="form-group"><input type="hidden" name="access_token"  id="access_token"  class="form-control"></div>                               
+                    <div class="form-group"><input type="hidden" name="idusuario" id="idusuario" value="{{ current_user.id }}" class="form-control"></div> 
                     <div class="form-group"><button type="submit" class="btn btn-primary btn-sm btn-block form-control">This</button></div>
                 </form>
                 </td> 
@@ -55,10 +55,12 @@
         {% endfor %}
         <script>  
            //en este script cargo el correo electronico almacenado en el localStorage 
+         
           document.addEventListener('DOMContentLoaded', function() {
-            let access_token = localStorage.getItem("access_token");
+           
+            access_token = localStorage.getItem("access_token");
             let correo_electronico = localStorage.getItem("correo_electronico");
-            
+            document.getElementById("access_token").value = access_token;   
             let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
             let mensaje_correo_electronico = document.getElementById("mensaje_correo_electronico");
             if (mensaje_correo_electronico) {

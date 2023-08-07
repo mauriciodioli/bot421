@@ -131,8 +131,8 @@
   </table>
   <script>
   
-      cuenta = localStorage.getItem("cuenta");
-      refresh_token = localStorage.getItem('access_token');
+      account = localStorage.getItem("cuenta");
+      access_token = localStorage.getItem('access_token');
       correo_electronico = localStorage.getItem('correo_electronico');
       usuario = localStorage.getItem("usuario");
      
@@ -141,29 +141,27 @@
       document.getElementById("access_token_portfolio").value = access_token
       document.getElementById("account").value = account;
 
-  
+      function ordenarDatos(campo) {
+        var tabla = document.getElementById("tabla-datos");
+        var filas = Array.from(tabla.rows).slice(1);
+        
+        filas.sort(function(a, b) {
+          var valorA = a.cells[campo].innerHTML.trim();
+          var valorB = b.cells[campo].innerHTML.trim();
+          return valorA.localeCompare(valorB);
+        });
+        
+        while (tabla.rows.length > 1) {
+          tabla.deleteRow(1);
+        }
+        
+        filas.forEach(function(fila) {
+          tabla.appendChild(fila);
+        });
+      }
 
   </script>
 </div>
 
-<script>
-function ordenarDatos(campo) {
-  var tabla = document.getElementById("tabla-datos");
-  var filas = Array.from(tabla.rows).slice(1);
-  
-  filas.sort(function(a, b) {
-    var valorA = a.cells[campo].innerHTML.trim();
-    var valorB = b.cells[campo].innerHTML.trim();
-    return valorA.localeCompare(valorB);
-  });
-  
-  while (tabla.rows.length > 1) {
-    tabla.deleteRow(1);
-  }
-  
-  filas.forEach(function(fila) {
-    tabla.appendChild(fila);
-  });
-}
-</script>
+
 {% endblock %}

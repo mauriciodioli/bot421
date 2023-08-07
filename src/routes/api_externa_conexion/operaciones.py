@@ -53,8 +53,11 @@ def estadoOperacion():
         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
         
         operaciones = repuesta_operacion['orders']
+        if len(operaciones)!=0:
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-        return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+          return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+        else:
+          return render_template("notificaciones/noPoseeDatos.html")
    except:  
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
