@@ -137,6 +137,19 @@ def index():
     
     return render_template('index.html')
 
+
+@autenticacion.route("/home", methods=['POST'])
+def home():
+     if request.method == 'POST':
+        print("intenta crear tablaaaaaaaaaaaaa_____________________   ")
+        
+        access_token = request.json.get('token')
+        refresh_token  = request.json.get('refresh_token')
+        selector = request.json.get('selectorEnvironment')
+        account = request.json.get('account')
+        cuenta = [account,selector,access_token]
+        return render_template('home.html', cuenta = cuenta)
+    
  # esta es la autenticacion cuando ingresa por app si en caso ya existe el token##################    
 
 @autenticacion.route("/loginIndex", methods=['POST'])
@@ -147,7 +160,7 @@ def loginIndex():
         access_token = request.json.get('token')
         refresh_token  = request.json.get('refresh_token')
         selector = request.json.get('selectorEnvironment')
-        account = request.json.get('cuenta')
+        account = request.json.get('account')
         print("___________________token   ", access_token)
         
         if access_token:
@@ -164,12 +177,14 @@ def loginIndex():
                 
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
+                    # return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
                     resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': user.cuentas[0].userCuenta, 'selector': selector}))
                     resp.headers['Content-Type'] = 'application/json'
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
                     return resp
-                
+                    #return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
+                    
             except jwt.ExpiredSignatureError:
                 # Si el token ha expirado, redirigirlo a la página de inicio de sesión
                 print("El token ha expirado")
@@ -192,7 +207,7 @@ def refresh():
     refresh_token = request.cookies.get('refresh_token')
 
     # Decodificar el refresh token
-    username = decode_token(refresh_token)
+    username = refresh_token.decode_token(refresh_token)
 
     # Verificar si el usuario existe
     with db.cursor() as cursor:
@@ -237,9 +252,11 @@ def loginUsuario():
         # Buscar el usuario en la base de datos
        # crea_tabla_usuario()
         usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+       
        # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
             flash('Correo electrónico o contraseña incorrectos', 'danger')
+           
             return redirect(url_for('autenticacion.index'))
         # Iniciar sesión de usuario
        
@@ -255,7 +272,12 @@ def loginUsuario():
         #if access_token:
         #    app = current_app._get_current_object()
         # Configurar las cookies de JWT
-        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
+        cuenta = ''
+        selector = '1'
+        user = ''
+       # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
+        resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user]))
+        #resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
        # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
        # user = Usuario.query.get(user_id)
        # print("user ___________", user.correo_electronico)

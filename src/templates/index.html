@@ -239,6 +239,7 @@
                             <div class="form-group">
                               <label for="correo_electronico" class="text-white">Correo electrónico:</label>
                               <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" required>
+                              
                             </div>
       
                             <div class="form-group">
@@ -315,6 +316,8 @@
       // Obtener el token del localStorage
       var token = localStorage.getItem('access_token');
       var refresh_token = localStorage.getItem('refresh_token');
+      var selectorEnvironment = localStorage.getItem('selector');
+      account =  localStorage.getItem('cuenta');
       const payload = JSON.parse(atob(token.split('.')[1]));
       const tokenExpirationDate = new Date(payload.exp * 1000);
       const currentDateTime = new Date();
@@ -327,7 +330,7 @@
           type: "POST",
           url: "{{ url_for('autenticacion.loginIndex') }}",
           contentType: "application/json",
-          data: JSON.stringify({'token': token,'refresh_token':refresh_token}),
+          data: JSON.stringify({'token': token,'refresh_token':refresh_token,'selectorEnvironment':selectorEnvironment,'account':account}),
           success: function(response) {
             if (response.redirect) {
               window.location.href = response.redirect;
