@@ -42,7 +42,7 @@
       //en este script cargo el correo electronico almacenado en el localStorage 
       access_token = localStorage.getItem("access_token");
       correo_electronico = localStorage.getItem("correo_electronico");  
-      console.log(access_token);
+      
       let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
       document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
       document.getElementById("correo_electronico").value = correo_electronico;

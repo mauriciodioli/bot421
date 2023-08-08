@@ -111,20 +111,20 @@
               <div class="horizontal-padding vertical-padding">
                 <section class="sobre-nosotros" id="sobre-nosotros">
                   <div class="container" id="container-sobre-nosotros">
-                    <div class="image-container-sobre-nosotros">
-                      <img src="ruta-de-la-imagen.jpg" alt="Descripción de la imagen">
-                    </div>
-                    <div class="text-container-sobre-nosotros">
-                      <h4 class="sobre-nosotros" style="color: gold; font-size: 24px;">SOBRE NOSOTROS</h4>
-                      <h1 class="sobre-nosotros-descripcion" style="color: white; font-size: 32px;">Somos Quant Trading</h1>
-                      <p class="subtitulo">Subtítulo del texto</p>
+                    <h4 class="sobre-nosotros" style="color: gold; font-size: 24px;">SOBRE NOSOTROS</h4>
+                    <h1 class="sobre-nosotros-descripcion" style="color: white; font-size: 32px;">Somos Quant Trading</h1>
+                    <div class="flex-container">
+                      <div class="image-container-sobre-nosotros">
+                        <img src="/static/bitCoinSobreNosotros.jpg" alt="Descripción de la imagen" style="width: 200%; height: auto;">
+                      </div>
+                      <div class="text-container-sobre-nosotros">
+                        <p class="subtitulo">Subtítulo del texto</p>
+                      </div>
                     </div>
                   </div>
                 </section>
               </div>
               
-              </div>
-
               <div class="horizontal-padding vertical-padding">
                 <section class="faq" id="faq">
                   <div class="faq-info">
@@ -318,10 +318,15 @@
       var refresh_token = localStorage.getItem('refresh_token');
       var selectorEnvironment = localStorage.getItem('selector');
       account =  localStorage.getItem('cuenta');
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const tokenExpirationDate = new Date(payload.exp * 1000);
-      const currentDateTime = new Date();
-      vencimiento_access_token = currentDateTime.getTime() > tokenExpirationDate.getTime();
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const tokenExpirationDate = new Date(payload.exp * 1000);
+        const currentDateTime = new Date();
+        vencimiento_access_token = currentDateTime.getTime() > tokenExpirationDate.getTime();
+      } else {
+      // En caso de que no haya un token
+      //  console.log("No hay token disponible");
+      }  
       //console.log("tokenExpirationDate: ",tokenExpirationDate," currentDateTime: ",currentDateTime," vencimiento: ",vencimiento_access_token)
       
       if (token) { // Verificar si el token existe en el localStorage

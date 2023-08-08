@@ -20,8 +20,7 @@
           <th scope="col">id</th>
           <th scope="col">Usuario</th>
           <th scope="col">Cuenta</th>  
-          <th scope="col">Password</th>                                                      
-          <th scope="col">Select Account</th>
+          <th scope="col">Password</th>
           <th scope="col">Quitar</th>                                                                         
         </tr>            
       </thead>
@@ -33,17 +32,6 @@
                 <th scope="row">{{ dato.userCuenta }}</th> 
                 <th scope="row">{{ dato.accountCuenta }}</th>
                 <th scope="row">{{ dato.passwordCuenta }}</th> 
-                <td>
-                <form action="/loginExtCuentaSeleccionadaBroker" method="POST">
-                    <div class="form-group"><input type="hidden" name="selectorEnvironment" id="selectorEnvironment"  value="1" class="form-control"></div>                    
-                    <div class="form-group"><input type="hidden" name="usuario" id="usuario" value="{{ dato.userCuenta }}" class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="cuenta" id="cuenta" placeholder="cuenta" value="{{ dato.accountCuenta }}" class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="access_token"  id="access_token"  class="form-control"></div>                               
-                    <div class="form-group"><input type="hidden" name="idusuario" id="idusuario" value="{{ current_user.id }}" class="form-control"></div> 
-                    <div class="form-group"><button type="submit" class="btn btn-primary btn-sm btn-block form-control">This</button></div>
-                </form>
-                </td> 
                 <td>
                 <form action="/delete_cuenta_usuario_broker" method="POST">
                     <div class="form-group"><input type="hidden" name="id" placeholder="escribe cuenta" value="{{ dato.id }}" class="form-control"></div>                               

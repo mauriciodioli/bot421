@@ -20,28 +20,15 @@ var cuenta = "{{ cuenta[0] }}";
 var usuario = "{{ cuenta[1] }}";
 var selector = "{{ cuenta[2] }}";
 
-
+console.log("probanodo",cuenta)
+console.log(usuario)
+console.log(selector)
 // Almacenar los tokens en el localStorage
 localStorage.setItem("cuenta", cuenta);
 localStorage.setItem("usuario", usuario);
 localStorage.setItem("selector", selector);
 //{% endif %}
 
-var accesstoken;
-var refreshtoken;
-var usuario1;
-
-// Obtener los tokens de localStorage y realizar la solicitud fetch
-function obtenerTokens() {
-  accesstoken = localStorage.getItem('access_token');
-  correo_electronico = localStorage.getItem('correo_electronico');
-  refreshtoken = localStorage.getItem('refresh_token');
-  usuario1 = localStorage.getItem('usuario');
-
-}
-
-// Llamar a la función obtenerTokens
-//obtenerTokens();
 
 
 </script>
