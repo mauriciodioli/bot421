@@ -18,7 +18,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/static/js/actualizaTabla.js"></script>
-    <title>Registro de usuarios</title>
+    <title>logeado en Broker</title>
     <meta name="google-signin-client_id" content="TU_CLIENTE_ID_DE_GOOGLE">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -35,11 +35,12 @@
     <!-- As a heading -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <h1 name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
-            <h1 name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
-            <h1 name="mensaje_simulado"  id="mensaje_simulado"></h1>
+            <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
+            <h1 id="mensaje_cuentaBroker" name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
+            <h1 id="mensaje_simulado" name="mensaje_simulado"  id="mensaje_simulado"></h1>
            
-            
+           
+
             <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
@@ -112,7 +113,7 @@
                                     <input type="hidden" name="usuario_id" id = "usuario_id" class="form-control">
                                 </div>                               
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-secondary btn-sm btn-block form-control w-auto mx-2">Estrategias</button>
+                                    <button type="submit" class="btn  btn-success btn-sm btn-block form-control w-auto mx-2">Estrategias</button>
                                 </div>
                              </form>
                         </li>  
@@ -182,19 +183,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     <script>
-        let correo_electronico = localStorage.getItem("correo_electronico");  
-        let cuentaBroker = localStorage.getItem("cuenta");  
-        let simulado = localStorage.getItem("selector");  
-        let access_token = localStorage.getItem("access_token")
-        let rol = localStorage.getItem('roll');
+         correo_electronico = localStorage.getItem("correo_electronico");  
+         cuentaBroker = localStorage.getItem("cuenta");  
+         simulado = localStorage.getItem("selector");  
+         access_token = localStorage.getItem("access_token")
+         rol = localStorage.getItem('roll');
       
 
         document.getElementById("access_token_form_Abm").value = access_token;
-       
-        
-        
-       
-        document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+      
         document.addEventListener('DOMContentLoaded', function() {
             let usuario_id = localStorage.getItem('usuario_id');
             document.getElementById("usuario_id").value = usuario_id;
@@ -205,24 +202,24 @@
           });
         
         if (simulado == '1') {
-            let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
+             cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
           
             let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
             document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
-            let mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
+             mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
             document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
             
             } else if (simulado == '2') {
 
-            let cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
+             cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
 
-            let enlace_correo = "<a ' style='text-decoration:none; color:blue;''>" + correo_electronico + "</a>";
+             enlace_correo = "<a ' style='text-decoration:none; color:blue;''>" + correo_electronico + "</a>";
             document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
-            let mensaje = "<a ' style='text-decoration:none;  color:blue;'>" + cuentaBroker + "</a>";
+             mensaje = "<a ' style='text-decoration:none;  color:blue;'>" + cuentaBroker + "</a>";
             document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
             } else {
             // handle the case when the value of simulado is neither '1' nor '2'
@@ -232,7 +229,7 @@
                 // Verificar si el rol es "administrador"
         if (rol != 'ADMINISTRADOR') {
             // Ocultar el enlace del menú de administración
-            var adminLink = document.querySelector('.nav-link.dropdown-toggle');
+             adminLink = document.querySelector('.nav-link.dropdown-toggle');
             adminLink.style.display = 'none';
         }
 

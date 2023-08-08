@@ -62,10 +62,15 @@
     display: flex;
     align-items: center;
   }
-
+  
+  .flex-container {
+    display: flex;
+    align-items: center; /* Alinear verticalmente */
+  }
+  
   .image-container-sobre-nosotros {
-    flex: 1;
-    margin-right: 20px; /* Espacio entre la imagen y el texto */
+    flex: 0 0 50%; /* O el porcentaje deseado para la imagen */
+    padding-right: 20px; /* Espacio entre la imagen y el texto */
   }
 
   .image-container-sobre-nosotros img {
