@@ -292,6 +292,50 @@ def get_cuentas_de_broker_usuario():
      db.session.close()
      return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
   
+@cuenta.route("/get_cuentas_de_broker_usuario_Abm",  methods=["POST"])   
+def get_cuentas_de_broker_usuario_Abm():
+     if request.method == 'POST':
+       
+         access_token = request.form['access_token_form_Abm']
+         todasLasCuentas = []
+         if access_token:
+            app = current_app._get_current_object()
+            
+            try:
+               user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+
+              # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                # Obtener el objeto Usuario correspondiente al user_id
+               usuario = Usuario.query.get(user_id)         
+              # Buscar todas las cuentas asociadas a ese usuario
+               cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
+
+               if cuentas:
+                  print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+                  
+                  for cuenta in cuentas:
+                   todasLasCuentas.append(cuenta.accountCuenta)
+                   password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                   todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta})
+     
+                   print(cuenta.accountCuenta)	
+                  
+                
+               else:
+                  print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
+                  flash('No registra cuenta para el usuario: ',usuario.nombre)
+                  return render_template("cuentas/registrarCuentaBroker.html")
+                  
+         
+    
+       
+            except:
+                     print("No se pudo registrar la cuenta.")
+                     db.session.rollback()  # Hacer rollback de la sesión
+                     return render_template("errorLogueo.html")
+     db.session.close()
+     return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
+  
 @cuenta.route("/delete_cuenta_usuario_broker",  methods=["POST"])   
 def delete_cuenta_usuario_broker():
     try:
