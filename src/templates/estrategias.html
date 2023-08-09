@@ -65,8 +65,12 @@
                             <button type="button" class="btn btn-primary mb-2" onclick="submitForm()">TEST</button>
                         </form>
                     </div>
-                    <div class = "col-md-4">    
-                       <a class="btn btn-primary btn-lg" href="/detenerWS/" role="button">DETENER Web Socket</a>
+                    <div class = "col-md-4">   
+
+                        <form action="/detenerWS/" method="post">
+                            <input type="hidden" name="usuario_id" id="usuario_id">
+                            <button type="submit" class="btn btn-primary btn-lg">DETENER Web Socket</button>
+                        </form>
                 
                     </div>    
                 </div> 
@@ -84,18 +88,15 @@
             document.getElementById("cuenta1").value = cuenta
             document.getElementById("usuario1").value = usuario
             document.getElementById("correo_electronico1").value = correo_electronico
-<<<<<<< HEAD
+
             document.getElementById("access_token1").value = access_token
-<<<<<<< HEAD
+            document.getElementById("usuario_id").value = usuario;
             function setLocalStorageValue(value) {
                 localStorage.setItem('inicio_automatico', value);
             }
-=======
->>>>>>> origin/pcDaniel
-=======
-            document.getElementById("access_token1").value = access_token 
+
             document.getElementById("account").value = cuenta;
->>>>>>> origin/pcDaniel
+
             function submitForm() {
                 document.getElementById("ruta_de_test_ws").submit();
             }

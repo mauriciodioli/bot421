@@ -103,7 +103,7 @@ def leerSheet():
      ut = sheet.col_values(20)
      senial = sheet.col_values(21)
      union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-     modificar_columna_ut('ORO/SEP23',8)
+     #modificar_columna_ut('ORO/SEP23',8)
      #for Symbol,cedear,trade_en_curso,ut,senial  in union:
       #print(Symbol,cedear,trade_en_curso,ut,senial)
     
