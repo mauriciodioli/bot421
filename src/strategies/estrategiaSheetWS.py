@@ -236,12 +236,11 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
             if Symbol in get.diccionario_global_operaciones:
                 #print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
-                    #aqui entra en caso que tenga que cambiar la señal del stock de operaciones 
+                    #aqui entra en caso que tenga que cambiar la señal de trading
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
-                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
                             get.diccionario_global_operaciones[Symbol]['senial'] = senial
-                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
+
 
             #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
             mepAl30 = 460 ####Calcula dolar MEP
@@ -325,10 +324,10 @@ def calcularMepCedearsWS(message):
     # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
     # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
     # size = resultado2['BI'][0]['size']
-   #  print("__________ko_ci____________",ko_ci)
-   #  print("__________koD_ci____________",koD_ci)
-   #  print("__________size____________",size)
-     #mep= ko_ci / koD_ci
+    # print("__________ko_ci____________",ko_ci)
+    # print("__________koD_ci____________",koD_ci)
+    # print("__________size____________",size)
+    # mep= ko_ci / koD_ci
      
      """"
      if len(resultado['OF']) > 0:

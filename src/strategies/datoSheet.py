@@ -323,7 +323,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta
                             }
-                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario                           
+                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
                            # print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")                        
                            # pprint.pprint(g et.diccionario_operaciones_enviadas)
                            # print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
