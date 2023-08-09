@@ -167,7 +167,7 @@ def registrar_cuenta():
             except:               
                 db.session.rollback()  # Hacer rollback de la sesión
                 db.session.close()
-                print("No se pudo registrar la cuenta.")
+                print("No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.")
     
    return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
 

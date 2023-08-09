@@ -1,4 +1,4 @@
-{% extends 'layouts/layout_without_navbar.html' %}
+{% extends 'layouts/layout.html' %}
 {% block content %}
 
 
@@ -38,13 +38,13 @@
   
       <script>
         let guardada = localStorage.getItem("date")
-        let access_token = localStorage.getItem("access_token")  
+        access_token = localStorage.getItem("access_token")  
         console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage
        // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
        if (!access_token || tokenExpirado(access_token)) {
         // Obtener los tokens desde el diccionario de contexto de Flask
         {% if tokens is defined %}
-          const access_token = "{{ tokens[0] }}";
+          access_token = "{{ tokens[0] }}";
           const refresh_token = "{{ tokens[1] }}";
           const correo_electronico = "{{ tokens[2] }}";
           const expiry_timestamp = "{{ tokens[3] }}";  // Marca de tiempo de expiración
@@ -97,7 +97,7 @@
             // Obtener el token del localStorage
            
             var refresh_token = localStorage.getItem('refresh_token');
-            var correo_electronico = localStorage.getItem('correo_electronico');
+            correo_electronico = localStorage.getItem('correo_electronico');
             var cuenta = localStorage.getItem("cuenta");
             var usuario = localStorage.getItem("usuario");
             var simuladoOproduccion = localStorage.getItem("selector");
@@ -121,7 +121,7 @@
                     window.location.href = response.redirect;
                   } else {
                     // handle error
-                    showError("No se pudo redirigir al usuario se puede haber vencido el token loguee nuevamente");
+                    showError("No se pudo redirigir al usuario se debe ingresar el usario de broker");
                   }
                 },
                 error: function(error) {
@@ -132,7 +132,15 @@
             }
           
        
-
+            function showError(message) {
+              // Crear un elemento para mostrar el mensaje de error
+              var errorElement = document.createElement('div');
+              errorElement.className = 'error-message';
+              errorElement.textContent = message;
+          
+              // Agregar el elemento de error al DOM (por ejemplo, al cuerpo del documento)
+              document.body.appendChild(errorElement);
+          }
 
 
       </script>

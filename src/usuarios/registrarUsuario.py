@@ -96,12 +96,13 @@ def registro_usuario():
     db.session.commit()
     db.session.close()
     # Crear una respuesta
-    response = make_response(render_template("index.html"))
+   
 
 
     flash('Registro como usuario exitoso.')
     # Crear una respuesta
-    response = make_response(render_template("home.html", tokens=[access_token, refresh_token]))
+    response = make_response(render_template("index.html"))
+   # response = make_response(render_template("home.html", tokens=[access_token, refresh_token]))
 
     # Configurar las cookies HTTP con los tokens
     set_access_cookies(response, access_token)
