@@ -6,13 +6,15 @@
   <p class="lead">EN CUALQUIER MOMENTO PUEDE DETENER EL WEBSOCKET</p>
   <hr class="my-4">
   <p>Para detener el WEBSOCKET PRESIONE EL BOTON.</p>
-  <a class="btn btn-primary btn-lg" href="/detenerWS/" role="button">DETENER</a>
+  <button class="btn btn-primary btn-lg" id="detenerBtn">DETENER</button>
   <hr class="my-4">
-
   <p>Para detener todas las operaciones PRESIONE EL BOTON DE PANICO.</p>
-  <form  name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">    
-     
-      <div class="col">           
+  <form  name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">   
+    <input type="hidden" name="usuario_portfolio" id="usuario_portfolio">
+    <input type="hidden" name="account" id="account"> 
+    <input type="hidden" name="access_token_portfolio" id="access_token_portfolio"> 
+    <input type="hidden" name="correo_electronico_portfolio" id="correo_electronico_portfolio"> 
+    <div class="col">           
         <button type="submit" class="btn btn-primary my-2">TERMINAR TODO</button>
       </div>
   </form>
@@ -23,10 +25,26 @@
 
 
     <script>
-      cuenta = localStorage.getItem("cuenta");
+      var cuenta = localStorage.getItem("cuenta");
      
-      document.getElementById("account").value = account;
-
+      document.getElementById("account").value = cuenta;
+      $(document).ready(function() {
+        $('#detenerBtn').click(function() {
+          var usuario_id = localStorage.getItem('usuario_id');
+          
+          $.ajax({
+            type: 'POST',
+            url: '/detenerWS/',
+            data: { usuario_id: usuario_id },
+            success: function(response) {
+              // Hacer algo con la respuesta si es necesario
+            },
+            error: function(error) {
+              console.log('Error al detener WS:', error);
+            }
+          });
+        });
+      });
     </script>
 </div>
 

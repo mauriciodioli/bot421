@@ -317,7 +317,7 @@
       var token = localStorage.getItem('access_token');
       var refresh_token = localStorage.getItem('refresh_token');
       var selectorEnvironment = localStorage.getItem('selector');
-      account =  localStorage.getItem('cuenta');
+      var account =  localStorage.getItem('cuenta');
       if (token) {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const tokenExpirationDate = new Date(payload.exp * 1000);

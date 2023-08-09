@@ -35,7 +35,7 @@ def estrategias_usuario_general():
 @estrategias.route("/estrategias-usuario-nadmin",  methods=["POST"])
 def estrategias_usuario_nadmin():
     try:
-      if request.method == 'POST': 
+        if request.method == 'POST': 
             usuario_id = request.form['usuario_id']                      
             estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
             db.session.close()
@@ -44,7 +44,7 @@ def estrategias_usuario_nadmin():
                 print("Name:", estrategia.userCuenta)
                 # Print other attributes as needed
                 print()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id, estrategias])
     
     except:
        print('no hay estrategias') 
@@ -200,13 +200,13 @@ def detenerWS():
         # Llamar a la función estrategias_usuario_nadmin y pasar los datos por POST
         resultado_estrategias = estrategias_usuario_nadmin()
 
-        # Hacer algo con el resultado de la función si es necesario
+        # Devolver la respuesta generada por la función estrategias_usuario_nadmin
+        return resultado_estrategias
 
-        
     except Exception as e:
         print('Error al detener WS:', str(e))
-        return render_template("errorOperacion.html")  # Puedes renderizar una plantilla de error específica
- 
+        return render_template("errorOperacion.html")
+    
 @estrategias.route('/cargaDatosEstrategyUno/', methods = ['POST'])
 def cargaDatosEstrategyUno():   
     if request.method == 'POST':         
