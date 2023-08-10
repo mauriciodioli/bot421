@@ -20,6 +20,7 @@
     <table class="table table-dark table-striped">
       <thead>           
         <tr>
+          <th scope="col">BOTON PANICO</th> 
           <th scope="col">IdTrigger</th>  
           <th scope="col">IdUser</th>
           <th scope="col">UserCuenta</th>
@@ -38,7 +39,7 @@
             <td> 
             <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
               <input type="hidden" name="account" id="account">
-              <button type="submit" class="btn btn-danger my-2">TERMINAR</button>
+              <button type="submit" id="boton-panico-estrategia-usuario-noadmin" class="btn btn-danger my-2"></button>
             </form>
           </td>  
           <td>{{ estrategia.id }}</td>
