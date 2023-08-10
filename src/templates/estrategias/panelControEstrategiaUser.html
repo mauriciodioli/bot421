@@ -34,7 +34,13 @@
       <tbody>
         <!-- Aquí se mostrarán los usuarios -->
         {% for estrategia in datos[1] %}
-        <tr>
+          <tr>  
+            <td> 
+            <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
+              <input type="hidden" name="account" id="account">
+              <button type="submit" class="btn btn-danger my-2">TERMINAR</button>
+            </form>
+          </td>  
           <td>{{ estrategia.id }}</td>
           <td>{{ estrategia.user_id }}</td>          
           <td>{{ estrategia.userCuenta }}</td>
@@ -44,6 +50,7 @@
           <td>{{ estrategia.ManualAutomatico }}</td>
           <td>{{ estrategia.nombreEstrategia }}</td>
           <td class="d-flex">
+          
             <form action="/estrategia_sheet_WS/" method="POST">
               <input type="hidden" name="access_token" id="access_token" value="{{ access_token }}">                       
               <input type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
