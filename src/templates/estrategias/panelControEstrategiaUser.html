@@ -13,7 +13,7 @@
 
 {% block content %}
 
-  <h1>Estrategias</h1>
+  <h1>Panel Control Estrategias</h1>
 
   <div>
     
@@ -59,7 +59,7 @@
               <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">
               <button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    
             </form>
-            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" onclick="setLocalStorageValue('AUTOMATICO')">A</button>
+            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" onclick="toggleModo()">A</button>
 
             <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.cuenta }}">Editar</button>
             <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
@@ -167,7 +167,7 @@
                          
               <select class="form-control" id="ManualAutomatico" name="ManualAutomatico">
                 <option value="MANUAL">Manual</option>
-                <option value="ADAUTOMATICO">Automatico</option>
+                <option value="AUTOMATICO">Automatico</option>
               </select>
             
           </div>
@@ -247,6 +247,30 @@
     }
  
   
+    function toggleModo(estrategiaId) {
+      var botonAutomatico = document.getElementById('boton-automatico-estrategia-usuario-noadmin');
+      var botonManual = document.getElementById('boton-manual-estrategia-usuario-noadmin');
+      
+      // Obtener el valor actual del modo
+      var modoActual = (botonAutomatico.style.display === 'none') ? 'MANUAL' : 'AUTOMATICO';
+      
+      // Cambiar entre "AUTOMATICO" y "MANUAL"
+      var nuevoModo = (modoActual === 'AUTOMATICO') ? 'MANUAL' : 'AUTOMATICO';
+      
+      // Actualizar el estilo de los botones para reflejar el nuevo modo
+      if (nuevoModo === 'AUTOMATICO') {
+          botonAutomatico.style.display = 'inline-block';
+          botonManual.style.display = 'none';
+      } else {
+          botonAutomatico.style.display = 'none';
+          botonManual.style.display = 'inline-block';
+      }
+      
+      // Aquí puedes realizar cualquier otra acción que necesites, como enviar datos al servidor, actualizar la base de datos, etc.
+  }
   
+  function setModo(modo, estrategiaId) {
+      // Aquí puedes realizar acciones para configurar el modo en el servidor, si es necesario
+  }
 </script>
 {% endblock %}
