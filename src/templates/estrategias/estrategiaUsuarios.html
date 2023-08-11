@@ -34,7 +34,7 @@
       <tbody>
         <!-- Aquí se mostrarán los usuarios -->
         {% for estrategia in datos[1] %}
-        <tr>
+        <tr>          
           <td>{{ estrategia.id }}</td>
           <td>{{ estrategia.user_id }}</td>          
           <td>{{ estrategia.userCuenta }}</td>
@@ -159,7 +159,7 @@
                          
               <select class="form-control" id="ManualAutomatico" name="ManualAutomatico">
                 <option value="MANUAL">Manual</option>
-                <option value="ADAUTOMATICO">Automatico</option>
+                <option value="AUTOMATICO">Automatico</option>
               </select>
             
           </div>
