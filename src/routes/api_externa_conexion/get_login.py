@@ -76,21 +76,21 @@ def home():
 
 @get_login.route("/loginExtAutomatico", methods=['POST'])
 def loginExtAutomatico():
-    print('loginExtAutomatico ')
+    print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
         try:
+            print('Valores recibidos en loginExtAutomatico:', request.json)
             access_token = request.json.get('access_token')
+            rutaDeLogeo =  request.json.get('rutaDeLogeo')
             refresh_token = request.json.get('refresh_token')
             correo_electronico = request.json.get('correo_electronico')
             user = request.json.get('usuario')
-            password = request.json.get('contraseña')
             account = request.json.get('cuenta')
-          
             simuladoOproduccion = request.json.get('simuladoOproduccion')
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
            # print('correo_electronico ',correo_electronico)
-            
+            print('Valor de pagina:', rutaDeLogeo)
             print('usuario ',user)
             print('selector ',account)
             if access_token:
@@ -118,9 +118,10 @@ def loginExtAutomatico():
                                #     error_handler=error_handler,
                                #     exception_handler=exception_handler)
                                 print("está logueado en simulado en REMARKET")
-                                
-                                return jsonify({'redirect': url_for('get_login.home')})
-
+                                if rutaDeLogeo == 'Home':  
+                                 return jsonify({'redirect': url_for('get_login.home')})
+                                else:
+                                 return jsonify({'redirect': url_for('panelControl.panel_control')})
                                 #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
                   # except:
                      #  print("contraseña o usuario incorrecto")
@@ -144,8 +145,10 @@ def loginExtAutomatico():
         except:
            print("contraseña o usuario incorrecto")
            
-                  
-        return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
+        if rutaDeLogeo != 'Home':      
+             return render_template("/cuentas/panelDeControlBroker.html")   
+        else: 
+            return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
 
 
 @get_login.route("/loginExt", methods=['POST'])

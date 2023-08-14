@@ -95,26 +95,29 @@
       
          
             // Obtener el token del localStorage
-           
+            
             var refresh_token = localStorage.getItem('refresh_token');
             correo_electronico = localStorage.getItem('correo_electronico');
             var cuenta = localStorage.getItem("cuenta");
             var usuario = localStorage.getItem("usuario");
             var simuladoOproduccion = localStorage.getItem("selector");
-          
+
             if (access_token) { // Verificar si el token existe en el localStorage
+              
               // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
               $.ajax({
                 type: "POST",
                 url: "{{ url_for('get_login.loginExtAutomatico') }}",
                 contentType: "application/json",
-                data: JSON.stringify({'access_token': access_token,
+                data: JSON.stringify({
+                                      'rutaDeLogeo':'loginEnBroker',
+                                      'access_token': access_token,                                      
                                       'refresh_token':refresh_token,
                                       'correo_electronico':correo_electronico,
                                       'cuenta':cuenta,
                                       'usuario':usuario,
-                                      'simuladoOproduccion':simuladoOproduccion
-
+                                      'simuladoOproduccion':simuladoOproduccion,
+                                     
                                     }),
                 success: function(response) {
                   if (response.redirect) {

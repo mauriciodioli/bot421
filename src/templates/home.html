@@ -84,14 +84,16 @@ console.log("No se pudo obtener un nuevo token.");
     var cuenta = localStorage.getItem("cuenta");
     var usuario = localStorage.getItem("usuario");
     var simuladoOproduccion = localStorage.getItem("selector");
-  
+    
     if (access_token) { // Verificar si el token existe en el localStorage
       // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
       $.ajax({
         type: "POST",
         url: "{{ url_for('get_login.loginExtAutomatico') }}",
         contentType: "application/json",
-        data: JSON.stringify({'access_token': access_token,
+        data: JSON.stringify({
+                              'rutaDeLogeo':'Home',
+                              'access_token': access_token,
                               'refresh_token':refresh_token,
                               'correo_electronico':correo_electronico,
                               'cuenta':cuenta,
