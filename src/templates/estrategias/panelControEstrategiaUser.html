@@ -17,7 +17,7 @@
 
   <div>
     
-    <table class="table table-dark table-striped">
+    <table class="table table-dark table-striped" id="tabla-trigger">
       <thead>           
         <tr>
           <th scope="col">BOTON PANICO</th> 
@@ -59,9 +59,11 @@
               <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">
               <button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    
             </form>
-            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" onclick="toggleModo()">A</button>
 
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.cuenta }}">Editar</button>
+            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
+
+
+            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
             <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
           </td>
@@ -246,31 +248,81 @@
      
     }
  
-  
-    function toggleModo(estrategiaId) {
+    document.addEventListener('DOMContentLoaded', function () {
       var botonAutomatico = document.getElementById('boton-automatico-estrategia-usuario-noadmin');
-      var botonManual = document.getElementById('boton-manual-estrategia-usuario-noadmin');
       
-      // Obtener el valor actual del modo
-      var modoActual = (botonAutomatico.style.display === 'none') ? 'MANUAL' : 'AUTOMATICO';
+      botonAutomatico.addEventListener('click', function () {
+          var userId = botonAutomatico.getAttribute('data-trigger-user-id');
+          var triggerId = botonAutomatico.getAttribute('data-trigger-id');
+          var userCuenta = botonAutomatico.getAttribute('data-user-cuenta');
+          
+          llamarFuncionPython(userId, triggerId, userCuenta);
+      });
       
-      // Cambiar entre "AUTOMATICO" y "MANUAL"
-      var nuevoModo = (modoActual === 'AUTOMATICO') ? 'MANUAL' : 'AUTOMATICO';
-      
-      // Actualizar el estilo de los botones para reflejar el nuevo modo
-      if (nuevoModo === 'AUTOMATICO') {
-          botonAutomatico.style.display = 'inline-block';
-          botonManual.style.display = 'none';
-      } else {
-          botonAutomatico.style.display = 'none';
-          botonManual.style.display = 'inline-block';
-      }
-      
-      // Aquí puedes realizar cualquier otra acción que necesites, como enviar datos al servidor, actualizar la base de datos, etc.
-  }
+      function llamarFuncionPython(userId, triggerId, userCuenta) {
+          var xhr = new XMLHttpRequest();
+          
+          xhr.open('POST', '/pcEstrategiaUs-boton-a-m/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          
+          xhr.onload = function () {
+                          if (xhr.status === 200) {
+                            var respuesta = JSON.parse(xhr.responseText);  // Parsear la respuesta JSON
+                            
+                            // Acceder y manipular los datos recibidos
+                            var operationResult = respuesta.resultado;  // Cambiar 'operation_result' por 'resultado'
+                            var triggerData = respuesta.trigger_data;  // Accede directamente a la propiedad trigger_data
+        
+                          //console.log(operationResult);  // Imprime "Operación exitosa"
+                          //console.log(triggerData);      // Imprime el contenido de trigger_data
+                            actualizarTabla(triggerData);
+                        } else {
+                            alert('Error al llamar a la función Python');
+                        }
+                    };
+                    
+                    xhr.onerror = function () {
+                        alert('Error de conexión');
+                    };
+                    
+                    var requestData = {
+                        userId: userId,
+                        triggerId: triggerId,
+                        userCuenta: userCuenta
+                    };
+                    
+                    xhr.send(JSON.stringify(requestData));
+                }
+
+
+
+                function actualizarTabla(triggerData) {
+                  console.log(triggerData);  // Agregar esta línea para depurar
+                  var tablaTrigger = document.getElementById('tabla-trigger');
+                  var filas = tablaTrigger.getElementsByTagName('tr'); // Obtener todas las filas
+                  
+                  // Recorrer los datos recibidos y actualizar las celdas correspondientes en cada fila
+                  for (var i = 0; i < triggerData.length; i++) {
+                      var trigger = triggerData[i];
+                      var fila = filas[i + 1]; // Saltar la fila de encabezado
+                      var celdas = fila.getElementsByTagName('td'); // Obtener todas las celdas en la fila
+                      
+                      // Actualizar el contenido de las celdas con los datos correspondientes
+                     // celdas[1].textContent = trigger.id;
+                    //  celdas[2].textContent = trigger.userId;
+                    //  celdas[3].textContent = trigger.userCuenta;
+                    //  celdas[4].textContent = trigger.accountCuenta;
+                    //  celdas[5].textContent = trigger.horaInicio;
+                    //  celdas[6].textContent = trigger.horaFin;
+                      celdas[7].textContent = trigger.ManualAutomatico;
+                    //  celdas[8].textContent = trigger.nombreEstrategia;
+                      // ... Actualiza más celdas según sea necesario
+                  }
+              }
+              
+    
+  });
   
-  function setModo(modo, estrategiaId) {
-      // Aquí puedes realizar acciones para configurar el modo en el servidor, si es necesario
-  }
+    
 </script>
 {% endblock %}

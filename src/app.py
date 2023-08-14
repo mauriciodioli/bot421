@@ -42,6 +42,7 @@ from usuarios.usuario import usuario
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
 from panelControlBroker.panelControl import panelControl
+from panelControl.pcEstrategiaUs import pcEtrategiaUs
 from automatizacion.programar_trigger import programar_trigger
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
@@ -97,6 +98,7 @@ app.register_blueprint(testWS)
 app.register_blueprint(imagenesOperaciones)
 app.register_blueprint(media_e_mail)
 app.register_blueprint(panelControl)
+app.register_blueprint(pcEtrategiaUs)
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
