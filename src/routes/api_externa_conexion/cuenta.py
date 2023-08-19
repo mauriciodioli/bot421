@@ -25,7 +25,8 @@ def crea_tabla_cuenta():
         user_id = "1",
         userCuenta="mauriciodioli6603",
         passwordCuenta="zbwitW5#",
-        accountCuenta="REM6603"                
+        accountCuenta="REM6603",
+        selector="simulado"                
     )
     cuenta.crear_tabla_cuentas()
     print("Tabla creada!")
@@ -125,6 +126,7 @@ def registrar_cuenta():
          userCuenta = request.form['usuario']
          passwordCuenta = request.form['contraseña']
          accountCuenta = request.form['cuenta']
+         selector = request.form['environment']
          print("___________cuentas___________userCuenta",userCuenta)
         
          print("___________cuentas___________accountCuenta",accountCuenta)
@@ -142,13 +144,18 @@ def registrar_cuenta():
                crea_tabla_cuenta()
                
                usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario correspondiente al user_id
+               if selector == '1':
+                  selectorStr = 'simulado'
+               else: 
+                  selectorStr = 'produccion'
 
                cuenta = Cuenta( 
                      id=None,   
                      user_id=user_id,
                      userCuenta=userCuenta_encoded,
                      passwordCuenta=passwordCuenta_encoded,
-                     accountCuenta=accountCuenta_encoded                
+                     accountCuenta=accountCuenta_encoded,
+                     selector=selectorStr              
                      )
                cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
                db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
@@ -236,7 +243,7 @@ def get_cuentas_de_broker(user_id):
             print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
             for cuenta in cuentas:
                 password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                todasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta})
+                todasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta, 'selector':cuenta.selector})
                 print(cuenta.accountCuenta)    
         else:
             print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
@@ -272,7 +279,7 @@ def get_cuentas_de_broker_usuario():
                   for cuenta in cuentas:
                    todasLasCuentas.append(cuenta.accountCuenta)
                    password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                   todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta})
+                   todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta,'selector':cuenta.selector})
      
                    print(cuenta.accountCuenta)	
                   

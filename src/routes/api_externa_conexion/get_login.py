@@ -92,51 +92,49 @@ def loginExtAutomatico():
            # print('correo_electronico ',correo_electronico)
             print('Valor de pagina:', rutaDeLogeo)
             print('usuario ',user)
-            print('selector ',account)
+            print('account ',account)
             if access_token:
                     app = current_app._get_current_object()
             
                     user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                     # Add user data to the database
                     print("user_id ",user_id)
-                    cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
-                    db.session.close()
-                    print("______............._______",cuentas.userCuenta) 
-                  
-                    print("cuentas.userCuenta ",cuentas.passwordCuenta)
-                    print("cuentas.accountCuenta ",cuentas.accountCuenta)
-          
+                    if cuentas != '':
+                        cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
+                        db.session.close()
              
-            if int(simuladoOproduccion) < 2:
-                  # try:
-                                pyRofexInicializada.initialize(user=cuentas.userCuenta,
-                                                                password=cuentas.passwordCuenta,
-                                                                account=cuentas.accountCuenta,
-                                                                environment=pyRofexInicializada.Environment.REMARKET)
-                               # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                               #     order_report_handler=order_report_handler,
-                               #     error_handler=error_handler,
-                               #     exception_handler=exception_handler)
-                                print("está logueado en simulado en REMARKET")
-                                if rutaDeLogeo == 'Home':  
-                                 return jsonify({'redirect': url_for('get_login.home')})
-                                else:
-                                 return jsonify({'redirect': url_for('panelControl.panel_control')})
-                                #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
-                  # except:
-                     #  print("contraseña o usuario incorrecto")
-                     #  flash('Loggin Incorrect')
-                     #  return render_template("errorLogueo.html")
-            else:
-                    pyRofexInicializada.initialize(user=cuentas.userCuenta,
-                                                   password=cuentas.passwordCuenta,
-                                                   account=cuentas.accountCuenta,
-                                                 environment=pyRofexInicializada.Environment.LIVE)
-                    #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                      # order_report_handler=order_report_handler,
-                      # error_handler=error_handler,
-                      # exception_handler=exception_handler)
-                    print("está logueado en produccion en LIVE")
+          
+            if  simuladoOproduccion !='':
+                if simuladoOproduccion =='simulado':
+                    # try:
+                                    pyRofexInicializada.initialize(user=cuentas.userCuenta,
+                                                                    password=cuentas.passwordCuenta,
+                                                                    account=cuentas.accountCuenta,
+                                                                    environment=pyRofexInicializada.Environment.REMARKET)
+                                # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                                #     order_report_handler=order_report_handler,
+                                #     error_handler=error_handler,
+                                #     exception_handler=exception_handler)
+                                    print("está logueado en simulado en REMARKET")
+                                    if rutaDeLogeo == 'Home':  
+                                        return jsonify({'redirect': url_for('get_login.home')})
+                                    else:
+                                        return jsonify({'redirect': url_for('panelControl.panel_control')})
+                                    #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
+                    # except:
+                        #  print("contraseña o usuario incorrecto")
+                        #  flash('Loggin Incorrect')
+                        #  return render_template("errorLogueo.html")
+                else:
+                        pyRofexInicializada.initialize(user=cuentas.userCuenta,
+                                                    password=cuentas.passwordCuenta,
+                                                    account=cuentas.accountCuenta,
+                                                    environment=pyRofexInicializada.Environment.LIVE)
+                        #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                        # order_report_handler=order_report_handler,
+                        # error_handler=error_handler,
+                        # exception_handler=exception_handler)
+                        print("está logueado en produccion en LIVE")
         except jwt.ExpiredSignatureError:
             print("El token ha expirado")
             return redirect(url_for('autenticacion.index'))
@@ -257,7 +255,7 @@ def loginExtCuentaSeleccionadaBroker():
                    #     print("no posee datos")
                    #     return render_template("login.html")
 
-                    if int(selector) < 2:
+                    if selector == 'simulado':
                         try:
                             pyRofexInicializada.initialize(user=user,
                                                            password=password,
