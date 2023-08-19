@@ -21,6 +21,7 @@
           <th scope="col">Usuario</th>
           <th scope="col">Cuenta</th>  
           <th scope="col">Password</th>
+          <th scope="col">Tipo</th>
           <th scope="col">Quitar</th>                                                                         
         </tr>            
       </thead>
@@ -32,9 +33,11 @@
                 <th scope="row">{{ dato.userCuenta }}</th> 
                 <th scope="row">{{ dato.accountCuenta }}</th>
                 <th scope="row">{{ dato.passwordCuenta }}</th> 
+                <th scope="row">{{ dato.selector }}</th> 
                 <td>
                 <form action="/delete_cuenta_usuario_broker" method="POST">
                     <div class="form-group"><input type="hidden" name="id" placeholder="escribe cuenta" value="{{ dato.id }}" class="form-control"></div>                               
+                    <input type="hidden" name="selector" value="{{ dato.selector }}">
                     <div class="form-group"><button type="submit" class="btn btn-secondary btn-sm btn-block form-control">Quitar</button></div>
                 </form>
                 </td>
@@ -77,7 +80,7 @@
       
                 // Crear campos ocultos para enviar los valores
                 const fields = [
-                  { name: 'selectorEnvironment', value: '1' },
+                  { name: 'selectorEnvironment', value: form.querySelector('input[name="selector"]').value },
                   { name: 'usuario', value: form.querySelector('input[name="usuario"]').value },
                   { name: 'contraseña', value: form.querySelector('input[name="contraseña"]').value },
                   { name: 'cuenta', value: form.querySelector('input[name="cuenta"]').value },

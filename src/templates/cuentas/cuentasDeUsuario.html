@@ -20,7 +20,8 @@
           <th scope="col">id</th>
           <th scope="col">Usuario</th>
           <th scope="col">Cuenta</th>  
-          <th scope="col">Password</th>                                                      
+          <th scope="col">Password</th>  
+          <th scope="col">Tipo</th>                                                     
           <th scope="col">Select Account</th>
           <th scope="col">Quitar</th>                                                                         
         </tr>            
@@ -33,9 +34,10 @@
                 <th scope="row">{{ dato.userCuenta }}</th> 
                 <th scope="row">{{ dato.accountCuenta }}</th>
                 <th scope="row">{{ dato.passwordCuenta }}</th> 
+                <th scope="row">{{ dato.selector }}</th> 
                 <td>
                 <form action="/loginExtCuentaSeleccionadaBroker" method="POST">
-                    <div class="form-group"><input type="hidden" name="selectorEnvironment" id="selectorEnvironment"  value="1" class="form-control"></div>                    
+                    <div class="form-group"><input type="hidden" name="selectorEnvironment" id="selectorEnvironment"  value="{{ dato.selector }}" class="form-control"></div>                    
                     <div class="form-group"><input type="hidden" name="usuario" id="usuario" value="{{ dato.userCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="cuenta" id="cuenta" placeholder="cuenta" value="{{ dato.accountCuenta }}" class="form-control"></div>                               
@@ -54,12 +56,23 @@
           {% endif %}
         {% endfor %}
         <script>  
+          if (localStorage.getItem("selector")) {
+            // Utilice removeItem para eliminar el valor con la clave "selector"
+            localStorage.removeItem("selector");
+            console.log("El valor 'miDato' se ha eliminado de localStorage.");
+          } else {
+            console.log("El valor 'selector' no existe en localStorage.");
+          }
+          
+          
+          
            //en este script cargo el correo electronico almacenado en el localStorage 
            access_token = localStorage.getItem("access_token")  
            refresh_token = localStorage.getItem('refresh_token');
            correo_electronico = localStorage.getItem('correo_electronico');
            cuenta = localStorage.getItem("cuenta");
            usuario = localStorage.getItem("usuario");
+
            simuladoOproduccion = localStorage.getItem("selector");
            
           document.addEventListener('DOMContentLoaded', function() {
@@ -80,46 +93,51 @@
           document.addEventListener('click', function(event) {
             const target = event.target;
             if (target && target.matches('.btn-primary')) {
-              event.preventDefault();
-              const form = target.closest('form'); // Encuentra el formulario que contiene el botón clicado
-              const usuarioIDInput = form.querySelector('input[name="idusuario"]'); // Busca el campo 'idusuario' dentro del formulario
-              console.log(usuarioIDInput)
-              if (usuarioIDInput) {
-                const usuarioID = usuarioIDInput.value;
-                localStorage.setItem('usuario_id', usuarioID);
-      
-                // Crear y enviar el formulario de redirección
-                const redirectForm = document.createElement('form');
-                redirectForm.method = 'POST';
-                redirectForm.action = '/loginExtCuentaSeleccionadaBroker';
-      
-                // Crear campos ocultos para enviar los valores
-                const fields = [
-                  { name: 'selectorEnvironment', value: '1' },
-                  { name: 'usuario', value: form.querySelector('input[name="usuario"]').value },
-                  { name: 'contraseña', value: form.querySelector('input[name="contraseña"]').value },
-                  { name: 'cuenta', value: form.querySelector('input[name="cuenta"]').value },
-                  { name: 'access_token', value: form.querySelector('input[name="access_token"]').value },
-                  { name: 'usuario_id', value: usuarioID }
-                ];
-      
-                // Agregar los campos ocultos al formulario de redirección
-                fields.forEach(field => {
-                  const input = document.createElement('input');
-                  input.type = 'hidden';
-                  input.name = field.name;
-                  input.value = field.value;
-                  redirectForm.appendChild(input);
-                });
-      
-                // Agregar el formulario de redirección al cuerpo del documento y enviarlo
-                document.body.appendChild(redirectForm);
-                redirectForm.submit();
-              } else {
-                console.error("Error: Input element 'idusuario' not found.");
-              }
+                event.preventDefault();
+                const form = target.closest('form'); // Encuentra el formulario que contiene el botón clicado
+                const usuarioIDInput = form.querySelector('input[name="idusuario"]'); // Busca el campo 'idusuario' dentro del formulario
+        
+                if (usuarioIDInput) {
+                    const usuarioID = usuarioIDInput.value;
+                    const selectorEnvironment = form.querySelector('input[name="selectorEnvironment"]').value; // Obtén el valor del campo selectorEnvironment
+        
+                    // Almacena el valor de selectorEnvironment en localStorage
+                    localStorage.setItem('selectorEnvironment', selectorEnvironment);
+                    localStorage.setItem('usuario_id', usuarioID);
+        
+                    // Crear y enviar el formulario de redirección
+                    const redirectForm = document.createElement('form');
+                    redirectForm.method = 'POST';
+                    redirectForm.action = '/loginExtCuentaSeleccionadaBroker';
+        
+                    // Crear campos ocultos para enviar los valores
+                    const fields = [
+                        { name: 'selectorEnvironment', value: selectorEnvironment },
+                        { name: 'usuario', value: form.querySelector('input[name="usuario"]').value },
+                        { name: 'contraseña', value: form.querySelector('input[name="contraseña"]').value },
+                        { name: 'cuenta', value: form.querySelector('input[name="cuenta"]').value },
+                        { name: 'access_token', value: form.querySelector('input[name="access_token"]').value },
+                        { name: 'usuario_id', value: usuarioID }
+                    ];
+        
+                    // Agregar los campos ocultos al formulario de redirección
+                    fields.forEach(field => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = field.name;
+                        input.value = field.value;
+                        redirectForm.appendChild(input);
+                    });
+        
+                    // Agregar el formulario de redirección al cuerpo del documento y enviarlo
+                    document.body.appendChild(redirectForm);
+                    redirectForm.submit();
+                } else {
+                    console.error("Error: Input element 'idusuario' not found.");
+                }
             }
-          });
+        });
+        
           
           if (access_token) { // Verificar si el token existe en el localStorage
           

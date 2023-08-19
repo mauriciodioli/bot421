@@ -31,6 +31,7 @@ from flask_jwt_extended import (
 )
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from routes.api_externa_conexion.cuenta import cuenta
 from utils.db import db
 import jwt
 
@@ -272,30 +273,38 @@ def loginUsuario():
         #if access_token:
         #    app = current_app._get_current_object()
         # Configurar las cookies de JWT
-        cuenta = ''
-        selector = '1'
-        user = ''
-       # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
-        resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user]))
-        #resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
-       # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-       # user = Usuario.query.get(user_id)
-       # print("user ___________", user.correo_electronico)
-       # print("userid ________________", user_id)
-       # print("userCuenta ________________", user.cuentas[0].userCuenta)
-       # print("Cuenta ________________", user.cuentas[0].accountCuenta)
-       # resp = make_response(jsonify({'redirect': 'home', 'cuenta': user.cuentas[0].accountCuenta, 'userCuenta': usuario.cuentas[0].userCuenta, 'selector': '1'}))
-       # resp.headers['Content-Type'] = 'application/json'
-       
-        set_access_cookies(resp, access_token)
-        set_refresh_cookies(resp, refresh_token)
-        # Guardar tokens en localStorage
-        db.session.close()
-       
-        return resp
+        if access_token:
+            app = current_app._get_current_object()
+            
+            try:
+              
+                cuenta = ''
+                selector = ''
+                user = ''
+            # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
+                resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user]))
+                #resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
+            # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            # user = Usuario.query.get(user_id)
+            # print("user ___________", user.correo_electronico)
+            # print("userid ________________", user_id)
+            # print("userCuenta ________________", user.cuentas[0].userCuenta)
+            # print("Cuenta ________________", user.cuentas[0].accountCuenta)
+            # resp = make_response(jsonify({'redirect': 'home', 'cuenta': user.cuentas[0].accountCuenta, 'userCuenta': usuario.cuentas[0].userCuenta, 'selector': '1'}))
+            # resp.headers['Content-Type'] = 'application/json'
+            
+                set_access_cookies(resp, access_token)
+                set_refresh_cookies(resp, refresh_token)
+                # Guardar tokens en localStorage
+                db.session.close()
+            
+                return resp
     
      
-    
+            except:               
+                db.session.rollback()  # Hacer rollback de la sesión
+                db.session.close()
+                print("No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.")
 
 @autenticacion.route('/loginBroker', methods=['POST'])
 def loginBroker():
