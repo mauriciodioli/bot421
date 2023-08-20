@@ -79,7 +79,7 @@ def loginExtAutomatico():
     print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
         try:
-            print('Valores recibidos en loginExtAutomatico:', request.json)
+           
             access_token = request.json.get('access_token')
             rutaDeLogeo =  request.json.get('rutaDeLogeo')
             refresh_token = request.json.get('refresh_token')
@@ -300,15 +300,16 @@ def loginExtCuentaSeleccionadaBroker():
                 print("El token es inválido")
 
             return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
-#def order_report_handler(message):
-#  print("Mensaje de OrderRouting: {0}".format(message))
+
+def order_report_handler(message):
+  print("Mensaje de OrderRouting: {0}".format(message))
 #  reporte_de_ordenes.append(message)
   
-#def error_handler(message):
-#  print("Mensaje de error: {0}".format(message))
+def error_handler(message):
+  print("Mensaje de error: {0}".format(message))
 
-#def exception_handler(e):
-#    print("Exception Occurred: {0}".format(e.msg))
+def exception_handler(e):
+    print("Exception Occurred: {0}".format(e.msg))
 
 
        #ws.webSocket() ### AQUI FALTA HACER LA PANTALLA EN DONDE ELIJO LOS INSTRUMENTOS PARA SUSCRIBIRME 
