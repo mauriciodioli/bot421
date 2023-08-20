@@ -59,8 +59,8 @@ def estadoOperacion():
         #else:
          # return render_template("notificaciones/noPoseeDatos.html")
    except:  
-        print("contraseña o usuario incorrecto")  
-        flash('Loggin Incorrect')    
+        print("no puede ver los instrumentas")  
+        flash(' get.pyRofexInicializada.get_all_orders_status en route/operaciones.py linea 53')    
    return render_template("login.html" )
   
 @operaciones.route("/comprar",  methods=["POST"])
