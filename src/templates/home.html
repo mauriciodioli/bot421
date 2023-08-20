@@ -40,8 +40,7 @@ if (!access_token || tokenExpirado(access_token)) {
   localStorage.setItem("selector",selector);
   localStorage.setItem("usuario",usuario);
 {% endif %}
-}
-else {
+}else {
 // Token válido, usarlo para la solicitud AJAX
 //document.getElementById("access_token").value = access_token;
 }
@@ -85,7 +84,7 @@ console.log("No se pudo obtener un nuevo token.");
     var usuario = localStorage.getItem("usuario");
     var simuladoOproduccion = localStorage.getItem("selector");
     
-    if (access_token) { // Verificar si el token existe en el localStorage
+   /* if (access_token) { // Verificar si el token existe en el localStorage
       // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
       $.ajax({
         type: "POST",
@@ -114,7 +113,7 @@ console.log("No se pudo obtener un nuevo token.");
           showError("Hubo un error en la solicitud AJAX");
         }
       });
-    }
+    }*/
   
 
 
