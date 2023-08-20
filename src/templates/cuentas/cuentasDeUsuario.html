@@ -56,13 +56,7 @@
           {% endif %}
         {% endfor %}
         <script>  
-          if (localStorage.getItem("selector")) {
-            // Utilice removeItem para eliminar el valor con la clave "selector"
-            localStorage.removeItem("selector");
-            console.log("El valor 'miDato' se ha eliminado de localStorage.");
-          } else {
-            console.log("El valor 'selector' no existe en localStorage.");
-          }
+         
           
           
           
@@ -72,6 +66,7 @@
            correo_electronico = localStorage.getItem('correo_electronico');
            cuenta = localStorage.getItem("cuenta");
            usuario = localStorage.getItem("usuario");
+        
 
            simuladoOproduccion = localStorage.getItem("selector");
            
@@ -100,9 +95,19 @@
                 if (usuarioIDInput) {
                     const usuarioID = usuarioIDInput.value;
                     const selectorEnvironment = form.querySelector('input[name="selectorEnvironment"]').value; // Obtén el valor del campo selectorEnvironment
-        
+                    if (localStorage.getItem("selector")) {
+                      // Utilice removeItem para eliminar el valor con la clave "selector"
+                      localStorage.removeItem("selector");
+                      localStorage.removeItem("usuario_id");
+                      console.log("El valor 'selector' se ha eliminado de localStorage.");
+                      
+                    } else {
+                      console.log("El valor 'selector' no existe en localStorage.");
+                    }
                     // Almacena el valor de selectorEnvironment en localStorage
-                    localStorage.setItem('selectorEnvironment', selectorEnvironment);
+                    localStorage.setItem('selector', selectorEnvironment);
+                    console.log("usuarioID: ",usuarioID);
+                    localStorage.removeItem("usuario_id");
                     localStorage.setItem('usuario_id', usuarioID);
         
                     // Crear y enviar el formulario de redirección
