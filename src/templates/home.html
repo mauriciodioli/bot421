@@ -28,6 +28,7 @@ if (!access_token || tokenExpirado(access_token)) {
   const cuenta = "{{ tokens[5] }}";
   const selector = "{{ tokens[6] }}";
   const usuario = "{{ tokens[7] }}";
+  const usuario_id = "{{ tokens[8] }}";
 
 
   // Almacenar los tokens y la marca de tiempo de expiración en el localStorage
@@ -39,6 +40,8 @@ if (!access_token || tokenExpirado(access_token)) {
   localStorage.setItem("cuenta",cuenta);
   localStorage.setItem("selector",selector);
   localStorage.setItem("usuario",usuario);
+  localStorage.removeItem('usuario_id');
+  localStorage.setItem("usuario_id",usuario_id);
 {% endif %}
 }else {
 // Token válido, usarlo para la solicitud AJAX

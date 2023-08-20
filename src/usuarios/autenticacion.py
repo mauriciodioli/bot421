@@ -270,6 +270,7 @@ def loginUsuario():
         usuario.refresh_token = refresh_token       
         db.session.add(usuario)
         db.session.commit()
+        
         #if access_token:
         #    app = current_app._get_current_object()
         # Configurar las cookies de JWT
@@ -280,9 +281,9 @@ def loginUsuario():
               
                 cuenta = ''
                 selector = ''
-                user = ''
+                user = ''               
             # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
-                resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user]))
+                resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user,usuario.id]))
                 #resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
             # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             # user = Usuario.query.get(user_id)
