@@ -259,7 +259,7 @@ def get_cuentas_de_broker(user_id):
 def get_cuentas_de_broker_usuario():
      if request.method == 'POST':
        
-         access_token = request.form['access_token_form2']
+         access_token = request.form['access_token']
          todasLasCuentas = []
          if access_token:
             app = current_app._get_current_object()
@@ -365,6 +365,14 @@ def delete_cuenta_usuario_broker():
          
 @cuenta.route("/logOutAccount")   
 def logOutAccount():
-   
+   #get.VariableParaTiemposMDHandler = 0
+   #get.accountLocalStorage = ""
+   #get.VariableParaBotonPanico = 0
+   #get.VariableParaSaldoCta = 0
+   #get.pyRofexInicializada = None
+   #get.pyConectionWebSocketInicializada = None
+   #get.pyWsSuscriptionInicializada = None
+   #get.diccionario_global_operaciones = {}
+   #get.diccionario_operaciones_enviadas = {}
    return render_template('cuentas/logOutAccount.html')
 

@@ -114,7 +114,8 @@ def loginExtAutomatico():
                                         #     exception_handler=exception_handler)
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
-                                                return jsonify({'redirect': url_for('get_login.home')})
+                                                return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
+                                                #return jsonify({'redirect': url_for('get_login.home')})
                                             else:
                                                 return jsonify({'redirect': url_for('panelControl.panel_control')})
                                             #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
@@ -142,11 +143,7 @@ def loginExtAutomatico():
                             else:
                                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                 else: 
-                    data = {
-                                'redirect': url_for('home'),  # Utiliza el nombre de la vista de inicio
-                                'cuenta': [account, user, simuladoOproduccion]
-                            }
-                    return jsonify(data)
+                    return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
             else:
                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                     
@@ -156,7 +153,7 @@ def loginExtAutomatico():
             print("El token ha expirado")
         except Exception as e:
             print("Otro error:", str(e))
-
+        return render_template("cuentas/registrarCuentaBroker.html")
 
 
 @get_login.route("/loginExt", methods=['POST'])
@@ -264,6 +261,16 @@ def loginExtCuentaSeleccionadaBroker():
                    # except:
                    #     print("no posee datos")
                    #     return render_template("login.html")
+                    
+                    VariableParaTiemposMDHandler = 0
+                    accountLocalStorage = ""
+                    VariableParaBotonPanico = 0
+                    VariableParaSaldoCta = 0
+                    pyRofexInicializada = pyRofex
+                    pyConectionWebSocketInicializada = pyRofex
+                    pyWsSuscriptionInicializada = pyRofex
+                    diccionario_global_operaciones = {}
+                    diccionario_operaciones_enviadas = {}
 
                     if selector == 'simulado':
                         try:
@@ -294,12 +301,17 @@ def loginExtCuentaSeleccionadaBroker():
                    
                         
             except jwt.ExpiredSignatureError:
-                print("El token ha expirado")
-                return redirect(url_for('autenticacion.index'))
+                   print("El token ha expirado")
+                   return redirect(url_for('autenticacion.index'))
             except jwt.InvalidTokenError:
                 print("El token es inválido")
-
-            return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
+            except Exception as e:
+                print('No se puede logear en route/get_login linea 294')
+                flash('No se puede logear en route/get_login linea 294')
+                return render_template("cuentas/registrarCuentaBroker.html")
+                # Puedes manejar este error de la manera que desees, por ejemplo, redirigir a una página de error.
+               
+            return render_template('cuentas/panelDeControlBroker.html', cuenta=[account, user, selector])
 
 def order_report_handler(message):
   print("Mensaje de OrderRouting: {0}".format(message))
