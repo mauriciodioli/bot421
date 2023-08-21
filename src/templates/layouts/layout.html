@@ -174,40 +174,44 @@
         let simulado = localStorage.getItem("selector");  
         let access_token = localStorage.getItem("access_token")
         let rol = localStorage.getItem('roll');
+        if (localStorage.getItem("selector")) {
 
-
-        console.log(correo_electronico);
-        console.log(cuentaBroker);
-        console.log(simulado);
-        
-        
-       
-        document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
-        
-        if (simulado == '1') {
-            let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
-            document.getElementById("mensaje_simulado").innerHTML = cuenta;
-          
-            let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
-            document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
-
-            let mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
-            document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
+                console.log(correo_electronico);
+                console.log(cuentaBroker);
+                console.log(simulado);
+                
+                
             
-            } else if (simulado == '2') {
+                document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+                
+                if (simulado == 'simulado') {
+                    let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
+                    document.getElementById("mensaje_simulado").innerHTML = cuenta;
+                
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
-            let cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
-            document.getElementById("mensaje_simulado").innerHTML = cuenta;
+                    let mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
+                    document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
+                    
+                    } else if (simulado == 'produccion') {
 
-            let enlace_correo = "<a ' style='text-decoration:none; color:blue;''>" + correo_electronico + "</a>";
-            document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+                    let cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
+                    document.getElementById("mensaje_simulado").innerHTML = cuenta;
 
-            let mensaje = "<a ' style='text-decoration:none;  color:blue;'>" + cuentaBroker + "</a>";
-            document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
-            } else {
-            // handle the case when the value of simulado is neither '1' nor '2'
-            }
+                    let enlace_correo = "<a ' style='text-decoration:none; color:blue;''>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
+                    let mensaje = "<a ' style='text-decoration:none;  color:blue;'>" + cuentaBroker + "</a>";
+                    document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
+                    } else {
+                    // handle the case when the value of simulado is neither '1' nor '2'
+                    }
+                }else {
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+                    console.log("El valor 'selector' no existe en localStorage.");
+                  }
 
                 // Verificar si el rol es "administrador"
         if (rol != 'ADMINISTRADOR') {
