@@ -94,7 +94,7 @@
                         </ul>
                     </li>
                   
-                   <!-- 
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="/instrumentos_detalles">Get Instruments</a>
                     </li>
@@ -107,7 +107,7 @@
                           <li><a class="dropdown-item" href="/suscripcionDb">List Instruments</a></li>                          
                         </ul>
                     </li>
-                     --> 
+                     
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Estrategias</a>
                         <ul class="dropdown-menu ">                        
@@ -205,7 +205,7 @@
 
           });
         
-        if (simulado == '1') {
+        if (simulado == 'simulado') {
              cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
           
@@ -215,7 +215,7 @@
              mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
             document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
             
-            } else if (simulado == '2') {
+            } else if (simulado == 'produccion') {
 
              cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
