@@ -190,8 +190,26 @@ def loginExt():
                    # except:
                    #     print("no posee datos")
                    #     return render_template("login.html")
+                    VariableParaTiemposMDHandler = 0
+                    accountLocalStorage = ""
+                    VariableParaBotonPanico = 0
+                    VariableParaSaldoCta = 0
+                    pyRofexInicializada = None
+                    pyConectionWebSocketInicializada = None
+                    pyWsSuscriptionInicializada = None
+                    diccionario_global_operaciones = {}
+                    diccionario_operaciones_enviadas = {}
+                    VariableParaTiemposMDHandler = 0
+                    accountLocalStorage = ""
+                    VariableParaBotonPanico = 0
+                    VariableParaSaldoCta = 0
+                    pyRofexInicializada = pyRofex
+                    pyConectionWebSocketInicializada = pyRofex
+                    pyWsSuscriptionInicializada = pyRofex
+                    diccionario_global_operaciones = {}
+                    diccionario_operaciones_enviadas = {}
 
-                    if int(selector) < 2:
+                    if selector == 'simulado':
                         try:
                             pyRofexInicializada.initialize(user=user,
                                                            password=password,
@@ -224,7 +242,12 @@ def loginExt():
                 return redirect(url_for('autenticacion.index'))
             except jwt.InvalidTokenError:
                 print("El token es inválido")
-
+            except Exception as e:
+                # Manejas la excepción aquí
+                print(f"Se produjo una excepción: {e}")
+                print('No se puede logear contraseña incorrecta')
+                flash('No se puede logear contraseña incorrecta')
+                return render_template("login.html")
             return render_template('home.html', cuenta=[account,user,selector])
 
 @get_login.route("/loginExtCuentaSeleccionadaBroker", methods=['POST'])
@@ -262,6 +285,15 @@ def loginExtCuentaSeleccionadaBroker():
                    #     print("no posee datos")
                    #     return render_template("login.html")
                     
+                    VariableParaTiemposMDHandler = 0
+                    accountLocalStorage = ""
+                    VariableParaBotonPanico = 0
+                    VariableParaSaldoCta = 0
+                    pyRofexInicializada = None
+                    pyConectionWebSocketInicializada = None
+                    pyWsSuscriptionInicializada = None
+                    diccionario_global_operaciones = {}
+                    diccionario_operaciones_enviadas = {}
                     VariableParaTiemposMDHandler = 0
                     accountLocalStorage = ""
                     VariableParaBotonPanico = 0
@@ -308,7 +340,7 @@ def loginExtCuentaSeleccionadaBroker():
             except Exception as e:
                 print('No se puede logear en route/get_login linea 294')
                 flash('No se puede logear en route/get_login linea 294')
-                return render_template("cuentas/registrarCuentaBroker.html")
+                return render_template("login.html")
                 # Puedes manejar este error de la manera que desees, por ejemplo, redirigir a una página de error.
                
             return render_template('cuentas/panelDeControlBroker.html', cuenta=[account, user, selector])
