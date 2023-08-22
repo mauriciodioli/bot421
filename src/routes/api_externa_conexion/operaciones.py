@@ -49,19 +49,24 @@ def get_trade_history_by_symbol():
 
 @operaciones.route("/estadoOperacion")
 def estadoOperacion():
-   try:        
+    try:
+        print(get.pyRofexInicializada)
         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-        
-        operaciones = repuesta_operacion['orders']
-        #if len(operaciones)!=0:
-        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-        return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
-        #else:
-         # return render_template("notificaciones/noPoseeDatos.html")
-   except:  
-        print("no puede ver los instrumentas")  
-        flash(' get.pyRofexInicializada.get_all_orders_status en route/operaciones.py linea 53')    
-   return render_template("login.html" )
+       
+        operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
+        return render_template('tablaOrdenesRealizadas.html', datos=operaciones)
+    
+    except KeyError as e:
+        # Manejar el caso en que 'orders' no está en la respuesta
+        print(f"Error: La respuesta no contiene 'orders': {e}")
+        flash("La respuesta no contiene datos de operaciones")
+    
+    except Exception as e:
+        # Manejar otras excepciones generales
+        print(f"Error inesperado: {e}")
+        flash("Ocurrió un error inesperado al obtener los datos de operaciones")
+
+    return render_template("login.html")
   
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():

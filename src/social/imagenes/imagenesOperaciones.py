@@ -39,3 +39,20 @@ def MostrarImages():
     # Obtener las imágenes desde la base de datos
     images = Image.query.all()
     return render_template('images.html', images=images)
+
+@imagenesOperaciones.route('/mostrarGaleria', methods = ['POST'])
+def MostrarGaleria():
+     if request.method == 'POST':
+        correo_electronico = request.form['correo_electronico']
+        password = request.form['password']
+        selector = request.json.get('selectorEnvironment')
+        account = request.json.get('account')
+        # Buscar el usuario en la base de datos
+        #crea_tabla_Image()
+        #usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+        imagenes = Image.query.all()
+    
+    # Envía información adicional (cuenta) a la plantilla
+ #      cuenta = [account, user, selector]
+    
+# return render_template('home.html', imagenes=imagenes, cuenta=cuenta)
