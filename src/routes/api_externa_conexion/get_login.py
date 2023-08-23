@@ -52,6 +52,10 @@ pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {}
+# Configurar las URLs de la instancia de BMB
+api_url = "https://api.bull.xoms.com.ar/"
+ws_url = "wss://api.bull.xoms.com.ar/"
+
 
 
 
@@ -79,9 +83,9 @@ def loginExtAutomatico():
     print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
         try:
-           
+            selector = request.form.get('environment')
             access_token = request.json.get('access_token')
-            rutaDeLogeo =  request.json.get('rutaDeLogeo')
+            rutaDeLogeo =  request.json.get('origin_page')
             refresh_token = request.json.get('refresh_token')
             correo_electronico = request.json.get('correo_electronico')
             user = request.json.get('usuario')
@@ -95,6 +99,8 @@ def loginExtAutomatico():
                 app = current_app._get_current_object()                    
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
+                environment = pyRofexInicializada.Environment.REMARKET if selector == 'simulado' else pyRofexInicializada.Environment.LIVE
+                print(f"Está enviando a {environment}")
                 if account is not None and account != '':   
                    cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
                    db.session.close()
@@ -180,18 +186,25 @@ def loginExtCuentaSeleccionadaBroker():
 
         try:
             inicializar_variables_globales()
-            environment = pyRofexInicializada.Environment.REMARKET if selector == 'simulado' else pyRofexInicializada.Environment.LIVE
+            environment = pyRofexInicializada.Environment.REMARKET 
+            if selector == 'simulado':
+                # Configurar para el entorno de simulación
+                environment = pyRofex.Environment.REMARKET
+            else:
+                # Configurar para el entorno LIVE
+                environment = pyRofex.Environment.LIVE
+                
+                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
+                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
+                
 
+                    
+            print(f"Está enviando a {environment}")
             if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
            
-            pyRofexInicializada.initialize(
-                user=user,
-                password=password,
-                account=account,
-                environment=environment
-            )
+            pyRofexInicializada.initialize(user=user,password=password,account=account,environment=environment )
             
             print(f"Está logueado en {selector} en {environment}")
 
@@ -216,6 +229,9 @@ def loginExtCuentaSeleccionadaBroker():
 
 def inicializar_variables_globales():
     global pyRofexInicializada, pyConectionWebSocketInicializada, pyWsSuscriptionInicializada
+    
+    
+   
 
     pyRofexInicializada = pyRofex
     pyConectionWebSocketInicializada = pyRofex
