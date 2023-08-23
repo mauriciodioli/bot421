@@ -5,6 +5,23 @@
   <h1 class="display-4">Bienvenido!, estas logeado en Bot420</h1>
   <p class="lead">Aqui puedes ver todos los videos e imagenes que se suben los usuarios relacionados</p>
   <hr class="my-4">
+  <div class="row">
+    {% for imagen in imagenes %}
+      <div class="col-md-4">
+        <div class="card mb-4 box-shadow">
+          <img class="card-img-top" src="{{ imagen.ruta }}" alt="{{ imagen.nombre }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ imagen.nombre }}</h5>
+            <p class="card-text">{{ imagen.descripcion }}</p>
+            <p class="card-text">Cuenta: {{ cuenta[0] }}</p>
+            <p class="card-text">Usuario: {{ cuenta[1] }}</p>
+            <p class="card-text">Selector: {{ cuenta[2] }}</p>
+            <a href="#" class="btn btn-primary">Saber más</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
   
 </div>
 <script>

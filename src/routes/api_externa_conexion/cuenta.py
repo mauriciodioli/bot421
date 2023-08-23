@@ -171,12 +171,14 @@ def registrar_cuenta():
                   passwordCuenta_decoded = passwordCuenta.decode('utf-8')
                   print(passwordCuenta_decoded)
 
-            except:               
+            except Exception as e:               
                 db.session.rollback()  # Hacer rollback de la sesión
                 db.session.close()
-                print("No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.")
+                flash('"No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.')
+                print("No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.",e)
+                
     
-   return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
+   return render_template('cuentas/registrarCuentaBroker.html')
 
 @cuenta.route("/registro-Cuenta-administracion/",  methods=["POST"])
 def registrar_cuenta_administracion():
@@ -365,14 +367,8 @@ def delete_cuenta_usuario_broker():
          
 @cuenta.route("/logOutAccount")   
 def logOutAccount():
-   #get.VariableParaTiemposMDHandler = 0
-   #get.accountLocalStorage = ""
-   #get.VariableParaBotonPanico = 0
-   #get.VariableParaSaldoCta = 0
-   #get.pyRofexInicializada = None
-   #get.pyConectionWebSocketInicializada = None
-   #get.pyWsSuscriptionInicializada = None
-   #get.diccionario_global_operaciones = {}
-   #get.diccionario_operaciones_enviadas = {}
+   get.inicializar_variables_globales()
+   get.diccionario_global_operaciones = {}
+   get.diccionario_operaciones_enviadas = {}
    return render_template('cuentas/logOutAccount.html')
 
