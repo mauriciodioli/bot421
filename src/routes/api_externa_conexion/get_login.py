@@ -161,37 +161,31 @@ def loginExtAutomatico():
 @get_login.route("/loginExtCuentaSeleccionadaBroker", methods=['POST'])
 def loginExtCuentaSeleccionadaBroker():
     if request.method == 'POST':
-        selector = request.form.get('selectorEnvironment')
+        origin_page = request.form.get('origin_page')
         user = request.form.get('usuario')
         password = request.form.get('contraseña')
         account = request.form.get('cuenta')
         access_token = request.form.get('access_token')
-        origin_page = request.form.get('origin_page')
-        VariableParaTiemposMDHandler = 0
-        accountLocalStorage = ""
-        VariableParaBotonPanico = 0
-        VariableParaSaldoCta = 0
-        pyRofexInicializada = None
-        pyConectionWebSocketInicializada = None
-        pyWsSuscriptionInicializada = None
-        diccionario_global_operaciones = {}
-        diccionario_operaciones_enviadas = {}
-        pyRofexInicializada = pyRofex
-        pyConectionWebSocketInicializada = pyRofex
-        pyWsSuscriptionInicializada = pyRofex
-        diccionario_global_operaciones = {}
-        diccionario_operaciones_enviadas = {}
+        
+        if origin_page == 'login':
+            selector = request.form.get('environment')
+        else: 
+            selector = request.form.get('selectorEnvironment')
+        
+        
+       
         if not selector or not user or not password or not account:
             flash('Falta información requerida')
             return redirect(url_for('autenticacion.index'))
 
         try:
+            inicializar_variables_globales()
             environment = pyRofexInicializada.Environment.REMARKET if selector == 'simulado' else pyRofexInicializada.Environment.LIVE
 
             if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
-
+           
             pyRofexInicializada.initialize(
                 user=user,
                 password=password,
@@ -208,6 +202,8 @@ def loginExtCuentaSeleccionadaBroker():
         except Exception as e:
             print('Error inesperado:', e)
             flash('No se pudo iniciar sesión')
+            return render_template('errorLogueo.html')
+            
  # Redirige a la página de origen según el valor de origin_page
         if origin_page == 'login':
             return render_template('home.html', cuenta=[account, user, selector])
@@ -218,7 +214,14 @@ def loginExtCuentaSeleccionadaBroker():
             return render_template('registrarCuentaBroker.html')
 
 
+def inicializar_variables_globales():
+    global pyRofexInicializada, pyConectionWebSocketInicializada, pyWsSuscriptionInicializada
 
+    pyRofexInicializada = pyRofex
+    pyConectionWebSocketInicializada = pyRofex
+    pyWsSuscriptionInicializada = pyRofex
+    
+    
 def order_report_handler(message):
   print("Mensaje de OrderRouting: {0}".format(message))
 #  reporte_de_ordenes.append(message)
