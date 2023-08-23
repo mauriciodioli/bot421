@@ -196,6 +196,7 @@ def loginExtCuentaSeleccionadaBroker():
                 
                 pyRofexInicializada._set_environment_parameter("url", api_url,environment)
                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
+                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                 
 
                     
