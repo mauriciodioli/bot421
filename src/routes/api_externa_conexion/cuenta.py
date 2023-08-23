@@ -367,13 +367,7 @@ def delete_cuenta_usuario_broker():
          
 @cuenta.route("/logOutAccount")   
 def logOutAccount():
-   get.VariableParaTiemposMDHandler = 0
-   get.accountLocalStorage = ""
-   get.VariableParaBotonPanico = 0
-   get.VariableParaSaldoCta = 0
-   get.pyRofexInicializada = None
-   get.pyConectionWebSocketInicializada = None
-   get.pyWsSuscriptionInicializada = None
+   get.inicializar_variables_globales()
    get.diccionario_global_operaciones = {}
    get.diccionario_operaciones_enviadas = {}
    return render_template('cuentas/logOutAccount.html')
