@@ -65,13 +65,13 @@
                         function filterTable() {
                           // Obtén el valor del input con name="symbol"
                           const symbolInput = document.querySelector('input[name="symbol"]');
-                          const symbolToFilter = symbolInput.value;
-                      
-                          // Recorre las filas de la tabla y muestra/oculta según el valor ingresado
+                          const symbolToFilter = symbolInput.value.toLowerCase(); // Convierte a minúsculas para una búsqueda sin distinción entre mayúsculas y minúsculas
+                        
+                          // Recorre las filas de la tabla y muestra/oculta según la búsqueda parcial
                           const rows = document.querySelectorAll('tbody tr');
                           rows.forEach(row => {
-                            const symbolInRow = row.getAttribute('data-symbol');
-                            if (symbolInRow === symbolToFilter || symbolToFilter === "") {
+                            const symbolInRow = row.getAttribute('data-symbol').toLowerCase(); // Convierte a minúsculas
+                            if (symbolInRow.includes(symbolToFilter) || symbolToFilter === "") {
                               row.style.display = ""; // Muestra la fila
                             } else {
                               row.style.display = "none"; // Oculta la fila
