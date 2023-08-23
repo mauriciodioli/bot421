@@ -98,15 +98,14 @@
               url: "{{ url_for('get_login.loginExtAutomatico') }}",
               contentType: "application/json",
               data: JSON.stringify({
-                                    'rutaDeLogeo': 'cuentasDeUsusario',
-                                    'access_token': access_token,
-                                    'refresh_token':refresh_token,
-                                    'correo_electronico':correo_electronico,
-                                    'cuenta':cuenta,
-                                    'usuario':usuario,
-                                    'simuladoOproduccion':simuladoOproduccion
-                                   
-                                  }),
+                'origin_page': 'cuentasDeUsusario',
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+                'correo_electronico': correo_electronico,
+                'cuenta': cuenta,
+                'usuario': usuario,
+                'simuladoOproduccion': simuladoOproduccion // Incluye simuladoOproduccion en la solicitud AJAX
+              }),
               success: function(response) {
                 if (response.redirect) {
                   window.location.href = response.redirect;
