@@ -23,25 +23,29 @@
                 </div> 
                 <div class="row">
                     <p>INICIO MANUAL DE LA ESTRATEGIA.</p>
-                    <form action="/estrategia_sheet_WS/" method="POST">
-                        <input type="hidden" name="access_token" id="access_token">                       
-                        <input type="hidden" name="usuario" id="usuario">  
-                        <input type="hidden" name="correo_electronico" id="correo_electronico">
-                        <input type="hidden" name="cuenta" id="cuenta">
-                        <button type="submit" class="btn btn-primary btn-block my-2" onclick="setLocalStorageValue('MANUAL')">Estrategia Sheet Ws</button>    
-                    </form>
-                    <p>INICIO AUTOMATICO DE LA ESTRATEGIA</p>
-                    <a class="btn btn-danger btn-lg d-inline-block"  role="button" onclick="setLocalStorageValue('AUTOMATICO')">RUN</a>
-                    <div class="col-md-4">
-                        <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
-                          <input type="hidden" name="account" id="account">
-                          <button type="submit" class="btn btn-danger my-2">TERMINAR TODO</button>
+                    <div class="d-flex align-items-center mb-3">
+                        
+                        <form action="/estrategia_sheet_WS/" method="POST">
+                            <input type="hidden" name="access_token" id="access_token">                       
+                            <input type="hidden" name="usuario" id="usuario">  
+                            <input type="hidden" name="correo_electronico" id="correo_electronico">
+                            <input type="hidden" name="cuenta" id="cuenta">
+                            <button type="submit" class="btn btn-primary btn-block mr-2" onclick="setLocalStorageValue('MANUAL')">Estrategia Sheet Ws</button>    
                         </form>
+                        
+                        <a class="btn btn-danger btn-lg d-inline-block ml-2"  role="button" onclick="setLocalStorageValue('AUTOMATICO')">RUN</a>
                     </div>
+                        <div class="col-md-4">
+                            <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
+                            <input type="hidden" name="account" id="account">
+                            <button type="submit" class="btn btn-danger my-2">TERMINAR TODO</button>
+                            </form>
+                        </div>
+                    
                 </div>
                 <div>
                     <p>Para iniciar estrategia presionar el boton.</p>
-                    <a class="btn btn-primary btn-lg" href="/estrategyDos/" role="button">Estrategia </a>
+                    <a class="btn btn-primary btn-lg" href="/basicas/" role="button">Estrategia </a>
                 </div>
                 
                 <div>

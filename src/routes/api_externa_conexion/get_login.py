@@ -110,10 +110,9 @@ def loginExtAutomatico():
                    if  simuladoOproduccion !='':
                         if simuladoOproduccion =='simulado':
                             try:
-                                            pyRofexInicializada.initialize(user=cuentas.userCuenta,
-                                                                            password=passwordCuenta,
-                                                                            account=cuentas.accountCuenta,
-                                                                            environment=pyRofexInicializada.Environment.REMARKET)
+                                            environment =pyRofexInicializada.Environment.REMARKET
+                                            pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
+                                           
                                         # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                         #     order_report_handler=order_report_handler,
                                         #     error_handler=error_handler,
@@ -133,10 +132,12 @@ def loginExtAutomatico():
                             exp_date = datetime.utcfromtimestamp(exp_timestamp)
                             fecha_actual =   datetime.utcnow()
                             if fecha_actual > exp_date:
-                                pyRofexInicializada.initialize(user=cuentas.userCuenta,
-                                                            password=passwordCuenta,
-                                                            account=cuentas.accountCuenta,
-                                                            environment=pyRofexInicializada.Environment.LIVE)
+                                environment = pyRofexInicializada.Environment.LIVE
+                
+                                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
+                                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
+                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
+                                pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
                                 # error_handler=error_handler,
@@ -186,13 +187,13 @@ def loginExtCuentaSeleccionadaBroker():
 
         try:
             inicializar_variables_globales()
-            environment = pyRofexInicializada.Environment.REMARKET 
+           
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
-                environment = pyRofex.Environment.REMARKET
+                environment = pyRofexInicializada.Environment.REMARKET
             else:
                 # Configurar para el entorno LIVE
-                environment = pyRofex.Environment.LIVE
+                environment = pyRofexInicializada.Environment.LIVE
                 
                 pyRofexInicializada._set_environment_parameter("url", api_url,environment)
                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
@@ -206,9 +207,10 @@ def loginExtCuentaSeleccionadaBroker():
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
            
             pyRofexInicializada.initialize(user=user,password=password,account=account,environment=environment )
-            
+            pyRofexInicializada.get_account_report(account=account)
             print(f"Está logueado en {selector} en {environment}")
-
+            
+            
         except jwt.ExpiredSignatureError:
             flash("El token ha expirado")
         except jwt.InvalidTokenError:
