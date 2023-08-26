@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
-
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
@@ -21,7 +20,6 @@ import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import pprint
-import websockets
 
 
 
@@ -62,16 +60,20 @@ def estrategia_sheet_WS():
             # Crear una instancia de RofexMarketDataHandler
             
 
-         
-            carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage, usuario, correo_electronico, ContenidoSheet_list[1])
+            
+            
+    #  except:  
+    #      print("_EstrategyUno_contraseña o usuario incorrecto")  
+    #      flash('Loggin Incorrect')    
+    #      return render_template("errorLogueo.html" ) 
     
         except jwt.ExpiredSignatureError:
-            print("El token ha expirado")
-            return redirect(url_for('autenticacion.index'))
+                print("El token ha expirado")
+                return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-            print("no pudo leer la base de datos")
+           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
     return render_template('/estrategiaOperando.html')
      
 def SuscripcionDeSheet():
@@ -234,12 +236,11 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
             if Symbol in get.diccionario_global_operaciones:
                 #print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
-                    #aqui entra en caso que tenga que cambiar la señal del stock de operaciones 
+                    #aqui entra en caso que tenga que cambiar la señal de trading
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
-                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
                             get.diccionario_global_operaciones[Symbol]['senial'] = senial
-                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
+
 
             #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
             mepAl30 = 460 ####Calcula dolar MEP
@@ -323,10 +324,10 @@ def calcularMepCedearsWS(message):
     # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
     # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
     # size = resultado2['BI'][0]['size']
-   #  print("__________ko_ci____________",ko_ci)
-   #  print("__________koD_ci____________",koD_ci)
-   #  print("__________size____________",size)
-     #mep= ko_ci / koD_ci
+    # print("__________ko_ci____________",ko_ci)
+    # print("__________koD_ci____________",koD_ci)
+    # print("__________size____________",size)
+    # mep= ko_ci / koD_ci
      
      """"
      if len(resultado['OF']) > 0:

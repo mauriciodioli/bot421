@@ -103,7 +103,7 @@ def leerSheet():
      ut = sheet.col_values(20)
      senial = sheet.col_values(21)
      union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-     #modificar_columna_ut('ORO/SEP23',8)
+     modificar_columna_ut('ORO/SEP23',8)
      #for Symbol,cedear,trade_en_curso,ut,senial  in union:
       #print(Symbol,cedear,trade_en_curso,ut,senial)
     
@@ -134,7 +134,7 @@ def datetime_encoder(obj):
 
 
 ################ AQUI DEFINO LA COMPRA POR WS ################
-def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, mepCedear, message):
+def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, message):
     saldocta = get.VariableParaSaldoCta### preguntar si existe el saldo de cuanta para recien operar
     #saldocta = 1000000
     ut = abs(int(ut))
@@ -210,7 +210,6 @@ def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, 
                         #precio = float(message["marketData"]["OF"][0]["price"])#
                        # get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 
-
                         ws_client_order_id = _ws_client_order_id
                         
                         user_id = get.diccionario_global_operaciones[Symbol]['user_id']
@@ -243,7 +242,7 @@ def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, 
                         #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                         precio = message["marketData"]["LA"]["price"]
-                       # get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.BUY,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+                        #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.BUY,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
                         ws_client_order_id = _ws_client_order_id                       
                         
                         user_id = get.diccionario_global_operaciones[Symbol]['user_id']
@@ -278,6 +277,7 @@ def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, 
                             #precio = float(message["marketData"]["OF"][0]["price"])
                             #precio = float(message["marketData"]["OF"][0]["price"])
                             #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+                            ws_client_order_id = _ws_client_order_id
                             
                             user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                             userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
@@ -307,23 +307,13 @@ def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, 
                             #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                             precio = float(message["marketData"]["LA"]["price"])
-                           # get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
-                            
-                           
-                    #AQUI PONE COMO TERMINADA CUANDO MANDA LA OPERACION
-                    for key, valor in get.diccionario_operaciones_enviadas.items():
-                        if  valor['Symbol'] == message["instrumentId"]["symbol"] and valor['_cliOrderId'] == cliOrderId:
-                             valor["status"] = 'TERMINADA'
-                
-                
-            #debe estar aqui por que puede ser que get.diccionario_global_operaciones[Symbol]['ut'] == 0
-            elif senial == 'closed.' and trade_en_curso == 'operar' : 
-                    if isinstance(message["marketData"]["OF"][0]["price"], float):
-                            precio = float(message["marketData"]["OF"][0]["price"])
                             #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+                            ws_client_order_id = _ws_client_order_id
+                           
                             user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                             userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
                             accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
+
                             diccionario = {
                                 "Symbol": Symbol,
                                 "_t_": tipo_de_activo,
@@ -340,7 +330,7 @@ def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, 
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta
                             }
-                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario                           
+                            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
                            # print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")                        
                            # pprint.pprint(g et.diccionario_operaciones_enviadas)
                            # print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
