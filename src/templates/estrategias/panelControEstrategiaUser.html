@@ -52,12 +52,12 @@
           <td>{{ estrategia.nombreEstrategia }}</td>
           <td class="d-flex">
           
-            <form action="/estrategia_sheet_WS/" method="POST">
+            <form method="POST" class="btn-guardar_inst">
               <input type="hidden" name="access_token" id="access_token" value="{{ access_token }}">                       
               <input type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
               <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
               <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">
-              <button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" ">M</button>    
+              <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario " data-nombre="{{ estrategia.nombreEstrategia }}">M</button>
             <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
             </form>
 
@@ -85,7 +85,7 @@
       <div class="form-group">
         <input type="hidden" class="form-control" id="cuenta" name="cuenta" value="{{ cuenta_estrategia }}" required>
       </div>         
-      <label for="nombre">Nombre:</label>
+      <label for="nombreEstrategia">Nombre:</label>
       <input type="text" class="form-control" id="nombreEstrategia" name="nombreEstrategia" required>         
       <button type="submit" class="btn btn-primary my-2">Registrar estrategia</button>
     </form>
@@ -111,7 +111,7 @@
               <input type="hidden" class="form-control" id="IdTrigger" name="IdTrigger">
             </div> 
             <div class="form-group">
-              <label for="editarEstrategiaModal" style="color: black;">Nombre:</label>
+              <label for="TriggerNombre" style="color: black;">Nombre:</label>
               <input type="text" class="form-control" id="TriggerNombre" name="TriggerNombre" required>
             </div>
           </div>
@@ -195,34 +195,6 @@
   document.getElementById("cuenta").value = cuenta_estrategia;
 
 
-  $(document).ready(function() {
-    // Validación del nombre
-    var nombre = document.getElementById("correo_electronico");
-    function validateNombre(event) {
-      if (nombre.value.indexOf(' ') >= 0) {
-        nombre.setCustomValidity("El correo_electronico no debe contener espacios en blanco");
-        event.preventDefault();
-      } else {
-        nombre.setCustomValidity("");
-      }
-    }
-  
-    // Validación de la confirmación de contraseña
-    var password = document.getElementById("password");
-    var confirm_password = document.getElementById("confirm_password");
-  
-    function validatePassword() {
-      if (password.value != confirm_password.value) {
-        confirm_password.setCustomValidity("Las contraseñas no coinciden");
-      } else {
-        confirm_password.setCustomValidity("");
-      }
-    }
-  
-    nombre.onchange = validateNombre;
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
-  });
 
   const editButtons = document.querySelectorAll('[data-bs-target="#editarEstrategiaModal"]');
   editButtons.forEach(button => {
@@ -295,13 +267,30 @@
                     xhr.send(JSON.stringify(requestData));
                 }
 
+                document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
+                  if (event.target && event.target.classList.contains('botonM')) {
+                      // Recupera el valor del atributo data-nombre
+                      var nombreEstrategia = event.target.getAttribute('data-nombre');
+                     
+                      console.log("Valor de nombreEstrategia: " + nombreEstrategia);
+                      
+                      // Coloca debugger; aquí para pausar la ejecución
+                      debugger;
+                      nombreEstrategia = '/basicas/'
+                      // Construye la URL dinámica utilizando el valor recuperado
+                      var url = '/strategies/FuncionesBasicas01/basicas/';
+                      console.log("url " + url);
+                      window.location.href = url; // Redirige a la URL construida
+                  }
+              });
 
 
                 function actualizarTabla(triggerData) {
+                  debugger;
                   console.log(triggerData);  // Agregar esta línea para depurar
                   var tablaTrigger = document.getElementById('tabla-trigger');
                   var filas = tablaTrigger.getElementsByTagName('tr'); // Obtener todas las filas
-                  
+                  debugger;
                   // Recorrer los datos recibidos y actualizar las celdas correspondientes en cada fila
                   for (var i = 0; i < triggerData.length; i++) {
                       var trigger = triggerData[i];

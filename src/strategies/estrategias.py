@@ -47,7 +47,7 @@ def estrategias_usuario_nadmin():
             return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
     
     except:
-       print('no hay estrategias') 
+       print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/estrategias/errorEstrategiaVacia.html")
 
 @estrategias.route("/estrategias-usuario",  methods=["POST"])

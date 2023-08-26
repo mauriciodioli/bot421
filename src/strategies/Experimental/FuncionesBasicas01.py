@@ -1,3 +1,38 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+import routes.instrumentos as instrumentos
+import routes.api_externa_conexion.get_login as get
+import routes.api_externa_conexion.validaInstrumentos as val
+import routes.instrumentos as inst
+from datetime import datetime
+import enum
+from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
+import socket
+import requests
+import time
+import json
+from models.orden import Orden
+import random
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+#import routes.api_externa_conexion.cuenta as cuenta
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pprint
+import os #obtener el directorio de trabajo actual
+#import drive
+#drive.mount('/content/gdrive')
+
+
+
+FuncionesBasicas01 = Blueprint('FuncionesBasicas01',__name__)
+
+
+@FuncionesBasicas01.route('/basicas/')
+def basicas():
+  MepAl30WS(2)
+  return ''
+
+
 # calculo del mep AL30 con websoket
 def MepAl30WS(message):
      
