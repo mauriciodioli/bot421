@@ -52,14 +52,14 @@
           <td>{{ estrategia.nombreEstrategia }}</td>
           <td class="d-flex">
           
-            <form method="POST" class="btn-guardar_inst">
+           <!-- <form method="POST" class="btn-guardar_inst">
               <input type="hidden" name="access_token" id="access_token" value="{{ access_token }}">                       
               <input type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
               <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
-              <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">
-              <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario " data-nombre="{{ estrategia.nombreEstrategia }}">M</button>
+              <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">-->
+              <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}"  data-nombreEstrategia="{{ estrategia.nombreEstrategia }}">M</button>
             <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
-            </form>
+          <!--  </form>-->
 
             <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
 
@@ -231,6 +231,9 @@
           
           llamarFuncionPython(userId, triggerId, userCuenta);
       });
+
+    
+      
       
       function llamarFuncionPython(userId, triggerId, userCuenta) {
           var xhr = new XMLHttpRequest();
@@ -265,27 +268,76 @@
                     };
                     
                     xhr.send(JSON.stringify(requestData));
-                }
+      }
 
-                document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
+     
+           
+      document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
                   if (event.target && event.target.classList.contains('botonM')) {
                       // Recupera el valor del atributo data-nombre
                       var nombreEstrategia = event.target.getAttribute('data-nombre');
-                     
-                      console.log("Valor de nombreEstrategia: " + nombreEstrategia);
                       
-                      // Coloca debugger; aquí para pausar la ejecución
+                      // Recupera los datos del Local Storage que deseas enviar
+                      access_token = localStorage.getItem('access_token');
+                      correo_electronico = localStorage.getItem('correo_electronico');
                       debugger;
-                      nombreEstrategia = '/basicas/'
-                      // Construye la URL dinámica utilizando el valor recuperado
-                      var url = '/strategies/FuncionesBasicas01/basicas/';
-                      console.log("url " + url);
-                      window.location.href = url; // Redirige a la URL construida
+                      console.log("tagName:", event.target.tagName);
+                      // Recupera los datos de la fila en la que se hizo clic
+                      
+                      // Recupera los datos de la fila en la que se hizo clic
+    var idUser = event.target.getAttribute('data-trigger-user-id');
+    var idTrigger = event.target.getAttribute('data-trigger-id');
+    var cuenta = event.target.getAttribute('data-user-cuenta');
+    var nombre = event.target.getAttribute('data-nombreEstrategia');
+    var tiempoInicio = event.target.getAttribute('data-horaInicio');
+    var tiempoFin = event.target.getAttribute('data-horaFin');
+    var ManualAutomatico = event.target.getAttribute('data-ManualAutomatico');
+
+                    
+                     
+                      console.log("userId:", idUser);
+                      console.log("idTrigger:",idTrigger);
+                      console.log("cuenta:", cuenta);
+                      console.log("nombre:", nombre);
+                      console.log("ManualAutomatico",ManualAutomatico)
+                      console.log("tiempoInicio",tiempoInicio)
+                      console.log("tiempoFin",tiempoFin)
+
+                          // Construye un objeto de datos para enviar al servidor
+                          var dataToSend = {
+                              userCuenta: cuenta,
+                              idTrigger: idTrigger,
+                              access_token: access_token, // Asegúrate de definir access_token y correo_electronico en este ámbito
+                              idUser: idUser,
+                              correo_electronico: correo_electronico,
+                              cuenta: cuenta,
+                              tiempoInicio: tiempoInicio,
+                              tiempoFin: tiempoFin,
+                              automatico: automatico,
+                              nombre: nombre
+                          };
+                          
+                          // Realiza la solicitud AJAX
+                          $.ajax({
+                              type: 'POST', // Puedes usar otros métodos HTTP según tus necesidades
+                              url: nombreEstrategia, // Ajusta la ruta de destino
+                              data: JSON.stringify(dataToSend), // Convierte los datos a JSON
+                              contentType: 'application/json', // Establece el tipo de contenido
+                              success: function (response) {
+                                  // Manejar la respuesta si es necesario
+                              },
+                              error: function (error) {
+                                console.error("Error en la solicitud AJAX: " + error);
+                              }
+                          });
+                      
                   }
-              });
+      });
+          
+              
 
 
-                function actualizarTabla(triggerData) {
+             function actualizarTabla(triggerData) {
                   debugger;
                   console.log(triggerData);  // Agregar esta línea para depurar
                   var tablaTrigger = document.getElementById('tabla-trigger');

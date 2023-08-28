@@ -27,10 +27,10 @@ import os #obtener el directorio de trabajo actual
 FuncionesBasicas01 = Blueprint('FuncionesBasicas01',__name__)
 
 
-@FuncionesBasicas01.route('/basicas/')
+@FuncionesBasicas01.route('/basicas/', methods = ['POST'])
 def basicas():
-  MepAl30WS(2)
-  return ''
+  print('llegamos a basicas ')
+  return render_template('test.html')
 
 
 # calculo del mep AL30 con websoket
