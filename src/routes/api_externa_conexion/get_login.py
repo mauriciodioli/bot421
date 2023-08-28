@@ -12,6 +12,7 @@ import websocket
 import requests
 import jwt
 import re
+import os
 import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
 import routes.instrumentos as inst
@@ -187,7 +188,7 @@ def loginExtCuentaSeleccionadaBroker():
 
         try:
             inicializar_variables_globales()
-           
+            creaJsonParaConextarseSheetGoogle()
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
                 environment = pyRofexInicializada.Environment.REMARKET
@@ -241,6 +242,51 @@ def inicializar_variables_globales():
     pyWsSuscriptionInicializada = pyRofex
     
     
+
+def creaJsonParaConextarseSheetGoogle():
+  #  directorioCompleto = os.path.dirname(__file__)
+  #  partes_ruta_partes = directorioCompleto.split(os.path.sep)
+  #  print(f'Ruta hasta "src": {partes_ruta_partes}')
+  #  indice_src = partes_ruta_partes.index('Desktop')
+  #  print(f'Ruta hasta "src": {indice_src}')
+
+    # Ruta al archivo de texto plano
+    ruta_archivo_texto = 'C:\\Users\\Mauricio\\Desktop\\clavesheet.txt'
+    
+    print(ruta_archivo_texto)
+    # Leer el texto plano desde el archivo
+    with open(ruta_archivo_texto, 'r') as archivo_texto:
+        texto_plano = archivo_texto.read()
+
+    # Parsear el texto plano a un diccionario
+    datos = json.loads(texto_plano)
+
+    # Obtener el directorio actual del script
+    directorio_actual = os.path.dirname(__file__)
+
+
+    # Dividir la ruta en partes
+    partes_ruta = directorio_actual.split(os.path.sep)
+
+    # Encontrar la posición de "src" en las partes de la ruta
+    indice_src = partes_ruta.index('src')
+
+    # Construir la ruta hasta "src"
+    ruta_hasta_src = os.path.sep.join(partes_ruta[:indice_src + 1])
+
+    print(f'Ruta hasta "src": {ruta_hasta_src}')
+
+
+    # Ruta relativa para guardar el archivo JSON en el subdirectorio "strategies"
+    ruta_archivo_json = os.path.join(ruta_hasta_src, 'strategies', 'pruebasheetpython.json')
+
+    # Escribir el diccionario en el archivo JSON
+    with open(ruta_archivo_json, 'w') as archivo_json:
+        json.dump(datos, archivo_json, indent=2)
+
+    print(f'Se ha creado el archivo JSON en "{ruta_archivo_json}"')
+
+
 def order_report_handler(message):
   print("Mensaje de OrderRouting: {0}".format(message))
 #  reporte_de_ordenes.append(message)
