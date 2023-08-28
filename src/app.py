@@ -1,18 +1,6 @@
 #from re import template
-from flask import (
-    Flask,
-    Blueprint,
-    render_template,
-    request,
-    redirect,
-    url_for,
-    flash,
-    jsonify,
-)
-from flask_jwt_extended import (
-    JWTManager, jwt_required, create_access_token,
-    get_jwt_identity
-)
+from flask import (Flask,Blueprint,render_template,request,redirect,url_for,flash,jsonify)
+from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
@@ -21,6 +9,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 
+from strategies.estrategias import estrategias
+from strategies.estrategiaSheetWS import estrategiaSheetWS
+from strategies.datoSheet import datoSheet
+from strategies.datoSheet import datoSheet
+from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
+from strategies.utils.testWS import testWS
+
+
+ 
 from routes.instrumentos import instrumentos
 from routes.instrumentosGet import instrumentosGet
 from routes.api_externa_conexion.get_login import get_login
@@ -28,25 +25,27 @@ from routes.api_externa_conexion.comprar import comprar
 from routes.api_externa_conexion.operaciones import operaciones
 from routes.api_externa_conexion.validaInstrumentos import validaInstrumentos
 from routes.api_externa_conexion.cuenta import cuenta
-from cuentas.cuentaUsuarioBroker import cuentas
-
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
-from strategies.estrategias import estrategias
-from strategies.estrategiaSheetWS import estrategiaSheetWS
-from strategies.datoSheet import datoSheet
-from strategies.utils.testWS import testWS
+
+from cuentas.cuentaUsuarioBroker import cuentas
+
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from usuarios.usuario import usuario
+
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
+
 from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
+
 from automatizacion.programar_trigger import programar_trigger
+
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
 from models.orden import orden
+
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
 from flask_cors import CORS
@@ -99,6 +98,9 @@ app.register_blueprint(imagenesOperaciones)
 app.register_blueprint(media_e_mail)
 app.register_blueprint(panelControl)
 app.register_blueprint(pcEtrategiaUs)
+app.register_blueprint(FuncionesBasicas01)
+
+
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
