@@ -57,7 +57,7 @@
               <input type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
               <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
               <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">-->
-              <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}"  data-nombreEstrategia="{{ estrategia.nombreEstrategia }}">M</button>
+              <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-trigger-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}"  data-nombreEstrategia="{{ estrategia.nombreEstrategia }}">M</button>
             <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
           <!--  </form>-->
 
@@ -275,12 +275,12 @@
       document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
                   if (event.target && event.target.classList.contains('botonM')) {
                       // Recupera el valor del atributo data-nombre
-                      var nombreEstrategia = event.target.getAttribute('data-nombre');
+                      var clicBoton = event.target.getAttribute('data-nombre');
                       
                       // Recupera los datos del Local Storage que deseas enviar
                       access_token = localStorage.getItem('access_token');
                       correo_electronico = localStorage.getItem('correo_electronico');
-                      debugger;
+                      //debugger;
                       console.log("tagName:", event.target.tagName);
                       // Recupera los datos de la fila en la que se hizo clic
                       
@@ -292,45 +292,56 @@
                       var nombre = event.target.getAttribute('data-nombreEstrategia');
                       var tiempoInicio = event.target.getAttribute('data-horaInicio');
                       var tiempoFin = event.target.getAttribute('data-horaFin');
-                      var ManualAutomatico = event.target.getAttribute('data-ManualAutomatico');
+                      var automatico = event.target.getAttribute('data-trigger-ManualAutomatico');
 
-                    
-                     
-                      console.log("userId:", idUser);
+                                        
+                     /* console.log("userId:", idUser);
                       console.log("idTrigger:",idTrigger);
-                      console.log("cuenta:", cuenta);
-                      console.log("nombre:", nombre);
-                      console.log("ManualAutomatico",ManualAutomatico)
-                      console.log("tiempoInicio",tiempoInicio)
-                      console.log("tiempoFin",tiempoFin)
+                      console.log("cuenta:", cuenta);                      
+                      console.log("automatico",automatico);
+                      console.log("tiempoInicio",tiempoInicio);
+                      console.log("tiempoFin",tiempoFin);
+                      console.log("userCuenta:", userCuenta);*/
 
-                          // Construye un objeto de datos para enviar al servidor
-                          var dataToSend = {
-                              userCuenta: userCuenta,
-                              idTrigger: idTrigger,
-                              access_token: access_token, // Asegúrate de definir access_token y correo_electronico en este ámbito
-                              idUser: idUser,
-                              correo_electronico: correo_electronico,
-                              cuenta: cuenta,
-                              tiempoInicio: tiempoInicio,
-                              tiempoFin: tiempoFin,
-                              automatico: automatico,
-                              nombre: nombre
-                          };
+                     
+                      nombreEstrategia = '/'+nombre+'/' ;
+                      //console.log("nombreEstrategia:", nombreEstrategia);   
+
+                        
                           
                           // Realiza la solicitud AJAX
                           $.ajax({
-                              type: 'POST', // Puedes usar otros métodos HTTP según tus necesidades
-                              url: nombreEstrategia, // Ajusta la ruta de destino
-                              data: JSON.stringify(dataToSend), // Convierte los datos a JSON
-                              contentType: 'application/json', // Establece el tipo de contenido
-                              success: function (response) {
-                                  // Manejar la respuesta si es necesario
-                              },
-                              error: function (error) {
-                                console.error("Error en la solicitud AJAX: " + error);
-                              }
-                          });
+                            type: 'POST',
+                            url: nombreEstrategia,
+                            data: JSON.stringify({
+                                'userCuenta': userCuenta,
+                                'idTrigger': idTrigger,
+                                'access_token': access_token,
+                                'idUser': idUser,
+                                'correo_electronico': correo_electronico,
+                                'cuenta': cuenta,
+                                'tiempoInicio': tiempoInicio,
+                                'tiempoFin': tiempoFin,
+                                'automatico': automatico,
+                                'nombre': nombre
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                // Verifica si la respuesta contiene una clave 'redirect'
+                                if (response.redirect) {
+                                    // Redirige a la URL especificada en la respuesta
+                                   // window.location.href = '/' + response.redirect;
+                                    window.location.href = response.redirect;
+                                } else {
+                                    // Maneja la respuesta de otra manera si es necesario
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log("Estado de la solicitud: " + textStatus);
+                                console.log("Mensaje de error: " + errorThrown);
+                            }
+                        });
+                        
                       
                   }
       });
