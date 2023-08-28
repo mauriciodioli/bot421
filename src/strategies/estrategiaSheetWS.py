@@ -41,10 +41,21 @@ def estrategia_sheet_WS():
     
     if request.method == 'POST':
         try:
-            usuario = request.form['usuario']
-            get.accountLocalStorage = request.form['cuenta']
-            access_token = request.form['access_token']
-            correo_electronico = request.form['correo_electronico']
+            
+            
+            data = request.get_json()
+
+            # Accede a los datos individualmente
+            usuario = data['userCuenta']
+            idTrigger = data['idTrigger']
+            access_token = data['access_token']
+            idUser = data['idUser']
+            correo_electronico = data['correo_electronico']
+            get.accountLocalStorage = data['cuenta']
+            tiempoInicio = data['tiempoInicio']
+            tiempoFin = data['tiempoFin']
+            automatico = data['automatico']
+            nombre = data['nombre']
             get.VariableParaBotonPanico = 0
             ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
             #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
