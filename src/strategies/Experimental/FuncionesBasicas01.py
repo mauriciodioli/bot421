@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,  make_response
 import routes.instrumentos as instrumentos
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
@@ -29,8 +29,41 @@ FuncionesBasicas01 = Blueprint('FuncionesBasicas01',__name__)
 
 @FuncionesBasicas01.route('/basicas/', methods = ['POST'])
 def basicas():
-  print('llegamos a basicas ')
-  return render_template('test.html')
+ if request.method == 'POST':
+        try:
+            # Obtén los datos enviados en la solicitud AJAX
+            data = request.get_json()
+
+            # Accede a los datos individualmente
+            userCuenta = data['userCuenta']
+            idTrigger = data['idTrigger']
+            access_token = data['access_token']
+            idUser = data['idUser']
+            correo_electronico = data['correo_electronico']
+            cuenta = data['cuenta']
+            tiempoInicio = data['tiempoInicio']
+            tiempoFin = data['tiempoFin']
+            automatico = data['automatico']
+            nombre = data['nombre']
+
+            # Ahora puedes procesar estos datos como desees
+            # ...
+
+            # Devuelve una respuesta (opcional)
+           # resp = {'redirect': '/paginaDePrueba/'}
+            #resp = make_response(jsonify({'redirect': 'test'}))
+           # resp.headers['Content-Type'] = 'application/json'
+            #return jsonify({'redirect': url_for('strategies.Experimental.paginaDePrueba')}) 
+            return ''
+        except Exception as e:
+            # Maneja cualquier excepción que pueda ocurrir
+            return str(e), 400  # Devuelve un código de estado 400 en caso de error
+
+
+       # print('llegamos a basicas ')
+@FuncionesBasicas01.route('/paginaDePrueba/')
+def paginaDePrueba():  
+  return render_template('test.html')  
 
 
 # calculo del mep AL30 con websoket
