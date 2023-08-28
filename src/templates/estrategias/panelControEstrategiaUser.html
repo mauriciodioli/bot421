@@ -285,13 +285,14 @@
                       // Recupera los datos de la fila en la que se hizo clic
                       
                       // Recupera los datos de la fila en la que se hizo clic
-    var idUser = event.target.getAttribute('data-trigger-user-id');
-    var idTrigger = event.target.getAttribute('data-trigger-id');
-    var cuenta = event.target.getAttribute('data-user-cuenta');
-    var nombre = event.target.getAttribute('data-nombreEstrategia');
-    var tiempoInicio = event.target.getAttribute('data-horaInicio');
-    var tiempoFin = event.target.getAttribute('data-horaFin');
-    var ManualAutomatico = event.target.getAttribute('data-ManualAutomatico');
+                      var idUser = event.target.getAttribute('data-trigger-user-id');
+                      var idTrigger = event.target.getAttribute('data-trigger-id');
+                      var userCuenta = event.target.getAttribute('data-user-cuenta');
+                      var cuenta = event.target.getAttribute('data-cuenta');   
+                      var nombre = event.target.getAttribute('data-nombreEstrategia');
+                      var tiempoInicio = event.target.getAttribute('data-horaInicio');
+                      var tiempoFin = event.target.getAttribute('data-horaFin');
+                      var ManualAutomatico = event.target.getAttribute('data-ManualAutomatico');
 
                     
                      
@@ -305,7 +306,7 @@
 
                           // Construye un objeto de datos para enviar al servidor
                           var dataToSend = {
-                              userCuenta: cuenta,
+                              userCuenta: userCuenta,
                               idTrigger: idTrigger,
                               access_token: access_token, // Asegúrate de definir access_token y correo_electronico en este ámbito
                               idUser: idUser,
