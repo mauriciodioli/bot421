@@ -22,26 +22,23 @@
                   -->         
                 </div> 
                 <div class="row">
-                    <p>Para iniciar estrategia que gana por spread presionar el botón.</p>
-                    <div class="col-md-4">
-                    
-                      <form action="/estrategia_sheet_WS/" method="POST">
-                        <input type="hidden" name="access_token" id="access_token">
-                        <input type="hidden" name="usuario" id="usuario">
+                    <p>INICIO MANUAL DE LA ESTRATEGIA.</p>
+                    <form action="/estrategia_sheet_WS/" method="POST">
+                        <input type="hidden" name="access_token" id="access_token">                       
+                        <input type="hidden" name="usuario" id="usuario">  
                         <input type="hidden" name="correo_electronico" id="correo_electronico">
                         <input type="hidden" name="cuenta" id="cuenta">
-                        <button type="submit" class="btn btn-primary btn-block my-2">Estrategia Sheet Ws</button>
-                      </form>
-                    </div>
-                  
+                        <button type="submit" class="btn btn-primary btn-block my-2" onclick="setLocalStorageValue('MANUAL')">Estrategia Sheet Ws</button>    
+                    </form>
+                    <p>INICIO AUTOMATICO DE LA ESTRATEGIA</p>
+                    <a class="btn btn-danger btn-lg d-inline-block"  role="button" onclick="setLocalStorageValue('AUTOMATICO')">RUN</a>
                     <div class="col-md-4">
-                      <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
-                        <input type="hidden" name="account" id="account">
-                        <button type="submit" class="btn btn-danger my-2">TERMINAR TODO</button>
-                      </form>
-                    </div>
-                  </div>
-                  
+                        <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
+                          <input type="hidden" name="account" id="account">
+                          <button type="submit" class="btn btn-danger my-2">TERMINAR TODO</button>
+                        </form>
+                      </div>
+                </div>
                 <div>
                     <p>Para iniciar estrategia presionar el boton.</p>
                     <a class="btn btn-primary btn-lg" href="/estrategyDos/" role="button">Estrategia </a>
@@ -77,7 +74,7 @@
 
         <script>
             var refresh_token = localStorage.getItem('access_token');
-            var correo_electronico = localStorage.getItem('correo_electronico');
+            correo_electronico = localStorage.getItem('correo_electronico');
             var cuenta = localStorage.getItem("cuenta");
             var usuario = localStorage.getItem("usuario");
             document.getElementById("cuenta").value = cuenta
@@ -87,8 +84,18 @@
             document.getElementById("cuenta1").value = cuenta
             document.getElementById("usuario1").value = usuario
             document.getElementById("correo_electronico1").value = correo_electronico
+<<<<<<< HEAD
+            document.getElementById("access_token1").value = access_token
+<<<<<<< HEAD
+            function setLocalStorageValue(value) {
+                localStorage.setItem('inicio_automatico', value);
+            }
+=======
+>>>>>>> origin/pcDaniel
+=======
             document.getElementById("access_token1").value = access_token 
             document.getElementById("account").value = cuenta;
+>>>>>>> origin/pcDaniel
             function submitForm() {
                 document.getElementById("ruta_de_test_ws").submit();
             }

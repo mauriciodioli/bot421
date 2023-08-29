@@ -19,6 +19,7 @@ from config import DATABASE_CONNECTION_URI
 # Importar create_engine y NullPool
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
+from sqlalchemy.pool import QueuePool
 
 from routes.instrumentos import instrumentos
 from routes.instrumentosGet import instrumentosGet
@@ -27,6 +28,8 @@ from routes.api_externa_conexion.comprar import comprar
 from routes.api_externa_conexion.operaciones import operaciones
 from routes.api_externa_conexion.validaInstrumentos import validaInstrumentos
 from routes.api_externa_conexion.cuenta import cuenta
+from cuentas.cuentaUsuarioBroker import cuentas
+
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
 from strategies.estrategias import estrategias
@@ -36,18 +39,25 @@ from strategies.datoSheet import datoSheet
 from strategies.utils.testWS import testWS
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
+from usuarios.usuario import usuario
+from social.imagenes.imagenesOperaciones import imagenesOperaciones
+from social.media_e_mail import media_e_mail
+from automatizacion.programar_trigger import programar_trigger
 from models.usuario import Usuario
+from models.triggerEstrategia import triggerEstrategia
 from models.orden import orden
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
 from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
-
+import schedule
+import time
 
 
 
 # desde aqui se llama la aplicacion al inicio
-app = Flask(__name__)
+#app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 login_manager = LoginManager(app)
 CORS(app)
 
@@ -70,6 +80,7 @@ app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
 app.register_blueprint(get_login)
 app.register_blueprint(cuenta)
+app.register_blueprint(cuentas)
 app.register_blueprint(orden)
 app.register_blueprint(comprar)
 app.register_blueprint(operaciones)
@@ -81,8 +92,14 @@ app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
+app.register_blueprint(usuario)
 app.register_blueprint(testWS)
+<<<<<<< HEAD
 app.register_blueprint(arbitraje_001)
+=======
+app.register_blueprint(imagenesOperaciones)
+app.register_blueprint(media_e_mail)
+>>>>>>> master
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
@@ -90,13 +107,18 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # no cache
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-engine = create_engine(DATABASE_CONNECTION_URI, poolclass=NullPool)
+app.config['SQLALCHEMY_POOL_SIZE'] = 100
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000)
+
 db = SQLAlchemy(app)
 # Configurar el pool de conexiones para SQLAlchemy
 db.init_app(app)
 db.session.configure(bind=engine)
 
 ma = Marshmallow(app)
+
 
 # Creación de la instancia del objeto LoginManager
 #login_manager = LoginManager()
@@ -108,10 +130,9 @@ ma = Marshmallow(app)
 #login_manager.request_loader(request_loader)
 
 @app.route("/")
-def entrada():
-  a=1
-  b=2
-  return redirect("index")
+def entrada():  
+      
+    return redirect("index")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -122,3 +143,7 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
     app.run(debug=True)
+    # Ciclo para ejecutar las tareas programadas
+    while True:
+        schedule.run_pending()
+        time.sleep(1)

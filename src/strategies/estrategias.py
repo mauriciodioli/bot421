@@ -8,7 +8,9 @@ from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
-
+from models.triggerEstrategia import TriggerEstrategia
+from models.usuario import Usuario
+from models.cuentas import Cuenta
 
 estrategias = Blueprint('estrategias',__name__)
 
@@ -19,7 +21,164 @@ class States(enum.Enum):
     WAITING_ORDERS = 2
 
 
-#primera estrategia de practica
+@estrategias.route("/estrategias-usuario-general/",  methods=["GET"])
+def estrategias_usuario_general():
+    try:
+      if request.method == 'GET': 
+           triggerEstrategia = db.session.query(TriggerEstrategia).all()
+           db.session.close()
+           return render_template("/estrategias/estrategiasGeneralUsuarios.html",datos = triggerEstrategia)
+    except:
+       print('no hay usuarios') 
+    return 'problemas con la base de datos'
+
+@estrategias.route("/estrategias-usuario-nadmin",  methods=["POST"])
+def estrategias_usuario_nadmin():
+    try:
+      if request.method == 'POST': 
+            usuario_id = request.form['usuario_id']                      
+            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            db.session.close()
+            for estrategia in estrategias:
+                print("ID:", estrategia.id)
+                print("Name:", estrategia.userCuenta)
+                # Print other attributes as needed
+                print()
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+    
+    except:
+       print('no hay estrategias') 
+    return  render_template("/estrategias/errorEstrategiaVacia.html")
+
+@estrategias.route("/estrategias-usuario",  methods=["POST"])
+def estrategias_usuario():
+    try:
+      if request.method == 'POST': 
+            usuario_id = request.form['usuario_id']                      
+            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            db.session.close()
+            for estrategia in estrategias:
+                print("ID:", estrategia.id)
+                print("Name:", estrategia.userCuenta)
+                # Print other attributes as needed
+                print()
+            return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+    
+    except:
+       print('no hay estrategias') 
+    return  render_template("/estrategias/errorEstrategiaVacia.html")
+
+@estrategias.route("/eliminar-trigger/",  methods=["POST"])
+def eliminar_trigger():
+    IdTrigger = request.form['IdTrigger']
+   
+    usuario_id = request.form['user_id']
+    Trigger = TriggerEstrategia.query.get(IdTrigger)
+    db.session.delete(Trigger)
+    db.session.commit()
+    
+    
+    flash('Trigger eliminado correctamente.')
+    estrategias = db.session.query(TriggerEstrategia).all()
+    db.session.close()
+    return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+@estrategias.route("/editar-trigger-nombre", methods=["POST"])
+def editar_trigger_nombre():
+    IdTrigger = request.form['IdTrigger']
+    usuario_id = request.form['usuario_id']  
+    
+    Trigger = TriggerEstrategia.query.get(IdTrigger)
+    Trigger.nombreEstrategia = request.form['TriggerNombre']
+   
+    db.session.commit()
+   
+    flash('Estrategia editado correctamente.')
+    estrategias = db.session.query(TriggerEstrategia).all()
+    db.session.close()
+    return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+    
+@estrategias.route("/editar-Trigger/", methods = ["POST"] )
+def editar_Trigger():
+    try:
+        if request.method == 'POST':
+            usuario_id = request.form['user_id']
+            IdTrigger = request.form['IdTrigger']
+            horaInicio = request.form['horaInicio']  
+            horaFin = request.form['horaFin']  
+            ManualAutomatico = request.form['ManualAutomatico'] 
+            
+            horaInicioSalvar, minutosInicioSalvar = horaInicio.split(':')
+            horaFinSalvar, minutosFinSalvar = horaFin.split(':')
+            hora_inicio = datetime(year=2023, month=7, day=3, hour=int(horaInicioSalvar), minute=int(minutosInicioSalvar))
+            hora_fin = datetime(year=2023, month=7, day=3, hour=int(horaFinSalvar), minute=int(minutosFinSalvar))
+            
+            
+            Trigger = TriggerEstrategia.query.get(IdTrigger)            
+            Trigger.ManualAutomatico = ManualAutomatico
+            Trigger.horaInicio = hora_inicio
+            Trigger.horaFin = hora_fin
+            
+            db.session.commit()
+            
+            flash('Estrategia editada correctamente.')
+            estrategias = db.session.query(TriggerEstrategia).all()
+            db.session.close()
+            return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+                    
+    except:
+                print('no hay estrategias')
+    return render_template("/estrategias/errorEstrategiaVacia.html")
+
+@estrategias.route("/alta-estrategias-trig", methods=["POST"])
+def alta_estrategias_trig():
+    try:
+        if request.method == 'POST':
+            user_id = request.form['usuario_id']
+            correo_electronico = request.form['correo_electronico']
+            cuenta = request.form['cuenta']
+            nombreEstrategia = request.form['nombreEstrategia']
+           
+            nombre = db.session.query(TriggerEstrategia).filter(TriggerEstrategia.nombreEstrategia == nombreEstrategia).first()
+
+            if nombre is None:
+                cuenta = Cuenta.query.filter_by(user_id=user_id).first()
+                if cuenta:
+                    print("Datos de la cuenta:")
+                    print("ID:", cuenta.id)
+                    print("User ID:", cuenta.user_id)
+                    print("User Cuenta:", cuenta.userCuenta)
+                    print("Password Cuenta:", cuenta.passwordCuenta)
+                    print("Account Cuenta:", cuenta.accountCuenta)                
+                    
+                    hora_inicio = datetime(year=2023, month=7, day=3, hour=int(15), minute=int(00))
+                    hora_fin = datetime(year=2023, month=7, day=3, hour=int(17), minute=int(00))
+                    triggerEstrategia = TriggerEstrategia( 
+                            id=None,   
+                            user_id=user_id,
+                            userCuenta=cuenta.userCuenta,
+                            passwordCuenta=cuenta.passwordCuenta,
+                            accountCuenta=cuenta.accountCuenta, 
+                            horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
+                            horaFin=hora_fin,  # Ejemplo de hora de fin (17:00)     
+                            ManualAutomatico = 'AUTOMATICO',
+                            nombreEstrategia = nombreEstrategia    
+                            )
+                    
+                
+                    db.session.add(triggerEstrategia)  # Agregar la instancia de Cuenta a la sesión
+                    db.session.commit()  # Confirmar los cambios
+                    db.session.refresh(triggerEstrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+                    triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
+                    estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == user_id).all()
+                    db.session.close()
+                    
+                    return render_template("/estrategias/estrategiaUsuarios.html", datos=[user_id, estrategias])
+
+    except:
+        print('no hay estrategias')
+
+    return render_template("/estrategias/errorEstrategiaVacia.html")
+
 @estrategias.route('/inicioEstrategias/')
 def inicioEstrategias():
  try:

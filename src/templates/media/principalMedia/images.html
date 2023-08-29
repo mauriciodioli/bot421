@@ -1,0 +1,11 @@
+{% extends 'layouts/layout.html' %}
+
+{% block content %}
+<div>
+  {% for image in images %}
+  <img src="{{ image.filepath }}" alt="{{ image.title }}">
+  <h3>{{ image.title }}</h3>
+  <p>{{ image.description }}</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
+
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
@@ -20,6 +21,7 @@ import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import pprint
+import websockets
 
 
 
@@ -60,20 +62,16 @@ def estrategia_sheet_WS():
             # Crear una instancia de RofexMarketDataHandler
             
 
-            
-            
-    #  except:  
-    #      print("_EstrategyUno_contraseña o usuario incorrecto")  
-    #      flash('Loggin Incorrect')    
-    #      return render_template("errorLogueo.html" ) 
+         
+            carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage, usuario, correo_electronico, ContenidoSheet_list[1])
     
         except jwt.ExpiredSignatureError:
-                print("El token ha expirado")
-                return redirect(url_for('autenticacion.index'))
+            print("El token ha expirado")
+            return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo leer la base de datos")
+            print("no pudo leer la base de datos")
     return render_template('/estrategiaOperando.html')
      
 def SuscripcionDeSheet():

@@ -134,7 +134,7 @@ def datetime_encoder(obj):
 
 
 ################ AQUI DEFINO LA COMPRA POR WS ################
-def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, message):
+def OperacionWs(Symbol, tipo_de_activo, cliOrderId, trade_en_curso, ut, senial, mepCedear, message):
     saldocta = get.VariableParaSaldoCta### preguntar si existe el saldo de cuanta para recien operar
     #saldocta = 1000000
     ut = abs(int(ut))
@@ -210,6 +210,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         #precio = float(message["marketData"]["OF"][0]["price"])#
                        # get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 
+
                         ws_client_order_id = _ws_client_order_id
                         
                         user_id = get.diccionario_global_operaciones[Symbol]['user_id']
@@ -277,7 +278,6 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                             #precio = float(message["marketData"]["OF"][0]["price"])
                             #precio = float(message["marketData"]["OF"][0]["price"])
                             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
-                            ws_client_order_id = _ws_client_order_id
                             
                             user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                             userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
@@ -308,12 +308,22 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                             precio = float(message["marketData"]["LA"]["price"])
                             get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
-                            ws_client_order_id = _ws_client_order_id
+                            
                            
+                    #AQUI PONE COMO TERMINADA CUANDO MANDA LA OPERACION
+                    for key, valor in get.diccionario_operaciones_enviadas.items():
+                        if  valor['Symbol'] == message["instrumentId"]["symbol"] and valor['_cliOrderId'] == cliOrderId:
+                             valor["status"] = 'TERMINADA'
+                
+                
+            #debe estar aqui por que puede ser que get.diccionario_global_operaciones[Symbol]['ut'] == 0
+            elif senial == 'closed.' and trade_en_curso == 'operar' : 
+                    if isinstance(message["marketData"]["OF"][0]["price"], float):
+                            precio = float(message["marketData"]["OF"][0]["price"])
+                            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.SELL,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
                             user_id = get.diccionario_global_operaciones[Symbol]['user_id']
                             userCuenta = get.diccionario_global_operaciones[Symbol]['userCuenta']
                             accountCuenta = get.diccionario_global_operaciones[Symbol]['accountCuenta']
-
                             diccionario = {
                                 "Symbol": Symbol,
                                 "_t_": tipo_de_activo,
