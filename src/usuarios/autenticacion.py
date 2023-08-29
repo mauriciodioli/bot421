@@ -137,6 +137,19 @@ def index():
     
     return render_template('index.html')
 
+
+@autenticacion.route("/home", methods=['POST'])
+def home():
+     if request.method == 'POST':
+        print("intenta crear tablaaaaaaaaaaaaa_____________________   ")
+        
+        access_token = request.json.get('token')
+        refresh_token  = request.json.get('refresh_token')
+        selector = request.json.get('selectorEnvironment')
+        account = request.json.get('account')
+        cuenta = [account,selector,access_token]
+        return render_template('home.html', cuenta = cuenta)
+    
  # esta es la autenticacion cuando ingresa por app si en caso ya existe el token##################    
 
 @autenticacion.route("/loginIndex", methods=['POST'])
@@ -146,29 +159,32 @@ def loginIndex():
         
         access_token = request.json.get('token')
         refresh_token  = request.json.get('refresh_token')
-        print("___________________todken   ",access_token)
+        selector = request.json.get('selectorEnvironment')
+        account = request.json.get('account')
+        print("___________________token   ", access_token)
+        
         if access_token:
             app = current_app._get_current_object()
+            
             try:
                 # Decodificar el token y obtener el id del usuario
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 user = Usuario.query.get(user_id)
-                print("user ___________",user.correo_electronico)
-                print("userid ________________",user_id)
+                
+                print("user ___________", user.id)
+                print("userid ________________", user_id)
+                print("userCuenta ________________", user.cuentas[0].userCuenta)
+                
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
-                   #  return redirect(url_for('get_login.loginApi'))
-                    # Crear una respuesta que redirige a la ruta autenticacion.loginBroker y enviar el token como parámetro
-                    resp = make_response(render_template('login.html'))
+                    # return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
+                    resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': user.cuentas[0].userCuenta, 'selector': selector}))
+                    resp.headers['Content-Type'] = 'application/json'
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
+                    return resp
+                    #return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
                     
-                   
-                    #return resp
-                   #resp = make_response('login.html', tokens=[token,refresh_token])
-                    return jsonify({'redirect': url_for('get_login.loginApi')})
-
-                 
             except jwt.ExpiredSignatureError:
                 # Si el token ha expirado, redirigirlo a la página de inicio de sesión
                 print("El token ha expirado")
@@ -176,9 +192,10 @@ def loginIndex():
             except jwt.InvalidTokenError:
                 # Si hay un error decodificando el token, redirigirlo a la página de inicio de sesión
                 print("El token es inválido")
+        
+        # Si no hay token válido o el usuario no existe, mostrar un mensaje de error o redirigir a otra página
+        return render_template('error.html', error_message="Error de autenticación")
 
-        # Si no hay token o el token no es válido, devolver la dirección a la que se debe redirigir
-        return jsonify({'redirect': url_for('get_login.loginApi')})
 
 ##################################################################################################
 
@@ -190,7 +207,7 @@ def refresh():
     refresh_token = request.cookies.get('refresh_token')
 
     # Decodificar el refresh token
-    username = decode_token(refresh_token)
+    username = refresh_token.decode_token(refresh_token)
 
     # Verificar si el usuario existe
     with db.cursor() as cursor:
@@ -235,9 +252,11 @@ def loginUsuario():
         # Buscar el usuario en la base de datos
        # crea_tabla_usuario()
         usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+       
        # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
             flash('Correo electrónico o contraseña incorrectos', 'danger')
+           
             return redirect(url_for('autenticacion.index'))
         # Iniciar sesión de usuario
        
@@ -250,15 +269,31 @@ def loginUsuario():
         usuario.refresh_token = refresh_token       
         db.session.add(usuario)
         db.session.commit()
-       
+        #if access_token:
+        #    app = current_app._get_current_object()
         # Configurar las cookies de JWT
-        resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp]))
+        cuenta = ''
+        selector = '1'
+        user = ''
+       # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
+        resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user]))
+        #resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
+       # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+       # user = Usuario.query.get(user_id)
+       # print("user ___________", user.correo_electronico)
+       # print("userid ________________", user_id)
+       # print("userCuenta ________________", user.cuentas[0].userCuenta)
+       # print("Cuenta ________________", user.cuentas[0].accountCuenta)
+       # resp = make_response(jsonify({'redirect': 'home', 'cuenta': user.cuentas[0].accountCuenta, 'userCuenta': usuario.cuentas[0].userCuenta, 'selector': '1'}))
+       # resp.headers['Content-Type'] = 'application/json'
+       
         set_access_cookies(resp, access_token)
         set_refresh_cookies(resp, refresh_token)
         # Guardar tokens en localStorage
         db.session.close()
        
         return resp
+    
      
     
 

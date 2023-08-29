@@ -2,9 +2,12 @@ body {
   background: #000;
   color: #fff;
 }
-container {
-  background: #0f0;
+.container {
+  background: rgb(26, 26, 26);
 }
+
+
+
 #mensaje_correo_electronico {
   font-size: small;
   
@@ -20,4 +23,15 @@ container {
   font-size: small; 
   margin-bottom: 20px;
   margin-right: 20px;
+}
+#modal {
+  display: none; /* Ocultar el modal de forma predeterminada */
+  position: fixed;
+  z-index: 1;
+  left: 0;
+}
+
+.dz-message {
+    text-align: center;
+    margin: 20px 0;
 }

@@ -53,8 +53,11 @@ def estadoOperacion():
         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
         
         operaciones = repuesta_operacion['orders']
+        if len(operaciones)!=0:
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-        return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+          return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+        else:
+          return render_template("notificaciones/noPoseeDatos.html")
    except:  
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
@@ -76,42 +79,42 @@ def comprar():
         print("tipoOrder ",tipoOrder)
         print("tipoTrafico ",tipoTrafico)
         
-   if tipoTrafico == 'REST':
+        if tipoTrafico == 'REST':
+              
+              print("tipoOrder ",tipoOrder)
         
-        print("tipoOrder ",tipoOrder)
-   
-        saldo = cuenta.obtenerSaldoCuenta()
-        
-        
-        if saldo >= int(orderQty) * float(price):
-          
-          print("tipoOrder ",tipoOrder)
-          if  tipoOrder == 'LIMIT':
-            print("saldo cuenta ",saldo)      
-            nuevaOrden = get.pyRofexInicializada.send_order(ticker=symbol,side=get.pyRofexInicializada.Side.BUY,size=orderQty,price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
-            orden = nuevaOrden
-            print("Orden de compra enviada ",orden)
-            
-            repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-        
-            operaciones = repuesta_operacion['orders']
-            print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-            return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
-           
+              saldo = cuenta.obtenerSaldoCuenta()
+              
+              
+              if saldo >= int(orderQty) * float(price):
+                
+                print("tipoOrder ",tipoOrder)
+                if  tipoOrder == 'LIMIT':
+                  print("saldo cuenta ",saldo)      
+                  nuevaOrden = get.pyRofexInicializada.send_order(ticker=symbol,side=get.pyRofexInicializada.Side.BUY,size=orderQty,price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
+                  orden = nuevaOrden
+                  print("Orden de compra enviada ",orden)
+                  
+                  repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+              
+                  operaciones = repuesta_operacion['orders']
+                  print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+                  return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+                
+              else:
+                print("No hay suficiente saldo para enviar la orden de compra")
+              #actualizarTablaOR()
+              #return format(nuevaOrden)
+              estadoOperacion()
+              flash('No hay suficiente saldo para enviar la orden de compra')
+              return render_template("errorOperacion.html" )
         else:
-          print("No hay suficiente saldo para enviar la orden de compra")
-        #actualizarTablaOR()
-        #return format(nuevaOrden)
-        estadoOperacion()
-        flash('No hay suficiente saldo para enviar la orden de compra')
-        return render_template("errorOperacion.html" )
-   else:
-    sendOrderWS()
-    flash('Operacion enviada exitosamente')
-    repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-    operaciones = repuesta_operacion['orders']
-    print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-    return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+          sendOrderWS()
+          flash('Operacion enviada exitosamente')
+          repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+          operaciones = repuesta_operacion['orders']
+          print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+          return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
   except:        
     flash('Datos Incorrect')  
     return render_template("operaciones.html" )
@@ -278,15 +281,14 @@ def cancelarOrden():
           
           # ojo se comento por compromiso con la homologacion restaurar **66
           
-          #order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
+          order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
           #print("order_status ",order_status)          
-          #if order_status["order"]["status"] == "NEW":
+          if order_status["order"]["status"] == "NEW":
             # Cancel Order
-          cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
-          #get.pyRofexInicializada.cancel_order
-          #get.pyRofexInicializada.cancel_order_via_websocket
-          #else:
-           # flash('No se puede cancelar la Orden, ya fue OPERADA')  
+            get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId)
+            #cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
+          else:
+            flash('No se puede cancelar la Orden, ya fue OPERADA')  
            
        
           #print("cancel_order ")

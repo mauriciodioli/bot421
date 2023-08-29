@@ -1,0 +1,9 @@
+ /* styles.css */
+ .footer {
+    background-color: #000000;
+    color: #fff;
+    width: 100%;
+    /*position: fixed;*/
+    bottom: 0;
+    left: 0;
+  }

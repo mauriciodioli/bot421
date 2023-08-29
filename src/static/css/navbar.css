@@ -1,0 +1,15 @@
+
+/* Asegurarse de que el contenido no se superponga con la barra de navegación fija */
+body {
+    padding-top: 70px;
+}
+#Nindex {
+    background-image: url('/static/leon.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center left;
+    height: 70px; /* Ajusta la altura del navbar */
+  }
+section[id]{
+    scroll-margin-top: 70px;
+}
