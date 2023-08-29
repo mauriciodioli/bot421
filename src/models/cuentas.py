@@ -17,7 +17,7 @@ class Cuenta(db.Model):
     userCuenta = db.Column(db.String(120), unique=True, nullable=False)
     passwordCuenta = db.Column(db.LargeBinary(128), nullable=False)
     accountCuenta = db.Column(db.String(500), nullable=True)
-    
+    state = db.Column(db.Integer)
     usuarios = relationship("Usuario", back_populates="cuentas")
 
     
