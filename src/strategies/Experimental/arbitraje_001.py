@@ -1,3 +1,27 @@
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+import routes.instrumentosGet as instrumentosGet
+from utils.db import db
+import routes.api_externa_conexion.get_login as get
+import routes.api_externa_conexion.validaInstrumentos as val
+import routes.instrumentos as inst
+from datetime import datetime
+import enum
+from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
+import socket
+
+
+arbitraje_001 = Blueprint('arbitraje_001',__name__)
+
+@arbitraje_001.route('/arbitraje-001/')
+def arbitraje_1(): 
+    print("<<<<<<--------'arbitraje_001----->>>>>>>A")
+    variable1=123
+    variable2=456
+    variable3=789
+    variable4=12458.21444
+    return render_template('/estrategiaOperando.html')
+
+
 # calculo del mep AL30 con websoket
 def MepAl30WS(message):
      

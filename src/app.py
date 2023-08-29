@@ -30,6 +30,7 @@ from routes.api_externa_conexion.cuenta import cuenta
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
 from strategies.estrategias import estrategias
+from strategies.Experimental.arbitraje_001 import arbitraje_001
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
 from strategies.utils.testWS import testWS
@@ -81,6 +82,7 @@ app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
 app.register_blueprint(testWS)
+app.register_blueprint(arbitraje_001)
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
