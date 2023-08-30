@@ -11,6 +11,8 @@ import requests
 import time
 import json
 from models.orden import Orden
+from models.instrumentosSuscriptos import InstrumentoSuscriptos
+from utils.db import db
 import random
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
@@ -103,12 +105,17 @@ def leerSheet():
      ut = sheet.col_values(20)
      senial = sheet.col_values(21)
      union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-     modificar_columna_ut('ORO/SEP23',8)
+    # modificar_columna_ut('ORO/SEP23',8)
      #for Symbol,cedear,trade_en_curso,ut,senial  in union:
       #print(Symbol,cedear,trade_en_curso,ut,senial)
     
      return union
- 
+
+def leerDb():
+    all_ins = db.session.query(InstrumentoSuscriptos).all()
+    db.session.close()
+    return all_ins
+
 def modificar_columna_ut(Symbol,new_ut_values):
     # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
     sheet = autenticar_y_abrir_sheet()
