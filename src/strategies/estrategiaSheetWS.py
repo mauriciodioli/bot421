@@ -91,22 +91,43 @@ def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
    
     ContenidoSheet = get_instrumento_para_suscripcion_ws()
-    ContenidoSheet_list = list(ContenidoSheet)   
-   
+    ContenidoSheet_list = list(ContenidoSheet)
+
+    ContenidoSheetDb = get_instrumento_para_suscripcion_db()
+    ContenidoSheet_list_db = list(ContenidoSheetDb)
+
   
     longitudLista = len(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
+    ContenidoSheet_list_solo_symbol_db = cargaSymbolParaValidarDb(ContenidoSheet_list_db)
+   
    # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
    # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
    # for item in ContenidoSheet_list_solo_symbol:
    #     print(item)
+
+  # Convertir listas a conjuntos para eliminar duplicados
+    set_contenido_ws = set(ContenidoSheet_list_solo_symbol)
+    set_contenido_db = set(ContenidoSheet_list_solo_symbol_db)
+
+    # Combinar conjuntos y eliminar duplicados
+    resultado_set = set_contenido_ws.union(set_contenido_db)
+
+    # Convertir conjunto resultante en una lista
+    resultado_lista = list(resultado_set)
+    
+    # Ahora 'resultado_lista' contiene todos los instrumentos sin duplicados
+
+    
+    #for elemento in resultado_lista:
+    #    print(elemento)
 
     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
     #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-    instrumentos_existentes = val.validar_existencia_instrumentos(ContenidoSheet_list_solo_symbol,tickers_existentes)
+    instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
       
     #### aqui define el MarketDataEntry
     entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
@@ -123,6 +144,14 @@ def SuscripcionDeSheet():
    
     
     return [ContenidoSheet_list,instrumentos_existentes]
+
+def cargaSymbolParaValidarDb(message):
+    listado_final = []
+    for instrumento  in message: 
+        listado_final.append(instrumento.symbol)
+        #print(instrumento.symbol)
+        
+    return listado_final
 
 def cargaSymbolParaValidar(message):
     listado_final = []
@@ -145,9 +174,13 @@ def get_instrumento_para_suscripcion_ws():
       ContenidoSheet = datoSheet.leerSheet()
       datoSheet.crea_tabla_orden()  
       return ContenidoSheet
-    
+  
+def get_instrumento_para_suscripcion_db():
+    ContenidoDb = datoSheet.leerDb()
+    return ContenidoDb    
+
 def market_data_handler_estrategia(message):
-        ## mensaje = Ticker+','+cantidad+','+spread
+    ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
     time = datetime.now()
     timeuno = int(time.timestamp())*1000
@@ -158,7 +191,7 @@ def market_data_handler_estrategia(message):
     response = botonPanicoRH('None') 
    # print("MDH respuesta desde el boton de panico", response)
    
-    #puse uno para probar cuando termino de testear poner != 1        
+    
     if response != 1: ### si es 1 el boton de panico fue activado
         _cancela_orden(300)
       #  print(" FUN: market_data_handler_estrategia: _")
@@ -174,9 +207,6 @@ def market_data_handler_estrategia(message):
             # esto hay que hacerlo aca, solo cada x segundos
             banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
 
-           # pedir el listado de instrumentos existentes en la cta, para verificar
-           # antes de hacer un close. deberia coincidir lo que quiero cerrar con lo que
-           # hay efectivamente para cerrar
 
         if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos        
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
@@ -500,11 +530,6 @@ def es_numero(numero):
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
         order_data = order_report['orderReport']
-        #################################################
-        ###### cambiar esto finalizado el test ##########
-        #################################################
-        #order_data = order_report
-        # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']        
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']  
@@ -520,10 +545,6 @@ def order_report_handler( order_report):
         
 def _operada(order_report):
     order_data = order_report['orderReport']
-     #################################################
-     ###### cambiar esto finalizado el test ##########
-     #################################################
-    #order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']   
@@ -586,11 +607,6 @@ def convert_datetime(original_datetime_str, desired_timezone_str):
 
 def _cancela_orden(delay):
     
-   # order_data = order_report['orderReport']
-     #################################################
-     ###### cambiar esto finalizado el test ##########
-     #################################################
-    #order_data = order_report
    # clOrdId = order_data['clOrdId']
    # symbol = order_data['instrumentId']['symbol']
    # status = order_data['status']
@@ -614,7 +630,7 @@ def _cancela_orden(delay):
            
             # Convertir el timestamp en milisegundos a objeto datetime
             # Convertir las cadenas de texto en objetos datetime
-            diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
+            diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)
            
 
           #  print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
@@ -671,12 +687,6 @@ def tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionar
 
 def asignarClOrId(order_report):
       order_data = order_report['orderReport']
-        #################################################
-        ###### cambiar esto finalizado el test ##########
-        #################################################
-      #order_data = order_report
-        # Leer un valor específico del diccionario
-     
       clOrdId = order_data['clOrdId']
       symbol = order_data['instrumentId']['symbol']
       status = order_data['status']   

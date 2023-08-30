@@ -26,6 +26,8 @@ import os #obtener el directorio de trabajo actual
 # C:\Users\dpuntillovirtual01\Documents\bot421\src\templates\estrategias.html
 # este archivo
 # C:\Users\dpuntillovirtual01\Documents\bot421\src\strategies\Experimental\FuncionesBasicas01.py
+# test WS:   src\strategies\utils\testWS.py
+# esta rutina de test se lanza tambien desde estrategias.html
 
 FuncionesBasicas01 = Blueprint('FuncionesBasicas01',__name__)
 #estrategia004 = Blueprint('estrategia004',__name__)
@@ -217,6 +219,7 @@ def estrategia002():
 @FuncionesBasicas01.route('/estrategia001/')#,methods=['POST'])
 def estrategia001():
   print("<<<<<<--------<<<<<<--------estrategia001----->>>>>>>----->>>>>>>")
+  
   #return render_template('/estrategiaOperando.html')
   return ''
 
