@@ -180,6 +180,9 @@ def get_instrumento_para_suscripcion_db():
     return ContenidoDb    
 
 def market_data_handler_estrategia(message):
+    
+    mepCedear = calcularMepCedearsWS(message)
+    
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
     time = datetime.now()
