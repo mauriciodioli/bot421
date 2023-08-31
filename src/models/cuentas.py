@@ -17,22 +17,23 @@ class Cuenta(db.Model):
     userCuenta = db.Column(db.String(120), unique=True, nullable=False)
     passwordCuenta = db.Column(db.LargeBinary(128), nullable=False)
     accountCuenta = db.Column(db.String(500), nullable=True)
-    state = db.Column(db.Integer)
+    selector = db.Column(db.String(500), nullable=True)
+    
     usuarios = relationship("Usuario", back_populates="cuentas")
 
     
  # constructor
-    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta):
+    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,selector):
         self.id = id
         self.user_id = user_id
         self.userCuenta = userCuenta
         self.passwordCuenta = passwordCuenta
         self.accountCuenta = accountCuenta
-        
+        self.selector = selector
 
    
     def __repr__(self):
-        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta})"
+        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector})"
 
     def crear_tabla_cuentas(self):
          insp = inspect(db.engine)
@@ -43,7 +44,7 @@ class Cuenta(db.Model):
         
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta")
+        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta","selector")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
