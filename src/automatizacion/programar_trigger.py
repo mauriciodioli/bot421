@@ -172,6 +172,6 @@ def tarea_fin():
     else:
         print("Error al detener WS")
         
-        
+
 
 

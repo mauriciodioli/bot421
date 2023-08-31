@@ -86,36 +86,43 @@ def SuscripcionWs():
         #almaceno los symbol a suscribirme
         instrumentosGet.guarda_instrumento_para_suscripcion_ws(Ticker)
         #traigo los instrumentos para suscribirme
-        mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
+        #mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
        
         #print("llega aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiii mis_instrumentos ",mis_instrumentos)
-        repuesta_listado_instrumento = get.pyConectionWebSocketInicializada.get_detailed_instruments()
-        listado_instrumentos = repuesta_listado_instrumento['instruments']   
-        tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-        longitudLista = len(mis_instrumentos)
-        instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
-        print("instrumentos_existentes ",instrumentos_existentes)    
+        #repuesta_listado_instrumento = get.pyConectionWebSocketInicializada.get_detailed_instruments()
+        #listado_instrumentos = repuesta_listado_instrumento['instruments']   
+        #tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+        #longitudLista = len(mis_instrumentos)
+        #instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
+        #print("instrumentos_existentes ",instrumentos_existentes)    
     ##aqui se conecta al ws
        
         
         
         #### aqui define el MarketDataEntry
       #  print("siiiiiiiiiiiiiiiiiiiiii paaaaaaaaaaaaaaaaaasaaaaaaaaaaaaaaaaa conexion")
-        entries = [get.pyConectionWebSocketInicializada.MarketDataEntry.BIDS,
-                    get.pyConectionWebSocketInicializada.MarketDataEntry.OFFERS,
-                    get.pyConectionWebSocketInicializada.MarketDataEntry.LAST]
+        #entries = [get.pyConectionWebSocketInicializada.MarketDataEntry.BIDS,
+        #            get.pyConectionWebSocketInicializada.MarketDataEntry.OFFERS,
+        #            get.pyConectionWebSocketInicializada.MarketDataEntry.LAST]
          
         ###asi puedo llamar otra funcion para manejar los datos del ws#####      
         #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
          #### aqui se subscribe
        
-        get.pyConectionWebSocketInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
+        #get.pyConectionWebSocketInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
         #print("instrumento_suscriptio",instrumento_suscriptio)
-        get.pyConectionWebSocketInicializada.order_report_subscription(snapshot=True)
+        #get.pyConectionWebSocketInicializada.order_report_subscription(snapshot=True)
         diccionario ={}
         #actualizarTablaMD()
         #diccionario.update(get.market_data_recibida)
-        return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
+        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+        #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
+        listado_instrumentos = repuesta_listado_instrumento['instruments']
+        #for listado_instrumentos in listado_instrumentos:
+       # print("listado_instrumentos en instrumentos_detalles en intrumentos.py",listado_instrumentos)#aqui muestro los instrumentos por pantalla
+        print("listado_instrumentos en instrumentos_detalles en intrumentos.py")
+        return render_template("instrumentos.html", datos = listado_instrumentos   )
+        #return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
 
 
 ##########################esto es para ws#############################
