@@ -182,6 +182,7 @@ def get_instrumento_para_suscripcion_db():
 def market_data_handler_estrategia(message):
     
     mepCedear = calcularMepCedearsWS(message)
+    mepReferencia = calcularMepcedearReferenciaWS(message)
     
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -286,7 +287,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                             get.diccionario_global_operaciones[Symbol]['senial'] = senial
 
 
-            #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
+            #mepAl30 = calcularMepcedearReferenciaWS(message) ####Calcula dolar MEP
             mepAl30 = 460 ####Calcula dolar MEP
     Symbol = message["instrumentId"]["symbol"]
     tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
@@ -360,10 +361,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                             datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
                                         
 def calcularMepCedearsWS(message):
-     #traer los precios del cedear
-    # print("_calcularMepCedears_______ le da 380")
-     resultado = instrument_by_symbol_para_CalculoMep(message) 
-     #resultado2 = instrument_by_symbol_para_CalculoMep("MERV - XMEV - GGAL - 48hs") 
      
     # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
     # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
@@ -391,7 +388,7 @@ def calcularMepCedearsWS(message):
      dato = [mep,size,offer_price,bid_price]
      return dato
  
-def calcularMepAl30WS(message):
+def calcularMepcedearReferenciaWS(message):
      
      
   #  resultado = instrument_by_symbol_para_CalculoMep(message)    
@@ -407,7 +404,7 @@ def calcularMepAl30WS(message):
     #if len( message['marketData']['OF']) == 0:
     if not isinstance(message["marketData"]["OF"][0]["size"],int):# entra si el offer esta vacio
         # entra si el offer esta vacio
-        print(" FUN calcularMepAl30WS: La clave 'OF' está vacía.")
+        print(" FUN calcularMepcedearReferenciaWS: La clave 'OF' está vacía.")
     else:
 
         al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
@@ -427,7 +424,7 @@ def calcularMepAl30WS(message):
         #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
         #mep = 10000 / dolaresmep
     mep = 380
-    #print(" FUN calcularMepAl30WS: .")
+    #print(" FUN calcularMepcedearReferenciaWS: .")
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
