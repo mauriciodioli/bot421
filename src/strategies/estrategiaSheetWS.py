@@ -285,10 +285,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
                             get.diccionario_global_operaciones[Symbol]['senial'] = senial
-<<<<<<< HEAD
-
-=======
->>>>>>> 5e7367dff56b0367bd627668872d3359c8c24ad6
 
 
             #mepAl30 = calcularMepcedearReferenciaWS(message) ####Calcula dolar MEP

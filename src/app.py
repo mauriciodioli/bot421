@@ -27,17 +27,9 @@ from routes.api_externa_conexion.validaInstrumentos import validaInstrumentos
 from routes.api_externa_conexion.cuenta import cuenta
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
-<<<<<<< HEAD
-from strategies.estrategias import estrategias
-from strategies.Experimental.arbitraje_001 import arbitraje_001
-from strategies.estrategiaSheetWS import estrategiaSheetWS
-from strategies.datoSheet import datoSheet
-from strategies.utils.testWS import testWS
-=======
 
 from cuentas.cuentaUsuarioBroker import cuentas
 
->>>>>>> 5e7367dff56b0367bd627668872d3359c8c24ad6
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from usuarios.usuario import usuario
