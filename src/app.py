@@ -94,12 +94,8 @@ app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
 app.register_blueprint(usuario)
 app.register_blueprint(testWS)
-<<<<<<< HEAD
-app.register_blueprint(arbitraje_001)
-=======
 app.register_blueprint(imagenesOperaciones)
 app.register_blueprint(media_e_mail)
->>>>>>> master
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'

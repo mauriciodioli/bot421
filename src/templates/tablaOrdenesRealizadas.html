@@ -1,15 +1,17 @@
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ message }}
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    {% endfor %}
-  {% endif %}
+{% endfor %}
+{% endif %}
 {% endwith %}
+{% extends 'layouts/layoutConexBroker.html'%}
+{% block content%}
 
-{% extends 'layouts/layout.html' %}
+<table border="1" class="dataframe">
 
 
   <div class = 'container p-4'>
@@ -131,7 +133,7 @@
   </table>
   <script>
   
-      account = localStorage.getItem("cuenta");
+      cuenta = localStorage.getItem("cuenta");
       access_token = localStorage.getItem('access_token');
       correo_electronico = localStorage.getItem('correo_electronico');
       usuario = localStorage.getItem("usuario");
@@ -141,27 +143,8 @@
       document.getElementById("access_token_portfolio").value = access_token
       document.getElementById("account").value = account;
 
-      function ordenarDatos(campo) {
-        var tabla = document.getElementById("tabla-datos");
-        var filas = Array.from(tabla.rows).slice(1);
-        
-        filas.sort(function(a, b) {
-          var valorA = a.cells[campo].innerHTML.trim();
-          var valorB = b.cells[campo].innerHTML.trim();
-          return valorA.localeCompare(valorB);
-        });
-        
-        while (tabla.rows.length > 1) {
-          tabla.deleteRow(1);
-        }
-        
-        filas.forEach(function(fila) {
-          tabla.appendChild(fila);
-        });
-      }
+  
 
   </script>
 </div>
-
-
-{% endblock %}
+{%endblock%}

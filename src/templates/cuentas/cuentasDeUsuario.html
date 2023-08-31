@@ -20,7 +20,8 @@
           <th scope="col">id</th>
           <th scope="col">Usuario</th>
           <th scope="col">Cuenta</th>  
-          <th scope="col">Password</th>                                                      
+          <th scope="col">Password</th>  
+          <th scope="col">Tipo</th>                                                     
           <th scope="col">Select Account</th>
           <th scope="col">Quitar</th>                                                                         
         </tr>            
@@ -33,15 +34,20 @@
                 <th scope="row">{{ dato.userCuenta }}</th> 
                 <th scope="row">{{ dato.accountCuenta }}</th>
                 <th scope="row">{{ dato.passwordCuenta }}</th> 
+                <th scope="row">{{ dato.selector }}</th> 
                 <td>
                 <form action="/loginExtCuentaSeleccionadaBroker" method="POST">
-                    <div class="form-group"><input type="hidden" name="selectorEnvironment" id="selectorEnvironment"  value="1" class="form-control"></div>                    
+                    <div class="form-group"><input type="hidden" name="selectorEnvironment" id="selectorEnvironment"  value="{{ dato.selector }}" class="form-control"></div>                    
                     <div class="form-group"><input type="hidden" name="usuario" id="usuario" value="{{ dato.userCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="contraseña" id="contraseña"value="{{ dato.passwordCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="cuenta" id="cuenta" placeholder="cuenta" value="{{ dato.accountCuenta }}" class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="access_token"  id="access_token"  class="form-control"></div>                               
                     <div class="form-group"><input type="hidden" name="idusuario" id="idusuario" value="{{ current_user.id }}" class="form-control"></div> 
-                    <div class="form-group"><button type="submit" class="btn btn-primary btn-sm btn-block form-control">This</button></div>
+                    <div class="form-group"><input type="hidden" name="origin_page" value="cuentasDeUsusario"></div> 
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-primary btn-sm btn-block form-control" >This</button>
+                    </div>
+                    
                 </form>
                 </td> 
                 <td>
@@ -54,67 +60,85 @@
           {% endif %}
         {% endfor %}
         <script>  
-           //en este script cargo el correo electronico almacenado en el localStorage 
          
-          document.addEventListener('DOMContentLoaded', function() {
-           
-            access_token = localStorage.getItem("access_token");
-            let correo_electronico = localStorage.getItem("correo_electronico");
-            document.getElementById("access_token").value = access_token;   
-            let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
-            let mensaje_correo_electronico = document.getElementById("mensaje_correo_electronico");
-            if (mensaje_correo_electronico) {
+          
+        //  document.addEventListener('DOMContentLoaded', function() {
+          
+           //en este script cargo el correo electronico almacenado en el localStorage 
+           access_token = localStorage.getItem("access_token")  
+           refresh_token = localStorage.getItem('refresh_token');
+           correo_electronico = localStorage.getItem('correo_electronico');
+           cuenta = localStorage.getItem("cuenta");
+           usuario = localStorage.getItem("usuario");
+        
+
+           simuladoOproduccion = localStorage.getItem("selector");
+           document.getElementById("access_token").value = access_token;   
+           let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
+           let mensaje_correo_electronico = document.getElementById("mensaje_correo_electronico");
+           if (mensaje_correo_electronico) {
               mensaje_correo_electronico.innerHTML = enlace_correo;
             }
 
             // Resto del código que manipula el DOM o eventos
-          });
+         // });
           
          
-          document.addEventListener('click', function(event) {
-            const target = event.target;
-            if (target && target.matches('.btn-primary')) {
-              event.preventDefault();
-              const form = target.closest('form'); // Encuentra el formulario que contiene el botón clicado
-              const usuarioIDInput = form.querySelector('input[name="idusuario"]'); // Busca el campo 'idusuario' dentro del formulario
-              console.log(usuarioIDInput)
-              if (usuarioIDInput) {
-                const usuarioID = usuarioIDInput.value;
-                localStorage.setItem('usuario_id', usuarioID);
-      
-                // Crear y enviar el formulario de redirección
-                const redirectForm = document.createElement('form');
-                redirectForm.method = 'POST';
-                redirectForm.action = '/loginExtCuentaSeleccionadaBroker';
-      
-                // Crear campos ocultos para enviar los valores
-                const fields = [
-                  { name: 'selectorEnvironment', value: '1' },
-                  { name: 'usuario', value: form.querySelector('input[name="usuario"]').value },
-                  { name: 'contraseña', value: form.querySelector('input[name="contraseña"]').value },
-                  { name: 'cuenta', value: form.querySelector('input[name="cuenta"]').value },
-                  { name: 'access_token', value: form.querySelector('input[name="access_token"]').value },
-                  { name: 'usuario_id', value: usuarioID }
-                ];
-      
-                // Agregar los campos ocultos al formulario de redirección
-                fields.forEach(field => {
-                  const input = document.createElement('input');
-                  input.type = 'hidden';
-                  input.name = field.name;
-                  input.value = field.value;
-                  redirectForm.appendChild(input);
-                });
-      
-                // Agregar el formulario de redirección al cuerpo del documento y enviarlo
-                document.body.appendChild(redirectForm);
-                redirectForm.submit();
-              } else {
-                console.error("Error: Input element 'idusuario' not found.");
-              }
-            }
+         
+          var access_token_inputs = document.querySelectorAll("input[name='access_token']");
+          access_token_inputs.forEach(function(input) {
+            input.value = access_token;
           });
-        
+          
+          if (access_token) { // Verificar si el token existe en el localStorage
+          
+            // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
+            $.ajax({
+              type: "POST",
+              url: "{{ url_for('get_login.loginExtAutomatico') }}",
+              contentType: "application/json",
+              data: JSON.stringify({
+                'origin_page': 'cuentasDeUsusario',
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+                'correo_electronico': correo_electronico,
+                'cuenta': cuenta,
+                'usuario': usuario,
+                'simuladoOproduccion': simuladoOproduccion // Incluye simuladoOproduccion en la solicitud AJAX
+              }),
+              success: function(response) {
+                if (response.redirect) {
+                  window.location.href = response.redirect;
+                } else {
+                  // handle error
+                  showError("No se pudo redirigir al usuario se debe ingresar el usario de broker");
+                }
+              },
+              error: function(error) {
+                // handle error
+                showError("Hubo un error en la solicitud AJAX");
+              }
+            });
+          }
+
+          
+          function showError(message) {
+            // Obtén el elemento donde deseas mostrar el mensaje de error
+            var errorElement = document.getElementById('error-message');
+          
+            // Verifica si el elemento existe
+            if (errorElement) {
+              // Actualiza el contenido del elemento con el mensaje de error
+              errorElement.textContent = message;
+              // Muestra el elemento (puede ser un elemento de alerta, un div, etc.)
+              errorElement.style.display = 'block';
+            } else {
+              // Si el elemento no existe, simplemente muestra una alerta
+              alert(message);
+            }
+          }
+          
+          
         </script>
       </tbody>
     </table>

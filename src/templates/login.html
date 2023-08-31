@@ -13,18 +13,19 @@
 
     <!--<meta http-equiv="refresh" content="1;url=http://localhost:5000/cargar" />-->
 
-    <form  name="logeo" action="/loginExt" method="post" class="btn-guardar_inst">
+    <form  name="logeo" action="/loginExtCuentaSeleccionadaBroker" method="post" class="btn-guardar_inst">
       <input type="hidden" name="fecha" id="fecha">
       <input type="hidden" name="access_token" id="access_token"> 
       <input type="hidden" name="environment" id="environment"> 
+      <input type="hidden" name="origin_page" value="login">
       <input type="text" name="usuario" placeholder="mauriciodioli6603" >  
       <input type="text" name="contraseña" placeholder="zbwitW5#"  >
       <input type="text" name="cuenta" placeholder="REM6603"  >
         
       <select class="form-select"aria-label="Default select example" name = "selctorEnvironment" id="selctorEnvironment">
         <option selected>Open this select menu</option>
-        <option value="1">Simulacion</option>
-        <option value="2">Produccion</option>     
+        <option value="simulacion">Simulacion</option>
+        <option value="produccion">Produccion</option>     
       </select>  
       <div class="col">           
         <button type="submit" class="btn btn-primary my-2">Loguear</button>
@@ -37,6 +38,28 @@
     </form>
   
       <script>
+
+        document.getElementById("selctorEnvironment").addEventListener("change", function() {
+          // Obtener el valor seleccionado
+          var selectedValue = this.value;
+          
+          // Guardar el valor en el localStorage
+          localStorage.setItem("selector", selectedValue);
+        });
+              // Capturar el evento de envío del formulario
+          document.querySelector("form[name='logeo']").addEventListener("submit", function() {
+            // Obtener el valor de environment desde el localStorage
+            var environment = localStorage.getItem("selector");
+
+            // Agregar el valor de environment al campo oculto en el formulario
+            document.getElementById("environment").value = environment;
+          });
+
+
+
+
+
+
         let guardada = localStorage.getItem("date")
         access_token = localStorage.getItem("access_token")  
         console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage
@@ -95,26 +118,29 @@
       
          
             // Obtener el token del localStorage
-           
+            
             var refresh_token = localStorage.getItem('refresh_token');
             correo_electronico = localStorage.getItem('correo_electronico');
             var cuenta = localStorage.getItem("cuenta");
             var usuario = localStorage.getItem("usuario");
             var simuladoOproduccion = localStorage.getItem("selector");
-          
+
             if (access_token) { // Verificar si el token existe en el localStorage
+              
               // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
               $.ajax({
                 type: "POST",
                 url: "{{ url_for('get_login.loginExtAutomatico') }}",
                 contentType: "application/json",
-                data: JSON.stringify({'access_token': access_token,
+                data: JSON.stringify({
+                                      'rutaDeLogeo':'loginEnBroker',
+                                      'access_token': access_token,                                      
                                       'refresh_token':refresh_token,
                                       'correo_electronico':correo_electronico,
                                       'cuenta':cuenta,
                                       'usuario':usuario,
-                                      'simuladoOproduccion':simuladoOproduccion
-
+                                      'simuladoOproduccion':simuladoOproduccion,
+                                     
                                     }),
                 success: function(response) {
                   if (response.redirect) {

@@ -12,6 +12,7 @@ import websocket
 import requests
 import jwt
 import re
+import os
 import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
 import routes.instrumentos as inst
@@ -52,6 +53,10 @@ pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {}
+# Configurar las URLs de la instancia de BMB
+api_url = "https://api.bull.xoms.com.ar/"
+ws_url = "wss://api.bull.xoms.com.ar/"
+
 
 
 
@@ -76,228 +81,221 @@ def home():
 
 @get_login.route("/loginExtAutomatico", methods=['POST'])
 def loginExtAutomatico():
-    print('loginExtAutomatico ')
+    print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
         try:
+            selector = request.form.get('environment')
             access_token = request.json.get('access_token')
+            rutaDeLogeo =  request.json.get('origin_page')
             refresh_token = request.json.get('refresh_token')
             correo_electronico = request.json.get('correo_electronico')
             user = request.json.get('usuario')
-            password = request.json.get('contraseña')
             account = request.json.get('cuenta')
-          
             simuladoOproduccion = request.json.get('simuladoOproduccion')
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
            # print('correo_electronico ',correo_electronico)
-            
-            print('usuario ',user)
-            print('selector ',account)
+           
             if access_token:
-                    app = current_app._get_current_object()
-            
-                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                    # Add user data to the database
-                    print("user_id ",user_id)
-                    cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
-                    db.session.close()
-                    print("______............._______",cuentas.userCuenta) 
-                  
-                    print("cuentas.userCuenta ",cuentas.passwordCuenta)
-                    print("cuentas.accountCuenta ",cuentas.accountCuenta)
-          
-             
-            if int(simuladoOproduccion) < 2:
-                  # try:
-                                pyRofexInicializada.initialize(user=cuentas.userCuenta,
-                                                                password=cuentas.passwordCuenta,
-                                                                account=cuentas.accountCuenta,
-                                                                environment=pyRofexInicializada.Environment.REMARKET)
-                               # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                               #     order_report_handler=order_report_handler,
-                               #     error_handler=error_handler,
-                               #     exception_handler=exception_handler)
-                                print("está logueado en simulado en REMARKET")
-                                
-                                return jsonify({'redirect': url_for('get_login.home')})
-
-                                #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
-                  # except:
-                     #  print("contraseña o usuario incorrecto")
-                     #  flash('Loggin Incorrect')
-                     #  return render_template("errorLogueo.html")
+                app = current_app._get_current_object()                    
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
+                environment = pyRofexInicializada.Environment.REMARKET if selector == 'simulado' else pyRofexInicializada.Environment.LIVE
+                print(f"Está enviando a {environment}")
+                if account is not None and account != '':   
+                   cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
+                   db.session.close()
+                   passwordCuenta = cuentas.passwordCuenta
+                   passwordCuenta = passwordCuenta.decode('utf-8')
+                    
+                   if  simuladoOproduccion !='':
+                        if simuladoOproduccion =='simulado':
+                            try:
+                                            environment =pyRofexInicializada.Environment.REMARKET
+                                            pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
+                                           
+                                        # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                                        #     order_report_handler=order_report_handler,
+                                        #     error_handler=error_handler,
+                                        #     exception_handler=exception_handler)
+                                            print("está logueado en simulado en REMARKET")
+                                            if rutaDeLogeo == 'Home':  
+                                                return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
+                                                #return jsonify({'redirect': url_for('get_login.home')})
+                                            else:
+                                                return jsonify({'redirect': url_for('panelControl.panel_control')})
+                                            #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
+                            except:
+                                #  print("contraseña o usuario incorrecto")
+                              flash('Loggin Incorrect')
+                              return render_template("errorLogueo.html")
+                        else:
+                            exp_date = datetime.utcfromtimestamp(exp_timestamp)
+                            fecha_actual =   datetime.utcnow()
+                            if fecha_actual > exp_date:
+                                environment = pyRofexInicializada.Environment.LIVE
+                
+                                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
+                                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
+                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
+                                pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
+                                #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
+                                # order_report_handler=order_report_handler,
+                                # error_handler=error_handler,
+                                # exception_handler=exception_handler)
+                                print("está logueado en produccion en LIVE")
+                                if rutaDeLogeo != 'Home':      
+                                 return render_template("/cuentas/panelDeControlBroker.html")   
+                                else:
+                                    return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
+                            else:
+                                  return jsonify({'redirect': url_for('panelControl.panel_control')}) 
+                else: 
+                    return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
             else:
-                    pyRofexInicializada.initialize(user=cuentas.userCuenta,
-                                                   password=cuentas.passwordCuenta,
-                                                   account=cuentas.accountCuenta,
-                                                 environment=pyRofexInicializada.Environment.LIVE)
-                    #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                      # order_report_handler=order_report_handler,
-                      # error_handler=error_handler,
-                      # exception_handler=exception_handler)
-                    print("está logueado en produccion en LIVE")
-        except jwt.ExpiredSignatureError:
-            print("El token ha expirado")
-            return redirect(url_for('autenticacion.index'))
+                  return jsonify({'redirect': url_for('panelControl.panel_control')}) 
+                    
         except jwt.InvalidTokenError:
             print("El token es inválido")
-        except:
-           print("contraseña o usuario incorrecto")
-           
-                  
-        return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
+        except jwt.ExpiredSignatureError:
+            print("El token ha expirado")
+        except Exception as e:
+            print("Otro error:", str(e))
+        return render_template("cuentas/registrarCuentaBroker.html")
 
 
-@get_login.route("/loginExt", methods=['POST'])
-def loginExt():
-    if request.method == 'POST':
-            selector = request.form['selctorEnvironment']
-            try:
-                user = request.form['usuario']
-                password = request.form['contraseña']
-                account = request.form['cuenta']
-                access_token = request.form['access_token']
-                #print("selctorEnvironment",selector)
 
-                if access_token:
-                    app = current_app._get_current_object()
-
-                   # try:
-                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                       # Add user data to the database
-                    usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
-                    usuario.userCuenta = user  # Modificar la propiedad nombre
-                    usuario.passwordCuenta = password
-                    usuario.accountCuenta = account
-                        
-                    db.session.commit()
-                    db.session.close()
-                    
-                   # except jwt.ExpiredSignatureError:
-                   #     print("El token ha expirado.")
-                   # except jwt.InvalidTokenError:
-                   #     print("El token es inválido.")
-                   # except Exception as e:
-                   #     print("Ocurrió un error no esperado:", e)    
-                   # except:
-                   #     print("no posee datos")
-                   #     return render_template("login.html")
-
-                    if int(selector) < 2:
-                        try:
-                            pyRofexInicializada.initialize(user=user,
-                                                           password=password,
-                                                           account=account,
-                                                           environment=pyRofexInicializada.Environment.REMARKET)
-                          #  pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                          #      order_report_handler=order_report_handler,
-                          #      error_handler=error_handler,
-                          #      exception_handler=exception_handler)
-                            print("está logueado en simulado en REMARKET")
-                        except:
-                            print("contraseña o usuario incorrecto")
-                            flash('Loggin Incorrect')
-                            return render_template("errorLogueo.html")
-                    else:
-                        pyRofexInicializada.initialize(user=user,
-                                                       password=password,
-                                                       account=account,
-                                                       environment=pyRofexInicializada.Environment.LIVE)
-                        #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                        #    order_report_handler=order_report_handler,
-                        #    error_handler=error_handler,
-                        #    exception_handler=exception_handler)
-                        print("está logueado en produccion en LIVE")
-                        
-                   
-                        
-            except jwt.ExpiredSignatureError:
-                print("El token ha expirado")
-                return redirect(url_for('autenticacion.index'))
-            except jwt.InvalidTokenError:
-                print("El token es inválido")
-
-            return render_template('home.html', cuenta=[account,user,selector])
 
 @get_login.route("/loginExtCuentaSeleccionadaBroker", methods=['POST'])
 def loginExtCuentaSeleccionadaBroker():
     if request.method == 'POST':
-            selector = request.form['selectorEnvironment']
-            try:
-                user = request.form['usuario']
-                password = request.form['contraseña']              
-                account = request.form['cuenta']
-                access_token = request.form['access_token']
-                #print("selctorEnvironment",selector)
+        origin_page = request.form.get('origin_page')
+        user = request.form.get('usuario')
+        password = request.form.get('contraseña')
+        account = request.form.get('cuenta')
+        access_token = request.form.get('access_token')
+        
+        if origin_page == 'login':
+            selector = request.form.get('environment')
+        else: 
+            selector = request.form.get('selectorEnvironment')
+        
+        
+       
+        if not selector or not user or not password or not account:
+            flash('Falta información requerida')
+            return redirect(url_for('autenticacion.index'))
 
-                if access_token:
-                    app = current_app._get_current_object()
+        try:
+            inicializar_variables_globales()
+            creaJsonParaConextarseSheetGoogle()
+            if selector == 'simulado':
+                # Configurar para el entorno de simulación
+                environment = pyRofexInicializada.Environment.REMARKET
+            else:
+                # Configurar para el entorno LIVE
+                environment = pyRofexInicializada.Environment.LIVE
+                
+                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
+                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
+                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
+                
 
-                   # try:
-                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                       # Add user data to the database
-                  #  usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario con id=1
-                  #  usuario.userCuenta = user  # Modificar la propiedad nombre
-                  #  usuario.passwordCuenta = password
-                  #  usuario.accountCuenta = account
-                        
-                  #  db.session.commit()
-                  #  db.session.close()
                     
-                   # except jwt.ExpiredSignatureError:
-                   #     print("El token ha expirado.")
-                   # except jwt.InvalidTokenError:
-                   #     print("El token es inválido.")
-                   # except Exception as e:
-                   #     print("Ocurrió un error no esperado:", e)    
-                   # except:
-                   #     print("no posee datos")
-                   #     return render_template("login.html")
+            print(f"Está enviando a {environment}")
+            if access_token:
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
+           
+            pyRofexInicializada.initialize(user=user,password=password,account=account,environment=environment )
+            pyRofexInicializada.get_account_report(account=account)
+            print(f"Está logueado en {selector} en {environment}")
+            
+            
+        except jwt.ExpiredSignatureError:
+            flash("El token ha expirado")
+        except jwt.InvalidTokenError:
+            flash("El token es inválido")
+        except Exception as e:
+            print('Error inesperado:', e)
+            flash('No se pudo iniciar sesión')
+            return render_template('errorLogueo.html')
+            
+ # Redirige a la página de origen según el valor de origin_page
+        if origin_page == 'login':
+            return render_template('home.html', cuenta=[account, user, selector])
+        elif origin_page == 'cuentasDeUsusario':
+            return render_template('cuentas/panelDeControlBroker.html', cuenta=[account, user, selector])
+        else:
+            # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
+            return render_template('registrarCuentaBroker.html')
 
-                    if int(selector) < 2:
-                        try:
-                            pyRofexInicializada.initialize(user=user,
-                                                           password=password,
-                                                           account=account,
-                                                           environment=pyRofexInicializada.Environment.REMARKET)
-                          #  pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                          #      order_report_handler=order_report_handler,
-                          #      error_handler=error_handler,
-                          #      exception_handler=exception_handler)
-                            print("está logueado en simulado en REMARKET")
-                        except:
-                            print("contraseña o usuario incorrecto")
-                            flash('Loggin Incorrect')
-                            return render_template("errorLogueo.html")
-                    else:
-                        pyRofexInicializada.initialize(user=user,
-                                                       password=password,
-                                                       account=account,
-                                                       environment=pyRofexInicializada.Environment.LIVE)
-                        #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                        #    order_report_handler=order_report_handler,
-                        #    error_handler=error_handler,
-                        #    exception_handler=exception_handler)
-                        print("está logueado en produccion en LIVE")
-                        
-                   
-                        
-            except jwt.ExpiredSignatureError:
-                print("El token ha expirado")
-                return redirect(url_for('autenticacion.index'))
-            except jwt.InvalidTokenError:
-                print("El token es inválido")
 
-            return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
-#def order_report_handler(message):
-#  print("Mensaje de OrderRouting: {0}".format(message))
+def inicializar_variables_globales():
+    global pyRofexInicializada, pyConectionWebSocketInicializada, pyWsSuscriptionInicializada
+    
+    
+   
+
+    pyRofexInicializada = pyRofex
+    pyConectionWebSocketInicializada = pyRofex
+    pyWsSuscriptionInicializada = pyRofex
+    
+    
+
+def creaJsonParaConextarseSheetGoogle():
+  #  directorioCompleto = os.path.dirname(__file__)
+  #  partes_ruta_partes = directorioCompleto.split(os.path.sep)
+  #  print(f'Ruta hasta "src": {partes_ruta_partes}')
+  #  indice_src = partes_ruta_partes.index('Desktop')
+  #  print(f'Ruta hasta "src": {indice_src}')
+
+    # Ruta al archivo de texto plano
+    ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'   
+    
+    print(ruta_archivo_texto)
+    # Leer el texto plano desde el archivo
+    with open(ruta_archivo_texto, 'r') as archivo_texto:
+        texto_plano = archivo_texto.read()
+
+    # Parsear el texto plano a un diccionario
+    datos = json.loads(texto_plano)
+
+    # Obtener el directorio actual del script
+    directorio_actual = os.path.dirname(__file__)
+
+
+    # Dividir la ruta en partes
+    partes_ruta = directorio_actual.split(os.path.sep)
+
+    # Encontrar la posición de "src" en las partes de la ruta
+    indice_src = partes_ruta.index('src')
+
+    # Construir la ruta hasta "src"
+    ruta_hasta_src = os.path.sep.join(partes_ruta[:indice_src + 1])
+
+    print(f'Ruta hasta "src": {ruta_hasta_src}')
+
+
+    # Ruta relativa para guardar el archivo JSON en el subdirectorio "strategies"
+    ruta_archivo_json = os.path.join(ruta_hasta_src, 'strategies', 'pruebasheetpython.json')
+
+    # Escribir el diccionario en el archivo JSON
+    with open(ruta_archivo_json, 'w') as archivo_json:
+        json.dump(datos, archivo_json, indent=2)
+
+    print(f'Se ha creado el archivo JSON en "{ruta_archivo_json}"')
+
+
+def order_report_handler(message):
+  print("Mensaje de OrderRouting: {0}".format(message))
 #  reporte_de_ordenes.append(message)
   
-#def error_handler(message):
-#  print("Mensaje de error: {0}".format(message))
+def error_handler(message):
+  print("Mensaje de error: {0}".format(message))
 
-#def exception_handler(e):
-#    print("Exception Occurred: {0}".format(e.msg))
+def exception_handler(e):
+    print("Exception Occurred: {0}".format(e.msg))
 
 
        #ws.webSocket() ### AQUI FALTA HACER LA PANTALLA EN DONDE ELIJO LOS INSTRUMENTOS PARA SUSCRIBIRME 
