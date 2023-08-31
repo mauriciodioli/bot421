@@ -288,8 +288,8 @@ def estrategyDos():
  
  
 @estrategias.route('/estrategyPcDaniel/')
-def estrategyPcDaniel(): 
-    print("<<<<<<--------estrategyPcDaniel----->>>>>>>A")
+def estrategyPcDaniel():
+    print("<<<<<<--------estrategyPcDaniel----->>>>>>>")
     variable1=123
     variable2=456
     variable3=789

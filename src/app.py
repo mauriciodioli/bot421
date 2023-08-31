@@ -12,9 +12,12 @@ from sqlalchemy.pool import QueuePool
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
-from strategies.utils.testWS import testWS
+from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
+from strategies.utils.testWS import testWS
 
+
+ 
 from routes.instrumentos import instrumentos
 from routes.instrumentosGet import instrumentosGet
 from routes.api_externa_conexion.get_login import get_login

@@ -30,6 +30,18 @@ testWS = Blueprint('testWS',__name__)
 
 
 
+@testWS.route('/nueva_ruta', methods=['POST'])
+def nueva_ruta():
+  if request.method == 'POST':
+    access_token = request.form['access_token1']
+    print("<<<<<<--------<<<<<<--------nueva_ruta----->>>>>>>----->>>>>>>", access_token)
+       
+  
+  
+  return ''
+
+
+
 @testWS.route('/ruta_de_test_ws', methods=['POST'])
 def ruta_de_test_ws():
     
@@ -91,10 +103,6 @@ def market_data_handler_test(message):
 def order_report_handler_test( order_report):
         # Obtener el diccionario de datos del reporte de orden
         order_data = order_report['orderReport']
-        #################################################
-        ###### cambiar esto finalizado el test ##########
-        #################################################
-        #order_data = order_report
         # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']
         symbol = order_data['instrumentId']['symbol']
