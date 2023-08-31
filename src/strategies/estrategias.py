@@ -47,7 +47,7 @@ def estrategias_usuario_nadmin():
             return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
     
     except:
-       print('no hay estrategias') 
+       print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/estrategias/errorEstrategiaVacia.html")
 
 @estrategias.route("/estrategias-usuario",  methods=["POST"])
@@ -189,11 +189,23 @@ def inicioEstrategias():
      flash('Loggin Incorrect')    
      return render_template("login.html" )    
    
-@estrategias.route('/detenerWS/')   
+@estrategias.route('/detenerWS/', methods=["GET", "POST"])
 def detenerWS():
-     get.pyRofexInicializada.close_websocket_connection()
-     return render_template("estrategias.html" )
- 
+    try:
+        get.pyRofexInicializada.close_websocket_connection()
+
+        # Obtener los datos por POST (cambia 'nombre_del_campo' al nombre correcto)
+        usuario_id = request.form['usuario_id']
+
+        # Llamar a la función estrategias_usuario_nadmin y pasar los datos por POST
+        resultado_estrategias = estrategias_usuario_nadmin()
+
+        # Hacer algo con el resultado de la función si es necesario
+
+        
+    except Exception as e:
+        print('Error al detener WS:', str(e))
+        return render_template("errorOperacion.html")  # Puedes renderizar una plantilla de error específica
  
 @estrategias.route('/cargaDatosEstrategyUno/', methods = ['POST'])
 def cargaDatosEstrategyUno():   
@@ -276,8 +288,8 @@ def estrategyDos():
  
  
 @estrategias.route('/estrategyPcDaniel/')
-def estrategyPcDaniel(): 
-    print("<<<<<<--------estrategyPcDaniel----->>>>>>>A")
+def estrategyPcDaniel():
+    print("<<<<<<--------estrategyPcDaniel----->>>>>>>")
     variable1=123
     variable2=456
     variable3=789
