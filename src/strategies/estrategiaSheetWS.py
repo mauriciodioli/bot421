@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
-
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
@@ -21,7 +20,6 @@ import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import pprint
-import websockets
 
 
 
@@ -73,38 +71,63 @@ def estrategia_sheet_WS():
             # Crear una instancia de RofexMarketDataHandler
             
 
-         
-            carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage, usuario, correo_electronico, ContenidoSheet_list[1])
+            
+            
+    #  except:  
+    #      print("_EstrategyUno_contraseña o usuario incorrecto")  
+    #      flash('Loggin Incorrect')    
+    #      return render_template("errorLogueo.html" ) 
     
         except jwt.ExpiredSignatureError:
-            print("El token ha expirado")
-            return redirect(url_for('autenticacion.index'))
+                print("El token ha expirado")
+                return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-            print("no pudo leer la base de datos")
+           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
     return render_template('/estrategiaOperando.html')
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
    
     ContenidoSheet = get_instrumento_para_suscripcion_ws()
-    ContenidoSheet_list = list(ContenidoSheet)   
-   
+    ContenidoSheet_list = list(ContenidoSheet)
+
+    ContenidoSheetDb = get_instrumento_para_suscripcion_db()
+    ContenidoSheet_list_db = list(ContenidoSheetDb)
+
   
     longitudLista = len(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
+    ContenidoSheet_list_solo_symbol_db = cargaSymbolParaValidarDb(ContenidoSheet_list_db)
+   
    # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
    # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
    # for item in ContenidoSheet_list_solo_symbol:
    #     print(item)
+
+  # Convertir listas a conjuntos para eliminar duplicados
+    set_contenido_ws = set(ContenidoSheet_list_solo_symbol)
+    set_contenido_db = set(ContenidoSheet_list_solo_symbol_db)
+
+    # Combinar conjuntos y eliminar duplicados
+    resultado_set = set_contenido_ws.union(set_contenido_db)
+
+    # Convertir conjunto resultante en una lista
+    resultado_lista = list(resultado_set)
+    
+    # Ahora 'resultado_lista' contiene todos los instrumentos sin duplicados
+
+    
+    #for elemento in resultado_lista:
+    #    print(elemento)
 
     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
     #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-    instrumentos_existentes = val.validar_existencia_instrumentos(ContenidoSheet_list_solo_symbol,tickers_existentes)
+    instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
       
     #### aqui define el MarketDataEntry
     entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
@@ -121,6 +144,14 @@ def SuscripcionDeSheet():
    
     
     return [ContenidoSheet_list,instrumentos_existentes]
+
+def cargaSymbolParaValidarDb(message):
+    listado_final = []
+    for instrumento  in message: 
+        listado_final.append(instrumento.symbol)
+        #print(instrumento.symbol)
+        
+    return listado_final
 
 def cargaSymbolParaValidar(message):
     listado_final = []
@@ -143,9 +174,17 @@ def get_instrumento_para_suscripcion_ws():
       ContenidoSheet = datoSheet.leerSheet()
       datoSheet.crea_tabla_orden()  
       return ContenidoSheet
-    
+  
+def get_instrumento_para_suscripcion_db():
+    ContenidoDb = datoSheet.leerDb()
+    return ContenidoDb    
+
 def market_data_handler_estrategia(message):
-        ## mensaje = Ticker+','+cantidad+','+spread
+    
+    mepCedear = calcularMepCedearsWS(message)
+    mepReferencia = calcularMepcedearReferenciaWS(message)
+    
+    ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
     time = datetime.now()
     timeuno = int(time.timestamp())*1000
@@ -156,7 +195,7 @@ def market_data_handler_estrategia(message):
     response = botonPanicoRH('None') 
    # print("MDH respuesta desde el boton de panico", response)
    
-    #puse uno para probar cuando termino de testear poner != 1        
+    
     if response != 1: ### si es 1 el boton de panico fue activado
         _cancela_orden(300)
       #  print(" FUN: market_data_handler_estrategia: _")
@@ -172,9 +211,6 @@ def market_data_handler_estrategia(message):
             # esto hay que hacerlo aca, solo cada x segundos
             banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
 
-           # pedir el listado de instrumentos existentes en la cta, para verificar
-           # antes de hacer un close. deberia coincidir lo que quiero cerrar con lo que
-           # hay efectivamente para cerrar
 
         if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos        
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
@@ -245,14 +281,13 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
             if Symbol in get.diccionario_global_operaciones:
                 #print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
-                    #aqui entra en caso que tenga que cambiar la señal del stock de operaciones 
+                    #aqui entra en caso que tenga que cambiar la señal de trading
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
                         if get.diccionario_global_operaciones[Symbol]['status'] == "0":
-                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
                             get.diccionario_global_operaciones[Symbol]['senial'] = senial
-                           # print(get.diccionario_global_operaciones[Symbol]['senial'])
 
-            #mepAl30 = calcularMepAl30WS(message) ####Calcula dolar MEP
+
+            #mepAl30 = calcularMepcedearReferenciaWS(message) ####Calcula dolar MEP
             mepAl30 = 460 ####Calcula dolar MEP
     Symbol = message["instrumentId"]["symbol"]
     tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
@@ -326,18 +361,14 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                             datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
                                         
 def calcularMepCedearsWS(message):
-     #traer los precios del cedear
-    # print("_calcularMepCedears_______ le da 380")
-     resultado = instrument_by_symbol_para_CalculoMep(message) 
-     #resultado2 = instrument_by_symbol_para_CalculoMep("MERV - XMEV - GGAL - 48hs") 
      
     # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
     # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
     # size = resultado2['BI'][0]['size']
-   #  print("__________ko_ci____________",ko_ci)
-   #  print("__________koD_ci____________",koD_ci)
-   #  print("__________size____________",size)
-     #mep= ko_ci / koD_ci
+    # print("__________ko_ci____________",ko_ci)
+    # print("__________koD_ci____________",koD_ci)
+    # print("__________size____________",size)
+    # mep= ko_ci / koD_ci
      
      """"
      if len(resultado['OF']) > 0:
@@ -357,7 +388,7 @@ def calcularMepCedearsWS(message):
      dato = [mep,size,offer_price,bid_price]
      return dato
  
-def calcularMepAl30WS(message):
+def calcularMepcedearReferenciaWS(message):
      
      
   #  resultado = instrument_by_symbol_para_CalculoMep(message)    
@@ -373,7 +404,7 @@ def calcularMepAl30WS(message):
     #if len( message['marketData']['OF']) == 0:
     if not isinstance(message["marketData"]["OF"][0]["size"],int):# entra si el offer esta vacio
         # entra si el offer esta vacio
-        print(" FUN calcularMepAl30WS: La clave 'OF' está vacía.")
+        print(" FUN calcularMepcedearReferenciaWS: La clave 'OF' está vacía.")
     else:
 
         al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
@@ -393,7 +424,7 @@ def calcularMepAl30WS(message):
         #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
         #mep = 10000 / dolaresmep
     mep = 380
-    #print(" FUN calcularMepAl30WS: .")
+    #print(" FUN calcularMepcedearReferenciaWS: .")
     return mep
 
 def instrument_by_symbol_para_CalculoMep(message):
@@ -499,11 +530,6 @@ def es_numero(numero):
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
         order_data = order_report['orderReport']
-        #################################################
-        ###### cambiar esto finalizado el test ##########
-        #################################################
-        #order_data = order_report
-        # Leer un valor específico del diccionario
         clOrdId = order_data['clOrdId']        
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']  
@@ -519,10 +545,6 @@ def order_report_handler( order_report):
         
 def _operada(order_report):
     order_data = order_report['orderReport']
-     #################################################
-     ###### cambiar esto finalizado el test ##########
-     #################################################
-    #order_data = order_report
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']   
@@ -585,11 +607,6 @@ def convert_datetime(original_datetime_str, desired_timezone_str):
 
 def _cancela_orden(delay):
     
-   # order_data = order_report['orderReport']
-     #################################################
-     ###### cambiar esto finalizado el test ##########
-     #################################################
-    #order_data = order_report
    # clOrdId = order_data['clOrdId']
    # symbol = order_data['instrumentId']['symbol']
    # status = order_data['status']
@@ -613,7 +630,7 @@ def _cancela_orden(delay):
            
             # Convertir el timestamp en milisegundos a objeto datetime
             # Convertir las cadenas de texto en objetos datetime
-            diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
+            diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)
            
 
           #  print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
@@ -670,12 +687,6 @@ def tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionar
 
 def asignarClOrId(order_report):
       order_data = order_report['orderReport']
-        #################################################
-        ###### cambiar esto finalizado el test ##########
-        #################################################
-      #order_data = order_report
-        # Leer un valor específico del diccionario
-     
       clOrdId = order_data['clOrdId']
       symbol = order_data['instrumentId']['symbol']
       status = order_data['status']   

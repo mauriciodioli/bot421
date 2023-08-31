@@ -43,7 +43,7 @@ def suscripcion_instrumentos():
 @suscripciones.route("/suscripcionDb/" )
 def suscripcionDb():
     try:
-         get.pyRofexInicializada.get_detailed_instruments()
+       
          all_ins = db.session.query(InstrumentoSuscriptos).all()
          db.session.close()
          return render_template("suscripciones_db.html", datos =  all_ins)
