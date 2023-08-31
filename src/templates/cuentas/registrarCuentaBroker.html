@@ -1,7 +1,15 @@
 {% extends 'layouts/layout.html' %}
 {% block content %}
 
-
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="flash-messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
   
 <body> 
 
@@ -18,6 +26,8 @@
       <input type="hidden" name="access_token" id="access_token">
       <input type="hidden" name = "correo_electronico" id = "correo_electronico" >
       <input type="hidden" name="environment" id="environment"> 
+      <input type="hidden" name="origin_page" value="registrarCuentaBroker">
+
       <input type="text" name="usuario">  
       <input type="text" name="contraseña">
       <input type="text" name="cuenta">
@@ -33,22 +43,35 @@
       
     </form>
     <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
-      <input type="hidden" name="access_token_form2" id="access_token_form2">
+      <input type="hidden" name="access_token" id="access_token">
       <div class="col">  
           <button type="submit" class="btn btn-secondary my-2">Cuentas existentes</button> 
       </div>
     </form>
     <script>     
-      //en este script cargo el correo electronico almacenado en el localStorage 
-      access_token = localStorage.getItem("access_token");
-      correo_electronico = localStorage.getItem("correo_electronico");  
       
-      let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
-      document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
-      document.getElementById("correo_electronico").value = correo_electronico;
-      
-      document.getElementById("access_token").value = access_token;
-      document.getElementById("access_token_form2").value = access_token;   
+  // en este script cargo el correo electrónico almacenado en el localStorage
+  access_token = localStorage.getItem("access_token");
+  correo_electronico = localStorage.getItem("correo_electronico");
+
+  let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
+  document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+  document.getElementById("correo_electronico").value = correo_electronico;
+
+  $(document).ready(function() {
+    // Escuchar el evento de cambio en el combobox
+    $("#selctorEnvironment").change(function() {
+      // Obtener el valor seleccionado
+      var selectedValue = $(this).val();
+
+      // Asignar el valor al campo de entrada oculto "environment" en ambos formularios
+      $("input[name='environment']").val(selectedValue);
+    });
+
+    // Asignar el valor del access token al campo oculto en ambos formularios
+    $("input[name='access_token']").val(access_token);
+    $("input[name='access_token_form2']").val(access_token);
+  });
      
     </script>
     

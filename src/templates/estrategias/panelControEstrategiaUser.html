@@ -13,13 +13,14 @@
 
 {% block content %}
 
-  <h1>Estrategias</h1>
+  <h1>Panel Control Estrategias</h1>
 
   <div>
     
-    <table class="table table-dark table-striped">
+    <table class="table table-dark table-striped" id="tabla-trigger">
       <thead>           
         <tr>
+          <th scope="col">BOTON PANICO</th> 
           <th scope="col">IdTrigger</th>  
           <th scope="col">IdUser</th>
           <th scope="col">UserCuenta</th>
@@ -34,7 +35,13 @@
       <tbody>
         <!-- Aquí se mostrarán los usuarios -->
         {% for estrategia in datos[1] %}
-        <tr>
+          <tr>  
+            <td> 
+            <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
+              <input type="hidden" name="account" id="account">
+              <button type="submit" id="boton-panico-estrategia-usuario-noadmin" class="btn btn-danger my-2"></button>
+            </form>
+          </td>  
           <td>{{ estrategia.id }}</td>
           <td>{{ estrategia.user_id }}</td>          
           <td>{{ estrategia.userCuenta }}</td>
@@ -44,16 +51,20 @@
           <td>{{ estrategia.ManualAutomatico }}</td>
           <td>{{ estrategia.nombreEstrategia }}</td>
           <td class="d-flex">
-            <form action="/estrategia_sheet_WS/" method="POST">
+          
+           <!-- <form method="POST" class="btn-guardar_inst">
               <input type="hidden" name="access_token" id="access_token" value="{{ access_token }}">                       
               <input type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
               <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
-              <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">
-              <button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    
-            </form>
-            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" onclick="setLocalStorageValue('AUTOMATICO')">A</button>
+              <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">-->
+              <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-trigger-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}"  data-nombreEstrategia="{{ estrategia.nombreEstrategia }}">M</button>
+            <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
+          <!--  </form>-->
 
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.cuenta }}">Editar</button>
+            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
+
+
+            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
             <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
           </td>
@@ -74,7 +85,7 @@
       <div class="form-group">
         <input type="hidden" class="form-control" id="cuenta" name="cuenta" value="{{ cuenta_estrategia }}" required>
       </div>         
-      <label for="nombre">Nombre:</label>
+      <label for="nombreEstrategia">Nombre:</label>
       <input type="text" class="form-control" id="nombreEstrategia" name="nombreEstrategia" required>         
       <button type="submit" class="btn btn-primary my-2">Registrar estrategia</button>
     </form>
@@ -100,7 +111,7 @@
               <input type="hidden" class="form-control" id="IdTrigger" name="IdTrigger">
             </div> 
             <div class="form-group">
-              <label for="editarEstrategiaModal" style="color: black;">Nombre:</label>
+              <label for="TriggerNombre" style="color: black;">Nombre:</label>
               <input type="text" class="form-control" id="TriggerNombre" name="TriggerNombre" required>
             </div>
           </div>
@@ -159,7 +170,7 @@
                          
               <select class="form-control" id="ManualAutomatico" name="ManualAutomatico">
                 <option value="MANUAL">Manual</option>
-                <option value="ADAUTOMATICO">Automatico</option>
+                <option value="AUTOMATICO">Automatico</option>
               </select>
             
           </div>
@@ -184,34 +195,6 @@
   document.getElementById("cuenta").value = cuenta_estrategia;
 
 
-  $(document).ready(function() {
-    // Validación del nombre
-    var nombre = document.getElementById("correo_electronico");
-    function validateNombre(event) {
-      if (nombre.value.indexOf(' ') >= 0) {
-        nombre.setCustomValidity("El correo_electronico no debe contener espacios en blanco");
-        event.preventDefault();
-      } else {
-        nombre.setCustomValidity("");
-      }
-    }
-  
-    // Validación de la confirmación de contraseña
-    var password = document.getElementById("password");
-    var confirm_password = document.getElementById("confirm_password");
-  
-    function validatePassword() {
-      if (password.value != confirm_password.value) {
-        confirm_password.setCustomValidity("Las contraseñas no coinciden");
-      } else {
-        confirm_password.setCustomValidity("");
-      }
-    }
-  
-    nombre.onchange = validateNombre;
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
-  });
 
   const editButtons = document.querySelectorAll('[data-bs-target="#editarEstrategiaModal"]');
   editButtons.forEach(button => {
@@ -238,7 +221,162 @@
      
     }
  
+    document.addEventListener('DOMContentLoaded', function () {
+      var botonAutomatico = document.getElementById('boton-automatico-estrategia-usuario-noadmin');
+      
+      botonAutomatico.addEventListener('click', function () {
+          var userId = botonAutomatico.getAttribute('data-trigger-user-id');
+          var triggerId = botonAutomatico.getAttribute('data-trigger-id');
+          var userCuenta = botonAutomatico.getAttribute('data-user-cuenta');
+          
+          llamarFuncionPython(userId, triggerId, userCuenta);
+      });
+
+    
+      
+      
+      function llamarFuncionPython(userId, triggerId, userCuenta) {
+          var xhr = new XMLHttpRequest();
+          
+          xhr.open('POST', '/pcEstrategiaUs-boton-a-m/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          
+          xhr.onload = function () {
+                          if (xhr.status === 200) {
+                            var respuesta = JSON.parse(xhr.responseText);  // Parsear la respuesta JSON
+                            
+                            // Acceder y manipular los datos recibidos
+                            var operationResult = respuesta.resultado;  // Cambiar 'operation_result' por 'resultado'
+                            var triggerData = respuesta.trigger_data;  // Accede directamente a la propiedad trigger_data
+        
+                          //console.log(operationResult);  // Imprime "Operación exitosa"
+                          //console.log(triggerData);      // Imprime el contenido de trigger_data
+                            actualizarTabla(triggerData);
+                        } else {
+                            alert('Error al llamar a la función Python');
+                        }
+                    };
+                    
+                    xhr.onerror = function () {
+                        alert('Error de conexión');
+                    };
+                    
+                    var requestData = {
+                        userId: userId,
+                        triggerId: triggerId,
+                        userCuenta: userCuenta
+                    };
+                    
+                    xhr.send(JSON.stringify(requestData));
+      }
+
+     
+           
+      document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
+                  if (event.target && event.target.classList.contains('botonM')) {
+                      // Recupera el valor del atributo data-nombre
+                      var clicBoton = event.target.getAttribute('data-nombre');
+                      
+                      // Recupera los datos del Local Storage que deseas enviar
+                      access_token = localStorage.getItem('access_token');
+                      correo_electronico = localStorage.getItem('correo_electronico');
+                      //debugger;
+                      console.log("tagName:", event.target.tagName);
+                      // Recupera los datos de la fila en la que se hizo clic
+                      
+                      // Recupera los datos de la fila en la que se hizo clic
+                      var idUser = event.target.getAttribute('data-trigger-user-id');
+                      var idTrigger = event.target.getAttribute('data-trigger-id');
+                      var userCuenta = event.target.getAttribute('data-user-cuenta');
+                      var cuenta = event.target.getAttribute('data-cuenta');   
+                      var nombre = event.target.getAttribute('data-nombreEstrategia');
+                      var tiempoInicio = event.target.getAttribute('data-horaInicio');
+                      var tiempoFin = event.target.getAttribute('data-horaFin');
+                      var automatico = event.target.getAttribute('data-trigger-ManualAutomatico');
+
+                                        
+                     /* console.log("userId:", idUser);
+                      console.log("idTrigger:",idTrigger);
+                      console.log("cuenta:", cuenta);                      
+                      console.log("automatico",automatico);
+                      console.log("tiempoInicio",tiempoInicio);
+                      console.log("tiempoFin",tiempoFin);
+                      console.log("userCuenta:", userCuenta);*/
+
+                     
+                      nombreEstrategia = '/'+nombre+'/' ;
+                      //console.log("nombreEstrategia:", nombreEstrategia);   
+
+                        
+                          
+                          // Realiza la solicitud AJAX
+                          $.ajax({
+                            type: 'POST',
+                            url: nombreEstrategia,
+                            data: JSON.stringify({
+                                'userCuenta': userCuenta,
+                                'idTrigger': idTrigger,
+                                'access_token': access_token,
+                                'idUser': idUser,
+                                'correo_electronico': correo_electronico,
+                                'cuenta': cuenta,
+                                'tiempoInicio': tiempoInicio,
+                                'tiempoFin': tiempoFin,
+                                'automatico': automatico,
+                                'nombre': nombre
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                // Verifica si la respuesta contiene una clave 'redirect'
+                                if (response.redirect) {
+                                    // Redirige a la URL especificada en la respuesta
+                                   // window.location.href = '/' + response.redirect;
+                                    window.location.href = response.redirect;
+                                } else {
+                                    // Maneja la respuesta de otra manera si es necesario
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log("Estado de la solicitud: " + textStatus);
+                                console.log("Mensaje de error: " + errorThrown);
+                            }
+                        });
+                        
+                      
+                  }
+      });
+          
+              
+
+
+             function actualizarTabla(triggerData) {
+                  debugger;
+                  console.log(triggerData);  // Agregar esta línea para depurar
+                  var tablaTrigger = document.getElementById('tabla-trigger');
+                  var filas = tablaTrigger.getElementsByTagName('tr'); // Obtener todas las filas
+                  debugger;
+                  // Recorrer los datos recibidos y actualizar las celdas correspondientes en cada fila
+                  for (var i = 0; i < triggerData.length; i++) {
+                      var trigger = triggerData[i];
+                      var fila = filas[i + 1]; // Saltar la fila de encabezado
+                      var celdas = fila.getElementsByTagName('td'); // Obtener todas las celdas en la fila
+                      
+                      // Actualizar el contenido de las celdas con los datos correspondientes
+                     // celdas[1].textContent = trigger.id;
+                    //  celdas[2].textContent = trigger.userId;
+                    //  celdas[3].textContent = trigger.userCuenta;
+                    //  celdas[4].textContent = trigger.accountCuenta;
+                    //  celdas[5].textContent = trigger.horaInicio;
+                    //  celdas[6].textContent = trigger.horaFin;
+                      celdas[7].textContent = trigger.ManualAutomatico;
+                    //  celdas[8].textContent = trigger.nombreEstrategia;
+                      // ... Actualiza más celdas según sea necesario
+                  }
+              }
+              
+    
+  });
   
-  
+    
 </script>
 {% endblock %}
