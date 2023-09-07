@@ -46,12 +46,18 @@ def estrategia_sheet_WS():
             data = request.get_json()
 
             # Accede a los datos individualmente
+            
             usuario = data['userCuenta']
+            #usuario = "apipuntillo22583398"
+            
             idTrigger = data['idTrigger']
             access_token = data['access_token']
             idUser = data['idUser']
             correo_electronico = data['correo_electronico']
+            
             get.accountLocalStorage = data['cuenta']
+            #get.accountLocalStorage = "20225833983"
+            
             tiempoInicio = data['tiempoInicio']
             tiempoFin = data['tiempoFin']
             automatico = data['automatico']
@@ -203,16 +209,18 @@ def market_data_handler_estrategia(message):
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
         marca_de_tiempo = message["timestamp"]
         #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", marca_de_tiempo - get.VariableParaTiemposMDHandler)
+
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
         banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-        #if  (60000): # entra todo el tiempo para debug. Comentar esta linea y elejir alguna opcion de arriba
-        if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
+        if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
             # esto hay que hacerlo aca, solo cada x segundos
             banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
 
 
-        if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos        
+        if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos
             get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
         
@@ -227,11 +235,11 @@ def market_data_handler_estrategia(message):
             print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
         else:
         
-            tiempoAhora = datetime.now()
+            #tiempoAhora = datetime.now()
             estrategiaSheetNuevaWS(message, banderaLecturaSheet)
-            tiempoDespues = datetime.now()
-            teimporAhoraInt = tiempoDespues - tiempoAhora
-            tiempomili =  teimporAhoraInt.total_seconds() * 1000
+            #tiempoDespues = datetime.now()
+            #teimporAhoraInt = tiempoDespues - tiempoAhora
+            #tiempomili =  teimporAhoraInt.total_seconds() * 1000
           #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
  
 @estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
@@ -388,16 +396,55 @@ def calcularMepCedearsWS(message):
      dato = [mep,size,offer_price,bid_price]
      return dato
  
+
+AL30CI=0
+AL30CI_z=0
+AL30_48hs_BI=0
+AL30_48hs_BI_z=0
 def calcularMepcedearReferenciaWS(message):
      
      
   #  resultado = instrument_by_symbol_para_CalculoMep(message)    
+<<<<<<< HEAD
   
   
   
     Symbol = message["instrumentId"]["symbol"]
   
+=======
+# instrumentos
+#MERV - XMEV - AAPL - 48hs
+#MERV - XMEV - BABA - 48hs	
+#MERV - XMEV - BABAD - 48hs	
+#MERV - XMEV - AAPLD - 48hs	
+#MERV - XMEV - AL30 - 48hs	
+#MERV - XMEV - AL30 - CI
+>>>>>>> d6957fd8bdabe65a7489481794bc9b45aa887ece
     
+    # Atenti los CI cierran a las 16:30. 16:25 cerrar la ultima operacion.
+    global AL30CI, AL30_48hs_BI,AL30CI_z, AL30_48hs_BI_z
+    Symbol = message["instrumentId"]["symbol"]
+    if( Symbol == "MERV - XMEV - AL30 - 48hs"):
+        #print("AL30 48hs OF = ",float(message["marketData"]["OF"][0]["price"]))
+        #print("aapl 48hs last = ", float(message["marketData"]["LA"]["price"]))
+        #print("AL30 48hs BI = ",float(message["marketData"]["BI"][0]["price"]))
+        AL30_48hs_BI=float(message["marketData"]["BI"][0]["price"])
+        AL30_48hs_BI_z=message["marketData"]["BI"][0]["size"]
+        
+    if( Symbol == "MERV - XMEV - AL30 - CI"):
+        #print("AL30 CI OF = ",float(message["marketData"]["OF"][0]["price"]))
+        AL30CI=float(message["marketData"]["OF"][0]["price"])
+        AL30CI_z=message["marketData"]["OF"][0]["size"]
+        #print("aapld 48hs last = ", float(message["marketData"]["LA"]["price"]))
+        #print("aapld 48hs BI = ",float(message["marketData"]["BI"][0]["price"]))
+        #Factor_aapl=10
+        DIF=-1
+    if (AL30_48hs_BI != 0):#**22
+        DIF = AL30_48hs_BI - AL30CI 
+        DIFP= DIF / AL30_48hs_BI
+        
+        print("z",AL30CI_z, "AL30 CI OF = ",AL30CI," z",AL30_48hs_BI_z,"AL30 48hs BI = ",AL30_48hs_BI," DIF = ", DIF, "DIFP = ", DIFP)
+            
     #if isinstance(message["marketData"]["OF"][0]["price"],float):
     #precio = message["marketData"]["OF"][0]["price"]
     #if isinstance(message["marketData"]["OF"][0]["size"],int):
@@ -405,8 +452,13 @@ def calcularMepcedearReferenciaWS(message):
 
 
 
+<<<<<<< HEAD
     al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
     al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
+=======
+        #al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
+        #al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
+>>>>>>> d6957fd8bdabe65a7489481794bc9b45aa887ece
         #print("__________al30_ci____________",al30_ci)
         #print("__________al30D_ci____________",al30D_ci)
         

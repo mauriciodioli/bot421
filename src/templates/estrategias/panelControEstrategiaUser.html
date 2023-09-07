@@ -86,8 +86,11 @@
         <input type="hidden" class="form-control" id="cuenta" name="cuenta" value="{{ cuenta_estrategia }}" required>
       </div>         
       <label for="nombreEstrategia">Nombre:</label>
-      <input type="text" class="form-control" id="nombreEstrategia" name="nombreEstrategia" required>         
-      <button type="submit" class="btn btn-primary my-2">Registrar estrategia</button>
+      <input type="text" class="form-control" id="nombreEstrategia" name="nombreEstrategia" required>  
+      <label for="cuentaBroker">Cuenta:</label>
+      <input type="text" class="form-control" id="cuentaBroker" name="cuentaBroker" required>         
+      <button type="submit" class="btn btn-primary my-2" >Registrar estrategia</button>
+      <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarCuentaModal">Seleccionar Cuenta</button>
     </form>
   </div>
 
@@ -183,6 +186,34 @@
     </div>
   </div>
   
+
+  <div class="modal fade" id="seleccionarCuentaModal" tabindex="-1" aria-labelledby="seleccionarCuentaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="seleccionarCuentaModalLabel" style="color: black;" >Seleccionar Cuenta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul>
+            {% for cuenta in cuentas %}
+            <ul>
+            </ul>
+              <li>
+                <button type="button" class="btn btn-primary" onclick="seleccionarCuenta('{{ cuenta.id }}', '{{ cuenta.userCuenta }}')">{{ cuenta.accountCuenta }}</button>
+              </li>
+            
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   
 <!-- Enlaces a scripts de JavaScript -->
 <script>
@@ -376,6 +407,69 @@
               
     
   });
+  
+
+ 
+  function seleccionarCuenta(cuentaId, cuentaUserId, cuentaUser,accountCuenta) {
+    document.getElementById('cuentaBroker').value = accountCuenta;
+    // Puedes almacenar el ID del usuario seleccionado en un campo oculto para enviarlo junto con el formulario de registro
+   
+    // Cierra el modal de selección de usuario
+    const modal = document.getElementById('seleccionarCuentaModal');
+    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+    bootstrapModal.hide();
+  }
+
+  ////cuando se abre el modal se llama la funcion para cargar los usuarios
+  document.getElementById('seleccionarCuentaModal').addEventListener('shown.bs.modal', function () {
+    cargarCuentas();
+  });
+  function cargarCuentas() {
+    // Obtener el accessToken del localStorage
+    const accessToken = localStorage.getItem("access_token");
+    
+    if (!accessToken) {
+      console.error("No se encontró el accessToken en el localStorage");
+      return;
+    }
+    debugger;
+    
+   
+    // Configurar las opciones de la solicitud fetch
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ accessToken: accessToken })
+    };
+     
+    fetch('/cuentaUsuarioBroker_all_cuentas_post/', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        const cuentas = data.cuentas;  // Accede a data.cuentas en lugar de data.usuarios
+  
+        const ul = document.querySelector('.modal-body ul');
+        ul.innerHTML = '';  // Limpia la lista existente
+  
+        cuentas.forEach(cuenta => {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'btn btn-primary';
+          button.innerText = cuenta.accountCuenta; // Mostrar el nombre de la cuenta
+          button.addEventListener('click', () => {
+            // Llamar a seleccionarCuenta con los datos deseados
+            seleccionarCuenta(cuenta.id, cuenta.user_id, cuenta.userCuenta, cuenta.accountCuenta);
+          });
+  
+          li.appendChild(button);
+          ul.appendChild(li);
+        });
+      })
+      .catch(error => console.error(error));
+  }
+  
   
     
 </script>
