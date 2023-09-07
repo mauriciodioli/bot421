@@ -62,7 +62,7 @@ def estrategias_usuario():
                 print("Name:", estrategia.userCuenta)
                 # Print other attributes as needed
                 print()
-            return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
     
     except:
        print('no hay estrategias') 
@@ -80,8 +80,8 @@ def eliminar_trigger():
     
     flash('Trigger eliminado correctamente.')
     estrategias = db.session.query(TriggerEstrategia).all()
-    db.session.close()
-    return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+    db.session.close()   
+    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
 @estrategias.route("/editar-trigger-nombre", methods=["POST"])
 def editar_trigger_nombre():
     IdTrigger = request.form['IdTrigger']
@@ -95,7 +95,7 @@ def editar_trigger_nombre():
     flash('Estrategia editado correctamente.')
     estrategias = db.session.query(TriggerEstrategia).all()
     db.session.close()
-    return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
     
 @estrategias.route("/editar-Trigger/", methods = ["POST"] )
 def editar_Trigger():
@@ -123,7 +123,7 @@ def editar_Trigger():
             flash('Estrategia editada correctamente.')
             estrategias = db.session.query(TriggerEstrategia).all()
             db.session.close()
-            return render_template("/estrategias/estrategiaUsuarios.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
                     
     except:
                 print('no hay estrategias')
@@ -133,15 +133,15 @@ def editar_Trigger():
 def alta_estrategias_trig():
     try:
         if request.method == 'POST':
-            user_id = request.form['usuario_id']
+            user_id = request.form['usuario_id']          
             correo_electronico = request.form['correo_electronico']
-            cuenta = request.form['cuenta']
+            cuenta = request.form['cuentaBroker']
             nombreEstrategia = request.form['nombreEstrategia']
            
             nombre = db.session.query(TriggerEstrategia).filter(TriggerEstrategia.nombreEstrategia == nombreEstrategia).first()
 
             if nombre is None:
-                cuenta = Cuenta.query.filter_by(user_id=user_id).first()
+                cuenta = Cuenta.query.filter_by(user_id=user_id, accountCuenta=cuenta).first()
                 if cuenta:
                     print("Datos de la cuenta:")
                     print("ID:", cuenta.id)
@@ -172,7 +172,7 @@ def alta_estrategias_trig():
                     estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == user_id).all()
                     db.session.close()
                     
-                    return render_template("/estrategias/estrategiaUsuarios.html", datos=[user_id, estrategias])
+                    return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias])
 
     except:
         print('no hay estrategias')
