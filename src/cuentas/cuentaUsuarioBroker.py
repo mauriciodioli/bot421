@@ -16,6 +16,49 @@ from models.cuentas import Cuenta
 
 cuentas = Blueprint('cuentas',__name__)
 
+@cuentas.route("/cuentaUsuarioBroker_all_cuentas_post/", methods=["POST"])   
+def cuentaUsuarioBroker_all_cuentas_post():
+    if request.method == 'POST':
+        
+        access_token = request.json.get('accessToken')
+
+        todasLasCuentas = []
+
+        if access_token:
+            app = current_app._get_current_object()
+            
+            try:
+                user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                usuario = Usuario.query.get(user_id)         
+                cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
+
+                if cuentas:
+                    data = []  # Lista para almacenar los datos de las cuentas
+                    
+                    for cuenta in cuentas:
+                        password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                        data.append({
+                            'id': cuenta.id,
+                            'user_id': cuenta.user_id,
+                            'accountCuenta': cuenta.accountCuenta,
+                            'userCuenta': cuenta.userCuenta,
+                            'passwordCuenta': password_cuenta,
+                            'selector': cuenta.selector
+                        })
+                    
+                    return jsonify({'cuentas': data})  # Devolver los datos en formato JSON
+                
+                else:
+                    return jsonify({'message': 'No se encontraron cuentas asociadas a este usuario.'}), 404
+                  
+            except Exception as e:
+                print("Error:", str(e))
+                print("No se pudo registrar la cuenta.")
+                db.session.rollback()  # Hacer rollback de la sesión
+                return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
+    
+    return jsonify({'message': 'Solicitud no válida.'}), 400
+
 @cuentas.route("/cuentas-Usuario-Broker/",  methods=["GET"])
 def cuentas_Usuario_Broker():
    try:
