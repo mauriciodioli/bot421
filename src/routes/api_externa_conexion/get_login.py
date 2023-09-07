@@ -17,6 +17,7 @@ import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
+import routes.api_externa_conexion.cuenta as cuenta
 import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
@@ -139,6 +140,10 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
+                                num = '20225833983'
+                                pyRofexInicializada.get_account_report(account=num,environment=environment)
+                                pyRofexInicializada.get_account_report(account=None,environment=environment)
+                               # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
                                 # error_handler=error_handler,
@@ -149,6 +154,10 @@ def loginExtAutomatico():
                                 else:
                                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
                             else:
+                                  num = '20225833983'
+                                  
+                                  saldo1 = pyRofexInicializada.get_account_report(account=num)
+                              
                                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                 else: 
                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
@@ -191,25 +200,26 @@ def loginExtCuentaSeleccionadaBroker():
             creaJsonParaConextarseSheetGoogle()
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
-                environment = pyRofexInicializada.Environment.REMARKET
+                environments = pyRofexInicializada.Environment.REMARKET
             else:
                 # Configurar para el entorno LIVE
-                environment = pyRofexInicializada.Environment.LIVE
+                environments = pyRofexInicializada.Environment.LIVE
                 
-                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
-                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
-                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
-                
+                pyRofexInicializada._set_environment_parameter("url", api_url,environments)
+                pyRofexInicializada._set_environment_parameter("ws", ws_url,environments) 
+                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+               
 
                     
-            print(f"Está enviando a {environment}")
+            print(f"Está enviando a {environments}")
             if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
-           
-            pyRofexInicializada.initialize(user=user,password=password,account=account,environment=environment )
-            pyRofexInicializada.get_account_report(account=account)
-            print(f"Está logueado en {selector} en {environment}")
+            num = '10861'
+            pyRofexInicializada.initialize(user=user,password=password,account=num,environment=environments )
+          
+            saldo = pyRofexInicializada.get_account_report()
+            print(f"Está logueado en {selector} en {environments}")
             
             
         except jwt.ExpiredSignatureError:

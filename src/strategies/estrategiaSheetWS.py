@@ -181,7 +181,7 @@ def get_instrumento_para_suscripcion_db():
 
 def market_data_handler_estrategia(message):
     
-    mepCedear = calcularMepCedearsWS(message)
+    #mepCedear = calcularMepCedearsWS(message)
     mepReferencia = calcularMepcedearReferenciaWS(message)
     
     ## mensaje = Ticker+','+cantidad+','+spread
@@ -392,8 +392,11 @@ def calcularMepcedearReferenciaWS(message):
      
      
   #  resultado = instrument_by_symbol_para_CalculoMep(message)    
-  #  resultado2 = instrument_by_symbol_para_CalculoMep(message) 
-    
+  
+  
+  
+    Symbol = message["instrumentId"]["symbol"]
+  
     
     #if isinstance(message["marketData"]["OF"][0]["price"],float):
     #precio = message["marketData"]["OF"][0]["price"]
@@ -401,14 +404,9 @@ def calcularMepcedearReferenciaWS(message):
     #Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
 
 
-    #if len( message['marketData']['OF']) == 0:
-    if not isinstance(message["marketData"]["OF"][0]["size"],int):# entra si el offer esta vacio
-        # entra si el offer esta vacio
-        print(" FUN calcularMepcedearReferenciaWS: La clave 'OF' está vacía.")
-    else:
 
-        al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
-        al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
+    al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
+    al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
         #print("__________al30_ci____________",al30_ci)
         #print("__________al30D_ci____________",al30D_ci)
         
@@ -423,6 +421,8 @@ def calcularMepcedearReferenciaWS(message):
         #al30D_ci_unitaria = al30D_ci/100
         #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
         #mep = 10000 / dolaresmep
+
+
     mep = 380
     #print(" FUN calcularMepcedearReferenciaWS: .")
     return mep
