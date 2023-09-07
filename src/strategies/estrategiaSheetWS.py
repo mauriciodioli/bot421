@@ -398,7 +398,9 @@ def calcularMepCedearsWS(message):
  
 
 AL30CI=0
+AL30CI_z=0
 AL30_48hs_BI=0
+AL30_48hs_BI_z=0
 def calcularMepcedearReferenciaWS(message):
      
      
@@ -412,7 +414,7 @@ def calcularMepcedearReferenciaWS(message):
 #MERV - XMEV - AL30 - CI
     
     # Atenti los CI cierran a las 16:30. 16:25 cerrar la ultima operacion.
-    global AL30CI, AL30_48hs_BI
+    global AL30CI, AL30_48hs_BI,AL30CI_z, AL30_48hs_BI_z
     Symbol = message["instrumentId"]["symbol"]
     if( Symbol == "MERV - XMEV - AL30 - 48hs"):
         #print("AL30 48hs OF = ",float(message["marketData"]["OF"][0]["price"]))
