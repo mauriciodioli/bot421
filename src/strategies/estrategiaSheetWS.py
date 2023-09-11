@@ -187,7 +187,7 @@ def get_instrumento_para_suscripcion_db():
 
 def market_data_handler_estrategia(message):
     
-    #mepCedear = calcularMepCedearsWS(message)
+    #mepCedear = ConsultarFlagCCLCedearsWS(message)
     mepReferencia = calcularMepcedearReferenciaWS(message)
     
     ## mensaje = Ticker+','+cantidad+','+spread
@@ -308,9 +308,9 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                     if TradeEnCurso == 'LONG_':                        
                         if senial != "":
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
-                                mepCedear = calcularMepCedearsWS(message)
+                                FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
                                 porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30                                
-                                if porcentaje_de_diferencia <= 1:
+                                if FlagCCLCedear == 1:
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar
@@ -368,7 +368,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and message != '':
                                             datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
                                         
-def calcularMepCedearsWS(message):
+def ConsultarFlagCCLCedearsWS(message):
      
     # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
     # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
@@ -396,6 +396,8 @@ def calcularMepCedearsWS(message):
      dato = [mep,size,offer_price,bid_price]
      return dato
  
+ 
+ 
 
 AL30CI=0
 AL30CI_z=0
@@ -405,21 +407,11 @@ def calcularMepcedearReferenciaWS(message):
      
      
   #  resultado = instrument_by_symbol_para_CalculoMep(message)    
-<<<<<<< HEAD
   
   
   
-    Symbol = message["instrumentId"]["symbol"]
   
-=======
-# instrumentos
-#MERV - XMEV - AAPL - 48hs
-#MERV - XMEV - BABA - 48hs	
-#MERV - XMEV - BABAD - 48hs	
-#MERV - XMEV - AAPLD - 48hs	
-#MERV - XMEV - AL30 - 48hs	
-#MERV - XMEV - AL30 - CI
->>>>>>> d6957fd8bdabe65a7489481794bc9b45aa887ece
+  
     
     # Atenti los CI cierran a las 16:30. 16:25 cerrar la ultima operacion.
     global AL30CI, AL30_48hs_BI,AL30CI_z, AL30_48hs_BI_z
@@ -443,7 +435,7 @@ def calcularMepcedearReferenciaWS(message):
         DIF = AL30_48hs_BI - AL30CI 
         DIFP= DIF / AL30_48hs_BI
         
-        print("z",AL30CI_z, "AL30 CI OF = ",AL30CI," z",AL30_48hs_BI_z,"AL30 48hs BI = ",AL30_48hs_BI," DIF = ", DIF, "DIFP = ", DIFP)
+        #print("z",AL30CI_z, "AL30 CI OF = ",AL30CI," z",AL30_48hs_BI_z,"AL30 48hs BI = ",AL30_48hs_BI," DIF = ", DIF, "DIFP = ", DIFP)
             
     #if isinstance(message["marketData"]["OF"][0]["price"],float):
     #precio = message["marketData"]["OF"][0]["price"]
@@ -452,13 +444,8 @@ def calcularMepcedearReferenciaWS(message):
 
 
 
-<<<<<<< HEAD
-    al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
-    al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
-=======
-        #al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
-        #al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
->>>>>>> d6957fd8bdabe65a7489481794bc9b45aa887ece
+    #al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
+    #al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
         #print("__________al30_ci____________",al30_ci)
         #print("__________al30D_ci____________",al30D_ci)
         

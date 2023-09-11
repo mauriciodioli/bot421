@@ -32,7 +32,9 @@ newPath = os.path.join(os.getcwd(), 'strategies\\credentials_module.json')
 directorio_credenciales = newPath 
 
 #SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
-SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
+#SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
+SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
+#1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s
 
 class States(enum.Enum):
     WAITING_MARKET_DATA = 0
@@ -99,15 +101,13 @@ def autenticar_y_abrir_sheet():
 def leerSheet(): 
      sheet = autenticar_y_abrir_sheet()
      
-     symbol = sheet.col_values(1)
-     tipo_de_activo = sheet.col_values(16)
-     trade_en_curso = sheet.col_values(19)
-     ut = sheet.col_values(20)
-     senial = sheet.col_values(21)
-     union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-    # modificar_columna_ut('ORO/SEP23',8)
-     #for Symbol,cedear,trade_en_curso,ut,senial  in union:
-      #print(Symbol,cedear,trade_en_curso,ut,senial)
+     symbol = sheet.col_values(5)       # Simbolo que usa byma interno para bots, no el ticker
+     tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
+     trade_en_curso = sheet.col_values(19)  # long, short o nada
+     ut = sheet.col_values(20)              # cantidad a operar
+     senial = sheet.col_values(21)          # Open o Close
+     FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
+     union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial,FlagCCLCedear_col)
     
      return union
 
