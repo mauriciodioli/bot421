@@ -32,7 +32,7 @@ newPath = os.path.join(os.getcwd(), 'strategies\\credentials_module.json')
 directorio_credenciales = newPath 
 
 #SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
-SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
+SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot3 de pruba
 
 class States(enum.Enum):
     WAITING_MARKET_DATA = 0
@@ -87,7 +87,7 @@ def login():
     credenciales = GoogleDrive(gauth)
     return credenciales
 
-def autenticar_y_abrir_sheet():
+def autenticar_y_abrir_sheet():   
     scope = ['https://spreadsheets.google.com/feeds', 
              'https://www.googleapis.com/auth/drive']
     newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')
