@@ -27,7 +27,7 @@ def estrategias_usuario_general():
       if request.method == 'GET': 
            triggerEstrategia = db.session.query(TriggerEstrategia).all()
            db.session.close()
-           return render_template("/estrategias/estrategiasGeneralUsuarios.html",datos = [0,triggerEstrategia])
+           return render_template("/estrategias/panelControEstrategiaUser.html",datos = [0,triggerEstrategia])
     except:
        print('no hay usuarios') 
     return 'problemas con la base de datos'
