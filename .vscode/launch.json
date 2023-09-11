@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+
         {
             "name": "Python: Flask",
             "type": "python",
@@ -18,7 +19,11 @@
             ],
             "jinja": true,
             "justMyCode": true,
+<<<<<<< HEAD
             "cwd": "C:\\Users\\dpuntillovirtual01\\Documents\\bot421\\src"
+=======
+            "cwd": "C:\\Users\\dpuntillovirtual01\\Documents\\ITCOR\\bot421\\src"
+>>>>>>> c73863e5438023b6b7e70a6c6edfcc09925e2d1a
         }
     ]
 }
