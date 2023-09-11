@@ -295,12 +295,8 @@ def get_cuentas_de_broker_usuario():
     
        
             except Exception as e:
-<<<<<<< HEAD
                      print("Error:", str(e))
                      print("No se pudo registrar la cuenta.")
-=======
-                     print("No se pudo registrar la cuenta.", str(e))
->>>>>>> c73863e5438023b6b7e70a6c6edfcc09925e2d1a
                      db.session.rollback()  # Hacer rollback de la sesión
                      return render_template("errorLogueo.html")
      db.session.close()
