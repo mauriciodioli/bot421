@@ -32,13 +32,9 @@ newPath = os.path.join(os.getcwd(), 'strategies\\credentials_module.json')
 directorio_credenciales = newPath 
 
 #SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
-<<<<<<< HEAD
-SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot3 de pruba
-=======
 #SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
 SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
 #1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s
->>>>>>> 34afb0767db5131ebf39645af31e13906992b46f
 
 class States(enum.Enum):
     WAITING_MARKET_DATA = 0

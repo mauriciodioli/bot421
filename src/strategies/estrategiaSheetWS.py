@@ -411,10 +411,7 @@ def calcularMepcedearReferenciaWS(message):
   
   
   
-<<<<<<< HEAD
-=======
   
->>>>>>> 34afb0767db5131ebf39645af31e13906992b46f
     
     # Atenti los CI cierran a las 16:30. 16:25 cerrar la ultima operacion.
     global AL30CI, AL30_48hs_BI,AL30CI_z, AL30_48hs_BI_z
@@ -447,13 +444,8 @@ def calcularMepcedearReferenciaWS(message):
 
 
 
-<<<<<<< HEAD
-    al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
-    al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
-=======
     #al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
     #al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
->>>>>>> 34afb0767db5131ebf39645af31e13906992b46f
         #print("__________al30_ci____________",al30_ci)
         #print("__________al30D_ci____________",al30D_ci)
         
