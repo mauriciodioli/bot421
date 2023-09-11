@@ -405,6 +405,7 @@ def calcularMepcedearReferenciaWS(message):
      
      
   #  resultado = instrument_by_symbol_para_CalculoMep(message)    
+<<<<<<< HEAD
 # instrumentos
 #MERV - XMEV - AAPL - 48hs
 #MERV - XMEV - BABA - 48hs	
@@ -412,6 +413,13 @@ def calcularMepcedearReferenciaWS(message):
 #MERV - XMEV - AAPLD - 48hs	
 #MERV - XMEV - AL30 - 48hs	
 #MERV - XMEV - AL30 - CI
+=======
+  
+  
+  
+    Symbol = message["instrumentId"]["symbol"]
+  
+>>>>>>> c73863e5438023b6b7e70a6c6edfcc09925e2d1a
     
     # Atenti los CI cierran a las 16:30. 16:25 cerrar la ultima operacion.
     global AL30CI, AL30_48hs_BI,AL30CI_z, AL30_48hs_BI_z
@@ -444,8 +452,13 @@ def calcularMepcedearReferenciaWS(message):
 
 
 
+<<<<<<< HEAD
         #al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
         #al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
+=======
+    al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
+    al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
+>>>>>>> c73863e5438023b6b7e70a6c6edfcc09925e2d1a
         #print("__________al30_ci____________",al30_ci)
         #print("__________al30D_ci____________",al30D_ci)
         
@@ -460,6 +473,8 @@ def calcularMepcedearReferenciaWS(message):
         #al30D_ci_unitaria = al30D_ci/100
         #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
         #mep = 10000 / dolaresmep
+
+
     mep = 380
     #print(" FUN calcularMepcedearReferenciaWS: .")
     return mep
