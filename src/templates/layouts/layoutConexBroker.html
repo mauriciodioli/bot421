@@ -235,7 +235,16 @@
         }
 
 
-
+       
+            //esto es para que el menú desplegable se cierre al ser seleccionado
+            $(document).ready(function() {
+                $(".navbar-nav .nav-item.dropdown").on("click", function(e) {
+                    if ($(e.target).hasClass('dropdown-toggle')) {
+                        return;
+                    }
+                    $(".navbar-collapse").collapse('hide');
+                });
+            });
     </script>
    
 </body>
