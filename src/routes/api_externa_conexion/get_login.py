@@ -262,8 +262,8 @@ def creaJsonParaConextarseSheetGoogle():
 
     # Ruta al archivo de texto plano
     #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    
+    ruta_archivo_texto = 'C:\\Users\\mDioli\\Desktop\\clavesheet.txt'    
+   
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo
     with open(ruta_archivo_texto, 'r') as archivo_texto:
