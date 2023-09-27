@@ -29,6 +29,7 @@ from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
 
 from cuentas.cuentaUsuarioBroker import cuentas
+from fichasTokens.fichas import fichas
 
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
@@ -45,6 +46,8 @@ from automatizacion.programar_trigger import programar_trigger
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
 from models.orden import orden
+from models.ficha import ficha
+from models.trazaFicha import trazaFicha
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -99,6 +102,9 @@ app.register_blueprint(media_e_mail)
 app.register_blueprint(panelControl)
 app.register_blueprint(pcEtrategiaUs)
 app.register_blueprint(FuncionesBasicas01)
+app.register_blueprint(ficha)
+app.register_blueprint(trazaFicha)
+app.register_blueprint(fichas)
 
 
 print(DATABASE_CONNECTION_URI)
