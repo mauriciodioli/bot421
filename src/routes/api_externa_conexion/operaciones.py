@@ -12,6 +12,7 @@ import time
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
+from panelControlBroker.panelControl import panel_control
 
 import routes.api_externa_conexion as getFunction
 
@@ -68,6 +69,26 @@ def estadoOperacion():
 
     return render_template("login.html")
   
+  
+@operaciones.route("/operaciones_desde_seniales/", methods = ["POST"] )
+def operaciones_desde_seniales():
+  try:     
+   if request.method == 'POST':
+        data = request.json
+        symbol = data['symbol']
+        signal = data['signal']
+        ut = data['ut']
+       
+        if(signal == 'closed.'):
+          comprar()
+        elif ( signal == 'OPEN.'):
+          vender()
+       
+   return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+  except:        
+    flash('Datos Incorrect')  
+    panel_control()
+
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():
   try:  
