@@ -233,7 +233,7 @@ def loginExtCuentaSeleccionadaBroker():
         if origin_page == 'login':
             return render_template('home.html', cuenta=[accountCuenta, user, selector])
         elif origin_page == 'cuentasDeUsusario':
-            return render_template('cuentas/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
+            return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
         else:
             # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
             return render_template('registrarCuentaBroker.html')

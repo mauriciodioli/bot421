@@ -12,14 +12,20 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+import strategies.datoSheet as datoSheet
 
 panelControl = Blueprint('panelControl',__name__)
 
 @panelControl.route("/panel_control/")
 def panel_control():
-   
-     return render_template("/cuentas/panelDeControlBroker.html")
-   
+     ContenidoSheet = datoSheet.leerSheet()
+     print(ContenidoSheet)
+     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+     for dato in ContenidoSheet:
+          print( dato)
+         
+     return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+
 
 
 
