@@ -69,28 +69,24 @@ def estadoOperacion():
 
     return render_template("login.html")
   
-  
-@operaciones.route("/operaciones_desde_seniales/", methods = ["POST"] )
+@operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
 def operaciones_desde_seniales():
-  try:     
-   if request.method == 'POST':
-        data = request.json
-        symbol = data['symbol']
-        signal = data['signal']
-        ut = data['ut']
-       
-        if(signal == 'closed.'):
-          comprar()
-        elif ( signal == 'OPEN.'):
-          vender()
-       
-   return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
-  except:        
-    flash('Datos Incorrect')  
-    panel_control()
+    try:
+        if request.method == 'POST':
+            data = request.json
+            symbol = data['symbol']
+            signal = data['signal']
+            ut = data['ut']
+
+            if signal == 'closed.':
+                vender(symbol, ut)  # Pasar datos a la función vender
+            elif signal == 'OPEN.':
+                comprar(symbol, ut)  # Pasar datos a la función comprar
+    except Exception as e:
+        return str(e)
 
 @operaciones.route("/comprar",  methods=["POST"])
-def comprar():
+def comprar(symbol, ut):
   try:  
    
    if request.method == 'POST':
@@ -170,7 +166,7 @@ def mostrarLaVenta():
     
 ############# aqui se realiza la operacion de vender ###############################    
 @operaciones.route("/vender/" , methods = ['POST'])
-def vender():
+def vender(symbol, ut):
   if request.method == 'POST':
      clOrdId = request.form.get('clOrdId') 
      symbol = request.form.get('symbol') 
