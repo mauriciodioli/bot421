@@ -48,6 +48,7 @@ from models.triggerEstrategia import triggerEstrategia
 from models.orden import orden
 from models.ficha import ficha
 from models.trazaFicha import trazaFicha
+from models.operacion import operacion
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -86,6 +87,7 @@ app.register_blueprint(cuenta)
 app.register_blueprint(cuentas)
 app.register_blueprint(orden)
 app.register_blueprint(comprar)
+app.register_blueprint(operacion)
 app.register_blueprint(operaciones)
 app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)

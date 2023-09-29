@@ -5,6 +5,7 @@ import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from models.instrumento import Instrumento
+from models.operacion import Operacion
 from utils.db import db
 import pandas as pd
 import time
@@ -12,6 +13,7 @@ import time
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
+import routes.instrumentos as inst
 from panelControlBroker.panelControl import panel_control
 
 import routes.api_externa_conexion as getFunction
@@ -74,19 +76,43 @@ def operaciones_desde_seniales():
     try:
         if request.method == 'POST':
             data = request.json
+            cuentaA = data['cuentaA']
             symbol = data['symbol']
             signal = data['signal']
             ut = data['ut']
+            existencia = inst.instrumentos_existentes(symbol) 
+            if existencia == True:           
+              precios = inst.instrument_por_symbol(symbol)               
+              if precios != '':
+                precios = list(precios)
+                              
+                if signal == 'closed.':               
+                    accion = 'vender' 
+                    price = precios[0][3]#envio precio de la oferta                               
+                elif signal == 'OPEN.':
+                    accion = 'comprar'                 
+                    price = precios[0][2]#envio precio de la demanda
+                 
+           
+                  # Crear una instancia de la clase
+                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price)
 
-            if signal == 'closed.':
-                vender(symbol, ut)  # Pasar datos a la función vender
-            elif signal == 'OPEN.':
-                comprar(symbol, ut)  # Pasar datos a la función comprar
+                    # Verificar el saldo y enviar la orden si hay suficiente
+                if orden_.enviar_orden(cuenta=cuentaA):
+                        print("Orden enviada con éxito.")
+                else:
+                        print("No se pudo enviar la orden debido a saldo insuficiente.")
+                repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+                operaciones = repuesta_operacion['orders']    
+                  
     except Exception as e:
         return str(e)
 
+
+
+
 @operaciones.route("/comprar",  methods=["POST"])
-def comprar(symbol, ut):
+def comprar():
   try:  
    
    if request.method == 'POST':
@@ -112,7 +138,7 @@ def comprar(symbol, ut):
                 
                 print("tipoOrder ",tipoOrder)
                 if  tipoOrder == 'LIMIT':
-                  print("saldo cuenta ",saldo)      
+                  #print("saldo cuenta ",saldo)      
                   nuevaOrden = get.pyRofexInicializada.send_order(ticker=symbol,side=get.pyRofexInicializada.Side.BUY,size=orderQty,price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
                   orden = nuevaOrden
                   print("Orden de compra enviada ",orden)
