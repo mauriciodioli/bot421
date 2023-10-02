@@ -20,7 +20,8 @@ import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import pprint
-
+instrumentos_existentes_arbitrador1=[]
+import sys
 
 
 
@@ -95,9 +96,10 @@ def estrategia_sheet_WS():
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
-   
-    ContenidoSheet = get_instrumento_para_suscripcion_ws()
+    
+    ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
     ContenidoSheet_list = list(ContenidoSheet)
+
 
     ContenidoSheetDb = get_instrumento_para_suscripcion_db()
     ContenidoSheet_list_db = list(ContenidoSheetDb)
@@ -133,8 +135,12 @@ def SuscripcionDeSheet():
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
     #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+    
+    # Validamos existencia
     instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
-      
+    
+    
+    
     #### aqui define el MarketDataEntry
     entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
                get.pyRofexInicializada.MarketDataEntry.OFFERS,
@@ -176,7 +182,7 @@ def cargaSymbolParaValidar(message):
  
     return listado_final
   
-def get_instrumento_para_suscripcion_ws():
+def get_instrumento_para_suscripcion_ws():#   **77
       ContenidoSheet = datoSheet.leerSheet()
       datoSheet.crea_tabla_orden()  
       return ContenidoSheet
@@ -187,8 +193,8 @@ def get_instrumento_para_suscripcion_db():
 
 def market_data_handler_estrategia(message):
     
-    #mepCedear = calcularMepCedearsWS(message)
-    mepReferencia = calcularMepcedearReferenciaWS(message)
+    
+    #Arbitrador001(message)
     
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -279,7 +285,7 @@ def botonPanicoRH(message):
        
         return get.VariableParaBotonPanico
     
-def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
+def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
     if banderaLecturaSheet == 0:
         ContenidoSheet = datoSheet.leerSheet()
         banderaLecturaSheet = 1
@@ -287,7 +293,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
 
         for Symbol,tipo, TradeEnCurso,ut,senial in ContenidoSheet_list[2:]:
             if Symbol in get.diccionario_global_operaciones:
-                #print("FUN estrategiaSheetNuevaWS Symbol:",Symbol," senial",senial)
                 if senial != '':
                     #aqui entra en caso que tenga que cambiar la señal de trading
                     if senial != get.diccionario_global_operaciones[Symbol]['senial']:
@@ -295,7 +300,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                             get.diccionario_global_operaciones[Symbol]['senial'] = senial
 
 
-            #mepAl30 = calcularMepcedearReferenciaWS(message) ####Calcula dolar MEP
             mepAl30 = 460 ####Calcula dolar MEP
     Symbol = message["instrumentId"]["symbol"]
     tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
@@ -308,9 +312,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                     if TradeEnCurso == 'LONG_':                        
                         if senial != "":
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
-                                mepCedear = calcularMepCedearsWS(message)
-                                porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30                                
-                                if porcentaje_de_diferencia <= 1:
+                                FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
+                                porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30 
+                                mepCedear=1                              
+                                if FlagCCLCedear == 1:
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar
@@ -368,7 +373,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and message != '':
                                             datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
                                         
-def calcularMepCedearsWS(message):
+def ConsultarFlagCCLCedearsWS(message):
      
     # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
     # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
@@ -396,114 +401,19 @@ def calcularMepCedearsWS(message):
      dato = [mep,size,offer_price,bid_price]
      return dato
  
-
-AL30CI=0
-AL30CI_z=0
-AL30_48hs_BI=0
-AL30_48hs_BI_z=0
-def calcularMepcedearReferenciaWS(message):
-     
-     
-  #  resultado = instrument_by_symbol_para_CalculoMep(message)    
-<<<<<<< HEAD
-  
-  
-  
-    Symbol = message["instrumentId"]["symbol"]
-  
-=======
-# instrumentos
-#MERV - XMEV - AAPL - 48hs
-#MERV - XMEV - BABA - 48hs	
-#MERV - XMEV - BABAD - 48hs	
-#MERV - XMEV - AAPLD - 48hs	
-#MERV - XMEV - AL30 - 48hs	
-#MERV - XMEV - AL30 - CI
->>>>>>> d6957fd8bdabe65a7489481794bc9b45aa887ece
-    
-    # Atenti los CI cierran a las 16:30. 16:25 cerrar la ultima operacion.
-    global AL30CI, AL30_48hs_BI,AL30CI_z, AL30_48hs_BI_z
-    Symbol = message["instrumentId"]["symbol"]
-    if( Symbol == "MERV - XMEV - AL30 - 48hs"):
-        #print("AL30 48hs OF = ",float(message["marketData"]["OF"][0]["price"]))
-        #print("aapl 48hs last = ", float(message["marketData"]["LA"]["price"]))
-        #print("AL30 48hs BI = ",float(message["marketData"]["BI"][0]["price"]))
-        AL30_48hs_BI=float(message["marketData"]["BI"][0]["price"])
-        AL30_48hs_BI_z=message["marketData"]["BI"][0]["size"]
-        
-    if( Symbol == "MERV - XMEV - AL30 - CI"):
-        #print("AL30 CI OF = ",float(message["marketData"]["OF"][0]["price"]))
-        AL30CI=float(message["marketData"]["OF"][0]["price"])
-        AL30CI_z=message["marketData"]["OF"][0]["size"]
-        #print("aapld 48hs last = ", float(message["marketData"]["LA"]["price"]))
-        #print("aapld 48hs BI = ",float(message["marketData"]["BI"][0]["price"]))
-        #Factor_aapl=10
-        DIF=-1
-    if (AL30_48hs_BI != 0):#**22
-        DIF = AL30_48hs_BI - AL30CI 
-        DIFP= DIF / AL30_48hs_BI
-        
-        print("z",AL30CI_z, "AL30 CI OF = ",AL30CI," z",AL30_48hs_BI_z,"AL30 48hs BI = ",AL30_48hs_BI," DIF = ", DIF, "DIFP = ", DIFP)
-            
-    #if isinstance(message["marketData"]["OF"][0]["price"],float):
-    #precio = message["marketData"]["OF"][0]["price"]
-    #if isinstance(message["marketData"]["OF"][0]["size"],int):
-    #Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
+ 
+ 
+ 
+ 
 
 
 
-<<<<<<< HEAD
-    al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
-    al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
-=======
-        #al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
-        #al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
->>>>>>> d6957fd8bdabe65a7489481794bc9b45aa887ece
-        #print("__________al30_ci____________",al30_ci)
-        #print("__________al30D_ci____________",al30D_ci)
-        
-        # simulo compra de bono      
-        #print("____simulo compra de bono ")  
-        # al30ci_unitaria = al30_ci/100
-        #cantidad_al30ci=int(10000/al30ci_unitaria)
-        #print("__________cantidad_al30ci_________",cantidad_al30ci)
-        
-        # ahora simulo la venta de los bonos D
-        #print("ahora simulo la venta de los bonos D")
-        #al30D_ci_unitaria = al30D_ci/100
-        #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
-        #mep = 10000 / dolaresmep
 
 
-    mep = 380
-    #print(" FUN calcularMepcedearReferenciaWS: .")
-    return mep
 
-def instrument_by_symbol_para_CalculoMep(message):
-      #print("__________FUN instrument_by_symbol_para_CalculoMep:____________",message) 
-      #print("_FUN CalculoMep:_") 
-      try:
-        
-                
-            objeto = message 
-            jdato = str(objeto['marketData']['LA'])
-            jdato1 = str(objeto['marketData']['BI'])
-            jdato2 = str(objeto['marketData']['OF'])
-            if jdato.find('price')==-1:
-                print("FUN instrument_by_symbol_para_CalculoMep: no existe LA ",jdato.find('price'))
-                
-            elif jdato1.find('price')==-1:
-                print("FUN instrument_by_symbol_para_CalculoMep: no existe BI ",jdato1.find('price'))
-                
-            
-            elif jdato2.find('price')==-1:
-                print("FUN instrument_by_symbol_para_CalculoMep: no existe OF",jdato2.find('price'))
-           
-            return objeto
-        
-      except:       
-        flash('FUN instrument_by_symbol_para_CalculoMep: Symbol Incorrecto')   
-        return render_template("instrumentos.html" )
+
+
+
 
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
       
@@ -773,7 +683,7 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                    tiempo_diccionario = datetime.strptime(tiempo_diccionario, "%Y-%m-%d %H:%M:%S")         
                 diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)   
                 print("FUN _asignarClOrId: diferencia [seg]",diferencia_segundos)
-                #if diferencia_segundos >= 3:      #**33      
+                #if diferencia_segundos >= 3:       
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
