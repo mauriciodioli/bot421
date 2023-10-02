@@ -32,7 +32,9 @@ newPath = os.path.join(os.getcwd(), 'strategies\\credentials_module.json')
 directorio_credenciales = newPath 
 
 #SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
-SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
+#SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
+SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
+#1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s
 
 class States(enum.Enum):
     WAITING_MARKET_DATA = 0
@@ -93,21 +95,25 @@ def autenticar_y_abrir_sheet():
     newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')
     creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
     client = gspread.authorize(creds)
-    sheet = client.open_by_key(SPREADSHEET_ID).sheet1   
-    return sheet
+    sheet = client.open_by_key(SPREADSHEET_ID).sheet1   # Instrumentos del bot
+    # solo agregue esta linea
+    sheet2 = client.open_by_key(SPREADSHEET_ID).get_worksheet(1)# Instrumentos del Arbitrador001
+
+    return sheet, sheet2  # Devuelve una tupla de hojas
+
 
 def leerSheet(): 
-     sheet = autenticar_y_abrir_sheet()
      
-     symbol = sheet.col_values(1)
-     tipo_de_activo = sheet.col_values(16)
-     trade_en_curso = sheet.col_values(19)
-     ut = sheet.col_values(20)
-     senial = sheet.col_values(21)
+     # recibo la tupla pero como este es para el bot leo el primer elemento 
+     sheet, sheet2= autenticar_y_abrir_sheet() 
+     
+     symbol = sheet.col_values(5)       # ticker de mercado
+     tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
+     trade_en_curso = sheet.col_values(19)  # long, short o nada
+     ut = sheet.col_values(20)              # cantidad a operar
+     senial = sheet.col_values(21)          # Open o Close
+     #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
      union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-    # modificar_columna_ut('ORO/SEP23',8)
-     #for Symbol,cedear,trade_en_curso,ut,senial  in union:
-      #print(Symbol,cedear,trade_en_curso,ut,senial)
     
      return union
 
@@ -215,7 +221,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         #precio1 = float(message["marketData"]["BI"][1]["price"])
                         #precio2 = float(message["marketData"]["BI"][2]["price"])
                         #precio = float(message["marketData"]["OF"][0]["price"])#
-                       # get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+                        get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=get.pyRofexInicializada.Side.BUY,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
 
                         ws_client_order_id = _ws_client_order_id
                         
@@ -249,7 +255,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
                         #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
                     elif isinstance(message["marketData"]["LA"]["price"], float):
                         precio = message["marketData"]["LA"]["price"]
-                        #get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.BUY,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
+                        get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=Symbol,side=get.pyRofexInicializada.Side.BUY,size=ut,order_type=get.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio)
                         ws_client_order_id = _ws_client_order_id                       
                         
                         user_id = get.diccionario_global_operaciones[Symbol]['user_id']
