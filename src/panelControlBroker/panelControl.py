@@ -26,6 +26,11 @@ def panel_control():
          
      return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 
-
+@panelControl.route("/panel_control_atomatico/")
+def panel_control_atomatico():
+    ContenidoSheet = datoSheet.leerSheet()
+    datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+   
+    return jsonify(datos=datos_desempaquetados)
 
 
