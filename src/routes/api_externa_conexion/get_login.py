@@ -15,6 +15,7 @@ import re
 import os
 import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
+import strategies.estrategiaSheetWS as shWS 
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
@@ -140,7 +141,9 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(error_handler=error_handler,exception_handler=exception_handler)
+                                ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
+                                pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
+             
                                # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
@@ -148,7 +151,7 @@ def loginExtAutomatico():
                                 # exception_handler=exception_handler)
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
-                                 return render_template("/cuentas/panelDeControlBroker.html")   
+                                 return render_template("/paneles/panelDeControlBroker.html")   
                                 else:
                                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
                             else:
@@ -173,11 +176,11 @@ def loginExtAutomatico():
 
 @get_login.route("/loginExtCuentaSeleccionadaBroker", methods=['POST'])
 def loginExtCuentaSeleccionadaBroker():
-    if request.method == 'POST':
+     if request.method == 'POST':
         origin_page = request.form.get('origin_page')
         user = request.form.get('usuario')
         password = request.form.get('contraseña')
-        account = request.form.get('cuenta')
+        accountCuenta = request.form.get('cuenta')
         access_token = request.form.get('access_token')
         
         if origin_page == 'login':
@@ -204,17 +207,20 @@ def loginExtCuentaSeleccionadaBroker():
                 pyRofexInicializada._set_environment_parameter("url", api_url,environments)
                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environments) 
                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
-                #conexion ws
-                pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(error_handler=error_handler,exception_handler=exception_handler)
+               
+
                     
             print(f"Está enviando a {environments}")
             if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
-            num = '10861'
-            pyRofexInicializada.initialize(user=user,password=password,account=num,environment=environments )
-          
-            saldo = pyRofexInicializada.get_account_report()
+            
+            pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
+            ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
+            pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
+        
+           
+           
             print(f"Está logueado en {selector} en {environments}")
             
             
@@ -229,12 +235,13 @@ def loginExtCuentaSeleccionadaBroker():
             
  # Redirige a la página de origen según el valor de origin_page
         if origin_page == 'login':
-            return render_template('home.html', cuenta=[account, user, selector])
+            return render_template('home.html', cuenta=[accountCuenta, user, selector])
         elif origin_page == 'cuentasDeUsusario':
-            return render_template('cuentas/panelDeControlBroker.html', cuenta=[account, user, selector])
+            return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
         else:
             # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
             return render_template('registrarCuentaBroker.html')
+
 
 
 def inicializar_variables_globales():
@@ -294,8 +301,11 @@ def creaJsonParaConextarseSheetGoogle():
     print(f'Se ha creado el archivo JSON en "{ruta_archivo_json}"')
 
 
-def order_report_handler(message):
-  print("Mensaje de OrderRouting: {0}".format(message))
+def market_data_handler_0(message):
+    print(".")
+
+def order_report_handler_0(message):
+  print(".")
 #  reporte_de_ordenes.append(message)
   
 def error_handler(message):
