@@ -247,29 +247,31 @@ def Arbitrador001(message):#**66
 # ****************************************************************************************
 
 #@testWS.route('/ruta_de_test_ws', methods=['POST'])
-@arbitraje_001.route('/arbitraje-001/')
+@arbitraje_001.route('/Arbitrador-Plazo-001/', methods=['POST'])
 def Arbitrador_Plazo_001():
     
     if request.method == 'POST':
         try:
-            usuario = request.form['usuario1']
-            get.accountLocalStorage = request.form['cuenta1']
-            access_token = request.form['access_token1']
-            correo_electronico = request.form['correo_electronico1']
+            data = request.get_json()
+            get.accountLocalStorage = data['cuenta']
+            
             get.VariableParaBotonPanico = 0
             ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
-          
-            get.pyRofexInicializada.order_report_subscription(
-                account=get.accountLocalStorage, 
-                snapshot=True, 
-                handler=order_report_handler_arbitraje_001)
+           
+            get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
+            get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler_arbitraje_001)
             
-            pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(
-                market_data_handler=market_data_handler_arbitraje_001,
-                order_report_handler=order_report_handler_arbitraje_001,
-                error_handler=error_handler,
-                exception_handler=exception_handler
-            )
+           # get.pyRofexInicializada.order_report_subscription(
+           #     account=get.accountLocalStorage, 
+           #     snapshot=True, 
+           #     handler=order_report_handler_arbitraje_001)
+            
+          #  pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(
+          #      market_data_handler=market_data_handler_arbitraje_001,
+          #      order_report_handler=order_report_handler_arbitraje_001,
+          #      error_handler=error_handler,
+          #      exception_handler=exception_handler
+          #  )
 
             ## esta no va, trabaja con los diccionarios del bot
             ##shWS.carga_operaciones(
