@@ -18,7 +18,7 @@ panelControl = Blueprint('panelControl',__name__)
 @panelControl.route("/panel_control/")
 def panel_control():
    
-     return render_template("/cuentas/panelDeControlBroker.html")
+     return render_template("/paneles/panelDeControlBroker.html")
    
 
 

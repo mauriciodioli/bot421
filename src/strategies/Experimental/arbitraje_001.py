@@ -246,9 +246,10 @@ def Arbitrador001(message):#**66
 # ****************************************************************************************
 # ****************************************************************************************
 
-#@testWS.route('/ruta_de_test_ws', methods=['POST'])
-@arbitraje_001.route('/Arbitrador-Plazo-001/', methods=['POST'])
-def Arbitrador_Plazo_001():
+
+    
+@arbitraje_001.route('/arbitrador-002/', methods=['POST'])
+def arbitrador_002():
     
     if request.method == 'POST':
         try:
@@ -256,8 +257,9 @@ def Arbitrador_Plazo_001():
             get.accountLocalStorage = data['cuenta']
             
             get.VariableParaBotonPanico = 0
-            ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
-           
+            #ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
+            get.pyRofexInicializada.remove_websocket_market_data_handler(get.market_data_handler_0)
+            get.pyRofexInicializada.remove_websocket_order_report_handler(get.order_report_handler_0)
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
             get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler_arbitraje_001)
             
@@ -308,7 +310,7 @@ def market_data_handler_arbitraje_001(message):
         print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
     else:
         #print("FUN market_data_handler_estrategia: SI HAY DATOS. ")
-        Arbitrador001()
+        Arbitrador001(message)
 
 
 

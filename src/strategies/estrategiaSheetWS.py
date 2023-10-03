@@ -37,8 +37,8 @@ class States(enum.Enum):
 
 
 
-@estrategiaSheetWS.route('/estrategia_sheet_WS/', methods=['POST'])
-def estrategia_sheet_WS():
+@estrategiaSheetWS.route('/estrategia-001/', methods=['POST'])
+def estrategia_001():
     
     if request.method == 'POST':
         try:
