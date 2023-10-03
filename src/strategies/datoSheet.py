@@ -97,15 +97,16 @@ def autenticar_y_abrir_sheet():
     client = gspread.authorize(creds)
     sheet = client.open_by_key(SPREADSHEET_ID).sheet1   # Instrumentos del bot
     # solo agregue esta linea
-    sheet2 = client.open_by_key(SPREADSHEET_ID).get_worksheet(1)# Instrumentos del Arbitrador001
+    #sheet2 = client.open_by_key(SPREADSHEET_ID).get_worksheet(1)# Instrumentos del Arbitrador001
+    #return sheet, sheet2  # Devuelve una tupla de hojas
+    return sheet
 
-    return sheet, sheet2  # Devuelve una tupla de hojas
-
+#def leerSheet_arbitrador001(): 
 
 def leerSheet(): 
      
      # recibo la tupla pero como este es para el bot leo el primer elemento 
-     sheet, sheet2= autenticar_y_abrir_sheet() 
+     sheet= autenticar_y_abrir_sheet() 
      
      symbol = sheet.col_values(5)       # ticker de mercado
      tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa

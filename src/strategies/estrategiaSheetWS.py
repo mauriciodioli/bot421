@@ -96,6 +96,8 @@ def estrategia_sheet_WS():
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
+    ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
+    ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     
     ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
     ContenidoSheet_list = list(ContenidoSheet)
@@ -103,11 +105,13 @@ def SuscripcionDeSheet():
 
     ContenidoSheetDb = get_instrumento_para_suscripcion_db()
     ContenidoSheet_list_db = list(ContenidoSheetDb)
-
+    
+    
   
     longitudLista = len(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol_db = cargaSymbolParaValidarDb(ContenidoSheet_list_db)
+    
    
    # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
    # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
@@ -117,9 +121,10 @@ def SuscripcionDeSheet():
   # Convertir listas a conjuntos para eliminar duplicados
     set_contenido_ws = set(ContenidoSheet_list_solo_symbol)
     set_contenido_db = set(ContenidoSheet_list_solo_symbol_db)
+    set_contenido_json = set(ContenidoJsonDb_list_db)
 
     # Combinar conjuntos y eliminar duplicados
-    resultado_set = set_contenido_ws.union(set_contenido_db)
+    resultado_set = set_contenido_ws.union(set_contenido_db,set_contenido_json)
 
     # Convertir conjunto resultante en una lista
     resultado_lista = list(resultado_set)
@@ -165,6 +170,8 @@ def cargaSymbolParaValidarDb(message):
         
     return listado_final
 
+
+
 def cargaSymbolParaValidar(message):
     listado_final = []
     for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in message: 
@@ -191,6 +198,21 @@ def get_instrumento_para_suscripcion_db():
     ContenidoDb = datoSheet.leerDb()
     return ContenidoDb    
 
+def get_instrumento_para_suscripcion_json():
+   try:
+        ruta_archivo_json = 'strategies\\listadoInstrumentos\\instrumentos_001.json'    
+        with open(ruta_archivo_json , 'r') as archivo:
+            contenido = archivo.read()
+            datos = json.loads(contenido)
+
+            # Acceder a los datos
+           
+            return datos
+   except FileNotFoundError:
+        print("El archivo no se encuentra.")
+   except json.JSONDecodeError:
+        print("Error al decodificar el JSON.")
+       
 def market_data_handler_estrategia(message):
     
     

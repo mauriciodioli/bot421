@@ -140,9 +140,7 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                num = '20225833983'
-                                pyRofexInicializada.get_account_report(account=num,environment=environment)
-                                pyRofexInicializada.get_account_report(account=None,environment=environment)
+                                pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(error_handler=error_handler,exception_handler=exception_handler)
                                # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
@@ -154,9 +152,7 @@ def loginExtAutomatico():
                                 else:
                                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
                             else:
-                                  num = '20225833983'
-                                  
-                                  saldo1 = pyRofexInicializada.get_account_report(account=num)
+                                 
                               
                                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                 else: 
@@ -208,8 +204,8 @@ def loginExtCuentaSeleccionadaBroker():
                 pyRofexInicializada._set_environment_parameter("url", api_url,environments)
                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environments) 
                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
-               
-
+                #conexion ws
+                pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(error_handler=error_handler,exception_handler=exception_handler)
                     
             print(f"Está enviando a {environments}")
             if access_token:
