@@ -39,6 +39,29 @@ def delete_mer(id):
     flash('Operation Removed successfully')
     return redirect('/')
 
+def instrument_por_symbol(symbol):
+    try:
+        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                   get.pyRofexInicializada.MarketDataEntry.OFFERS,
+                   get.pyRofexInicializada.MarketDataEntry.LAST]
+
+        repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+
+        objeto = repuesta_instrumento['marketData']
+
+        jdato = str(objeto['LA'])
+        jdato1 = str(objeto['BI'])
+        jdato2 = str(objeto['OF'])
+
+        if jdato.find('price') == -1 or jdato1.find('price') == -1 or jdato2.find('price') == -1:
+            return ''
+        
+        dato = zip(symbol, jdato, jdato1, jdato2)
+        return dato
+
+    except:
+        flash('Symbol Incorrect')
+        return render_template("instrumentos.html")
 
 
 ##########################AQUI LLAMO A UN INSTRUMENTO####################
@@ -67,7 +90,7 @@ def instrument_by_symbol():
                         get.pyRofexInicializada.MarketDataEntry.TRADE_EFFECTIVE_VOLUME,
                         get.pyRofexInicializada.MarketDataEntry.TRADE_VOLUME,
                         get.pyRofexInicializada.MarketDataEntry.OPEN_INTEREST]
-            print("symbolllllllllllllllllllllll ",symbol)
+            print("symbol ",symbol)
            #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
             repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
            
@@ -77,9 +100,9 @@ def instrument_by_symbol():
             objeto = repuesta_instrumento['marketData']   
            # for objeto in objeto:     
             
-            print("instrumentooooooooooooooooooooooooooooo LA ",objeto['LA'])
-            print("instrumentooooooooooooooooooooooooooooo BI ",objeto['BI'])            
-            print("instrumentooooooooooooooooooooooooooooo OF ",objeto['OF'])
+            print(" LA ",objeto['LA'])
+            print(" BI ",objeto['BI'])            
+            print(" OF ",objeto['OF'])
             jdato = str(objeto['LA'])
             jdato1 = str(objeto['BI'])
             jdato2 = str(objeto['OF'])
