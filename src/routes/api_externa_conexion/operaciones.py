@@ -5,7 +5,7 @@ import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from models.instrumento import Instrumento
-from models.operacion import Operacion
+#from models.operacion import Operacion
 from utils.db import db
 import pandas as pd
 import time
@@ -95,15 +95,15 @@ def operaciones_desde_seniales():
                  
            
                   # Crear una instancia de la clase
-                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price)
+              #  orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price)
 
                     # Verificar el saldo y enviar la orden si hay suficiente
-                if orden_.enviar_orden(cuenta=cuentaA):
-                        print("Orden enviada con éxito.")
-                else:
-                        print("No se pudo enviar la orden debido a saldo insuficiente.")
-                repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-                operaciones = repuesta_operacion['orders']    
+               # if orden_.enviar_orden(cuenta=cuentaA):
+               #         print("Orden enviada con éxito.")
+                #else:
+                #        print("No se pudo enviar la orden debido a saldo insuficiente.")
+               # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+               # operaciones = repuesta_operacion['orders']    
                   
     except Exception as e:
         return str(e)
