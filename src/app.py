@@ -15,6 +15,7 @@ from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
 from strategies.utils.testWS import testWS
+from strategies.Experimental.arbitraje_001 import arbitraje_001
 
 
  
@@ -104,9 +105,13 @@ app.register_blueprint(media_e_mail)
 app.register_blueprint(panelControl)
 app.register_blueprint(pcEtrategiaUs)
 app.register_blueprint(FuncionesBasicas01)
+<<<<<<< HEAD
 app.register_blueprint(ficha)
 app.register_blueprint(trazaFicha)
 app.register_blueprint(fichas)
+=======
+app.register_blueprint(arbitraje_001)
+>>>>>>> 6eb0bedb81956a9344be9c19c880a87ec4cbc790
 
 
 print(DATABASE_CONNECTION_URI)

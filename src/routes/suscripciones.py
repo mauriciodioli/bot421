@@ -21,6 +21,11 @@ from websockets import WebSocketServerProtocol
 
 
 
+
+
+
+
+
 # Crea la conexión WebSocket
 ws = None
 global datos
@@ -119,7 +124,8 @@ async def SuscripcionPorWebSocket():
     
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
     instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
-      
+    instrumentos_existentes_arbitrador1 = instrumentos_existentes.copy()
+
     ##aqui se conecta al ws
     #get.pyRofexInicializada.init_websocket_connection(market_data_handler2,order_report_handler,error_handler,exception_error)
     print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")

@@ -31,6 +31,12 @@ def panel_control_atomatico():
     ContenidoSheet = datoSheet.leerSheet()
     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
    
+<<<<<<< HEAD
     return jsonify(datos=datos_desempaquetados)
+=======
+     return render_template("/paneles/panelDeControlBroker.html")
+   
+
+>>>>>>> 6eb0bedb81956a9344be9c19c880a87ec4cbc790
 
 
