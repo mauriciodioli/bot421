@@ -29,13 +29,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.7.0/dist/pickr.min.js"></script>
     <!--CSS PERSONALIZADO -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
 </head>
 
 <body>
     <!-- As a heading -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
+            <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico" ></h1>
             <h1 id="mensaje_cuentaBroker" name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
             <h1 id="mensaje_simulado" name="mensaje_simulado"  id="mensaje_simulado"></h1>
            
@@ -76,9 +77,9 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Tokens</a>
                         <ul class="dropdown-menu">              
                                      
-                          <li><a class="dropdown-item" href="/" >Generar</a></li>  
+                          <li><a class="dropdown-item" href="/fichasToken_fichas_generar" >Generar</a></li>  
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/">Listar</a></li>
+                          <li><a class="dropdown-item" href="/fichasToken_fichas_listar">Listar</a></li>
                                               
                         </ul>
                     </li>

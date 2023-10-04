@@ -19,8 +19,12 @@
             ],
             "jinja": true,
             "justMyCode": true,
+<<<<<<< HEAD
             "cwd": "C:\\Users\\Mauricio\\Documents\\ITCOR\\bot421\\src"
             
+=======
+            "cwd": "C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src"
+>>>>>>> 327f37695b655cb1033020ec036599a12a9c1ae2
         }
     ]
 }

@@ -251,7 +251,7 @@ def loginUsuario():
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
         # Buscar el usuario en la base de datos
-        crea_tabla_usuario()
+        #crea_tabla_usuario()
         usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
        
        # print("Valor de password: ", password," usuario.password ",usuario.password)
