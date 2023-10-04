@@ -141,13 +141,7 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-<<<<<<< HEAD
-                                ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
-                                pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
-             
-=======
                                 ws.wsocketConexion()
->>>>>>> 6eb0bedb81956a9344be9c19c880a87ec4cbc790
                                # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
@@ -220,13 +214,7 @@ def loginExtCuentaSeleccionadaBroker():
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
             
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-<<<<<<< HEAD
-            ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
-            pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
-        
-=======
             ws.wsocketConexion()
->>>>>>> 6eb0bedb81956a9344be9c19c880a87ec4cbc790
            
            
             print(f"Está logueado en {selector} en {environments}")
@@ -309,16 +297,6 @@ def creaJsonParaConextarseSheetGoogle():
     print(f'Se ha creado el archivo JSON en "{ruta_archivo_json}"')
 
 
-<<<<<<< HEAD
-def market_data_handler_0(message):
-    print(".")
-
-def order_report_handler_0(message):
-  print(".")
-#  reporte_de_ordenes.append(message)
-=======
-
->>>>>>> 6eb0bedb81956a9344be9c19c880a87ec4cbc790
   
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
