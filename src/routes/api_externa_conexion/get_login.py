@@ -141,11 +141,7 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-<<<<<<< HEAD
                                 ws.wsocketConexion()
-=======
-                             
->>>>>>> 327f37695b655cb1033020ec036599a12a9c1ae2
                                # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
@@ -218,12 +214,8 @@ def loginExtCuentaSeleccionadaBroker():
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
             
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-<<<<<<< HEAD
             ws.wsocketConexion()
            
-=======
-          
->>>>>>> 327f37695b655cb1033020ec036599a12a9c1ae2
            
             print(f"Está logueado en {selector} en {environments}")
             

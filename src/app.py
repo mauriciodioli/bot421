@@ -105,13 +105,10 @@ app.register_blueprint(media_e_mail)
 app.register_blueprint(panelControl)
 app.register_blueprint(pcEtrategiaUs)
 app.register_blueprint(FuncionesBasicas01)
-<<<<<<< HEAD
-app.register_blueprint(arbitraje_001)
-=======
 app.register_blueprint(ficha)
 app.register_blueprint(trazaFicha)
 app.register_blueprint(fichas)
->>>>>>> 327f37695b655cb1033020ec036599a12a9c1ae2
+app.register_blueprint(arbitraje_001)
 
 
 print(DATABASE_CONNECTION_URI)
