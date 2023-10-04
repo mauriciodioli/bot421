@@ -3,6 +3,7 @@ import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
+import strategies.estrategiaSheetWS as shWS 
 import routes.instrumentos as inst
 from datetime import datetime
 import pandas as pd
@@ -19,6 +20,16 @@ wsocket = Blueprint('wsocket',__name__)
 
 
 reporte_de_instrumentos = []
+
+
+def wsocketConexion():
+   ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
+   pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
+   get.pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0)
+   get.pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0)
+
+
+
 @wsocket.route('/detenerWSSuscripcionInstrumentos/')   
 def detenerWSSuscripcionInstrumentos():
      get.pyRofexInicializada.close_websocket_connection()
@@ -127,6 +138,14 @@ def SuscripcionWs():
 
 ##########################esto es para ws#############################
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
+
+def market_data_handler_0(message):
+    print(".")
+
+def order_report_handler_0(message):
+  print(".")
+#  reporte_de_ordenes.append(message)
+
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
 
