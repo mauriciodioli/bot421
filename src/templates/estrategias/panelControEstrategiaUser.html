@@ -304,17 +304,20 @@
      
            
       document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
+                 
                   if (event.target && event.target.classList.contains('botonM')) {
                       // Recupera el valor del atributo data-nombre
-                      var clicBoton = event.target.getAttribute('data-nombre');
+                     
+                      //var clicBoton = event.target.getAttribute('nombreEstrategia');
                       
                       // Recupera los datos del Local Storage que deseas enviar
                       access_token = localStorage.getItem('access_token');
                       correo_electronico = localStorage.getItem('correo_electronico');
-                      //debugger;
+                      debugger;
+                      //console.log("clicBoton:", clicBoton);
                       console.log("tagName:", event.target.tagName);
                       // Recupera los datos de la fila en la que se hizo clic
-                      
+                     
                       // Recupera los datos de la fila en la que se hizo clic
                       var idUser = event.target.getAttribute('data-trigger-user-id');
                       var idTrigger = event.target.getAttribute('data-trigger-id');
@@ -336,7 +339,7 @@
 
                      
                       nombreEstrategia = '/'+nombre+'/' ;
-                      //console.log("nombreEstrategia:", nombreEstrategia);   
+                      console.log("nombreEstrategia:", nombreEstrategia);   
 
                         
                           
