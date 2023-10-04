@@ -104,14 +104,27 @@ def autenticar_y_abrir_sheet():
 #def leerSheet_arbitrador001(): 
 
 def leerSheet(): 
+<<<<<<< HEAD
      sheet= autenticar_y_abrir_sheet() 
      symbol = sheet.col_values(5)       # Simbolo que usa byma interno para bots, no el ticker
+=======
+     
+     # recibo la tupla pero como este es para el bot leo el primer elemento 
+     sheet= autenticar_y_abrir_sheet() 
+     
+     symbol = sheet.col_values(5)       # ticker de mercado
+>>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
      tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
      trade_en_curso = sheet.col_values(19)  # long, short o nada
      ut = sheet.col_values(20)              # cantidad a operar
      senial = sheet.col_values(21)          # Open o Close
+<<<<<<< HEAD
      FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
      union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial,FlagCCLCedear_col)
+=======
+     #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
+     union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
+>>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
     
      return union
 

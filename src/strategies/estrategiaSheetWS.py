@@ -215,8 +215,13 @@ def get_instrumento_para_suscripcion_json():
        
 def market_data_handler_estrategia(message):
     
+<<<<<<< HEAD
     #mepCedear = ConsultarFlagCCLCedearsWS(message)
     mepReferencia = calcularMepcedearReferenciaWS(message)
+=======
+    
+    #Arbitrador001(message)
+>>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
     
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -335,7 +340,12 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                         if senial != "":
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
                                 FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
+<<<<<<< HEAD
                                 porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30                                
+=======
+                                porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30 
+                                mepCedear=1                              
+>>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
                                 if FlagCCLCedear == 1:
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:
@@ -424,6 +434,7 @@ def ConsultarFlagCCLCedearsWS(message):
  
  
  
+<<<<<<< HEAD
 
 AL30CI=0
 AL30CI_z=0
@@ -486,6 +497,16 @@ def calcularMepcedearReferenciaWS(message):
         #al30D_ci_unitaria = al30D_ci/100
         #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
         #mep = 10000 / dolaresmep
+=======
+ 
+ 
+
+
+
+
+
+
+>>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
 
 
 
