@@ -15,6 +15,7 @@ import re
 import os
 import routes.api_externa_conexion.validaInstrumentos as valida
 import routes.api_externa_conexion.wsocket as ws
+import strategies.estrategiaSheetWS as shWS 
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
@@ -140,7 +141,9 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                             
+                                ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
+                                pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
+             
                                # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
@@ -148,13 +151,11 @@ def loginExtAutomatico():
                                 # exception_handler=exception_handler)
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
-                                 return render_template("/cuentas/panelDeControlBroker.html")   
+                                 return render_template("/paneles/panelDeControlBroker.html")   
                                 else:
                                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
                             else:
-                                  num = '20225833983'
-                                  
-                                  saldo1 = pyRofexInicializada.get_account_report(account=num)
+                                 
                               
                                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                 else: 
@@ -175,7 +176,7 @@ def loginExtAutomatico():
 
 @get_login.route("/loginExtCuentaSeleccionadaBroker", methods=['POST'])
 def loginExtCuentaSeleccionadaBroker():
-    if request.method == 'POST':
+     if request.method == 'POST':
         origin_page = request.form.get('origin_page')
         user = request.form.get('usuario')
         password = request.form.get('contraseña')
@@ -215,7 +216,10 @@ def loginExtCuentaSeleccionadaBroker():
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
             
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-          
+            ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
+            pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
+        
+           
            
             print(f"Está logueado en {selector} en {environments}")
             
@@ -239,6 +243,7 @@ def loginExtCuentaSeleccionadaBroker():
             return render_template('registrarCuentaBroker.html')
 
 
+
 def inicializar_variables_globales():
     global pyRofexInicializada, pyConectionWebSocketInicializada, pyWsSuscriptionInicializada
     
@@ -260,8 +265,8 @@ def creaJsonParaConextarseSheetGoogle():
 
     # Ruta al archivo de texto plano
     #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    ruta_archivo_texto = 'C:\\Users\\mDioli\\Desktop\\clavesheet.txt'    
-   
+    ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
+    
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo
     with open(ruta_archivo_texto, 'r') as archivo_texto:
@@ -296,8 +301,11 @@ def creaJsonParaConextarseSheetGoogle():
     print(f'Se ha creado el archivo JSON en "{ruta_archivo_json}"')
 
 
-def order_report_handler(message):
-  print("Mensaje de OrderRouting: {0}".format(message))
+def market_data_handler_0(message):
+    print(".")
+
+def order_report_handler_0(message):
+  print(".")
 #  reporte_de_ordenes.append(message)
   
 def error_handler(message):
