@@ -18,11 +18,6 @@ panelControl = Blueprint('panelControl',__name__)
 
 @panelControl.route("/panel_control/")
 def panel_control():
-<<<<<<< HEAD
-   
-     return render_template("/paneles/panelDeControlBroker.html")
-   
-=======
      ContenidoSheet = datoSheet.leerSheet()
      print(ContenidoSheet)
      datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
@@ -31,7 +26,6 @@ def panel_control():
          
      return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 
->>>>>>> 327f37695b655cb1033020ec036599a12a9c1ae2
 
 
 
