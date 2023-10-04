@@ -258,8 +258,8 @@ def arbitrador_002():
             
             get.VariableParaBotonPanico = 0
             #ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
-            get.pyRofexInicializada.remove_websocket_market_data_handler(get.market_data_handler_0)
-            get.pyRofexInicializada.remove_websocket_order_report_handler(get.order_report_handler_0)
+           # get.pyRofexInicializada.remove_websocket_market_data_handler(get.market_data_handler_0)
+           # get.pyRofexInicializada.remove_websocket_order_report_handler(get.order_report_handler_0)
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
             get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler_arbitraje_001)
             
