@@ -1,4 +1,4 @@
-
+from utils.common import Marshmallow, db
 from ast import Return
 from http.client import UnimplementedFileMode
 from flask import current_app,g
@@ -14,8 +14,8 @@ import jwt
 import re
 import os
 import routes.api_externa_conexion.validaInstrumentos as valida
-import routes.api_externa_conexion.wsocket as ws
-import strategies.estrategiaSheetWS as shWS 
+
+from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
@@ -115,7 +115,7 @@ def loginExtAutomatico():
                             try:
                                             environment =pyRofexInicializada.Environment.REMARKET
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                           
+                                            conexion()
                                         # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                         #     order_report_handler=order_report_handler,
                                         #     error_handler=error_handler,
@@ -141,7 +141,7 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                ws.wsocketConexion()
+                                conexion()
                                # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
                                 #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
                                 # order_report_handler=order_report_handler,
@@ -214,7 +214,7 @@ def loginExtCuentaSeleccionadaBroker():
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
             
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-            ws.wsocketConexion()
+            conexion()
            
            
             print(f"Está logueado en {selector} en {environments}")
@@ -261,8 +261,8 @@ def creaJsonParaConextarseSheetGoogle():
 
     # Ruta al archivo de texto plano
     #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    
+    ruta_archivo_texto = 'C:\\Users\\mDioli\\Desktop\\clavesheet.txt'    
+  
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo
     with open(ruta_archivo_texto, 'r') as archivo_texto:
@@ -298,6 +298,10 @@ def creaJsonParaConextarseSheetGoogle():
 
 
   
+
+#  reporte_de_ordenes.append(message)
+
+   
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
 

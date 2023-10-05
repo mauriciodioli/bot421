@@ -215,13 +215,8 @@ def get_instrumento_para_suscripcion_json():
        
 def market_data_handler_estrategia(message):
     
-<<<<<<< HEAD
-    #mepCedear = ConsultarFlagCCLCedearsWS(message)
-    mepReferencia = calcularMepcedearReferenciaWS(message)
-=======
     
     #Arbitrador001(message)
->>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
     
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -340,12 +335,8 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                         if senial != "":
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
                                 FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
-<<<<<<< HEAD
-                                porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30                                
-=======
                                 porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30 
                                 mepCedear=1                              
->>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
                                 if FlagCCLCedear == 1:
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:
@@ -434,70 +425,6 @@ def ConsultarFlagCCLCedearsWS(message):
  
  
  
-<<<<<<< HEAD
-
-AL30CI=0
-AL30CI_z=0
-AL30_48hs_BI=0
-AL30_48hs_BI_z=0
-def calcularMepcedearReferenciaWS(message):
-     
-     
-  #  resultado = instrument_by_symbol_para_CalculoMep(message)    
-  
-  
-  
-  
-  
-    
-    # Atenti los CI cierran a las 16:30. 16:25 cerrar la ultima operacion.
-    global AL30CI, AL30_48hs_BI,AL30CI_z, AL30_48hs_BI_z
-    Symbol = message["instrumentId"]["symbol"]
-    if( Symbol == "MERV - XMEV - AL30 - 48hs"):
-        #print("AL30 48hs OF = ",float(message["marketData"]["OF"][0]["price"]))
-        #print("aapl 48hs last = ", float(message["marketData"]["LA"]["price"]))
-        #print("AL30 48hs BI = ",float(message["marketData"]["BI"][0]["price"]))
-        AL30_48hs_BI=float(message["marketData"]["BI"][0]["price"])
-        AL30_48hs_BI_z=message["marketData"]["BI"][0]["size"]
-        
-    if( Symbol == "MERV - XMEV - AL30 - CI"):
-        #print("AL30 CI OF = ",float(message["marketData"]["OF"][0]["price"]))
-        AL30CI=float(message["marketData"]["OF"][0]["price"])
-        AL30CI_z=message["marketData"]["OF"][0]["size"]
-        #print("aapld 48hs last = ", float(message["marketData"]["LA"]["price"]))
-        #print("aapld 48hs BI = ",float(message["marketData"]["BI"][0]["price"]))
-        #Factor_aapl=10
-        DIF=-1
-    if (AL30_48hs_BI != 0):#**22
-        DIF = AL30_48hs_BI - AL30CI 
-        DIFP= DIF / AL30_48hs_BI
-        
-        #print("z",AL30CI_z, "AL30 CI OF = ",AL30CI," z",AL30_48hs_BI_z,"AL30 48hs BI = ",AL30_48hs_BI," DIF = ", DIF, "DIFP = ", DIFP)
-            
-    #if isinstance(message["marketData"]["OF"][0]["price"],float):
-    #precio = message["marketData"]["OF"][0]["price"]
-    #if isinstance(message["marketData"]["OF"][0]["size"],int):
-    #Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
-
-
-
-    #al30_ci = message['marketData']['OF'][0]['price'] #vendedora OF
-    #al30D_ci =message['marketData']['BI'][0]['price'] #compradora BI
-        #print("__________al30_ci____________",al30_ci)
-        #print("__________al30D_ci____________",al30D_ci)
-        
-        # simulo compra de bono      
-        #print("____simulo compra de bono ")  
-        # al30ci_unitaria = al30_ci/100
-        #cantidad_al30ci=int(10000/al30ci_unitaria)
-        #print("__________cantidad_al30ci_________",cantidad_al30ci)
-        
-        # ahora simulo la venta de los bonos D
-        #print("ahora simulo la venta de los bonos D")
-        #al30D_ci_unitaria = al30D_ci/100
-        #dolaresmep = al30D_ci_unitaria * cantidad_al30ci
-        #mep = 10000 / dolaresmep
-=======
  
  
 
@@ -506,7 +433,6 @@ def calcularMepcedearReferenciaWS(message):
 
 
 
->>>>>>> 17982927dc387c97ff1e22d7266628210036a3aa
 
 
 
