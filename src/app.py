@@ -112,10 +112,6 @@ app.register_blueprint(ficha)
 app.register_blueprint(trazaFicha)
 app.register_blueprint(fichas)
 app.register_blueprint(arbitraje_001)
-<<<<<<< HEAD
-=======
-
->>>>>>> 376a2e01cbe9d2404c0b08315d14d26a0659728a
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
