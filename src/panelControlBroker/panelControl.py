@@ -18,6 +18,14 @@ panelControl = Blueprint('panelControl',__name__)
 
 @panelControl.route("/panel_control/")
 def panel_control():
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+   
+     return render_template("/paneles/panelDeControlBroker.html")
+   
+=======
+>>>>>>> 376a2e01cbe9d2404c0b08315d14d26a0659728a
      ContenidoSheet = datoSheet.leerSheet()
      print(ContenidoSheet)
      datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
@@ -26,11 +34,16 @@ def panel_control():
          
      return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 
+<<<<<<< HEAD
 @panelControl.route("/panel_control_atomatico/")
 def panel_control_atomatico():
     ContenidoSheet = datoSheet.leerSheet()
     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
    
     return jsonify(datos=datos_desempaquetados)
+=======
+>>>>>>> 327f37695b655cb1033020ec036599a12a9c1ae2
+
+>>>>>>> 376a2e01cbe9d2404c0b08315d14d26a0659728a
 
 
