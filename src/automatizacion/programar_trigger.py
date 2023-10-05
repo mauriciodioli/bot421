@@ -16,7 +16,7 @@ import schedule
 import time
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
 import strategies.estrategias as estrategias
-from utils.db import db
+from utils.common import Marshmallow, db
 from datetime import datetime
 import jwt
 

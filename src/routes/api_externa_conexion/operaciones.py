@@ -4,19 +4,17 @@ from unittest import result
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from utils.common import Marshmallow, db, get
 from models.instrumento import Instrumento
 from models.operacion import Operacion
-from utils.db import db
 import pandas as pd
 import time
-
-import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import panel_control
 
-import routes.api_externa_conexion as getFunction
+
 
 
 operaciones = Blueprint('operaciones',__name__)
@@ -98,7 +96,7 @@ def panelDeControlBroker_operaciones():
                  
            
                   # Crear una instancia de la clase
-                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price)
+                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
 
                     # Verificar el saldo y enviar la orden si hay suficiente
                 if orden_.enviar_orden(cuenta=cuentaA):
@@ -138,7 +136,8 @@ def operaciones_desde_seniales():
                  
            
                   # Crear una instancia de la clase
-                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price)
+                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
+
 
                     # Verificar el saldo y enviar la orden si hay suficiente
                 if orden_.enviar_orden(cuenta=cuentaA):

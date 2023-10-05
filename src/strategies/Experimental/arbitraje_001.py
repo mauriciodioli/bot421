@@ -1,12 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
 import routes.instrumentosGet as instrumentosGet
-from utils.db import db
+from utils.common import Marshmallow, db, get
 from models.orden import Orden
 from models.usuario import Usuario
 import jwt
 import json
 import random
-import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
 import strategies.estrategiaSheetWS as shWS 
