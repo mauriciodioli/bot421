@@ -24,8 +24,10 @@
         {% for dato in datos %}
           {% if dato[4] == 'OPEN.' or dato[4] == 'closed.' %}
             {% if dato[3] > '0' %}
+            
+            
               <tr data-symbol="{{ dato[0] }}">
-                
+                <td>{{ dato[5] }}</td>
                 <td>{{ dato[0] }}</td>
                 <td>{{ dato[1] }}</td>             
                 <td>{{ dato[3] }}</td>
@@ -38,9 +40,9 @@
                     </div> 
                     <div class="form-group">
                       {% if dato[4] == 'OPEN.' %}
-                        <Button type="submit" class="btn btn-success btn-sm btn-block form-control" data-symbol="{{ dato[0] }}">Submit</Button>
+                        <Button type="submit" class="btn btn-success btn-sm btn-block form-control" data-symbol="{{ dato[1] }}">Submit</Button>
                       {% elif dato[4] == 'closed.' %}
-                        <Button type="submit" class="btn btn-danger btn-sm btn-block form-control" data-symbol="{{ dato[0] }}">Submit</Button>
+                        <Button type="submit" class="btn btn-danger btn-sm btn-block form-control" data-symbol="{{ dato[1] }}">Submit</Button>
                       {% endif %}
                     </div>
                   </form>
@@ -104,9 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
       cells.forEach(function(cell) {
         rowData.push(cell.textContent.trim());
       });
-      var symbol  = rowData[0]; 
-      var ut  = rowData[2]; 
-      var signal = rowData[3]; 
+      var symbol  = rowData[1]; 
+      var ut  = rowData[3]; 
+      var signal = rowData[4]; 
       cuentaA = localStorage.getItem("cuenta");
       //debugger;
       //console.log('Datos de la fila seleccionada:', rowData);
@@ -193,7 +195,7 @@ function updateTable() {
                 <td>
                     <form action="/panelDeControlBroker_operaciones/" method="POST">
                         <div class="form-group">
-                            <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                            <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[1]}" class="form-control">
                         </div> 
                         <div class="form-group">
                             ${dato[4] == 'OPEN.' ? '<button type="submit" class="btn btn-success btn-sm btn-block form-control">Submit</button>' : ''}
@@ -203,7 +205,7 @@ function updateTable() {
                 </td>
             `;
             tableBody.appendChild(row);
-            if (filasCambiadas.some(function(fila) { return fila[0] === dato[0]; })) {
+            if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
               document.getElementById(filaId).style.display = 'none'; // Oculta la fila
             }
         }
@@ -306,7 +308,7 @@ function comparaFilas(elementosAntes, response) {
       // Busca el mismo dato en la respuesta
       var datoDespues = response.datos.find(function(dato) {
         //console.log("dato[0]:", dato[0]);
-        return dato[0] === idAntes;
+        return dato[1] === idAntes;
       });
 
     // Si el dato ha cambiado, añádelo a la lista de filas cambiadas
