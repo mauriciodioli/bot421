@@ -1,2 +1,5 @@
-# created by virtualenv automatically
-*
+# Ignore venv folder
+/venv/
+
+# Ignore pruebasheetpython.json
+/pruebasheetpython.json
