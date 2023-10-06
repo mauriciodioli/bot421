@@ -21,8 +21,14 @@ def panel_control():
      ContenidoSheet = datoSheet.leerSheet()
      print(ContenidoSheet)
      datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
-     for dato in ContenidoSheet:
-          print( dato)
+     
+     for i, dato in enumerate(datos_desempaquetados):
+        dato = list(dato)
+        dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
+        datos_desempaquetados[i] = tuple(dato)
+     
+    # for dato in datos_desempaquetados:
+     #     print( dato)
          
      return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 

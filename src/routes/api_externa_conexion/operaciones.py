@@ -7,6 +7,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from utils.common import Marshmallow, db, get
 from models.instrumento import Instrumento
 from models.operacion import Operacion
+import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
 import routes.api_externa_conexion.wsocket as getWs
@@ -121,8 +122,17 @@ def operaciones_desde_seniales():
             symbol = data['symbol']
             signal = data['signal']
             ut = data['ut']
-            existencia = inst.instrumentos_existentes(symbol) 
-            if existencia == True:           
+            
+            repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+            
+            listado_instrumentos = repuesta_listado_instrumento['instruments']   
+            #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
+            tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+            
+            # Validamos existencia
+            existencia = val.validar_existencia_instrumento_solo(symbol,tickers_existentes)
+           
+            if existencia is not None:        
               precios = inst.instrument_por_symbol(symbol)               
               if precios != '':
                 precios = list(precios)
