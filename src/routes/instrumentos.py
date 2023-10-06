@@ -216,7 +216,7 @@ def instrumentos_existentes(listado):
      repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
      listado_instrumentos = repuesta_listado_instrumento['instruments']
      tickers_existentes = obtener_array_tickers(listado_instrumentos)
-     print(tickers_existentes)     
+     #print(tickers_existentes)     
      
      for inst in listado:
       listado_final.append(inst['instrumentId']['symbol'])
