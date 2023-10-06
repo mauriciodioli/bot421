@@ -18,6 +18,10 @@ panelControl = Blueprint('panelControl',__name__)
 
 @panelControl.route("/panel_control/")
 def panel_control():
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3d9ac749aaebc3b1da17680810eea10a9908fc5d
      ContenidoSheet = datoSheet.leerSheet()
      print(ContenidoSheet)
      datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas

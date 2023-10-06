@@ -9,14 +9,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 
+
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
-from strategies.utils.testWS import testWS
 from strategies.Experimental.arbitraje_001 import arbitraje_001
+from strategies.utils.testWS import testWS
 
+from tokens.token import token
 
  
 from routes.instrumentos import instrumentos
@@ -79,6 +81,7 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
+app.register_blueprint(token)
 app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
 app.register_blueprint(get_login)
@@ -105,7 +108,6 @@ app.register_blueprint(pcEtrategiaUs)
 app.register_blueprint(FuncionesBasicas01)
 
 app.register_blueprint(arbitraje_001)
-
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
