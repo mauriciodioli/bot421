@@ -6,12 +6,7 @@ import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from utils.common import Marshmallow, db, get
 from models.instrumento import Instrumento
-<<<<<<< HEAD
-#from models.operacion import Operacion
-from utils.db import db
-=======
 from models.operacion import Operacion
->>>>>>> 3d9ac749aaebc3b1da17680810eea10a9908fc5d
 import pandas as pd
 import time
 import routes.api_externa_conexion.wsocket as getWs
@@ -141,12 +136,8 @@ def operaciones_desde_seniales():
                  
            
                   # Crear una instancia de la clase
-<<<<<<< HEAD
-              #  orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price)
-=======
                 orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
 
->>>>>>> 3d9ac749aaebc3b1da17680810eea10a9908fc5d
 
                     # Verificar el saldo y enviar la orden si hay suficiente
                # if orden_.enviar_orden(cuenta=cuentaA):

@@ -55,7 +55,7 @@ def crear_ficha():
         cuenta = data.get('cuenta')
         correoElectronico = data.get('correoElectronico')
         total_cuenta = data.get('total_cuenta')
-        #crea_tabla_ficha()
+        crea_tabla_ficha()
         # obtener los valores del accesToken
         if access_token:
             app = current_app._get_current_object()                    
