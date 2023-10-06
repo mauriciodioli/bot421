@@ -1,7 +1,7 @@
 from flask_marshmallow import Marshmallow
 from flask import Blueprint
 from utils.db import db
-from sqlalchemy import inspect,Column, Integer, String, ForeignKey
+from sqlalchemy import inspect,Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 ma = Marshmallow()
