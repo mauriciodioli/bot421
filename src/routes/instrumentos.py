@@ -44,8 +44,8 @@ def instrument_por_symbol(symbol):
         entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
                    get.pyRofexInicializada.MarketDataEntry.OFFERS,
                    get.pyRofexInicializada.MarketDataEntry.LAST]
-
-        repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+       # repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+        repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries)
 
         objeto = repuesta_instrumento['marketData']
 
