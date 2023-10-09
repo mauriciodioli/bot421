@@ -86,7 +86,8 @@ def loginExtAutomatico():
     print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
         try:
-            selector = request.form.get('environment')
+            #selector = request.form.get('environment')
+            selector = request.json.get('simuladoOproduccion')
             access_token = request.json.get('access_token')
             rutaDeLogeo =  request.json.get('origin_page')
             refresh_token = request.json.get('refresh_token')
@@ -261,7 +262,7 @@ def creaJsonParaConextarseSheetGoogle():
 
     # Ruta al archivo de texto plano
     #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    ruta_archivo_texto = 'C:\\Users\\Mauricio\\Desktop\\clavesheet.txt'    
+    ruta_archivo_texto = 'C:\\Users\\mdioli\\Desktop\\clavesheet.txt'    
   
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo

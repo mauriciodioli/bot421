@@ -77,9 +77,10 @@ def panelDeControlBroker_operaciones():
 
     try:
         if request.method == 'POST':
+          
             data = request.get_json()
-            cuentaA = data['cuentaA']
             symbol = data['symbol']
+            cuentaA = data['cuentaA']
             signal = data['signal']
             ut = data['ut']
             existencia = inst.instrumentos_existentes(symbol) 
@@ -107,19 +108,21 @@ def panelDeControlBroker_operaciones():
                 repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
                 operaciones = repuesta_operacion['orders']    
                   
-    except Exception as e:
-        return str(e)
+                return jsonify({'message': 'Operación exitosa'}), 200
 
+    except Exception as e:
+        # En caso de cualquier error, devolver un mensaje de error
+        return jsonify({'error': str(e)}), 400
     # Retorna una respuesta, por ejemplo:
-    return jsonify({'message': 'Operación exitosa'}) 
+   
   
 @operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
 def operaciones_desde_seniales():
     try:
         if request.method == 'POST':
             data = request.json
-            cuentaA = data['cuentaA']
             symbol = data['symbol']
+            cuentaA = data['cuentaA']
             signal = data['signal']
             ut = data['ut']
             
