@@ -108,23 +108,23 @@ def panelDeControlBroker_operaciones():
                 repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
                 operaciones = repuesta_operacion['orders']    
                   
-                return jsonify({'message': 'Operación exitosa'}), 200
+                return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
 
     except Exception as e:
         # En caso de cualquier error, devolver un mensaje de error
-        return jsonify({'error': str(e)}), 400
+        return render_template('errorOperacion.html')
+        #return jsonify({'redirect': url_for('errorOperaciones')})
     # Retorna una respuesta, por ejemplo:
    
   
 @operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
 def operaciones_desde_seniales():
-    try:
+   # try:
         if request.method == 'POST':
-            data = request.json
-            symbol = data['symbol']
-            cuentaA = data['cuentaA']
-            signal = data['signal']
-            ut = data['ut']
+            cuenta = request.form['cuenta']
+            symbol = request.form['symbol']
+            ut = request.form['ut']
+            signal = request.form['signal']
             
             repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
             
@@ -159,9 +159,9 @@ def operaciones_desde_seniales():
                 #        print("No se pudo enviar la orden debido a saldo insuficiente.")
                # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
                # operaciones = repuesta_operacion['orders']    
-                  
-    except Exception as e:
-        return str(e)
+                return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
+    #except Exception as e:
+    #     return render_template('errorOperacion.html')
 
 
 
