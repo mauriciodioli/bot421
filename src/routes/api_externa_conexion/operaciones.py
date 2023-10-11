@@ -71,62 +71,18 @@ def estadoOperacion():
     return render_template("login.html")
 
 @operaciones.route('/panelDeControlBroker_operaciones/', methods=['POST'])
-def panelDeControlBroker_operaciones():
-    #data = request.get_json()
-    # Ahora `data` contendrá los datos enviados en la solicitud POST en formato JSON
 
-    try:
-        if request.method == 'POST':
-          
-            data = request.get_json()
-            symbol = data['symbol']
-            cuentaA = data['cuentaA']
-            signal = data['signal']
-            ut = data['ut']
-            existencia = inst.instrumentos_existentes(symbol) 
-            if existencia == True:           
-              precios = inst.instrument_por_symbol(symbol)               
-              if precios != '':
-                precios = list(precios)
-                              
-                if signal == 'closed.':               
-                    accion = 'vender' 
-                    price = precios[0][3]#envio precio de la oferta                               
-                elif signal == 'OPEN.':
-                    accion = 'comprar'                 
-                    price = precios[0][2]#envio precio de la demanda
-                 
-           
-                  # Crear una instancia de la clase
-                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
-
-                    # Verificar el saldo y enviar la orden si hay suficiente
-                if orden_.enviar_orden(cuenta=cuentaA):
-                        print("Orden enviada con éxito.")
-                else:
-                        print("No se pudo enviar la orden debido a saldo insuficiente.")
-                repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-                operaciones = repuesta_operacion['orders']    
-                  
-                return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
-
-    except Exception as e:
-        # En caso de cualquier error, devolver un mensaje de error
-        return render_template('errorOperacion.html')
-        #return jsonify({'redirect': url_for('errorOperaciones')})
-    # Retorna una respuesta, por ejemplo:
-   
   
 @operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
 def operaciones_desde_seniales():
-   # try:
+    try:
         if request.method == 'POST':
             access_token = request.form['access_token']
             symbol = request.form['symbol']
             ut = request.form['ut']
             signal = request.form['senial']
             
-            existencia = inst.instrumentos_existentes(symbol) 
+            existencia = inst.instrumentos_existentes_by_symbol(symbol) 
             if existencia == True:           
               precios = inst.instrument_por_symbol(symbol)               
               if precios != '':
@@ -151,8 +107,8 @@ def operaciones_desde_seniales():
                # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
                # operaciones = repuesta_operacion['orders']    
                 return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
-    #except Exception as e:
-    #     return render_template('errorOperacion.html')
+    except Exception as e:
+         return render_template('errorOperacion.html')
 
 
 
