@@ -126,20 +126,11 @@ def operaciones_desde_seniales():
             ut = request.form['ut']
             signal = request.form['senial']
             
-            repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
-            
-            listado_instrumentos = repuesta_listado_instrumento['instruments']   
-            #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
-            tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-            
-            # Validamos existencia
-            existencia = val.validar_existencia_instrumento_solo(symbol,tickers_existentes)
-           
-            if existencia is not None:        
+            existencia = inst.instrumentos_existentes(symbol) 
+            if existencia == True:           
               precios = inst.instrument_por_symbol(symbol)               
               if precios != '':
                 precios = list(precios)
-                              
                 if signal == 'closed.':               
                     accion = 'vender' 
                     price = precios[0][3]#envio precio de la oferta                               
