@@ -103,8 +103,7 @@ document.addEventListener('click', function(event) {
       document.getElementById('ut').value = ut;
       document.getElementById('access_token').value = access_token;
        // Cerrar el modal
-       var myModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-       myModal.hide();
+       $('#confirmModal').modal('hide');
   }
 });
 
