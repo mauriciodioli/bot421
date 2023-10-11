@@ -51,18 +51,22 @@
                     <div class="modal-body">
                       ¿Estás seguro de que deseas realizar esta operación?                    
                       <div class="form-group">
-                        <input type="hidden" class="form-control" id="cuenta" name="cuenta">
+                        <input type="hidden" class="form-control" id="access_token" name="access_token">
                       </div>
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="symbol" name="symbol">
                       </div>
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="ut" name="ut">
-                      </div>                                        
+                      </div>    
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="senial" name="senial">
+                      </div>                                     
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>                    
                     <button type="submit" id="confirmBtn" class="btn btn-primary my-2" >Confirmar</button>
+
                   </div>
                 </div>
               </div>
@@ -85,25 +89,24 @@ localStorage.setItem("cuenta", cuenta);
 localStorage.setItem("usuario", usuario);
 localStorage.setItem("selector", selector);
 //{% endif %}
-
-
-
-document.getElementById('confirmBtn').addEventListener('click', function() {
-   // Cierra el modal
-   const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-   modal.hide();
-  // Código para enviar los datos al servidor si es necesario
-      const ut = button.dataset.ut;
-      const symbol = button.dataset.symbol;
-      const cuenta = button.dataset.cuenta;
-  
-      // Actualiza los campos en el modal
-      document.querySelector('#cuenta').value = cuenta;
-      document.querySelector('#symbol').value = symbol;
-      document.querySelector('#ut').value = ut
-  $('#confirmModal').modal('hide'); // Cierra el modal
+document.addEventListener('click', function(event) {
+  if (event.target && event.target.id == "boton-despues-carga-tabla") {
+      
+      access_token = localStorage.getItem('access_token');
+      var symbol = event.target.dataset.symbol;
+      var senial = event.target.dataset.senial;      
+      var ut = event.target.dataset.ut;
+      
+      // Llenar los campos ocultos en el formulario del modal
+      document.getElementById('symbol').value = symbol;
+      document.getElementById('senial').value = senial;     
+      document.getElementById('ut').value = ut;
+      document.getElementById('access_token').value = access_token;
+       // Cerrar el modal
+       var myModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+       myModal.hide();
+  }
 });
- 
 
 
 
@@ -149,14 +152,13 @@ function updateTable() {
                   <div class="form-group">
                     <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
                   </div> 
-                  <div class="form-group">
-                    <input type="hidden" name="cuentaA" value="{{ cuentaA }}">
-                    <input type="hidden" name="signal" value="{{ signal }}">
+                  <div class="form-group">                   
+                    <input type="hidden" name="senial" value="{{ senial }}">
                     <input type="hidden" name="ut" value="{{ ut }}">
                     <input type="hidden" id="datoValor" class="form-control"> 
                                          
-                    ${dato[4] == 'OPEN.' ? '<button  type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-user-senial="${ dato[4] }" data-trigger-user-symbol="${ dato[0] }"  data-user-cuenta="${{ cuentaA }}" data-user-ut="{{ ut }}">Submit</button>' : ''}
-                    ${dato[4] == 'closed.' ? '<button  type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal"  data-user-senial="${ dato[4] }" data-trigger-user-symbol="${ dato[0] }"  data-user-cuenta="${{ cuentaA }}" data-user-ut="{{ ut }}">Submit</button>' : ''}  
+                    ${dato[4] == 'OPEN.' ?  `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}"   data-ut="${ dato[3] }">Submit</button>`:''}
+                    ${dato[4] == 'closed.' ? `<button  id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${ dato[4] }" data-symbol="${ dato[0] }"  data-ut="${ dato[3] }">Submit</button>` : ''}  
                   </div>                             
                 </td>
             `;
