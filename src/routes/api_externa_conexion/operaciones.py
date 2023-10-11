@@ -121,10 +121,10 @@ def panelDeControlBroker_operaciones():
 def operaciones_desde_seniales():
    # try:
         if request.method == 'POST':
-            cuenta = request.form['cuenta']
+            access_token = request.form['access_token']
             symbol = request.form['symbol']
             ut = request.form['ut']
-            signal = request.form['signal']
+            signal = request.form['senial']
             
             repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
             
