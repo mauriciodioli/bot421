@@ -11,31 +11,25 @@
     <table class="table table-dark table-striped"  id="signalTable">
       <thead>           
         <tr>
-          <th>Número de Orden</th>
-          <th>Símbolo</th>
-          <th>Tipo de Activo</th>         
-          <th>UT</th>
-          <th>Señal</th>  
+          <th></th>
+          <th></th>
+          <th></th>         
+          <th></th>
+          <th></th>  
         </tr>         
       </thead>
       <tbody>
-        {% for dato in datos %}
-          {% if dato[4] == 'OPEN.' or dato[4] == 'closed.' %}
-            {% if dato[3] > '0' %}
-              <tr data-symbol="{{ dato[0] }}">
-                <td>{{ dato[5] }}</td>
-                <td>{{ dato[0] }}</td>
-                <td>{{ dato[1] }}</td>             
-                <td>{{ dato[3] }}</td>
-                <td>{{ dato[4] }}</td>   
-                <td class="operado-column"></td>          
-                <td>
+        
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>             
+                <td>CARGANDO DATOS, ESPERE</td>
+                <td></td>   
+                   
                 
-                </td>
               </tr>
-            {% endif %}
-          {% endif %}
-        {% endfor %}
+           
       </tbody>
     </table>
     
