@@ -85,9 +85,15 @@ def crear_ficha():
             # Almacenar el token en la base de datos
             db.session.add(nueva_ficha)
             db.session.commit()
-
-            return jsonify({'mensaje': 'Ficha creada exitosamente en la base de datos'}), 201
-
+                     # Consulta todas las fichas del usuario dado
+            #fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
+            #total_cuenta = available_to_collateral + portfolio
+            total_para_fichas =  total_cuenta * 0.6
+            print(total_para_fichas)
+        
+            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta)
+        
+          
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -112,7 +118,7 @@ def fichasToken_fichas_generar():
         fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
         
         
-        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario)
+        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta)
         
    #except:  
    #     print("no lla correctamente")  
