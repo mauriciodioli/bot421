@@ -37,38 +37,38 @@
         {% for estrategia in datos[1] %}
           <tr>  
             <td> 
-            <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
-              <input type="hidden" name="account" id="account">
-              <button type="submit" id="boton-panico-estrategia-usuario-noadmin" class="btn btn-danger my-2"></button>
-            </form>
-          </td>  
-          <td>{{ estrategia.id }}</td>
-          <td>{{ estrategia.user_id }}</td>          
-          <td>{{ estrategia.userCuenta }}</td>
-          <td>{{ estrategia.accountCuenta }}</td>
-          <td>{{ estrategia.horaInicio }}</td>          
-          <td>{{ estrategia.horaFin }}</td>
-          <td>{{ estrategia.ManualAutomatico }}</td>
-          <td>{{ estrategia.nombreEstrategia }}</td>
-          <td class="d-flex">
-          
-           <!-- <form method="POST" class="btn-guardar_inst">
-              <input type="hidden" name="access_token" id="access_token" value="{{ access_token }}">                       
-              <input type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
-              <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
-              <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">-->
-              <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-trigger-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}"  data-nombreEstrategia="{{ estrategia.nombreEstrategia }}">M</button>
-            <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
-          <!--  </form>-->
+              <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
+                <input type="hidden" name="account" id="account">
+                <button type="submit" id="boton-panico-estrategia-usuario-noadmin" class="btn btn-danger my-2"></button>
+              </form>
+            </td>  
+              <td>{{ estrategia.id }}</td>
+              <td>{{ estrategia.user_id }}</td>          
+              <td>{{ estrategia.userCuenta }}</td>
+              <td>{{ estrategia.accountCuenta }}</td>
+              <td>{{ estrategia.horaInicio }}</td>          
+              <td>{{ estrategia.horaFin }}</td>
+              <td>{{ estrategia.ManualAutomatico }}</td>
+              <td>{{ estrategia.nombreEstrategia }}</td>
+              <td class="d-flex">
+              
+            <!-- <form method="POST" class="btn-guardar_inst">
+                <input type="hidden" name="access_token" id="access_token" value="{{ access_token }}">                       
+                <input type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
+                <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
+                <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">-->
+                <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-trigger-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}"  data-nombreEstrategia="{{ estrategia.nombreEstrategia }}">M</button>
+              <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
+              <!--  </form>-->
 
-            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
+              <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
 
 
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
-            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
-          </td>
-        </tr>
+              <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
+              <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
+              <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
+              </td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>

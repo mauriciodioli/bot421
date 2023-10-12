@@ -70,9 +70,6 @@ def estadoOperacion():
 
     return render_template("login.html")
 
-@operaciones.route('/panelDeControlBroker_operaciones/', methods=['POST'])
-
-  
 @operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
 def operaciones_desde_seniales():
     try:
@@ -93,19 +90,21 @@ def operaciones_desde_seniales():
                 elif signal == 'OPEN.':
                     accion = 'comprar'                 
                     price = precios[0][2]#envio precio de la demanda
-                 
+                   # Verificar el saldo y enviar la orden si hay suficiente
            
                   # Crear una instancia de la clase
                 orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
 
 
-                    # Verificar el saldo y enviar la orden si hay suficiente
+                  
                # if orden_.enviar_orden(cuenta=cuentaA):
                #         print("Orden enviada con éxito.")
                 #else:
                 #        print("No se pudo enviar la orden debido a saldo insuficiente.")
                # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-               # operaciones = repuesta_operacion['orders']    
+               # operaciones = repuesta_operacion['orders']   
+               # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
+               # 
                 return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
     except Exception as e:
          return render_template('errorOperacion.html')
