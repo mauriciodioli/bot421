@@ -96,6 +96,7 @@ def autenticar_y_abrir_sheet(sheetId,sheet_name):
     creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
     client = gspread.authorize(creds)
     sheet = client.open_by_key(sheetId).worksheet(sheet_name)  # Abre el sheet especificado
+   
     # solo agregue esta linea
     #sheet2 = client.open_by_key(SPREADSHEET_ID).get_worksheet(1)# Instrumentos del Arbitrador001
     #return sheet, sheet2  # Devuelve una tupla de hojas

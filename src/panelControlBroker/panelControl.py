@@ -36,11 +36,17 @@ def panel_control(pais):
      return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 
 
-@panelControl.route("/panel_control_atomatico/")
-def panel_control_atomatico():
-    ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s')
-    datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+@panelControl.route("/panel_control_atomatico/<pais>")
+def panel_control_atomatico(pais):
+     if pais == "argentina":
+         ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
+     elif pais == "usa":
+          ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot2')
+     else:
+         return "País no válido"
+     ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
+     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
    
-    return jsonify(datos=datos_desempaquetados)
+     return jsonify(datos=datos_desempaquetados)
 
 
