@@ -52,6 +52,7 @@ from models.orden import orden
 from models.ficha import ficha
 from models.trazaFicha import trazaFicha
 from models.operacion import operacion
+from models.logs import logs
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -83,6 +84,7 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
+app.register_blueprint(logs)
 app.register_blueprint(token)
 app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
