@@ -116,7 +116,7 @@ def operaciones_desde_seniales():
                 if  tipoOrder == 'LIMIT':
                     
                     orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
-
+                     
                     if orden_.enviar_orden(cuenta=cuentaA):
                          print("Orden enviada con éxito.")
                          flash('Operacion enviada exitosamente')

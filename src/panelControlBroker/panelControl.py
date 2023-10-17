@@ -16,12 +16,32 @@ import strategies.datoSheet as datoSheet
 
 panelControl = Blueprint('panelControl',__name__)
 
+@panelControl.route('/panel_control_sin_cuenta')
+def panel_control_sin_cuenta():
+    pais = request.args.get('country')
+    if pais == "argentina":
+         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+    elif pais == "usa":
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'bot')
+    else:
+         return "País no válido"
+     
+    print(ContenidoSheet)
+    datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+     
+    for i, dato in enumerate(datos_desempaquetados):
+        dato = list(dato)
+        dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
+        datos_desempaquetados[i] = tuple(dato)
+         
+    return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+
 @panelControl.route("/panel_control/<pais>")
 def panel_control(pais):
      if pais == "argentina":
-         ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
+         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
-          ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot2')
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'bot')
      else:
          return "País no válido"
      
@@ -39,12 +59,12 @@ def panel_control(pais):
 @panelControl.route("/panel_control_atomatico/<pais>")
 def panel_control_atomatico(pais):
      if pais == "argentina":
-         ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
-          ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot2')
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'bot')
      else:
          return "País no válido"
-     ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
+     
      datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
    
      return jsonify(datos=datos_desempaquetados)
