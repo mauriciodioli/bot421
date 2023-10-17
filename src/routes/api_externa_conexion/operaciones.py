@@ -7,6 +7,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from utils.common import Marshmallow, db, get
 from models.instrumento import Instrumento
 from models.operacion import Operacion
+from models.logs import Logs
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
@@ -16,6 +17,9 @@ import routes.instrumentos as inst
 from panelControlBroker.panelControl import panel_control
 import threading
 import jwt
+from datetime import datetime  # Agrega esta línea para obtener la fecha y hora actual
+
+ 
 
 
 
@@ -87,6 +91,8 @@ def operaciones_desde_seniales():
             ut = request.form['ut']
             signal = request.form['senial']
             cuentaA = request.form['cuentaEnvioAjax']
+            logs_table = Logs()  # Crea una instancia de Logs
+            logs_table.crear_tabla()  # Llama a la función crear_tabla
             if access_token:
                 app = current_app._get_current_object()  
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -132,7 +138,15 @@ def operaciones_desde_seniales():
                # 
                 return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
     except Exception as e:
-         return render_template('errorOperacion.html')
+         # Si se genera una excepción, crear un registro en Logs
+        error_msg = str(e)  # Obtener el mensaje de error
+
+        # Crear un nuevo registro en Logs
+        new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
+        db.session.add(new_log)
+        db.session.commit()
+
+        return render_template('errorOperacion.html')
 
 
 

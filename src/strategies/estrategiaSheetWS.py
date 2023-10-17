@@ -190,7 +190,7 @@ def cargaSymbolParaValidar(message):
     return listado_final
   
 def get_instrumento_para_suscripcion_ws():#   **77
-      ContenidoSheet = datoSheet.leerSheet()
+      ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
       datoSheet.crea_tabla_orden()  
       return ContenidoSheet
   
@@ -309,7 +309,7 @@ def botonPanicoRH(message):
     
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
     if banderaLecturaSheet == 0:
-        ContenidoSheet = datoSheet.leerSheet()
+        ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
 

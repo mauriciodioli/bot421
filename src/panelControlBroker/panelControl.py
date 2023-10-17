@@ -16,9 +16,15 @@ import strategies.datoSheet as datoSheet
 
 panelControl = Blueprint('panelControl',__name__)
 
-@panelControl.route("/panel_control/")
-def panel_control():
-     ContenidoSheet = datoSheet.leerSheet()
+@panelControl.route("/panel_control/<pais>")
+def panel_control(pais):
+     if pais == "argentina":
+         ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
+     elif pais == "usa":
+          ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot2')
+     else:
+         return "País no válido"
+     
      print(ContenidoSheet)
      datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
      
@@ -26,15 +32,13 @@ def panel_control():
         dato = list(dato)
         dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
         datos_desempaquetados[i] = tuple(dato)
-     
-    # for dato in datos_desempaquetados:
-     #     print( dato)
          
      return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 
+
 @panelControl.route("/panel_control_atomatico/")
 def panel_control_atomatico():
-    ContenidoSheet = datoSheet.leerSheet()
+    ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s')
     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
    
     return jsonify(datos=datos_desempaquetados)
