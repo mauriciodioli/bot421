@@ -136,7 +136,9 @@ function updateTable() {
       var filasCambiadas = comparaFilas(elementosAntes, response);
       //console.log(filasCambiadas);
       for (var i = 0; i < response.datos.length; i++) {
+
         var dato = response.datos[i];
+        //console.log(dato);
         if (dato[3] > '0' && (dato[4] == 'OPEN.' || dato[4] == 'closed.')) {
             var row = document.createElement('tr');
             var numeroDeOrden = i + 1; // Empieza desde 1
@@ -147,8 +149,10 @@ function updateTable() {
                 <td>${numeroDeOrden}</td>
                 <td>${dato[0]}</td>
                 <td>${dato[1]}</td>
-                <td>${dato[3]}</td>
                 <td>${dato[4]}</td>
+                <td>${dato[2]}</td>
+                <td>${dato[3]}</td>
+                
                 <td class="operado-column"></td>
                 <td>
                   <div class="form-group">
