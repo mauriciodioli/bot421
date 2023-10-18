@@ -24,6 +24,9 @@ import sys
 
 arbitraje_001 = Blueprint('arbitraje_001',__name__)
 
+
+mapeo = {}
+
 # ****************************************************************************************
 # ****************************************************************************************
 # ****************************************************************************************
@@ -146,6 +149,7 @@ def Arbitrador001(message):#**66
         update_symbol_data(Symbol, p_value, z_value, suffix)        
     
     # arbitraje inverso :  comprar el largo, vender el corto, este es mas conveniente, da plata para caucho
+    # pero hay que ser tenendor 
     p_value = 0
     z_value = 0
     suffix = ""
@@ -207,7 +211,7 @@ def Arbitrador001(message):#**66
         bruto_pCI=0
         bruto_p48hs=0
         comision=0
-        print(current_time,"D:",Symbol[13:19]," cpraCI=", pCI, " vta48=", p48hs,DIF, "d%= {:.2f}%".format(DIFP)," dz=",dz)#, "bruto_pCI=", int(bruto_pCI), "bruto_p48hs=", int(bruto_p48hs), "bruto_gan=", int(bruto_p48hs-bruto_pCI), "comi=", int(comision))
+        print(current_time,"D:",Symbol[13:19]," cpraCI=", pCI, " vta48=", p48hs,DIF, "d%= {:.2f}%".format(DIFP)," dz=",dz)
 
     #if DIFPi > 1 and dzi > 0:
         #current_time = datetime.now().strftime("%H:%M:%S,%f")[:-3]  # Formato hh:mm:ss,xxxx
@@ -238,6 +242,26 @@ def Arbitrador001(message):#**66
     mep = 380
     #print(" FUN Arbitrador001() .")
     return mep
+
+
+
+
+def generar_Instrum_factor(lista_instrumentos):
+    # Crear un diccionario para mapear securityDescription a priceConvertionFactor
+    
+    #ruta_archivo_json = 'strategies\\listadoInstrumentos\\instrumentos_Factor.json'
+    
+    # Rellenar el diccionario
+    for instrumento in lista_instrumentos:
+        sec_desc = instrumento['securityDescription']
+        price_factor = instrumento['priceConvertionFactor']
+        mapeo[sec_desc] = price_factor
+    
+    # Escribir el diccionario en un archivo JSON
+    #with open(ruta_archivo_json, 'w') as archivo:
+    #    json.dump(mapeo, archivo)
+
+
 # ****************************************************************************************
 # ****************************************************************************************
 # ****************************************************************************************
@@ -245,9 +269,20 @@ def Arbitrador001(message):#**66
 # ****************************************************************************************
 # ****************************************************************************************
 # ****************************************************************************************
+def Cargar_Factores():
+        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+        listado_instrumentos = repuesta_listado_instrumento['instruments']
+
+        
+        for instrumento in listado_instrumentos:
+            sec_desc = instrumento['securityDescription']
+            price_factor = instrumento['priceConvertionFactor']
+            mapeo[sec_desc] = price_factor
 
 
-    
+
+
+# es el arbitrador001 pasa que quedaron asi las etiquetas
 @arbitraje_001.route('/arbitrador-002/', methods=['POST'])
 def arbitrador_002():
     
@@ -255,33 +290,14 @@ def arbitrador_002():
         try:
             data = request.get_json()
             get.accountLocalStorage = data['cuenta']
-            
             get.VariableParaBotonPanico = 0
-            #ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
-           # get.pyRofexInicializada.remove_websocket_market_data_handler(get.market_data_handler_0)
-           # get.pyRofexInicializada.remove_websocket_order_report_handler(get.order_report_handler_0)
+            
+            Cargar_Factores()# Carga diccionario de factores
+            
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
             get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler_arbitraje_001)
             
-           # get.pyRofexInicializada.order_report_subscription(
-           #     account=get.accountLocalStorage, 
-           #     snapshot=True, 
-           #     handler=order_report_handler_arbitraje_001)
-            
-          #  pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(
-          #      market_data_handler=market_data_handler_arbitraje_001,
-          #      order_report_handler=order_report_handler_arbitraje_001,
-          #      error_handler=error_handler,
-          #      exception_handler=exception_handler
-          #  )
 
-            ## esta no va, trabaja con los diccionarios del bot
-            ##shWS.carga_operaciones(
-              ##  ContenidoSheet_list[0], 
-              ##  get.accountLocalStorage, 
-              ##  usuario, 
-                ##correo_electronico, 
-                ##ContenidoSheet_list[1])
     
         except jwt.ExpiredSignatureError:
             print("El token ha expirado")
