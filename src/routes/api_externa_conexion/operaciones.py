@@ -3,10 +3,11 @@ from pipes import Template
 from unittest import result
 import requests
 import json
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,current_app
 from utils.common import Marshmallow, db, get
 from models.instrumento import Instrumento
 from models.operacion import Operacion
+from models.logs import Logs
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
@@ -14,12 +15,20 @@ import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import panel_control
+import threading
+import jwt
+from datetime import datetime  # Agrega esta línea para obtener la fecha y hora actual
+
+ 
 
 
 
 
 operaciones = Blueprint('operaciones',__name__)
 
+
+saldo = None  # Variable global para almacenar el saldo
+ultima_entrada = 0
 @operaciones.route("/operar",methods=["GET"])
 def operar():
   try:
@@ -70,6 +79,9 @@ def estadoOperacion():
 
     return render_template("login.html")
 
+
+
+    
 @operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
 def operaciones_desde_seniales():
     try:
@@ -78,7 +90,13 @@ def operaciones_desde_seniales():
             symbol = request.form['symbol']
             ut = request.form['ut']
             signal = request.form['senial']
-            
+            cuentaA = request.form['cuentaEnvioAjax']
+            logs_table = Logs()  # Crea una instancia de Logs
+            logs_table.crear_tabla()  # Llama a la función crear_tabla
+            if access_token:
+                app = current_app._get_current_object()  
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+          
             existencia = inst.instrumentos_existentes_by_symbol(symbol) 
             if existencia == True:           
               precios = inst.instrument_por_symbol(symbol)               
@@ -91,23 +109,44 @@ def operaciones_desde_seniales():
                     accion = 'comprar'                 
                     price = precios[0][2]#envio precio de la demanda
                    # Verificar el saldo y enviar la orden si hay suficiente
-           
-                  # Crear una instancia de la clase
-                orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
-
-
+                tipoOrder = 'LIMIT'        
+                print("tipoOrder ",tipoOrder)
+                #se debe controlar cuando sea mayor a 1 minuto
+                 # Inicia el hilo para consultar el saldo después de un minuto
+                if  tipoOrder == 'LIMIT':
+                    
+                    orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
+                     
+                    if orden_.enviar_orden(cuenta=cuentaA):
+                         print("Orden enviada con éxito.")
+                         flash('Operacion enviada exitosamente')
+                         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+                         operaciones = repuesta_operacion['orders']
+                         print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+                    else:
+                        print("No se pudo enviar la orden debido a saldo insuficiente.")
                   
-               # if orden_.enviar_orden(cuenta=cuentaA):
-               #         print("Orden enviada con éxito.")
-                #else:
-                #        print("No se pudo enviar la orden debido a saldo insuficiente.")
+                    
+                    
+                   
+              
+                                      
+           
                # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
                # operaciones = repuesta_operacion['orders']   
                # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
                # 
                 return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
     except Exception as e:
-         return render_template('errorOperacion.html')
+         # Si se genera una excepción, crear un registro en Logs
+        error_msg = str(e)  # Obtener el mensaje de error
+
+        # Crear un nuevo registro en Logs
+        new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
+        db.session.add(new_log)
+        db.session.commit()
+
+        return render_template('errorOperacion.html')
 
 
 

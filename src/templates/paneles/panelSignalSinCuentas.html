@@ -1,4 +1,4 @@
-{% extends "layouts/layoutConexBroker.html" %}
+{% extends "layouts/layout_signal.html" %}
 {% block content %}
 
   <div class="jumbotron">
@@ -145,29 +145,29 @@ function updateTable() {
              // Crear un identificador único para esta fila (puedes usar un dato específico o el índice)
             var filaId = 'fila-' + i;
             row.setAttribute('id', filaId); // Agrega un ID a la fila
-              // Agrega una clase CSS según el valor de dato[4]
-            var colorClass = dato[4] == 'OPEN.' ? 'bg-success' : 'bg-danger';
-
             row.innerHTML = `
-            <td>${numeroDeOrden}</td>
-            <td>${dato[0]}</td>
-            <td>${dato[1]}</td>
-            <td>${dato[4]}</td>
-            <td>${dato[2]}</td>
-            <td>${dato[3]}</td>
-            <td class="operado-column"></td>
-            <td>
-              <div class="form-group">
-                <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
-              </div> 
-              <div class="form-group">                   
-                <input type="hidden" name="senial" value="{{ senial }}">
-                <input type="hidden" name="ut" value="{{ ut }}">
-                <input type="hidden" id="datoValor" class="form-control"> 
-                <button id="boton-despues-carga-tabla" type="button" class="btn btn-block form-control ${colorClass}" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>
-              </div>                             
-            </td>
-          `;
+                <td>${numeroDeOrden}</td>
+                <td>${dato[0]}</td>
+                <td>${dato[1]}</td>
+                <td>${dato[4]}</td>
+                <td>${dato[2]}</td>
+                <td>${dato[3]}</td>
+                
+                <td class="operado-column"></td>
+                <td>
+                  <div class="form-group">
+                    <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                  </div> 
+                  <div class="form-group">                   
+                    <input type="hidden" name="senial" value="{{ senial }}">
+                    <input type="hidden" name="ut" value="{{ ut }}">
+                    <input type="hidden" id="datoValor" class="form-control"> 
+                                         
+                    ${dato[4] == 'OPEN.' ?  `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}"   data-ut="${ dato[3] }">Submit</button>`:''}
+                    ${dato[4] == 'closed.' ? `<button  id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${ dato[4] }" data-symbol="${ dato[0] }"  data-ut="${ dato[3] }">Submit</button>` : ''}  
+                  </div>                             
+                </td>
+            `;
             tableBody.appendChild(row);
             if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
               document.getElementById(filaId).style.display = 'none'; // Oculta la fila
