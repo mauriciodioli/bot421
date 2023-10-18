@@ -35,14 +35,8 @@ def panel_control_sin_cuenta():
     else:
          return "País no válido"
      
-   
-    datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
-     
-    for i, dato in enumerate(datos_desempaquetados):
-        dato = list(dato)
-        dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
-        dato[0] = dato[0].replace("MERV - XMEV -", "")
-        datos_desempaquetados[i] = tuple(dato)
+    datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet) 
+       
     if layout == 'layout_signal':
         return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
     if layout == 'layout': 
@@ -57,13 +51,8 @@ def panel_control(pais, layout):
      else:
          return "País no válido"
      
-    
-     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
      
-     for i, dato in enumerate(datos_desempaquetados):
-        dato = list(dato)
-        dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
-        datos_desempaquetados[i] = tuple(dato)
+     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
     
      if layout == 'layout_signal':
         return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
@@ -79,9 +68,20 @@ def panel_control_atomatico(pais):
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
          return "País no válido"
-     
-     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
-   
+     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
+    
+    
      return jsonify(datos=datos_desempaquetados)
 
 
+def forma_datos_para_envio_paneles(ContenidoSheet):
+    
+     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+     for i, dato in enumerate(datos_desempaquetados):
+        dato = list(dato)
+        dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
+        datos_desempaquetados[i] = tuple(dato)
+        dato[0] = dato[0].replace("MERV - XMEV -", "")
+        datos_desempaquetados[i] = tuple(dato)
+        
+     return datos_desempaquetados
