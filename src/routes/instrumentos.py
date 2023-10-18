@@ -199,6 +199,11 @@ def instrumentos_existentes(listado):
       listado_final.append(inst['instrumentId']['symbol'])
      return listado_final
 
+
+
+
+
+
 @instrumentos.route("/instrumentos_detalles/" )
 def instrumentos_detalles():
     try:
@@ -211,8 +216,10 @@ def instrumentos_detalles():
         repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
         #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
         listado_instrumentos = repuesta_listado_instrumento['instruments']
-        #for listado_instrumentos in listado_instrumentos:
-       # print("listado_instrumentos en instrumentos_detalles en intrumentos.py",listado_instrumentos)#aqui muestro los instrumentos por pantalla
+        
+        
+
+       
         print("listado_instrumentos en instrumentos_detalles en intrumentos.py")
         return render_template("instrumentos.html", datos = listado_instrumentos   )
 

@@ -25,7 +25,7 @@ reporte_de_instrumentos = []
 def wsocketConexion():
    ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
    pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
-   get.pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0)
+   get.pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0)
    get.pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0)
 
 
