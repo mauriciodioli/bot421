@@ -13,7 +13,7 @@
         <tr>
           <th scope="col">Id</th>
           <th scope="col">Symbol</th>
-          <th scope="col">Tipo</th>
+          <th scope="col">type </th>
           <th scope="col">Signal</th>
           <th scope="col">In Progress</th>
           <th scope="col"> Ut</th>      
@@ -36,21 +36,26 @@
 
   <script>
     $(document).ready(function() {
-      $('#signalTable tbody tr').each(function() {
-        var signalColumn = $(this).find('td:nth-child(4)');
-        var utColumn = $(this).find('td:nth-child(6)');
-
-        if (signalColumn.text() === 'open') {
-          $(this).css('background-color', 'green');
-        } else if (signalColumn.text() === 'closed') {
-          $(this).css('background-color', 'red');
-        }
-
-        if (utColumn.text() === '0') {
-          $(this).css('background-color', 'blue');
-        }
+        $('#signalTable tbody tr').each(function() {
+          var signalColumn = $(this).find('td:nth-child(4)');
+          var utColumn = $(this).find('td:nth-child(6)');
+          
+        //  console.log(signalColumn.text()); // Verifica que esto imprima el contenido de la columna "Signal"
+        //  console.log(utColumn.text()); // Verifica que esto imprima el contenido de la columna "Ut"
+      
+          if (signalColumn.text() === 'OPEN.') {
+            $(this).css('background-color', 'green');
+          } else if (signalColumn.text() === 'closed.') {
+            $(this).css('background-color', 'red');
+          }
+      
+          if (utColumn.text() === '0') {
+            $(this).css('background-color', 'blue');
+          }
+        });
       });
-    });
+      
+      
   </script>
   
 {% endblock %}

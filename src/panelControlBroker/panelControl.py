@@ -30,7 +30,7 @@ def panel_control_sin_cuenta():
     if pais == "argentina":
          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
     elif pais == "usa":
-          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'bot')
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
     else:
          return "País no válido"
      
@@ -50,7 +50,7 @@ def panel_control(pais):
      if pais == "argentina":
          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
-          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'bot')
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
          return "País no válido"
      
@@ -70,7 +70,7 @@ def panel_control_atomatico(pais):
      if pais == "argentina":
          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
-          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'bot')
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
          return "País no válido"
      

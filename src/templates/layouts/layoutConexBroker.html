@@ -73,7 +73,8 @@
                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paneles</a>
-                        <ul class="dropdown-menu">              
+                        <ul class="dropdown-menu">    
+                            <li><a class="dropdown-item"id="guardarPaisSeleccionado1">signals</a></li>                                 
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/panel_control/argentina" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                             <li><hr class="dropdown-divider"></li>
@@ -201,6 +202,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     <script>
+        selectedCountry  = localStorage.getItem('paisSeleccionado');
+        document.getElementById('guardarPaisSeleccionado1').addEventListener('click', function() {
+           
+            window.location.href = '/panel_control_sin_cuenta?country=' + selectedCountry;
+          }); 
+
         function seleccionarPais(pais) {
             localStorage.setItem('paisSeleccionado', pais);
         }
