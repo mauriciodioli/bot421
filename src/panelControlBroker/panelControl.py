@@ -44,7 +44,7 @@ def panel_control_sin_cuenta():
         dato[0] = dato[0].replace("MERV - XMEV -", "")
         datos_desempaquetados[i] = tuple(dato)
     if layout == 'layout_signal':
-        return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+        return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
     if layout == 'layout': 
         return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
 
@@ -57,7 +57,7 @@ def panel_control(pais, layout):
      else:
          return "País no válido"
      
-     print(ContenidoSheet)
+    
      datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
      
      for i, dato in enumerate(datos_desempaquetados):
