@@ -1,0 +1,35 @@
+{% extends "layouts/layoutConexBroker.html" %}
+{% block content %}
+
+<div class="jumbotron">
+  <h1 class="display-4">Bienvenido!, estas logeado en la cuenta del Broker</h1>
+  <p class="lead">Para operar puedes seleccionar la pestaña estrategia</p>
+  <hr class="my-4">
+  <p>Para ir a operaciones puedes presionar el boton.</p>
+  <a class="btn btn-primary btn-lg" href="/operar" role="button">Operaciones</a>
+</div>
+<script>
+// Definir la función showError
+function showError(message) {
+  console.error(message);
+  // Aquí puedes agregar el código para mostrar el error al usuario, como una alerta o una notificación en la página.
+}
+//{% if cuenta is defined %}
+// Acceder a los tokens desde el diccionario de contexto de Flask
+var cuenta = "{{ cuenta[0] }}";
+var usuario = "{{ cuenta[1] }}";
+var selector = "{{ cuenta[2] }}";
+
+console.log("probanodo",cuenta)
+console.log(usuario)
+console.log(selector)
+// Almacenar los tokens en el localStorage
+localStorage.setItem("cuenta", cuenta);
+localStorage.setItem("usuario", usuario);
+localStorage.setItem("selector", selector);
+//{% endif %}
+
+
+
+</script>
+{% endblock%}
