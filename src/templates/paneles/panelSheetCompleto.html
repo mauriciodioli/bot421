@@ -1,0 +1,56 @@
+{% extends "layouts/layout_signal.html" %}
+{% block content %}
+
+  <div class="jumbotron">
+    <h1 class="display-4">Signs!</h1>
+    <p class="lead">To operate you can go to Dashboard</p>
+    <hr class="my-4">
+  </div>
+  
+  <div class="container p-4">   
+    <table class="table table-dark table-striped" id="signalTable">
+      <thead>           
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Symbol</th>
+          <th scope="col">Tipo</th>
+          <th scope="col">Signal</th>
+          <th scope="col">In Progress</th>
+          <th scope="col"> Ut</th>      
+        </tr>            
+      </thead>
+      <tbody>
+        {% for dato in datos %}
+          <tr>
+            <th scope="row">{{ dato[5] }}</th>
+            <td>{{ dato[0] }}</td>
+            <td>{{ dato[1] }}</td>
+            <td>{{ dato[4] }}</td>
+            <td>{{ dato[2] }}</td>
+            <td>{{ dato[3] }}</td>                        
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      $('#signalTable tbody tr').each(function() {
+        var signalColumn = $(this).find('td:nth-child(4)');
+        var utColumn = $(this).find('td:nth-child(6)');
+
+        if (signalColumn.text() === 'open') {
+          $(this).css('background-color', 'green');
+        } else if (signalColumn.text() === 'closed') {
+          $(this).css('background-color', 'red');
+        }
+
+        if (utColumn.text() === '0') {
+          $(this).css('background-color', 'blue');
+        }
+      });
+    });
+  </script>
+  
+{% endblock %}
