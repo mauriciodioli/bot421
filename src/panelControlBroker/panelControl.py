@@ -16,6 +16,14 @@ import strategies.datoSheet as datoSheet
 
 panelControl = Blueprint('panelControl',__name__)
 
+def obtener_pais():
+    ip = request.remote_addr
+    response = requests.get(f'http://ipinfo.io/{ip}')
+    data = response.json()
+    pais = data.get('country')
+    return f'El país de la conexión es: {pais}'
+
+
 @panelControl.route('/panel_control_sin_cuenta')
 def panel_control_sin_cuenta():
     pais = request.args.get('country')
@@ -26,15 +34,16 @@ def panel_control_sin_cuenta():
     else:
          return "País no válido"
      
-    print(ContenidoSheet)
+   
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
      
     for i, dato in enumerate(datos_desempaquetados):
         dato = list(dato)
         dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
+        dato[0] = dato[0].replace("MERV - XMEV -", "")
         datos_desempaquetados[i] = tuple(dato)
-         
-    return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+        
+    return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
 
 @panelControl.route("/panel_control/<pais>")
 def panel_control(pais):

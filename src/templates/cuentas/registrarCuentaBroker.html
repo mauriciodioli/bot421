@@ -53,7 +53,7 @@
           </div>
         </form>
         <div class="col">
-          <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#modalSeleccionPais">No tengo cuenta</button>
+          <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#modalSeleccionPais">Signals</button>
         </div>
       </div>  
     </div>  
@@ -73,6 +73,7 @@
        <div class="modal-body">
         <p>Por favor, selecciona tu país:</p>
         <select class="form-select mb-3" id="seleccionarPais">
+          <option value="" selected disabled>Select a Country</option> <!-- Opción sin valor por defecto -->
           <option value="argentina">Argentina</option>
           <option value="usa">USA</option>
         </select>
@@ -89,7 +90,10 @@
 
 
 
-    <script>     
+    <script>   
+
+
+
       document.getElementById('guardarPais').addEventListener('click', function() {
         var selectedCountry = document.getElementById('seleccionarPais').value;
         localStorage.setItem('paisSeleccionado', selectedCountry);
