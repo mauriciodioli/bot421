@@ -63,9 +63,9 @@
                         <ul class="dropdown-menu">  
                           <li><a class="dropdown-item"id="guardarPaisSeleccionado">signals</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/panel_control/argentina" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
+                          <li><a class="dropdown-item" href="/panel_control/argentina/layout_signal" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/panel_control/usa" onclick="seleccionarPais('usa')">USA</a></li>
+                          <li><a class="dropdown-item" href="/panel_control/usa/layout_signal" onclick="seleccionarPais('usa')">USA</a></li>
                                                 
                         </ul>
                     </li>
@@ -114,7 +114,12 @@
        
          document.getElementById('guardarPaisSeleccionado').addEventListener('click', function() {
            
-            window.location.href = '/panel_control_sin_cuenta?country=' + selectedCountry;
+            //var currentFileName = window.location.pathname.split('/').pop(); // Obtiene el nombre del archivo actual
+            var layoutOrigen = 'layout_signal'; // Cambia 'nombre_del_layout' por el valor deseado
+            var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen;
+
+            
+            window.location.href = url;
           }); 
         
 

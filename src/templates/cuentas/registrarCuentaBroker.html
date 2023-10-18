@@ -99,7 +99,9 @@
         localStorage.setItem('paisSeleccionado', selectedCountry);
         $('#modalSeleccionPais').modal('hide'); // Esta línea cierra el modal
          // Redirigir a la ruta /panel_control_sin_cuenta
-        window.location.href = '/panel_control_sin_cuenta?country=' + selectedCountry;
+        layoutOrigen = 'layout'; // Cambia 'nombre_del_layout' por el valor deseado
+        var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen;
+        window.location.href = url;
       });   
   // en este script cargo el correo electrónico almacenado en el localStorage
   access_token = localStorage.getItem("access_token");

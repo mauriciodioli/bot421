@@ -27,6 +27,7 @@ def obtener_pais():
 @panelControl.route('/panel_control_sin_cuenta')
 def panel_control_sin_cuenta():
     pais = request.args.get('country')
+    layout = request.args.get('layoutOrigen')
     if pais == "argentina":
          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
     elif pais == "usa":
@@ -42,11 +43,13 @@ def panel_control_sin_cuenta():
         dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
         dato[0] = dato[0].replace("MERV - XMEV -", "")
         datos_desempaquetados[i] = tuple(dato)
-        
-    return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
+    if layout == 'layout_signal':
+        return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+    if layout == 'layout': 
+        return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
 
-@panelControl.route("/panel_control/<pais>")
-def panel_control(pais):
+@panelControl.route("/panel_control/<pais>/<layout>")
+def panel_control(pais, layout):
      if pais == "argentina":
          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
@@ -61,8 +64,11 @@ def panel_control(pais):
         dato = list(dato)
         dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
         datos_desempaquetados[i] = tuple(dato)
-         
-     return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+    
+     if layout == 'layout_signal':
+        return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+     if layout == 'layout':         
+        return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 
 
 @panelControl.route("/panel_control_atomatico/<pais>")
