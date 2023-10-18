@@ -2,7 +2,7 @@ from flask import Blueprint
 from utils.common import Marshmallow, db, get
 from sqlalchemy import inspect,Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-
+import time
 
 ma = Marshmallow()
 
@@ -17,12 +17,33 @@ class Operacion:
         self.order_type = order_type
 
     def validar_saldo(self, cuenta):
-        saldo_actual = get.pyRofexInicializada.get_account_report(account=cuenta)
-        costo_total = self.size * self.price
+        global ultima_entrada
 
-        if saldo_actual >= costo_total:
-            return True
+        # Obtener el tiempo actual
+        tiempo_actual = time.time()
+
+        # Calcular la diferencia de tiempo
+        diferencia_tiempo = tiempo_actual - ultima_entrada
+
+        # Si han pasado al menos 60 segundos desde la última entrada
+        if diferencia_tiempo >= 30:
+            # Actualizar el tiempo de la última entrada
+            ultima_entrada = tiempo_actual
+
+            # Realizar las operaciones que deseas hacer después de 60 segundos
+            resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
+            saldo = resumenCuenta["accountData"]["availableToCollateral"]
+            # Resto de las operaciones...
+
+            # Verificar el saldo
+            costo_total = self.size * self.price
+            if saldo >= costo_total:
+                return True
+            else:
+                return False
+
         else:
+            # Si no han pasado 60 segundos, no hacemos nada
             return False
 
     def enviar_orden(self, cuenta):

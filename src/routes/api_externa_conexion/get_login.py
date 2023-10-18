@@ -46,6 +46,11 @@ account = "{{cuenta}}"
 market_data_recibida = []
 reporte_de_ordenes = []
 
+
+SPREADSHEET_ID_PRUEBA='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
+SPREADSHEET_ID_PRODUCCION='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
+SPREADSHEET_ID_USA='1sxbKe5pjF3BsGgUCUzBDGmI-zV5hWbd6nzJwRFw3yyU'#de produccion USA
+
 VariableParaTiemposMDHandler = 0
 accountLocalStorage = ""
 VariableParaBotonPanico = 0

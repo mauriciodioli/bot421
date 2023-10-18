@@ -16,27 +16,72 @@ import strategies.datoSheet as datoSheet
 
 panelControl = Blueprint('panelControl',__name__)
 
-@panelControl.route("/panel_control/")
-def panel_control():
-     ContenidoSheet = datoSheet.leerSheet()
-     print(ContenidoSheet)
-     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+def obtener_pais():
+    ip = request.remote_addr
+    response = requests.get(f'http://ipinfo.io/{ip}')
+    data = response.json()
+    pais = data.get('country')
+    return f'El país de la conexión es: {pais}'
+
+
+@panelControl.route('/panel_control_sin_cuenta')
+def panel_control_sin_cuenta():
+    pais = request.args.get('country')
+    layout = request.args.get('layoutOrigen')
+    if pais == "argentina":
+         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+    elif pais == "usa":
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+    else:
+         return "País no válido"
      
+    datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet) 
+       
+    if layout == 'layout_signal':
+        return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
+    if layout == 'layout': 
+        return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
+
+@panelControl.route("/panel_control/<pais>/<layout>")
+def panel_control(pais, layout):
+     if pais == "argentina":
+         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+     elif pais == "usa":
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+     else:
+         return "País no válido"
+     
+     
+     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
+    
+     if layout == 'layout_signal':
+        return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+     if layout == 'layout':         
+        return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+
+
+@panelControl.route("/panel_control_atomatico/<pais>")
+def panel_control_atomatico(pais):
+     if pais == "argentina":
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+     elif pais == "usa":
+          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+     else:
+         return "País no válido"
+     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
+    
+    
+     return jsonify(datos=datos_desempaquetados)
+
+
+def forma_datos_para_envio_paneles(ContenidoSheet):
+    
+     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
      for i, dato in enumerate(datos_desempaquetados):
         dato = list(dato)
         dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
         datos_desempaquetados[i] = tuple(dato)
-     
-    # for dato in datos_desempaquetados:
-     #     print( dato)
-         
-     return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
-
-@panelControl.route("/panel_control_atomatico/")
-def panel_control_atomatico():
-    ContenidoSheet = datoSheet.leerSheet()
-    datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
-   
-    return jsonify(datos=datos_desempaquetados)
-
-
+        dato[0] = dato[0].replace("MERV - XMEV -", "")
+        datos_desempaquetados[i] = tuple(dato)
+        
+     return datos_desempaquetados
