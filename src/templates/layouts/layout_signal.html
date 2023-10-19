@@ -63,9 +63,10 @@
                         <ul class="dropdown-menu">  
                           <li><a class="dropdown-item"id="guardarPaisSeleccionado">signals</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/panel_control/argentina/layout_signal" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
+                          <li><a class="dropdown-item" href="#" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/panel_control/usa/layout_signal" onclick="seleccionarPais('usa')">USA</a></li>
+                          <li><a class="dropdown-item" href="#" onclick="seleccionarPais('usa')">USA</a></li>
+
                                                 
                         </ul>
                     </li>
@@ -103,32 +104,41 @@
     <script>
         function seleccionarPais(pais) {
             localStorage.setItem('paisSeleccionado', pais);
+        
+            var usuario_id = localStorage.getItem('usuario_id');
+        
+            var layoutOrigen = 'layout_signal';
+            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
+            window.location.href = url;
         }
+        
          correo_electronico = localStorage.getItem("correo_electronico");  
          cuentaBroker = localStorage.getItem("cuenta");  
          simulado = localStorage.getItem("selector");  
          access_token = localStorage.getItem("access_token")
          rol = localStorage.getItem('roll');
          selectedCountry  = localStorage.getItem('paisSeleccionado');
-        
+         usuario_id = localStorage.getItem('usuario_id');
        
          document.getElementById('guardarPaisSeleccionado').addEventListener('click', function() {
-           
-            //var currentFileName = window.location.pathname.split('/').pop(); // Obtiene el nombre del archivo actual
-            var layoutOrigen = 'layout_signal'; // Cambia 'nombre_del_layout' por el valor deseado
-            var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen;
-
-            
+            var pais = selectedCountry;
+            localStorage.setItem('paisSeleccionado', pais);
+        
+            var usuario_id = localStorage.getItem('usuario_id');
+        
+            var layoutOrigen = 'layout_signal';
+            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
             window.location.href = url;
-          }); 
+        });
+        
         
 
                 // Verificar si el rol es "administrador"
-        if (rol != 'ADMINISTRADOR') {
+      //  if (rol != 'ADMINISTRADOR') {
             // Ocultar el enlace del menú de administración
-             adminLink = document.querySelector('.nav-link.dropdown-toggle');
-            adminLink.style.display = 'none';
-        }
+      //       adminLink = document.querySelector('.nav-link.dropdown-toggle');
+      //      adminLink.style.display = 'none';
+       // }
 
 
        
