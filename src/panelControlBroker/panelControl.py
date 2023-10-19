@@ -12,6 +12,7 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from models.orden import Orden
 import strategies.datoSheet as datoSheet
 
 panelControl = Blueprint('panelControl',__name__)
@@ -75,13 +76,18 @@ def panel_control_atomatico(pais):
 
 
 def forma_datos_para_envio_paneles(ContenidoSheet):
-    
-     datos_desempaquetados =  list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
-     for i, dato in enumerate(datos_desempaquetados):
+    datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+    for i, dato in enumerate(datos_desempaquetados):
         dato = list(dato)
         dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
         datos_desempaquetados[i] = tuple(dato)
         dato[0] = dato[0].replace("MERV - XMEV -", "")
         datos_desempaquetados[i] = tuple(dato)
-        
-     return datos_desempaquetados
+        orden_existente = Orden.query.filter_by(symbol=dato[0]).first()
+        if orden_existente:  # Asegúrate de que se encontró una orden
+            dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
+            datos_desempaquetados[i] += dato_extra
+        else:
+            # Si no se encontró una orden, puedes manejarlo de alguna manera o simplemente dejar los campos vacíos
+            datos_desempaquetados[i] += (None, None)
+    return datos_desempaquetados

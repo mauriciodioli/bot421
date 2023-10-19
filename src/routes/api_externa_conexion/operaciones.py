@@ -130,7 +130,7 @@ def operaciones_desde_seniales_sin_cuenta():
                     status='operado'
                 )
                 db.session.add(nueva_orden)
-                db.session.commit() 
+            db.session.commit() 
                 #get.current_session = db.session
             db.session.close()
           
