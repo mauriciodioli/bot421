@@ -29,7 +29,7 @@ def panel_control_sin_cuenta():
     pais = request.args.get('country')
     layout = request.args.get('layoutOrigen')
     if pais == "argentina":
-         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
     elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
     else:
@@ -45,7 +45,7 @@ def panel_control_sin_cuenta():
 @panelControl.route("/panel_control/<pais>/<layout>")
 def panel_control(pais, layout):
      if pais == "argentina":
-         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
@@ -63,7 +63,7 @@ def panel_control(pais, layout):
 @panelControl.route("/panel_control_atomatico/<pais>")
 def panel_control_atomatico(pais):
      if pais == "argentina":
-         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:

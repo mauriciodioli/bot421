@@ -3,10 +3,12 @@ from pipes import Template
 from unittest import result
 import requests
 import json
+import random
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,current_app
 from utils.common import Marshmallow, db, get
 from models.instrumento import Instrumento
 from models.operacion import Operacion
+from models.orden import Orden
 from models.logs import Logs
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
@@ -14,7 +16,9 @@ import time
 import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.instrumentos as inst
+import strategies.datoSheet as datoSheet
 from panelControlBroker.panelControl import panel_control
+from panelControlBroker.panelControl import forma_datos_para_envio_paneles
 import threading
 import jwt
 from datetime import datetime  # Agrega esta línea para obtener la fecha y hora actual
@@ -79,7 +83,73 @@ def estadoOperacion():
 
     return render_template("login.html")
 
+@operaciones.route("/operaciones_desde_seniales_sin_cuenta/", methods=["POST"]) 
+def operaciones_desde_seniales_sin_cuenta():
+    try:
+        if request.method == 'POST':
+            access_token = request.form['access_token']
+            ticker = request.form['symbol']
+            ut1 = request.form['ut']
+            signal = request.form['senial']
+            cuentaUser = request.form['correo_electronico']
+            pais = request.form['paisSeleccionado']
+            if access_token:
+                app = current_app._get_current_object()  
+                userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                
+            # Intentamos encontrar el registro con el symbol específico
+            orden_existente = Orden.query.filter_by(symbol=ticker).first()
 
+            if orden_existente:
+                # Si el registro existe, lo actualizamos
+                orden_existente.user_id = userId
+                orden_existente.userCuenta = cuentaUser
+                orden_existente.ut = ut1
+                orden_existente.senial = signal
+                orden_existente.clOrdId_alta_timestamp=datetime.now()
+                orden_existente.status = 'operado'
+            else:
+                # Si no existe, creamos un nuevo registro
+                nueva_orden = Orden(
+                    user_id=userId,
+                    userCuenta=cuentaUser,
+                    accountCuenta="sin cuenta broker",
+                    clOrdId_alta=random.randint(1,100000),
+                    clOrdId_baja='',
+                    clientId='',
+                    wsClOrdId_timestamp=datetime.now(),
+                    clOrdId_alta_timestamp=datetime.now(),
+                    clOrdId_baja_timestamp=None,
+                    proprietary=True,
+                    marketId='',
+                    symbol=ticker,
+                    tipo="sin tipo",
+                    tradeEnCurso="si",
+                    ut=ut1,
+                    senial=signal,
+                    status='operado'
+                )
+                db.session.add(nueva_orden)
+                #get.current_session = db.session
+            db.session.close()
+          
+            
+            if pais == "argentina":
+               ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            elif pais == "usa":
+                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+            else:
+              return "País no válido"
+          
+          
+            datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
+          
+            return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+        else:
+            return jsonify({'error': 'Método no permitido'}), 405  # 405 significa Método no permitido
+    except Exception as e:
+        # Tu código de manejo de excepciones aquí
+        return render_template('notificaciones/errorOperacionSinCuenta.html')           
 
     
 @operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
