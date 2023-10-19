@@ -48,7 +48,7 @@ class Operacion:
 
     def enviar_orden(self, cuenta):
         if self.validar_saldo(cuenta):
-            get.pyRofexInicializada.order_report_subscription()
+           # get.pyRofexInicializada.order_report_subscription()
             get.pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
            
             return True

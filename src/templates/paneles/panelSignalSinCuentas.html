@@ -135,6 +135,22 @@ function updateTable() {
     
       var filasCambiadas = comparaFilas(elementosAntes, response);
       //console.log(filasCambiadas);
+
+      // Crea una fila de encabezado
+      var headerRow = document.createElement('tr');
+      // Agrega encabezados a cada columna
+      headerRow.innerHTML = `
+      <th>Orden</th>
+      <th>Symbol</th>
+      <th>Type</th>
+      <th>Signal</th>
+      <th>In Progress</th>
+      <th>Ut</th>
+      <th>Operado</th>
+      <th>Acciones</th>
+      `;
+      // Agrega la fila de encabezado a la tabla
+      tableBody.appendChild(headerRow);
       for (var i = 0; i < response.datos.length; i++) {
 
         var dato = response.datos[i];
@@ -146,6 +162,7 @@ function updateTable() {
             var filaId = 'fila-' + i;
             row.setAttribute('id', filaId); // Agrega un ID a la fila
             row.innerHTML = `
+            
                 <td>${numeroDeOrden}</td>
                 <td>${dato[0]}</td>
                 <td>${dato[1]}</td>
@@ -168,6 +185,7 @@ function updateTable() {
                   </div>                             
                 </td>
             `;
+
             tableBody.appendChild(row);
             if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
               document.getElementById(filaId).style.display = 'none'; // Oculta la fila
