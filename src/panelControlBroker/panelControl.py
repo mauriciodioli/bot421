@@ -29,6 +29,7 @@ def obtener_pais():
 def panel_control_sin_cuenta():
     pais = request.args.get('country')
     layout = request.args.get('layoutOrigen')
+    usuario_id = request.args.get('usuario_id')
     if pais == "argentina":
          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
     elif pais == "usa":
@@ -36,15 +37,18 @@ def panel_control_sin_cuenta():
     else:
          return "País no válido"
      
-    datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet) 
+    datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,usuario_id)
        
     if layout == 'layout_signal':
         return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
     if layout == 'layout': 
         return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
-
-@panelControl.route("/panel_control/<pais>/<layout>")
-def panel_control(pais, layout):
+    
+@panelControl.route("/panel_control")
+def panel_control():
+     pais = request.args.get('country')
+     layout = request.args.get('layoutOrigen')
+     usuario_id = request.args.get('usuario_id')
      if pais == "argentina":
          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
      elif pais == "usa":
@@ -53,7 +57,7 @@ def panel_control(pais, layout):
          return "País no válido"
      
      
-     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
+     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,usuario_id)
     
      if layout == 'layout_signal':
         return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
@@ -61,29 +65,29 @@ def panel_control(pais, layout):
         return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
 
 
-@panelControl.route("/panel_control_atomatico/<pais>")
-def panel_control_atomatico(pais):
+@panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>")
+def panel_control_atomatico(pais,usuario_id):
      if pais == "argentina":
          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
          return "País no válido"
-     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
+     datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,usuario_id)
     
     
      return jsonify(datos=datos_desempaquetados)
 
 
-def forma_datos_para_envio_paneles(ContenidoSheet):
+def forma_datos_para_envio_paneles(ContenidoSheet,usuario_id):
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
     for i, dato in enumerate(datos_desempaquetados):
         dato = list(dato)
         dato.append(i+1)  # El +1 es porque los índices empiezan en 0, pero parece que tus números de orden empiezan en 1.
         datos_desempaquetados[i] = tuple(dato)
         dato[0] = dato[0].replace("MERV - XMEV -", "")
-        datos_desempaquetados[i] = tuple(dato)
-        orden_existente = Orden.query.filter_by(symbol=dato[0]).first()
+        datos_desempaquetados[i] = tuple(dato)       
+        orden_existente = Orden.query.filter_by(symbol=dato[0], user_id=usuario_id).first()
         if orden_existente:  # Asegúrate de que se encontró una orden
             dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
             datos_desempaquetados[i] += dato_extra

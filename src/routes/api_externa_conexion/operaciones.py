@@ -143,7 +143,7 @@ def operaciones_desde_seniales_sin_cuenta():
               return "País no válido"
           
           
-            datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet)
+            datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,userId)
           
             return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
         else:

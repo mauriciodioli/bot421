@@ -124,9 +124,10 @@ function updateTable() {
   // Realizar una solicitud AJAX para obtener los nuevos datos
 
   var paisSeleccionado = localStorage.getItem('paisSeleccionado');
-
+  var usuario_id = localStorage.getItem('usuario_id');
   var xhr = new XMLHttpRequest();
-  var url = '/panel_control_atomatico/'+paisSeleccionado;
+  var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id;
+  
   xhr.open('GET', url, true);
   //  encabezado Content-Type
   xhr.setRequestHeader('Content-Type', 'application/json');
