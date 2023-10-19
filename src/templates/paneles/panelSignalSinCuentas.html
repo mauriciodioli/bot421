@@ -39,7 +39,7 @@
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="confirmModalLabel">Confirmar Operación</h5>
+                    <h5 class="modal-title" id="confirmModalLabel">Confirm Operation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>                                    
                     <div class="modal-body">
@@ -111,7 +111,10 @@ document.addEventListener('click', function(event) {
   }
 });
 
-
+// Llama a la función de actualización inicial
+window.addEventListener('load', function() {
+  updateTable();
+});
 
 function updateTable() {
    // Guarda los elementos visibles antes de la actualización
