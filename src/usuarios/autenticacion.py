@@ -156,13 +156,14 @@ def home():
 @autenticacion.route("/loginIndex", methods=['POST'])
 def loginIndex():
     if request.method == 'POST':
-        print("intenta crear tablaaaaaaaaaaaaa_____________________   ")
+       
         
         access_token = request.json.get('token')
         refresh_token  = request.json.get('refresh_token')
         selector = request.json.get('selectorEnvironment')
         account = request.json.get('account')
         print("___________________token   ", access_token)
+        
         
         if access_token:
             app = current_app._get_current_object()
@@ -171,15 +172,17 @@ def loginIndex():
                 # Decodificar el token y obtener el id del usuario
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 user = Usuario.query.get(user_id)
-                
-                print("user ___________", user.id)
-                print("userid ________________", user_id)
-                print("userCuenta ________________", user.cuentas[0].userCuenta)
+                if len(user.cuentas) > 0:
+                    user_cuenta = user.cuentas[0].userCuenta
+                    # do something with user_cuenta
+                else:
+                    user_cuenta ='null'
+              
                 
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
                     # return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
-                    resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': user.cuentas[0].userCuenta, 'selector': selector}))
+                    resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': user_cuenta, 'selector': selector}))
                     resp.headers['Content-Type'] = 'application/json'
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
