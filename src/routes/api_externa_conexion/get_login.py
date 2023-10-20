@@ -60,6 +60,10 @@ pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {}
+diccionario_global_sheet = {}
+diccionario_global_sheet_intercambio = {}
+hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
+
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.bull.xoms.com.ar/"
 ws_url = "wss://api.bull.xoms.com.ar/"
