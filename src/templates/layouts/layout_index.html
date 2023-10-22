@@ -109,6 +109,13 @@
    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     
-    
+    <script>
+         //esto es para que el menú desplegable se cierre al ser seleccionado
+        $(document).ready(function() {
+            $(".navbar-nav a").click(function() {
+                $(".navbar-collapse").collapse('hide');
+            });
+        });
+    </script>
 </body>
 </html>

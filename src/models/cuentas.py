@@ -18,7 +18,8 @@ class Cuenta(db.Model):
     passwordCuenta = db.Column(db.LargeBinary(128), nullable=False)
     accountCuenta = db.Column(db.String(500), nullable=True)
     selector = db.Column(db.String(500), nullable=True)
-    
+    ficha = relationship("Ficha", back_populates="cuentas")
+    trazaFichas = relationship('TrazaFicha', backref='cuenta')
     usuarios = relationship("Usuario", back_populates="cuentas")
 
     

@@ -75,7 +75,7 @@ def ruta_de_test_ws():
 
   
 def get_instrumento_para_suscripcion_ws():
-      ContenidoSheet = datoSheet.leerSheet()
+      ContenidoSheet = datoSheet.leerSheet('1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s','bot')
       datoSheet.crea_tabla_orden()  
       return ContenidoSheet
     

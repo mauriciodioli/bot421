@@ -1,0 +1,64 @@
+{% extends "layouts/layout_signal.html" %}
+{% block content %}
+
+<div class="jumbotron">
+  <h1 class="display-4">Signs!</h1>
+  <p class="lead">To operate you can go to Dashboard</p>
+  <hr class="my-4">
+</div>
+
+<div class="container p-4">   
+  <table class="table table-dark table-striped" id="signalTable">
+    <thead>           
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Symbol</th>
+        <th scope="col">type </th>
+        <th scope="col">Signal</th>
+        <th scope="col">In Progress</th>
+        <th scope="col"> Ut</th>      
+      </tr>            
+    </thead>
+    <tbody>
+      {% for dato in datos %}
+      
+        <tr class="fila-{{ dato[7] }}">
+          <th scope="row">{{ dato[7] }}</th>
+          <td>{{ dato[0] }}</td>
+          <td>{{ dato[1] }}</td>
+          <td>{{ dato[4] }}</td>
+          <td>{{ dato[2] }}</td>
+          <td>{{ dato[3] }}</td>                        
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+   
+    // Aquí puedes escribir tu código JavaScript para cambiar el color de las filas
+    // según el valor de dato[6]
+    var filas = document.querySelectorAll('tbody tr');
+   
+    filas.forEach(function(fila) {
+      var clase = fila.classList[1]; // Obtenemos la clase que indica el color
+      fila.style.backgroundColor = getColor(clase);
+    });
+    
+    function getColor(clase) {
+      switch (clase) {
+        case 'fila-1':
+          return 'red'; // Puedes cambiar 'red' por el color que desees
+        case 'fila-2':
+          return 'green'; // Puedes cambiar 'green' por el color que desees
+        // Agrega más casos según tus necesidades
+        default:
+          return 'white'; // Color por defecto
+      }
+    }
+  });
+</script>
+
+{% endblock %}
