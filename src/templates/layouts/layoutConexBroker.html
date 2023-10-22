@@ -29,13 +29,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.7.0/dist/pickr.min.js"></script>
     <!--CSS PERSONALIZADO -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
 </head>
 
 <body>
     <!-- As a heading -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
+            <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico" ></h1>
             <h1 id="mensaje_cuentaBroker" name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
             <h1 id="mensaje_simulado" name="mensaje_simulado"  id="mensaje_simulado"></h1>
            
@@ -69,16 +70,33 @@
                     <li class="nav-item ">
                         <a class="nav-link active" aria-current="page" href="/home">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/panel_control">Panel</a>
-                    </li>
+                   
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Tokens</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Paneles</a>
+                        <ul class="dropdown-menu">    
+                            <li><a class="dropdown-item"id="guardarPaisSeleccionado1">signals</a></li>                                 
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/panel_control/argentina" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/panel_control/usa" onclick="seleccionarPais('usa')">USA</a></li>                          
+                        </ul>
+                    </li>
+                    
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
                         <ul class="dropdown-menu">              
+                            <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
+                                
+                                <div class="col">  
+                                    <li><button type="submit" class="dropdown-item">Generar</button></li>   
                                      
-                          <li><a class="dropdown-item" href="/" >Generar</a></li>  
+                              </div>
+                              </form>    
+                           
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/">Listar</a></li>
+                          <li><a class="dropdown-item" href="/fichasToken_fichas_listar">Listar</a></li>
                                               
                         </ul>
                     </li>
@@ -184,6 +202,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     <script>
+        selectedCountry  = localStorage.getItem('paisSeleccionado');
+        document.getElementById('guardarPaisSeleccionado1').addEventListener('click', function() {
+           
+            window.location.href = '/panel_control_sin_cuenta?country=' + selectedCountry;
+          }); 
+
+        function seleccionarPais(pais) {
+            localStorage.setItem('paisSeleccionado', pais);
+        }
          correo_electronico = localStorage.getItem("correo_electronico");  
          cuentaBroker = localStorage.getItem("cuenta");  
          simulado = localStorage.getItem("selector");  
@@ -192,7 +219,7 @@
       
 
         document.getElementById("access_token_form_Abm").value = access_token;
-      
+        document.getElementById("access_token_form_GenerarFicha").value = access_token;
         document.addEventListener('DOMContentLoaded', function() {
             let usuario_id = localStorage.getItem('usuario_id');
             document.getElementById("usuario_id").value = usuario_id;
@@ -235,7 +262,16 @@
         }
 
 
-
+       
+            //esto es para que el menú desplegable se cierre al ser seleccionado
+            $(document).ready(function() {
+                $(".navbar-nav .nav-item.dropdown").on("click", function(e) {
+                    if ($(e.target).hasClass('dropdown-toggle')) {
+                        return;
+                    }
+                    $(".navbar-collapse").collapse('hide');
+                });
+            });
     </script>
    
 </body>

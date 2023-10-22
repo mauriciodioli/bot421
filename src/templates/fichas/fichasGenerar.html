@@ -1,0 +1,301 @@
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% extends 'layouts/layout_fichas.html'%}
+{% block content%}
+ <body>
+    <div class="container" id="cardIndex">
+        <div class="card card-body cardIndexFichas">
+          <h2>Ficha</h2>
+          <h4 class="planes-titulo" style="color: gold; font-size: 24px;">$ {{total_para_fichas }} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Disponible</span></h4>
+          <h4 class="planes-titulo" style="color: white; font-size: 24px;">60% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">De cuenta</span></h4>
+          <hr class="separator">
+          <p style="margin-bottom: 5px;">Varia según mercado</p>
+          <p style="margin-bottom: 5px;">Valor variable: <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Si</span></p>
+          <p style="margin-bottom: 5px;">Total {{total_cuenta}} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Cuenta</span></p>
+          <div class="card-corner-band">
+              <div class="card-corner-text">NUEVO</div>
+          </div>        
+          <button id="btnCrearFicha" class="card-button" style="margin-top: 20px;">Crear Ficha</button>
+       
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="CrearFichas" tabindex="-1" aria-labelledby="CrearFichasModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content border shadow">
+                
+                <div class="modal-header">
+                    <h6 class="modal-title" id="CrearFichasModalLabel" style="color: blue; margin-bottom: 10px;">{{total_para_fichas }}</h6>
+                    <h2 class="modal-title" id="valorComboSeleccionado" style="color: green; margin-left: 100px; text-align: center;">0</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <!-- Primer combobox con etiqueta -->
+                    <div class="mb-3">
+                        <label for="modoCantidad" class="form-label text-dark">Selecciona modo</label>
+                        <select class="form-select" id="modoCantidad" aria-label="Descripción 1">
+                            <option value="opcion1">%</option>
+                            <option value="opcion2">Cantidad</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <select class="form-select" id="comboCantidad" aria-label="Descripción 1">
+                            <option value="opcion1">10</option>
+                            <option value="opcion2">20</option>
+                            <option value="opcion3">30</option>
+                            <option value="opcion4">40</option>
+                            <option value="opcion5">50</option>
+                            <option value="opcion6">60</option>
+                            <option value="opcion7">70</option>
+                            <option value="opcion8">80</option>
+                            <option value="opcion9">90</option>
+                            <option value="opcion10">100</option>
+                        </select>
+                    </div>
+                    
+                    <div id="inputCantidad" class="mb-3" style="display: none;">
+                        <label for="inputCantidad" class="form-label text-dark">Ingrese Cantidad</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span> <!-- Agrega el signo de dólar -->
+                            <input type="text" class="form-control" id="inputCantidad1" name="inputCantidad1">
+                            <button class="btn btn-primary" id="btnGuardarCantidad">Guardar</button> <!-- Agrega el botón -->
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnGuardarCrear" class="btn btn-primary" data-bs-dismiss="modal">Crear</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="MuestraValorFicha" tabindex="-1" aria-labelledby="MuestraValorFichaModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content border shadow">
+                
+                <div class="modal-header">
+                </div>
+                
+                <div class="modal-body">
+                    <!-- MODAL PARA EL VALOR DEL TOKEN -->
+                    
+                </div>
+                <div class="modal-footer">                  
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
+    <div class = 'container p-4'>
+            <table class="table table-dark table-striped">
+                <thead>           
+                    <tr>
+                        <th scope="col">Ficha</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Inicial</th>
+                        <th scope="col">Capitalizacion</th>
+                        <th scope="col">Operaciones</th>
+                    </tr>            
+                </thead>
+                <tbody>
+                    {% for fichas in datos %}
+                        <tr>
+                            <th scope="row">{{fichas.monto_efectivo}}</th>
+                            <td>{{ fichas.user_id }}</td>  
+                            <td>{{fichas.estado }}</td>                                      
+                            <td>{{ fichas.id }}</td>
+                            <td>{{ fichas.interes }}</td>                            
+                            <td class="d-flex"> 
+                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal" data-user-id="{{ fichas.user_id }}" data-ficha-id="{{ fichas.id }}" onclick="setFichaData(this.getAttribute('data-user-id'), this.getAttribute('data-ficha-id'))">Eliminar</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>
+
+<div class="modal fade" id="eliminarFichaModal" tabindex="-1" aria-labelledby="eliminarFichaModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="eliminarFichaModal">Eliminar Ficha</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="eliminarFichaForm" action="/eliminar-ficha" method="POST">
+          <div class="modal-body">
+            <input type="hidden" id="eliminarUserId" name="user_id" value="">
+            <input type="hidden" id="eliminarFichaId" name="IdFicha" value="">
+            <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta ficha?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+      <script>
+        function setFichaData(userId, fichaId) {
+            document.getElementById('eliminarUserId').value = userId;
+            document.getElementById('eliminarFichaId').value = fichaId;
+          }
+
+
+        // Espera a que el documento esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Encuentra el botón "Crear Ficha" por su ID
+            var btnCrearFicha = document.getElementById('btnCrearFicha');
+    
+            // Agrega un evento de clic al botón
+            btnCrearFicha.addEventListener('click', function() {
+                // Utiliza jQuery para abrir el modal
+                $('#CrearFichas').modal('show');
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            var total_cuenta_paraAjax = parseFloat(" {{total_cuenta}}");
+            var modoCantidad = document.getElementById('modoCantidad');
+            var comboCantidad = document.getElementById('comboCantidad');           
+            var btnGuardarCantidad = document.getElementById('btnGuardarCantidad'); 
+            var inputCantidad1 = document.getElementById('inputCantidad1');
+            var accessToken = localStorage.getItem('access_token') || ''; // Si no existe en el localStorage, se asigna una cadena vacía
+                cuenta = localStorage.getItem('cuenta') || '';
+                correoElectronico = localStorage.getItem('correo_electronico') || '';
+            modoCantidad.addEventListener('change', function() {
+                if (modoCantidad.value === 'opcion1') {
+                    comboCantidad.style.display = 'block';
+                    inputCantidad.style.display = 'none';
+                } else {
+                    comboCantidad.style.display = 'none';
+                    inputCantidad.style.display = 'block';
+                }
+            });
+
+
+
+
+            comboCantidad.addEventListener('change', function() {
+                if (modoCantidad.value === 'opcion1') {
+                    comboCantidad.style.display = 'block';
+                    inputCantidad.style.display = 'none';
+                    //console.log('Combo cambiado',comboCantidad.value);
+                    var valorCombo = parseFloat( comboCantidad.options[comboCantidad.selectedIndex].text);
+                    var valorFichas = parseFloat("{{ total_para_fichas }}");
+                    // Verifica si los valores son números válidos
+                    if (!isNaN(valorCombo) && !isNaN(valorFichas)) {
+                        var porcentaje = ( valorCombo/100) * valorFichas;                    
+                        document.getElementById('valorComboSeleccionado').innerHTML =porcentaje;
+                    }
+                } else {
+                    comboCantidad.style.display = 'none';
+                    inputCantidad.style.display = 'block';
+                }
+                
+                
+            });
+
+           
+           
+            btnGuardarCantidad.addEventListener('click', function() {
+                var cantidad = parseFloat(inputCantidad1.value);
+                var totalParaFichas = parseFloat("{{total_para_fichas}}");
+              
+        
+                if (isNaN(cantidad)) {
+                    alert("Por favor ingresa un valor válido");
+                    return;
+                }
+        
+                if (cantidad < totalParaFichas) {
+                    document.getElementById('valorComboSeleccionado').innerHTML = cantidad;
+                } else {
+                    alert("La cantidad es mayor que {{total_para_fichas}}");
+                }
+        
+               // $('#CrearFichas').modal('hide');
+            });
+
+            
+            btnGuardarCrear.addEventListener('click', function() {
+               
+                var valorComboSeleccionadoValor = parseFloat(document.getElementById('valorComboSeleccionado').textContent);
+                
+                if (!isNaN(valorComboSeleccionadoValor)) {
+                    alert("El valor de cantidad es: " + valorComboSeleccionadoValor);
+
+                    // Realizar una solicitud AJAX
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/crearFicha', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            alert('La solicitud se ha completado exitosamente.');
+                        } else {
+                            alert('Hubo un problema con la solicitud.');
+                        }
+                    };
+
+                    // Construir el objeto de datos que se enviará
+                    var data = JSON.stringify({
+                        valor: valorComboSeleccionadoValor,
+                        accessToken: accessToken,
+                        cuenta: cuenta,
+                        correoElectronico: correoElectronico,
+                        total_cuenta: total_cuenta_paraAjax
+                    });
+
+                    xhr.send(data);
+
+
+
+
+
+
+                } else {
+                    alert("El valor no es un número válido");
+                }
+            });
+            
+        });
+        
+      
+    </script>
+    
+ </body>          
+           
+{%endblock%}
+ 

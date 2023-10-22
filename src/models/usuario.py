@@ -24,8 +24,10 @@ class Usuario(db.Model):
     orden = relationship("Orden", back_populates="usuarios")
     imagenes = relationship("Image", back_populates="usuarios")
     triggerEstrategia = relationship("TriggerEstrategia", back_populates="usuarios")
+    ficha = relationship("Ficha", back_populates="usuarios")   
+    trazaFichas = relationship('TrazaFicha', back_populates='usuario')
+    logs = relationship("Logs", back_populates="usuarios")   
    
-    
  # constructor
     def __init__(self, id,correo_electronico,token,refresh_token,activo,password,roll='USUARIO'):
         self.id = id

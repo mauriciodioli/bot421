@@ -89,13 +89,14 @@ def login():
     credenciales = GoogleDrive(gauth)
     return credenciales
 
-def autenticar_y_abrir_sheet():
+def autenticar_y_abrir_sheet(sheetId,sheet_name):   
     scope = ['https://spreadsheets.google.com/feeds', 
              'https://www.googleapis.com/auth/drive']
     newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')
     creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
     client = gspread.authorize(creds)
-    sheet = client.open_by_key(SPREADSHEET_ID).sheet1   # Instrumentos del bot
+    sheet = client.open_by_key(sheetId).worksheet(sheet_name)  # Abre el sheet especificado
+   
     # solo agregue esta linea
     #sheet2 = client.open_by_key(SPREADSHEET_ID).get_worksheet(1)# Instrumentos del Arbitrador001
     #return sheet, sheet2  # Devuelve una tupla de hojas
@@ -103,10 +104,10 @@ def autenticar_y_abrir_sheet():
 
 #def leerSheet_arbitrador001(): 
 
-def leerSheet(): 
+def leerSheet(sheetId,sheet_name): 
      
      # recibo la tupla pero como este es para el bot leo el primer elemento 
-     sheet= autenticar_y_abrir_sheet() 
+     sheet= autenticar_y_abrir_sheet(sheetId,sheet_name) 
      
      symbol = sheet.col_values(5)       # ticker de mercado
      tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa

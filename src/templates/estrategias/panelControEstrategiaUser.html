@@ -66,14 +66,14 @@
             <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
           <!--  </form>-->
 
-            <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
+              <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
 
 
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
-            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
-          </td>
-        </tr>
+              <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
+              <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
+              <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
+              </td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
@@ -413,7 +413,7 @@
     
   });
   
-
+  
  
   function seleccionarCuenta(cuentaId, cuentaUserId, cuentaUser,accountCuenta) {
     document.getElementById('cuentaBroker').value = accountCuenta;

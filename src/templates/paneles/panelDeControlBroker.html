@@ -1,19 +1,77 @@
 {% extends "layouts/layoutConexBroker.html" %}
 {% block content %}
 
-<div class="jumbotron">
-  <h1 class="display-4">Bienvenido!, estas logeado en la cuenta del Broker</h1>
-  <p class="lead">Para operar puedes seleccionar la pestaña estrategia</p>
-  <hr class="my-4">
-  <p>Para ir a operaciones puedes presionar el boton.</p>
-  <a class="btn btn-primary btn-lg" href="/operar" role="button">Operaciones</a>
-</div>
+  <div class="jumbotron">
+    <h1 class="display-4">Señales!</h1>
+    <p class="lead">Para operar puedes presionar el boton con el color correspondiente</p>
+    <hr class="my-4">
+  
+  </div>
+  <div class = 'container p-4'>   
+    <table class="table table-dark table-striped"  id="signalTable">
+      <thead>           
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>         
+          <th></th>
+          <th></th>  
+        </tr>         
+      </thead>
+      <tbody>
+        
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>             
+                <td>CARGANDO DATOS, ESPERE</td>
+                <td></td>   
+                   
+                
+              </tr>
+           
+      </tbody>
+    </table>
+    
+        <div class="modal-content" style="color: black;">
+          <form id="registro-usuario-form" action="/operaciones_desde_seniales" method="POST">
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmar Operación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>                                    
+                    <div class="modal-body">
+                      ¿Estás seguro de que deseas realizar esta operación?                    
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="access_token" name="access_token">
+                      </div>
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="symbol" name="symbol">
+                      </div>
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="ut" name="ut">
+                      </div>    
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="senial" name="senial">
+                      </div>  
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="cuentaEnvioAjax" name="cuentaEnvioAjax">
+                      </div>                                    
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>                    
+                    <button type="submit" id="confirmBtn" class="btn btn-primary my-2" >Confirmar</button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>  
 <script>
-// Definir la función showError
-function showError(message) {
-  console.error(message);
-  // Aquí puedes agregar el código para mostrar el error al usuario, como una alerta o una notificación en la página.
-}
+
 //{% if cuenta is defined %}
 // Acceder a los tokens desde el diccionario de contexto de Flask
 var cuenta = "{{ cuenta[0] }}";
@@ -28,8 +86,235 @@ localStorage.setItem("cuenta", cuenta);
 localStorage.setItem("usuario", usuario);
 localStorage.setItem("selector", selector);
 //{% endif %}
+document.addEventListener('click', function(event) {
+  if (event.target && event.target.id == "boton-despues-carga-tabla") {
+      
+      access_token = localStorage.getItem('access_token');
+      var cuentaEnvioAjax = localStorage.getItem('cuenta');
+      var symbol = event.target.dataset.symbol;
+      var senial = event.target.dataset.senial;      
+      var ut = event.target.dataset.ut;
+      
+      // Llenar los campos ocultos en el formulario del modal
+      document.getElementById('symbol').value = symbol;
+      document.getElementById('senial').value = senial;     
+      document.getElementById('ut').value = ut;
+      document.getElementById('access_token').value = access_token;
+      document.getElementById('cuenta').value = cuentaEnvioAjax;
+       // Cerrar el modal
+       $('#confirmModal').modal('hide');
+  }
+});
 
 
+
+function updateTable() {
+   // Guarda los elementos visibles antes de la actualización
+   var elementosAntes = obtenerElementos();
+
+  var cambiosAntes = compararCambios();
+  // Realizar una solicitud AJAX para obtener los nuevos datos
+
+  var paisSeleccionado = localStorage.getItem('paisSeleccionado');
+
+  var xhr = new XMLHttpRequest();
+  var url = '/panel_control_atomatico/'+paisSeleccionado;
+  xhr.open('GET', url, true);
+  //  encabezado Content-Type
+  xhr.setRequestHeader('Content-Type', 'application/json');
+
+  xhr.onload = function() {
+    if (xhr.status >= 200 && xhr.status < 400) {
+      // La solicitud fue exitosa, actualiza la tabla     
+      var response = JSON.parse(xhr.responseText);
+     
+      var tableBody = document.getElementById('signalTable').getElementsByTagName('tbody')[0];
+      tableBody.innerHTML = ''; // Limpiar el contenido actual de la tabla
+
+      
+    
+      var filasCambiadas = comparaFilas(elementosAntes, response);
+      //console.log(filasCambiadas);
+      for (var i = 0; i < response.datos.length; i++) {
+
+        var dato = response.datos[i];
+        //console.log(dato);
+        if (dato[3] > '0' && (dato[4] == 'OPEN.' || dato[4] == 'closed.')) {
+            var row = document.createElement('tr');
+            var numeroDeOrden = i + 1; // Empieza desde 1
+             // Crear un identificador único para esta fila (puedes usar un dato específico o el índice)
+            var filaId = 'fila-' + i;
+            row.setAttribute('id', filaId); // Agrega un ID a la fila
+              // Agrega una clase CSS según el valor de dato[4]
+            var colorClass = dato[4] == 'OPEN.' ? 'bg-success' : 'bg-danger';
+
+            row.innerHTML = `
+            <td>${numeroDeOrden}</td>
+            <td>${dato[0]}</td>
+            <td>${dato[1]}</td>
+            <td>${dato[4]}</td>
+            <td>${dato[2]}</td>
+            <td>${dato[3]}</td>
+            <td class="operado-column"></td>
+            <td>
+              <div class="form-group">
+                <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+              </div> 
+              <div class="form-group">                   
+                <input type="hidden" name="senial" value="{{ senial }}">
+                <input type="hidden" name="ut" value="{{ ut }}">
+                <input type="hidden" id="datoValor" class="form-control"> 
+                <button id="boton-despues-carga-tabla" type="button" class="btn btn-block form-control ${colorClass}" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>
+              </div>                             
+            </td>
+          `;
+            tableBody.appendChild(row);
+            if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
+              document.getElementById(filaId).style.display = 'none'; // Oculta la fila
+            }
+        }
+    }
+    // Después de actualizar la tabla, puedes comparar los cambios nuevamente
+    var cambiosDespues = compararCambios();
+
+    var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
+    var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
+
+    console.log('Cambios en estado OPEN:', openChanged);
+    console.log('Cambios en estado closed:', closedChanged);
+    // Oculta las filas que no cambiaron
+   
+    } else {
+      // Hubo un error en la solicitud
+      showError('Error al obtener los datos: ' + xhr.statusText);
+    }
+  };
+
+  xhr.onerror = function() {
+    showError('Error de red al intentar obtener los datos');
+  };
+  //console.log('XHR:', xhr);
+  //console.log('URL:', xhr.url);
+  xhr.send();
+}
+
+// Llama a la función de actualización inicial/
+//updateTable();
+
+// Establece un intervalo para actualizar la tabla cada 5 minutos
+//setInterval(updateTable, 300000); // 300000 milisegundos = 5 minutos
+//setInterval(updateTable, 90000); // 90000 milisegundos = 1 minuto 30 segundos
+setInterval(updateTable, 15000); // 15 segundos
+
+// Definir la función showError
+function showError(message) {
+  console.error(message);
+  // Aquí puedes agregar el código para mostrar el error al usuario, como una alerta o una notificación en la página.
+}
+
+function compararCambios() {
+  var openBefore = contarElementosOpen();
+  var closedBefore = contarElementosClosed();
+
+
+  return {
+    openBefore: openBefore,
+    closedBefore: closedBefore
+  };
+}
+
+function contarElementosOpen() {
+  var openCount = 0;
+  var allTds = document.querySelectorAll('td:nth-child(4)');
+  
+  allTds.forEach(function(td) {
+    if (td.textContent.includes("OPEN.")) {
+      openCount++;
+    }
+  });
+
+  return openCount;
+}
+function contarElementosClosed() {
+  var closedCount = 0;
+  var allTds = document.querySelectorAll('td:nth-child(4)');
+  
+  allTds.forEach(function(td) {
+    if (td.textContent.includes("closed.")) {
+      closedCount++;
+    }
+  });
+
+  return closedCount;
+}
+
+function obtenerElementos() {
+  var elementosVisibles = [];
+  var filas = document.getElementById('signalTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+  
+  for (var i = 0; i < filas.length; i++) {
+    if (filas[i].style.display !== 'none') {
+      elementosVisibles.push(filas[i]);
+    }
+  }
+  console.log('Elementos visibles:', elementosVisibles);
+  return elementosVisibles;
+}
+
+function comparaFilas(elementosAntes, response) {
+  var filasCambiadas = [];
+  
+  // Itera sobre los elementos antes de la actualización
+  elementosAntes.forEach(function(filaAntes) {
+    var datoAntes = obtenerDatoDesdeFila(filaAntes);    
+    var idAntes = datoAntes[0]; // Supongo que el primer elemento es un identificador único
+    //debugger;
+    //console.log("idAntes:", idAntes);
+      // Busca el mismo dato en la respuesta
+      var datoDespues = response.datos.find(function(dato) {
+        //console.log("dato[0]:", dato[0]);
+        return dato[1] === idAntes;
+      });
+
+    // Si el dato ha cambiado, añádelo a la lista de filas cambiadas
+    if (datoDespues && datoDespues[4] !== datoAntes[3]) {
+      filasCambiadas.push(datoDespues);
+      console.log("El dato ha cambiado:", datoDespues);
+    }
+  });
+
+  return filasCambiadas;
+}
+
+
+function ocultarFilasNoCambiadas(elementosAntes) {
+  var filas = document.getElementById('signalTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+  for (var i = 0; i < filas.length; i++) {
+    // Obtener el dato[3] de la fila actual
+    var dato = obtenerDatoDesdeFila(filas[i]);
+
+    // Verificar si el dato[3] ha cambiado
+    if (!elementosAntes.includes(filas[i]) && dato[3] === '0') {
+      filas[i].style.display = 'none';
+    }
+  }
+}
+
+
+function obtenerDatoDesdeFila(fila) {
+  // Obtener los valores de cada celda de la fila
+  
+  var celdas = fila.getElementsByTagName('td');
+  
+  // Crear un array para almacenar los valores
+  var dato = [];
+  for (var j = 0; j < celdas.length; j++) {    
+    dato.push(celdas[j].textContent.trim());    
+  }
+
+  return dato;
+}
 
 </script>
 {% endblock%}
