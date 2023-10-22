@@ -26,6 +26,8 @@ arbitraje_001 = Blueprint('arbitraje_001',__name__)
 
 
 mapeo = {}
+caucion1d = 0
+caucion7d = 0
 
 # ****************************************************************************************
 # ****************************************************************************************
@@ -123,7 +125,12 @@ def buscar_valores_completos_i(symbol):
     return p48hs, z48hs, pCI, zCI
 
 
+
+
+
 # Esta estrategia opera desde la apertura hasta las 16.25 hs porque 16.30 cierra el contado.
+
+
 def Arbitrador001(message):#**66
     # esta linea tuve que modificar en datoSheet.py
     # sheet2 = client.open_by_key(SPREADSHEET_ID).get_worksheet(1)
@@ -137,111 +144,121 @@ def Arbitrador001(message):#**66
     p_value = 0
     z_value = 0
     suffix = ""
-    if Symbol.endswith("48hs"):
-        p_value = float(message["marketData"]["BI"][0]["price"])# precio para venderlo
-        z_value = message["marketData"]["BI"][0]["size"]
-        suffix = "48hs"
-    elif Symbol.endswith("CI"):
-        p_value = float(message["marketData"]["OF"][0]["price"])# precio para comprarlo
-        z_value = message["marketData"]["OF"][0]["size"]
-        suffix = "CI"
-    if suffix:
-        update_symbol_data(Symbol, p_value, z_value, suffix)        
     
-    # arbitraje inverso :  comprar el largo, vender el corto, este es mas conveniente, da plata para caucho
-    # pero hay que ser tenendor 
-    p_value = 0
-    z_value = 0
-    suffix = ""
-    if Symbol.endswith("48hs"):
-        p_value = float(message["marketData"]["OF"][0]["price"])# precio para comprarlo
-        z_value = message["marketData"]["OF"][0]["size"]
-        suffix = "48hs"
-    elif Symbol.endswith("CI"):
-        p_value = float(message["marketData"]["BI"][0]["price"])# precio para venderlo
-        z_value = message["marketData"]["BI"][0]["size"]
-        suffix = "CI"
-    if suffix:
-        update_symbol_data_i(Symbol, p_value, z_value, suffix)        
-
-
-
-
-    pCI=0       # precio del CI
-    zCI=0       # zise del CI 
-    p48hs=0     # ...
-    z48hs=0      
-    pCIi=0      # precio del CI arbitraje inverso
-    zCIi=0      # ...
-    p48hsi=0
-    z48hsi=0      
-    DIF = -1    # Inicializar DIF para evitar errores si no se actualiza
-    DIFP = -1
-    DIFPi = -1
-    dz = -1
     
-    # se supone que tengo que tener p48 y pCI de lo mismo, y z48,zCI de lo mismo. VERIFICAR
-    p48hs, z48hs, pCI, zCI = buscar_valores_completos(Symbol)
-    # se supone que tengo que tener p48 y pCI de lo mismo, y z48,zCI de lo mismo. VERIFICAR
-    p48hsi, z48hsi, pCIi, zCIi = buscar_valores_completos_i(Symbol)
+    #if "PESOS - 1D" in Symbol:
+        #caucion1d = float(message["marketData"]["OF"][0]["price"])# precio para venderlo
     
-    # Verificar que ninguno de los valores sea None, cero o negativo
-    if all(val is not None and val > 0 for val in [p48hs, z48hs, pCI, zCI, p48hsi, z48hsi, pCIi, zCIi]):
-    # tengo que ver para que lado me conviene el arbitraje: 
-    #                       C_corto -> V_largo     o    C_largo -> V_corto   ???
-    #*************************************************************************************
-        DIF = p48hs - pCI   # C_corto -> V_largo   si y solo si   p48hs > pCI
-        if (DIF>0):         
-            if (pCI != 0):
-                DIFP= (DIF / pCI)*100
-            dz = min(zCI, z48hs)
+    if "MERV - XMEV - PESOS - 7D" in Symbol:
+        caucion7d = float(message["marketData"]["BI"][0]["price"])# precio para venderlo
+    else:
+        
+        if Symbol.endswith("48hs"):
+            p_value = float(message["marketData"]["BI"][0]["price"])# precio para venderlo
+            z_value = message["marketData"]["BI"][0]["size"]
+            suffix = "48hs"
+        elif Symbol.endswith("CI"):
+            p_value = float(message["marketData"]["OF"][0]["price"])# precio para comprarlo
+            z_value = message["marketData"]["OF"][0]["size"]
+            suffix = "CI"
+        if suffix:
+            update_symbol_data(Symbol, p_value, z_value, suffix)        
+        
+        # arbitraje inverso :  comprar el largo, vender el corto, este es mas conveniente, da plata para caucho
+        # pero hay que ser tenendor 
+        p_value = 0
+        z_value = 0
+        suffix = ""
+        if Symbol.endswith("48hs"):
+            p_value = float(message["marketData"]["OF"][0]["price"])# precio para comprarlo
+            z_value = message["marketData"]["OF"][0]["size"]
+            suffix = "48hs"
+        elif Symbol.endswith("CI"):
+            p_value = float(message["marketData"]["BI"][0]["price"])# precio para venderlo
+            z_value = message["marketData"]["BI"][0]["size"]
+            suffix = "CI"
+        if suffix:
+            update_symbol_data_i(Symbol, p_value, z_value, suffix)        
 
 
-        DIFi = pCIi - p48hsi # C_largo -> V_corto  si y solo si   pCIi > p48hsi  
-        if (DIFi>0):         
-            if (p48hsi != 0):
-                DIFPi= (DIFi / p48hsi)*100
-            dzi = min(zCIi, z48hsi)
 
-    #else:# Al menos uno de los valores es None, cero o negativo
-    #    print("Arbitrador001: Al menos uno de los datos de entrada es invalido.")
-    umbrald=0.45
-    if DIFP > 0.2 and dz > 0:
-        current_time = datetime.now().strftime("%H:%M:%S,%f")[:-3]  # Formato hh:mm:ss,xxxx
-        bruto_pCI=0
-        bruto_p48hs=0
-        comision=0
-        print(current_time,"D:",Symbol[13:19]," cpraCI=", pCI, " vta48=", p48hs,DIF, "d%= {:.2f}%".format(DIFP)," dz=",dz)
 
-    #if DIFPi > 1 and dzi > 0:
-        #current_time = datetime.now().strftime("%H:%M:%S,%f")[:-3]  # Formato hh:mm:ss,xxxx
-        #print(current_time,"I:",Symbol[13:19]," cpra48=", p48hsi, " vtaCI=",pCIi,  DIFi,"d%= {:.2f}%".format(DIFPi)," dz=",dzi )
+        pCI=0       # precio del CI
+        zCI=0       # zise del CI 
+        p48hs=0     # ...
+        z48hs=0      
+        pCIi=0      # precio del CI arbitraje inverso
+        zCIi=0      # ...
+        p48hsi=0
+        z48hsi=0      
+        DIF = -1    # Inicializar DIF para evitar errores si no se actualiza
+        DIFP = -1
+        DIFPi = -1
+        dz = -1
         
+        # se supone que tengo que tener p48 y pCI de lo mismo, y z48,zCI de lo mismo. VERIFICAR
+        p48hs, z48hs, pCI, zCI = buscar_valores_completos(Symbol)
+        # se supone que tengo que tener p48 y pCI de lo mismo, y z48,zCI de lo mismo. VERIFICAR
+        p48hsi, z48hsi, pCIi, zCIi = buscar_valores_completos_i(Symbol)
         
-    original_stdout = sys.stdout     
-    # Ruta completa al archivo
-    file_path = 'Z:\\python\\Arb01log0928.csv'
-    # Redirigir la salida estándar al archivo
-    with open(file_path, 'a') as f:
-        sys.stdout = f
-        #"timestamp","Direccion","Ticker"," cpra", " vta", "Gan bruta %"," liquidez delta"
-        if (DIFP>1.5):
-            print(current_time,",D:",",",Symbol[13:19],",", pCI,",", p48hs,",",DIF,",", "{:.2f}%".format(DIFP),",",dz)
-        #if (DIFPi>0.9):
-            #print(current_time,",I:",",",Symbol[13:19],",", p48hsi,",", pCIi,",",DIFi,",", "{:.2f}%".format(DIFPi),",",dzi)
+        # Verificar que ninguno de los valores sea None, cero o negativo
+        if all(val is not None and val > 0 for val in [p48hs, z48hs, pCI, zCI, p48hsi, z48hsi, pCIi, zCIi]):
+        # tengo que ver para que lado me conviene el arbitraje: 
+        #                       C_corto -> V_largo     o    C_largo -> V_corto   ???
+        #*************************************************************************************
+            DIF = p48hs - pCI   # C_corto -> V_largo   si y solo si   p48hs > pCI
+            if (DIF>0):         
+                if (pCI != 0):
+                    DIFP= (DIF / pCI)*100
+                dz = min(zCI, z48hs)
 
-    # Restaurar la salida estándar original
 
-    sys.stdout = original_stdout
-        
-        
-        
-        
-        
-        
-    mep = 380
-    #print(" FUN Arbitrador001() .")
-    return mep
+            DIFi = pCIi - p48hsi # C_largo -> V_corto  si y solo si   pCIi > p48hsi  
+            if (DIFi>0):         
+                if (p48hsi != 0):
+                    DIFPi= (DIFi / p48hsi)*100
+                dzi = min(zCIi, z48hsi)
+
+        #else:# Al menos uno de los valores es None, cero o negativo
+        #    print("Arbitrador001: Al menos uno de los datos de entrada es invalido.")
+        umbrald=0.45
+        if DIFP > 0.2 and dz > 0:
+            current_time = datetime.now().strftime("%H:%M:%S,%f")[:-3]  # Formato hh:mm:ss,xxxx
+            bruto_pCI=0
+            bruto_p48hs=0
+            comision=0
+            print(current_time,"D:",Symbol[13:19]," cpraCI=", pCI, " vta48=", p48hs,DIF, "d%= {:.2f}%".format(DIFP)," dz=",dz, "cau1d", caucion1d, "cau7d",caucion7d)
+
+        #if DIFPi > 1 and dzi > 0:
+            #current_time = datetime.now().strftime("%H:%M:%S,%f")[:-3]  # Formato hh:mm:ss,xxxx
+            #print(current_time,"I:",Symbol[13:19]," cpra48=", p48hsi, " vtaCI=",pCIi,  DIFi,"d%= {:.2f}%".format(DIFPi)," dz=",dzi )
+            
+        """ # bloque de escribir el log
+        original_stdout = sys.stdout     
+        # Ruta completa al archivo
+        file_path = 'Z:\\python\\Arb01log0928.csv'
+        # Redirigir la salida estándar al archivo
+        with open(file_path, 'a') as f:
+            sys.stdout = f
+            #"timestamp","Direccion","Ticker"," cpra", " vta", "Gan bruta %"," liquidez delta"
+            if (DIFP>1.5):
+                print(current_time,",D:",",",Symbol[13:19],",", pCI,",", p48hs,",",DIF,",", "{:.2f}%".format(DIFP),",",dz)
+            #if (DIFPi>0.9):
+                #print(current_time,",I:",",",Symbol[13:19],",", p48hsi,",", pCIi,",",DIFi,",", "{:.2f}%".format(DIFPi),",",dzi)
+
+        # Restaurar la salida estándar original
+
+        sys.stdout = original_stdout
+        """
+        #"""
+            
+            
+            
+            
+            
+        mep = 380
+        #print(" FUN Arbitrador001() .")
+        return mep
 
 
 
@@ -292,6 +309,7 @@ def arbitrador_002():
             get.accountLocalStorage = data['cuenta']
             get.VariableParaBotonPanico = 0
             
+            # ejecuciones de setup para este arbitrador
             Cargar_Factores()# Carga diccionario de factores
             
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
