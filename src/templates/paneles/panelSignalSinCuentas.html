@@ -166,6 +166,7 @@ function updateTable() {
         var dato = response.datos[i];
         //console.log(dato);
         if (dato[3] > '0' && (dato[4] == 'OPEN.' || dato[4] == 'closed.')) {
+          if (dato[4] !== dato[6]){
             var row = document.createElement('tr');
             var numeroDeOrden = i + 1; // Empieza desde 1
              // Crear un identificador único para esta fila (puedes usar un dato específico o el índice)
@@ -179,8 +180,8 @@ function updateTable() {
                 <td>${dato[4]}</td>
                 <td>${dato[2]}</td>
                 <td>${dato[3]}</td>
-                <td>${dato[7]}</td> <!-- senial -->
-                <td>${dato[6]}</td> <!-- clOrdId_alta_timestamp -->
+                <td>${dato[6]}</td> <!-- senial -->
+                <td>${dato[8]}</td> <!-- clOrdId_alta_timestamp -->
               
                 <td>
                   <div class="form-group">
@@ -201,7 +202,8 @@ function updateTable() {
             if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
               document.getElementById(filaId).style.display = 'none'; // Oculta la fila
             }
-        }
+          }
+       }
     }
     // Después de actualizar la tabla, puedes comparar los cambios nuevamente
     var cambiosDespues = compararCambios();
