@@ -26,8 +26,6 @@
                 <td></td>             
                 <td>CARGANDO DATOS, ESPERE</td>
                 <td></td>   
-                   
-                
               </tr>
            
       </tbody>
@@ -118,9 +116,9 @@ window.addEventListener('load', function() {
 
 function updateTable() {
    // Guarda los elementos visibles antes de la actualización
-   var elementosAntes = obtenerElementos();
+  // var elementosAntes = obtenerElementos();
 
-  var cambiosAntes = compararCambios();
+ // var cambiosAntes = compararCambios();
   // Realizar una solicitud AJAX para obtener los nuevos datos
 
   var paisSeleccionado = localStorage.getItem('paisSeleccionado');
@@ -142,7 +140,7 @@ function updateTable() {
 
       
     
-      var filasCambiadas = comparaFilas(elementosAntes, response);
+    //  var filasCambiadas = comparaFilas(elementosAntes, response);
       //console.log(filasCambiadas);
 
       // Crea una fila de encabezado
@@ -166,6 +164,7 @@ function updateTable() {
         var dato = response.datos[i];
         //console.log(dato);
         if (dato[3] > '0' && (dato[4] == 'OPEN.' || dato[4] == 'closed.')) {
+          if (dato[4] !== dato[6]){
             var row = document.createElement('tr');
             var numeroDeOrden = i + 1; // Empieza desde 1
              // Crear un identificador único para esta fila (puedes usar un dato específico o el índice)
@@ -179,11 +178,11 @@ function updateTable() {
                 <td>${dato[4]}</td>
                 <td>${dato[2]}</td>
                 <td>${dato[3]}</td>
-                <td>${dato[7]}</td> <!-- senial -->
-                <td>${dato[6]}</td> <!-- clOrdId_alta_timestamp -->
+                <td>${dato[6]}</td> <!-- senial -->
+                <td>${dato[5]}</td> <!-- clOrdId_alta_timestamp -->
               
                 <td>
-                  <div class="form-group">
+                  <div class="form-group">  
                     <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
                   </div> 
                   <div class="form-group">                   
@@ -198,19 +197,20 @@ function updateTable() {
             `;
 
             tableBody.appendChild(row);
-            if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
-              document.getElementById(filaId).style.display = 'none'; // Oculta la fila
-            }
-        }
+          //  if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
+          //    document.getElementById(filaId).style.display = 'none'; // Oculta la fila
+          //  }
+          }
+       }
     }
     // Después de actualizar la tabla, puedes comparar los cambios nuevamente
-    var cambiosDespues = compararCambios();
+    //var cambiosDespues = compararCambios();
 
-    var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
-    var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
+  //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
+ //   var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
 
-    console.log('Cambios en estado OPEN:', openChanged);
-    console.log('Cambios en estado closed:', closedChanged);
+   // console.log('Cambios en estado OPEN:', openChanged);
+  //  console.log('Cambios en estado closed:', closedChanged);
     // Oculta las filas que no cambiaron
    
     } else {
