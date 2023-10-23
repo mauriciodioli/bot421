@@ -46,7 +46,6 @@ def panel_control_sin_cuenta():
     else:
       enviar_leer_sheet(pais)
       datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-  
     
     if layout == 'layout_signal':
         return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
