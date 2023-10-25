@@ -147,15 +147,20 @@ function updateTable() {
       var headerRow = document.createElement('tr');
       // Agrega encabezados a cada columna
       headerRow.innerHTML = `
-      <th>Orden</th>
-      <th>Symbol</th>
-      <th>Type</th>
-      <th>Signal</th>
-      <th>In Progress</th>
-      <th>Ut</th>
-      <th>Operated</th>
-      <th>Date</th>
-      <th>Actions</th>
+      <thead>           
+        <tr>
+          <th>Orden</th>
+          <th>Symbol</th>
+          <th>Type</th>
+          <th>Signal</th>
+          <th>In Progress</th>
+          <th>Ut</th>
+          <th>Operated</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>           
+        
       `;
       // Agrega la fila de encabezado a la tabla
       tableBody.appendChild(headerRow);
@@ -163,45 +168,46 @@ function updateTable() {
 
         var dato = response.datos[i];
         //console.log(dato);
-        if (dato[3] > '0' && (dato[4] == 'OPEN.' || dato[4] == 'closed.')) {
-          if (dato[4] !== dato[6]){
-            var row = document.createElement('tr');
-            var numeroDeOrden = i + 1; // Empieza desde 1
-             // Crear un identificador único para esta fila (puedes usar un dato específico o el índice)
-            var filaId = 'fila-' + i;
-            row.setAttribute('id', filaId); // Agrega un ID a la fila
-            row.innerHTML = `
-            
-                <td>${numeroDeOrden}</td>
-                <td>${dato[0]}</td>
-                <td>${dato[1]}</td>
-                <td>${dato[4]}</td>
-                <td>${dato[2]}</td>
-                <td>${dato[3]}</td>
-                <td>${dato[6]}</td> <!-- senial -->
-                <td>${dato[5]}</td> <!-- clOrdId_alta_timestamp -->
-              
-                <td>
-                  <div class="form-group">  
-                    <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
-                  </div> 
-                  <div class="form-group">                   
-                    <input type="hidden" name="senial" value="{{ senial }}">
-                    <input type="hidden" name="ut" value="{{ ut }}">
-                    <input type="hidden" id="datoValor" class="form-control"> 
-                                         
-                    ${dato[4] == 'OPEN.' ?  `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}"   data-ut="${ dato[3] }">Submit</button>`:''}
-                    ${dato[4] == 'closed.' ? `<button  id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${ dato[4] }" data-symbol="${ dato[0] }"  data-ut="${ dato[3] }">Submit</button>` : ''}  
-                  </div>                             
-                </td>
-            `;
-
-            tableBody.appendChild(row);
-          //  if (filasCambiadas.some(function(fila) { return fila[0] === dato[1]; })) {
-          //    document.getElementById(filaId).style.display = 'none'; // Oculta la fila
-          //  }
+        //debugger;
+        if ((dato[1] == 'USA' || dato[1] == 'ARG' || dato[1] == 'CEDEAR') && dato[2] == 'LONG_' || dato[2] == 'SHORT') {
+          if (dato[3] > '0') {
+              if (dato[4] == 'OPEN.' || dato[4] == 'closed.') {
+                  if (dato[4] !== dato[6]) {
+                 //   if (dato[0].replace(/\s/g, '') == 'AMD-48hs') {
+                 //     console.log(dato[4]);
+                //  }
+                      var row = document.createElement('tr');
+                      var numeroDeOrden = i + 1; // Empieza desde 1
+                      var filaId = 'fila-' + i;
+                      row.setAttribute('id', filaId);
+                      row.innerHTML = `
+                          <td>${numeroDeOrden}</td>
+                          <td>${dato[0]}</td>
+                          <td>${dato[1]}</td>
+                          <td>${dato[4]}</td>
+                          <td>${dato[2]}</td>
+                          <td>${dato[3]}</td>
+                          <td>${dato[6]}</td>
+                          <td>${dato[5]}</td>
+                          <td>
+                            <div class="form-group">  
+                              <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                            </div> 
+                            <div class="form-group">                   
+                              <input type="hidden" name="senial" value="{{ senial }}">
+                              <input type="hidden" name="ut" value="{{ ut }}">
+                              <input type="hidden" id="datoValor" class="form-control"> 
+                              ${dato[4] == 'OPEN.' ?  `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}"   data-ut="${ dato[3] }">Submit</button>`:''}
+                              ${dato[4] == 'closed.' ? `<button  id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${ dato[4] }" data-symbol="${ dato[0] }"  data-ut="${ dato[3] }">Submit</button>` : ''}  
+                            </div>                             
+                          </td>
+                      `;
+                      tableBody.appendChild(row);
+                  }
+              }
           }
-       }
+      }
+      
     }
     // Después de actualizar la tabla, puedes comparar los cambios nuevamente
     //var cambiosDespues = compararCambios();
