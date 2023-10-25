@@ -108,7 +108,10 @@
               }),
               success: function(response) {
                 if (response.redirect) {
+                  
                   window.location.href = response.redirect;
+                 
+              
                 } else {
                   // handle error
                   showError("No se pudo redirigir al usuario se debe ingresar el usario de broker");

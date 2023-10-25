@@ -1,7 +1,7 @@
 from utils.common import Marshmallow, db
 from ast import Return
 from http.client import UnimplementedFileMode
-from flask import current_app,g
+
 import json
 from datetime import datetime
 from re import template
@@ -24,7 +24,16 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from utils.db import db
 from datetime import datetime
-
+from flask_jwt_extended import (
+    JWTManager,
+    jwt_required,
+    create_access_token,
+    get_jwt_identity,
+    create_refresh_token,
+    set_access_cookies,
+    set_refresh_cookies
+    
+)
 from flask import (
     Flask,
     Blueprint,
@@ -34,6 +43,9 @@ from flask import (
     url_for,
     flash,
     jsonify,
+    current_app,
+    g,
+    make_response
 )
 
 
@@ -90,6 +102,13 @@ def loginApi():
 def home():
     return render_template('home.html')
 
+@get_login.route("/panel_control_broker", methods=['GET'])
+def panel_control_broker():
+     if request.method == 'GET':       
+       
+        cuenta = ['0','userCuenta','selector']
+        return render_template("/paneles/panelDeControlBroker.html", datos = cuenta)
+
 @get_login.route("/loginExtAutomatico", methods=['POST'])
 def loginExtAutomatico():
     print('get_login.loginExtAutomatico ')
@@ -132,11 +151,17 @@ def loginExtAutomatico():
                                         #     exception_handler=exception_handler)
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
-                                                return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
-                                                #return jsonify({'redirect': url_for('get_login.home')})
-                                            else:
-                                                return jsonify({'redirect': url_for('panelControl.panel_control')})
-                                            #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
+                                                resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': cuentas.userCuenta, 'selector': selector}))
+                                                resp.headers['Content-Type'] = 'application/json'
+                                                set_access_cookies(resp, access_token)
+                                                set_refresh_cookies(resp, refresh_token)
+                                                return resp
+                                            else:                                          
+                                                resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                                resp.headers['Content-Type'] = 'application/json'
+                                                set_access_cookies(resp, access_token)
+                                                set_refresh_cookies(resp, refresh_token)
+                                                return resp
                             except:
                                 #  print("contraseña o usuario incorrecto")
                               flash('Loggin Incorrect')
@@ -164,7 +189,7 @@ def loginExtAutomatico():
                                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
                             else:
                                  
-                              
+                                  # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
                                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                 else: 
                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
@@ -178,6 +203,7 @@ def loginExtAutomatico():
         except Exception as e:
             print("Otro error:", str(e))
         return render_template("cuentas/registrarCuentaBroker.html")
+
 
 
 
