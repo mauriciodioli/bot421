@@ -148,9 +148,6 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
                         <ul class="dropdown-menu">                        
                           <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>                        
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/logOutAccount">get out of account</a></li>
-                          <input type="hidden" name="access_token_get_cuentas_usuario_broker" id="access_token_get_cuentas_usuario_broker">                   
                         </ul>
                     </li>
                     <li class="nav-item ">
@@ -188,7 +185,7 @@
                 
                 
             
-                document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+               // document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
                 
                 if (simulado == 'simulado') {
                     let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
