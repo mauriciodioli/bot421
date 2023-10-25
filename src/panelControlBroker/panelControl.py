@@ -155,10 +155,10 @@ def determinar_pais(pais):
 
         lista_asociada = get.diccionario_global_sheet.get(pais, None)
         if lista_asociada is not None:
-            print(f"La lista asociada a {pais} es: {lista_asociada}")
+           # print(f"La lista asociada a {pais} es: {lista_asociada}")
             return lista_asociada
         else:
-            print(f"No se encontró una lista asociada a {pais}")
+            #print(f"No se encontró una lista asociada a {pais}")
             return None
     else:
         print(f"'get.diccionario_global_sheet' no está disponible o no es un diccionario con las listas asociadas a los países.")
