@@ -84,7 +84,7 @@ def panel_control_atomatico(pais,usuario_id):
         datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
  
      if datos_desempaquetados:
-      print(datos_desempaquetados)
+     # print(datos_desempaquetados)
       return jsonify(datos=datos_desempaquetados)
 
 
