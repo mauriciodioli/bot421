@@ -56,7 +56,6 @@ def panel_control_sin_cuenta():
         return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
     return "Página no encontrada"  # Cambia el mensaje según sea necesario
 
-
 @panelControl.route("/panel_control")
 def panel_control():
      pais = request.args.get('country')
@@ -75,7 +74,7 @@ def panel_control():
      if layout == 'layout_signal':
         return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
      if layout == 'layout' or layout == 'layoutConexBroker':      
-        return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+        return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
      return "Página no encontrada"  # Cambia el mensaje según sea necesario
 
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>")
