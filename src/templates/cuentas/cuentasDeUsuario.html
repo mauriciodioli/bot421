@@ -60,10 +60,10 @@
           {% endif %}
         {% endfor %}
         <script>  
-         
+
           
         //  document.addEventListener('DOMContentLoaded', function() {
-          
+          localStorage.setItem('paisSeleccionado','argentina');
            //en este script cargo el correo electronico almacenado en el localStorage 
            access_token = localStorage.getItem("access_token")  
            refresh_token = localStorage.getItem('refresh_token');
@@ -89,6 +89,7 @@
           access_token_inputs.forEach(function(input) {
             input.value = access_token;
           });
+          localStorage.setItem('hasVisited', 'false'); // Marcar como visitado el panelDeControlBroker
           
           if (access_token) { // Verificar si el token existe en el localStorage
           
