@@ -8,6 +8,7 @@
   
   </div>
   <div class = 'container p-4'>   
+    <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>
     <table class="table table-dark table-striped"  id="signalTable">
       <thead>           
         <tr>
@@ -167,13 +168,21 @@ function updateTable() {
       for (var i = 0; i < response.datos.length; i++) {
 
         var dato = response.datos[i];
-        //console.log(dato);
-        //debugger;
+       
+        
+        //console.log(dato[6]);
+       
+        
         if ((dato[1] == 'USA' || dato[1] == 'ARG' || dato[1] == 'CEDEAR') && 
     dato[2] == 'LONG_' || (dato[2] == 'SHORT' && dato[1] != 'ARG' && dato[1] != 'CEDEAR')) {
     if (dato[3] > '0') {
         if (dato[4] == 'OPEN.' || dato[4] == 'closed.') {
-            if (dato[4] !== dato[6]) {
+            if (dato[4] !== dato[6]) {   
+            
+              if (dato[6] !== null) { 
+                var campana = document.getElementById('Campana');
+                campana.play();
+              }            
                 var row = document.createElement('tr');
                 var numeroDeOrden = i + 1; // Empieza desde 1
                 var filaId = 'fila-' + i;

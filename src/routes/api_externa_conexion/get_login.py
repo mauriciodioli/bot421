@@ -144,11 +144,7 @@ def loginExtAutomatico():
                             try:
                                             environment =pyRofexInicializada.Environment.REMARKET
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion()
-                                        # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                                        #     order_report_handler=order_report_handler,
-                                        #     error_handler=error_handler,
-                                        #     exception_handler=exception_handler)
+                                            conexion()                                     
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
                                                 resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': cuentas.userCuenta, 'selector': selector}))
@@ -177,20 +173,24 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion()
-                               # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
-                                #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                                # order_report_handler=order_report_handler,
-                                # error_handler=error_handler,
-                                # exception_handler=exception_handler)
+                              
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
                                  return render_template("/paneles/panelDeControlBroker.html")   
                                 else:
-                                    return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
+                                    resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                    resp.headers['Content-Type'] = 'application/json'
+                                    set_access_cookies(resp, access_token)
+                                    set_refresh_cookies(resp, refresh_token)
+                                    return resp 
                             else:
                                  
                                   # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-                                  return jsonify({'redirect': url_for('panelControl.panel_control')}) 
+                                  resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                  resp.headers['Content-Type'] = 'application/json'
+                                  set_access_cookies(resp, access_token)
+                                  set_refresh_cookies(resp, refresh_token)
+                                  return resp 
                 else: 
                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
             else:
