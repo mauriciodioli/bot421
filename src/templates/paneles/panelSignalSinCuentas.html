@@ -189,7 +189,7 @@ function updateTable() {
                 row.setAttribute('id', filaId);
                 row.innerHTML = `
                     <td>${numeroDeOrden}</td>
-                    <td>${dato[0]}</td>
+                    <td>${dato[0].replace('MERV - XMEV -', '')}</td>                 
                     <td>${dato[1]}</td>
                     <td>${dato[4]}</td>
                     <td>${dato[2]}</td>

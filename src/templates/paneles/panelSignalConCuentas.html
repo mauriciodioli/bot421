@@ -115,8 +115,8 @@
                                                       
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>                    
-                    <button type="submit" id="confirmBtn" class="btn btn-primary my-2" >Confirmar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>      
+                    <button type="submit" id="confirmBtn" class="btn btn-primary my-2" disabled>Confirmar</button>
 
                   </div>
                 </div>
@@ -420,6 +420,13 @@ function obtenerDatoDesdeFila(fila) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+
+
+
+  var confirmBtn = document.getElementById('confirmBtn'); // Obtener el botón
+
+
+
   var cantidadRadio = document.getElementById('Cantidad');
   var montoRadio = document.getElementById('Monto');
   var valorCantidadInput = document.getElementById('ValorCantidad');
@@ -436,14 +443,16 @@ document.addEventListener('DOMContentLoaded', function() {
           valorMontoInput.value = '';
           valorCantidadInput.disabled = false;
           precioMercadoRadio.disabled = true;
-          precioLimiteRadio.disabled = false;
+          precioLimiteRadio.disabled = false;          
           labelPrecioMercado.style.color = 'gray'; // Deshabilitar color del label
           labelPrecioLimite.style.color = 'black'; // Habilitar color del label
+          confirmBtn.disabled = false;
       }
   });
 
   montoRadio.addEventListener('change', function() {
       if (this.checked) {
+          confirmBtn.disabled = false;
           valorCantidadInput.disabled = true;
           valorCantidadInput.value = '';
           valorMontoInput.disabled = false;
