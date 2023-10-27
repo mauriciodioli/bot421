@@ -106,7 +106,7 @@ def home():
 def panel_control_broker():
      if request.method == 'GET':       
        
-        cuenta = ['0','userCuenta','selector']#si va cero entonces no cargar localstorage
+        cuenta = ['','','']#si va cero entonces no cargar localstorage
         return render_template("/paneles/panelDeControlBroker.html", datos = cuenta)
 
 @get_login.route("/loginExtAutomatico", methods=['POST'])
