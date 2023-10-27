@@ -100,7 +100,7 @@ def forma_datos_para_envio_paneles(ContenidoSheet,usuario_id):
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
     for i, tupla_exterior in enumerate(datos_desempaquetados):
         dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-        dato[0] = dato[0].replace("MERV - XMEV -", "")
+       # dato[0] = dato[0].replace("MERV - XMEV -", "")
         orden_existente = Orden.query.filter_by(symbol=dato[0], user_id=usuario_id).first()
          
         if orden_existente:
@@ -144,7 +144,7 @@ def enviar_leer_sheet(pais):
         abort(404, description="País no válido")
         
      if pais == "argentina":
-         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:

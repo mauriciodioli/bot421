@@ -24,11 +24,11 @@
       
         <tr class="fila-{{ dato[7] }}">
           <th scope="row">{{ dato[7] }}</th>
-          <td>{{ dato[0] }}</td>
-          <td>{{ dato[1] }}</td>
-          <td>{{ dato[4] }}</td>
-          <td>{{ dato[2] }}</td>
-          <td>{{ dato[3] }}</td>                        
+          <td>{{ dato[0].replace('MERV - XMEV -', '') }}</td>
+          <td>{{ dato[1].replace('MERV - XMEV -', '') }}</td>
+          <td>{{ dato[4].replace('MERV - XMEV -', '') }}</td>
+          <td>{{ dato[2].replace('MERV - XMEV -', '') }}</td>
+          <td>{{ dato[3].replace('MERV - XMEV -', '') }}</td>                       
         </tr>
       {% endfor %}
     </tbody>
