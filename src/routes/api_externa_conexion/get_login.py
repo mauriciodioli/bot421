@@ -163,9 +163,9 @@ def loginExtAutomatico():
                               flash('Loggin Incorrect')
                               return render_template("errorLogueo.html")
                         else:
-                           # exp_date = datetime.utcfromtimestamp(exp_timestamp)
-                           # fecha_actual =   datetime.utcnow()
-                            #if fecha_actual > exp_date:
+                            exp_date = datetime.utcfromtimestamp(exp_timestamp)
+                            fecha_actual =   datetime.utcnow()
+                            if fecha_actual > exp_date:
                                 environment = pyRofexInicializada.Environment.LIVE
                 
                                 pyRofexInicializada._set_environment_parameter("url", api_url,environment)
@@ -176,18 +176,8 @@ def loginExtAutomatico():
                               
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
-                                 #return render_template("/paneles/panelDeControlBroker.html")   
-                                  return render_template('paneles/panelDeControlBroker.html', cuenta=[account, user, selector])
-                                  #return jsonify({'redirect': url_for('panelControl.panel_control')})
-                                 #return jsonify({'redirect': url_for('get_login.home')}) 
+                                 return render_template("/paneles/panelDeControlBroker.html")   
                                 else:
-<<<<<<< HEAD
-                                    return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
-                           # else:
-                                 
-                              
-                            #      return jsonify({'redirect': url_for('panelControl.panel_control')}) 
-=======
                                     resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                     resp.headers['Content-Type'] = 'application/json'
                                     set_access_cookies(resp, access_token)
@@ -201,7 +191,6 @@ def loginExtAutomatico():
                                   set_access_cookies(resp, access_token)
                                   set_refresh_cookies(resp, refresh_token)
                                   return resp 
->>>>>>> 78bd35e63cb167f1e4e77d2e709408b8e8233fa9
                 else: 
                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
             else:
@@ -307,8 +296,8 @@ def creaJsonParaConextarseSheetGoogle():
   #  print(f'Ruta hasta "src": {indice_src}')
 
     # Ruta al archivo de texto plano
+    #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
     ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    #ruta_archivo_texto = 'C:\\Users\\mdioli\\Desktop\\clavesheet.txt'    
   
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo
