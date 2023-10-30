@@ -142,9 +142,9 @@ def loginExtAutomatico():
                               flash('Loggin Incorrect')
                               return render_template("errorLogueo.html")
                         else:
-                            exp_date = datetime.utcfromtimestamp(exp_timestamp)
-                            fecha_actual =   datetime.utcnow()
-                            if fecha_actual > exp_date:
+                           # exp_date = datetime.utcfromtimestamp(exp_timestamp)
+                           # fecha_actual =   datetime.utcnow()
+                            #if fecha_actual > exp_date:
                                 environment = pyRofexInicializada.Environment.LIVE
                 
                                 pyRofexInicializada._set_environment_parameter("url", api_url,environment)
@@ -159,13 +159,16 @@ def loginExtAutomatico():
                                 # exception_handler=exception_handler)
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
-                                 return render_template("/paneles/panelDeControlBroker.html")   
+                                 #return render_template("/paneles/panelDeControlBroker.html")   
+                                  return render_template('paneles/panelDeControlBroker.html', cuenta=[account, user, selector])
+                                  #return jsonify({'redirect': url_for('panelControl.panel_control')})
+                                 #return jsonify({'redirect': url_for('get_login.home')}) 
                                 else:
                                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
-                            else:
+                           # else:
                                  
                               
-                                  return jsonify({'redirect': url_for('panelControl.panel_control')}) 
+                            #      return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                 else: 
                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
             else:
