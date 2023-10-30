@@ -58,7 +58,7 @@ def panel_control():
      layout = request.args.get('layoutOrigen')
      usuario_id = request.args.get('usuario_id')
      
-     llenar_diccionario_cada_15_segundos_sheet(pais)     
+     #llenar_diccionario_cada_15_segundos_sheet(pais)     
      
      datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
     
@@ -71,7 +71,7 @@ def panel_control():
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>")
 def panel_control_atomatico(pais,usuario_id):
      
-     llenar_diccionario_cada_15_segundos_sheet(pais)
+     #llenar_diccionario_cada_15_segundos_sheet(pais)
      datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
     
     
