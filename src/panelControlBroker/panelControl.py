@@ -62,10 +62,6 @@ def panel_control():
      layout = request.args.get('layoutOrigen')
      usuario_id = request.args.get('usuario_id')
      
-<<<<<<< HEAD
-     #llenar_diccionario_cada_15_segundos_sheet(pais)     
-=======
->>>>>>> 78bd35e63cb167f1e4e77d2e709408b8e8233fa9
      
      respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
      if  determinar_pais(pais) is not None:
@@ -84,13 +80,6 @@ def panel_control():
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>")
 def panel_control_atomatico(pais,usuario_id):
      
-<<<<<<< HEAD
-     #llenar_diccionario_cada_15_segundos_sheet(pais)
-     datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-    
-    
-     return jsonify(datos=datos_desempaquetados)
-=======
      if  determinar_pais(pais) is not None:
        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
      else:
@@ -100,7 +89,6 @@ def panel_control_atomatico(pais,usuario_id):
      if datos_desempaquetados:
      # print(datos_desempaquetados)
       return jsonify(datos=datos_desempaquetados)
->>>>>>> 78bd35e63cb167f1e4e77d2e709408b8e8233fa9
 
 
 def forma_datos_para_envio_paneles(ContenidoSheet,usuario_id):
@@ -156,7 +144,7 @@ def enviar_leer_sheet(pais):
         abort(404, description="País no válido")
         
      if pais == "argentina":
-         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'drpibotUSA')
      else:
