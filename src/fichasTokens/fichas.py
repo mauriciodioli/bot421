@@ -35,6 +35,7 @@ def crea_tabla_ficha():
         cuenta_broker_id = "1083",
         activo = "True",
         token = "", 
+        llave ='',
         monto_efectivo = 1.1,
         porcentaje_creacion = 10 ,
         valor_cuenta_creacion = 1.1,
@@ -61,7 +62,13 @@ def crear_ficha():
             app = current_app._get_current_object()                    
             userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
-            access_token = generar_token(userid, valor, cuenta)
+            # Llamada a la función para generar el token
+            token_con_llave = generar_token(userid, valor, cuenta)
+
+            # Separa el token de la llave secreta
+            token_generado = token_con_llave[:-64]
+            llave_generada = token_con_llave[-64:]
+            llave_bytes = llave_generada.encode('utf-8')
             #cuenta_id = Cuenta.query.filter_by(accountCuenta=cuenta).first()
             cuenta_id = db.session.query(Cuenta).filter_by(accountCuenta=cuenta).first()
             # almacenar el valor en el token
@@ -72,7 +79,8 @@ def crear_ficha():
                 user_id=userid,
                 cuenta_broker_id=cuenta_id.id,  
                 activo=True,  
-                token=access_token, 
+                token=token_generado, 
+                llave = llave_bytes,
                 monto_efectivo=valor,
                 porcentaje_creacion=porcentajeCreacion, 
                 valor_cuenta_creacion=total_cuenta, 
@@ -85,13 +93,14 @@ def crear_ficha():
             # Almacenar el token en la base de datos
             db.session.add(nueva_ficha)
             db.session.commit()
+            
                      # Consulta todas las fichas del usuario dado
             #fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
             #total_cuenta = available_to_collateral + portfolio
             total_para_fichas =  total_cuenta * 0.6
             print(total_para_fichas)
         
-            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta)
+            return render_template("fichas/fichasGenerar.html", datos=llave_generada,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta)
         
           
     except Exception as e:
@@ -117,7 +126,18 @@ def fichasToken_fichas_generar():
         # Consulta todas las fichas del usuario dado
         fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
         
-        
+        for ficha in fichas_usuario:
+            print(ficha.token)
+            llave_bytes = ficha.llave
+            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+            # Luego, si necesitas obtener la llave original como bytes nuevamente
+            llave_original_bytes = bytes.fromhex(llave_hex)
+            #obtenemos el valor
+            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+            
+            #obtenemos el numero
+            random_number = decoded_token.get('random_number')
         return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta)
         
    #except:  

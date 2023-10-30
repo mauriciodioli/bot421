@@ -1,6 +1,9 @@
 {% extends 'layouts/layout.html' %}
 {% block content %}
-
+<div class="splash-container" id="splash" style="display:none">
+  {% include 'notificaciones/splashPage.html' %}
+</div>
+  
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         <ul class="flash-messages">
