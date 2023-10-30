@@ -161,9 +161,29 @@ def operaciones_desde_seniales():
             symbol = request.form['symbol']
             ut = request.form['ut']
             signal = request.form['senial']
-            cuentaA = request.form['cuentaEnvioAjax']
-            logs_table = Logs()  # Crea una instancia de Logs
-            logs_table.crear_tabla()  # Llama a la función crear_tabla
+            cuentaA = request.form['correo_electronico']
+            #aqui controlo los checkbox y los input del modal de operacion enviado por POST
+            if 'CantidadMonto' in request.form:
+               cantidad_monto = request.form['CantidadMonto']
+            if 'ValorCantidad' in request.form:
+                valor_cantidad = request.form['ValorCantidad']
+            if 'ValorMonto' in request.form:   
+              valor_monto = request.form['ValorMonto']  
+            else: 
+              valor_monto='0'            
+            if 'Modalidad' in request.form:
+                # El checkbox de modalidad fue seleccionado
+                modalidad_seleccionada = request.form['Modalidad']
+            else:
+                modalidad_seleccionada = '2'
+            if 'ValorPrecioLimite' in request.form: 
+                valor_cantidad = request.form['ValorPrecioLimite']
+              
+           
+          
+          
+            #logs_table = Logs()  # Crea una instancia de Logs
+            #logs_table.crear_tabla()  # Llama a la función crear_tabla
             if access_token:
                 app = current_app._get_current_object()  
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -173,6 +193,7 @@ def operaciones_desde_seniales():
               precios = inst.instrument_por_symbol(symbol)               
               if precios != '':
                 precios = list(precios)
+                cantidad_comprar = calculaUt(precios,cantidad_monto,valor_monto)
                 if signal == 'closed.':               
                     accion = 'vender' 
                     price = precios[0][3]#envio precio de la oferta                               
@@ -180,20 +201,66 @@ def operaciones_desde_seniales():
                     accion = 'comprar'                 
                     price = precios[0][2]#envio precio de la demanda
                    # Verificar el saldo y enviar la orden si hay suficiente
-                tipoOrder = 'LIMIT'        
-                print("tipoOrder ",tipoOrder)
+                   
+                #se verifica el tipo de orden   
+                if modalidad_seleccionada=='1':
+                   tipoOrder = get.pyRofexInicializada.OrderType.LIMIT 
+                   tipo_orden = 'LIMIT'
+                   print("tipoOrder ",tipoOrder)  
+                else:        
+                  tipoOrder = get.pyRofexInicializada.OrderType.MARKET
+                  tipo_orden = 'MARKET'
+                  print("tipoOrder ",tipoOrder)
+                  
                 #se debe controlar cuando sea mayor a 1 minuto
                  # Inicia el hilo para consultar el saldo después de un minuto
-                if  tipoOrder == 'LIMIT':
+                if  tipo_orden == 'LIMIT':
                     
-                    orden_ = Operacion(ticker=symbol, accion=accion, size=ut, price=price,order_type=get.pyRofexInicializada.OrderType.LIMIT)
-                     
+                    orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_comprar, price=price,order_type=tipoOrder)
+                    ticker = symbol
                     if orden_.enviar_orden(cuenta=cuentaA):
-                         print("Orden enviada con éxito.")
-                         flash('Operacion enviada exitosamente')
-                         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-                         operaciones = repuesta_operacion['orders']
-                         print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+                          print("Orden enviada con éxito.")
+                          flash('Operacion enviada exitosamente')
+                          repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+                          operaciones = repuesta_operacion['orders']
+                          print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+                              
+                          # Intentamos encontrar el registro con el symbol específico
+                          orden_existente = Orden.query.filter_by(symbol=ticker).first()
+
+                          if orden_existente:
+                              # Si el registro existe, lo actualizamos
+                              orden_existente.user_id = user_id
+                              orden_existente.userCuenta = cuentaA
+                              orden_existente.ut = cantidad_comprar
+                              orden_existente.senial = signal
+                              orden_existente.clOrdId_alta_timestamp=datetime.now()
+                              orden_existente.status = 'operado'
+                          else:
+                              # Si no existe, creamos un nuevo registro
+                              nueva_orden = Orden(
+                                  user_id=user_id,
+                                  userCuenta=cuentaA,
+                                  accountCuenta=cuentaA,
+                                  clOrdId_alta=random.randint(1,100000),
+                                  clOrdId_baja='',
+                                  clientId='',
+                                  wsClOrdId_timestamp=datetime.now(),
+                                  clOrdId_alta_timestamp=datetime.now(),
+                                  clOrdId_baja_timestamp=None,
+                                  proprietary=True,
+                                  marketId='',
+                                  symbol=ticker,
+                                  tipo=tipo_orden,
+                                  tradeEnCurso="si",
+                                  ut=cantidad_comprar,
+                                  senial=signal,
+                                  status='operado'
+                              )
+                              db.session.add(nueva_orden)
+                          db.session.commit() 
+                              #get.current_session = db.session
+                          db.session.close()
                     else:
                         print("No se pudo enviar la orden debido a saldo insuficiente.")
                   
@@ -220,7 +287,14 @@ def operaciones_desde_seniales():
         return render_template('errorOperacion.html')
 
 
+def calculaUt(precio,cantidad_monto,valor_monto):
+  if valor_monto == '0':
+    cantidad_a_comprar = precio / cantidad_monto
+  else:
+    cantidad_a_comprar = valor_monto / precio
+      
 
+  return cantidad_a_comprar
 
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():

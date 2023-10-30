@@ -1,15 +1,13 @@
-{% extends "layouts/layout_signal.html" %}
+{% extends "layouts/layoutConexBroker.html" %}
 {% block content %}
-<div class="splash-container" id="splash" style="display:none">
-  {% include 'notificaciones/splashPage.html' %}
-</div>
+
   <div class="jumbotron">
     <h1 class="display-4">Signs!</h1>
     <p class="lead">To operate you can press the button with the corresponding color</p>
     <hr class="my-4">
   
   </div>
-  <div class = 'container p-4'id="contenido">   
+  <div class = 'container p-4'>   
     <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>
     <table class="table table-dark table-striped"  id="signalTable">
       <thead>           
@@ -35,7 +33,7 @@
     </table>
     
         <div class="modal-content" style="color: black;">
-          <form id="registro-usuario-form" action="/operaciones_desde_seniales_sin_cuenta" method="POST">
+          <form id="registro-usuario-form" action="/operaciones_desde_seniales" method="POST">
             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -43,15 +41,15 @@
                     <h5 class="modal-title" id="confirmModalLabel">Confirm Operation</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>                                    
-                    <div class="modal-body">
-                      Are you sure you want to perform this operation?
-                      <div class="form-group">
+                    <div class="modal-body"><strong>Are you sure you want to perform this operation?</strong><div class="form-group">
+
                         <input type="hidden" class="form-control" id="access_token" name="access_token">
                       </div>
                       <div class="form-group">
-                        <input type="hidden" class="form-control" id="symbol" name="symbol">
+                        <label for="symbol"><strong>Symbol</strong></label>
+                        <input type="text" class="form-control" id="symbol" name="symbol">
                       </div>
-                      <div class="form-group">
+                      <div class="form-group">                       
                         <input type="hidden" class="form-control" id="ut" name="ut">
                       </div>    
                       <div class="form-group">
@@ -62,11 +60,63 @@
                       </div>  
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="paisSeleccionado" name="paisSeleccionado">
-                      </div>                                  
+                      </div> 
+
+                      <div class="divRowCompra">
+                        <label class="divCellLabelCompra" for="CantidadMonto"><strong>Cantidad/Monto</strong></label>
+                        <div class="divCellCompra">
+                            <div class="divRowCompra">
+                                <div style="float: left; width: 120px;">
+                                    <input data-val="true" data-val-number="El campo CantidadMonto debe ser un número." data-val-required="Cantidad o Monto es requerido" id="Cantidad" name="CantidadMonto" type="radio" value="2">
+                                    <label for="Cantidad" class="tooltiper" data-original-title="Opciones: Cantidad de Opciones, no cantidad de Lotes." aria-describedby="tooltip607883"><strong>Cantidad</strong></label>
+                                </div>
+                                <input data-val="true" data-val-number="El campo Cantidad debe ser un número." data-val-range="Cantidad debe ser un número válido." data-val-range-max="2147483647" data-val-range-min="0" data-val-regex="Cantidad debe ser un número." data-val-regex-pattern="\d+(?:.\d{1,6})?" data-val-requiredifradiobuttonvalue="El campo Cantidad es obligatorio." data-val-requiredifradiobuttonvalue-boolprop="CantidadMonto" data-val-requiredifradiobuttonvalue-value="2" id="ValorCantidad" maxlength="14" name="ValorCantidad" style="width:100px;" type="text" value="" disabled="">
+                            </div>
+                            <div class="divRowCompra">
+                                <div style="float: left; width: 120px;">
+                                    <input id="Monto" name="CantidadMonto" type="radio" value="1">
+                                    <label for="Monto"><strong>Monto</strong></label>
+                                </div>
+                                <input data-val="true" data-val-number="El campo Monto debe ser un número." data-val-regex="El monto debe ser un número." data-val-regex-pattern="\d+(?:.\d{1,6})?" data-val-requiredifradiobuttonvalue="El campo Monto es obligatorio." data-val-requiredifradiobuttonvalue-boolprop="CantidadMonto" data-val-requiredifradiobuttonvalue-value="1" id="ValorMonto" maxlength="14" name="ValorMonto" style="width:100px;" type="text" value="">
+                            </div>
+                            <small class="error">
+                                <span class="field-validation-valid" data-valmsg-for="CantidadMonto" data-valmsg-replace="true"></span>
+                                <span class="field-validation-valid" data-valmsg-for="ValorMonto" data-valmsg-replace="true"></span>
+                                <span class="field-validation-valid" data-valmsg-for="ValorCantidad" data-valmsg-replace="true"></span>
+                            </small>
+                        </div>
+                    </div>
+
+
+                    <div class="divRowCompra">
+                      <label class="divCellLabelCompra" for="Modalidad"><strong>Modalidad</strong></label>
+                      <div class="divCellCompra">
+                          <div id="divPrecioMercado" class="divRowCompra">
+                              <input data-val="true" data-val-required="Modalidad es requirida" id="PrecioMercado" name="Modalidad" type="radio" value="2">
+                              <label for="PrecioMercado" class="tooltiper" data-original-title="Los títulos se operarán al mejor precio vendedor en ese momento; el inversor no especifica precio" aria-describedby="tooltip476820"><strong>Precio mercado</strong></label>
+                          </div>
+                          <div class="divRowCompra">
+                              <div style="float: left; width: 120px;">
+                                  <input id="PrecioLimite" name="Modalidad" type="radio" value="1">
+                                  <label for="PrecioLimite" class="tooltiper" data-original-title="El inversor selecciona un precio máximo que desea pagar por los títulos" aria-describedby="tooltip423004"><strong>Precio límite</strong></label>
+                              </div>
+                              <input data-val="true" data-val-number="El campo Precio límite debe ser un número." data-val-range="El Precio Limite debe ser un número válido." data-val-range-max="2147483647" data-val-range-min="0" data-val-regex="El precio límite debe ser un número." data-val-regex-pattern="\d+(?:.\d{1,6})?" data-val-requiredifradiobuttonvalue="El campo Precio límite es obligatorio." data-val-requiredifradiobuttonvalue-boolprop="Modalidad" data-val-requiredifradiobuttonvalue-value="1" id="ValorPrecioLimite" maxlength="14" name="ValorPrecioLimite" style="width:100px;" type="text" value="" disabled="">
+                          </div>
+                          <small class="error">
+                              <span class="field-validation-valid" data-valmsg-for="Modalidad" data-valmsg-replace="true"></span>
+                              <span class="field-validation-valid" data-valmsg-for="ValorPrecioLimite" data-valmsg-replace="true"></span>
+                          </small>
+                      </div>
+                  </div>
+
+
+
+
+                                                      
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>                    
-                    <button type="submit" id="confirmBtn" class="btn btn-primary my-2" >Confirmar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>      
+                    <button type="submit" id="confirmBtn" class="btn btn-primary my-2" disabled>Confirmar</button>
 
                   </div>
                 </div>
@@ -104,6 +154,7 @@ document.addEventListener('click', function(event) {
       document.getElementById('symbol').value = symbol;
       document.getElementById('senial').value = senial;     
       document.getElementById('ut').value = ut;
+      document.getElementById('ValorCantidad').value = ut;
       document.getElementById('access_token').value = access_token;
       document.getElementById('correo_electronico').value = cuentaEnvioAjax;
       document.getElementById('paisSeleccionado').value = paisS;
@@ -191,7 +242,7 @@ function updateTable() {
                 row.setAttribute('id', filaId);
                 row.innerHTML = `
                     <td>${numeroDeOrden}</td>
-                    <td>${dato[0].replace('MERV - XMEV -', '')}</td>                 
+                    <td>${dato[0]}</td>
                     <td>${dato[1]}</td>
                     <td>${dato[4]}</td>
                     <td>${dato[2]}</td>
@@ -360,6 +411,72 @@ function obtenerDatoDesdeFila(fila) {
 
   return dato;
 }
+
+
+
+
+//aqui está el manejo del modal
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+
+
+
+  var confirmBtn = document.getElementById('confirmBtn'); // Obtener el botón
+
+
+
+  var cantidadRadio = document.getElementById('Cantidad');
+  var montoRadio = document.getElementById('Monto');
+  var valorCantidadInput = document.getElementById('ValorCantidad');
+  var valorMontoInput = document.getElementById('ValorMonto');
+  var precioMercadoRadio = document.getElementById('PrecioMercado');
+  var precioLimiteRadio = document.getElementById('PrecioLimite');
+  var valorPrecioLimiteInput = document.getElementById('ValorPrecioLimite');
+  var labelPrecioMercado = document.querySelector('label[for="PrecioMercado"]');
+  var labelPrecioLimite = document.querySelector('label[for="PrecioLimite"]');
+
+  cantidadRadio.addEventListener('change', function() {
+      if (this.checked) {
+          valorMontoInput.disabled = true;
+          valorMontoInput.value = '';
+          valorCantidadInput.disabled = false;
+          precioMercadoRadio.disabled = true;
+          precioLimiteRadio.disabled = false;          
+          labelPrecioMercado.style.color = 'gray'; // Deshabilitar color del label
+          labelPrecioLimite.style.color = 'black'; // Habilitar color del label
+          confirmBtn.disabled = false;
+      }
+  });
+
+  montoRadio.addEventListener('change', function() {
+      if (this.checked) {
+          confirmBtn.disabled = false;
+          valorCantidadInput.disabled = true;
+          valorCantidadInput.value = '';
+          valorMontoInput.disabled = false;
+          precioMercadoRadio.disabled = false;
+          precioLimiteRadio.disabled = false;
+          labelPrecioMercado.style.color = 'black'; // Habilitar color del label
+          labelPrecioLimite.style.color = 'black'; // Habilitar color del label
+      }
+  });
+
+  precioMercadoRadio.addEventListener('change', function() {
+      valorPrecioLimiteInput.disabled = true;
+      valorPrecioLimiteInput.value = '';
+  });
+
+  precioLimiteRadio.addEventListener('change', function() {
+      valorPrecioLimiteInput.disabled = false;
+  });
+});
+
+
+
+
+
 
 </script>
 {% endblock%}

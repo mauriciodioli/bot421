@@ -101,7 +101,7 @@ def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
-    
+    #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
     ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
     ContenidoSheet_list = list(ContenidoSheet)
 
@@ -122,12 +122,12 @@ def SuscripcionDeSheet():
    #     print(item)
 
   # Convertir listas a conjuntos para eliminar duplicados
-    set_contenido_ws = set(ContenidoSheet_list_solo_symbol)
+    set_contenido_ws = set(ContenidoSheet_list_solo_symbol) #comentado parte de sheet
     set_contenido_db = set(ContenidoSheet_list_solo_symbol_db)
     set_contenido_json = set(ContenidoJsonDb_list_db)
 
     # Combinar conjuntos y eliminar duplicados
-    resultado_set = set_contenido_ws.union(set_contenido_db,set_contenido_json)
+    resultado_set = set_contenido_db.union(set_contenido_json,set_contenido_ws)
 
     # Convertir conjunto resultante en una lista
     resultado_lista = list(resultado_set)
@@ -159,10 +159,10 @@ def SuscripcionDeSheet():
     mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3)
    
     #print("instrumento_suscriptio",mensaje)
-    datos = ContenidoSheet_list
+    datos = ContenidoSheet_list #COMENTADO POR SHEET
     
    
-    
+    #return instrumentos_existentes
     return [ContenidoSheet_list,instrumentos_existentes]
 
 def cargaSymbolParaValidarDb(message):

@@ -142,7 +142,7 @@ def index():
 @autenticacion.route("/home", methods=['POST'])
 def home():
      if request.method == 'POST':
-        print("intenta crear tablaaaaaaaaaaaaa_____________________   ")
+        print("llga a home de autenticacion   ")
         
         access_token = request.json.get('token')
         refresh_token  = request.json.get('refresh_token')
@@ -162,7 +162,7 @@ def loginIndex():
         refresh_token  = request.json.get('refresh_token')
         selector = request.json.get('selectorEnvironment')
         account = request.json.get('account')
-        print("___________________token   ", access_token)
+        #print("___________________token   ", access_token)
         
         
         if access_token:
