@@ -34,9 +34,10 @@ def panel_control_sin_cuenta():
     pais = request.args.get('country')
     layout = request.args.get('layoutOrigen')
     usuario_id = request.args.get('usuario_id')
-      
+    
     respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
-    if len(get.diccionario_global_sheet) != 0:
+    
+    if determinar_pais(pais)  is not None:
      
      datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
      if len(datos_desempaquetados) != 0:
@@ -51,51 +52,77 @@ def panel_control_sin_cuenta():
         return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
     if layout == 'layout': 
         return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
-    
+    if layout == 'layout' or layout == 'layoutConexBroker':        
+        return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+    return "Página no encontrada"  # Cambia el mensaje según sea necesario
+
 @panelControl.route("/panel_control")
 def panel_control():
      pais = request.args.get('country')
      layout = request.args.get('layoutOrigen')
      usuario_id = request.args.get('usuario_id')
      
+<<<<<<< HEAD
      #llenar_diccionario_cada_15_segundos_sheet(pais)     
+=======
+>>>>>>> 78bd35e63cb167f1e4e77d2e709408b8e8233fa9
      
-     datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-    
+     respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+     if  determinar_pais(pais) is not None:
+        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+     else:
+        enviar_leer_sheet(pais)
+        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+ 
+         
      if layout == 'layout_signal':
         return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
-     if layout == 'layout':         
-        return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
-
+     if layout == 'layout' or layout == 'layoutConexBroker':      
+        return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
+     return "Página no encontrada"  # Cambia el mensaje según sea necesario
 
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>")
 def panel_control_atomatico(pais,usuario_id):
      
+<<<<<<< HEAD
      #llenar_diccionario_cada_15_segundos_sheet(pais)
      datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
     
     
      return jsonify(datos=datos_desempaquetados)
+=======
+     if  determinar_pais(pais) is not None:
+       datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+     else:
+        enviar_leer_sheet(pais)
+        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+ 
+     if datos_desempaquetados:
+     # print(datos_desempaquetados)
+      return jsonify(datos=datos_desempaquetados)
+>>>>>>> 78bd35e63cb167f1e4e77d2e709408b8e8233fa9
 
 
 def forma_datos_para_envio_paneles(ContenidoSheet,usuario_id):
-    ContenidoSheet = zip(ContenidoSheet)
-    ContenidoSheet = list(ContenidoSheet)
+    if not ContenidoSheet:
+        return False
+   
+   
     
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
     for i, tupla_exterior in enumerate(datos_desempaquetados):
-        tupla_interior = tupla_exterior[0]  # Extrae la tupla interior de la tupla exterior
-        dato = list(tupla_interior)  # Convierte la tupla interior a una lista
-        dato[0] = dato[0].replace("MERV - XMEV -", "")
+        dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
+       # dato[0] = dato[0].replace("MERV - XMEV -", "")
         orden_existente = Orden.query.filter_by(symbol=dato[0], user_id=usuario_id).first()
-
+         
         if orden_existente:
             dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
             dato += dato_extra
         else:
             dato += (None, None)
-
-        dato.append(i+1)  
+       
+        dato.append(i+1) 
+        #print(dato) 
         datos_desempaquetados[i] = tuple(dato)
     return datos_desempaquetados
 
@@ -117,8 +144,10 @@ def llenar_diccionario_cada_15_segundos_sheet(pais):
 
 def ejecutar_en_hilo(pais):
     while True:
+        time.sleep(120)
+        print("ENTRA A THREAD Y LEE EL SHEET")
         enviar_leer_sheet(pais)
-        time.sleep(15)
+        
 
 def enviar_leer_sheet(pais):
       
@@ -132,6 +161,23 @@ def enviar_leer_sheet(pais):
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_USA,'drpibotUSA')
      else:
          return "País no válido"
-     
-     get.diccionario_global_sheet[pais] = ContenidoSheet
+     get.diccionario_global_sheet[pais] ={}
+     get.diccionario_global_sheet[pais] =list(ContenidoSheet)
+
+def determinar_pais(pais):
+    if hasattr(get, 'diccionario_global_sheet') and isinstance(get.diccionario_global_sheet, dict):
+        # Asegúrate de que 'get.diccionario_global_sheet' exista y sea un diccionario
+
+        lista_asociada = get.diccionario_global_sheet.get(pais, None)
+        if lista_asociada is not None:
+           # print(f"La lista asociada a {pais} es: {lista_asociada}")
+            return lista_asociada
+        else:
+            #print(f"No se encontró una lista asociada a {pais}")
+            return None
+    else:
+        print(f"'get.diccionario_global_sheet' no está disponible o no es un diccionario con las listas asociadas a los países.")
+        return None
+
+    
      
