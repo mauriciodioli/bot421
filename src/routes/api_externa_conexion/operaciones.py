@@ -194,6 +194,7 @@ def operaciones_desde_seniales():
                     
               if precios != '':
                 
+<<<<<<< HEAD
                 cantidad_a_comprar_abs, LA_price, BI_price, OF_price = calculaUt(precios,valor_cantidad,valor_monto,signal)
                 if signal == 'closed.':               
                     accion = 'vender' 
@@ -201,6 +202,15 @@ def operaciones_desde_seniales():
                 elif signal == 'OPEN.':
                     accion = 'comprar'                 
                     price = BI_price#envio precio de la demanda
+=======
+                cantidad_y_precio = calculaUt(precios,valor_cantidad,valor_monto,signal)
+                if signal == 'closed.':               
+                    accion = 'vender' 
+                    price = cantidad_y_precio[3]#envio precio de la oferta                               
+                elif signal == 'OPEN.':
+                    accion = 'comprar'                 
+                    price = cantidad_y_precio[2]#envio precio de la demanda
+>>>>>>> 0a6005dd92921e259fd5749a6f877ac5d21db15a
                    # Verificar el saldo y enviar la orden si hay suficiente
                    
                 #se verifica el tipo de orden   
@@ -217,7 +227,11 @@ def operaciones_desde_seniales():
                  # Inicia el hilo para consultar el saldo después de un minuto
                 if  tipo_orden == 'LIMIT':
                     
+<<<<<<< HEAD
                    # orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
+=======
+                   # orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_comprar, price=price,order_type=tipoOrder)
+>>>>>>> 0a6005dd92921e259fd5749a6f877ac5d21db15a
                     ticker = symbol
                     if orden_.enviar_orden(cuenta=cuentaA):
                           print("Orden enviada con éxito.")
@@ -309,12 +323,21 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
      precio =  BI[0]['price']    
      
   if valor_monto == '0':
+<<<<<<< HEAD
       cantidad_a_comprar =int(valor_cantidad)  # Aseguramos que valor_cantidad sea un entero
   else:
       cantidad_a_comprar = int(int(valor_monto) / precio)
   cantidad_a_comprar_abs = abs(cantidad_a_comprar)   
   return cantidad_a_comprar_abs, LA['price'], BI[0]['price'], OF[0]['price']
 
+=======
+      cantidad_a_comprar = precio / int(valor_cantidad)
+  else:
+    cantidad_a_comprar = int(valor_monto) / precio
+  cantidad_a_comprar_abs = abs(cantidad_a_comprar)   
+  cantidad = zip([cantidad_a_comprar_abs],[LA['price']],[BI[0]['price']], [OF[0]['price']])
+  return cantidad
+>>>>>>> 0a6005dd92921e259fd5749a6f877ac5d21db15a
 
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():
