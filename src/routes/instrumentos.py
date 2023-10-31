@@ -56,7 +56,7 @@ def instrument_por_symbol(symbol):
         if jdato.find('price') == -1 or jdato1.find('price') == -1 or jdato2.find('price') == -1:
             return ''
         
-        dato = zip(symbol, jdato, jdato1, jdato2)
+        dato = zip([symbol], [jdato], [jdato1], [jdato2])
         return dato
 
     except:
