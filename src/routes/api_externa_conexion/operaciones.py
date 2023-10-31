@@ -190,16 +190,17 @@ def operaciones_desde_seniales():
           
             existencia = inst.instrumentos_existentes_by_symbol(symbol) 
             if existencia == True:           
-              precios = inst.instrument_por_symbol(symbol)               
+              precios = inst.instrument_por_symbol(symbol)    
+                    
               if precios != '':
-                precios = list(precios)
-                cantidad_comprar = calculaUt(precios,cantidad_monto,valor_monto)
+                
+                cantidad_y_precio = calculaUt(precios,valor_cantidad,valor_monto,signal)
                 if signal == 'closed.':               
                     accion = 'vender' 
-                    price = precios[0][3]#envio precio de la oferta                               
+                    price = cantidad_y_precio[3]#envio precio de la oferta                               
                 elif signal == 'OPEN.':
                     accion = 'comprar'                 
-                    price = precios[0][2]#envio precio de la demanda
+                    price = cantidad_y_precio[2]#envio precio de la demanda
                    # Verificar el saldo y enviar la orden si hay suficiente
                    
                 #se verifica el tipo de orden   
@@ -216,7 +217,7 @@ def operaciones_desde_seniales():
                  # Inicia el hilo para consultar el saldo después de un minuto
                 if  tipo_orden == 'LIMIT':
                     
-                    orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_comprar, price=price,order_type=tipoOrder)
+                   # orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_comprar, price=price,order_type=tipoOrder)
                     ticker = symbol
                     if orden_.enviar_orden(cuenta=cuentaA):
                           print("Orden enviada con éxito.")
@@ -287,14 +288,33 @@ def operaciones_desde_seniales():
         return render_template('errorOperacion.html')
 
 
-def calculaUt(precio,cantidad_monto,valor_monto):
+def calculaUt(precios,valor_cantidad,valor_monto,signal):
+  for item in precios:
+                  print(item[0])
+                  print(item[1])
+                  print(item[2])
+                  print(item[3])
+                  LA = json.loads(item[1].replace("'", "\""))
+                  BI = json.loads(item[2].replace("'", "\""))
+                  OF = json.loads(item[3].replace("'", "\""))
+                    
+                    # Acceder a los valores
+                  print('LA:', LA['price'], 'size:', LA['size'], 'date:', LA['date'])
+                  print('BI:', BI[0]['price'], 'size:', BI[0]['size'])
+                  print('OF:', OF[0]['price'], 'size:', OF[0]['size'])
+                  
+  if signal == 'closed.':
+     precio = OF[0]['price']       
+  if signal == 'OPEN.':
+     precio =  BI[0]['price']    
+     
   if valor_monto == '0':
-    cantidad_a_comprar = precio / cantidad_monto
+      cantidad_a_comprar = precio / int(valor_cantidad)
   else:
-    cantidad_a_comprar = valor_monto / precio
-      
-
-  return cantidad_a_comprar
+    cantidad_a_comprar = int(valor_monto) / precio
+  cantidad_a_comprar_abs = abs(cantidad_a_comprar)   
+  cantidad = zip([cantidad_a_comprar_abs],[LA['price']],[BI[0]['price']], [OF[0]['price']])
+  return cantidad
 
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():
