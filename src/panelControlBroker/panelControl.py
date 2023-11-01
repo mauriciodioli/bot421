@@ -91,28 +91,30 @@ def panel_control_atomatico(pais,usuario_id):
       return jsonify(datos=datos_desempaquetados)
 
 
-def forma_datos_para_envio_paneles(ContenidoSheet,usuario_id):
+def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
     if not ContenidoSheet:
         return False
-   
-   
-    
+
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+    datos_procesados = []
+
     for i, tupla_exterior in enumerate(datos_desempaquetados):
         dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-       # dato[0] = dato[0].replace("MERV - XMEV -", "")
-        orden_existente = Orden.query.filter_by(symbol=dato[0], user_id=usuario_id).first()
-         
-        if orden_existente:
-            dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
-            dato += dato_extra
-        else:
-            dato += (None, None)
-       
-        dato.append(i+1) 
-        #print(dato) 
-        datos_desempaquetados[i] = tuple(dato)
-    return datos_desempaquetados
+
+        with db.session.begin(subtransactions=True):
+            orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
+
+            if orden_existente:
+                dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
+                dato += dato_extra
+            else:
+                dato += (None, None)
+
+            dato.append(i+1)
+            datos_procesados.append(tuple(dato))
+
+    return datos_procesados
+
 
 
 
