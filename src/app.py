@@ -52,6 +52,7 @@ from models.orden import orden
 from models.ficha import ficha
 from models.trazaFicha import trazaFicha
 from models.operacion import operacion
+from models.operacionHF import operacionHF
 from models.logs import logs
 
 from flask_login import LoginManager
@@ -95,6 +96,7 @@ app.register_blueprint(orden)
 app.register_blueprint(comprar)
 app.register_blueprint(operacion)
 app.register_blueprint(operaciones)
+app.register_blueprint(operacionHF)
 app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)

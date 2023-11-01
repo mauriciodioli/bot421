@@ -24,6 +24,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from utils.db import db
 from datetime import datetime
+import time
 from flask_jwt_extended import (
     JWTManager,
     jwt_required,
@@ -75,7 +76,7 @@ diccionario_operaciones_enviadas = {}
 diccionario_global_sheet = {}
 diccionario_global_sheet_intercambio = {}
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
-
+ultima_entrada = time.time()
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.bull.xoms.com.ar/"
 ws_url = "wss://api.bull.xoms.com.ar/"
@@ -297,7 +298,7 @@ def creaJsonParaConextarseSheetGoogle():
 
     # Ruta al archivo de texto plano
     #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    ruta_archivo_texto = 'C:\\Users\\mdioli\\Desktop\\clavesheet.txt'    
+    ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
   
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo
