@@ -98,7 +98,8 @@ def operaciones_desde_seniales_sin_cuenta():
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 
             # Intentamos encontrar el registro con el symbol específico
-            orden_existente = Orden.query.filter_by(symbol=ticker).first()
+            orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+       
 
             if orden_existente:
                 # Si el registro existe, lo actualizamos
