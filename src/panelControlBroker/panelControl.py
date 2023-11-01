@@ -114,7 +114,10 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
             datos_procesados.append(tuple(dato))
 
     return datos_procesados
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1b116d399b7d1b52a56f7d4553966de1d2d5a1ab
 
 
 
@@ -146,7 +149,7 @@ def enviar_leer_sheet(pais):
         abort(404, description="País no válido")
         
      if pais == "argentina":
-         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:

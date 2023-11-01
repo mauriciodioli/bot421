@@ -10,6 +10,8 @@ from models.instrumento import Instrumento
 from models.operacion import Operacion
 from models.orden import Orden
 from models.logs import Logs
+from models.usuario import Usuario
+from models.cuentas import Cuenta
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
@@ -188,24 +190,24 @@ def operaciones_desde_seniales():
             if access_token:
                 app = current_app._get_current_object()  
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-          
+                cuentaBroker = obtenerCuentaBroker(user_id)
             existencia = inst.instrumentos_existentes_by_symbol(symbol) 
             if existencia == True:           
               precios = inst.instrument_por_symbol(symbol)    
                     
               if precios != '':
                 
-                cantidad_y_precio = calculaUt(precios,valor_cantidad,valor_monto,signal)
+                cantidad_a_comprar_abs, LA_price, BI_price, OF_price = calculaUt(precios,valor_cantidad,valor_monto,signal)
                 if signal == 'closed.':               
                     accion = 'vender' 
-                    price = cantidad_y_precio[3]#envio precio de la oferta                               
+                    price = OF_price#envio precio de la oferta                               
                 elif signal == 'OPEN.':
                     accion = 'comprar'                 
-                    price = cantidad_y_precio[2]#envio precio de la demanda
+                    price = BI_price#envio precio de la demanda
                    # Verificar el saldo y enviar la orden si hay suficiente
                    
                 #se verifica el tipo de orden   
-                if modalidad_seleccionada=='1':
+                if modalidad_seleccionada=='2':
                    tipoOrder = get.pyRofexInicializada.OrderType.LIMIT 
                    tipo_orden = 'LIMIT'
                    print("tipoOrder ",tipoOrder)  
@@ -218,9 +220,9 @@ def operaciones_desde_seniales():
                  # Inicia el hilo para consultar el saldo después de un minuto
                 if  tipo_orden == 'LIMIT':
                     
-                   # orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_comprar, price=price,order_type=tipoOrder)
+                    orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
                     ticker = symbol
-                    if orden_.enviar_orden(cuenta=cuentaA):
+                    if orden_.enviar_orden(cuenta=cuentaBroker):
                           print("Orden enviada con éxito.")
                           flash('Operacion enviada exitosamente')
                           repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
@@ -234,7 +236,7 @@ def operaciones_desde_seniales():
                               # Si el registro existe, lo actualizamos
                               orden_existente.user_id = user_id
                               orden_existente.userCuenta = cuentaA
-                              orden_existente.ut = cantidad_comprar
+                              orden_existente.ut = cantidad_a_comprar_abs
                               orden_existente.senial = signal
                               orden_existente.clOrdId_alta_timestamp=datetime.now()
                               orden_existente.status = 'operado'
@@ -255,7 +257,7 @@ def operaciones_desde_seniales():
                                   symbol=ticker,
                                   tipo=tipo_orden,
                                   tradeEnCurso="si",
-                                  ut=cantidad_comprar,
+                                  ut=cantidad_a_comprar_abs,
                                   senial=signal,
                                   status='operado'
                               )
@@ -310,13 +312,28 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
      precio =  BI[0]['price']    
      
   if valor_monto == '0':
-      cantidad_a_comprar = precio / int(valor_cantidad)
+      cantidad_a_comprar =int(valor_cantidad)  # Aseguramos que valor_cantidad sea un entero
   else:
-    cantidad_a_comprar = int(valor_monto) / precio
+      cantidad_a_comprar = int(int(valor_monto) / precio)
   cantidad_a_comprar_abs = abs(cantidad_a_comprar)   
-  cantidad = zip([cantidad_a_comprar_abs],[LA['price']],[BI[0]['price']], [OF[0]['price']])
-  return cantidad
+  return cantidad_a_comprar_abs, LA['price'], BI[0]['price'], OF[0]['price']
 
+def obtenerCuentaBroker(user_id):
+   todasLasCuentas = []
+   usuario = Usuario.query.get(user_id)  
+# Buscar todas las cuentas asociadas a ese usuario
+   cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
+
+   if cuentas:
+      print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+                  
+      for cuenta in cuentas:
+        todasLasCuentas.append(cuenta.accountCuenta)
+        password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+        todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta,'selector':cuenta.selector})
+     
+        print(cuenta.accountCuenta)
+   return cuenta.accountCuenta                  	
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():
   try:  
