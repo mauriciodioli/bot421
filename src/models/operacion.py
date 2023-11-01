@@ -17,18 +17,18 @@ class Operacion:
         self.order_type = order_type
 
     def validar_saldo(self, cuenta):
-        global ultima_entrada
+     
 
         # Obtener el tiempo actual
         tiempo_actual = time.time()
 
         # Calcular la diferencia de tiempo
-        diferencia_tiempo = tiempo_actual - ultima_entrada
+        diferencia_tiempo = tiempo_actual - get.ultima_entrada
 
         # Si han pasado al menos 60 segundos desde la última entrada
         if diferencia_tiempo >= 30:
             # Actualizar el tiempo de la última entrada
-            ultima_entrada = tiempo_actual
+            get.ultima_entrada = tiempo_actual
 
             # Realizar las operaciones que deseas hacer después de 60 segundos
             resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
@@ -48,7 +48,6 @@ class Operacion:
 
     def enviar_orden(self, cuenta):
         if self.validar_saldo(cuenta):
-           # get.pyRofexInicializada.order_report_subscription()
             get.pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
            
             return True

@@ -10,6 +10,8 @@ from models.instrumento import Instrumento
 from models.operacion import Operacion
 from models.orden import Orden
 from models.logs import Logs
+from models.usuario import Usuario
+from models.cuentas import Cuenta
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
@@ -187,14 +189,13 @@ def operaciones_desde_seniales():
             if access_token:
                 app = current_app._get_current_object()  
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-          
+                cuentaBroker = obtenerCuentaBroker(user_id)
             existencia = inst.instrumentos_existentes_by_symbol(symbol) 
             if existencia == True:           
               precios = inst.instrument_por_symbol(symbol)    
                     
               if precios != '':
                 
-<<<<<<< HEAD
                 cantidad_a_comprar_abs, LA_price, BI_price, OF_price = calculaUt(precios,valor_cantidad,valor_monto,signal)
                 if signal == 'closed.':               
                     accion = 'vender' 
@@ -202,15 +203,6 @@ def operaciones_desde_seniales():
                 elif signal == 'OPEN.':
                     accion = 'comprar'                 
                     price = BI_price#envio precio de la demanda
-=======
-                cantidad_y_precio = calculaUt(precios,valor_cantidad,valor_monto,signal)
-                if signal == 'closed.':               
-                    accion = 'vender' 
-                    price = cantidad_y_precio[3]#envio precio de la oferta                               
-                elif signal == 'OPEN.':
-                    accion = 'comprar'                 
-                    price = cantidad_y_precio[2]#envio precio de la demanda
->>>>>>> 0a6005dd92921e259fd5749a6f877ac5d21db15a
                    # Verificar el saldo y enviar la orden si hay suficiente
                    
                 #se verifica el tipo de orden   
@@ -227,13 +219,9 @@ def operaciones_desde_seniales():
                  # Inicia el hilo para consultar el saldo después de un minuto
                 if  tipo_orden == 'LIMIT':
                     
-<<<<<<< HEAD
-                   # orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
-=======
-                   # orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_comprar, price=price,order_type=tipoOrder)
->>>>>>> 0a6005dd92921e259fd5749a6f877ac5d21db15a
+                    orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
                     ticker = symbol
-                    if orden_.enviar_orden(cuenta=cuentaA):
+                    if orden_.enviar_orden(cuenta=cuentaBroker):
                           print("Orden enviada con éxito.")
                           flash('Operacion enviada exitosamente')
                           repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
@@ -323,22 +311,28 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
      precio =  BI[0]['price']    
      
   if valor_monto == '0':
-<<<<<<< HEAD
       cantidad_a_comprar =int(valor_cantidad)  # Aseguramos que valor_cantidad sea un entero
   else:
       cantidad_a_comprar = int(int(valor_monto) / precio)
   cantidad_a_comprar_abs = abs(cantidad_a_comprar)   
   return cantidad_a_comprar_abs, LA['price'], BI[0]['price'], OF[0]['price']
 
-=======
-      cantidad_a_comprar = precio / int(valor_cantidad)
-  else:
-    cantidad_a_comprar = int(valor_monto) / precio
-  cantidad_a_comprar_abs = abs(cantidad_a_comprar)   
-  cantidad = zip([cantidad_a_comprar_abs],[LA['price']],[BI[0]['price']], [OF[0]['price']])
-  return cantidad
->>>>>>> 0a6005dd92921e259fd5749a6f877ac5d21db15a
+def obtenerCuentaBroker(user_id):
+   todasLasCuentas = []
+   usuario = Usuario.query.get(user_id)  
+# Buscar todas las cuentas asociadas a ese usuario
+   cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
 
+   if cuentas:
+      print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+                  
+      for cuenta in cuentas:
+        todasLasCuentas.append(cuenta.accountCuenta)
+        password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+        todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta,'selector':cuenta.selector})
+     
+        print(cuenta.accountCuenta)
+   return cuenta.accountCuenta                  	
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():
   try:  

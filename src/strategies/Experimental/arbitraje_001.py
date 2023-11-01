@@ -300,9 +300,9 @@ def Arbitrador001(message):#
         [Ganancia_n_arb,per_tasa, imp_neto_cpra, imp_neto_vta, price_factor] = Ganancia_neta_arb(Symbol,pCI,p48hs,dz)
         
         if flag_arbitraje_en_ejecucion:
-            monitoreo_arbitraje_en_ejecucion()
+            print("monitoreo_arbitraje_en_ejecucion()")
         # aca se sabe recien si conviene ejecutar
-        elif Ganancia_n_arb>0 and not flag_arbitraje_en_ejecucion:
+        elif Ganancia_n_arb>0 and not flag_arbitraje_en_ejecucion and price_factor==1:
             
             flag_arbitraje_en_ejecucion=True
             current_time = datetime.now().strftime("%H:%M:%S,%f")[:-3]  # Formato hh:mm:ss,xxxx
