@@ -3,3 +3,25 @@
 
 # Ignore pruebasheetpython.json
 /pruebasheetpython.json
+/src/models/__pycache__/cuentas.cpython-39.pyc
+/src/models/__pycache__/instrumento.cpython-39.pyc
+/src/models/__pycache__/instrumentoEstrategiaUno.cpython-39.pyc
+/src/models/__pycache__/instrumentoGet.cpython-39.pyc
+/src/models/__pycache__/instrumentosSuscriptos.cpython-39.pyc
+/src/models/__pycache__/logs.cpython-39.pyc
+/src/models/__pycache__/operacion.cpython-39.pyc
+/src/models/__pycache__/orden.cpython-39.pyc
+/src/models/__pycache__/usuario.cpython-39.pyc
+/src/panelControlBroker/panelControl.py
+/src/routes/__pycache__/instrumentos.cpython-39.pyc
+/src/routes/__pycache__/instrumentosGet.cpython-39.pyc
+/src/routes/api_externa_conexion/__pycache__/cuenta.cpython-39.pyc
+/src/routes/api_externa_conexion/__pycache__/get_login.cpython-39.pyc
+/src/routes/api_externa_conexion/__pycache__/operaciones.cpython-39.pyc
+/src/routes/api_externa_conexion/__pycache__/validaInstrumentos.cpython-39.pyc
+/src/routes/api_externa_conexion/__pycache__/wsocket.cpython-39.pyc
+/src/strategies/__pycache__/datoSheet.cpython-39.pyc
+/src/strategies/__pycache__/estrategiaSheetWS.cpython-39.pyc
+/src/strategies/__pycache__/estrategias.cpython-39.pyc
+/src/utils/__pycache__/common.cpython-39.pyc
+/src/utils/__pycache__/db.cpython-39.pyc
