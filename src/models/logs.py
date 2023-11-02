@@ -34,7 +34,7 @@ class Logs(db.Model):
         self.linea = linea
         self.error = error
 
-    def crear_tabla(self):
+    def crear_tabla_logs(self):
         insp = inspect(db.engine)
         if not insp.has_table("logs"):
             db.create_all()

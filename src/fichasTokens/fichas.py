@@ -22,6 +22,8 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from datetime import datetime, timedelta
 import random
+from models.creaTablas import crea_tabla_ficha
+from models.creaTablas import crea_tabla_logs
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.ficha import Ficha
@@ -29,22 +31,6 @@ from tokens.token import generar_token
 
 fichas = Blueprint('fichas',__name__)
 
-def crea_tabla_ficha():
-    ficha = Ficha(           
-        user_id = "1",
-        cuenta_broker_id = "1083",
-        activo = "True",
-        token = "", 
-        llave ='',
-        monto_efectivo = 1.1,
-        porcentaje_creacion = 10 ,
-        valor_cuenta_creacion = 1.1,
-        valor_cuenta_actual = 9.9,
-        fecha_generacion = datetime(2023, 10, 5),
-        interes = 10.5    
-    )
-    ficha.crear_tabla_ficha()
-    print("Tabla creada!")
 
 
 @fichas.route('/crearFicha', methods=['POST'])
@@ -57,6 +43,9 @@ def crear_ficha():
         correoElectronico = data.get('correoElectronico')
         total_cuenta = data.get('total_cuenta')
         crea_tabla_ficha()
+        crea_tabla_logs()
+        
+        
         # obtener los valores del accesToken
         if access_token:
             app = current_app._get_current_object()                    
@@ -100,7 +89,41 @@ def crear_ficha():
             total_para_fichas =  total_cuenta * 0.6
             print(total_para_fichas)
         
-            return render_template("fichas/fichasGenerar.html", datos=llave_generada,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta)
+            fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
+        
+            for ficha in fichas_usuario:
+                print(ficha.token)
+                llave_bytes = ficha.llave
+                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                llave_original_bytes = bytes.fromhex(llave_hex)
+                #obtenemos el valor
+                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                
+                #obtenemos el numero
+                random_number = decoded_token.get('random_number')
+                # Agregamos random_number a la ficha
+                ficha.random_number = random_number
+                
+                
+                 # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
+                fichas_json = [
+                    {
+                        'id': ficha.id,
+                        'user_id': ficha.user_id,
+                        'monto_efectivo': ficha.monto_efectivo,
+                        'interes': ficha.interes,
+                        'estado': ficha.estado,
+                        'random_number': ficha.random_number
+                        # Agrega más campos si es necesario
+                    }
+                    for ficha in fichas_usuario
+                ]
+
+            return jsonify({'fichas_usuario': fichas_json})
+                
+          
         
           
     except Exception as e:
@@ -138,7 +161,9 @@ def fichasToken_fichas_generar():
             
             #obtenemos el numero
             random_number = decoded_token.get('random_number')
-        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta)
+            # Agregamos random_number a la ficha
+            ficha.random_number = random_number
+        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, )
         
    #except:  
    #     print("no lla correctamente")  
@@ -209,14 +234,51 @@ def fichasToken_fichas_usuarios_get():
        print('no hay usuarios') 
    return 'problemas con la base de datos'
 
-@fichas.route("/eliminar_fichasToken_fichas_usuarios_post/",  methods=["POST"])
-def eliminar_fichasToken_fichas_usuarios_post():
+@fichas.route("/eliminar-ficha/",  methods=["POST"])
+def eliminar_ficha():
+  if request.method == 'POST':
+    access_token = request.form['access_token']
+    if access_token:
+        app = current_app._get_current_object()
+            
+        ficha_id = request.form['eliminarFichaId']
+       
+        user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+               
+        # Buscar y eliminar la ficha
+        ficha = Ficha.query.filter_by(id=ficha_id, user_id=user_id).first()
 
-    cuenta_id = request.form['eliminarCuentaId']
-    cuenta = Cuenta.query.get(cuenta_id)
-    db.session.delete(cuenta)
-    db.session.commit()
-    flash('Cuenta eliminada correctamente.')
-    cuentas = db.session.query(Cuenta).all()
-    db.session.close()
-    return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentas)
+        if ficha:
+            db.session.delete(ficha)
+            db.session.commit()
+            db.session.close()
+            flash('Ficha eliminada correctamente.')
+            mensaje = "La ficha ha sido eliminada correctamente."
+        else:
+            mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
+
+        fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+        
+        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+        reporte = repuesta_cuenta['accountData']
+        available_to_collateral = reporte['availableToCollateral']
+        portfolio = reporte['portfolio']
+        
+        total_cuenta = available_to_collateral + portfolio
+        total_para_fichas =  total_cuenta * 0.6
+        for ficha in fichas_usuario:
+            print(ficha.token)
+            llave_bytes = ficha.llave
+            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+            # Luego, si necesitas obtener la llave original como bytes nuevamente
+            llave_original_bytes = bytes.fromhex(llave_hex)
+            #obtenemos el valor
+            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+            
+            #obtenemos el numero
+            random_number = decoded_token.get('random_number')
+            # Agregamos random_number a la ficha
+            ficha.random_number = random_number
+        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, )
+        
