@@ -27,6 +27,10 @@ class Usuario(db.Model):
     ficha = relationship("Ficha", back_populates="usuarios")   
     trazaFichas = relationship('TrazaFicha', back_populates='usuario')
     logs = relationship("Logs", back_populates="usuarios")   
+    trades = relationship("Trade", back_populates="usuario")
+
+
+ 
    
  # constructor
     def __init__(self, id,correo_electronico,token,refresh_token,activo,password,roll='USUARIO'):
@@ -50,8 +54,8 @@ class Usuario(db.Model):
     def get_id(self):
         return str(self.id)
 
-
-    def crear_tabla(serlf):
+    @classmethod
+    def crear_tabla_usuarios(serlf):
          insp = inspect(db.engine)
          if not insp.has_table("usuarios"):
               db.create_all()

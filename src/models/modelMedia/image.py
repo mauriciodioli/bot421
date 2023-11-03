@@ -34,7 +34,7 @@ class Image(db.Model):
 
    
 
-
+    @classmethod
     def crear_tabla_image(self):
          insp = inspect(db.engine)
          if not insp.has_table("image"):

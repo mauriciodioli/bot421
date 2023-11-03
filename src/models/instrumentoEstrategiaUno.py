@@ -3,6 +3,8 @@ from utils.db import db
 from flask_marshmallow import Marshmallow
 from flask import Blueprint
 import enum
+from sqlalchemy import inspect,Column, Integer, String, ForeignKey
+
 
 ma = Marshmallow()
 instrumentoEstrategiaUno = Blueprint('instrumentoEstrategiaUno',__name__) 
@@ -31,7 +33,12 @@ class InstrumentoEstrategiaUno(db.Model):
         self.last_md = None
         self.state = States.WAITING_MARKET_DATA
  
-        
+    @classmethod
+    def crear_tabla_instrumentoEstrategiaUno(self):
+        insp = inspect(db.engine)
+        if not insp.has_table("instrumentoEstrategiaUno"):
+            db.create_all()
+                    
 class MerShema(ma.Schema):
     class Meta:
         fields = ("id","instrument","comision","initial_size","buy_size","sell_size","spread","tick","my_order","last_md","state")
