@@ -19,7 +19,7 @@ class Cuenta(db.Model):
     accountCuenta = db.Column(db.String(500), nullable=True)
     selector = db.Column(db.String(500), nullable=True)
     ficha = relationship("Ficha", back_populates="cuentas")
-    trazaFichas = relationship('TrazaFicha', backref='cuenta')
+    trazaFichas = relationship('TrazaFicha', backref='cuenta')    
     usuarios = relationship("Usuario", back_populates="cuentas")
 
     
@@ -35,7 +35,7 @@ class Cuenta(db.Model):
    
     def __repr__(self):
         return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector})"
-
+    @classmethod
     def crear_tabla_cuentas(self):
          insp = inspect(db.engine)
          if not insp.has_table("cuentas"):

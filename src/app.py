@@ -8,6 +8,7 @@ from config import DATABASE_CONNECTION_URI
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
+from models.creaTablas import crea_tablas_DB
 
 
 from strategies.estrategias import estrategias
@@ -149,7 +150,7 @@ ma = Marshmallow(app)
 
 @app.route("/")
 def entrada():  
-      
+    crea_tablas_DB()
     return redirect("index")
 
 @login_manager.user_loader

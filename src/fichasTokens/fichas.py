@@ -22,8 +22,6 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from datetime import datetime, timedelta
 import random
-from models.creaTablas import crea_tabla_ficha
-from models.creaTablas import crea_tabla_logs
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.ficha import Ficha
@@ -42,8 +40,7 @@ def crear_ficha():
         cuenta = data.get('cuenta')
         correoElectronico = data.get('correoElectronico')
         total_cuenta = data.get('total_cuenta')
-        crea_tabla_ficha()
-        crea_tabla_logs()
+   
         
         
         # obtener los valores del accesToken

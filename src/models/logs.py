@@ -33,7 +33,7 @@ class Logs(db.Model):
         self.archivo = archivo
         self.linea = linea
         self.error = error
-
+    @classmethod
     def crear_tabla_logs(self):
         insp = inspect(db.engine)
         if not insp.has_table("logs"):
