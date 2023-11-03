@@ -138,16 +138,20 @@ def fichasToken_fichas_generar():
        # print("detalle  ",available_to_collateral)
        # print("detalle ",portfolio)
        
-        total_cuenta = available_to_collateral + portfolio
-        total_para_fichas =  total_cuenta * 0.6
-        print(total_para_fichas)
+        
         if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
         # Consulta todas las fichas del usuario dado
         fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-        
+        total_cuenta = available_to_collateral + portfolio
+        total_para_fichas =  total_cuenta * 0.6
+       
         for ficha in fichas_usuario:
-            print(ficha.token)
+            #print(ficha.monto_efectivo)
+            total_para_fichas=total_para_fichas - ficha.monto_efectivo
+            interes = ficha.valor_cuenta_creacion*100
+            interes = interes/total_cuenta
+            print(interes)  
             llave_bytes = ficha.llave
             llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
@@ -160,7 +164,11 @@ def fichasToken_fichas_generar():
             random_number = decoded_token.get('random_number')
             # Agregamos random_number a la ficha
             ficha.random_number = random_number
-        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, )
+        
+       
+        print(total_para_fichas)    
+            
+        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta )
         
    #except:  
    #     print("no lla correctamente")  

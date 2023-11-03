@@ -194,7 +194,7 @@ def cargaSymbolParaValidar(message):
   
 def get_instrumento_para_suscripcion_ws():#   **77
       ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-      datoSheet.crea_tabla_orden()  
+    
       return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db():
