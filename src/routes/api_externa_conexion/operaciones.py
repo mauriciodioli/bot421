@@ -380,6 +380,7 @@ def comprar():
               flash('No hay suficiente saldo para enviar la orden de compra')
               return render_template("errorOperacion.html" )
         else:
+          
           sendOrderWS()
           flash('Operacion enviada exitosamente')
           repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
@@ -581,34 +582,34 @@ def sendOrderWS():
         
         print("tipoOrder WWWWWWWWWWWWWWWWWssssssssssssssssss",tipoOrder)
         
-        saldo = cuenta.obtenerSaldoCuenta()
+       # saldo = cuenta.obtenerSaldoCuenta()
         
         
-        if saldo >= int(orderQty) * float(price):
+        #if saldo >= int(orderQty) * float(price):
           
-          print("tipoOrder ",tipoOrder)
-          if  tipoOrder == 'LIMIT':
-            print("saldo cuenta ",saldo)      
+        print("tipoOrder ",tipoOrder)
+        if  tipoOrder == 'LIMIT':
+          print("saldo cuenta ",saldo)      
          
-            
-            
-            # 4-Subscribes to receive order report for the default account
-            get.pyConectionWebSocketInicializada.order_report_subscription()
+              
+              
+              # 4-Subscribes to receive order report for the default account
+            # get.pyConectionWebSocketInicializada.order_report_subscription()
 
-            # 5-Send an order via websocket message then check that order_report_handler is called
-            get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
-            # validate correct price
-            # print("______pasaaaaaa sa send_order_via_websocket")
-            # 8-Wait 5 sec then close the connection
-            time.sleep(5)
-           
+              # 5-Send an order via websocket message then check that order_report_handler is called
+          get.pyConectionWebSocketInicializada.send_order_via_websocket(ticker=symbol, side=get.pyRofexInicializada.Side.BUY, size=orderQty, order_type=get.pyRofexInicializada.OrderType.LIMIT,price=price)  
+              # validate correct price
+              # print("______pasaaaaaa sa send_order_via_websocket")
+              # 8-Wait 5 sec then close the connection
+          time.sleep(5)
             
-            
-            repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-            operaciones = repuesta_operacion['orders']
-            print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-            return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
-          else:
+              
+              
+          repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+          operaciones = repuesta_operacion['orders']
+          print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
+          return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+        else:
             print("No hay suficiente saldo para enviar la orden de compra")
              
             estadoOperacion()
