@@ -144,6 +144,13 @@ def loginExtAutomatico():
                         if simuladoOproduccion =='simulado':
                             try:
                                             environment =pyRofexInicializada.Environment.REMARKET
+                                            
+                                          #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
+                                          #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
+                                          #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environment)
+                                          #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environment) 
+                                          #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
+                                         
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                             conexion()                                     
                                             print("está logueado en simulado en REMARKET")
@@ -235,6 +242,12 @@ def loginExtCuentaSeleccionadaBroker():
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
                 environments = pyRofexInicializada.Environment.REMARKET
+              #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
+              #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
+              #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environments)
+              #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environments) 
+              #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+                                         
             else:
                 # Configurar para el entorno LIVE
                 environments = pyRofexInicializada.Environment.LIVE

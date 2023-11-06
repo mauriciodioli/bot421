@@ -20,8 +20,8 @@ def validar_existencia_instrumentos(mi_listado,listado_instrumentos):
     if instrumento in listado_instrumentos:
       print(f'El instrumento {instrumento} existe en el mercado')
       listado_final.append(instrumento)
-    else:
-      print(f'El instrumento {instrumento} NO existe en el mercado')
+   # else:
+   #   print(f'El instrumento {instrumento} NO existe en el mercado')
   return listado_final
 
 

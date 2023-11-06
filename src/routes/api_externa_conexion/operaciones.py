@@ -48,15 +48,25 @@ def operar():
     return render_template("errorLogueo.html" )
   
     
-@operaciones.route("/get_trade_history_by_symbol",  methods=["POST"])
+@operaciones.route("/get_trade_history_by_symbol/",  methods=["POST"])
 def get_trade_history_by_symbol():
   try:        
         if request.method == 'POST': 
             symbol = request.form.get('symbol')
-           # end = datetime.date.today()
-           # start = datetime.date(year=end.year, month=1, day=1)
-           # historic_trades = get.pyRofexInicializada.get_trade_history(ticker=symbol, start_date=start, end_date=end)
-           # operaciones = historic_trades
+            end = datetime.today()
+            start = datetime(end.year, 1, 1).date()
+            # Convertir a cadena en formato "YYYY-MM-DD"
+            start_str = start.strftime('%Y-%m-%d')
+            end_str = end.strftime('%Y-%m-%d')
+            historic_trades = get.pyRofexInicializada.get_trade_history(
+                ticker=symbol,
+                start_date=start_str,
+                end_date=end_str,
+                market=get.pyRofexInicializada.Market.ROFEX,
+                environment=None
+            )
+           
+            operaciones = historic_trades.get('trades', []) 
             print("historic_trades operacionnnnnnnnnnnnnnnnnnnnneeesss ",symbol)
         return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
   except:  

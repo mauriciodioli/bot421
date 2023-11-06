@@ -271,8 +271,9 @@ def eliminar_ficha():
         
         total_cuenta = available_to_collateral + portfolio
         total_para_fichas =  total_cuenta * 0.6
+        
         for ficha in fichas_usuario:
-            print(ficha.token)
+           # print(ficha.token)
             llave_bytes = ficha.llave
             llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 

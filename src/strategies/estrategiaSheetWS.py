@@ -95,7 +95,7 @@ def estrategia_001():
             print("El token es inválido")
         except:
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
-    return render_template('/estrategiaOperando.html')
+    return render_template('notificaciones/estrategiaOperando.html')
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
