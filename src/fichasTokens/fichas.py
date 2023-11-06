@@ -128,7 +128,7 @@ def crear_ficha():
 
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
- #  try:  
+   try:  
         
         access_token = request.form['access_token_form_GenerarFicha'] 
         repuesta_cuenta = get.pyRofexInicializada.get_account_report()
@@ -149,9 +149,12 @@ def fichasToken_fichas_generar():
         for ficha in fichas_usuario:
             #print(ficha.monto_efectivo)
             total_para_fichas=total_para_fichas - ficha.monto_efectivo
-            interes = ficha.valor_cuenta_creacion*100
-            interes = interes/total_cuenta
-            print(interes)  
+            diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+            porcien= diferencia*100
+            interes = porcien/available_to_collateral
+            interes = int(interes)
+            ficha.interes = interes
+           # print(interes)  
             llave_bytes = ficha.llave
             llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
@@ -164,25 +167,69 @@ def fichasToken_fichas_generar():
             random_number = decoded_token.get('random_number')
             # Agregamos random_number a la ficha
             ficha.random_number = random_number
+            
         
        
         print(total_para_fichas)    
             
         return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta )
         
-   #except:  
-   #     print("no lla correctamente")  
-   #     flash('Loggin Incorrect')    
+   except:  
+        print("no lla correctamente")  
+        flash('Loggin Incorrect')    
           
   # return render_template("login.html" )
     
  
 
-@fichas.route("/fichasToken_fichas_listar/", methods=["POST"])   
+@fichas.route("/fichasToken-fichas-listar/", methods=["POST"])   
 def fichasToken_fichas_listar():
-    
-    
- return jsonify({'cuentas': data})  # Devolver los datos en formato JSON      
+    try:  
+        access_token = request.form['access_token_form_ListarFicha'] 
+        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+        reporte = repuesta_cuenta['accountData']
+        available_to_collateral = reporte['availableToCollateral']
+        portfolio = reporte['portfolio']
+       # print("detalle  ",available_to_collateral)
+       # print("detalle ",portfolio)
+       
+        
+        if access_token:
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        # Consulta todas las fichas del usuario dado
+        fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+       
+       
+        for ficha in fichas_usuario:
+            #print(ficha.monto_efectivo)
+           
+            diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+            porcien= diferencia*100
+            interes = porcien/available_to_collateral
+            interes = int(interes)
+            ficha.interes = interes
+           # print(interes)  
+            llave_bytes = ficha.llave
+            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+            # Luego, si necesitas obtener la llave original como bytes nuevamente
+            llave_original_bytes = bytes.fromhex(llave_hex)
+            #obtenemos el valor
+            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+            
+            #obtenemos el numero
+            random_number = decoded_token.get('random_number')
+            # Agregamos random_number a la ficha
+            ficha.random_number = random_number
+            
+        
+       
+        
+            
+        return render_template("fichas/fichasListado.html", datos=fichas_usuario )
+    except:  
+        print("no lla correctamente")  
+        flash('Loggin Incorrect')    
     
 
 @fichas.route("/fichasToken_fichas_all/", methods=["POST"])   
