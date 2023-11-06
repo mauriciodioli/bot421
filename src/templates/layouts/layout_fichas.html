@@ -61,21 +61,26 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Tokens</a>
-                        <ul class="dropdown-menu">              
-                                     
+                        <ul class="dropdown-menu">  
                             <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
                                 <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
                                 
                                 <div class="col">  
                                     <li><button type="submit" class="dropdown-item">Generar</button></li>   
                                      
-                              </div>
-                              </form>    
+                                </div>
+                            </form>    
                             
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/fichasToken_fichas_listar">Listar</a></li>
-                          <div class="form-group"><input type="hidden" name="access_token_form_Abm"  id="access_token_form_Abm"  class="form-control"></div>  
-                          <input type="hidden" name="usuario_id" id = "usuario_id" class="form-control">                    
+
+                           <form  name="fichasToken-fichas-listar" action="/fichasToken-fichas-listar/" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div>  
+                                
+                                <div class="col">  
+                                    <li><button type="submit" class="dropdown-item">Listar</button></li>   
+                                     
+                              </div>
+                            </form>                      
                         </ul>
                     </li>
                     
@@ -122,6 +127,7 @@
 
         document.getElementById("access_token_form_Abm").value = access_token;
         document.getElementById("access_token_form_GenerarFicha").value = access_token;
+        document.getElementById("access_token_form_ListarFicha").value = access_token;
         document.addEventListener('DOMContentLoaded', function() {
             let usuario_id = localStorage.getItem('usuario_id');
             document.getElementById("usuario_id").value = usuario_id;
