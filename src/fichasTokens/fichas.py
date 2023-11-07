@@ -131,6 +131,7 @@ def fichasToken_fichas_generar():
    try:  
         
         access_token = request.form['access_token_form_GenerarFicha'] 
+        
         repuesta_cuenta = get.pyRofexInicializada.get_account_report()
         reporte = repuesta_cuenta['accountData']
         available_to_collateral = reporte['availableToCollateral']
@@ -186,6 +187,7 @@ def fichasToken_fichas_generar():
 def fichasToken_fichas_listar():
     try:  
         access_token = request.form['access_token_form_ListarFicha'] 
+        layouts = request.form['layoutOrigen']
         repuesta_cuenta = get.pyRofexInicializada.get_account_report()
         reporte = repuesta_cuenta['accountData']
         available_to_collateral = reporte['availableToCollateral']
@@ -224,14 +226,66 @@ def fichasToken_fichas_listar():
             
         
        
-        
+        if layouts == 'layout':
+           layouts = 'layout'
+        elif layouts == 'layout_fichas':
+           layouts = 'layout_fichas'   
             
-        return render_template("fichas/fichasListado.html", datos=fichas_usuario )
+        return render_template("fichas/fichasListado.html", datos=fichas_usuario , layout=layouts)
     except:  
         print("no lla correctamente")  
         flash('Loggin Incorrect')    
     
+@fichas.route("/fichasToken-fichas-listar-sin-cuenta/", methods=["POST"])   
+def fichasToken_fichas_listar_sin_cuenta():
+    try:  
+        access_token = request.form['access_token_form_ListarFicha'] 
+        layouts = request.form['layoutOrigen']
+      
+       # print("detalle  ",available_to_collateral)
+       # print("detalle ",portfolio)
+       
+        
+        if access_token:
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        # Consulta todas las fichas del usuario dado
+        fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+       
+       
+        for ficha in fichas_usuario:
+            #print(ficha.monto_efectivo)
+           
+            diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+            porcien= diferencia*100
+            interes = porcien/ficha.valor_cuenta_actual
+            interes = int(interes)
+            ficha.interes = interes
+           # print(interes)  
+            llave_bytes = ficha.llave
+            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
+            # Luego, si necesitas obtener la llave original como bytes nuevamente
+            llave_original_bytes = bytes.fromhex(llave_hex)
+            #obtenemos el valor
+            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+            
+            #obtenemos el numero
+            random_number = decoded_token.get('random_number')
+            # Agregamos random_number a la ficha
+            ficha.random_number = random_number
+            
+        
+       
+        if layouts == 'layout':
+           layouts = 'layout'
+        elif layouts == 'layout_fichas':
+           layouts = 'layout_fichas'   
+            
+        return render_template("fichas/fichasListado.html", datos=fichas_usuario , layout=layouts)
+    except:  
+        print("no lla correctamente")  
+        flash('Loggin Incorrect')    
+    
 @fichas.route("/fichasToken_fichas_all/", methods=["POST"])   
 def fichasToken_fichas_all():
     if request.method == 'POST':
