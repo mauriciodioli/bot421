@@ -84,7 +84,15 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
                         <ul class="dropdown-menu">   
-                          <li><a class="dropdown-item" href="/fichasToken_fichas_listar">Listar</a></li>                    
+                            <form  name="fichasToken-fichas-listar" action="/fichasToken-fichas-listar-sin-cuenta/" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div> 
+                                <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>   
+                                
+                                <div class="col">  
+                                    <li><button type="submit" class="dropdown-item">Listar</button></li>   
+                                     
+                              </div>
+                            </form>                     
                         </ul>
                     </li>
                     <li class="nav-item ">
@@ -182,6 +190,11 @@
         let simulado = localStorage.getItem("selector");  
         let access_token = localStorage.getItem("access_token")
         let rol = localStorage.getItem('roll');
+
+
+     
+       
+       document.getElementById("access_token_form_ListarFicha").value = access_token;
         if (localStorage.getItem("selector")) {
 
                 console.log(correo_electronico);

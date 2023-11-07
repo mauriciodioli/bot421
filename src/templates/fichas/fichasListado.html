@@ -8,15 +8,22 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-{% extends 'layouts/layoutConexBroker.html'%}
+{% if layout %}
+    {% extends 'layouts/layout.html' %}
+{% else %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% endif %}
 {% block content%}
 
 <div class = 'container p-4'>
+    <div class="container p-4 text-center">
+        <button type="button" class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><strong>RECIBIR</strong></button>
+    </div>
+                    
     <table class="table table-dark table-striped"  id="tablaDatos">
         <thead>           
             <tr>
-                <th scope="col">Ficha</th>
-                <th scope="col">Usuario</th>
+                <th scope="col">Ficha</th>               
                 <th scope="col">Inicial</th>
                 <th scope="col">Capitalizacion</th>
                 <th scope="col">Estado</th>                     
@@ -26,16 +33,16 @@
         <tbody>
             {% for fichas in datos %}
                 <tr>
-                    <th scope="row">{{fichas.id}}</th>
-                    <td>{{ fichas.user_id }}</td>       
+                    <th scope="row">{{fichas.id}}</th>                      
                     <td>{{ fichas.monto_efectivo }}</td>
                     <td>{{ fichas.interes }}%</td>
                     <td>{{fichas.estado }}</td>                                                       
                     <td class="d-flex"> 
            
-                        <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))">Eliminar</button>
-                        <button type="button" class="btn btn-success  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.random_number }}"  data-ficha-monto="{{ fichas.monto_efectivo }}"  onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><srtrong>TOKEN</strong></button>
-                    </td>
+                       
+                             <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" data-ficha-llave="{{ fichas.random_number }}" data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><strong>Asignar</strong></button>
+                            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))">Reportar</button>
+                        </td>
                 </tr>
             {% endfor %}
         </tbody>
