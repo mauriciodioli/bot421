@@ -15,7 +15,7 @@
     background-color: #333; /* Fondo gris oscuro para las tarjetas */
     box-shadow: 0 6px 12px rgba(218, 165, 32, 0.5); /* Sombra dorada en las tarjetas */
     max-width: 300px;
-    margin: 10px;
+    margin: 20px;
   }
   
   /* Estilos adicionales para aplicar sombra más grande al pasar el mouse o seleccionar */
