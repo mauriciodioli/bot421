@@ -30,6 +30,18 @@ from tokens.token import generar_token
 fichas = Blueprint('fichas',__name__)
 
 
+def refrescoValorActualCuentaFichas(user_id):    
+        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+        reporte = repuesta_cuenta['accountData']
+        available_to_collateral = reporte['availableToCollateral']
+        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+        
+        try:
+            for ficha in fichas_usuario:                
+                ficha.valor_cuenta_actual = available_to_collateral
+                db.session.commit()
+        except Exception as e:
+               db.session.rollback()              
 
 @fichas.route('/crearFicha', methods=['POST'])
 def crear_ficha():
