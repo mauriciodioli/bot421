@@ -5,6 +5,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 import strategies.estrategiaSheetWS as shWS 
 import routes.instrumentos as inst
 from datetime import datetime
+
 import pandas as pd
 import pyRofex #lo utilizo para test
 import time    #lo utilizo para test
@@ -22,6 +23,7 @@ reporte_de_instrumentos = []
 
 
 def wsocketConexion():
+   
    ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
   # get.pyRofexInicializada.order_report_subscription()
   # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)

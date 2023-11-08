@@ -16,12 +16,14 @@ import os
 import routes.api_externa_conexion.validaInstrumentos as valida
 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
+from fichasTokens.fichas import refrescoValorActualCuentaFichas
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
 import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+
 from utils.db import db
 from datetime import datetime
 import time
@@ -152,7 +154,8 @@ def loginExtAutomatico():
                                           #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                          
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion()                                     
+                                            conexion() 
+                                            refrescoValorActualCuentaFichas(user_id)                                    
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
                                                 resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': cuentas.userCuenta, 'selector': selector}))
@@ -181,7 +184,7 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion()
-                              
+                                refrescoValorActualCuentaFichas(user_id)
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
                                  return render_template("/paneles/panelDeControlBroker.html")   
@@ -265,6 +268,7 @@ def loginExtCuentaSeleccionadaBroker():
             
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
             conexion()
+            refrescoValorActualCuentaFichas(user_id)
            
            
             print(f"Está logueado en {selector} en {environments}")
