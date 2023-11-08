@@ -8,7 +8,20 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-{% extends 'layouts/layout_fichas.html'%}
+ 
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+
 {% block content%}
  <body>
     <div class="container" id="cardIndex">
@@ -194,7 +207,7 @@
 
 
       <script>
-     
+      
         function setFichaData( fichaId) {
             accessToken = localStorage.getItem('access_token');             
             document.getElementById('access_token').value = accessToken;
@@ -219,8 +232,7 @@
                 // Utiliza jQuery para abrir el modal
                 $('#CrearFichas').modal('show');
             });
-        });
-        document.addEventListener('DOMContentLoaded', function() {
+       
             var total_cuenta_paraAjax = parseFloat(" {{total_cuenta}}");
             var modoCantidad = document.getElementById('modoCantidad');
             var comboCantidad = document.getElementById('comboCantidad');           
@@ -229,10 +241,7 @@
             var accessToken = localStorage.getItem('access_token') || ''; // Si no existe en el localStorage, se asigna una cadena vacía
                 cuenta = localStorage.getItem('cuenta') || '';
                 correoElectronico = localStorage.getItem('correo_electronico') || '';
-                document.getElementById("access_token_form_GenerarFicha").value = accessToken;//estas son para utilizarlas en el layout
-                document.getElementById("access_token_form_ListarFicha").value = accessToken;//estas son para utilizarlas en el layout
-                document.getElementById("access_token_form_Abm").value = accessToken;//estas son para utilizarlas en el layout
-            modoCantidad.addEventListener('change', function() {
+               modoCantidad.addEventListener('change', function() {
                 if (modoCantidad.value === 'opcion1') {
                     comboCantidad.style.display = 'block';
                     inputCantidad.style.display = 'none';

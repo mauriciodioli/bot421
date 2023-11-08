@@ -86,8 +86,8 @@ def crear_ficha():
             total_para_fichas =  total_cuenta * 0.6
             print(total_para_fichas)
         
-            fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
-        
+           # fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
+            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == userid).all()
             for ficha in fichas_usuario:
                 print(ficha.token)
                 llave_bytes = ficha.llave
@@ -128,56 +128,67 @@ def crear_ficha():
 
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
-   try:  
+   #try:  
         
         access_token = request.form['access_token_form_GenerarFicha'] 
-        
+        layouts = request.form['layoutOrigen']
         repuesta_cuenta = get.pyRofexInicializada.get_account_report()
         reporte = repuesta_cuenta['accountData']
-        available_to_collateral = reporte['availableToCollateral']
-        portfolio = reporte['portfolio']
-       # print("detalle  ",available_to_collateral)
-       # print("detalle ",portfolio)
-       
+        if reporte!=None:
+            available_to_collateral = reporte['availableToCollateral']
+            portfolio = reporte['portfolio']
+           # layouts = 'layout'
+        # print("detalle  ",available_to_collateral)
+        # print("detalle ",portfolio)
         
-        if access_token:
-                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-        # Consulta todas las fichas del usuario dado
-        fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-        total_cuenta = available_to_collateral + portfolio
-        total_para_fichas =  total_cuenta * 0.6
-       
-        for ficha in fichas_usuario:
-            #print(ficha.monto_efectivo)
-            total_para_fichas=total_para_fichas - ficha.monto_efectivo
-            diferencia = available_to_collateral - ficha.valor_cuenta_creacion
-            porcien= diferencia*100
-            interes = porcien/available_to_collateral
-            interes = int(interes)
-            ficha.interes = interes
-           # print(interes)  
-            llave_bytes = ficha.llave
-            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+            
+            if access_token:
+                    user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            # Consulta todas las fichas del usuario dado
+            #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+      
+            total_cuenta = available_to_collateral + portfolio
+            total_para_fichas =  total_cuenta * 0.6
+            try:
+                for ficha in fichas_usuario:
+                    #print(ficha.monto_efectivo)
+                    total_para_fichas=total_para_fichas - ficha.monto_efectivo
+                    diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                    porcien= diferencia*100
+                    interes = porcien/available_to_collateral
+                    interes = int(interes)
+                    ficha.interes = interes
+                    
+                # print(interes)  
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-            # Luego, si necesitas obtener la llave original como bytes nuevamente
-            llave_original_bytes = bytes.fromhex(llave_hex)
-            #obtenemos el valor
-            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-            
-            #obtenemos el numero
-            random_number = decoded_token.get('random_number')
-            # Agregamos random_number a la ficha
-            ficha.random_number = random_number
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    # Agregamos random_number a la ficha
+                    ficha.random_number = random_number
+                    ficha.interes = interes
+                    db.session.commit()
+            except Exception as e:
+                db.session.rollback()   
             
         
-       
-        print(total_para_fichas)    
-            
-        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta )
-        
-   except:  
-        print("no lla correctamente")  
-        flash('Loggin Incorrect')    
+            print(total_para_fichas)    
+           
+            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+        else:
+             flash('no posee datos') 
+             return render_template("notificaciones/noPoseeDatos.html")   
+  # except:  
+  #      print("no llama correctamente")  
+  #      flash('error en la llamada a generacion de ficha')   
+  #      return render_template("notificaciones/errorOperacionSinCuenta.html",layout = layouts)    
           
   # return render_template("login.html" )
     
@@ -194,47 +205,45 @@ def fichasToken_fichas_listar():
         portfolio = reporte['portfolio']
        # print("detalle  ",available_to_collateral)
        # print("detalle ",portfolio)
-       
+        #layouts = 'layout'
         
         if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
         # Consulta todas las fichas del usuario dado
-        fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-       
-       
-        for ficha in fichas_usuario:
-            #print(ficha.monto_efectivo)
-           
-            diferencia = available_to_collateral - ficha.valor_cuenta_creacion
-            porcien= diferencia*100
-            interes = porcien/available_to_collateral
-            interes = int(interes)
-            ficha.interes = interes
-           # print(interes)  
-            llave_bytes = ficha.llave
-            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-            # Luego, si necesitas obtener la llave original como bytes nuevamente
-            llave_original_bytes = bytes.fromhex(llave_hex)
-            #obtenemos el valor
-            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-            
-            #obtenemos el numero
-            random_number = decoded_token.get('random_number')
-            # Agregamos random_number a la ficha
-            ficha.random_number = random_number
-            
+       # fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+       # fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.otra_condicion == valor).all()
+        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
         
-       
-        if layouts == 'layout':
-           layouts = 'layout'
-        elif layouts == 'layout_fichas':
-           layouts = 'layout_fichas'   
+        try:
+            for ficha in fichas_usuario:
+                #print(ficha.monto_efectivo)
             
-        return render_template("fichas/fichasListado.html", datos=fichas_usuario , layout=layouts)
+                diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                porcien= diferencia*100
+                interes = porcien/available_to_collateral
+                interes = int(interes)
+                ficha.interes = interes
+            # print(interes)  
+                llave_bytes = ficha.llave
+                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                llave_original_bytes = bytes.fromhex(llave_hex)
+                #obtenemos el valor
+                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                
+                #obtenemos el numero
+                random_number = decoded_token.get('random_number')
+                # Agregamos random_number a la ficha
+                ficha.random_number = random_number
+                db.session.commit()
+        except Exception as e:
+               db.session.rollback()   
+            
+        return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
     except:  
-        print("no lla correctamente")  
-        flash('Loggin Incorrect')    
+        print("no llama correctamente")  
+        flash('fichasListado Incorrect')    
     
 @fichas.route("/fichasToken-fichas-listar-sin-cuenta/", methods=["POST"])   
 def fichasToken_fichas_listar_sin_cuenta():
@@ -249,42 +258,39 @@ def fichasToken_fichas_listar_sin_cuenta():
         if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
         # Consulta todas las fichas del usuario dado
-        fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-       
-       
-        for ficha in fichas_usuario:
-            #print(ficha.monto_efectivo)
-           
-            diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
-            porcien= diferencia*100
-            interes = porcien/ficha.valor_cuenta_actual
-            interes = int(interes)
-            ficha.interes = interes
-           # print(interes)  
-            llave_bytes = ficha.llave
-            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+        #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
 
-            # Luego, si necesitas obtener la llave original como bytes nuevamente
-            llave_original_bytes = bytes.fromhex(llave_hex)
-            #obtenemos el valor
-            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+        try:
+            for ficha in fichas_usuario:
+                #print(ficha.monto_efectivo)
             
-            #obtenemos el numero
-            random_number = decoded_token.get('random_number')
-            # Agregamos random_number a la ficha
-            ficha.random_number = random_number
+                diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+                porcien= diferencia*100
+                interes = porcien/ficha.valor_cuenta_actual
+                interes = int(interes)
+                ficha.interes = interes
+            # print(interes)  
+                llave_bytes = ficha.llave
+                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                llave_original_bytes = bytes.fromhex(llave_hex)
+                #obtenemos el valor
+                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                
+                #obtenemos el numero
+                random_number = decoded_token.get('random_number')
+                # Agregamos random_number a la ficha
+                ficha.random_number = random_number
+                db.session.commit()
+        except Exception as e:
+               db.session.rollback()   
             
-        
-       
-        if layouts == 'layout':
-           layouts = 'layout'
-        elif layouts == 'layout_fichas':
-           layouts = 'layout_fichas'   
-            
-        return render_template("fichas/fichasListado.html", datos=fichas_usuario , layout=layouts)
+        return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
     except:  
-        print("no lla correctamente")  
-        flash('Loggin Incorrect')    
+        print("retorno incorrecto")  
+        flash('retorno incorrecto')    
     
 @fichas.route("/fichasToken_fichas_all/", methods=["POST"])   
 def fichasToken_fichas_all():

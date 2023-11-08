@@ -8,11 +8,21 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-{% if layout %}
+
+{% if layout == 'layout'%}
     {% extends 'layouts/layout.html' %}
-{% else %}
-    {% extends 'layouts/layoutConexBroker.html' %}
 {% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+
+
 {% block content%}
 
 <div class = 'container p-4'>
@@ -73,6 +83,7 @@
 
 
     <script>
+       
         document.getElementById('tokenInput').addEventListener('input', function() {
             document.getElementById('valorllave').textContent = this.value;
         });

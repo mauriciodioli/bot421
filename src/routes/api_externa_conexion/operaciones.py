@@ -105,6 +105,7 @@ def operaciones_desde_seniales_sin_cuenta():
             signal = request.form['senial']
             cuentaUser = request.form['correo_electronico']
             pais = request.form['paisSeleccionado']
+            layouts = 'layout_signal'
             if access_token:
                 app = current_app._get_current_object()  
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -163,7 +164,7 @@ def operaciones_desde_seniales_sin_cuenta():
             return jsonify({'error': 'Método no permitido'}), 405  # 405 significa Método no permitido
     except Exception as e:
         # Tu código de manejo de excepciones aquí
-        return render_template('notificaciones/errorOperacionSinCuenta.html')           
+        return render_template('notificaciones/errorOperacionSinCuenta.html', layout = layouts)           
 
     
 @operaciones.route("/operaciones_desde_seniales/", methods=["POST"]) 
