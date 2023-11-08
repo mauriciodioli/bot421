@@ -100,36 +100,39 @@ def crear_ficha():
         
            # fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
             fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == userid).all()
-            for ficha in fichas_usuario:
-                print(ficha.token)
-                llave_bytes = ficha.llave
-                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+            try:
+                for ficha in fichas_usuario:
+                    print(ficha.token)
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-                # Luego, si necesitas obtener la llave original como bytes nuevamente
-                llave_original_bytes = bytes.fromhex(llave_hex)
-                #obtenemos el valor
-                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                
-                #obtenemos el numero
-                random_number = decoded_token.get('random_number')
-                # Agregamos random_number a la ficha
-                ficha.random_number = random_number
-                
-                
-                 # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
-                fichas_json = [
-                    {
-                        'id': ficha.id,
-                        'user_id': ficha.user_id,
-                        'monto_efectivo': ficha.monto_efectivo,
-                        'interes': ficha.interes,
-                        'estado': ficha.estado,
-                        'random_number': ficha.random_number
-                        # Agrega más campos si es necesario
-                    }
-                    for ficha in fichas_usuario
-                ]
-
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    # Agregamos random_number a la ficha
+                    ficha.random_number = random_number
+                    
+                    
+                    # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
+                    fichas_json = [
+                        {
+                            'id': ficha.id,
+                            'user_id': ficha.user_id,
+                            'monto_efectivo': ficha.monto_efectivo,
+                            'interes': ficha.interes,
+                            'estado': ficha.estado,
+                            'random_number': ficha.random_number
+                            # Agrega más campos si es necesario
+                        }
+                        for ficha in fichas_usuario
+                    ]
+                db.session.commit()
+            except Exception as e:
+               db.session.rollback()     
             return jsonify({'fichas_usuario': fichas_json})
                 
           
@@ -140,7 +143,7 @@ def crear_ficha():
 
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
-   #try:  
+   try:  
         
         access_token = request.form['access_token_form_GenerarFicha'] 
         layouts = request.form['layoutOrigen']
@@ -197,10 +200,10 @@ def fichasToken_fichas_generar():
         else:
              flash('no posee datos') 
              return render_template("notificaciones/noPoseeDatos.html")   
-  # except:  
-  #      print("no llama correctamente")  
-  #      flash('error en la llamada a generacion de ficha')   
-  #      return render_template("notificaciones/errorOperacionSinCuenta.html",layout = layouts)    
+   except:  
+        print("no llama correctamente")  
+        flash('error en la llamada a generacion de ficha')   
+        return render_template("notificaciones/errorOperacionSinCuenta.html",layout = layouts)    
           
   # return render_template("login.html" )
     
