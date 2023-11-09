@@ -84,6 +84,8 @@
                         <div class="input-group">
                             <span class="input-group-text">$</span> <!-- Agrega el signo de dólar -->
                             <input type="text" class="form-control" id="inputCantidad1" name="inputCantidad1">
+                            <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'></div>  
+       
                             <button class="btn btn-primary" id="btnGuardarCantidad">Guardar</button> <!-- Agrega el botón -->
                         </div>
                     </div>
@@ -166,6 +168,8 @@
           <div class="modal-body">
             <input type="hidden" id="access_token" name="access_token">
             <input type="hidden" id="eliminarFichaId" name="eliminarFichaId">
+            <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
+                              
             <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta ficha?</p>
           </div>
           <div class="modal-footer">
@@ -299,7 +303,7 @@
             btnGuardarCrear.addEventListener('click', function() {
                
                 var valorComboSeleccionadoValor = parseFloat(document.getElementById('valorComboSeleccionado').textContent);
-                
+                var layoutOrigen = "{{ layout }}";
                 if (!isNaN(valorComboSeleccionadoValor)) {
                     alert("El valor de cantidad es: " + valorComboSeleccionadoValor);
 
@@ -310,12 +314,7 @@
 
                     xhr.onload = function() {
                         if (xhr.status === 200) {
-                            var responseData = JSON.parse(xhr.responseText);
-                    
-                            var htmlTemplate = responseData.html_template;
-                            var container = document.getElementById('cardIndex');
-                    
-                            container.innerHTML = htmlTemplate;
+                          
                         } else {
                             alert('Hubo un problema con la solicitud.');
                         }
@@ -327,6 +326,7 @@
                         accessToken: accessToken,
                         cuenta: cuenta,
                         correoElectronico: correoElectronico,
+                        layoutOrigen:layoutOrigen,
                         total_cuenta: total_cuenta_paraAjax
                     });
 
