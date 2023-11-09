@@ -36,7 +36,7 @@ class TriggerEstrategia(db.Model):
         self.nombreEstrategia = nombreEstrategia
    
 
-
+    @classmethod
     def crear_tabla_triggerEstrategia(self):
          insp = inspect(db.engine)
          if not insp.has_table("triggerEstrategia"):

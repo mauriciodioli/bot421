@@ -30,5 +30,6 @@ def generar_token(user_id, valor, cuenta):
    
 
     # Crear el token
-    access_token = jwt.encode(token_data, llave , algorithm='HS256')
-    return access_token
+    token_generado = jwt.encode(token_data, llave , algorithm='HS256')
+    dato = token_generado + llave
+    return dato

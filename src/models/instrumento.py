@@ -1,9 +1,11 @@
 from utils.db import db
 from flask_marshmallow import Marshmallow
 from flask import Blueprint
+from sqlalchemy import inspect,Column, Integer, String, ForeignKey
 ma = Marshmallow()
 instrumento = Blueprint('instrumento',__name__) 
 class Instrumento(db.Model):
+    __tablename__ = 'instrumento'
     id = db.Column(db.Integer, primary_key=True)
     especie = db.Column(db.String(100))
     c_compra = db.Column(db.Float)
@@ -41,7 +43,13 @@ class Instrumento(db.Model):
         self.vwap = vwap
         self.idsegmento = idsegmento
         self.idmarket = idmarket
-        
+
+    @classmethod        
+    def crear_tabla_instrumento(self):
+        insp = inspect(db.engine)
+        if not insp.has_table("instrumento"):
+            db.create_all()
+                  
 class MerShema(ma.Schema):
     class Meta:
         fields = ("id",  "especie","c_compra","p_compra","p_venta","c_venta","ultimo","var","apertura","minimo","maximo","cierre_anterior","volumen","vol_monto","vwap","idsegmento","idmarket")

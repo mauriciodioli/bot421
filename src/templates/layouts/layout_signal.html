@@ -23,6 +23,7 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{url_for('static', filename='js/notificacionAlertOperacion.js') }}"></script>
     <!--esto es para los colores-->
     <!-- Include the Pickr library -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.7.0/dist/themes/classic.min.css" />
@@ -31,6 +32,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/navbar.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
+
+   
+
 </head>
 
 <body>
@@ -63,20 +68,16 @@
                         <ul class="dropdown-menu">  
                           <li><a class="dropdown-item"id="guardarPaisSeleccionado">signals</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/panel_control/argentina/layout_signal" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
+                          <li><a class="dropdown-item" href="#" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/panel_control/usa/layout_signal" onclick="seleccionarPais('usa')">USA</a></li>
-                                                
+                          <li><a class="dropdown-item" href="#" onclick="seleccionarPais('usa')">USA</a></li>
                         </ul>
                     </li>
                     
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>                        
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/logOutAccount">get out of account</a></li>
-                                                
+                          <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>
                         </ul>
                     </li>
                     <li class="nav-item ">
@@ -93,6 +94,9 @@
         
       {%block content%}
       {% endblock%}
+          <div class="splash-container" id="splash" style="display:none">
+            {% include 'notificaciones/splashPage.html' %}
+         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -100,35 +104,45 @@
    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
+    
+
     <script>
         function seleccionarPais(pais) {
-            localStorage.setItem('paisSeleccionado', pais);
+            localStorage.setItem('paisSeleccionado', pais);           
+            var usuario_id = localStorage.getItem('usuario_id');
+        
+            var layoutOrigen = 'layout_signal';
+            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
+            window.location.href = url;
         }
+        
          correo_electronico = localStorage.getItem("correo_electronico");  
          cuentaBroker = localStorage.getItem("cuenta");  
          simulado = localStorage.getItem("selector");  
          access_token = localStorage.getItem("access_token")
          rol = localStorage.getItem('roll');
          selectedCountry  = localStorage.getItem('paisSeleccionado');
-        
+         usuario_id = localStorage.getItem('usuario_id');
        
          document.getElementById('guardarPaisSeleccionado').addEventListener('click', function() {
-           
-            //var currentFileName = window.location.pathname.split('/').pop(); // Obtiene el nombre del archivo actual
-            var layoutOrigen = 'layout_signal'; // Cambia 'nombre_del_layout' por el valor deseado
-            var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen;
-
-            
+            var pais = selectedCountry;
+            localStorage.setItem('paisSeleccionado', pais);
+        
+            usuario_id = localStorage.getItem('usuario_id');
+        
+            var layoutOrigen = 'layout_signal';
+            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
             window.location.href = url;
-          }); 
+        });
+        
         
 
                 // Verificar si el rol es "administrador"
-        if (rol != 'ADMINISTRADOR') {
+      //  if (rol != 'ADMINISTRADOR') {
             // Ocultar el enlace del menú de administración
-             adminLink = document.querySelector('.nav-link.dropdown-toggle');
-            adminLink.style.display = 'none';
-        }
+      //       adminLink = document.querySelector('.nav-link.dropdown-toggle');
+      //      adminLink.style.display = 'none';
+       // }
 
 
        

@@ -8,6 +8,7 @@ from config import DATABASE_CONNECTION_URI
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
+from models.creaTablas import crea_tablas_DB
 
 
 from strategies.estrategias import estrategias
@@ -52,7 +53,9 @@ from models.orden import orden
 from models.ficha import ficha
 from models.trazaFicha import trazaFicha
 from models.operacion import operacion
+from models.operacionHF import operacionHF
 from models.logs import logs
+from models.creaTablas import creaTabla
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -85,6 +88,7 @@ blueprint = make_google_blueprint(client_id='client_id',
 app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
 app.register_blueprint(logs)
+app.register_blueprint(creaTabla)
 app.register_blueprint(token)
 app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
@@ -95,6 +99,7 @@ app.register_blueprint(orden)
 app.register_blueprint(comprar)
 app.register_blueprint(operacion)
 app.register_blueprint(operaciones)
+app.register_blueprint(operacionHF)
 app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
@@ -145,7 +150,7 @@ ma = Marshmallow(app)
 
 @app.route("/")
 def entrada():  
-      
+   # crea_tablas_DB()
     return redirect("index")
 
 @login_manager.user_loader
