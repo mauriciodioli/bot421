@@ -25,6 +25,7 @@ import random
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.ficha import Ficha
+from models.trazaFicha import TrazaFicha
 from tokens.token import generar_token
 
 fichas = Blueprint('fichas',__name__)
@@ -50,6 +51,81 @@ def refrescoValorActualCuentaFichas(user_id):
     # Aquí puedes agregar código adicional si deseas manejar la excepción de alguna manera.
         
 
+@fichas.route('/fichas-tomar', methods=['POST'])
+def fichas_tomar():
+    try:  
+        access_token = request.form.get('access_token_form_ListarFicha')
+        
+   
+        llave_ficha = request.form['valorllave'] 
+        layouts = request.form['layoutOrigen']
+        if access_token:
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        # Consulta todas las fichas del usuario dado
+        #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+        ficha_usuario = db.session.query(Ficha).filter(Ficha.llave == llave_ficha).first()
+       
+        nueva_ficha = Ficha()
+        #qui cargo la ficha en el nuevo usuario
+        nueva_ficha.user_id = user_id
+        nueva_ficha.cuenta_broker_id= ficha_usuario.cuenta_broker_id
+        nueva_ficha.activo= ficha_usuario.activo
+        nueva_ficha.token=access_token
+        nueva_ficha.llave=ficha_usuario.llave
+        nueva_ficha.monto_efectivo=ficha_usuario.monto_efectivo
+        nueva_ficha.porcentaje_creacion=ficha_usuario.porcentaje_creacion
+        nueva_ficha.valor_cuenta_actual=ficha_usuario.valor_cuenta_actual
+        nueva_ficha.estado="ACEPTADO"
+        nueva_ficha.fecha_generacion=ficha_usuario.fecha_generacion
+        nueva_ficha.interes=ficha_usuario.interes
+        # Guarda la nueva ficha en la base de datos
+        db.session.add(nueva_ficha)
+        db.session.commit()
+        #modifico el estado del usuario anterior
+        ficha_usuario.estado="ACEPTADO"
+        # Guarda la nueva ficha en la base de datos
+        db.session.add(ficha_usuario)
+        db.session.commit()
+        #carga en TrazaFicha
+       # traza_ficha = TrazaFicha()
+       # traza_ficha.ficha = ficha_usuario  # Asigna la ficha de usuario a la traza de ficha
+      
+        ficha_usuario_Nuevo =  db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+        try:
+            for ficha in ficha_usuario_Nuevo:
+                #print(ficha.monto_efectivo)
+            
+                diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+                porcien= diferencia*100
+                interes = porcien/ficha.valor_cuenta_actual
+                interes = int(interes)
+                ficha.interes = interes
+              
+            # print(interes)  
+                llave_bytes = ficha.llave
+                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                llave_original_bytes = bytes.fromhex(llave_hex)
+                #obtenemos el valor
+                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                
+                #obtenemos el numero
+                random_number = decoded_token.get('random_number')
+                # Agregamos random_number a la ficha
+                ficha.random_number = random_number
+                db.session.commit()
+        except Exception as e:
+               db.session.rollback()   
+            
+        return render_template("fichas/fichasListado.html", datos=ficha_usuario_Nuevo, layout = layouts)
+    except:  
+        print("retorno incorrecto")  
+        flash('no posee fichas aún')   
+        return render_template("fichas/fichasListado.html", datos=[], layout=layouts)
+
+    
+    
 @fichas.route('/crearFicha', methods=['POST'])
 def crear_ficha():
     try:
@@ -151,6 +227,7 @@ def crear_ficha():
           
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
