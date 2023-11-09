@@ -60,7 +60,7 @@
                         <a class="nav-link active" aria-current="page" href="/home">Home</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Tokens</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
                         <ul class="dropdown-menu">  
                             <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
                                 <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
@@ -129,14 +129,7 @@
          document.getElementById("access_token_form_GenerarFicha").value = access_token;
          document.getElementById("access_token_form_ListarFicha").value = access_token;
        
-        document.addEventListener('DOMContentLoaded', function() {
-            let usuario_id = localStorage.getItem('usuario_id');
-            document.getElementById("usuario_id").value = usuario_id;
-            
-            
-           
-
-          });
+       
         
         
 

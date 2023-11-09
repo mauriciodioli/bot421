@@ -257,16 +257,19 @@
      
     }
  
-    document.addEventListener('DOMContentLoaded', function () {
-      var botonAutomatico = document.getElementById('boton-automatico-estrategia-usuario-noadmin');
-      
-      botonAutomatico.addEventListener('click', function () {
-          var userId = botonAutomatico.getAttribute('data-trigger-user-id');
-          var triggerId = botonAutomatico.getAttribute('data-trigger-id');
-          var userCuenta = botonAutomatico.getAttribute('data-user-cuenta');
-          
-          llamarFuncionPython(userId, triggerId, userCuenta);
-      });
+   document.addEventListener('DOMContentLoaded', function() {
+    var botonAutomatico = document.getElementById('botonAutomatico');
+
+    if (botonAutomatico) {
+        botonAutomatico.addEventListener('click', function () {
+            var userId = botonAutomatico.getAttribute('data-trigger-user-id');
+            var triggerId = botonAutomatico.getAttribute('data-trigger-id');
+            var userCuenta = botonAutomatico.getAttribute('data-user-cuenta');
+
+            llamarFuncionPython(userId, triggerId, userCuenta);
+        });
+    }
+
 
     
       

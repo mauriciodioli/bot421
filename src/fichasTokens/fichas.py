@@ -59,6 +59,8 @@ def crear_ficha():
         cuenta = data.get('cuenta')
         correoElectronico = data.get('correoElectronico')
         total_cuenta = data.get('total_cuenta')
+        layouts = data.get('layoutOrigen')
+       
    
         
         
@@ -139,8 +141,10 @@ def crear_ficha():
                     ]
                 db.session.commit()
             except Exception as e:
-               db.session.rollback()     
-            return jsonify({'fichas_usuario': fichas_json})
+               db.session.rollback() 
+            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+
+            #return jsonify({'fichas_usuario': fichas_json})
                 
           
         
@@ -151,7 +155,7 @@ def crear_ficha():
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
    try:  
-        
+        total_cuenta = 0.0
         access_token = request.form['access_token_form_GenerarFicha'] 
         layouts = request.form['layoutOrigen']
         repuesta_cuenta = get.pyRofexInicializada.get_account_report()
@@ -168,10 +172,11 @@ def fichasToken_fichas_generar():
                     user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             # Consulta todas las fichas del usuario dado
             #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-      
             total_cuenta = available_to_collateral + portfolio
             total_para_fichas =  total_cuenta * 0.6
+            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+      
+           
             try:
                 for ficha in fichas_usuario:
                     #print(ficha.monto_efectivo)
@@ -209,8 +214,11 @@ def fichasToken_fichas_generar():
              return render_template("notificaciones/noPoseeDatos.html")   
    except:  
         print("no llama correctamente")  
-        flash('error en la llamada a generacion de ficha')   
-        return render_template("notificaciones/errorOperacionSinCuenta.html",layout = layouts)    
+        flash('no hay fichas creadas aún')   
+        if total_cuenta < 1:
+              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
+        return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+        
           
   # return render_template("login.html" )
     
@@ -266,7 +274,7 @@ def fichasToken_fichas_listar():
     except:  
         print("no llama correctamente")  
         flash('fichasListado Incorrect')   
-        return render_template("notificaciones/noPoseeDatos.html")  
+        return render_template("fichas/fichasListado.html", datos=[], layout=layouts)  
     
 @fichas.route("/fichasToken-fichas-listar-sin-cuenta/", methods=["POST"])   
 def fichasToken_fichas_listar_sin_cuenta():
@@ -376,6 +384,7 @@ def fichasToken_fichas_usuarios_get():
 def eliminar_ficha():
   if request.method == 'POST':
     access_token = request.form['access_token']
+    layouts = request.form['layoutOrigen']
     if access_token:
         app = current_app._get_current_object()
             
@@ -394,6 +403,7 @@ def eliminar_ficha():
             mensaje = "La ficha ha sido eliminada correctamente."
         else:
             mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
+        fichas_usuario = []  # o asigna la lista que corresponda
 
         fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
         
@@ -419,5 +429,10 @@ def eliminar_ficha():
             random_number = decoded_token.get('random_number')
             # Agregamos random_number a la ficha
             ficha.random_number = random_number
-        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, )
-        
+            
+     
+        if not fichas_usuario:
+            fichas_usuario = []
+       
+
+        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
