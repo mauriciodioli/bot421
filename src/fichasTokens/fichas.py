@@ -31,17 +31,24 @@ fichas = Blueprint('fichas',__name__)
 
 
 def refrescoValorActualCuentaFichas(user_id):    
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
-        reporte = repuesta_cuenta['accountData']
-        available_to_collateral = reporte['availableToCollateral']
-        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+      try:
+            repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+            if repuesta_cuenta and 'accountData' in repuesta_cuenta:
+                reporte = repuesta_cuenta['accountData']
+                available_to_collateral = reporte['availableToCollateral']
+                fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+
+                for ficha in fichas_usuario:
+                    ficha.valor_cuenta_actual = available_to_collateral
+                    db.session.commit()
+            else:
+                # Aquí puedes agregar código adicional si deseas realizar alguna acción específica cuando no hay datos.
+                pass
+
+      except Exception as e:
+            db.session.rollback()
+    # Aquí puedes agregar código adicional si deseas manejar la excepción de alguna manera.
         
-        try:
-            for ficha in fichas_usuario:                
-                ficha.valor_cuenta_actual = available_to_collateral
-                db.session.commit()
-        except Exception as e:
-               db.session.rollback()              
 
 @fichas.route('/crearFicha', methods=['POST'])
 def crear_ficha():
@@ -258,7 +265,8 @@ def fichasToken_fichas_listar():
         return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
     except:  
         print("no llama correctamente")  
-        flash('fichasListado Incorrect')    
+        flash('fichasListado Incorrect')   
+        return render_template("notificaciones/noPoseeDatos.html")  
     
 @fichas.route("/fichasToken-fichas-listar-sin-cuenta/", methods=["POST"])   
 def fichasToken_fichas_listar_sin_cuenta():
@@ -305,7 +313,10 @@ def fichasToken_fichas_listar_sin_cuenta():
         return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
     except:  
         print("retorno incorrecto")  
-        flash('retorno incorrecto')    
+        flash('no posee fichas aún')   
+        return render_template("fichas/fichasListado.html", datos=[], layout=layouts)
+
+       # return render_template("notificaciones/errorOperacionSinCuenta.html", layout = layouts) 
     
 @fichas.route("/fichasToken_fichas_all/", methods=["POST"])   
 def fichasToken_fichas_all():
