@@ -8,36 +8,108 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-{% extends 'layouts/layoutConexBroker.html'%}
+
+{% if layout == 'layout'%}
+    {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+
+
 {% block content%}
 
-            <div class = 'container p-4'>                
-                  <div class = 'container p-4'>
-                  <table class="table table-dark table-striped">
-                    <thead>           
-                        <tr>
-                            <th scope="col">account</th>
-                            <th scope="col">report</th>
-                            <th scope="col">lastCalculation</th>
-                        </tr>            
-                    </thead>
-                    <tbody>
-                      
-                     
-                        <tr>
-                            <th scope="row">{{datos.account}}</th>
-                            <td>{{datos.report.FUTURE}}</td>
-                            <td>{{datos.lastCalculation}}</td>  
-                           
-                           
-                           
-                            
-                          </tr>  
-                       
+<div class = 'container p-4'>
+    <div class="container p-4 text-center">
+        <button type="button" class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#IngresaValorFicha"><strong>RECIBIR</strong></button>
 
-                    </tbody>
-                </table>
+    </div>
+                    
+    <table class="table table-dark table-striped"  id="tablaDatos">
+        <thead>           
+            <tr>
+                <th scope="col">Ficha</th>               
+                <th scope="col">Inicial</th>
+                <th scope="col">Capitalizacion</th>
+                <th scope="col">Estado</th>                     
+                <th scope="col">Operaciones</th>
+            </tr>            
+        </thead>
+        <tbody>
+            {% for fichas in datos %}
+                <tr>
+                    <th scope="row">{{fichas.id}}</th>                      
+                    <td>{{ fichas.monto_efectivo }}</td>
+                    <td>{{ fichas.interes }}%</td>
+                    <td>{{fichas.estado }}</td>                                                       
+                    <td class="d-flex"> 
+           
+                       
+                             <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" data-ficha-llave="{{ fichas.random_number }}" data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><strong>Asignar</strong></button>
+                            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))">Reportar</button>
+                        </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <div class="modal fade" id="IngresaValorFicha" tabindex="-1" aria-labelledby="IngresaValorFichaModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content border shadow">
+                
+                <div class="modal-header">
+                </div>
+                
+                <div class="modal-body">
+                    <h6 style="color: blue; margin-bottom: 10px;">INGRESAR TOKEN</h6>
+                    <input type="text" id="tokenInput" class="form-control" placeholder="Ingresa tu token">
+                 
+                    <h2 class="modal-title text-center" id="valorllave" style="color: green;  100px; text-align: center;"></h2>
+
+                </div>
+                <div class="modal-footer">                  
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  id="aceptarBtn">Aceptar</button>
+                </div>
             </div>
         </div>
+    </div>
+
+
+    <script>
+       
+        document.getElementById('tokenInput').addEventListener('input', function() {
+            document.getElementById('valorllave').textContent = this.value;
+        });
+
+
+
+        document.getElementById('aceptarBtn').addEventListener('click', function() {
+            document.getElementById('tokenInput').value = ''; // Borra el contenido del input
+            document.getElementById('valorllave').textContent = ''; // Restaura el valor del modal-title
+        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+        
+
+</div>
 {%endblock%}
  

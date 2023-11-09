@@ -16,6 +16,7 @@
     <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
     <!--CSS PERSONALIZADO -->
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/main.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
@@ -32,6 +33,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/themes/classic.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/pickr.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
 </head>
 
 <body>
@@ -66,9 +68,11 @@
                           <li><a class="dropdown-item" href="/SuscripcionPorWebSocket/">Procesos</a></li>                          
                         </ul>                        
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/home">Home</a>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/home">Home</a>
                     </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Subir</a>
                         <ul class="dropdown-menu">              
@@ -81,13 +85,36 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
+                        
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
                         <ul class="dropdown-menu">   
-                          <li><a class="dropdown-item" href="/fichasToken_fichas_listar">Listar</a></li>                    
+                            <div class="nav-menu-generar"> 
+                                <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
+                                    <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>  
+                            
+                                    <div class="col">  
+                                        <li><button type="submit" class="dropdown-item">Generar</button></li>   
+                                    </div>
+                                </form>
+                             <li><hr class="dropdown-divider"></li>
+                            </div>
+                            
+                           
+                        
+                            <form  name="fichasToken-fichas-listar" action="/fichasToken-fichas-listar-sin-cuenta/" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div> 
+                                <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>   
+                                
+                                <div class="col">  
+                                    <li><button type="submit" class="dropdown-item">Listar</button></li>   
+                                     
+                              </div>
+                            </form>                     
                         </ul>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/registrar_cuenta_broker">Herramientas</a>
+                        <a class="nav-link" aria-current="page" href="/registrar_cuenta_broker">Herramientas</a>
                     </li>
                     
                    <!-- 
@@ -148,13 +175,10 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
                         <ul class="dropdown-menu">                        
                           <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>                        
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/logOutAccount">get out of account</a></li>
-                          <input type="hidden" name="access_token_get_cuentas_usuario_broker" id="access_token_get_cuentas_usuario_broker">                   
                         </ul>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/registrar_usuario">Registrarse</a>
+                        <a class="nav-link " aria-current="page" href="/registrar_usuario">Registrarse</a>
                     </li>
                 </ul>
                 
@@ -167,6 +191,10 @@
         
       {%block content%}
       {% endblock%}
+        <div class="splash-container" id="splash" style="display:none">
+         {% include 'notificaciones/splashPage.html' %}
+        </div>
+        
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -175,21 +203,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     <script>
+
+
+
+
         let correo_electronico = localStorage.getItem("correo_electronico");  
-        let cuentaBroker = localStorage.getItem("cuenta");  
-        let simulado = localStorage.getItem("selector");  
+        
         let access_token = localStorage.getItem("access_token")
         let rol = localStorage.getItem('roll');
+        document.getElementById("access_token_form_GenerarFicha").value = access_token;
+        document.getElementById("access_token_form_ListarFicha").value = access_token;
+     //   console.log(access_token)
+        var cuentaLink = document.querySelector('.nav-menu-generar');
+        cuentaLink.style.display = 'none'; 
         if (localStorage.getItem("selector")) {
-
-                console.log(correo_electronico);
-                console.log(cuentaBroker);
-                console.log(simulado);
+            let cuentaBroker = localStorage.getItem("cuenta");  
+            let simulado = localStorage.getItem("selector");  
+            console.log(correo_electronico);
+            console.log(cuentaBroker);
+            console.log(simulado);
                 
                 
             
-                document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
-                
+               // document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+          
                 if (simulado == 'simulado') {
                     let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
                     document.getElementById("mensaje_simulado").innerHTML = cuenta;
@@ -213,6 +250,16 @@
                     } else {
                     // handle the case when the value of simulado is neither '1' nor '2'
                     }
+                
+                
+                    //aqui oculto generador de fichas si no posee cuenta de broker logeada
+                  
+                     
+                        cuentaLink.style.display = 'block';
+                        
+                   
+                
+                
                 }else {
                     let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
                     document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
@@ -235,6 +282,18 @@
             $(".navbar-collapse").collapse('hide');
         });
     });
+   
+    
+
+
+//para activar Instruments
+$(document).ready(function() {
+    $('.nav-link').on('click', function() {
+        $('.nav-link').removeClass('active'); // Remover la clase 'active' de todos los elementos
+        $(this).addClass('active'); // Agregar la clase 'active' al elemento seleccionado
+    });
+});
+
 
     </script>
    

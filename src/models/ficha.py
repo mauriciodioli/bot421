@@ -15,6 +15,7 @@ class Ficha(db.Model):
     cuenta_broker_id = db.Column(Integer, ForeignKey('cuentas.id'))  
     activo = db.Column(Boolean, nullable=False, default=False)   
     token = db.Column(String(500), nullable=True)
+    llave = db.Column(db.LargeBinary(128), nullable=False)
     monto_efectivo = db.Column(Float)
     porcentaje_creacion = db.Column(Integer)   
     valor_cuenta_creacion = db.Column(Float)
@@ -27,13 +28,14 @@ class Ficha(db.Model):
     usuarios = relationship("Usuario", back_populates="ficha")
     trazaFichas = relationship('TrazaFicha', back_populates='ficha')
     
-    def __init__(self, user_id, cuenta_broker_id, activo=False, token=None, monto_efectivo=0.0, 
+    def __init__(self, user_id, cuenta_broker_id, activo=False, token=None,llave=None, monto_efectivo=0.0, 
                  porcentaje_creacion=0, valor_cuenta_creacion=0.0, valor_cuenta_actual=0.0, 
                  estado=None, fecha_generacion=None, interes=0.0):
         self.user_id = user_id
         self.cuenta_broker_id = cuenta_broker_id
         self.activo = activo
         self.token = token
+        self.llave = llave
         self.monto_efectivo = monto_efectivo
         self.porcentaje_creacion = porcentaje_creacion
         self.valor_cuenta_creacion = valor_cuenta_creacion
@@ -62,7 +64,7 @@ class Ficha(db.Model):
 
 class MerSchema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id", "cuenta_broker_id", "activo", "token", "monto_efectivo",
+        fields = ("id", "user_id", "cuenta_broker_id", "activo", "token","llave", "monto_efectivo",
                   "porcentaje_creacion", "valor_cuenta_creacion", "valor_cuenta_actual", 
                   "estado", "fecha_generacion", "interes")
 

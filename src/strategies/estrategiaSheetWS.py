@@ -67,12 +67,15 @@ def estrategia_001():
             ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
             #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
-            pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
-                                    market_data_handler=market_data_handler_estrategia,
-                                    order_report_handler=order_report_handler,
-                                    error_handler=error_handler,
-                                    exception_handler=exception_handler
-                                    )
+            get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia)
+            get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler)
+         
+       #     pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
+       #                             market_data_handler=market_data_handler_estrategia,
+       #                             order_report_handler=order_report_handler,
+       #                             error_handler=error_handler,
+       #                             exception_handler=exception_handler
+       #                             )
             #get.pyRofexInicializada.run_websocket()
             carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,ContenidoSheet_list[1])
             # Crear una instancia de RofexMarketDataHandler
@@ -92,13 +95,13 @@ def estrategia_001():
             print("El token es inválido")
         except:
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
-    return render_template('/estrategiaOperando.html')
+    return render_template('notificaciones/estrategiaOperando.html')
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
-    
+    #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
     ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
     ContenidoSheet_list = list(ContenidoSheet)
 
@@ -119,12 +122,12 @@ def SuscripcionDeSheet():
    #     print(item)
 
   # Convertir listas a conjuntos para eliminar duplicados
-    set_contenido_ws = set(ContenidoSheet_list_solo_symbol)
+    set_contenido_ws = set(ContenidoSheet_list_solo_symbol) #comentado parte de sheet
     set_contenido_db = set(ContenidoSheet_list_solo_symbol_db)
     set_contenido_json = set(ContenidoJsonDb_list_db)
 
     # Combinar conjuntos y eliminar duplicados
-    resultado_set = set_contenido_ws.union(set_contenido_db,set_contenido_json)
+    resultado_set = set_contenido_db.union(set_contenido_json,set_contenido_ws)
 
     # Convertir conjunto resultante en una lista
     resultado_lista = list(resultado_set)
@@ -156,10 +159,10 @@ def SuscripcionDeSheet():
     mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3)
    
     #print("instrumento_suscriptio",mensaje)
-    datos = ContenidoSheet_list
+    datos = ContenidoSheet_list #COMENTADO POR SHEET
     
    
-    
+    #return instrumentos_existentes
     return [ContenidoSheet_list,instrumentos_existentes]
 
 def cargaSymbolParaValidarDb(message):
@@ -190,10 +193,10 @@ def cargaSymbolParaValidar(message):
     return listado_final
   
 def get_instrumento_para_suscripcion_ws():#   **77
-      ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
-      datoSheet.crea_tabla_orden()  
+      ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+    
       return ContenidoSheet
-  
+
 def get_instrumento_para_suscripcion_db():
     ContenidoDb = datoSheet.leerDb()
     return ContenidoDb    
@@ -309,7 +312,7 @@ def botonPanicoRH(message):
     
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
     if banderaLecturaSheet == 0:
-        ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+        ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
 

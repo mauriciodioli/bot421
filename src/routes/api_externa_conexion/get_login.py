@@ -1,7 +1,7 @@
 from utils.common import Marshmallow, db
 from ast import Return
 from http.client import UnimplementedFileMode
-from flask import current_app,g
+
 import json
 from datetime import datetime
 from re import template
@@ -16,15 +16,27 @@ import os
 import routes.api_externa_conexion.validaInstrumentos as valida
 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
+from fichasTokens.fichas import refrescoValorActualCuentaFichas
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
 import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+
 from utils.db import db
 from datetime import datetime
-
+import time
+from flask_jwt_extended import (
+    JWTManager,
+    jwt_required,
+    create_access_token,
+    get_jwt_identity,
+    create_refresh_token,
+    set_access_cookies,
+    set_refresh_cookies
+    
+)
 from flask import (
     Flask,
     Blueprint,
@@ -34,6 +46,9 @@ from flask import (
     url_for,
     flash,
     jsonify,
+    current_app,
+    g,
+    make_response
 )
 
 
@@ -60,6 +75,10 @@ pyConectionWebSocketInicializada = pyRofex
 pyWsSuscriptionInicializada = pyRofex
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {}
+diccionario_global_sheet = {}
+diccionario_global_sheet_intercambio = {}
+hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
+ultima_entrada = time.time()
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.bull.xoms.com.ar/"
 ws_url = "wss://api.bull.xoms.com.ar/"
@@ -85,6 +104,13 @@ def loginApi():
 @get_login.route('/home')
 def home():
     return render_template('home.html')
+
+@get_login.route("/panel_control_broker", methods=['GET'])
+def panel_control_broker():
+     if request.method == 'GET':       
+       
+        cuenta = []#si va cero entonces no cargar localstorage
+        return render_template("/paneles/panelDeControlBroker.html", datos = cuenta)
 
 @get_login.route("/loginExtAutomatico", methods=['POST'])
 def loginExtAutomatico():
@@ -120,19 +146,29 @@ def loginExtAutomatico():
                         if simuladoOproduccion =='simulado':
                             try:
                                             environment =pyRofexInicializada.Environment.REMARKET
+                                            
+                                          #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
+                                          #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
+                                          #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environment)
+                                          #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environment) 
+                                          #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
+                                         
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion()
-                                        # pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                                        #     order_report_handler=order_report_handler,
-                                        #     error_handler=error_handler,
-                                        #     exception_handler=exception_handler)
+                                            conexion() 
+                                            refrescoValorActualCuentaFichas(user_id)                                    
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
-                                                return render_template('home.html', cuenta=[account,user,simuladoOproduccion])
-                                                #return jsonify({'redirect': url_for('get_login.home')})
-                                            else:
-                                                return jsonify({'redirect': url_for('panelControl.panel_control')})
-                                            #return render_template('home.html', cuenta=[cuentas.accountCuenta,cuentas.userCuenta,simuladoOproduccion])
+                                                resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': cuentas.userCuenta, 'selector': selector}))
+                                                resp.headers['Content-Type'] = 'application/json'
+                                                set_access_cookies(resp, access_token)
+                                                set_refresh_cookies(resp, refresh_token)
+                                                return resp
+                                            else:                                          
+                                                resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                                resp.headers['Content-Type'] = 'application/json'
+                                                set_access_cookies(resp, access_token)
+                                                set_refresh_cookies(resp, refresh_token)
+                                                return resp
                             except:
                                 #  print("contraseña o usuario incorrecto")
                               flash('Loggin Incorrect')
@@ -148,20 +184,24 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion()
-                               # SaldoCta=cuenta.obtenerSaldoCuenta( num )# cada mas de 
-                                #pyConectionWebSocketInicializada = pyRofexInicializada.init_websocket_connection(
-                                # order_report_handler=order_report_handler,
-                                # error_handler=error_handler,
-                                # exception_handler=exception_handler)
+                                refrescoValorActualCuentaFichas(user_id)
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
                                  return render_template("/paneles/panelDeControlBroker.html")   
                                 else:
-                                    return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
+                                    resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                    resp.headers['Content-Type'] = 'application/json'
+                                    set_access_cookies(resp, access_token)
+                                    set_refresh_cookies(resp, refresh_token)
+                                    return resp 
                             else:
                                  
-                              
-                                  return jsonify({'redirect': url_for('panelControl.panel_control')}) 
+                                  # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
+                                  resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                  resp.headers['Content-Type'] = 'application/json'
+                                  set_access_cookies(resp, access_token)
+                                  set_refresh_cookies(resp, refresh_token)
+                                  return resp 
                 else: 
                     return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
             else:
@@ -174,6 +214,7 @@ def loginExtAutomatico():
         except Exception as e:
             print("Otro error:", str(e))
         return render_template("cuentas/registrarCuentaBroker.html")
+
 
 
 
@@ -204,6 +245,12 @@ def loginExtCuentaSeleccionadaBroker():
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
                 environments = pyRofexInicializada.Environment.REMARKET
+              #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
+              #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
+              #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environments)
+              #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environments) 
+              #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+                                         
             else:
                 # Configurar para el entorno LIVE
                 environments = pyRofexInicializada.Environment.LIVE
@@ -221,6 +268,7 @@ def loginExtCuentaSeleccionadaBroker():
             
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
             conexion()
+            refrescoValorActualCuentaFichas(user_id)
            
            
             print(f"Está logueado en {selector} en {environments}")

@@ -1,6 +1,9 @@
 {% extends 'layouts/layout.html' %}
 {% block content %}
-
+<div class="splash-container" id="splash" style="display:none">
+  {% include 'notificaciones/splashPage.html' %}
+</div>
+  
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         <ul class="flash-messages">
@@ -13,7 +16,7 @@
   
 <body> 
 
-  <div class = 'container p-4'>
+  <div class = 'container p-4' id="contenido">
     <h1 name = "mensaje" id = "mensaje " >AGREGAR CUENTA PARA LOGEO EN BROKER</h1>
     <h1 name = "mensaje_correo_electronico" id = "mensaje_correo_electronico" ></h1>
 
@@ -95,12 +98,15 @@
 
 
       document.getElementById('guardarPais').addEventListener('click', function() {
+        document.getElementById('splash').style.display = 'block';
+        document.getElementById('contenido').style.display = 'none';
         var selectedCountry = document.getElementById('seleccionarPais').value;
+        var usuario_id =localStorage.getItem('usuario_id');
         localStorage.setItem('paisSeleccionado', selectedCountry);
         $('#modalSeleccionPais').modal('hide'); // Esta línea cierra el modal
          // Redirigir a la ruta /panel_control_sin_cuenta
         layoutOrigen = 'layout'; // Cambia 'nombre_del_layout' por el valor deseado
-        var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen;
+        var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id;
         window.location.href = url;
       });   
   // en este script cargo el correo electrónico almacenado en el localStorage

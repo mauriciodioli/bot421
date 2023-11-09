@@ -33,6 +33,8 @@ class Orden(db.Model):
     
     
     usuarios = relationship("Usuario", back_populates="orden")
+    #usuario = relationship("Usuario", back_populates="orden")
+   
 
     
  # constructor
@@ -73,8 +75,8 @@ class Orden(db.Model):
 
    
 
-
-    def crear_tabla(self):
+    @classmethod
+    def crear_tabla_orden(_self):
          insp = inspect(db.engine)
          if not insp.has_table("orden"):
               db.create_all()

@@ -25,8 +25,9 @@ class TrazaFicha(db.Model):
     estado_traza = db.Column(String(500), nullable=True)
     
     ficha = relationship('Ficha', back_populates='trazaFichas')    
-    usuario = relationship('Usuario', back_populates='trazaFichas')
-    cuentas = relationship("Cuenta", back_populates="trazaFichas")  
+    usuario = relationship('Usuario', back_populates='trazaFichas')  
+    cuentas = relationship("Cuenta", back_populates="trazaFichas", overlaps="cuenta")
+
      
     def __init__(self, idFicha, user_id_traspaso, cuenta_broker_id_traspaso, fecha_traspaso, 
                  fecha_habilitacion, fecha_denuncia, fecha_baja, user_id_denuncia, user_id_alta, 
@@ -44,7 +45,7 @@ class TrazaFicha(db.Model):
         self.estado_traza = estado_traza
 
     @classmethod
-    def crear_tabla(cls):
+    def crear_tabla_trazaFichas(cls):
         insp = inspect(db.engine)
         if not insp.has_table(cls.__tablename__):
             db.create_all()

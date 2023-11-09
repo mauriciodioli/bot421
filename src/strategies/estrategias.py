@@ -48,7 +48,7 @@ def estrategias_usuario_nadmin():
     
     except:
        print('no hay estrategias en strategies/estrategias.py') 
-    return  render_template("/estrategias/errorEstrategiaVacia.html")
+    return  render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route("/estrategias-usuario",  methods=["POST"])
 def estrategias_usuario():
@@ -66,7 +66,7 @@ def estrategias_usuario():
     
     except:
        print('no hay estrategias') 
-    return  render_template("/estrategias/errorEstrategiaVacia.html")
+    return  render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route("/eliminar-trigger/",  methods=["POST"])
 def eliminar_trigger():
@@ -127,7 +127,7 @@ def editar_Trigger():
                     
     except:
                 print('no hay estrategias')
-    return render_template("/estrategias/errorEstrategiaVacia.html")
+    return render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route("/alta-estrategias-trig", methods=["POST"])
 def alta_estrategias_trig():
@@ -177,7 +177,7 @@ def alta_estrategias_trig():
     except:
         print('no hay estrategias')
 
-    return render_template("/estrategias/errorEstrategiaVacia.html")
+    return render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route('/inicioEstrategias/')
 def inicioEstrategias():
