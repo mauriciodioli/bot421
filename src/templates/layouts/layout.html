@@ -274,32 +274,8 @@
             adminLink.style.display = 'none';
         }
 
-<<<<<<< HEAD
-       //esto es para que el menú desplegable se cierre al ser seleccionado
-       $(document).ready(function() {
-        $(".navbar-nav .nav-item.dropdown").on("click", function(e) {
-            if ($(e.target).hasClass('dropdown-toggle')) {
-                return;
-            }
-            $(".navbar-collapse").collapse('hide');
-        });
-    });
-   
-    
-
-
-//para activar Instruments
-$(document).ready(function() {
-    $('.nav-link').on('click', function() {
-        $('.nav-link').removeClass('active'); // Remover la clase 'active' de todos los elementos
-        $(this).addClass('active'); // Agregar la clase 'active' al elemento seleccionado
-    });
-});
-
-=======
        // Cerrar el menú desplegable al ser seleccionado
        cerrarMenuSeleccionado();
->>>>>>> 8f84d3e4d5ee4ccce2cf3a12cd1724bae2d3f965
 
     </script>
    
