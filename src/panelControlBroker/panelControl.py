@@ -114,11 +114,6 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
             datos_procesados.append(tuple(dato))
 
     return datos_procesados
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 8f84d3e4d5ee4ccce2cf3a12cd1724bae2d3f965
 
 def llenar_diccionario_cada_15_segundos_sheet(pais):
     get.hilo_iniciado_panel_control
