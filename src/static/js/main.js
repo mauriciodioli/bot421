@@ -1,6 +1,11 @@
-
-
-
+// Cerrar el menú desplegable al ser seleccionado
+  function cerrarMenuSeleccionado() {
+    $(document).ready(function() {
+      $(".navbar-nav a").click(function() {
+          $(".navbar-collapse").collapse('hide');
+      });
+  });
+}
 
 
 document.addEventListener("DOMContentLoaded", function() {
