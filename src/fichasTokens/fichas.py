@@ -54,13 +54,25 @@ def refrescoValorActualCuentaFichas(user_id):
 @fichas.route('/fichas-tomar', methods=['POST'])
 def fichas_tomar():
     try:  
-        access_token = request.form.get('access_token_form_ListarFicha')
-        
-   
-        llave_ficha = request.form['valorllave'] 
-        layouts = request.form['layoutOrigen']
+        access_token = request.form.get('access_token_forma')
+        llave_ficha = request.form.get('valorllave')  
+        layouts = request.form.get('layoutOrigen') 
         if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                
+        try:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token de acceso expirado'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Token de acceso no válido'}), 401
+
+        if not llave_ficha:
+            return jsonify({'error': 'Falta el valor de la llave de ficha'}), 400
+
+        if not layouts:
+            return jsonify({'error': 'Falta el valor de layout'}), 400
+        
         # Consulta todas las fichas del usuario dado
         #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
         ficha_usuario = db.session.query(Ficha).filter(Ficha.llave == llave_ficha).first()
