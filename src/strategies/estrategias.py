@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,current_app
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
@@ -11,6 +11,7 @@ import socket
 from models.triggerEstrategia import TriggerEstrategia
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+import jwt
 
 estrategias = Blueprint('estrategias',__name__)
 
@@ -36,7 +37,11 @@ def estrategias_usuario_general():
 def estrategias_usuario_nadmin():
     try:
       if request.method == 'POST': 
-            usuario_id = request.form['usuario_id']                      
+          access_token = request.form['access_token']  
+          if access_token:
+            app = current_app._get_current_object()  
+            
+            usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
             estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
             db.session.close()
             for estrategia in estrategias:
