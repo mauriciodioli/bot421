@@ -51,18 +51,6 @@ REFRESH_TOKEN_DURATION = 43200  # minutos
 login_manager = LoginManager()
 login_manager.init_app(autenticacion)
 
-# Crear la tabla usuarios si no existe
-def crea_tabla_usuario():
-    usuario = Usuario(
-        id=1,
-        correo_electronico="ejemplo@ejemplo.com",
-        token="1234",
-        refresh_token="5678",
-        activo=True,
-        password="12345678"        
-    )
-    usuario.crear_tabla()
-    print("Tabla creada!")
     
 #sale del sistema completo
 @autenticacion.route("/logOutSystem")   
