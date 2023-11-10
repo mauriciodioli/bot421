@@ -3,6 +3,10 @@
 from pipes import Template
 from unittest import result
 from flask import current_app
+from sqlalchemy import func, cast, String, Integer
+from sqlalchemy.orm import aliased
+from sqlalchemy.orm import joinedload
+import bcrypt
 from flask_jwt_extended import (
     JWTManager,
     jwt_required,
@@ -54,11 +58,11 @@ def refrescoValorActualCuentaFichas(user_id):
 
 @fichas.route('/fichas-tomar', methods=['POST'])
 def fichas_tomar():
-    try:  
+   # try:  
         access_token = request.form.get('access_token_forma')
         llave_ficha = request.form.get('tokenInput')  
         layouts = request.form.get('layoutOrigen') 
-                
+    
         try:
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
         except jwt.ExpiredSignatureError:
@@ -72,51 +76,15 @@ def fichas_tomar():
         if not layouts:
             return jsonify({'error': 'Falta el valor de layout'}), 400
         
-        # Consulta todas las fichas del usuario dado
-        #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-      # Aplica la misma transformación a la cadena para comparar
-        llave_ficha_bin = hashlib.sha256(llave_ficha.encode('utf-8')).digest()
-
-        # Realiza la consulta en la base de datos
-        ficha_usuario = db.session.query(Ficha).filter(Ficha.llave == llave_ficha_bin).first()
-       
-        nueva_ficha = Ficha()
-        #qui cargo la ficha en el nuevo usuario
-        nueva_ficha.user_id = user_id
-        nueva_ficha.cuenta_broker_id= ficha_usuario.cuenta_broker_id
-        nueva_ficha.activo= ficha_usuario.activo
-        nueva_ficha.token=access_token
-        nueva_ficha.llave=ficha_usuario.llave
-        nueva_ficha.monto_efectivo=ficha_usuario.monto_efectivo
-        nueva_ficha.porcentaje_creacion=ficha_usuario.porcentaje_creacion
-        nueva_ficha.valor_cuenta_actual=ficha_usuario.valor_cuenta_actual
-        nueva_ficha.estado="ACEPTADO"
-        nueva_ficha.fecha_generacion=ficha_usuario.fecha_generacion
-        nueva_ficha.interes=ficha_usuario.interes
-        # Guarda la nueva ficha en la base de datos
-        db.session.add(nueva_ficha)
-        db.session.commit()
-        #modifico el estado del usuario anterior
-        ficha_usuario.estado="ACEPTADO"
-        # Guarda la nueva ficha en la base de datos
-        db.session.add(ficha_usuario)
-        db.session.commit()
-        #carga en TrazaFicha
-       # traza_ficha = TrazaFicha()
-       # traza_ficha.ficha = ficha_usuario  # Asigna la ficha de usuario a la traza de ficha
+ 
       
-        ficha_usuario_Nuevo =  db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+      
+      
+        fichas = Ficha.query.filter_by().all()
+      
+      
         try:
-            for ficha in ficha_usuario_Nuevo:
-                #print(ficha.monto_efectivo)
-            
-                diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
-                porcien= diferencia*100
-                interes = porcien/ficha.valor_cuenta_actual
-                interes = int(interes)
-                ficha.interes = interes
-              
-            # print(interes)  
+            for ficha in fichas:
                 llave_bytes = ficha.llave
                 llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
@@ -124,20 +92,55 @@ def fichas_tomar():
                 llave_original_bytes = bytes.fromhex(llave_hex)
                 #obtenemos el valor
                 decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                
+                    
                 #obtenemos el numero
                 random_number = decoded_token.get('random_number')
-                # Agregamos random_number a la ficha
-                ficha.random_number = random_number
-                db.session.commit()
+                if int(llave_ficha) == random_number:                
+                    print("Llave correcta para la ficha")
+                    nueva_ficha = TrazaFicha(
+                        idFicha=ficha.id,
+                        user_id_traspaso=user_id,
+                        cuenta_broker_id_traspaso=ficha.cuenta_broker_id,
+                        token=ficha.token,
+                        fecha_traspaso=datetime.now(),
+                        fecha_habilitacion=datetime.now(),
+                        fecha_denuncia=None,
+                        fecha_baja=None,
+                        user_id_denuncia=None,
+                        user_id_alta=ficha.user_id,
+                        user_id_baja=None,
+                        estado_traza="ACEPTADO"
+                    )
+
+                   
+                    # Guarda la nueva ficha en la base de datos
+                    db.session.add(nueva_ficha)
+                    db.session.commit()
+                    #modifico el estado del usuario anterior
+                    ficha.estado="ACEPTADO"
+                    # Guarda la nueva ficha en la base de datos
+                    db.session.add(ficha)
+                    db.session.commit()
+                
+                    break 
+                    
+                else:
+                # Ninguna ficha tiene una llave que coincida con la proporcionada
+                   print("no es la llave correcta")
+            print("Llave ")
         except Exception as e:
-               db.session.rollback()   
+               db.session.rollback()      
+       
+       
+        #consultas de las neuvas fichas aceptadas
+        ficha_aceptadas =  db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
+       
             
-        return render_template("fichas/fichasListado.html", datos=ficha_usuario_Nuevo, layout = layouts)
-    except:  
-        print("retorno incorrecto")  
-        flash('no posee fichas aún')   
-        return render_template("fichas/fichasListado.html", datos=[], layout=layouts)
+        return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
+  #  except:  
+   #     print("retorno incorrecto")  
+   #     flash('no posee fichas aún')   
+   #     return render_template("fichas/fichasListado.html", datos=[], layout=layouts)
 
     
     
@@ -330,39 +333,46 @@ def fichasToken_fichas_listar():
         #layouts = 'layout'
         
         if access_token:
-                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-        # Consulta todas las fichas del usuario dado
-       # fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-       # fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.otra_condicion == valor).all()
-        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-        
-        try:
-            for ficha in fichas_usuario:
-                #print(ficha.monto_efectivo)
-            
-                diferencia = available_to_collateral - ficha.valor_cuenta_creacion
-                porcien= diferencia*100
-                interes = porcien/available_to_collateral
-                interes = int(interes)
-                ficha.interes = interes
-            # print(interes)  
-                llave_bytes = ficha.llave
-                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-                # Luego, si necesitas obtener la llave original como bytes nuevamente
-                llave_original_bytes = bytes.fromhex(llave_hex)
-                #obtenemos el valor
-                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+            traza_fichas = db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
+            try:
+                for ficha in fichas_usuario:
+                    #print(ficha.monto_efectivo)
                 
-                #obtenemos el numero
-                random_number = decoded_token.get('random_number')
-                # Agregamos random_number a la ficha
-                ficha.random_number = random_number
-                db.session.commit()
-        except Exception as e:
-               db.session.rollback()   
+                    diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                    porcien= diferencia*100
+                    interes = porcien/available_to_collateral
+                    interes = int(interes)
+                    ficha.interes = interes
+                # print(interes)  
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    # Agregamos random_number a la ficha
+                    ficha.random_number = random_number
+                    db.session.commit()
+            except Exception as e:
+                db.session.rollback()   
+                
+             # Obtener todas las TrazaFichas con sus Fichas relacionadas
+            traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+
+            # Puedes acceder a las fichas relacionadas de cada TrazaFicha en el bucle
+            for traza_ficha in traza_fichas_con_fichas:
+                ficha_relacionada = traza_ficha.ficha
+                print(f"Ficha relacionada - ID: {ficha_relacionada.id}, Token: {ficha_relacionada.token}")
             
-        return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
+          
+                
+            return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
     except:  
         print("no llama correctamente")  
         flash('fichasListado Incorrect')   
@@ -383,11 +393,11 @@ def fichasToken_fichas_listar_sin_cuenta():
         # Consulta todas las fichas del usuario dado
         #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
         fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-
+         
         try:
             for ficha in fichas_usuario:
                 #print(ficha.monto_efectivo)
-            
+               
                 diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
                 porcien= diferencia*100
                 interes = porcien/ficha.valor_cuenta_actual
@@ -404,13 +414,37 @@ def fichasToken_fichas_listar_sin_cuenta():
                 
                 #obtenemos el numero
                 random_number = decoded_token.get('random_number')
+                valorInicial = decoded_token.get('valor')
                 # Agregamos random_number a la ficha
                 ficha.random_number = random_number
                 db.session.commit()
         except Exception as e:
                db.session.rollback()   
+        
+           # Obtener todas las TrazaFichas con sus Fichas relacionadas
+        traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+
+        for traza_ficha in traza_fichas_con_fichas:
+            ficha_relacionada = traza_ficha.ficha
+     
+
+            # Imprimir todos los campos de Ficha
+            print("Campos de Ficha:")
+            print(f"  ID: {ficha_relacionada.id}")
+            print(f"  User ID: {ficha_relacionada.user_id}")
+            print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+            print(f"  Activo: {ficha_relacionada.activo}")
+            print(f"  User ID: {ficha_relacionada.monto_efectivo}")
+            print(f"  User ID: {ficha_relacionada.interes}")
+            print(f"  User ID: {ficha_relacionada.estado}")
+            # ... Agrega más campos según sea necesario
+
+            print("\n")  
+          
+                
             
-        return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
+            
+        return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas, layout = layouts)
     except:  
         print("retorno incorrecto")  
         flash('no posee fichas aún')   

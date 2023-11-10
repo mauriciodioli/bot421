@@ -23,6 +23,7 @@ class TrazaFicha(db.Model):
     user_id_alta = db.Column(Integer)
     user_id_baja = db.Column(Integer)
     estado_traza = db.Column(String(500), nullable=True)
+    token = db.Column(String(500), nullable=True)
     
     ficha = relationship('Ficha', back_populates='trazaFichas')    
     usuario = relationship('Usuario', back_populates='trazaFichas')  
@@ -31,7 +32,7 @@ class TrazaFicha(db.Model):
      
     def __init__(self, idFicha, user_id_traspaso, cuenta_broker_id_traspaso, fecha_traspaso, 
                  fecha_habilitacion, fecha_denuncia, fecha_baja, user_id_denuncia, user_id_alta, 
-                 user_id_baja, estado_traza):
+                 user_id_baja, estado_traza,token):
         self.idFicha = idFicha
         self.user_id_traspaso = user_id_traspaso
         self.cuenta_broker_id_traspaso = cuenta_broker_id_traspaso
@@ -43,6 +44,7 @@ class TrazaFicha(db.Model):
         self.user_id_alta = user_id_alta
         self.user_id_baja = user_id_baja
         self.estado_traza = estado_traza
+        self.token = token
 
     @classmethod
     def crear_tabla_trazaFichas(cls):
@@ -54,7 +56,7 @@ class MerSchema(ma.Schema):
     class Meta:
         fields = ("id", "idFicha", "user_id_traspaso", "cuenta_broker_id_traspaso", 
                   "fecha_traspaso", "fecha_habilitacion", "fecha_denuncia", "fecha_baja", 
-                  "user_id_denuncia", "user_id_alta", "user_id_baja", "estado_traza")
+                  "user_id_denuncia", "user_id_alta", "user_id_baja", "estado_traza", "token")
 
 mer_schema = MerSchema()
 mer_schemas = MerSchema(many=True)

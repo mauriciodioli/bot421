@@ -45,9 +45,9 @@
             {% for fichas in datos %}
                 <tr>
                     <th scope="row">{{fichas.id}}</th>                      
-                    <td>{{ fichas.monto_efectivo }}</td>
-                    <td>{{ fichas.interes }}%</td>
-                    <td>{{fichas.estado }}</td>                                                       
+                    <td>{{ fichas.ficha.monto_efectivo }}</td>
+                    <td>{{ fichas.ficha.interes }}%</td>
+                    <td>{{fichas.estado_traza }}</td>                                                       
                     <td class="d-flex"> 
            
                        
@@ -71,7 +71,7 @@
                         <h6 style="color: blue; margin-bottom: 10px;">INGRESAR TOKEN</h6>
                         <input type="text" id="tokenInput" class="form-control" name="tokenInput" placeholder="Ingresa tu token">
                         <input type="hidden" id="access_token_forma" name="access_token_forma" >
-                        <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layoutBroker">
+                        <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
                         <h2 class="modal-title text-center" id="valorllave" style="color: green;  100px; text-align: center;"></h2>
                     
                    
@@ -114,7 +114,8 @@
                 aceptarBtn.addEventListener('click', function() {
                   
                     var tokenForm =  localStorage.getItem('access_token');
-                    
+                    var layoutOrigen = "{{ layout }}";
+                    document.getElementById('layoutOrigen').value = layoutOrigen;
                     document.getElementById('access_token_forma').value = tokenForm;
                   
                     // Envía el formulario
