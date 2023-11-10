@@ -37,7 +37,7 @@ def estrategias_usuario_general():
 def estrategias_usuario_nadmin():
     try:
       if request.method == 'POST': 
-          access_token = request.form['access_token']  
+          access_token = request.form.get('access_token_est') 
           if access_token:
             app = current_app._get_current_object()  
             
