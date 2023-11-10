@@ -86,51 +86,36 @@
 
     <script>
        
-        document.getElementById('tokenInput').addEventListener('input', function() {
-            document.getElementById('valorllave').textContent = this.value;
-          
-        });
-
-
-
-       
-
-
         document.addEventListener('DOMContentLoaded', function() {
-            
             var IngresaValorFicha = document.getElementById('IngresaValorFicha');
             IngresaValorFicha.addEventListener('click', function() {
-                  
                 document.getElementById('tokenInput').value = '';
                 document.getElementById('valorllave').textContent = '';
-
-
             });
-
-
+        
             var aceptarBtn = document.getElementById('aceptarBtn');
             var tomarFichaForm = document.getElementById('tomarFicha');
-          
-                aceptarBtn.addEventListener('click', function() {
-                  
-                    var tokenForm =  localStorage.getItem('access_token');
+            
+            aceptarBtn.addEventListener('click', function() {
+                // Obtener el valor del token ingresado
+                var tokenInputValue = document.getElementById('tokenInput').value;
+        
+                // Verificar si el valor es un número y no está vacío
+                if (!isNaN(tokenInputValue) && tokenInputValue.trim() !== '') {
+                    var tokenForm = localStorage.getItem('access_token');
                     var layoutOrigen = "{{ layout }}";
                     document.getElementById('layoutOrigen').value = layoutOrigen;
                     document.getElementById('access_token_forma').value = tokenForm;
-                  
+        
                     // Envía el formulario
                     tomarFichaForm.submit();
-                });
-
-           
+                } else {
+                    // Muestra un mensaje de error o toma la acción que desees
+                    alert('Ingresa un número válido en el campo del token.');
+                }
+            });
         });
         
-        
-        
-        
-        
-        
-
 
 
 
