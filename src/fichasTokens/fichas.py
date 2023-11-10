@@ -26,6 +26,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.ficha import Ficha
 from models.trazaFicha import TrazaFicha
+import hashlib
 from tokens.token import generar_token
 
 fichas = Blueprint('fichas',__name__)
@@ -55,10 +56,8 @@ def refrescoValorActualCuentaFichas(user_id):
 def fichas_tomar():
     try:  
         access_token = request.form.get('access_token_forma')
-        llave_ficha = request.form.get('valorllave')  
+        llave_ficha = request.form.get('tokenInput')  
         layouts = request.form.get('layoutOrigen') 
-        if access_token:
-                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 
         try:
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -75,7 +74,11 @@ def fichas_tomar():
         
         # Consulta todas las fichas del usuario dado
         #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-        ficha_usuario = db.session.query(Ficha).filter(Ficha.llave == llave_ficha).first()
+      # Aplica la misma transformación a la cadena para comparar
+        llave_ficha_bin = hashlib.sha256(llave_ficha.encode('utf-8')).digest()
+
+        # Realiza la consulta en la base de datos
+        ficha_usuario = db.session.query(Ficha).filter(Ficha.llave == llave_ficha_bin).first()
        
         nueva_ficha = Ficha()
         #qui cargo la ficha en el nuevo usuario
