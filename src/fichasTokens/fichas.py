@@ -85,45 +85,46 @@ def fichas_tomar():
       
         try:
             for ficha in fichas:
-                llave_bytes = ficha.llave
-                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+                if ficha.estado != 'ACEPTADO':
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-                # Luego, si necesitas obtener la llave original como bytes nuevamente
-                llave_original_bytes = bytes.fromhex(llave_hex)
-                #obtenemos el valor
-                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                    
-                #obtenemos el numero
-                random_number = decoded_token.get('random_number')
-                if int(llave_ficha) == random_number:                
-                    print("Llave correcta para la ficha")
-                    nueva_ficha = TrazaFicha(
-                        idFicha=ficha.id,
-                        user_id_traspaso=user_id,
-                        cuenta_broker_id_traspaso=ficha.cuenta_broker_id,
-                        token=ficha.token,
-                        fecha_traspaso=datetime.now(),
-                        fecha_habilitacion=datetime.now(),
-                        fecha_denuncia=None,
-                        fecha_baja=None,
-                        user_id_denuncia=None,
-                        user_id_alta=ficha.user_id,
-                        user_id_baja=None,
-                        estado_traza="ACEPTADO"
-                    )
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                        
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    if int(llave_ficha) == random_number:                
+                        print("Llave correcta para la ficha")
+                        nueva_ficha = TrazaFicha(
+                            idFicha=ficha.id,
+                            user_id_traspaso=user_id,
+                            cuenta_broker_id_traspaso=ficha.cuenta_broker_id,
+                            token=ficha.token,
+                            fecha_traspaso=datetime.now(),
+                            fecha_habilitacion=datetime.now(),
+                            fecha_denuncia=None,
+                            fecha_baja=None,
+                            user_id_denuncia=None,
+                            user_id_alta=ficha.user_id,
+                            user_id_baja=None,
+                            estado_traza="ACEPTADO"
+                        )
 
-                   
-                    # Guarda la nueva ficha en la base de datos
-                    db.session.add(nueva_ficha)
-                    db.session.commit()
-                    #modifico el estado del usuario anterior
-                    ficha.estado="ACEPTADO"
-                    # Guarda la nueva ficha en la base de datos
-                    db.session.add(ficha)
-                    db.session.commit()
-                
-                    break 
                     
+                        # Guarda la nueva ficha en la base de datos
+                        db.session.add(nueva_ficha)
+                        db.session.commit()
+                        #modifico el estado del usuario anterior
+                        ficha.estado="ACEPTADO"
+                        # Guarda la nueva ficha en la base de datos
+                        db.session.add(ficha)
+                        db.session.commit()
+                    
+                        break 
+                        
                 else:
                 # Ninguna ficha tiene una llave que coincida con la proporcionada
                    print("no es la llave correcta")
@@ -521,13 +522,14 @@ def eliminar_ficha():
                
         # Buscar y eliminar la ficha
         ficha = Ficha.query.filter_by(id=ficha_id, user_id=user_id).first()
-
+        
         if ficha:
-            db.session.delete(ficha)
-            db.session.commit()
-            db.session.close()
-            flash('Ficha eliminada correctamente.')
-            mensaje = "La ficha ha sido eliminada correctamente."
+            if ficha.estado == 'PENDIENTE':
+                db.session.delete(ficha)
+                db.session.commit()
+                db.session.close()
+                flash('Ficha eliminada correctamente.')
+                mensaje = "La ficha ha sido eliminada correctamente."
         else:
             mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
         fichas_usuario = []  # o asigna la lista que corresponda
@@ -563,3 +565,89 @@ def eliminar_ficha():
        
 
         return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+
+
+@fichas.route("/reportar-ficha/",  methods=["POST"])
+def reportar_ficha():
+  if request.method == 'POST':
+    access_token = request.form['access_token']
+    layouts = request.form['layoutOrigen']
+    if access_token:
+        app = current_app._get_current_object()
+            
+        ficha_id = request.form['reportarFichaId']
+        id_ficha = request.form['reportaridFicha']
+       
+        user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+               
+        # Buscar y eliminar la ficha
+        ficha = Ficha.query.filter_by(id=id_ficha).first()
+        trazaficha = TrazaFicha.query.filter_by(id=ficha_id).first()
+        
+        if ficha:
+            if ficha.estado != 'ENTREGADO':
+                ficha.estado = 'REPORTADO'
+                trazaficha.estado_traza = 'REPORTADO'
+                db.session.commit()
+               
+                flash('Ficha reportada correctamente.')
+                mensaje = "La ficha ha sido reportada correctamente."
+        else:
+            mensaje = "No se encontró la ficha o no tienes permisos para reportar."
+        fichas_usuario = []  # o asigna la lista que corresponda
+
+        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
+         
+        try:
+            for ficha in fichas_usuario:
+                #print(ficha.monto_efectivo)
+               
+                diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+                porcien= diferencia*100
+                interes = porcien/ficha.valor_cuenta_actual
+                interes = int(interes)
+                ficha.interes = interes
+            # print(interes)  
+                llave_bytes = ficha.llave
+                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                llave_original_bytes = bytes.fromhex(llave_hex)
+                #obtenemos el valor
+                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                
+                #obtenemos el numero
+                random_number = decoded_token.get('random_number')
+                valorInicial = decoded_token.get('valor')
+                # Agregamos random_number a la ficha
+                ficha.random_number = random_number
+                db.session.commit()
+        except Exception as e:
+               db.session.rollback()   
+        
+           # Obtener todas las TrazaFichas con sus Fichas relacionadas
+        traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+
+        for traza_ficha in traza_fichas_con_fichas:
+            ficha_relacionada = traza_ficha.ficha
+     
+
+            # Imprimir todos los campos de Ficha
+            print("Campos de Ficha:")
+            print(f"  ID: {ficha_relacionada.id}")
+            print(f"  User ID: {ficha_relacionada.user_id}")
+            print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+            print(f"  Activo: {ficha_relacionada.activo}")
+            print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+            print(f" interes: {ficha_relacionada.interes}")
+            print(f"  estado: {ficha_relacionada.estado}")
+            print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
+            # ... Agrega más campos según sea necesario
+
+            print("\n")  
+          
+                
+            
+            
+        return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
+   

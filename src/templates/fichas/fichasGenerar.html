@@ -130,7 +130,7 @@
                 <thead>           
                     <tr>
                         <th scope="col">Ficha</th>
-                        <th scope="col">Usuario</th>
+                        <th scope="col">Fecha</th>
                         <th scope="col">Inicial</th>
                         <th scope="col">Capitalizacion</th>
                         <th scope="col">Estado</th>                     
@@ -141,14 +141,14 @@
                     {% for fichas in datos %}
                         <tr>
                             <th scope="row">{{fichas.id}}</th>
-                            <td>{{ fichas.user_id }}</td>       
+                            <td>{{ fichas.fecha_generacion }}</td>       
                             <td>{{ fichas.monto_efectivo }}</td>
                             <td>{{ fichas.interes }}%</td>
                             <td>{{fichas.estado }}</td>                                                       
                             <td class="d-flex"> 
                    
-                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))">Eliminar</button>
-                                <button type="button" class="btn btn-success  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.random_number }}"  data-ficha-monto="{{ fichas.monto_efectivo }}"  onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><srtrong>TOKEN</strong></button>
+                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>Eliminar</button>
+                                <button type="button" class="btn btn-success  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.random_number }}"  data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}><srtrong>TOKEN</strong></button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -157,30 +157,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="eliminarFichaModal" tabindex="-1" aria-labelledby="eliminarFichaModal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="eliminarFichaModal">Eliminar Ficha</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="eliminarFichaForm" action="/eliminar-ficha" method="POST">
-          <div class="modal-body">
-            <input type="hidden" id="access_token" name="access_token">
-            <input type="hidden" id="eliminarFichaId" name="eliminarFichaId">
-            <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
-                              
-            <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta ficha?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-danger">Eliminar</button>
-          </div>
-        </form>
-        
-      </div>
-    </div>
-  </div>
+ 
 
   <div class="modal fade" id="tokenFichaModal" tabindex="-1" aria-labelledby="tokenFichaModal" aria-hidden="true">
     <div class="modal-dialog">
@@ -201,10 +178,33 @@
             </div>
         </div>
     </div>
-</div>
+ </div>
 
 
-
+    <div class="modal fade" id="eliminarFichaModal" tabindex="-1" aria-labelledby="eliminarFichaModal" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="eliminarFichaModal">Eliminar Ficha</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="eliminarFichaForm" action="/eliminar-ficha" method="POST">
+            <div class="modal-body">
+                <input type="hidden" id="access_token" name="access_token">
+                <input type="hidden" id="eliminarFichaId" name="eliminarFichaId">
+                <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
+                                
+                <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta ficha?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </div>
+            </form>
+            
+        </div>
+        </div>
+   </div>
 
 
 
@@ -212,12 +212,19 @@
 
       <script>
       
-        function setFichaData( fichaId) {
-            accessToken = localStorage.getItem('access_token');             
-            document.getElementById('access_token').value = accessToken;
-            document.getElementById('eliminarFichaId').value = fichaId;
-            
-        }
+          function setFichaData(fichaId) {
+                var accessToken = localStorage.getItem('access_token');
+                var access_token_element = document.getElementById('access_token');
+                var eliminarFichaId_element = document.getElementById('eliminarFichaId');
+
+                // Verifica si los elementos existen antes de intentar establecer sus valores
+                if (access_token_element && eliminarFichaId_element) {
+                    access_token_element.value = accessToken;
+                    eliminarFichaId_element.value = fichaId;
+                } else {
+                    console.error("Elementos no encontrados.");
+                }
+          }
 
         function setFichaDataToken( llave,monto) {
             document.getElementById('llaveFicha').textContent = llave;
