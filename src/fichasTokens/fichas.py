@@ -434,9 +434,10 @@ def fichasToken_fichas_listar_sin_cuenta():
             print(f"  User ID: {ficha_relacionada.user_id}")
             print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
             print(f"  Activo: {ficha_relacionada.activo}")
-            print(f"  User ID: {ficha_relacionada.monto_efectivo}")
-            print(f"  User ID: {ficha_relacionada.interes}")
-            print(f"  User ID: {ficha_relacionada.estado}")
+            print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+            print(f" interes: {ficha_relacionada.interes}")
+            print(f"  estado: {ficha_relacionada.estado}")
+            print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
             # ... Agrega más campos según sea necesario
 
             print("\n")  
@@ -444,7 +445,7 @@ def fichasToken_fichas_listar_sin_cuenta():
                 
             
             
-        return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas, layout = layouts)
+        return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
     except:  
         print("retorno incorrecto")  
         flash('no posee fichas aún')   
