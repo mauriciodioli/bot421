@@ -35,7 +35,7 @@
         <thead>           
             <tr>
                 <th scope="col">Ficha</th>               
-                <th scope="col">Inicial</th>
+                <th scope="col">Inicial</th>               
                 <th scope="col">Capitalizacion</th>
                 <th scope="col">Estado</th>                     
                 <th scope="col">Operaciones</th>
@@ -43,18 +43,20 @@
         </thead>
         <tbody>
             {% for fichas in datos %}
-                <tr>
-                    <th scope="row">{{fichas.id}}</th>                      
-                    <td>{{ fichas.ficha.monto_efectivo }}</td>
-                    <td>{{ fichas.ficha.interes }}%</td>
-                    <td>{{fichas.estado_traza }}</td>                                                       
-                    <td class="d-flex"> 
-           
-                       
-                             <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" data-ficha-llave="{{ fichas.random_number }}" data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><strong>Asignar</strong></button>
-                            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))">Reportar</button>
-                        </td>
-                </tr>
+                {% if fichas.ficha.user_id != usuario_id %}
+                    <tr>
+                        <th scope="row">{{fichas.id}}</th>                      
+                        <td>{{ fichas.ficha.monto_efectivo }}</td>                        
+                        <td>{{ fichas.ficha.interes }}%</td>
+                        <td>{{fichas.estado_traza }}</td>                                                       
+                        <td class="d-flex"> 
+            
+                        
+                                <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" data-ficha-llave="{{ fichas.random_number }}" data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><strong>Asignar</strong></button>
+                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))">Reportar</button>
+                            </td>
+                    </tr>
+                {% endif %}    
             {% endfor %}
         </tbody>
     </table>
