@@ -52,8 +52,9 @@
                         <td class="d-flex"> 
             
                         
-                                <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" data-ficha-llave="{{ fichas.random_number }}" data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))"><strong>Asignar</strong></button>
-                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))">Reportar</button>
+                                <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarUsuarioModal"><strong>Asignar</strong></button>
+
+                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#reportarFichaModal"  data-ficha-id="{{ fichas.id }}" data-ficha-idFicha="{{ fichas.idFicha }}" onclick="setFichaDataReportar( this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))">Reportar</button>
                             </td>
                     </tr>
                 {% endif %}    
@@ -86,8 +87,85 @@
         </div>
     </div>
 
+
+
+
+    <div class="modal fade" id="reportarFichaModal" tabindex="-1" aria-labelledby="reportarFichaModal" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="reportarFichaModal">Reportar Ficha</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="reportarFichaForm" action="/reportar-ficha" method="POST">
+            <div class="modal-body">
+                <input type="hidden" id="access_token" name="access_token">
+                <input type="hidden" id="reportarFichaId" name="reportarFichaId">
+                <input type="hidden" id="reportaridFicha" name="reportaridFicha">
+                <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
+                                
+                <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea reportar esta ficha?</p>
+                <p class="fw-bold text-dark" style="color: black;">Si reporta esta ficha se bloqueara la cuenta del emisor</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Reportar</button>
+            </div>
+            </form>
+            
+        </div>
+        </div>
+   </div>
+
+
+
+
+   <div class="modal fade" id="seleccionarUsuarioModal" tabindex="-1" aria-labelledby="seleccionarUsuarioModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="seleccionarUsuarioModalLabel" style="color: black;" >Seleccionar Usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul>
+            {% for usuario in usuarios %}
+            <ul>
+            </ul>
+              <li>
+                <button type="button" class="btn btn-primary" onclick="seleccionarUsuario('{{ usuario.id }}', '{{ usuario.nombre }}')">{{ usuario.nombre }}</button>
+              </li>
+            
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <script>
-       
+    ////cuando se abre el modal se llama la funcion para cargar los usuarios
+    document.getElementById('seleccionarUsuarioModal').addEventListener('shown.bs.modal', function () {
+        cargarUsuarios();
+    });
+
+        function setFichaDataReportar(fichaId,idFicha) {
+            var accessToken = localStorage.getItem('access_token');
+            var access_token_element = document.getElementById('access_token');
+            var reportarFichaId_element = document.getElementById('reportarFichaId');
+            var reportarIdFicha_element = document.getElementById('reportaridFicha');
+           
+            // Verifica si los elementos existen antes de intentar establecer sus valores
+           
+                access_token_element.value = accessToken;
+                reportarFichaId_element.value = fichaId;
+                reportarIdFicha_element.value = idFicha;
+            
+      }
+
         document.addEventListener('DOMContentLoaded', function() {
             var IngresaValorFicha = document.getElementById('IngresaValorFicha');
             IngresaValorFicha.addEventListener('click', function() {
@@ -121,9 +199,37 @@
 
 
 
-
-
-
+//cuando se abre el modal se llama la funcion para cargar los usuarios
+document.getElementById('seleccionarCuentaModal').addEventListener('shown.bs.modal', function () {
+    cargarCuentas();
+  });
+  document.getElementById('seleccionarUsuarioModal').addEventListener('shown.bs.modal', function () {
+    cargarUsuarios();
+  });
+  function cargarUsuarios() {
+    fetch('/usuariosModal/')
+      .then(response => response.json())
+      .then(data => {
+        const usuarios = data.usuarios;  // Suponiendo que la respuesta JSON contiene una propiedad "usuarios" con los datos de los usuarios
+        const ul = document.querySelector('.modal-body ul');
+        ul.innerHTML = '';  // Limpia la lista existente
+  
+        usuarios.forEach(usuario => {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'btn btn-primary';
+          button.innerText = usuario.nombre;
+          button.addEventListener('click', () => {
+            seleccionarUsuario(usuario.id, usuario.nombre);
+          });
+  
+          li.appendChild(button);
+          ul.appendChild(li);
+        });
+      })
+      .catch(error => console.error(error));
+  }
 
 
 
