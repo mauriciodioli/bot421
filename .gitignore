@@ -7,5 +7,7 @@
 #Ignore pycache files
 *.pyc
 
+.env
+
 #Ignore workspace file
 bot421.code-workspace

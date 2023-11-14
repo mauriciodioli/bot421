@@ -1,3 +1,19 @@
 {
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "192.168.0.102",
+            "port": 3307,
+            "driver": "MySQL",
+            "name": "Local MySQL Connection",
+            "database": "flaskmysql",
+            "username": "root",
+            "askForPassword": true
+        }
+    ]
 }

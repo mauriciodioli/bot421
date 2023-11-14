@@ -1,0 +1,25 @@
+// .devcontainer/devcontainer.json
+{
+	"name": "Bot421 Dev Container",
+	"dockerComposeFile": [
+	  "docker-compose.yml"
+	],
+	"service": "python_app",  // Nombre del servicio que se abrirá en el contenedor
+	"settings": {
+	  "dockerComposeFile": [
+		"docker-compose.yml"
+	  ],
+	  "service": "python_app",  // Nombre del servicio que se abrirá en el contenedor
+	  "postCreateCommand": "sleep 10",  // Espera 10 segundos después de la creación del contenedor
+	  "overrideCommand": false,
+	  "workspaceFolder": "/workspace",  // Carpeta de trabajo dentro del contenedor
+	  "workspaceMount": "source=.,target=/workspace,type=bind,consistency=cached",  // Monta el directorio de trabajo en el contenedor
+	  "remoteUser": "vscode",  // Usuario remoto en el contenedor
+	  "remoteUserAuthentication": "container",  // Autenticación de usuario remoto con el contenedor
+	  "extensions": [
+		"ms-python.python",  // Extensión de Python para VS Code
+		"visualstudioexptteam.vscodeintellicode"  // Extensión de IntelliCode para VS Code
+	  ]
+	}
+  }
+  
