@@ -427,7 +427,19 @@ def fichasToken_fichas_listar_sin_cuenta():
 
         for traza_ficha in traza_fichas_con_fichas:
             ficha_relacionada = traza_ficha.ficha
-     
+            llave_bytes = ficha_relacionada.llave
+            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+            # Luego, si necesitas obtener la llave original como bytes nuevamente
+            llave_original_bytes = bytes.fromhex(llave_hex)
+            #obtenemos el valor
+            decoded_token = jwt.decode(ficha_relacionada.token, llave_original_bytes, algorithms=['HS256'])
+                
+            #obtenemos el numero
+            random_number = decoded_token.get('random_number')
+            valorInicial = decoded_token.get('valor')
+            # Agregamos random_number a la ficha
+            ficha_relacionada.random_number = random_number
 
             # Imprimir todos los campos de Ficha
             print("Campos de Ficha:")

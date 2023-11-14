@@ -51,9 +51,7 @@
                         <td>{{fichas.estado_traza }}</td>                                                       
                         <td class="d-flex"> 
             
-                        
-                                <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarUsuarioModal">Asignar</button>
-
+                               <button type="button" class="btn btn-success  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.ficha.random_number }}"  data-ficha-monto="{{ fichas.ficha.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}><srtrong>Asignar</strong></button>
                                 <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#reportarFichaModal"  data-ficha-id="{{ fichas.id }}" data-ficha-idFicha="{{ fichas.idFicha }}" onclick="setFichaDataReportar( this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))">Reportar</button>
                             </td>
                     </tr>
@@ -118,6 +116,26 @@
    </div>
 
 
+   <div class="modal fade" id="tokenFichaModal" tabindex="-1" aria-labelledby="tokenFichaModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <span id="montoEtiqueta" style="color: black; font-weight: bold; font-size: 1rem; display: block; text-align: left;">Valor</span>
+                    <span id="montoFicha" name="montoFicha" style="color: blue; font-weight: bold; font-size: 1rem; display: block; text-align: left;"></span>
+                </div>
+            </div>
+            <div class="modal-body">               
+                <div>
+                    <span id="llaveFicha" name="llaveFicha" style="color: black; font-weight: bold; font-size: 3rem; display: block; text-align: center;"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+ </div>
 
 
    <div class="modal fade" id="seleccionarUsuarioModal" tabindex="-1" aria-labelledby="seleccionarUsuarioModalLabel" aria-hidden="true">
@@ -147,6 +165,15 @@
   </div>
 
     <script>
+
+      //esto es para el modal de llave
+      function setFichaDataToken( llave,monto) {
+        document.getElementById('llaveFicha').textContent = llave;
+        document.getElementById('montoFicha').textContent = monto;
+    }
+    
+
+
     ////cuando se abre el modal se llama la funcion para cargar los usuarios
     document.getElementById('seleccionarUsuarioModal').addEventListener('shown.bs.modal', function () {
         cargarUsuarios();
