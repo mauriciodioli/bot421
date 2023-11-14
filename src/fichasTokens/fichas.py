@@ -56,9 +56,92 @@ def refrescoValorActualCuentaFichas(user_id):
     # Aquí puedes agregar código adicional si deseas manejar la excepción de alguna manera.
         
 
+@fichas.route('/fichas-asignar', methods = ['POST'])
+def fichas_asignar():
+    try:  
+        access_token = request.form.get('access_token_forma')
+        llave_ficha = request.form.get('tokenInput')  
+        layouts = request.form.get('layoutOrigen') 
+    
+        try:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token de acceso expirado'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Token de acceso no válido'}), 401
+
+        if not llave_ficha:
+            return jsonify({'error': 'Falta el valor de la llave de ficha'}), 400
+
+        if not layouts:
+            return jsonify({'error': 'Falta el valor de layout'}), 400
+        
+ 
+      
+      
+      
+             # Obtener todas las TrazaFichas con sus Fichas relacionadas
+        traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+
+            # Puedes acceder a las fichas relacionadas de cada TrazaFicha en el bucle
+            
+      
+      
+        try:
+            for traza_ficha in traza_fichas_con_fichas:
+                    ficha_relacionada = traza_ficha.ficha
+                
+                    llave_bytes = ficha_relacionada.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha_relacionada.token, llave_original_bytes, algorithms=['HS256'])
+                        
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    if int(llave_ficha) == random_number:  
+                        if traza_ficha.estado == 'ACEPTADA':
+                           if user_id != traza_ficha.user_id_traspaso:         
+                            #print("Llave correcta para la ficha")
+                            ficha_asignada = TrazaFicha(                                
+                                user_id_traspaso=user_id,
+                                fecha_traspaso=datetime.now(),                              
+                                estado_traza="PENDIENTE"
+                            )
+
+                        
+                            # Guarda la nueva ficha en la base de datos
+                            db.session.add(ficha_asignada)
+                            db.session.commit()
+                            
+                        
+                            break 
+                        
+                            
+                    else:
+                    # Ninguna ficha tiene una llave que coincida con la proporcionada
+                     print("no es la llave correcta")
+            print("Llave ")
+        except Exception as e:
+               db.session.rollback()      
+       
+       
+        #consultas de las neuvas fichas aceptadas
+        ficha_aceptadas =  db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
+       
+            
+        return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
+    except:  
+        print("retorno incorrecto")  
+        flash('no posee fichas aún')   
+        return render_template("fichas/fichasListado.html", datos=[], layout=layouts)
+    
+
 @fichas.route('/fichas-tomar', methods=['POST'])
 def fichas_tomar():
-   # try:  
+    try:  
         access_token = request.form.get('access_token_forma')
         llave_ficha = request.form.get('tokenInput')  
         layouts = request.form.get('layoutOrigen') 
@@ -85,7 +168,7 @@ def fichas_tomar():
       
         try:
             for ficha in fichas:
-                if ficha.estado != 'ACEPTADO':
+                if ficha.estado == 'PENDIENTE':
                     llave_bytes = ficha.llave
                     llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
@@ -97,7 +180,7 @@ def fichas_tomar():
                     #obtenemos el numero
                     random_number = decoded_token.get('random_number')
                     if int(llave_ficha) == random_number:                
-                        print("Llave correcta para la ficha")
+                        #print("Llave correcta para la ficha")
                         nueva_ficha = TrazaFicha(
                             idFicha=ficha.id,
                             user_id_traspaso=user_id,
@@ -124,6 +207,7 @@ def fichas_tomar():
                         db.session.commit()
                     
                         break 
+                    
                         
                 else:
                 # Ninguna ficha tiene una llave que coincida con la proporcionada
@@ -138,10 +222,10 @@ def fichas_tomar():
        
             
         return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
-  #  except:  
-   #     print("retorno incorrecto")  
-   #     flash('no posee fichas aún')   
-   #     return render_template("fichas/fichasListado.html", datos=[], layout=layouts)
+    except:  
+        print("retorno incorrecto")  
+        flash('no posee fichas aún')   
+        return render_template("fichas/fichasListado.html", datos=[], layout=layouts)
 
     
     
@@ -421,7 +505,7 @@ def fichasToken_fichas_listar_sin_cuenta():
                 db.session.commit()
         except Exception as e:
                db.session.rollback()   
-        
+        traza_fichas_con_fichas = []  # o asigna la lista que corresponda
            # Obtener todas las TrazaFichas con sus Fichas relacionadas
         traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
 
@@ -536,12 +620,13 @@ def eliminar_ficha():
         ficha = Ficha.query.filter_by(id=ficha_id, user_id=user_id).first()
         
         if ficha:
-            if ficha.estado == 'PENDIENTE':
-                db.session.delete(ficha)
-                db.session.commit()
-                db.session.close()
-                flash('Ficha eliminada correctamente.')
-                mensaje = "La ficha ha sido eliminada correctamente."
+          if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
+                    db.session.delete(ficha)
+                    db.session.commit()
+                    db.session.close()
+
+                    flash('Ficha eliminada correctamente.')
+                    mensaje = "La ficha ha sido eliminada correctamente."
         else:
             mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
         fichas_usuario = []  # o asigna la lista que corresponda
@@ -638,6 +723,68 @@ def reportar_ficha():
                db.session.rollback()   
         
            # Obtener todas las TrazaFichas con sus Fichas relacionadas
+        traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+
+        for traza_ficha in traza_fichas_con_fichas:
+            ficha_relacionada = traza_ficha.ficha
+     
+
+            # Imprimir todos los campos de Ficha
+            print("Campos de Ficha:")
+            print(f"  ID: {ficha_relacionada.id}")
+            print(f"  User ID: {ficha_relacionada.user_id}")
+            print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+            print(f"  Activo: {ficha_relacionada.activo}")
+            print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+            print(f" interes: {ficha_relacionada.interes}")
+            print(f"  estado: {ficha_relacionada.estado}")
+            print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
+            # ... Agrega más campos según sea necesario
+
+            print("\n")  
+          
+                
+            
+            
+        return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
+   
+   
+@fichas.route("/recibir-ficha/",  methods=["POST"])
+def recibir_ficha():
+  if request.method == 'POST':
+    access_token = request.form['recibir_access_token']
+    layouts = request.form['layoutOrigen']
+    if access_token:
+        app = current_app._get_current_object()
+            
+        ficha_id = request.form['recibirFichaId']
+        id_ficha = request.form['recibiridFicha']
+       
+        user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+               
+        # Buscar y eliminar la ficha
+          # Buscar y eliminar la ficha
+        ficha = Ficha.query.filter_by(id=id_ficha).first()
+       
+        
+        traza_ficha = TrazaFicha.query.filter_by(id=ficha_id, user_id_traspaso=user_id).first()
+        
+        if traza_ficha:
+            if traza_ficha.estado_traza == 'ACEPTADO':
+                db.session.delete(traza_ficha)              
+                ficha.estado = 'ENTREGADO'
+                db.session.add(ficha)
+                db.session.commit()
+                flash('Ficha recibida correctamente.')
+                mensaje = "La trazaficha ha sido eliminada correctamente."
+        else:
+            mensaje = "No se encontró la ficha o no tienes permisos para acpetarla."
+        traza_fichas_con_fichas = []  # o asigna la lista que corresponda
+
+       
+        
+       
+              # Obtener todas las TrazaFichas con sus Fichas relacionadas
         traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
 
         for traza_ficha in traza_fichas_con_fichas:
