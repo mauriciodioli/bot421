@@ -23,18 +23,20 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                  <div class="preview-image-container">
-                    <img id="preview-image" src="#" alt="Vista previa de la imagen">
-                    <button class="close-button" onclick="closePreview()">X</button>
+                    <div class="preview-image-container">
+                        <img id="preview-image" src="#" alt="Vista previa de la imagen">
+                        <button class="close-button" onclick="closePreview()">X</button>
+                    </div>
+                    <h8 class="modal-title" id="modal-title">Cargar Imagen o Video</h8>
+                    <form id="myForm" enctype="multipart/form-data">
+                        <input type="file" name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
+                        <!-- Cambia el tipo de botón a "submit" y agrega un evento onclick para ejecutar uploadImage() -->
+                      
+                    </form>
                 </div>
-                <h8 class="modal-title" id="modal-title">Cargar Imagen o Video</h8>
-                <form id="myForm" enctype="multipart/form-data">
-                    <input type="file" name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
-                    <button type="button" onclick="uploadImage()">Subir Imagen</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" id="open-popup">Subir Archivo</button>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="open-popup" onclick="uploadImage()">Subir Archivo</button>
+                </div>
             </div>
         </div>
     </div>
