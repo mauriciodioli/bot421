@@ -2,116 +2,179 @@
 
 {% block content %}
   <!-- Modal -->
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .modal-dialog {
-      justify-content: center;
-      align-items: center;
-      height: 500px; /* Cambia el valor de la altura según tus necesidades */
-    }
-
-    .modal-content {
-      background-color: #F0F0F0; /* Utiliza un valor hexadecimal para un gris claro */
-      border: 1px solid #888;
-      padding: 20px;
-      width: 500px;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .modal-title {
-      text-align: center;
-      margin: 0 auto;
-      width: 100%;
-      color: black;
-    }
-
-    .modal-body {
-      margin-bottom: 20px;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    #my-dropzone {
-      max-height: 100%;
-      overflow-y: auto;
-      color: black;
-    }
-
-    .close-button {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
-    }
-
-    #file-description {
-      border: 0px solid;
-      padding: 1px;
-      width: 100%;
-      resize: both;
-      overflow: auto;
-    }
-
-    /* Aquí se desactiva la parte principal del panel de control de picker */
-    .pcr-color-palette {
-      display: none !important;
-    }
-  </style>
+ 
 
   <div id="miModal" class="modal">
-    <div class="modal-dialog  modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Publicar</h5>
-          <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Contenido del modal -->
-          <div class="description-block" id="description-block" style="max-width: 100%;">
-            <textarea id="file-description" style="max-width: 100%; " rows="3" placeholder="Ingrese su descripción aquí"></textarea>
-            <div>
-              <button id="color-picker-btn" class="btn btn-primary">Seleccionar Color</button>
-              <div id="selected-color"></div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Publicar</h5>
+                <button type="button" onclick="window.location.href='/home'" class="btn-close"
+                    aria-label="Close"></button>
             </div>
-          </div>
-          <h8 class="modal-title" id="modal-title">Cargar Imagen o Video</h8>
-          <form id="my-dropzone" action="/cargarImagen" class="dropzone">
-            <input type="hidden" name="nombreUsuario" id="nombreUsuario" value="">
-            <input type="hidden" name="numeroAleatorio" id="numeroAleatorio" value="">
-
-          </form>
-          
+            <div class="modal-body">
+                <!-- Contenido del modal -->
+                <div class="description-block" id="description-block" style="max-width: 100%;">
+                    <textarea id="file-description" style="max-width: 100%;" rows="3"
+                        placeholder="Ingrese su descripción aquí"></textarea>
+                    <div>
+                        <button id="color-picker-btn" class="btn btn-primary">Seleccionar Color</button>
+                        <div id="selected-color"></div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                  <div class="preview-image-container">
+                    <img id="preview-image" src="#" alt="Vista previa de la imagen">
+                    <button class="close-button" onclick="closePreview()">X</button>
+                </div>
+                <h8 class="modal-title" id="modal-title">Cargar Imagen o Video</h8>
+                <form id="myForm" enctype="multipart/form-data">
+                    <input type="file" name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
+                    <button type="button" onclick="uploadImage()">Subir Imagen</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="open-popup">Subir Archivo</button>
+            </div>
         </div>
-        
-        <div class="modal-footer">
-          <button class="btn btn-primary" id="open-popup">Subir Archivo</button>
-        </div>
-      </div>
     </div>
+</div>
+
+
+
+
+
+<!-- Modal para previsualizar la imagen -->
+<div class="modal" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="previewModalLabel">Vista previa de la imagen</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <img id="preview-image" src="#" alt="Vista previa de la imagen">
+          </div>
+      </div>
   </div>
+</div>
+
+
+
+
+
 
   <script>
+    function closePreview() {
+      var previewImage = document.getElementById('preview-image');
+      var fileInput = document.getElementById('imagen');
+  
+      previewImage.src = '#'; // Limpiar la imagen
+  
+      // Limpiar el campo de entrada de archivos para que se pueda seleccionar una nueva imagen
+      fileInput.value = '';
+  
+      // También puedes agregar la lógica para limpiar otros elementos o restablecer el formulario según sea necesario
+  }
+  
+
+
+    function previewSelectedImage() {
+      var fileInput = document.getElementById('imagen');
+      var previewImage = document.getElementById('preview-image');
+  
+      var file = fileInput.files[0];
+  
+      if (file) {
+          var reader = new FileReader();
+  
+          reader.onload = function (e) {
+              previewImage.src = e.target.result;
+          };
+  
+          reader.readAsDataURL(file);
+      } else {
+          // Limpiar la vista previa si no se selecciona ningún archivo
+          previewImage.src = '#';
+      }
+  }
+  
+  
+  function openPreviewModal() {
+      var fileInput = document.getElementById('imagen');
+      var file = fileInput.files[0];
+  
+      if (file) {
+          previewImage(); // Muestra la vista previa si hay un archivo seleccionado
+      } else {
+          alert('Selecciona una imagen antes de previsualizar.');
+      }
+  }
+
+
+
+
+
+
+
+
+
+    function uploadImage() {
+      var fileInput = document.getElementById('imagen');
+      var fileName = '';
+      var accessToken = localStorage.getItem('access_token');
+
+      // Verificar si se seleccionó un archivo
+      if (fileInput.files.length > 0) {
+        // Obtener el nombre del archivo del último segmento de la ruta
+        fileName = fileInput.files[0].name;
+      } else {
+        alert('Por favor, seleccione un archivo.');
+        return;
+      }
+
+      // Aquí puedes usar "fileName" según tus necesidades
+      console.log('Nombre del archivo:', fileName);
+
+
+      var formData = new FormData();
+      formData.append('imagen', fileInput.files[0]);
+      formData.append('nombreArchivo', fileName); // Agregar el nombre del archivo
+
+    
+      $.ajax({
+        url: '/cargarImagen', // Reemplaza esto con la ruta correcta en tu servidor
+        type: 'POST',
+        data: formData,
+        processData: false, // Evitar que jQuery procese los datos
+        contentType: false, // Evitar que jQuery establezca el tipo de contenido
+        headers: {
+          'Authorization': 'Bearer ' + accessToken
+        },
+        success: function(response) {
+          // Manejar la respuesta del servidor aquí
+          console.log('Imagen cargada con éxito:', response);
+          $('#result').html('Imagen cargada con éxito. Respuesta del servidor: ' + response);
+        },
+        error: function(error) {
+          // Manejar errores aquí
+          console.error('Error al cargar la imagen:', error);
+          $('#result').html('Error al cargar la imagen. Detalles: ' + JSON.stringify(error));
+        }
+      });
+    }
+
+
+
+
+
+
+
+
     const miModal = document.getElementById("miModal");
+    
     let myDropzone;
     let dropzoneInitialized = false;
     var nombreUsuario = localStorage.getItem("usuario");
@@ -119,52 +182,11 @@
 
 
     window.addEventListener("load", function () {
+      
       miModal.style.display = "block";
       document.body.style.overflow = "hidden"; // Deshabilitar el desplazamiento del fondo
 
-      const dropzoneContainer = document.querySelector('#my-dropzone');
-      const parentContainer = dropzoneContainer.parentNode;
-      const maxHeight = parentContainer.clientHeight * 0.8;
-      dropzoneContainer.style.maxHeight = `${maxHeight}px`;
-
-      if (!dropzoneContainer.classList.contains("dz-clickable")) {
-        
-        myDropzone = new Dropzone(dropzoneContainer, {
-          url: "/cargarImagen",
-          autoProcessQueue: false,
-          paramName: "file",
-          maxFilesize: 2,
-          addRemoveLinks: true,
-          dictDefaultMessage: "",
-          clickable: true,
-          
-          init: function() {
-            console.log("randomNumber______________ ",randomNumber);
-            this.on("addedfile", function(file) {
-              file.previewElement.querySelector(".dz-details").appendChild(removeButton);
-              document.getElementById("nombreUsuario").value = nombreUsuario;
-              document.getElementById("numeroAleatorio").value = randomNumber;
-            });
-            var removeButton = Dropzone.createElement("<button class='dz-remove-btn'>Eliminar</button>");
-            var _this = this;
-      
-            removeButton.addEventListener("click", function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              var file = _this.files.find(function(f) {
-                return f.previewElement === removeButton.parentNode.parentNode;
-              });
-      
-              if (file) {
-                _this.removeFile(file);
-                console.log("Archivo eliminado:", file);
-              }
-            });
-      
-           
-          }
-        });
-      } 
+     
       
       
       
@@ -174,7 +196,7 @@
 
     closeButton.addEventListener("click", function (event) {
       console.log("Se hizo clic en miModal o en el botón de cerrar");
-      miModal.style.display = "none";
+    
       document.body.style.overflow = "auto"; // Habilitar el desplazamiento del fondo
     });
 

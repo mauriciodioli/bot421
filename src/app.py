@@ -68,6 +68,7 @@ import time
 
 # desde aqui se llama la aplicacion al inicio
 #app = Flask(__name__)
+
 app = Flask(__name__, static_folder='static')
 login_manager = LoginManager(app)
 CORS(app)
