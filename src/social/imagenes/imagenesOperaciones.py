@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, render_template, Blueprint
+from flask import Flask,jsonify, request, render_template, Blueprint
 from utils.db import db
 from models.modelMedia.image import Image
 
@@ -12,27 +12,42 @@ def subirImagen():
 
 @imagenesOperaciones.route('/cargarImagen', methods=['POST'])
 def cargarImagen():
-  
-    print("dfffffffffffffffffffffffaa")
-    title = request.form['numeroAleatorio']
-    nombreUsuario = request.form['nombreUsuario']
-    print("nombreUsuario___________",nombreUsuario,"_________title________",title)
-       # Obtener el archivo enviado por Dropzone
-   # archivo = request.files['file']
+  try:
+        # Verificar si el campo 'imagen' está en la solicitud
+        if 'imagen' not in request.files:
+            return jsonify({'error': 'No se proporcionó el campo de imagen'}), 400
 
-    # Procesar el archivo como desees
-    # Por ejemplo, puedes guardarlo en el sistema de archivos
-   # archivo.save('/ruta/donde/guardar/el/archivo.jpg')
-   # image = request.files['image']
-   # filename = image.filename
-    # Guardar la imagen en el servidor
-   # filepath = os.path.join("carpeta_destino", filename)
-   # image.save(filepath)
-    # Guardar la información de la imagen en la base de datos
-   # new_image = Image(title=title, description=description, filepath=filepath)
-   # db.session.add(new_image)
-   # db.session.commit()
-    return 'Image uploaded successfully'
+        imagen = request.files['imagen']
+
+        # Verificar si el campo 'nombreArchivo' está en la solicitud
+        if 'nombreArchivo' not in request.form:
+            return jsonify({'error': 'No se proporcionó el campo de nombreArchivo'}), 400
+
+        nombre_archivo = request.form['nombreArchivo']
+
+        # Verificar si el token de acceso está presente en el encabezado 'Authorization'
+        if 'Authorization' not in request.headers:
+            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+
+        authorization_header = request.headers['Authorization']
+        parts = authorization_header.split()
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
+            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+
+        access_token = parts[1]
+       
+        # Guardar la imagen en la carpeta src/static/uploads
+      
+        new_path = os.path.join( 'static', 'uploads', imagen.filename)
+       # Guardar la imagen en la carpeta src/static/uploads
+        print(f"Ruta completa del archivo: {new_path}")
+        imagen.save(new_path)
+        # Resto de tu lógica para manejar la imagen, el nombre del archivo y el access_token
+        # Aquí puedes acceder a 'imagen' (objeto FileStorage), 'nombre_archivo' y 'access_token'
+
+        return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo})
+  except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @imagenesOperaciones.route('/MostrarImages')
 def MostrarImages():

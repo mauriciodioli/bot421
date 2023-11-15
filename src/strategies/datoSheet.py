@@ -68,18 +68,19 @@ def login():
     credenciales = GoogleDrive(gauth)
     return credenciales
 
-def autenticar_y_abrir_sheet(sheetId,sheet_name):   
-    scope = ['https://spreadsheets.google.com/feeds', 
-             'https://www.googleapis.com/auth/drive']
-    newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')
-    creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
-    client = gspread.authorize(creds)
-    sheet = client.open_by_key(sheetId).worksheet(sheet_name)  # Abre el sheet especificado
-   
-    # solo agregue esta linea
-    #sheet2 = client.open_by_key(SPREADSHEET_ID).get_worksheet(1)# Instrumentos del Arbitrador001
-    #return sheet, sheet2  # Devuelve una tupla de hojas
-    return sheet
+def autenticar_y_abrir_sheet(sheetId, sheet_name):
+    try:
+        scope = ['https://spreadsheets.google.com/feeds', 
+                 'https://www.googleapis.com/auth/drive']
+        newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')
+        creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
+        client = gspread.authorize(creds)
+        sheet = client.open_by_key(sheetId).worksheet(sheet_name)  # Abre el sheet especificado
+        return sheet
+    except Exception as e:
+        print(f"Error al autenticar y abrir la hoja de cálculo: {e}")
+        return None  # Puedes devolver None o manejar de otra manera el error en tu aplicación
+
 
 #def leerSheet_arbitrador001(): 
 
@@ -87,17 +88,20 @@ def leerSheet(sheetId,sheet_name):
      
      # recibo la tupla pero como este es para el bot leo el primer elemento 
      sheet= autenticar_y_abrir_sheet(sheetId,sheet_name) 
-     
-     symbol = sheet.col_values(5)       # ticker de mercado
-     tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
-     trade_en_curso = sheet.col_values(19)  # long, short o nada
-     ut = sheet.col_values(20)              # cantidad a operar
-     senial = sheet.col_values(21)          # Open o Close
-     #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
-     union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-    
-     return union
-
+     if sheet: 
+        symbol = sheet.col_values(5)       # ticker de mercado
+        tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
+        trade_en_curso = sheet.col_values(19)  # long, short o nada
+        ut = sheet.col_values(20)              # cantidad a operar
+        senial = sheet.col_values(21)          # Open o Close
+        #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
+        
+        union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
+        
+        return union
+     else:
+       
+        return render_template('notificaciones/noPoseeDatos.html')
 def leerDb():
     all_ins = db.session.query(InstrumentoSuscriptos).all()
     db.session.close()
