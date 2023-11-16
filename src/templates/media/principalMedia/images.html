@@ -2,10 +2,36 @@
 
 {% block content %}
 <div>
-  {% for image in images %}
-  <img src="{{ image.filepath }}" alt="{{ image.title }}">
-  <h3>{{ image.title }}</h3>
-  <p>{{ image.description }}</p>
-  {% endfor %}
+  <h1>Imágenes</h1>
+
+      <div class="image-grid">
+        {% for image_path in image_paths %}
+        <div class="card">
+          <div class="card-header">
+            <h3>Nombre del Usuario</h3> <!-- Reemplaza con el nombre real del usuario -->
+            <button class="close-card" onclick="cerrarTarjeta(this.parentElement.parentElement)">x</button>
+          </div>
+          <button class="close-button" onclick="eliminarImagen(this.parentElement.parentElement)">X</button>
+          <img src="{{ url_for('static', filename=image_path) }}" alt="Imagen">
+          <div class="card-footer">
+            <p>Descripción de la imagen</p> <!-- Reemplaza con la descripción real de la imagen -->
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+  </div>
+
 </div>
+
+<script>
+  function cerrarTarjeta(card) {
+    card.style.display = 'none';
+  }
+function eliminarImagen(imagePath) {
+  // Implementa la lógica para eliminar la imagen
+  console.log('Eliminar imagen:', imagePath);
+  // Aquí puedes realizar una solicitud al servidor para eliminar la imagen
+  // o implementar la lógica necesaria del lado del cliente.
+}
+</script>
 {% endblock %}
