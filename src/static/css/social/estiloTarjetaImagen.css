@@ -1,0 +1,35 @@
+
+.card {
+    /* ... Tus estilos anteriores ... */
+    position: relative;
+}
+
+.card-header {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.card-footer {
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.close-card {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ddd; /* Gris claro */
+    color: black;
+    border: none;
+    width: 30px; /* Ajusta el ancho del botón */
+    height: 30px; /* Ajusta la altura del botón */
+    border-radius: 50%; /* Hace el botón redondo */
+    padding: 8px;
+    cursor: pointer;
+    z-index: 1; /* Asegura que el botón esté adelante de la imagen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
