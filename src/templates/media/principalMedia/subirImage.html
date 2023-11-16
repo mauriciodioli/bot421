@@ -9,14 +9,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Publicar</h5>
-                <button type="button" onclick="window.location.href='/home'" class="btn-close"
-                    aria-label="Close"></button>
+                <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Contenido del modal -->
                 <div class="description-block" id="description-block" style="max-width: 100%;">
-                    <textarea id="file-description" style="max-width: 100%;" rows="3"
-                        placeholder="Ingrese su descripción aquí"></textarea>
+                    <textarea id="file-description" style="max-width: 100%;" rows="3" placeholder="Ingrese su descripción aquí"></textarea>
                     <div>
                         <button id="color-picker-btn" class="btn btn-primary">Seleccionar Color</button>
                         <div id="selected-color"></div>
@@ -25,14 +23,17 @@
                 <div class="modal-body">
                     <div class="preview-image-container">
                         <img id="preview-image" src="#" alt="Vista previa de la imagen">
-                        <button class="close-button" onclick="closePreview()">X</button>
+                        <button class="close-button" onclick="closePreview()" style="display: none;">X</button>
+  
+
+                        <form id="myForm" enctype="multipart/form-data">
+                            <label for="imagen" class="custom-file-upload">
+                                <input type="file" name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
+                                <i class="fas fa-folder"></i> Seleccionar Archivo
+                            </label>
+                        </form>
                     </div>
-                    <h8 class="modal-title" id="modal-title">Cargar Imagen o Video</h8>
-                    <form id="myForm" enctype="multipart/form-data">
-                        <input type="file" name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
-                        <!-- Cambia el tipo de botón a "submit" y agrega un evento onclick para ejecutar uploadImage() -->
-                      
-                    </form>
+                  
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" id="open-popup" onclick="uploadImage()">Subir Archivo</button>
@@ -41,6 +42,7 @@
         </div>
     </div>
 </div>
+
 
 
 
@@ -77,9 +79,10 @@
   
       // Limpiar el campo de entrada de archivos para que se pueda seleccionar una nueva imagen
       fileInput.value = '';
-  
-      // También puedes agregar la lógica para limpiar otros elementos o restablecer el formulario según sea necesario
-  }
+    // Mostrar el botón close-button solo si hay una imagen cargada
+    var closeButton = document.querySelector('.close-button');
+    closeButton.style.display = 'none';
+    }
   
 
 
@@ -101,6 +104,9 @@
           // Limpiar la vista previa si no se selecciona ningún archivo
           previewImage.src = '#';
       }
+      // Mostrar el botón close-button solo si hay una imagen cargada
+    var closeButton = document.querySelector('.close-button');
+    closeButton.style.display = 'block';
   }
   
   
