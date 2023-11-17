@@ -1,10 +1,25 @@
-version: '3.1'
+version: '3.8'
 
 services:
   mysql:
     image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: '2462128990'
-      MYSQL_DATABASE: 'flaskmysql'
+      MYSQL_ROOT_PASSWORD: 2462128990
+      MYSQL_DATABASE: flaskmysql
     ports:
       - "3307:3306"
+    networks:
+      - mynetwork
+
+  python_app:
+    build:
+      context: .
+      dockerfile: Dockerfile  # Asegúrate de tener tu Dockerfile configurado correctamente
+    ports:
+      - "8000:8000"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
