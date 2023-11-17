@@ -21,17 +21,17 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    <div class="preview-image-container">
+                    <div class="preview-image-container"style="max-width: 100%;">
                         <img id="preview-image" src="#" alt="Vista previa de la imagen">
                         <button class="close-button" onclick="closePreview()" style="display: none;">X</button>
   
-
                         <form id="myForm" enctype="multipart/form-data">
                             <label for="imagen" class="custom-file-upload">
-                                <input type="file" name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
-                                <i class="fas fa-folder"></i> Seleccionar Archivo
+                                <input type="file"   name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
+                                <i class="fas fa-folder" ></i> Seleccionar Archivo
                             </label>
                         </form>
+
                     </div>
                   
                 </div>
@@ -71,6 +71,10 @@
 
 
   <script>
+    let selectedColor = '#0000FF8C';  // Establece un color predeterminado
+
+
+
     function closePreview() {
       var previewImage = document.getElementById('preview-image');
       var fileInput = document.getElementById('imagen');
@@ -130,9 +134,14 @@
 
 
     function uploadImage() {
+      var description = document.getElementById('file-description').value;
+      
       var fileInput = document.getElementById('imagen');
+      
       var fileName = '';
       var accessToken = localStorage.getItem('access_token');
+
+      var randomNumber = Math.round(Math.random() * 1000000);
 
       // Verificar si se seleccionó un archivo
       if (fileInput.files.length > 0) {
@@ -150,6 +159,9 @@
       var formData = new FormData();
       formData.append('imagen', fileInput.files[0]);
       formData.append('nombreArchivo', fileName); // Agregar el nombre del archivo
+      formData.append('descriptionImagen',description)
+      formData.append('randomNumber',randomNumber)
+      formData.append('selectedColor', selectedColor);
 
     
       $.ajax({
@@ -186,7 +198,7 @@
     let myDropzone;
     let dropzoneInitialized = false;
     var nombreUsuario = localStorage.getItem("usuario");
-    var randomNumber = Math.round(Math.random() * 1000000);
+   
 
 
     window.addEventListener("load", function () {
@@ -250,7 +262,7 @@
 
     // Maneja el evento "save" de pickr para obtener el color seleccionado
     pickr.on('save', (color) => {
-      const selectedColor = color.toHEXA().toString();
+      selectedColor = color.toHEXA().toString();
       document.getElementById('selected-color').style.backgroundColor = selectedColor;
       document.getElementById('file-description').style.backgroundColor = selectedColor;
     });
