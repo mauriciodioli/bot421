@@ -9,17 +9,18 @@ services:
     ports:
       - "3307:3306"
     networks:
-      - mynetwork
+      - redbot421
 
   python_app:
     build:
       context: .
-      dockerfile: Dockerfile  # Asegúrate de tener tu Dockerfile configurado correctamente
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "5000:5000"
     networks:
-      - mynetwork
+      - redbot421
 
 networks:
   mynetwork:
     driver: bridge
+

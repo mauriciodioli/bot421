@@ -2,8 +2,13 @@ FROM python:3.9
 
 WORKDIR /usr/src/app
 
-COPY . .
+# Copiar primero solo el archivo requirements.txt para aprovechar el caché de Docker
+COPY src/requirements.txt .
 
+# Instalar dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "tu_script.py"]
+# Ahora copiar el resto de los archivos
+COPY . .
+
+# Resto del Dockerfile...
