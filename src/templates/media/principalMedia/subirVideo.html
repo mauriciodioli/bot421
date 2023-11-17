@@ -1,9 +1,18 @@
 {% extends 'layouts/layout.html' %}
 
 {% block content %}
-  <!-- Modal -->
- 
-
+<style>
+    .preview-video-container {
+      max-width: 100%;
+      overflow: hidden;
+    }
+  
+    #preview-video {
+      width: 100%;
+      height: auto;
+      max-height: 300px; /* Ajusta este valor según tus necesidades */
+    }
+  </style>
   <div id="miModal" class="modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -12,7 +21,6 @@
                 <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- Contenido del modal -->
                 <div class="description-block" id="description-block" style="max-width: 100%;">
                     <textarea id="file-description" style="max-width: 100%;" rows="3" placeholder="Ingrese su descripción aquí"></textarea>
                     <div>
@@ -21,126 +29,86 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    <div class="preview-image-container"style="max-width: 100%;">
-                        <img id="preview-image" src="#" alt="Vista previa de la imagen">
+                    <div class="preview-video-container" style="max-width: 100%;">
+                        <video id="preview-video" controls></video>
                         <button class="close-button" onclick="closePreview()" style="display: none;">X</button>
-  
+
                         <form id="myForm" enctype="multipart/form-data">
-                            <label for="imagen" class="custom-file-upload">
-                                <input type="file"   name="imagen" id="imagen" accept="image/*" onchange="previewSelectedImage()">
-                                <i class="fas fa-folder" ></i> Seleccionar Archivo
+                            <label for="video" class="custom-file-upload">
+                                <input type="file" name="video" id="video" accept="video/*" onchange="previewSelectedVideo()">
+                                <i class="fas fa-folder"></i> Seleccionar Video
                             </label>
                         </form>
-
                     </div>
-                  
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" id="open-popup" onclick="uploadImage()">Subir Archivo</button>
+                    <button class="btn btn-primary" id="open-popup" onclick="uploadVideo()">Subir Video</button>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
-
-
-
-
-<!-- Modal para previsualizar la imagen -->
-<div class="modal" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="previewModalLabel">Vista previa de la imagen</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <img id="preview-image" src="#" alt="Vista previa de la imagen">
-          </div>
-      </div>
   </div>
-</div>
 
-
-
-
-
+  <div class="modal" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Vista previa del video</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <video id="preview-video-modal" controls></video>
+            </div>
+        </div>
+    </div>
+  </div>
 
   <script>
     let selectedColor = '#0000FF8C';  // Establece un color predeterminado
 
-
-
     function closePreview() {
-      var previewImage = document.getElementById('preview-image');
-      var fileInput = document.getElementById('imagen');
-  
-      previewImage.src = '#'; // Limpiar la imagen
-  
-      // Limpiar el campo de entrada de archivos para que se pueda seleccionar una nueva imagen
+      var previewVideo = document.getElementById('preview-video');
+      var fileInput = document.getElementById('video');
+
+      previewVideo.src = ''; // Limpiar el video
+
+      // Limpiar el campo de entrada de video para que se pueda seleccionar un nuevo video
       fileInput.value = '';
-    // Mostrar el botón close-button solo si hay una imagen cargada
-    var closeButton = document.querySelector('.close-button');
-    closeButton.style.display = 'none';
+      // Ocultar el botón close-button si no hay un video cargado
+      var closeButton = document.querySelector('.close-button');
+      closeButton.style.display = 'none';
     }
-  
 
+    function previewSelectedVideo() {
+      var fileInput = document.getElementById('video');
+      var previewVideo = document.getElementById('preview-video');
 
-    function previewSelectedImage() {
-      var fileInput = document.getElementById('imagen');
-      var previewImage = document.getElementById('preview-image');
-  
       var file = fileInput.files[0];
-  
+
       if (file) {
-          var reader = new FileReader();
-  
-          reader.onload = function (e) {
-              previewImage.src = e.target.result;
-          };
-  
-          reader.readAsDataURL(file);
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          previewVideo.src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
       } else {
-          // Limpiar la vista previa si no se selecciona ningún archivo
-          previewImage.src = '#';
+        // Limpiar la vista previa si no se selecciona ningún archivo
+        previewVideo.src = '';
       }
-      // Mostrar el botón close-button solo si hay una imagen cargada
-    var closeButton = document.querySelector('.close-button');
-    closeButton.style.display = 'block';
-  }
-  
-  
-  function openPreviewModal() {
-      var fileInput = document.getElementById('imagen');
-      var file = fileInput.files[0];
-  
-      if (file) {
-          previewImage(); // Muestra la vista previa si hay un archivo seleccionado
-      } else {
-          alert('Selecciona una imagen antes de previsualizar.');
-      }
-  }
+      // Mostrar el botón close-button solo si hay un video cargado
+      var closeButton = document.querySelector('.close-button');
+      closeButton.style.display = 'block';
+    }
 
-
-
-
-
-
-
-
-
-    function uploadImage() {
+    function uploadVideo() {
       var description = document.getElementById('file-description').value;
-      
-      var fileInput = document.getElementById('imagen');
-      
+      var fileInput = document.getElementById('video');
       var fileName = '';
       var accessToken = localStorage.getItem('access_token');
-
       var randomNumber = Math.round(Math.random() * 1000000);
 
       // Verificar si se seleccionó un archivo
@@ -148,24 +116,22 @@
         // Obtener el nombre del archivo del último segmento de la ruta
         fileName = fileInput.files[0].name;
       } else {
-        alert('Por favor, seleccione un archivo.');
+        alert('Por favor, seleccione un video.');
         return;
       }
 
       // Aquí puedes usar "fileName" según tus necesidades
-      console.log('Nombre del archivo:', fileName);
-
+      console.log('Nombre del video:', fileName);
 
       var formData = new FormData();
-      formData.append('imagen', fileInput.files[0]);
+      formData.append('video', fileInput.files[0]);
       formData.append('nombreArchivo', fileName); // Agregar el nombre del archivo
-      formData.append('descriptionImagen',description)
-      formData.append('randomNumber',randomNumber)
+      formData.append('descriptionVideo', description);
+      formData.append('randomNumber', randomNumber);
       formData.append('selectedColor', selectedColor);
 
-    
       $.ajax({
-        url: '/cargarImagen', // Reemplaza esto con la ruta correcta en tu servidor
+        url: '/cargarVideo', // Reemplaza esto con la ruta correcta en tu servidor
         type: 'POST',
         data: formData,
         processData: false, // Evitar que jQuery procese los datos
@@ -175,19 +141,18 @@
         },
         success: function(response) {
           // Manejar la respuesta del servidor aquí
-          console.log('Imagen cargada con éxito:', response);
-          $('#result').html('Imagen cargada con éxito. Respuesta del servidor: ' + response);
+          console.log('Video cargado con éxito:', response);
+          $('#result').html('Video cargado con éxito. Respuesta del servidor: ' + response);
         },
         error: function(error) {
           // Manejar errores aquí
-          console.error('Error al cargar la imagen:', error);
-          $('#result').html('Error al cargar la imagen. Detalles: ' + JSON.stringify(error));
+          console.error('Error al cargar el video:', error);
+          $('#result').html('Error al cargar el video. Detalles: ' + JSON.stringify(error));
         }
       });
     }
 
-
-
+  
 
 
 
