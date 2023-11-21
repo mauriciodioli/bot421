@@ -28,6 +28,30 @@ function eliminarImagen(cardBody) {
   console.log('Eliminar imagen:', cardBody.querySelector('img').src);
   // Aquí puedes realizar una solicitud al servidor para eliminar la imagen
   // o implementar la lógica necesaria del lado del cliente.
+
+  $(document).ready(function () {
+    // Ruta al archivo con la galería de imágenes
+    var galeriaURL = '/MostrarImages/';
+  
+    // Realizar la solicitud Ajax
+    $.ajax({
+      url: galeriaURL,
+      dataType: 'html',
+      success: function (data) {
+        // Insertar el contenido de la galería en la ubicación deseada
+        $('.ubicacion-imagenes').html(data);
+      },
+      error: function () {
+        console.error('Error al cargar la galería de imágenes.');
+      }
+    });
+  });
+  
+
+
+
+
+
 }
 
 function cerrarTarjeta(card) {

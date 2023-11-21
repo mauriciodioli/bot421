@@ -143,13 +143,17 @@ def cargarImagen():
             )
             db.session.add(nueva_imagen)
             db.session.commit()
-        MostrarImages()
+          
+       # MostrarImages()
         return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo})
   except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@imagenesOperaciones.route('/MostrarImages/')
-def MostrarImages():
+@imagenesOperaciones.route('/MostrarImages/', methods=['POST'])
+def mostrar_imagenes():
+    access_token = request.form.get('access_token')
+    # Hacer algo con access_token
+   
     # Obtener las imágenes desde la base de datos
     #images = Image.query.all()
      # Obtener las rutas completas de las imágenes
@@ -163,7 +167,23 @@ def MostrarImages():
 
     # Crear las rutas completas de las imágenes sin codificación de caracteres
     image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
+   
+    # Transformar las rutas al formato almacenado en la base de datos
+   # db_image_paths = [os.path.relpath(os.path.join(current_app.root_path, path), current_app.root_path).replace('/', os.sep) for path in image_paths]
 
+   
+    if access_token:
+        app = current_app._get_current_object()                    
+        userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            
+
+        # Obtener todas las imágenes cuyas rutas coincidan con las rutas en db_image_paths
+        imagenes = Image.query.filter(Image.user_id == userid).all()
+        
+        # Convertir los paths al formato deseado
+       # Obtener los paths en el formato deseado# Cambiar el formato de las rutas
+        image_paths = [img.filepath.replace('static\\', '').replace('\\', '/') for img in imagenes]
+      
     return render_template('media/principalMedia/images.html', image_paths=image_paths)
     
   
@@ -184,3 +204,8 @@ def MostrarGaleria():
  #      cuenta = [account, user, selector]
     
 # return render_template('home.html', imagenes=imagenes, cuenta=cuenta)
+
+@imagenesOperaciones.route('/eliminarImagen', methods = ['POST'])
+def eliminar_imagen():
+    return''
+    

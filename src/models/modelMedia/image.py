@@ -14,7 +14,7 @@ class Image(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('usuarios.id'))  
     title = db.Column(db.String(255), unique=True, nullable=False)
-    description = db.Column(db.String(255), unique=True, nullable=False)   
+    description = db.Column(db.String(255), nullable=False)   
     colorDescription = db.Column(db.String(255), nullable=False) 
     filepath = db.Column(db.String(500), nullable=True)
     randomNumber = db.Column(db.Integer) 
