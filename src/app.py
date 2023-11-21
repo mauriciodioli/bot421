@@ -151,7 +151,7 @@ ma = Marshmallow(app)
 
 @app.route("/")
 def entrada():  
-    crea_tablas_DB()
+    #crea_tablas_DB()
     return redirect("index")
 
 @login_manager.user_loader

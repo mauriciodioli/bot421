@@ -1,26 +1,15 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: 2462128990
-      MYSQL_DATABASE: flaskmysql
-    ports:
-      - "3307:3306"
-    networks:
-      - redbot421
-
   python_app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../../..
+      dockerfile:  Documents/bot421/Dockerfile
     ports:
       - "5000:5000"
     networks:
       - redbot421
 
 networks:
-  mynetwork:
+  redbot421:
     driver: bridge
-
