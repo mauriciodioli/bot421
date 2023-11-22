@@ -1,3 +1,16 @@
+/*esto es para el mensaje de carga exitoso*/
+.hidden-message {
+  display: none;
+}
+
+#mensaje-exitoso {
+  color: #28a745; /* Texto blanco */
+  background-color: #000000; /* Fondo verde oscuro (#28a745 es el color verde de Bootstrap) */
+  padding: 10px; /* Agrega un poco de espacio alrededor del texto */
+  border-radius: 5px; /* Bordes redondeados */
+  font-weight: bold; /* Hace que el texto sea negrita */
+}
+
 .custom-file-upload {
   display: block;
   width: 100%;
