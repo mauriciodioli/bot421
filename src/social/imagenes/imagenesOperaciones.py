@@ -4,6 +4,7 @@ from utils.db import db
 from models.modelMedia.image import Image
 import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.exc import SQLAlchemyError
 
 # Configuración del Blueprint para el registro de usuarios
 imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
@@ -205,7 +206,41 @@ def MostrarGaleria():
     
 # return render_template('home.html', imagenes=imagenes, cuenta=cuenta)
 
-@imagenesOperaciones.route('/eliminarImagen', methods = ['POST'])
+@imagenesOperaciones.route('/eliminarImagen', methods=['POST'])
 def eliminar_imagen():
-    return''
+    data = request.form  # Puedes ajustar esto según la forma en que envíes los datos desde tu cliente
+    randomNumber = data.get('randomNumber')
+    imageName = data.get('imageName')
+    authorization_header = request.headers.get('Authorization')
+
+    if authorization_header and authorization_header.startswith('Bearer '):
+        # Extraer el token de acceso de la cadena del encabezado
+        access_token = authorization_header[len('Bearer '):]
+        app = current_app._get_current_object()
+        userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+
+        try:
+            
+            # Reemplazar barras diagonales hacia adelante ("/") por barras diagonales hacia atrás ("\")
+            ruta_base_datos = imageName.replace('/', '\\')
+
+            # Agregar "static" al inicio de la ruta
+            ruta_base_datos = os.path.normpath('static\\' + ruta_base_datos)
+            # Obtener la imagen correspondiente al nombre de la imagen y al ID del usuario
+            imagen = Image.query.filter_by(user_id=userid, filepath=ruta_base_datos).first()
+
+            if imagen:
+                # Eliminar la imagen de la base de datos
+                db.session.delete(imagen)
+                db.session.commit()
+                ruta_imagen = os.path.join(ruta_base_datos)
+                os.remove(ruta_imagen)
+                return jsonify({'message': 'Imagen eliminada con éxito'}), 200
+            else:
+                return jsonify({'error': 'Imagen no encontrada'}), 404
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return jsonify({'error': 'Error al eliminar la imagen'}), 500
+    else:
+        return jsonify({'error': 'Token de autorización no válido'}), 401
     
