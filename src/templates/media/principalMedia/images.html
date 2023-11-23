@@ -8,12 +8,11 @@
     <div class="card">
       <div class="card-header">
         <p style="color: black;">{{ imagen.correo_electronico }}</p>
-        <button class="close-card" onclick="cerrarTarjeta(this.parentElement.parentElement)">Cerrar</button>
+        <button class="close-card" onclick="cerrarTarjeta(this.parentElement.parentElement)">X</button>
       </div>
       <div class="card-body">
         <img src="{{ url_for('static', filename=imagen.image_paths) }}" alt="Imagen">
-        <button class="close-button-mostrar" onclick="eliminarImagen('{{ imagen.image_paths }}')">X</button>
-      </div>
+       </div>
       <div class="card-footer">
         <p style="color: black;"> {{ imagen.description }}</p> <!-- Reemplaza con la descripción real de la imagen -->
       </div>
