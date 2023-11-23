@@ -33,8 +33,7 @@
 .close-card {
     position: absolute;
     top: 10px;
-    right: 10px;
-    
+    right: 10px;    
     color: rgb(0, 0, 0);
     border: none;
     width: 30px; /* Ajusta el ancho del botón */
@@ -47,4 +46,21 @@
     justify-content: center;
     align-items: center;
 }
+
+.despliegue-card {
+    top: 10px;
+    right: 10px;
+    color: rgb(0, 0, 0);
+    border: none;
+    width: 30px; /* Ajusta el ancho del botón */
+    height: 30px; /* Ajusta la altura del botón */
+    border-radius: 50%; /* Hace el botón redondo */
+    padding: 8px;
+    cursor: pointer;
+    z-index: 1; /* Asegura que el botón esté adelante de la imagen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 
