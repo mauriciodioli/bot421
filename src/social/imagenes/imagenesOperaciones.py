@@ -2,6 +2,7 @@ import os
 from flask import Flask,jsonify, request, render_template, Blueprint,current_app, url_for
 from utils.db import db
 from models.modelMedia.image import Image
+from models.usuario import Usuario
 import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError
@@ -16,6 +17,10 @@ def subirImagen():
 @imagenesOperaciones.route('/subirVideo/')
 def subirVideo():
     return render_template("media/principalMedia/subirVideo.html")
+
+@imagenesOperaciones.route('/mostrarGaleria/')
+def mostrarGaleria():
+    return render_template("media/principalMedia/mostrarGaleria.html")
 
 @imagenesOperaciones.route('/cargarVideo', methods=['POST'])
 def cargarVideo():
@@ -76,7 +81,7 @@ def cargarVideo():
         db.session.commit()
 
         # Realizar alguna acción adicional si es necesario, como mostrar las imágenes
-        MostrarImages()
+     
 
         return jsonify({'mensaje': 'Video cargado con éxito', 'nombreArchivo': nombre_archivo})
 
@@ -153,6 +158,53 @@ def cargarImagen():
 @imagenesOperaciones.route('/MostrarImages/', methods=['POST'])
 def mostrar_imagenes():
     access_token = request.form.get('access_token')
+     
+   # Obtener la ruta completa de la carpeta 'static/uploads'
+    uploads_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+
+    # Obtener todas las imágenes en la carpeta 'static/uploads'
+    image_files = [file for file in os.listdir(uploads_folder) if file.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+
+    # Crear las rutas completas de las imágenes sin codificación de caracteres
+    image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
+   
+    
+    if access_token:
+        app = current_app._get_current_object()                    
+        userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            
+       
+        # Obtener todas las imágenes cuyas rutas coincidan con las rutas en db_image_paths
+        
+        usuarios = Usuario.query.all()
+        imagenes = Image.query.all()
+        
+        
+       # Filtrar solo las imágenes (puedes ajustar esto según tus necesidades)
+        imagenes_filtradas = [img for img in imagenes if es_formato_imagen(img.filepath)]
+        
+        # Procesar y asignar los paths solo a las imágenes filtradas
+        for img in imagenes_filtradas:
+            img.image_paths = img.filepath.replace('static\\', '').replace('\\', '/')
+  # Buscar el usuario correspondiente
+            usuario_correspondiente = next((usuario for usuario in usuarios if usuario.id == img.user_id), None)
+
+            # Agregar el correo electrónico del usuario a la imagen
+            if usuario_correspondiente:
+                img.correo_electronico = usuario_correspondiente.correo_electronico
+            else:
+                # Puedes manejar el caso en el que no se encuentra el usuario (si es relevante para tu lógica)
+                img.correo_electronico = "Usuario no encontrado"
+
+          
+      
+    return render_template('media/principalMedia/images.html', imagenes=imagenes_filtradas)
+    
+  
+
+@imagenesOperaciones.route('/imagenesImagenesOperaciones-mostrar-Galeria', methods = ['POST'])
+def imagenesImagenesOperaciones_mostrar_Galeria():
+    access_token = request.form.get('access_token')
     # Hacer algo con access_token
    
     # Obtener las imágenes desde la base de datos
@@ -177,34 +229,22 @@ def mostrar_imagenes():
         app = current_app._get_current_object()                    
         userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             
-
+       
         # Obtener todas las imágenes cuyas rutas coincidan con las rutas en db_image_paths
         imagenes = Image.query.filter(Image.user_id == userid).all()
         
-        # Convertir los paths al formato deseado
-       # Obtener los paths en el formato deseado# Cambiar el formato de las rutas
-        image_paths = [img.filepath.replace('static\\', '').replace('\\', '/') for img in imagenes]
-      
-    return render_template('media/principalMedia/images.html', image_paths=image_paths)
-    
-  
+       # Filtrar solo las imágenes (puedes ajustar esto según tus necesidades)
+        imagenes_filtradas = [img for img in imagenes if es_formato_imagen(img.filepath)]
 
-@imagenesOperaciones.route('/mostrarGaleria', methods = ['POST'])
-def MostrarGaleria():
-     if request.method == 'POST':
-        correo_electronico = request.form['correo_electronico']
-        password = request.form['password']
-        selector = request.json.get('selectorEnvironment')
-        account = request.json.get('account')
-        # Buscar el usuario en la base de datos
-        #crea_tabla_Image()
-        #usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
-        imagenes = Image.query.all()
-    
-    # Envía información adicional (cuenta) a la plantilla
- #      cuenta = [account, user, selector]
-    
-# return render_template('home.html', imagenes=imagenes, cuenta=cuenta)
+        # Procesar y asignar los paths solo a las imágenes filtradas
+        for img in imagenes_filtradas:
+            img.image_paths = img.filepath.replace('static\\', '').replace('\\', '/')
+
+        #          img.image_paths = [img.filepath.replace('static\\', '').replace('\\', '/') for img in imagenes if es_formato_imagen(img.filepath)]
+        
+          
+      
+    return render_template('media/principalMedia/mostrarGaleria.html', imagenes=imagenes_filtradas)
 
 @imagenesOperaciones.route('/eliminarImagen', methods=['POST'])
 def eliminar_imagen():
@@ -244,3 +284,9 @@ def eliminar_imagen():
     else:
         return jsonify({'error': 'Token de autorización no válido'}), 401
     
+def es_formato_imagen(filepath):
+    # Extensiones de archivo de imagen comunes
+    extensiones_imagen = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
+
+    # Verificar si la extensión del archivo está en la lista de extensiones de imagen
+    return any(filepath.lower().endswith(ext) for ext in extensiones_imagen)

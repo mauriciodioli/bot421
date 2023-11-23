@@ -4,22 +4,21 @@
   
 
   <div class="image-grid">
-    {% for image_path in image_paths %}
-      <div class="card">
-        <div class="card-header">
-          <h3>Nombre del Usuario</h3> <!-- Reemplaza con el nombre real del usuario -->
-          <button class="close-card" onclick="cerrarTarjeta(this.parentElement.parentElement)">Cerrar</button>
-        </div>
-        <div class="card-body">
-          <img src="{{ url_for('static', filename=image_path) }}" alt="Imagen">
-          <button class="close-button-mostrar" onclick="eliminarImagen('{{ image_path }}')">X</button>
-        </div>
-        <div class="card-footer">
-          <p>Descripción de la imagen</p> <!-- Reemplaza con la descripción real de la imagen -->
-        </div>
+    {% for imagen in imagenes %}
+    <div class="card">
+      <div class="card-header">
+        <p style="color: black;">{{ imagen.correo_electronico }}</p>
+        <button class="close-card" onclick="cerrarTarjeta(this.parentElement.parentElement)">Cerrar</button>
       </div>
-    {% endfor %}
-
+      <div class="card-body">
+        <img src="{{ url_for('static', filename=imagen.image_paths) }}" alt="Imagen">
+        <button class="close-button-mostrar" onclick="eliminarImagen('{{ imagen.image_paths }}')">X</button>
+      </div>
+      <div class="card-footer">
+        <p style="color: black;"> {{ imagen.description }}</p> <!-- Reemplaza con la descripción real de la imagen -->
+      </div>
+    </div>
+  {% endfor %}
   
   </div>
 </div>
