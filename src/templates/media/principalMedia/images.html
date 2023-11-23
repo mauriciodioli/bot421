@@ -15,6 +15,11 @@
        </div>
       <div class="card-footer">
         <p style="color: black;"> {{ imagen.description }}</p> <!-- Reemplaza con la descripción real de la imagen -->
+        <div style="display: flex; justify-content: space-between;">
+        <button class="despliegue-card" onclick="abrirModal()">&gt;</button>
+          <!-- Agregar el nuevo botón aquí -->
+          <button class="tu-clase" onclick="tuFuncion()" style="display: block; margin: 0 auto; border: none; border-radius: 10px; padding: 10px 20px;">enviale un mensaje</button>
+        </div>
       </div>
     </div>
   {% endfor %}
