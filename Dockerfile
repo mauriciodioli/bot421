@@ -1,9 +1,14 @@
-FROM python:3.9
+FROM python:3.9.7
 
-WORKDIR /usr/src/app
+WORKDIR /src
+
+# Copiar el contenido de la carpeta "src" al directorio de trabajo en el contenedor
+COPY src .
+
+RUN pip install --no-cache-dir --upgrade pip && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN pip install --no-cache-dir -r requirements.txt
+EXPOSE 5001
 
-CMD ["python", "tu_script.py"]
+CMD ["python", "-u", "app.py"]
