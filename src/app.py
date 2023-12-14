@@ -156,10 +156,8 @@ def entrada():
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
-
-
-
+    #return Usuario.query.get(int(user_id))
+     return db.session.query(Usuario).filter_by(id=user_id).first()
 # Make sure this we are executing this file
 if __name__ == "__main__":
     app.run(debug=True)

@@ -35,7 +35,7 @@ def panel_control_sin_cuenta():
     layout = request.args.get('layoutOrigen')
     usuario_id = request.args.get('usuario_id')
     
-    respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+    #respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
     
     if determinar_pais(pais)  is not None:
      
@@ -63,7 +63,7 @@ def panel_control():
      usuario_id = request.args.get('usuario_id')
      
      
-     respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+     #respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
      if  determinar_pais(pais) is not None:
         datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
      else:
@@ -130,10 +130,13 @@ def llenar_diccionario_cada_15_segundos_sheet(pais):
     return f"Hilo iniciado para {pais}"
 
 def ejecutar_en_hilo(pais):
-    while True:
-        time.sleep(120)
-        print("ENTRA A THREAD Y LEE EL SHEET")
-        enviar_leer_sheet(pais)
+    #if get.ya_ejecutado_hilo_panelControl == False:
+    #    get.ya_ejecutado_hilo_panelControl = True 
+    
+        while True:
+            time.sleep(420)
+            print("ENTRA A THREAD Y LEE EL SHEET")
+            enviar_leer_sheet(pais)
         
 
 def enviar_leer_sheet(pais):

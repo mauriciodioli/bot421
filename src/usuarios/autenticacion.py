@@ -271,7 +271,7 @@ def loginUsuario():
             try:
               
                 cuenta = ''
-                selector = ''
+                selector = 'vacio'
                 user = ''               
             # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
                 resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user,usuario.id]))

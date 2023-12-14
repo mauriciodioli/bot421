@@ -77,6 +77,7 @@ diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {}
 diccionario_global_sheet = {}
 diccionario_global_sheet_intercambio = {}
+ya_ejecutado_hilo_panelControl = False
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
 ultima_entrada = time.time()
 # Configurar las URLs de la instancia de BMB
@@ -235,7 +236,7 @@ def loginExtCuentaSeleccionadaBroker():
         
         
        
-        if not selector or not user or not password or not account:
+        if not selector or not user or not password or not accountCuenta:
             flash('Falta información requerida')
             return redirect(url_for('autenticacion.index'))
 
