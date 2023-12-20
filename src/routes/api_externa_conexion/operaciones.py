@@ -98,6 +98,7 @@ def estadoOperacion():
 @operaciones.route("/operaciones_desde_seniales_sin_cuenta/", methods=["POST"]) 
 def operaciones_desde_seniales_sin_cuenta():
     try:
+        
         if request.method == 'POST':
             access_token = request.form['access_token']
             ticker = request.form['symbol']
@@ -109,7 +110,8 @@ def operaciones_desde_seniales_sin_cuenta():
             if access_token:
                 app = current_app._get_current_object()  
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                
+              
+
             # Intentamos encontrar el registro con el symbol específico
             orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
        
@@ -150,7 +152,7 @@ def operaciones_desde_seniales_sin_cuenta():
           
             
             if pais == "argentina":
-               ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+               ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
             elif pais == "usa":
                 ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
             else:

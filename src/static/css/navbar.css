@@ -1,7 +1,9 @@
 
 
 /* Asegurarse de que el contenido no se superponga con la barra de navegación fija */
-
+body {
+    padding-top: 70px;
+  }
 .Nindex {
     height: 55px;
     width: 70px;
