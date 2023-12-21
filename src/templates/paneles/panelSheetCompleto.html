@@ -46,11 +46,12 @@
       var inProgres = $(this).find('td:nth-child(5)').text().trim();
       // Verificar si es OPEN o Closed y aplicar el color correspondiente
       if (signalText === 'OPEN.') {
-        $(this).find('td:nth-child(4)').css('color', 'green');
+        $(this).find('td:nth-child(4)').css('color', 'lime');
       } else if (signalText === 'closed.') {
         $(this).find('td:nth-child(4)').css('color', 'red');
+        $(this).find('td:nth-child(5)').text('Finalized').css('color', 'green');
       }
-
+      
       if (typeText === 'CEDEAR') {
         $(this).find('td:nth-child(3)').css('color', 'brown ');
       } else if (typeText === 'ARG') {
@@ -62,6 +63,14 @@
       } else if (inProgres === 'LONG_') {
         $(this).find('td:nth-child(5)').css('color', 'cyan');
       }
+      if (inProgres !== 'SHORT' && inProgres !== 'LONG_' && signalText != 'closed.' ) {
+        $(this).find('td:nth-child(5)').text('In Progress').css('color', 'yellow');
+      } 
+      
+      if (signalText === '') {
+        $(this).find('td:nth-child(5)').text('In Progress').css('color', 'yellow');
+      }
+
     });
   });
 </script>
