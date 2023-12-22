@@ -94,10 +94,12 @@ def leerSheet(sheetId,sheet_name):
         trade_en_curso = sheet.col_values(19)  # long, short o nada
         ut = sheet.col_values(20)              # cantidad a operar
         senial = sheet.col_values(21)          # Open o Close
+        gan_tot = sheet.col_values(26)
+        dias_operado = sheet.col_values(30)    # Dias habiles operado
         #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
         
-        union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-        
+        #union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
+        union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot,dias_operado)
      # for dato in union:
     #    if ((dato[1] == 'USA' or dato[1] == 'ARG' or dato[1] == 'CEDEAR') and 
      #           dato[2] == 'LONG_' or (dato[2] == 'SHORT' and dato[1] != 'ARG' and dato[1] != 'CEDEAR')):

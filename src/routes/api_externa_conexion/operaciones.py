@@ -132,7 +132,7 @@ def operaciones_desde_seniales_sin_cuenta():
                     accountCuenta="sin cuenta broker",
                     clOrdId_alta=random.randint(1,100000),
                     clOrdId_baja='',
-                    clientId='',
+                    clientId=0,
                     wsClOrdId_timestamp=datetime.now(),
                     clOrdId_alta_timestamp=datetime.now(),
                     clOrdId_baja_timestamp=None,
