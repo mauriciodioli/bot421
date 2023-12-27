@@ -160,7 +160,7 @@ def load_user(user_id):
      return db.session.query(Usuario).filter_by(id=user_id).first()
 # Make sure this we are executing this file
 if __name__ == "__main__":
-    app.run(host="0.0.0.0",port=5001)
+    app.run(host='0.0.0.0', port=5001, debug=True)
     # Ciclo para ejecutar las tareas programadas
     while True:
         schedule.run_pending()

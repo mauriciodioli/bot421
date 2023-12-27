@@ -243,7 +243,8 @@ def loginUsuario():
         password = request.form['password']
         # Buscar el usuario en la base de datos
         #crea_tabla_usuario()
-        usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+        #usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+        usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
        
        # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
