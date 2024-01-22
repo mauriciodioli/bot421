@@ -6,7 +6,7 @@ from models.usuario import Usuario
 import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError
-
+import sys
 # Configuración del Blueprint para el registro de usuarios
 imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
 
@@ -207,7 +207,10 @@ def mostrar_imagenes():
         
         # Procesar y asignar los paths solo a las imágenes filtradas
         for img in imagenes_filtradas:
-            img.image_paths = img.filepath.replace('static\\', '').replace('\\', '/')
+            original_filepath = img.filepath
+            img.image_paths = original_filepath.replace('static\\', '').replace('\\', '/')
+            print(f"Original: {original_filepath}, Modificado: {img.image_paths}")
+            sys.stdout.flush() 
   # Buscar el usuario correspondiente
             usuario_correspondiente = next((usuario for usuario in usuarios if usuario.id == img.user_id), None)
 
