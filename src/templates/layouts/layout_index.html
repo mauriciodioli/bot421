@@ -28,10 +28,13 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/faq.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
-    
+    <script src="{{ url_for('static', filename='js/notificacionAlertOperacion.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="/static/js/actualizaTabla.js"></script>     
+    <script src="/static/js/actualizaTabla.js"></script> 
+    <script src="{{url_for('static',filename='js/main.js')}}"></script> 
+   
+  
     <meta charset="UTF-8">
     <title>Registro de usuarios</title>
     <meta name="google-signin-client_id" content="TU_CLIENTE_ID_DE_GOOGLE">
@@ -44,16 +47,17 @@
 </head>
 
 <body>
-    <!-- As a heading -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="Nindex">
-       
+ 
+
+
         
+    <!-- As a heading -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top  " >       
+       
         <div class="container-fluid">
             <h1 name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
             <h1 name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
             <h1 name="mensaje_simulado"  id="mensaje_simulado"></h1>
-           
-            
             <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="collapse"
@@ -65,7 +69,6 @@
             </button>
             <div class="collapse navbar-collapse " id="navbarNav" >
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                   
                    
                     <li class="nav-item ">
                         <a class="nav-link active" aria-current="page" href="/">Inicio</a>
@@ -99,7 +102,8 @@
             </div>
         </div>
     </nav>
-   
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top Nindex " > 
+    </nav>
 
     <!-- <div class = 'container p-4'> -->
         
@@ -115,8 +119,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     
     
-    <script src="{{ url_for('static', filename='js/notificacionAlertOperacion.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  
 
     <script>
         // Solicitar permiso para mostrar notificaciones
