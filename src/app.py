@@ -5,9 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
 # Importar create_engine y NullPool
-from sqlalchemy import create_engine
+import logging
+from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
+
 from models.creaTablas import crea_tablas_DB
 
 
@@ -130,7 +132,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SQLALCHEMY_POOL_SIZE'] = 100
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000)
+engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000, max_overflow=10)
 
 db = SQLAlchemy(app)
 # Configurar el pool de conexiones para SQLAlchemy
@@ -148,6 +150,16 @@ ma = Marshmallow(app)
 # Registrar los métodos user_loader y request_loader
 #login_manager.user_loader(user_loader)
 #login_manager.request_loader(request_loader)
+# Función para registrar eventos de conexión
+# Contador para la cantidad de conexiones
+connection_count = 0
+def log_connection_info(dbapi_connection, connection_record):
+    """Log connection events."""
+    global connection_count
+    connection_count += 1
+    print(f"Conexión establecida ({connection_count} veces)")
+
+
 
 @app.route("/")
 def entrada():  
