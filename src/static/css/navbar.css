@@ -1,15 +1,26 @@
 
+
 /* Asegurarse de que el contenido no se superponga con la barra de navegación fija */
 body {
     padding-top: 70px;
-}
-#Nindex {
-    background-image: url('/static/leon.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center left;
-    height: 70px; /* Ajusta la altura del navbar */
   }
+.Nindex {
+    height: 55px;
+    width: 70px;
+    position: fixed;
+    top: 0;
+    background: url('/static/leon.png') no-repeat center left;
+    background-size: contain;
+    display: flex;
+    align-items: center;
+    padding-left: 80px; /* Ajusta según sea necesario */
+}
+
+@media (max-width: 767px) {
+    .Nindex {
+        padding-left: 10px; /* Ajusta según sea necesario para dispositivos móviles */
+    }
+}
 section[id]{
     scroll-margin-top: 70px;
 }
