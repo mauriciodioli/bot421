@@ -28,7 +28,7 @@ import os #obtener el directorio de trabajo actual
 
 datoSheet = Blueprint('datoSheet',__name__)
 
-newPath = os.path.join(os.getcwd(), 'strategies\\credentials_module.json') 
+newPath = os.path.join(os.getcwd(), 'strategies/credentials_module.json') 
 directorio_credenciales = newPath 
 
 #SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
