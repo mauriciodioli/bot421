@@ -171,13 +171,35 @@ def mostrar_imagenes():
     
     if access_token:
         app = current_app._get_current_object()                    
-        userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        try:
+            userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, jwt.DecodeError) as e:
+            # Manejar errores específicos de JWT
+            flash("Error en el token JWT", "error")
+            return render_template("login.html")
+            
+        except Exception as e:
+            # Manejar otras excepciones
+            flash("Error desconocido", "error")
+            return redirect(url_for('autenticacion.index')) # Puedes redirigir a la página principal o manejar de otra manera
+
+
             
        
         # Obtener todas las imágenes cuyas rutas coincidan con las rutas en db_image_paths
-        
-        usuarios = Usuario.query.all()
-        imagenes = Image.query.all()
+        with db.session.begin(subtransactions=True):            
+            try:
+                usuarios = db.session.query(Usuario).all()
+                imagenes = db.session.query(Image).all()
+            except Exception as e:
+                # Manejar excepciones de la base de datos
+                flash("Error en la base de datos", "error")
+                return redirect(url_for('index'))  # Puedes redirigir a la página principal o manejar de otra manera
+            finally:
+                db.session.close()
+           
+      #  usuarios = Usuario.query.all()
+      #  imagenes = Image.query.all()
         
         
        # Filtrar solo las imágenes (puedes ajustar esto según tus necesidades)

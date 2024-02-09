@@ -34,7 +34,9 @@ from models.cuentas import Cuenta
 from routes.api_externa_conexion.cuenta import cuenta
 from utils.db import db
 import jwt
-
+from contextlib import contextmanager
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.event import event
 
 autenticacion = Blueprint("autenticacion", __name__)
 
@@ -234,6 +236,18 @@ def protegido():
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
+@contextmanager
+def session_scope():
+    """Proporciona un alcance de sesión que se maneja automáticamente."""
+    session = db.session
+    try:
+        yield session
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 #aqui se logea el usuario de manera manual y se genera el token y el refresh token y luego se envia para
 # ser almacenado en localStorage y en cookies
 @autenticacion.route('/loginUsuario', methods=['POST'])
@@ -243,9 +257,13 @@ def loginUsuario():
         password = request.form['password']
         # Buscar el usuario en la base de datos
         #crea_tabla_usuario()
-        #usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+        ##usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+        # Registra la función para el evento 'connect'
+        event.listen(engine, 'connect', log_connection_info)
+        with session_scope() as session:
+            usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
         usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
-       
+
        # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
             flash('Correo electrónico o contraseña incorrectos', 'danger')
