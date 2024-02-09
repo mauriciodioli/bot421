@@ -242,7 +242,7 @@ def loginExtCuentaSeleccionadaBroker():
 
         try:
             inicializar_variables_globales()
-            creaJsonParaConextarseSheetGoogle()
+            #creaJsonParaConextarseSheetGoogle()
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
                 environments = pyRofexInicializada.Environment.REMARKET
