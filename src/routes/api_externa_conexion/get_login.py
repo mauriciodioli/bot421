@@ -183,9 +183,13 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("url", api_url,environment)
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
+                                print(cuentas.userCuenta)
+                                print(passwordCuenta)
+                                print(cuentas.accountCuenta)
+                                print(environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion()
-                                refrescoValorActualCuentaFichas(user_id)
+                                #refrescoValorActualCuentaFichas(user_id)
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
                                  return render_template("/paneles/panelDeControlBroker.html")   
@@ -231,8 +235,11 @@ def loginExtCuentaSeleccionadaBroker():
         
         if origin_page == 'login':
             selector = request.form.get('environment')
+            print('selector ',selector)
+            
         else: 
             selector = request.form.get('selectorEnvironment')
+            print('selector ',selector)
         
         
        
@@ -266,7 +273,7 @@ def loginExtCuentaSeleccionadaBroker():
             if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
-            
+          
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
             conexion()
             refrescoValorActualCuentaFichas(user_id)
@@ -293,7 +300,7 @@ def loginExtCuentaSeleccionadaBroker():
             # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
             return render_template('registrarCuentaBroker.html')
 
-
+    
 
 def inicializar_variables_globales():
     global pyRofexInicializada, pyConectionWebSocketInicializada, pyWsSuscriptionInicializada
@@ -316,7 +323,7 @@ def creaJsonParaConextarseSheetGoogle():
 
     # Ruta al archivo de texto plano
     #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    ruta_archivo_texto = 'C:\\Users\\mdioli\\Desktop\\clavesheet.txt'    
+    ruta_archivo_texto = 'C:/Users/mdioli/Desktop/clavesheet.txt'    
   
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo
