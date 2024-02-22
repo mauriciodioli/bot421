@@ -14,6 +14,7 @@ import requests
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 
+
 from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
 import enum
@@ -64,7 +65,9 @@ def estrategia_001():
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
+            
             ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
+            print('pasa suscripcionesssssss')
             #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia)
@@ -105,16 +108,17 @@ def SuscripcionDeSheet():
     ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
     ContenidoSheet_list = list(ContenidoSheet)
 
-
+    
     ContenidoSheetDb = get_instrumento_para_suscripcion_db()
     ContenidoSheet_list_db = list(ContenidoSheetDb)
+    
     
     
   
     longitudLista = len(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol_db = cargaSymbolParaValidarDb(ContenidoSheet_list_db)
-    
+   
    
    # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
    # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
@@ -128,13 +132,13 @@ def SuscripcionDeSheet():
 
     # Combinar conjuntos y eliminar duplicados
     resultado_set = set_contenido_db.union(set_contenido_json,set_contenido_ws)
-
+    
     # Convertir conjunto resultante en una lista
     resultado_lista = list(resultado_set)
     
     # Ahora 'resultado_lista' contiene todos los instrumentos sin duplicados
 
-    
+   
     #for elemento in resultado_lista:
     #    print(elemento)
 
@@ -142,6 +146,7 @@ def SuscripcionDeSheet():
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
     #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
+   
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
     
     # Validamos existencia
@@ -169,7 +174,7 @@ def cargaSymbolParaValidarDb(message):
     listado_final = []
     for instrumento  in message: 
         listado_final.append(instrumento.symbol)
-        #print(instrumento.symbol)
+        print(instrumento.symbol)
         
     return listado_final
 
@@ -177,7 +182,7 @@ def cargaSymbolParaValidarDb(message):
 
 def cargaSymbolParaValidar(message):
     listado_final = []
-    for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in message: 
+    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado  in message: 
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                                 if Symbol != '':
                                 #if trade_en_curso == 'LONG_':
@@ -203,11 +208,11 @@ def get_instrumento_para_suscripcion_db():
 
 def get_instrumento_para_suscripcion_json():
    try:
-        ruta_archivo_json = 'strategies\\listadoInstrumentos\\instrumentos_001.json'    
+        ruta_archivo_json = 'strategies/listadoInstrumentos/instrumentos_001.json'    
         with open(ruta_archivo_json , 'r') as archivo:
             contenido = archivo.read()
             datos = json.loads(contenido)
-
+            
             # Acceder a los datos
            
             return datos
@@ -267,7 +272,8 @@ def market_data_handler_estrategia(message):
         else:
         
             #tiempoAhora = datetime.now()
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            print('aqui va hacia la estrategia')
+            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
@@ -362,11 +368,13 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                        
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                            print('entra en operacion')
+                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
                                            # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                     else:                                          
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                            print('entra en operacion')
+                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
                                            # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                          
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
@@ -393,10 +401,12 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
+                                            print('entra en operacion')
+                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
                                     else:                                          
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
+                                            print('entra en operacion')
+                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
                                         
 def ConsultarFlagCCLCedearsWS(message):
      

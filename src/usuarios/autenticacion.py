@@ -36,7 +36,7 @@ from utils.db import db
 import jwt
 from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.event import event
+
 
 autenticacion = Blueprint("autenticacion", __name__)
 
@@ -259,7 +259,7 @@ def loginUsuario():
         #crea_tabla_usuario()
         ##usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
         # Registra la función para el evento 'connect'
-        event.listen(engine, 'connect', log_connection_info)
+       
         with session_scope() as session:
             usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
         usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
