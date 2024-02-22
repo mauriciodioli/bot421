@@ -15,6 +15,7 @@ import smtplib
 import schedule
 import time
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
+from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 import strategies.estrategias as estrategias
 from utils.common import Marshmallow, db
 from datetime import datetime
@@ -51,7 +52,7 @@ def trigger():
 @programar_trigger.route('/programador_trigger/', methods=['POST'])
 def programador_trigger():
     
-    crea_tabla_triggerEstrategia()
+    #crea_tabla_triggerEstrategia()
     # Obtener las horas ingresadas por el usuario desde los datos enviados en el cuerpo de la solicitud
     horaInicio = request.json["horaInicio"]
     horaFin = request.json["horaFin"]
@@ -143,21 +144,55 @@ def programar_tareas(horaInicio, horaFin):
 
 def tarea_inicio():
     print("Tarea de inicio ejecutada")
+    print("**************************************************")
     # Programar la próxima ejecución después de 24 horas
-    schedule.every(24).hours.do(tarea_inicio)
+#    schedule.every(24).hours.do(tarea_inicio)
+    #se inicia cada minuto para test
+    schedule.every(1).minutes.do(tarea_inicio)
+    print("**************************************************inicia***********************")
 
     # Aquí puedes enviar los datos a otra ruta en otro archivo Python
     # utilizando la librería requests o similar
-    datos_usuario = {
-        "nombre": "Usuario",
-        "email": "usuario@example.com"
-    }
-    response = requests.post(url_for('estrategia_sheet_WS.estrategia_sheet_WS'), data=datos_usuario)
+    #traer los datos del usuario y trigger
+    triggerEstrategias = db.session.query(TriggerEstrategia).all()
+    for triggerEstrategia in triggerEstrategias:
+      print(triggerEstrategia.nombreEstrategia)  # Acceder al atributo 'id' de cada instancia de TriggerEstrategia
+      print(triggerEstrategia.horaInicio)
+      print(triggerEstrategia.horaFin)
+      print(triggerEstrategia.manualAutomatico)
+      
+      usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.id_user).first()
 
-    if response.status_code == 200:
-        print("Datos de usuario enviados con éxito")
-    else:
-        print("Error al enviar los datos de usuario")
+        # Construir los datos a enviar a la otra ruta
+      datos = {
+                "usuario": triggerEstrategia.userCuenta,
+                "idTrigger":triggerEstrategia.id,
+                "access_token": 'access_token',
+                "idUser": triggerEstrategia.user_id,
+                "correo_electronico": usuario.correo_electronico,
+                "accountLocalStorage": triggerEstrategia.accountCuenta,
+                "tiempoInicio": triggerEstrategia.horaInicio,
+                "tiempoFin": triggerEstrategia.horaFin,
+                "automatico": triggerEstrategia.manualAutomatico,
+                "nombre": triggerEstrategia.nombreEstrategia
+            }
+      #conectar el WS y suscribe
+     
+      conexion()
+       
+      #enviar los datos a la estrategia
+     # url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
+     # response = requests.post(url_for(url), data=datos)
+      # Construir la URL de destino
+      url_destino = 'strategies/estrategiaSeetWS/' + triggerEstrategia.nombreEstrategia
+        
+      # Enviar los datos a la estrategia
+      response = requests.post(url_destino, json=datos)
+
+      if response.status_code == 200:
+            print("Datos de usuario enviados con éxito")
+      else:
+            print("Error al enviar los datos de usuario")
 
 def tarea_fin():
     print("Tarea de finalización ejecutada")

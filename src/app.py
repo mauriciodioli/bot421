@@ -1,4 +1,5 @@
 #from re import template
+
 from flask import (Flask,Blueprint,render_template,request,redirect,url_for,flash,jsonify)
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
@@ -48,6 +49,9 @@ from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
 
 from automatizacion.programar_trigger import programar_trigger
+from automatizacion.tasks import tasks,celery_app ,tarea_programada
+import subprocess
+from celery import Celery
 
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
@@ -58,6 +62,8 @@ from models.operacion import operacion
 from models.operacionHF import operacionHF
 from models.logs import logs
 from models.creaTablas import creaTabla
+
+from log.logRegister import logRegister
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -71,9 +77,31 @@ import time
 # desde aqui se llama la aplicacion al inicio
 #app = Flask(__name__)
 
+ # Inicia los workers de Celery
+#celery_app.start()
 app = Flask(__name__, static_folder='static')
+
+# Configurar Celery
+app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+
+# Crear y configurar la instancia de Celery
+celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery_app.conf.update(app.config)
+
+
+# Configurar el manejo de errores para la aplicación
 login_manager = LoginManager(app)
+
+# Configurar CORS
 CORS(app)
+
+# Configurar la generación de logs para la aplicación
+logging.basicConfig(level=logging.DEBUG)  # Configura el nivel de log a DEBUG
+
+# Configurar el logger de la aplicación Flask
+app.logger.setLevel(logging.DEBUG)  # Configura el nivel de log a DEBUG para la aplicación Flask
+
 
 # Configura el manejo de autenticación JWT
 app.config['JWT_SECRET_KEY'] = '621289'
@@ -90,6 +118,7 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
+
 app.register_blueprint(logs)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
@@ -122,6 +151,8 @@ app.register_blueprint(ficha)
 app.register_blueprint(trazaFicha)
 app.register_blueprint(fichas)
 app.register_blueprint(arbitraje_001)
+app.register_blueprint(programar_trigger)
+app.register_blueprint(tasks)
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
@@ -153,6 +184,10 @@ ma = Marshmallow(app)
 # Función para registrar eventos de conexión
 # Contador para la cantidad de conexiones
 connection_count = 0
+
+# Inicia los workers de Celery
+
+
 def log_connection_info(dbapi_connection, connection_record):
     """Log connection events."""
     global connection_count
@@ -163,6 +198,9 @@ def log_connection_info(dbapi_connection, connection_record):
 
 @app.route("/")
 def entrada():  
+      # Llama a la tarea Celery
+   # result = tarea_programada.delay()
+
     #crea_tablas_DB()
     return redirect("index")
 
@@ -172,8 +210,12 @@ def load_user(user_id):
      return db.session.query(Usuario).filter_by(id=user_id).first()
 # Make sure this we are executing this file
 if __name__ == "__main__":
+   
     app.run(host='0.0.0.0', port=5001, debug=True)
     # Ciclo para ejecutar las tareas programadas
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+  
+   # while True:
+   #     schedule.run_pending()
+   #     print('__________________________________________________')
+   #     print('entra en el planificador')
+   #     time.sleep(3)

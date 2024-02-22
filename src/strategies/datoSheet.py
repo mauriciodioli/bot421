@@ -3,6 +3,7 @@ import routes.instrumentos as instrumentos
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
+
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
@@ -13,6 +14,7 @@ import json
 from models.orden import Orden
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
+
 import random
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
@@ -21,6 +23,8 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pprint
 import os #obtener el directorio de trabajo actual
+import sys
+import csv
 #import drive
 #drive.mount('/content/gdrive')
 
@@ -72,7 +76,7 @@ def autenticar_y_abrir_sheet(sheetId, sheet_name):
     try:
         scope = ['https://spreadsheets.google.com/feeds', 
                  'https://www.googleapis.com/auth/drive']
-        newPath = os.path.join(os.getcwd(), 'strategies\\pruebasheetpython.json')
+        newPath = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
         creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
         client = gspread.authorize(creds)
         sheet = client.open_by_key(sheetId).worksheet(sheet_name)  # Abre el sheet especificado
@@ -99,19 +103,21 @@ def leerSheet(sheetId,sheet_name):
         #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
         
         #union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-        union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot,dias_operado)
-     # for dato in union:
-    #    if ((dato[1] == 'USA' or dato[1] == 'ARG' or dato[1] == 'CEDEAR') and 
-     #           dato[2] == 'LONG_' or (dato[2] == 'SHORT' and dato[1] != 'ARG' and dato[1] != 'CEDEAR')):
-     #           if (dato[3] > '0'):
-     #               if (dato[4] == 'OPEN.' or dato[4] == 'closed.'):
-     #                   print(f"Datos {dato} - Pasa la condición")
-     #               else:
-     #                   print(f"Datos {dato} - No pasa la condición de la posición 4")
-     #           else:
-     #               print(f"Datos {dato} - No pasa la condición de la posición 3")
-     #       else:
-     #           print(f"Datos {dato} - No pasa la condición inicial")
+        union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado)
+
+   
+       # for dato in union:
+       #  if ((dato[1] == 'USA' or dato[1] == 'ARG' or dato[1] == 'CEDEAR') and 
+       #         dato[2] == 'LONG_' or (dato[2] == 'SHORT' and dato[1] != 'ARG' and dato[1] != 'CEDEAR')):
+       #         if (dato[3] > '0'):
+       #             if (dato[4] == 'OPEN.' or dato[4] == 'closed.'):
+       #                 print(f"Datos {dato} - Pasa la condición")
+       #             else:
+       #                 print(f"Datos {dato} - No pasa la condición de la posición 4")
+       #         else:
+       #             print(f"Datos {dato} - No pasa la condición de la posición 3")
+       #  else:
+       #         print(f"Datos {dato} - No pasa la condición inicial")
         
         return union
      else:
@@ -521,7 +527,6 @@ def instrument_by_symbol_para_CalculoMep(symbol):
         flash('instrument_by_symbol_para_CalculoMep__: Symbol Incorrect')   
         return render_template("instrumentos.html" )
    
-
 
 
 
