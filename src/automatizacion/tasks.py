@@ -2,20 +2,19 @@ from celery import Celery
 from celery.schedules import crontab
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-from models.usuario import Usuario
 
-from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 
 
 tasks = Blueprint('tasks', __name__)
 
 # Configurar Celery con el mismo nombre de aplicación que en tasks.py
-celery_app = Celery('tareas', broker='redis://localhost:6379/0')
+celery_app = Celery('tareas', broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
+
 
 # Definir la tarea Celery para tarea_programada
 @celery_app.task
 def tarea_programada():
-    print("La tarea programada se ejecutó.")
+    print("La tarea programada se ejecutó en task000000000000000000.")
 
 # Definir la tarea Celery para otra_tarea
 @celery_app.task

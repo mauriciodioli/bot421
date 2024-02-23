@@ -273,7 +273,7 @@ def market_data_handler_estrategia(message):
         
             #tiempoAhora = datetime.now()
             print('aqui va hacia la estrategia')
-            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
@@ -321,8 +321,8 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
-
-        for Symbol,tipo, TradeEnCurso,ut,senial in ContenidoSheet_list[2:]:
+        
+        for Symbol,tipo, TradeEnCurso,ut,senial,gan_tot, dias_operado in ContenidoSheet_list[2:]:
             if Symbol in get.diccionario_global_operaciones:
                 if senial != '':
                     #aqui entra en caso que tenga que cambiar la señal de trading
@@ -332,6 +332,8 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
 
             mepAl30 = 460 ####Calcula dolar MEP
+    print('entra en estrategiaSheetNuevaWS')
+    print('____________________________________________________________________')
     Symbol = message["instrumentId"]["symbol"]
     tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
     senial = get.diccionario_global_operaciones[Symbol]['senial']
