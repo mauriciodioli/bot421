@@ -53,6 +53,7 @@ from automatizacion.tasks import tasks,celery_app ,tarea_programada
 import subprocess
 from celery import Celery
 
+from celery.schedules import crontab
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
 from models.orden import orden
@@ -199,8 +200,7 @@ def log_connection_info(dbapi_connection, connection_record):
 @app.route("/")
 def entrada():  
       # Llama a la tarea Celery
-   # result = tarea_programada.delay()
-
+    result = tarea_programada.delay()
     #crea_tablas_DB()
     return redirect("index")
 
@@ -219,3 +219,8 @@ if __name__ == "__main__":
    #     print('__________________________________________________')
    #     print('entra en el planificador')
    #     time.sleep(3)
+   
+   
+   
+   
+   
