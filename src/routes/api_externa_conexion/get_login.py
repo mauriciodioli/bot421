@@ -24,6 +24,8 @@ import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 
+import automatizacion.programar_trigger as trigger
+
 from utils.db import db
 from datetime import datetime
 import time
@@ -79,6 +81,7 @@ diccionario_global_sheet = {}
 diccionario_global_sheet_intercambio = {}
 ya_ejecutado_hilo_panelControl = False
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
+hilo_iniciado_estrategia_usuario = {}
 ultima_entrada = time.time()
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.bull.xoms.com.ar/"
@@ -189,6 +192,7 @@ def loginExtAutomatico():
                                 print(environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion()
+                                trigger.llama_tarea_cada_24_horas_estrategias('1',app)
                                 #refrescoValorActualCuentaFichas(user_id)
                                 print("está logueado en produccion en LIVE")
                                 if rutaDeLogeo != 'Home':      
@@ -249,6 +253,7 @@ def loginExtCuentaSeleccionadaBroker():
 
         try:
             inicializar_variables_globales()
+            app = current_app._get_current_object() 
             #creaJsonParaConextarseSheetGoogle()
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
@@ -276,6 +281,7 @@ def loginExtCuentaSeleccionadaBroker():
           
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
             conexion()
+            trigger.llama_tarea_cada_24_horas_estrategias('1',app)
             refrescoValorActualCuentaFichas(user_id)
            
            

@@ -48,8 +48,8 @@ from social.media_e_mail import media_e_mail
 from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
 
-from automatizacion.programar_trigger import programar_trigger
-from automatizacion.tasks import tasks,celery_app ,tarea_programada
+from automatizacion.programar_trigger import programar_trigger 
+import automatizacion.programar_trigger as trigger
 import subprocess
 from celery import Celery
 
@@ -81,15 +81,6 @@ import time
  # Inicia los workers de Celery
 #celery_app.start()
 app = Flask(__name__, static_folder='static')
-
-# Configurar Celery
-app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
-
-# Crear y configurar la instancia de Celery
-celery_app = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery_app.conf.update(app.config)
-
 
 # Configurar el manejo de errores para la aplicación
 login_manager = LoginManager(app)
@@ -153,7 +144,7 @@ app.register_blueprint(trazaFicha)
 app.register_blueprint(fichas)
 app.register_blueprint(arbitraje_001)
 app.register_blueprint(programar_trigger)
-app.register_blueprint(tasks)
+
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
@@ -187,6 +178,7 @@ ma = Marshmallow(app)
 connection_count = 0
 
 # Inicia los workers de Celery
+# Programar la tarea para que se ejecute a una hora específica
 
 
 def log_connection_info(dbapi_connection, connection_record):
@@ -200,17 +192,18 @@ def log_connection_info(dbapi_connection, connection_record):
 @app.route("/")
 def entrada():  
       # Llama a la tarea Celery
-    result = tarea_programada.delay()
+    #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
     #crea_tablas_DB()
     return redirect("index")
 
 @login_manager.user_loader
 def load_user(user_id):
     #return Usuario.query.get(int(user_id))
+    
      return db.session.query(Usuario).filter_by(id=user_id).first()
 # Make sure this we are executing this file
 if __name__ == "__main__":
-   
+    
     app.run(host='0.0.0.0', port=5001, debug=True)
     # Ciclo para ejecutar las tareas programadas
   

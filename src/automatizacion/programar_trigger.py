@@ -11,16 +11,20 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.triggerEstrategia import TriggerEstrategia
 from datetime import datetime, timedelta, time
+
 import smtplib
 import schedule
 import time
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
+import routes.api_externa_conexion.get_login as get
 import strategies.estrategias as estrategias
 from utils.common import Marshmallow, db
 from datetime import datetime
 import jwt
-
+import threading
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 programar_trigger = Blueprint('programar_trigger', __name__)
 
 # Crear la tabla cuenta si no existe
@@ -141,59 +145,6 @@ def programar_tareas(horaInicio, horaFin):
     # Programar las tareas de inicio y finalización a las horas deseadas
     schedule.every().day.at(horaInicio_deseada.strftime("%H:%M")).do(tarea_inicio)
     schedule.every().day.at(horaFin_deseada.strftime("%H:%M")).do(tarea_fin)
-
-def tarea_inicio():
-    print("Tarea de inicio ejecutada")
-    print("**************************************************")
-    # Programar la próxima ejecución después de 24 horas
-#    schedule.every(24).hours.do(tarea_inicio)
-    #se inicia cada minuto para test
-    schedule.every(1).minutes.do(tarea_inicio)
-    print("**************************************************inicia***********************")
-
-    # Aquí puedes enviar los datos a otra ruta en otro archivo Python
-    # utilizando la librería requests o similar
-    #traer los datos del usuario y trigger
-    triggerEstrategias = db.session.query(TriggerEstrategia).all()
-    for triggerEstrategia in triggerEstrategias:
-      print(triggerEstrategia.nombreEstrategia)  # Acceder al atributo 'id' de cada instancia de TriggerEstrategia
-      print(triggerEstrategia.horaInicio)
-      print(triggerEstrategia.horaFin)
-      print(triggerEstrategia.manualAutomatico)
-      
-      usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.id_user).first()
-
-        # Construir los datos a enviar a la otra ruta
-      datos = {
-                "usuario": triggerEstrategia.userCuenta,
-                "idTrigger":triggerEstrategia.id,
-                "access_token": 'access_token',
-                "idUser": triggerEstrategia.user_id,
-                "correo_electronico": usuario.correo_electronico,
-                "accountLocalStorage": triggerEstrategia.accountCuenta,
-                "tiempoInicio": triggerEstrategia.horaInicio,
-                "tiempoFin": triggerEstrategia.horaFin,
-                "automatico": triggerEstrategia.manualAutomatico,
-                "nombre": triggerEstrategia.nombreEstrategia
-            }
-      #conectar el WS y suscribe
-     
-      conexion()
-       
-      #enviar los datos a la estrategia
-     # url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
-     # response = requests.post(url_for(url), data=datos)
-      # Construir la URL de destino
-      url_destino = 'strategies/estrategiaSeetWS/' + triggerEstrategia.nombreEstrategia
-        
-      # Enviar los datos a la estrategia
-      response = requests.post(url_destino, json=datos)
-
-      if response.status_code == 200:
-            print("Datos de usuario enviados con éxito")
-      else:
-            print("Error al enviar los datos de usuario")
-
 def tarea_fin():
     print("Tarea de finalización ejecutada")
     # Programar la próxima ejecución después de 24 horas
@@ -207,6 +158,131 @@ def tarea_fin():
     else:
         print("Error al detener WS")
         
+def tarea_inicio(user_id,app,triggerEstrategias,usuario):
+    
+    # Programar la próxima ejecución después de 24 horas
+#    schedule.every(24).hours.do(tarea_inicio)
+    #se inicia cada minuto para test
+   
+    
 
+    # Aquí puedes enviar los datos a otra ruta en otro archivo Python
+    # utilizando la librería requests o similar
+    #traer los datos del usuario y trigger
+    with app.app_context():
+    
+        # Realizar la consulta
+       
+        
+        # Procesar los usuarios (aquí puedes hacer lo que necesites con los resultados)
+        
+        for triggerEstrategia in triggerEstrategias:
+            print(triggerEstrategia.nombreEstrategia)  # Acceder al atributo 'id' de cada instancia de TriggerEstrategia
+            print(triggerEstrategia.horaInicio)
+            print(triggerEstrategia.horaFin)
+            print(triggerEstrategia.ManualAutomatico)
+            
+          
+
+                # Construir los datos a enviar a la otra ruta
+            datos = {
+                        "userCuenta": triggerEstrategia.userCuenta,
+                        "idTrigger":triggerEstrategia.id,
+                        "access_token": 'access_token',
+                        "idUser": triggerEstrategia.user_id,
+                        "correo_electronico": usuario.correo_electronico,
+                        "cuenta": triggerEstrategia.accountCuenta,
+                        "tiempoInicio": triggerEstrategia.horaInicio,
+                        "tiempoFin": triggerEstrategia.horaFin,
+                        "automatico": triggerEstrategia.ManualAutomatico,
+                        "nombre": triggerEstrategia.nombreEstrategia
+                    }
+            # Convertir los objetos datetime a cadenas de texto
+            datos["tiempoInicio"] = triggerEstrategia.horaInicio.strftime('%Y-%m-%dT%H:%M:%S')
+            datos["tiempoFin"] = triggerEstrategia.horaFin.strftime('%Y-%m-%dT%H:%M:%S')
+
+            #conectar el WS y suscribe
+            
+            #conexion()
+            
+            #enviar los datos a la estrategia
+            #url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
+            #response = requests.post(url_for(url), data=datos)
+            # Construir la URL de destino
+            url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia
+            print("**************************************************inicia***********************")
+            print("Tarea de inicio ejecutada")
+            print("**************************************************")
+            # Enviar los datos a la estrategia
+            response = requests.post(url_destino, json=datos)
+
+            if response.status_code == 200:
+                    print("Datos de usuario enviados con éxito")
+            else:
+                    print("Error al enviar los datos de usuario")
+
+
+        
+def llama_tarea_cada_24_horas_estrategias(user_id,app):
+    get.hilo_iniciado_estrategia_usuario
+    triggerEstrategias = db.session.query(TriggerEstrategia).all()
+    
+    for triggerEstrategia in triggerEstrategias:
+     usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
+     if usuario:
+        print("El usuario existe en la lista triggerEstrategias.")
+     
+        # Verifica si ya hay un hilo iniciado para este país
+        if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
+            return f"Hilo para {user_id} ya está en funcionamiento"
+
+        # Si no hay un hilo iniciado para este país, lo inicia
+        hilo = threading.Thread(target=ejecutar_tarea, args=(user_id,app,triggerEstrategias,usuario))
+        get.hilo_iniciado_panel_control[user_id] = hilo
+        hilo.start()
+     else:
+        print("El usuario no existe en la lista triggerEstrategias.")  
+
+    return f"Hilo iniciado para {user_id}"
+
+def ejecutar_tarea(user_id,app,triggerEstrategias,usuario):
+    #if get.ya_ejecutado_hilo_panelControl == False:
+    #    get.ya_ejecutado_hilo_panelControl = True 
+    
+        while True:
+            time.sleep(30)
+            print("ENTRA A THREAD Y EJECUTA TAREA DE AUTOMATIZACION DE ESTRATEGIA")
+            lee_trigger_ejecuta_estrategia(user_id,app,triggerEstrategias,usuario)
+
+def ejecutar_tarea1(user_id,app,triggerEstrategias,usuario):
+    #if get.ya_ejecutado_hilo_panelControl == False:
+    #    get.ya_ejecutado_hilo_panelControl = True 
+    
+    while True:
+        # Ejecutar la tarea cada 24 horas
+       
+        schedule.every().day.at("10:01").do(lee_trigger_ejecuta_estrategia, user_id,app,triggerEstrategias,usuario)
+
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+        
+        
+
+def lee_trigger_ejecuta_estrategia(user_id,app,triggerEstrategias,usuario):
+    
+     tarea_inicio(user_id,app,triggerEstrategias,usuario)
+     #if pais not in ["argentina", "usa"]:
+        # Si el país no es válido, retorna un código de estado HTTP 404 y un mensaje de error
+    #    abort(404, description="País no válido")
+        
+    # if pais == "argentina":
+    #     ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+    # elif pais == "usa":
+    #      ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+    # else:
+    #     return "País no válido"
+    # get.diccionario_global_sheet[pais] ={}
+    # get.diccionario_global_sheet[pais] =list(ContenidoSheet)
 
 

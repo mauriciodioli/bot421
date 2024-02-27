@@ -40,7 +40,7 @@ class States(enum.Enum):
 
 @estrategiaSheetWS.route('/estrategia-001/', methods=['POST'])
 def estrategia_001():
-    
+    print('0000000000000000000000000000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -65,9 +65,9 @@ def estrategia_001():
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
-            
-            ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
             print('pasa suscripcionesssssss')
+            ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
+           
             #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia)
@@ -102,7 +102,9 @@ def estrategia_001():
      
 def SuscripcionDeSheet():
     # Trae los instrumentos para suscribirte
+    
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
+   
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
     ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
@@ -273,7 +275,7 @@ def market_data_handler_estrategia(message):
         
             #tiempoAhora = datetime.now()
             print('aqui va hacia la estrategia')
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+           # estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
