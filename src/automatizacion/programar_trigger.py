@@ -150,10 +150,20 @@ def programar_tareas(horaInicio, horaFin):
 ##############################################################################################################
 ################# INICIA LA AUTOMATIZACION ###############################
 #############################################################################################################
+def reiniciar_hilos():
+    # Reiniciar solo los hilos que han terminado
+    for hilo_id, hilo in get.hilo_iniciado_panel_control.items():
+        if not hilo.is_alive():
+            hilo.start()
+        else:
+            print(f"El hilo {hilo_id} aún está en ejecución y no será reiniciado.")
+
 def planificar_schedule():
     # Programar la ejecución de llama_tarea_cada_24_horas_estrategias cada 24 horas
     schedule.every().day.at("12:00").do(llama_tarea_cada_24_horas_estrategias)
 
+# Programar la ejecución de reiniciar_hilos todos los días hasta las 17:00
+    schedule.every().day.until("17:00").do(reiniciar_hilos)
 
     # Llamar a la función principal para iniciar el programa
     while True:
