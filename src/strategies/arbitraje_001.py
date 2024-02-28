@@ -1684,8 +1684,8 @@ def market_data_handler_arbitraje_001(message):
     #elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
      #   print("FUN market data handler_arbitraje_001: message[marketData][LA] es None o está vacío")
     else:
-        #print("FUN market_data_handler_estrategia: SI HAY DATOS. ")
-        Arbitrador001(message)
+        print("FUN market_data_handler_estrategia: SI HAY DATOS. ")
+        #Arbitrador001(message)
         #ArbitradorRatio(message)
 
 
