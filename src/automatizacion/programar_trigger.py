@@ -145,19 +145,57 @@ def programar_tareas(horaInicio, horaFin):
     # Programar las tareas de inicio y finalización a las horas deseadas
     schedule.every().day.at(horaInicio_deseada.strftime("%H:%M")).do(tarea_inicio)
     schedule.every().day.at(horaFin_deseada.strftime("%H:%M")).do(tarea_fin)
-def tarea_fin():
-    print("Tarea de finalización ejecutada")
-    # Programar la próxima ejecución después de 24 horas
-    schedule.every(24).hours.do(tarea_fin)
 
+
+##############################################################################################################
+################# INICIA LA AUTOMATIZACION ###############################
+#############################################################################################################
+def planificar_schedule():
+    # Programar la ejecución de llama_tarea_cada_24_horas_estrategias cada 24 horas
+    schedule.every().day.at("12:00").do(llama_tarea_cada_24_horas_estrategias)
+
+
+    # Llamar a la función principal para iniciar el programa
+    while True:
+        schedule.run_pending()
+        time.sleep(30*60)  # Espera un segundo antes de verificar si hay tareas pendientes en el schedule
+
+
+def llama_tarea_cada_24_horas_estrategias(user_id, app):
+    get.hilo_iniciado_estrategia_usuario
+    triggerEstrategias = db.session.query(TriggerEstrategia).all()    
+    hilos = []
     
-    response = requests.get(url_for('estrategias.detenerWS'))
+    for triggerEstrategia in triggerEstrategias:
+        if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
+            usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
+            if usuario:
+                print("El usuario existe en la lista triggerEstrategias.")
+                
+                # Verifica si ya hay un hilo iniciado para este usuario
+                if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
+                    print(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
+                    continue
+                
+                print("usuario ",usuario.id," nombre estrategia ",triggerEstrategia.nombreEstrategia," Hora de inicio:", triggerEstrategia.horaInicio)
+                
+               # # Si no hay un hilo iniciado para este usuario, lo inicia
+                hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategias, usuario))
+                get.hilo_iniciado_panel_control[user_id] = hilo
+                hilo.start()
+                hilos.append(hilo)
+                
+            else:
+                print("El usuario no existe en la lista triggerEstrategias.")  
 
-    if response.status_code == 200:
-        print("Detener WS exitoso")
-    else:
-        print("Error al detener WS")
+     # Esperar a que todos los hilos terminen antes de finalizar
+    for hilo in hilos:
+        hilo.join()
         
+    
+
+
+
 def tarea_inicio(user_id,app,triggerEstrategias,usuario):
     
     # Programar la próxima ejecución después de 24 horas
@@ -218,81 +256,9 @@ def tarea_inicio(user_id,app,triggerEstrategias,usuario):
 
 
         
-def llama_tarea_cada_24_horas_estrategias(user_id, app):
-    get.hilo_iniciado_estrategia_usuario
-    triggerEstrategias = db.session.query(TriggerEstrategia).all()
-    hilo_iniciado = False
-    
-    for triggerEstrategia in triggerEstrategias:
-        usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
-        if usuario:
-            print("El usuario existe en la lista triggerEstrategias.")
-            
-            # Verifica si ya hay un hilo iniciado para este usuario
-            if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
-                print(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
-                continue
-            
-            print("Hora de inicio:", triggerEstrategia.horaInicio)
-            
-            # Si no hay un hilo iniciado para este usuario, lo inicia
-            hilo = threading.Thread(target=ejecutar_tarea, args=(user_id, app, triggerEstrategias, usuario))
-            get.hilo_iniciado_panel_control[user_id] = hilo
-            hilo.start()
-            
-            # Programa la tarea para ejecutarse a la hora específica de la estrategia
-            schedule.every().day.at(triggerEstrategia.horaInicio.strftime('%H:%M:%S')).do(lee_trigger_ejecuta_estrategia, user_id, app, triggerEstrategias, usuario)
-            
-            hilo_iniciado = True
-            
-        else:
-            print("El usuario no existe en la lista triggerEstrategias.")  
-
-    if hilo_iniciado:
-        return f"Hilo(s) iniciado(s) para {user_id}"
-    else:
-        return f"No se inició ningún hilo para {user_id}"
 
 
 
-def ejecutar_tarea(user_id,app,triggerEstrategias,usuario):
-    #if get.ya_ejecutado_hilo_panelControl == False:
-    #    get.ya_ejecutado_hilo_panelControl = True 
-    
-        while True:
-            time.sleep(30)
-            print("ENTRA A THREAD Y EJECUTA TAREA DE AUTOMATIZACION DE ESTRATEGIA")
-            lee_trigger_ejecuta_estrategia(user_id,app,triggerEstrategias,usuario)
 
-def ejecutar_tarea1(user_id,app,triggerEstrategias,usuario):
-    #if get.ya_ejecutado_hilo_panelControl == False:
-    #    get.ya_ejecutado_hilo_panelControl = True 
-    
-    while True:
-        # Ejecutar la tarea cada 24 horas
-       
-        schedule.every().day.at("10:01").do(lee_trigger_ejecuta_estrategia, user_id,app,triggerEstrategias,usuario)
-
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-        
-        
-
-def lee_trigger_ejecuta_estrategia(user_id,app,triggerEstrategias,usuario):
-    
-     tarea_inicio(user_id,app,triggerEstrategias,usuario)
-     #if pais not in ["argentina", "usa"]:
-        # Si el país no es válido, retorna un código de estado HTTP 404 y un mensaje de error
-    #    abort(404, description="País no válido")
-        
-    # if pais == "argentina":
-    #     ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-    # elif pais == "usa":
-    #      ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
-    # else:
-    #     return "País no válido"
-    # get.diccionario_global_sheet[pais] ={}
-    # get.diccionario_global_sheet[pais] =list(ContenidoSheet)
 
 
