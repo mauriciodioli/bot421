@@ -180,10 +180,14 @@ def llama_tarea_cada_24_horas_estrategias(user_id, app):
                 print("usuario ",usuario.id," nombre estrategia ",triggerEstrategia.nombreEstrategia," Hora de inicio:", triggerEstrategia.horaInicio)
                 
                # # Si no hay un hilo iniciado para este usuario, lo inicia
+                hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
                 hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategias, usuario))
-                get.hilo_iniciado_panel_control[user_id] = hilo
+                get.hilo_iniciado_panel_control[hilo_id] = hilo
                 hilo.start()
                 hilos.append(hilo)
+                # Imprimir el diccionario de hilos iniciados
+                print("Diccionario de hilos iniciados:", get.hilo_iniciado_panel_control)
+                
                 
             else:
                 print("El usuario no existe en la lista triggerEstrategias.")  
