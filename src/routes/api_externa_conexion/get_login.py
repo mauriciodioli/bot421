@@ -25,6 +25,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 
 import automatizacion.programar_trigger as trigger
+import threading
 
 from utils.db import db
 from datetime import datetime
@@ -83,6 +84,7 @@ ya_ejecutado_hilo_panelControl = False
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
 hilo_iniciado_estrategia_usuario = {}
 ultima_entrada = time.time()
+detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.bull.xoms.com.ar/"
 ws_url = "wss://api.bull.xoms.com.ar/"
@@ -192,9 +194,17 @@ def loginExtAutomatico():
                                 print(environment)
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion()
-                                trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-                                #refrescoValorActualCuentaFichas(user_id)
+                                #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
                                 print("está logueado en produccion en LIVE")
+                                # Crear un objeto que represente los argumentos que deseas pasar a la función planificar_schedule
+                                args = ('1', app)
+
+                                # Crear el hilo sin llamar directamente a la función planificar_schedule
+                                hilo_principal = threading.Thread(target=trigger.planificar_schedule, args=args)
+
+                                hilo_principal.start()
+                                #refrescoValorActualCuentaFichas(user_id)
+                                print("pasa hilo hilo_principal.start() planificar_schedule")
                                 if rutaDeLogeo != 'Home':      
                                  return render_template("/paneles/panelDeControlBroker.html")   
                                 else:
@@ -281,11 +291,15 @@ def loginExtCuentaSeleccionadaBroker():
           
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
             conexion()
-            trigger.llama_tarea_cada_24_horas_estrategias('1',app)
+            #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
+            
             refrescoValorActualCuentaFichas(user_id)
            
            
             print(f"Está logueado en {selector} en {environments}")
+             # Se inicia el programa principal en un hilo separado
+            hilo_principal = threading.Thread(target=trigger.planificar_schedule('1',app), args=(user_id, app))
+            hilo_principal.start()
             
             
         except jwt.ExpiredSignatureError:
