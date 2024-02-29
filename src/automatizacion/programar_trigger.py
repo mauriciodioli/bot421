@@ -14,6 +14,7 @@ from datetime import datetime, timedelta, time
 
 import smtplib
 import schedule
+import functools
 import time
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
@@ -23,6 +24,7 @@ from utils.common import Marshmallow, db
 from datetime import datetime
 import jwt
 import threading
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 programar_trigger = Blueprint('programar_trigger', __name__)
@@ -158,18 +160,21 @@ def reiniciar_hilos():
         else:
             print(f"El hilo {hilo_id} aún está en ejecución y no será reiniciado.")
 
-def planificar_schedule():
-    # Programar la ejecución de llama_tarea_cada_24_horas_estrategias cada 24 horas
-    schedule.every().day.at("12:00").do(llama_tarea_cada_24_horas_estrategias)
+def planificar_schedule(user_id, app):
+    def ejecutar_schedule():
+        llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, user_id, app)
+        schedule.every().day.at("12:00").do(llama_tarea)
+        schedule.every().day.until("17:00").do(reiniciar_hilos)
 
-# Programar la ejecución de reiniciar_hilos todos los días hasta las 17:00
-    schedule.every().day.until("17:00").do(reiniciar_hilos)
+        while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
+            print("______________________________________________________________________________")
+            print("comprobando tarea pendiente schedule.run_pending() planificar_shedule ")
+            print("______________________________________________________________________________")
+            schedule.run_pending()
+            time.sleep(60)
 
-    # Llamar a la función principal para iniciar el programa
-    while True:
-        schedule.run_pending()
-        time.sleep(30*60)  # Espera un segundo antes de verificar si hay tareas pendientes en el schedule
-
+    hilo_schedule = threading.Thread(target=ejecutar_schedule)
+    hilo_schedule.start()
 
 def llama_tarea_cada_24_horas_estrategias(user_id, app):
     get.hilo_iniciado_estrategia_usuario
