@@ -163,8 +163,8 @@ def reiniciar_hilos():
 def planificar_schedule(user_id, app):
     def ejecutar_schedule():
         llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, user_id, app)
-        schedule.every().day.at("12:00").do(llama_tarea)
-        schedule.every().day.until("17:00").do(reiniciar_hilos)
+        schedule.every().day.at("13:07").do(llama_tarea)
+        schedule.every().day.until("14:20").do(reiniciar_hilos)
 
         while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
             print("______________________________________________________________________________")
@@ -178,38 +178,47 @@ def planificar_schedule(user_id, app):
 
 def llama_tarea_cada_24_horas_estrategias(user_id, app):
     get.hilo_iniciado_estrategia_usuario
-    triggerEstrategias = db.session.query(TriggerEstrategia).all()    
-    hilos = []
-    
-    for triggerEstrategia in triggerEstrategias:
-        if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
-            usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
-            if usuario:
-                print("El usuario existe en la lista triggerEstrategias.")
+    with app.app_context():
+        triggerEstrategias = db.session.query(TriggerEstrategia).all()    
+        hilos = []
+        
+        for triggerEstrategia in triggerEstrategias:
+            if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
                 
-                # Verifica si ya hay un hilo iniciado para este usuario
-                if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
-                    print(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
-                    continue
-                
-                print("usuario ",usuario.id," nombre estrategia ",triggerEstrategia.nombreEstrategia," Hora de inicio:", triggerEstrategia.horaInicio)
-                
-               # # Si no hay un hilo iniciado para este usuario, lo inicia
-                hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
-                hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategias, usuario))
-                get.hilo_iniciado_panel_control[hilo_id] = hilo
-                hilo.start()
-                hilos.append(hilo)
-                # Imprimir el diccionario de hilos iniciados
-                print("Diccionario de hilos iniciados:", get.hilo_iniciado_panel_control)
-                
-                
-            else:
-                print("El usuario no existe en la lista triggerEstrategias.")  
+                usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
+                if usuario:
+                    print("El usuario existe en la lista triggerEstrategias.")
+                    
+                    # Verifica si ya hay un hilo iniciado para este usuario
+                    if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
+                        print(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
+                        continue
+                    
+                    print("usuario ",usuario.id," nombre estrategia ",triggerEstrategia.nombreEstrategia," Hora de inicio:", triggerEstrategia.horaInicio)
+                    
+                # # Si no hay un hilo iniciado para este usuario, lo inicia
+                    hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
+                    hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategias, usuario))
+                    get.hilo_iniciado_panel_control[hilo_id] = hilo
+                    # Define las horas de inicio y fin para el hilo
+                    hora_inicio = triggerEstrategia.horaInicio
+                    hora_fin = triggerEstrategia.horaFin
+                    
+                    # Establece un atributo personalizado en el hilo para las horas de inicio y fin
+                   # hilo.hora_inicio = hora_inicio
+                   # hilo.hora_fin = hora_fin
+                    hilo.start()
+                    hilos.append(hilo)
+                    # Imprimir el diccionario de hilos iniciados
+                    print("Diccionario de hilos iniciados:", get.hilo_iniciado_panel_control)
+                    
+                    
+                else:
+                    print("El usuario no existe en la lista triggerEstrategias.")  
 
-     # Esperar a que todos los hilos terminen antes de finalizar
-    for hilo in hilos:
-        hilo.join()
+        # Esperar a que todos los hilos terminen antes de finalizar
+        for hilo in hilos:
+            hilo.join()
         
     
 
