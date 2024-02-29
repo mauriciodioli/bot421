@@ -197,10 +197,10 @@ def loginExtAutomatico():
                                 #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
                                 print("está logueado en produccion en LIVE")
                                 # Crear un objeto que represente los argumentos que deseas pasar a la función planificar_schedule
-                                args = ('1', app)
+                               
 
                                 # Crear el hilo sin llamar directamente a la función planificar_schedule
-                                hilo_principal = threading.Thread(target=trigger.planificar_schedule, args=args)
+                                hilo_principal = threading.Thread(target=trigger.planificar_schedule, args=('1', app))
 
                                 hilo_principal.start()
                                 #refrescoValorActualCuentaFichas(user_id)
