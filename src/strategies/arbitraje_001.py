@@ -135,31 +135,13 @@ GD30 = 0
 # es el arbitrador 001 pasa que quedaron asi las etiquetas
 @arbitraje_001.route('/arbitrador-002/', methods=['POST'])
 def arbitrador_002():
-    print('0000000000000000000000000arbitrador-0020000000000000000000000000000000')    
+    print('0000000000000000000000000arbitrador-0020000000000000000000000000000000')
     if request.method == 'POST':
         try:
-            
-            
             data = request.get_json()
-
-            # Accede a los datos individualmente
-            
-            usuario = data['userCuenta']
-            #usuario = "apipuntillo22583398"
-            
-            idTrigger = data['idTrigger']
-            access_token = data['access_token']
-            idUser = data['idUser']
-            correo_electronico = data['correo_electronico']
-            
             get.accountLocalStorage = data['cuenta']
-            #get.accountLocalStorage = "20225833983"
-            
-            tiempoInicio = data['tiempoInicio']
-            tiempoFin = data['tiempoFin']
-            automatico = data['automatico']
-            nombre = data['nombre']
             get.VariableParaBotonPanico = 0
+            
             # ejecuciones de setup para este arbitrador
             Cargar_Factores()# Carga diccionario de factores
             
@@ -177,7 +159,7 @@ def arbitrador_002():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-            print("no pudo leer la base de datos")
+            print("error en arbitrador-002")
     
     return ''
 
@@ -1693,7 +1675,7 @@ def market_data_handler_arbitraje_001(message):
     #orden_ = OperacionHF(ticker=symbol, accion='comprar', size=1, price=precio, order_type=get.pyRofexInicializada.OrderType.MARKET)
     #orden_.enviar_orden()
     #print(current_time, "FUN market data handler_arbitraje_001: Simbolo",symbol, "precio",precio)
-    print("FUN market_data_handler_estrategia:  estrategia 002 ")
+   
     if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
         #print(current_time, "[BI] vacio. Simbolo",symbol)
         pass

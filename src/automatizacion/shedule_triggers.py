@@ -34,10 +34,10 @@ shedule_triggers = Blueprint('shedule_triggers', __name__)
 @shedule_triggers.route("/muestraTriggers/")
 def muestraTriggers():
     try:
-       
-         all_ins = db.session.query(TriggerEstrategia).all()
-         
-         total_triggers = len(all_ins)  # Obtener el total de instancias de TriggerEstrategia
+         # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
+         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO").all()
+ 
+         total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          
          return render_template("automatizacion/trigger.html", num_triggers=total_triggers)

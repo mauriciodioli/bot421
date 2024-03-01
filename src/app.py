@@ -19,7 +19,7 @@ from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
-from strategies.Experimental.arbitraje_001 import arbitraje_001
+from strategies.arbitraje_001 import arbitraje_001
 from strategies.utils.testWS import testWS
 
 from tokens.token import token
