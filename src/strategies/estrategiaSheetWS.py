@@ -40,7 +40,7 @@ class States(enum.Enum):
 
 @estrategiaSheetWS.route('/estrategia-001/', methods=['POST'])
 def estrategia_001():
-    print('0000000000000000000000000000000000000000000000000')
+    print('00000000000000000000000estrategia-00100000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -65,8 +65,7 @@ def estrategia_001():
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
-            print('pasa suscripcionesssssss')
-            ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
+           
            
             #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
@@ -80,7 +79,7 @@ def estrategia_001():
        #                             exception_handler=exception_handler
        #                             )
             #get.pyRofexInicializada.run_websocket()
-            carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,ContenidoSheet_list[1])
+            carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
             # Crear una instancia de RofexMarketDataHandler
             
 

@@ -49,6 +49,7 @@ from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
 
 from automatizacion.programar_trigger import programar_trigger 
+from automatizacion.shedule_triggers import shedule_triggers
 import automatizacion.programar_trigger as trigger
 import subprocess
 from celery import Celery
@@ -144,6 +145,7 @@ app.register_blueprint(trazaFicha)
 app.register_blueprint(fichas)
 app.register_blueprint(arbitraje_001)
 app.register_blueprint(programar_trigger)
+app.register_blueprint(shedule_triggers)
 
 
 print(DATABASE_CONNECTION_URI)
