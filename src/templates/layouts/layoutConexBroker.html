@@ -154,7 +154,7 @@
                              </form>
                         </li>  
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/trigger/">Automatización</a></li>    
+                          <li><a class="dropdown-item dropdown-toggle" href="/muestraTriggers/">Shedule</a></li>    
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/inicioEstrategias/">Test</a></li>                          
                         </ul>
@@ -291,8 +291,10 @@
                 // Verificar si el rol es "administrador"
         if (rol != 'ADMINISTRADOR') {
             // Ocultar el enlace del menú de administración
-             adminLink = document.querySelector('.nav-link.dropdown-toggle');
+            adminLink = document.querySelector('.nav-link.dropdown-toggle');
+            adminLink1 = document.querySelector('.dropdown-item dropdown-toggle');
             adminLink.style.display = 'none';
+            adminLink1.style.display = 'none';
         }
 
 

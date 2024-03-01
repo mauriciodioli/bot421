@@ -1136,7 +1136,7 @@ def ArbitradorRatio(message):#
     
 
     
-    file_path = 'Z:\\python\\Arb_log_240103.csv'
+    #file_path = 'Z:\\python\\Arb_log_240103.csv'
     
     # variables basicas
     Symbol = message["instrumentId"]["symbol"]
@@ -1258,7 +1258,7 @@ def Arbitrador001(message):#
     
 
     
-    file_path = 'Z:\\python\\Arb_log_240103.csv'
+   # file_path = 'Z:\\python\\Arb_log_240103.csv'
     
     # variables basicas
     Symbol = message["instrumentId"]["symbol"]
@@ -1472,28 +1472,28 @@ def Arbitrador001(message):#
         
         original_stdout = sys.stdout     
         #ile_path = 'Z:\\python\\Arb01log231122.csv'
-        with open(file_path, 'a') as f:# Redirigir la salida estándar al archivo
-            sys.stdout = f
-            print(
-            current_time, ";", 
-            Symbol[13:19], ";", 
-            cadena_op, ";", 
-            "{:.2f}".format(price_factor).replace('.', ','), ";", 
-            "{:.2f}".format(pCI).replace('.', ','), ";", 
-            "{:.2f}".format(p48hs).replace('.', ','), ";", 
-            "{:.2f}".format(DIF).replace('.', ','), ";", 
-            "{:.2f}%".format(DIFP).replace('.', ','), ";", 
-            "{:.2f}".format(dz).replace('.', ','), ";", 
-            "{:.2f}".format(cantidad_arb01).replace('.', ','), ";", 
-            "{:.2f}".format(caucion7d).replace('.', ','), ";",
-            "{:.2f}".format(dias_tasa).replace('.', ','), ";",
-            "{:.2f}".format(per_tasa).replace('.', ','), ";", 
-            "{:.2f}".format(imp_neto_cpra).replace('.', ','), ";", 
-            "{:.2f}".format(imp_neto_vta).replace('.', ','), ";", 
-            "{:.2f}".format(Ganancia_n_arb).replace('.', ','), ";",
-            "{:.2f}".format(order_counter2).replace('.', ',')
-            )
-            sys.stdout = original_stdout
+        #with open(file_path, 'a') as f:# Redirigir la salida estándar al archivo
+        #    sys.stdout = f
+        #    print(
+        #    current_time, ";", 
+        #    Symbol[13:19], ";", 
+        #    cadena_op, ";", 
+        #    "{:.2f}".format(price_factor).replace('.', ','), ";", 
+        #    "{:.2f}".format(pCI).replace('.', ','), ";", 
+        #    "{:.2f}".format(p48hs).replace('.', ','), ";", 
+        #    "{:.2f}".format(DIF).replace('.', ','), ";", 
+        #   "{:.2f}%".format(DIFP).replace('.', ','), ";", 
+        #    "{:.2f}".format(dz).replace('.', ','), ";", 
+        #   "{:.2f}".format(cantidad_arb01).replace('.', ','), ";", 
+        #    "{:.2f}".format(caucion7d).replace('.', ','), ";",
+        #    "{:.2f}".format(dias_tasa).replace('.', ','), ";",
+        #    "{:.2f}".format(per_tasa).replace('.', ','), ";", 
+        #    "{:.2f}".format(imp_neto_cpra).replace('.', ','), ";", 
+        #    "{:.2f}".format(imp_neto_vta).replace('.', ','), ";", 
+        #    "{:.2f}".format(Ganancia_n_arb).replace('.', ','), ";",
+        #    "{:.2f}".format(order_counter2).replace('.', ',')
+         #   )
+        #    sys.stdout = original_stdout
         
 
         if Ganancia_n_arb > 0 and order_counter2 < 300000 and symbol_CI not in inhibidos and symbol_48hs not in inhibidos and not flag_arbitraje_en_ejecucion:
@@ -1558,27 +1558,27 @@ def Arbitrador001(message):#
         
         original_stdout = sys.stdout     
         #ile_path = 'Z:\\python\\Arb01log231122.csv'
-        with open(file_path, 'a') as f:# Redirigir la salida estándar al archivo
-            sys.stdout = f
-            print(
-            current_time, ";", 
-            Symbol[13:19], ";", 
-            cadena_op, ";", 
-            "{:.2f}".format(price_factor).replace('.', ','), ";", 
-            "{:.2f}".format(pCIi).replace('.', ','), ";", 
-            "{:.2f}".format(p48hsi).replace('.', ','), ";", 
-            "{:.2f}".format(DIFi).replace('.', ','), ";", 
-            "{:.2f}%".format(DIFPi).replace('.', ','), ";", 
-            "{:.2f}".format(dzi).replace('.', ','), ";", 
-            "{:.2f}".format(caucion7d).replace('.', ','), ";",
-            "{:.2f}".format(dias_tasa).replace('.', ','), ";",
-            "{:.2f}".format(per_tasa).replace('.', ','), ";", 
-            "{:.2f}".format(imp_neto_cpra).replace('.', ','), ";", 
-            "{:.2f}".format(imp_neto_vta).replace('.', ','), ";", 
-            "{:.2f}".format(Ganancia_n_arb).replace('.', ','), ";",
-            "{:.2f}".format(order_counter2).replace('.', ',')
-            )
-            sys.stdout = original_stdout
+       # with open(file_path, 'a') as f:# Redirigir la salida estándar al archivo
+       #     sys.stdout = f
+       #     print(
+       #     current_time, ";", 
+       #     Symbol[13:19], ";", 
+       #     cadena_op, ";", 
+       #     "{:.2f}".format(price_factor).replace('.', ','), ";", 
+       #     "{:.2f}".format(pCIi).replace('.', ','), ";", 
+       #     "{:.2f}".format(p48hsi).replace('.', ','), ";", 
+       #     "{:.2f}".format(DIFi).replace('.', ','), ";", 
+       #     "{:.2f}%".format(DIFPi).replace('.', ','), ";", 
+       #     "{:.2f}".format(dzi).replace('.', ','), ";", 
+       #     "{:.2f}".format(caucion7d).replace('.', ','), ";",
+       #     "{:.2f}".format(dias_tasa).replace('.', ','), ";",
+       #     "{:.2f}".format(per_tasa).replace('.', ','), ";", 
+       #     "{:.2f}".format(imp_neto_cpra).replace('.', ','), ";", 
+       #     "{:.2f}".format(imp_neto_vta).replace('.', ','), ";", 
+       #     "{:.2f}".format(Ganancia_n_arb).replace('.', ','), ";",
+       #     "{:.2f}".format(order_counter2).replace('.', ',')
+       #     )
+       #     sys.stdout = original_stdout
         #"""
         
         if Ganancia_n_arb > 0 and symbol_CIi not in inhibidos and symbol_48hsi not in inhibidos and not flag_arbitraje_en_ejecucion:
@@ -1674,7 +1674,7 @@ def market_data_handler_arbitraje_001(message):
     #orden_ = OperacionHF(ticker=symbol, accion='comprar', size=1, price=precio, order_type=get.pyRofexInicializada.OrderType.MARKET)
     #orden_.enviar_orden()
     #print(current_time, "FUN market data handler_arbitraje_001: Simbolo",symbol, "precio",precio)
-    
+    print("FUN market_data_handler_estrategia:  estrategia 002 ")
     if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
         #print(current_time, "[BI] vacio. Simbolo",symbol)
         pass
@@ -1684,7 +1684,7 @@ def market_data_handler_arbitraje_001(message):
     #elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
      #   print("FUN market data handler_arbitraje_001: message[marketData][LA] es None o está vacío")
     else:
-        print("FUN market_data_handler_estrategia: SI HAY DATOS. ")
+        print("FUN market_data_handler_estrategia: SI HAY DATOS. estrategia 002 ")
         #Arbitrador001(message)
         #ArbitradorRatio(message)
 
@@ -1773,8 +1773,8 @@ def order_report_handler_arbitraje_001( order_report):
     order_data = order_report['orderReport']
 
     # Ruta del archivo CSV
-    rutaORH = 'Z:\\python\\operacionesORH_01.csv'
-    append_order_report_to_csv(order_report, rutaORH)
+    #rutaORH = 'Z:\\python\\operacionesORH_01.csv'
+    #append_order_report_to_csv(order_report, rutaORH)
     # Verifica si 'clOrdId' está en order_data
     if 'clOrdId' in order_data:
         clOrdID = order_data['clOrdId']
