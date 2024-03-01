@@ -38,7 +38,7 @@ class States(enum.Enum):
 
 
 
-@estrategiaSheetWS.route('/estrategia-001/', methods=['POST'])
+@estrategiaSheetWS.route('/estrategia-001', methods=['POST'])
 def estrategia_001():
     print('00000000000000000000000estrategia-00100000000000000000000000000')
     if request.method == 'POST':
@@ -273,7 +273,7 @@ def market_data_handler_estrategia(message):
         else:
         
             #tiempoAhora = datetime.now()
-            print('aqui va hacia la estrategia')
+            print('aqui va hacia la estrategia 001')
            # estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
