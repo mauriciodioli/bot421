@@ -135,15 +135,34 @@ GD30 = 0
 # es el arbitrador 001 pasa que quedaron asi las etiquetas
 @arbitraje_001.route('/arbitrador-002/', methods=['POST'])
 def arbitrador_002():
-    
+    print('0000000000000000000000000arbitrador-0020000000000000000000000000000000')    
     if request.method == 'POST':
         try:
-            data = request.get_json()
-            get.accountLocalStorage = data['cuenta']
-            get.VariableParaBotonPanico = 0
             
+            
+            data = request.get_json()
+
+            # Accede a los datos individualmente
+            
+            usuario = data['userCuenta']
+            #usuario = "apipuntillo22583398"
+            
+            idTrigger = data['idTrigger']
+            access_token = data['access_token']
+            idUser = data['idUser']
+            correo_electronico = data['correo_electronico']
+            
+            get.accountLocalStorage = data['cuenta']
+            #get.accountLocalStorage = "20225833983"
+            
+            tiempoInicio = data['tiempoInicio']
+            tiempoFin = data['tiempoFin']
+            automatico = data['automatico']
+            nombre = data['nombre']
+            get.VariableParaBotonPanico = 0
             # ejecuciones de setup para este arbitrador
             Cargar_Factores()# Carga diccionario de factores
+            
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler_arbitraje_001)
   
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
