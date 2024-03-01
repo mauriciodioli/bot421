@@ -12,6 +12,7 @@
 {% extends 'layouts/layoutConexBroker.html' %}
 
 {% block content %}
+<body>
 <div class="container">
   
   <div class="container" id="cardIndex">                
@@ -23,27 +24,32 @@
           </div>
           <div class="row">
               <div class="col text-start">
+                <!-- Dentro de trigger.html -->
                   <span class="badge bg-primary">{% if num_triggers %}{{ num_triggers }}{% else %}0{% endif %}</span>
               </div>
           </div>
           <div class="row"> 
               <div class="col text-start">
-                <label for="horaInicio" style="color: gold;">Hora de inicio:</label>
-                <input type="time" id="horaInicio" name="horaInicio">
+                <label for="horaInicio" style="color: gold;">Hora de inicio:</label>                
+                <input type="time" id="horaInicio" name="horaInicio" value="12:00">
             </div>
             <div class="col text-start">
                 <label for="horaFin" style="color: gold;">Hora de fin:</label>
-                <input type="time" id="horaFin" name="horaFin">
+                <input type="time" id="horaFin" name="horaFin"  value="17:00">
             </div>
           </div>
           <div class="row mt-3">
-              <div class="col text-center">
-                  <label for="lanzar" style="color: gold;">Lanza todos los triggers</label>
-                  <button id="lanzar" type="button" class="btn btn-danger w-100" style="transition: box-shadow 0.3s;"
-                    onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
-                    data-bs-toggle="modal" data-bs-target="#confirmationModal">Lanzar</button>
-
-              </div>
+            <div class="col text-center">
+              <label for="lanzar" style="color: gold;">Lanza todos los triggers</label>
+              <button id="lanzar" type="button" class="btn btn-danger w-100 mb-2" style="transition: box-shadow 0.3s;"
+                  onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                  data-bs-toggle="modal" data-bs-target="#confirmationModal">Lanzar Shedule</button>
+          
+              <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
+              onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+              data-bs-toggle="modal" data-bs-target="#confirmationModalDetenerShedule">Detener Shedule</button>
+          </div>
+          
           </div>
       </div>
   </div>
@@ -82,15 +88,40 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        Se lanzaran procesos automáticos permanentes.
+        Se lanzarán procesos automáticos permanentes.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-success">Aceptar</button>
+        <button type="button" id="btnArrancarShedule" class="btn btn-success" >Aceptar</button>
       </div>
     </div>
   </div>
 </div>
+
+
+
+
+<!-- Modal Detener Shedule-->
+<div class="modal fade modal-gold" id="confirmationModalDetenerShedule" tabindex="-1" aria-labelledby="confirmationModalDetenerSheduleLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalDetenerSheduleLabel">Confirmación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Se detendran los procesos automáticos permanentes.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="btnDetenerShedule" class="btn btn-success" >Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 
 
 
@@ -116,4 +147,67 @@
 
 
 
+<script>
+  $(document).ready(function() {
+    
+    $('#btnDetenerShedule').click(function() {
+    
+      $.ajax({
+          type: 'GET',
+          url: '/DetenerShedule/',
+          contentType: 'application/json',         
+          success: function(response) {
+            $('#confirmationModalDetenerShedule').modal('hide');
+            if (response.success) {
+              // Si la solicitud fue exitosa, mostrar una notificación
+             
+              alert('Se detuvo exitosamente el shedule');
+            } else {
+                // Si hubo un problema, mostrar un mensaje de error
+                alert('Hubo un problema al detener el hilo');
+            }
+             
+          },
+          error: function(xhr, status, error) {
+              alert('Hubo un problema con la solicitud.');
+          }
+      });
+  });
+
+    $('#btnArrancarShedule').click(function() {
+        var horaInicio = $('#horaInicio').val(); // Obtener el valor de la hora de inicio
+        var horaFin = $('#horaFin').val(); // Obtener el valor de la hora de fin
+
+        // Realizar una solicitud AJAX
+        $.ajax({
+            type: 'POST',
+            url: '/ArrancaShedule',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                fechaInicioShedule: horaInicio,
+                fechaFinShedule: horaFin
+            }),
+            success: function(response) {
+              $('#confirmationModal').modal('hide');
+              if (response.success) {
+                // Si la solicitud fue exitosa, mostrar una notificación
+               
+                alert('Hilo iniciado exitosamente');
+              } else {
+                  // Si hubo un problema, mostrar un mensaje de error
+                  alert('Hubo un problema al iniciar el hilo');
+              }
+               
+            },
+            error: function(xhr, status, error) {
+                alert('Hubo un problema con la solicitud.');
+            }
+        });
+    });
+});
+
+  </script>
+  
+
+</body>
 {% endblock %}

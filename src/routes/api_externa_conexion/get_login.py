@@ -25,6 +25,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 
 import automatizacion.programar_trigger as trigger
+import automatizacion.shedule_triggers as shedule_triggers
 import threading
 
 from utils.db import db
@@ -85,6 +86,7 @@ hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por p
 hilo_iniciado_estrategia_usuario = {}
 ultima_entrada = time.time()
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
+ContenidoSheet_list = None
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.bull.xoms.com.ar/"
 ws_url = "wss://api.bull.xoms.com.ar/"
@@ -200,7 +202,9 @@ def loginExtAutomatico():
                                
 
                                 # Crear el hilo sin llamar directamente a la función planificar_schedule
-                                hilo_principal = threading.Thread(target=trigger.planificar_schedule, args=('1', app))
+                                # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
+                                hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
+                                args=('1', app, "12:00", "17:00"))
 
                                 hilo_principal.start()
                                 #refrescoValorActualCuentaFichas(user_id)
@@ -298,8 +302,11 @@ def loginExtCuentaSeleccionadaBroker():
            
             print(f"Está logueado en {selector} en {environments}")
              # Se inicia el programa principal en un hilo separado
-            hilo_principal = threading.Thread(target=trigger.planificar_schedule('1',app), args=(user_id, app))
-            hilo_principal.start()
+           # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
+            #hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
+             #                     args=('1', app, "12:00", "17:00"))
+
+            #hilo_principal.start()
             
             
         except jwt.ExpiredSignatureError:
