@@ -125,7 +125,7 @@
 
 
 
-<!-- Modal Detener -->
+<!-- Modal Detener threads-->
 <div class="modal fade modal-gold" id="detenerModal" tabindex="-1" aria-labelledby="detenerModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -138,7 +138,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-success">Aceptar</button>
+        <button type="button" class="btn btn-success" id="btnDetenerThreads">Aceptar</button>
       </div>
     </div>
   </div>
@@ -149,7 +149,30 @@
 
 <script>
   $(document).ready(function() {
+    $('#btnDetenerThreads').click(function() {
     
+      $.ajax({
+          type: 'GET',
+          url: '/detenerWS/',
+          contentType: 'application/json',         
+          success: function(response) {
+            $('#detenerModal').modal('hide');
+            if (response.success) {
+              // Si la solicitud fue exitosa, mostrar una notificación
+             
+              alert('Se detuvo exitosamente el websoket con el broker');
+            } else {
+                // Si hubo un problema, mostrar un mensaje de error
+                alert('Hubo un problema al detener el hilo');
+            }
+             
+          },
+          error: function(xhr, status, error) {
+              alert('Hubo un problema con la solicitud.');
+          }
+      });
+  });
+
     $('#btnDetenerShedule').click(function() {
     
       $.ajax({

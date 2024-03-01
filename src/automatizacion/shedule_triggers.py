@@ -123,6 +123,7 @@ def llama_tarea_cada_24_horas_estrategias(user_id, app):
         hilos = []
         
         for triggerEstrategia in triggerEstrategias:
+         
             if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
                 
                 usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
@@ -138,7 +139,7 @@ def llama_tarea_cada_24_horas_estrategias(user_id, app):
                     
                 # # Si no hay un hilo iniciado para este usuario, lo inicia
                     hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
-                    hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategias, usuario))
+                    hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategia, usuario))
                     get.hilo_iniciado_panel_control[hilo_id] = hilo
                     # Define las horas de inicio y fin para el hilo
                     hora_inicio = triggerEstrategia.horaInicio
@@ -162,7 +163,7 @@ def llama_tarea_cada_24_horas_estrategias(user_id, app):
 
 
 
-def tarea_inicio(user_id,app,triggerEstrategias,usuario):
+def tarea_inicio(user_id,app,triggerEstrategia,usuario):
     
     # Aquí puedes enviar los datos a otra ruta en otro archivo Python
     # utilizando la librería requests o similar
@@ -174,45 +175,45 @@ def tarea_inicio(user_id,app,triggerEstrategias,usuario):
         
         # Procesar los usuarios (aquí puedes hacer lo que necesites con los resultados)
         
-        for triggerEstrategia in triggerEstrategias:
-                # Construir los datos a enviar a la otra ruta
-            datos = {
-                        "userCuenta": triggerEstrategia.userCuenta,
-                        "idTrigger":triggerEstrategia.id,
-                        "access_token": 'access_token',
-                        "idUser": triggerEstrategia.user_id,
-                        "correo_electronico": usuario.correo_electronico,
-                        "cuenta": triggerEstrategia.accountCuenta,
-                        "tiempoInicio": triggerEstrategia.horaInicio,
-                        "tiempoFin": triggerEstrategia.horaFin,
-                        "automatico": triggerEstrategia.ManualAutomatico,
-                        "nombre": triggerEstrategia.nombreEstrategia
-                    }
-            # Convertir los objetos datetime a cadenas de texto
-            datos["tiempoInicio"] = triggerEstrategia.horaInicio.strftime('%Y-%m-%dT%H:%M:%S')
-            datos["tiempoFin"] = triggerEstrategia.horaFin.strftime('%Y-%m-%dT%H:%M:%S')
+     
+ 
+                datos = {
+                            "userCuenta": triggerEstrategia.userCuenta,
+                            "idTrigger":triggerEstrategia.id,
+                            "access_token": 'access_token',
+                            "idUser": triggerEstrategia.user_id,
+                            "correo_electronico": usuario.correo_electronico,
+                            "cuenta": triggerEstrategia.accountCuenta,
+                            "tiempoInicio": triggerEstrategia.horaInicio,
+                            "tiempoFin": triggerEstrategia.horaFin,
+                            "automatico": triggerEstrategia.ManualAutomatico,
+                            "nombre": triggerEstrategia.nombreEstrategia
+                        }
+                # Convertir los objetos datetime a cadenas de texto
+                datos["tiempoInicio"] = triggerEstrategia.horaInicio.strftime('%Y-%m-%dT%H:%M:%S')
+                datos["tiempoFin"] = triggerEstrategia.horaFin.strftime('%Y-%m-%dT%H:%M:%S')
 
-            #conectar el WS y suscribe
+                #conectar el WS y suscribe
+                
+                #conexion()
+                
+                #enviar los datos a la estrategia
+                #url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
+                #response = requests.post(url_for(url), data=datos)
+                # Construir la URL de destino
+                url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia
+                
             
-            #conexion()
-            
-            #enviar los datos a la estrategia
-            #url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
-            #response = requests.post(url_for(url), data=datos)
-            # Construir la URL de destino
-            url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia
-            
-           
-            # Enviar los datos a la estrategia
-            response = requests.post(url_destino, json=datos)
+                # Enviar los datos a la estrategia
+                response = requests.post(url_destino, json=datos)
 
-            if response.status_code == 200:
-                print("**************************************************inicia***********************")
-                print("Datos de usuario enviados con éxito")
-                print("estrategia ",triggerEstrategia.nombreEstrategia," iniciada con exito")
-                print("**************************************************")
-            else:
-                    print("Error al enviar los datos de usuario en  automatizacion/programar_trigger/thread/tarea_inicio")
+                if response.status_code == 200:
+                    print("**************************************************inicia***********************")
+                    print("Datos de usuario enviados con éxito")
+                    print("estrategia ",url_destino," iniciada con exito")
+                    print("**************************************************")
+                else:
+                        print("Error al enviar los datos de usuario en  automatizacion/programar_trigger/thread/tarea_inicio")
 
 
          

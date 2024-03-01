@@ -193,25 +193,29 @@ def inicioEstrategias():
      print("contraseña o usuario incorrecto")  
      flash('Loggin Incorrect')    
      return render_template("login.html" )    
-   
+ 
 @estrategias.route('/detenerWS/', methods=["GET", "POST"])
 def detenerWS():
     try:
+        # Cerrar la conexión del websocket
         get.pyRofexInicializada.close_websocket_connection()
 
-        # Obtener los datos por POST (cambia 'nombre_del_campo' al nombre correcto)
-        usuario_id = request.form['usuario_id']
+        # Obtener el usuario_id si la solicitud es POST
+        if request.method == 'POST':
+            usuario_id = request.form.get('usuario_id')
+            # Llamar a la función estrategias_usuario_nadmin y pasar los datos por POST
+            resultado_estrategias = estrategias_usuario_nadmin(usuario_id)
+            # Hacer algo con el resultado de la función si es necesario
 
-        # Llamar a la función estrategias_usuario_nadmin y pasar los datos por POST
-        resultado_estrategias = estrategias_usuario_nadmin()
+        # Si la solicitud es GET, no se espera ningún parámetro, ya que no se está enviando ningún formulario
+        elif request.method == 'GET':
+           #resultado_estrategias = estrategias_usuario_nadmin()
+           return jsonify({'success': True, 'message': 'Procesos en Threads detenidos'})
 
-        # Hacer algo con el resultado de la función si es necesario
-
-        
     except Exception as e:
         print('Error al detener WS:', str(e))
         return render_template("errorOperacion.html")  # Puedes renderizar una plantilla de error específica
- 
+    
 @estrategias.route('/cargaDatosEstrategyUno/', methods = ['POST'])
 def cargaDatosEstrategyUno():   
     if request.method == 'POST':         
