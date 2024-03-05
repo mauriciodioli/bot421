@@ -52,9 +52,7 @@ from automatizacion.programar_trigger import programar_trigger
 from automatizacion.shedule_triggers import shedule_triggers
 import automatizacion.programar_trigger as trigger
 import subprocess
-from celery import Celery
 
-from celery.schedules import crontab
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
 from models.orden import orden
@@ -64,8 +62,6 @@ from models.operacion import operacion
 from models.operacionHF import operacionHF
 from models.logs import logs
 from models.creaTablas import creaTabla
-
-from log.logRegister import logRegister
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
