@@ -87,6 +87,9 @@ hilo_iniciado_estrategia_usuario = {}
 ultima_entrada = time.time()
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
 ContenidoSheet_list = None
+# Calcula la hora de inicio del día siguiente a las 9:00 AM
+#hora_inicio_manana = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=1), datetime.time(9, 0))
+
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.bull.xoms.com.ar/"
 ws_url = "wss://api.bull.xoms.com.ar/"

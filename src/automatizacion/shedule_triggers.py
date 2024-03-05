@@ -102,8 +102,11 @@ def planificar_schedule(user_id, app,tiempoInicioDelDia,tiempoFinDelDia):
         llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, user_id, app)
         #tiempoInicioDelDia = '12:00'
         #tiempoFinDelDia = '14:20'
+        #schedule.every().day.at(get.hora_inicio_manana.strftime('%H:%M')).do(llama_tarea)
         schedule.every().day.at(tiempoInicioDelDia).do(llama_tarea)
+        
         schedule.every().day.until(tiempoFinDelDia).do(reiniciar_hilos)
+
 
         while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
             print("______________________________________________________________________________")

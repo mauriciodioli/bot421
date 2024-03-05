@@ -158,7 +158,7 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
     #saldocta = 1000000
     ut = abs(int(ut))
     saldoExiste = False
-    print('_________________________________________________')
+    print('______________________OperacionWs___________________________')
     try:
         # La clave "price" existe en message["marketData"]["OF"][0]  ???
         if "OF" in message["marketData"]:
