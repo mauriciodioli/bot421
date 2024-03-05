@@ -273,8 +273,8 @@ def market_data_handler_estrategia(message):
         else:
         
             #tiempoAhora = datetime.now()
-            print('aqui va hacia la estrategia 001')
-           # estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            #print('aqui va hacia la estrategia 001')
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
@@ -318,7 +318,9 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
+    
     if banderaLecturaSheet == 0:
+        print('entra en estrategiaSheetNuevaWS punto de control sheeeet')
         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
@@ -333,54 +335,83 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
 
             mepAl30 = 460 ####Calcula dolar MEP
-    print('entra en estrategiaSheetNuevaWS')
-    print('____________________________________________________________________')
-    Symbol = message["instrumentId"]["symbol"]
-    tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
-    senial = get.diccionario_global_operaciones[Symbol]['senial']
-    TradeEnCurso =  get.diccionario_global_operaciones[Symbol]['tradeEnCurso']
+     # Verificar si el diccionario de operaciones está vacío
+    #if not get.diccionario_global_operaciones:
+    #    print("El diccionario de operaciones está vacío.")
+    #else:
+        # Iterar sobre las claves y valores del diccionario
+    #    for clave, valor in get.diccionario_global_operaciones.items():
+            # Imprimir cada clave y su correspondiente valor
+   #         print("El diccionario de operaciones contiene esto")
+   #         print(clave)
+   #         print(valor)
+    
+    Symbol = message['instrumentId']['symbol']
+    
     if Symbol in get.diccionario_global_operaciones:
+        #print('___________________________________________________________')    
+        #print(message['instrumentId']['symbol']) 
+        tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
+        senial = get.diccionario_global_operaciones[Symbol]['senial']
+        TradeEnCurso =  get.diccionario_global_operaciones[Symbol]['tradeEnCurso']
+        
        # if get.diccionario_global_operaciones[Symbol] == message["instrumentId"]["symbol"]:
-            if get.diccionario_global_operaciones[Symbol]['status'] == "0":
-                if get.diccionario_global_operaciones[Symbol]['ut'] !="0":                                
-                    if TradeEnCurso == 'LONG_':                        
+        if get.diccionario_global_operaciones[Symbol]['status'] == "0":
+               
+                if get.diccionario_global_operaciones[Symbol]['ut'] !="0": 
+                                                 
+                    if TradeEnCurso == 'LONG_':  
+                                          
                         if senial != "":
+                            
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
+                                
                                 FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
                                 porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30 
                                 mepCedear=1                              
                                 if FlagCCLCedear == 1:
+                                
                                     if senial == 'OPEN.':
+                                  
                                         #if message["marketData"]["OF"] != None:
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar
+                                 
                                             Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
                                         else:
+                                   
                                             #if message["marketData"]["LA"] != None:                                         
                                             if isinstance(message["marketData"]["LA"]["size"], int):
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                             
 
                                     if senial == 'closed.':  
+                                        print("punto de control 1012")
                                         #if message["marketData"]["BI"] != None: 
                                         if isinstance(message["marketData"]["BI"][0]["size"], int):
+                                  
                                             Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
                                         else:
+                                      
                                             #if message["marketData"]["LA"] != None:
                                             if isinstance(message["marketData"]["LA"]["size"], int):
+                                                print("punto de control 1015")
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                        
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                        print("punto de control 1016")
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                            print('entra en operacion')
-                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                           
+                                           datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
                                            # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
-                                    else:                                          
+                                    else:
+                                                                        
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                            print('entra en operacion')
-                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+                                           
+                                           datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
                                            # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
                                          
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
+                                    
                                     mepCe =0
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:     
@@ -404,13 +435,15 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
                                     if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                            print('entra en operacion')
-                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
+                                           
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
                                     else:                                          
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and message != '':
-                                            print('entra en operacion')
-                                            #datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
-                                        
+                                          
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
+   # else:  
+        #print(message['instrumentId']['symbol'])  
+    #    print('______________________________________________________')                                   
 def ConsultarFlagCCLCedearsWS(message):
      
     # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
@@ -456,9 +489,24 @@ def ConsultarFlagCCLCedearsWS(message):
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
       
      #filtrar las coincidencias entre las dos listas
-     coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
-
-    # print(coincidencias)
+     #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
+     coincidencias = []
+     contador = 0
+     for elemento1 in ContenidoSheet_list:
+        if contador >= 2:
+            #print('elemento1 ', elemento1)        
+            for elemento2 in message:
+              #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
+                #print(' elemento1[0] ', elemento1 )
+                if elemento1[2] == 'LONG_':
+                     if elemento1[3] != '0':
+                          if elemento1[4] == 'OPEN.':
+                           
+                            if elemento1[0] == elemento2:
+                                coincidencias.append(elemento1)
+                               # print(' elemento1[] ', elemento1[0])
+                               # print(coincidencias)
+        contador += 1        
     
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
      
@@ -496,7 +544,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
             'clOrdId_alta_timestamp': None,
             'clOrdId_baja_timestamp': None,
             'proprietary': True,
-            'marketId': '',
+            'marketId': '',           
             'symbol': elemento[0],
             'tipo_de_activo': elemento[1],
             'tradeEnCurso': elemento[2],
@@ -507,7 +555,12 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
     # Cargar cada objeto Orden en el diccionario global con una clave única
          get.diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
        
-        
+         if elemento[0] in get.diccionario_global_operaciones:
+            contenido = get.diccionario_global_operaciones[elemento[0]]
+            print('cargó las operaciones correctmente en el diccionario global de operaciones')
+         else:
+            print("La clave", elemento[0], "no existe en el diccionario.")
+
         
     # Acceder al diccionario global y a los objetos Orden
      

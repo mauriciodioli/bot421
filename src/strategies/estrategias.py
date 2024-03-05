@@ -199,7 +199,7 @@ def detenerWS():
     try:
         # Cerrar la conexión del websocket
         get.pyRofexInicializada.close_websocket_connection()
-
+        
         # Obtener el usuario_id si la solicitud es POST
         if request.method == 'POST':
             usuario_id = request.form.get('usuario_id')

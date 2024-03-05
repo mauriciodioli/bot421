@@ -35,7 +35,7 @@ shedule_triggers = Blueprint('shedule_triggers', __name__)
 def muestraTriggers():
     try:
          # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
-         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO").all()
+         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO").all()        
  
          total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
@@ -59,7 +59,7 @@ def ArrancaShedule():
              # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
             app = current_app._get_current_object() 
             hilo_principal = threading.Thread(target=planificar_schedule, 
-                                 args=('1', app, fecha_inicio_shedule, fecha_fin_shedule))
+                                                args=('1', app, fecha_inicio_shedule, fecha_fin_shedule))
 
             hilo_principal.start()
 
@@ -215,6 +215,18 @@ def tarea_inicio(user_id,app,triggerEstrategia,usuario):
                 else:
                         print("Error al enviar los datos de usuario en  automatizacion/programar_trigger/thread/tarea_inicio")
 
+def tarea_fin():
+    print("Tarea de finalización ejecutada")
+    
+    # Programar la próxima ejecución después de 24 horas
+    schedule.every(24).hours.do(tarea_fin)
 
+
+    response = requests.get(url_for('estrategias.detenerWS'))
+
+    if response.status_code == 200:
+        print("Detener WS exitoso")
+    else:
+        print("Error al detener WS")
          
     
