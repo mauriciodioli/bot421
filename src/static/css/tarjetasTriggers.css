@@ -212,3 +212,25 @@
     border: 1px solid #D1D5DB;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
+
+
+
+.luz {
+  position: relative;
+  top: 10px;
+  right: 10px;
+  left: 237px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgb(63, 63, 63); /* Cambia el color de fondo a blanco */
+  transition: background-color 0.5s ease-in-out;
+}
+
+.luz.verde {
+    background-color: rgb(8, 255, 8);
+}
+
+.luz.roja {
+    background-color: rgb(255, 0, 0);
+}

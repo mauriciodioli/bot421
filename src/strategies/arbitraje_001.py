@@ -148,8 +148,10 @@ def arbitrador_002():
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler_arbitraje_001)
   
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
+            
             get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler_arbitraje_001)
-            #get.pyRofexInicializada.remove_websocket_market_data_handler(shWS.market_data_handler_estrategia)
+            
+            get.pyRofexInicializada.remove_websocket_market_data_handler(shWS.market_data_handler_estrategia)
             
 
     

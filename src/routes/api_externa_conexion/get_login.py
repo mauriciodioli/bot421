@@ -203,10 +203,10 @@ def loginExtAutomatico():
 
                                 # Crear el hilo sin llamar directamente a la función planificar_schedule
                                 # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
-                                hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
-                                args=('1', app, "12:00", "17:00"))
+                                #hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
+                                #args=('1', app, "12:00", "17:00"))
 
-                                hilo_principal.start()
+                               # hilo_principal.start()
                                 #refrescoValorActualCuentaFichas(user_id)
                                 print("pasa hilo hilo_principal.start() planificar_schedule")
                                 if rutaDeLogeo != 'Home':      

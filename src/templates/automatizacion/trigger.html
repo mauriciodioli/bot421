@@ -16,20 +16,25 @@
 <div class="container">
   
   <div class="container" id="cardIndex">                
-      <div class="card-body cardIndexTriggers">
-          <div class="row">
-              <div class="col text-start">
-                  <label for="lanzar" style="color: gold;">Cantidad de Triggers</label>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col text-start">
+    <div class="card-body cardIndexTriggers">
+       
+          
+             <div id="luz" class="luz"></div> <!-- Elemento de la luz -->
+         
+       
+        <div class="row">
+            <div class="col text-start">
+                <label for="lanzar" style="color: gold;">Cantidad de Triggers</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-start">
                 <!-- Dentro de trigger.html -->
-                  <span class="badge bg-primary">{% if num_triggers %}{{ num_triggers }}{% else %}0{% endif %}</span>
-              </div>
-          </div>
-          <div class="row"> 
-              <div class="col text-start">
+                <span class="badge bg-primary">{% if num_triggers %}{{ num_triggers }}{% else %}0{% endif %}</span>
+            </div>
+        </div>
+        <div class="row"> 
+            <div class="col text-start">
                 <label for="horaInicio" style="color: gold;">Hora de inicio:</label>                
                 <input type="time" id="horaInicio" name="horaInicio" value="12:00">
             </div>
@@ -37,22 +42,23 @@
                 <label for="horaFin" style="color: gold;">Hora de fin:</label>
                 <input type="time" id="horaFin" name="horaFin"  value="17:00">
             </div>
-          </div>
-          <div class="row mt-3">
+        </div>
+        <div class="row mt-3">
             <div class="col text-center">
-              <label for="lanzar" style="color: gold;">Lanza todos los triggers</label>
-              <button id="lanzar" type="button" class="btn btn-danger w-100 mb-2" style="transition: box-shadow 0.3s;"
-                  onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
-                  data-bs-toggle="modal" data-bs-target="#confirmationModal">Lanzar Shedule</button>
-          
-              <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
-              onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
-              data-bs-toggle="modal" data-bs-target="#confirmationModalDetenerShedule">Detener Shedule</button>
-          </div>
-          
-          </div>
-      </div>
-  </div>
+                <label for="lanzar" style="color: gold;">Lanza todos los triggers</label>
+                <button id="lanzar" type="button" class="btn btn-danger w-100 mb-2" style="transition: box-shadow 0.3s;"
+                        onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                        data-bs-toggle="modal" data-bs-target="#confirmationModal">Lanzar Shedule</button>
+            
+                <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
+                        onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                        data-bs-toggle="modal" data-bs-target="#confirmationModalDetenerShedule">Detener Shedule</button>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
 
   <div class="container" id="cardIndex">                
       <div class="card-body cardIndexTriggersAzul">
@@ -148,6 +154,49 @@
 
 
 <script>
+
+// Función para activar la luz verde parpadeante
+function activarLuzVerde() {
+  var luz = document.getElementById("luz");
+  luz.classList.remove("roja");
+  luz.classList.add("verde");
+  localStorage.setItem('luzEstado', 'verde');
+  var intervalo = setInterval(function () {
+      luz.classList.toggle("verde");
+  }, 3000);
+  localStorage.setItem('intervaloKey', intervalo.toString()); // Convertir a cadena
+}
+
+// Función para activar la luz roja
+function activarLuzRoja() {
+  var luz = document.getElementById("luz");
+  luz.classList.remove("verde");
+  luz.classList.add("roja");
+  localStorage.setItem('luzEstado', 'roja');
+  clearInterval(parseInt(localStorage.getItem('intervaloKey'))); // Convertir a entero
+}
+
+// Restaurar el estado de la luz al volver a la página
+document.addEventListener("DOMContentLoaded", function() {
+  var estadoLuz = localStorage.getItem('luzEstado');
+  if (estadoLuz === 'verde') {
+      activarLuzVerde();
+  } else if (estadoLuz === 'roja') {
+      activarLuzRoja();
+  }
+});
+
+
+// Escuchar eventos de los botones
+document.getElementById("lanzar").addEventListener("click", activarLuzVerde);
+document.getElementById("detener").addEventListener("click", activarLuzRoja);
+
+
+
+
+
+
+
   $(document).ready(function() {
     $('#btnDetenerThreads').click(function() {
     
