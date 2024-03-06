@@ -25,6 +25,7 @@ import pprint
 import os #obtener el directorio de trabajo actual
 import sys
 import csv
+
 #import drive
 #drive.mount('/content/gdrive')
 
@@ -123,10 +124,11 @@ def leerSheet(sheetId,sheet_name):
      else:
        
         return render_template('notificaciones/noPoseeDatos.html')
-def leerDb():
-    all_ins = db.session.query(InstrumentoSuscriptos).all()
-    db.session.close()
-    return all_ins
+def leerDb(app):
+     with app.app_context():   
+        all_ins = db.session.query(InstrumentoSuscriptos).all()
+        db.session.close()
+        return all_ins
 
 def modificar_columna_ut(Symbol,new_ut_values):
     # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
