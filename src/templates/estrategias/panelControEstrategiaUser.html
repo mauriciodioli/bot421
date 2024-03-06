@@ -66,7 +66,7 @@
             <!--<button type="submit" class="btn btn-primary btn-block my-2" id="boton-manual-estrategia-usuario-noadmin" onclick="setLocalStorageValue('MANUAL')">M</button>    -->  
           <!--  </form>-->
 
-              <button type="button" class="btn btn-primary my-2" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
+              <button type="button" class="btn btn-primary my-2 botonA" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
 
 
               <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
@@ -312,6 +312,9 @@
      
            
       document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
+                 //AQUI SE DEBE APLICAR EL AJAX PARA ACTUALIZAR LA TABLA CON EL BOTON A 
+                 // PARA PASAR DE MANUAL A AUTOMATICO
+                 // if (event.target && event.target.classList.contains('botonA')) { 
                   if (event.target && event.target.classList.contains('botonM')) {
                       // Recupera el valor del atributo data-nombre
                       var clicBoton = event.target.getAttribute('data-nombre');

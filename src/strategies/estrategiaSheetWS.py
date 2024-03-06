@@ -99,7 +99,7 @@ def estrategia_001():
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
-def SuscripcionDeSheet():
+def SuscripcionDeSheet(app):
     # Trae los instrumentos para suscribirte
     
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
@@ -110,7 +110,7 @@ def SuscripcionDeSheet():
     ContenidoSheet_list = list(ContenidoSheet)
 
     
-    ContenidoSheetDb = get_instrumento_para_suscripcion_db()
+    ContenidoSheetDb = get_instrumento_para_suscripcion_db(app)
     ContenidoSheet_list_db = list(ContenidoSheetDb)
     
     
@@ -203,8 +203,8 @@ def get_instrumento_para_suscripcion_ws():#   **77
     
       return ContenidoSheet
 
-def get_instrumento_para_suscripcion_db():
-    ContenidoDb = datoSheet.leerDb()
+def get_instrumento_para_suscripcion_db(app):
+    ContenidoDb = datoSheet.leerDb(app)
     return ContenidoDb    
 
 def get_instrumento_para_suscripcion_json():
@@ -268,7 +268,7 @@ def market_data_handler_estrategia(message):
             print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
         elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
             print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
-        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
+        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
             print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
         else:
         
@@ -501,7 +501,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
                 if elemento1[2] == 'LONG_':
                      if elemento1[3] != '0':
                           if elemento1[4] == 'OPEN.':
-                           
+                  #        if elemento1[3] == 'OPEN.' or elemento1[3] == 'closed.':
                             if elemento1[0] == elemento2:
                                 coincidencias.append(elemento1)
                                # print(' elemento1[] ', elemento1[0])

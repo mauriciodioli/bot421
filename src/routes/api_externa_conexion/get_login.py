@@ -297,7 +297,7 @@ def loginExtCuentaSeleccionadaBroker():
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
           
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-            conexion()
+            conexion(app)
             #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
             
             refrescoValorActualCuentaFichas(user_id)
