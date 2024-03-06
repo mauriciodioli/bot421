@@ -89,6 +89,20 @@ def DetenerShedule():
 ##############################################################################################################
 ################# INICIA LA AUTOMATIZACION ###############################
 #############################################################################################################
+def terminar_hilos():
+    # Aquí detienes los hilos iniciados desde planificar_schedule
+    # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden
+    for hilo_id, hilo in get.hilo_iniciado_panel_control.items():
+        if hilo.is_alive():
+            print('_______________________________________')
+            print('_______________________________________')
+            print('__________TERMINO CONEXION WS__________')
+            print('_______________________________________')
+            print('_______________________________________')
+            get.pyRofexInicializada.close_websocket_connection()
+            hilo.join()  # Espera a que el hilo termine su ejecución si aún está vivo
+    get.hilo_iniciado_panel_control.clear()  # Limpia el diccionario de hilos iniciados
+
 def reiniciar_hilos():
     # Reiniciar solo los hilos que han terminado
     for hilo_id, hilo in get.hilo_iniciado_panel_control.items():
@@ -103,15 +117,27 @@ def planificar_schedule(user_id, app,tiempoInicioDelDia,tiempoFinDelDia):
         #tiempoInicioDelDia = '12:00'
         #tiempoFinDelDia = '14:20'
         #schedule.every().day.at(get.hora_inicio_manana.strftime('%H:%M')).do(llama_tarea)
+        #INICIA LOS HILOS AL PRINCIPIO DEL DIA
         schedule.every().day.at(tiempoInicioDelDia).do(llama_tarea)
         
-        schedule.every().day.until(tiempoFinDelDia).do(reiniciar_hilos)
+        #REINICIA LOS HILOS HASTA EL FIN DEL DIA
+        # Calcula la hora 10 minutos antes de tiempoFinDelDia
+        hora_fin =datetime.strptime(tiempoFinDelDia, '%H:%M')
+        hora_fin_10_minutos_antes = (hora_fin  - timedelta(minutes=10)).strftime('%H:%M')
+
+        #schedule.every().day.at(hora_fin_10_minutos_antes).do(reiniciar_hilos)
+
+        #DETIENE LOS HILOS LAS FINAL DEL DIA
+        schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos)
 
 
         while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
+            hora_actual = datetime.now().strftime("%H:%M:%S")
+
             print("______________________________________________________________________________")
             print("comprobando schedule.run_pending() automatizacion shedule_trigger planificar_shedule  " )
-            print('__________inicio ',tiempoInicioDelDia,' ______________fin ',tiempoFinDelDia)
+            print('__inicio ',tiempoInicioDelDia,' ___fin ',tiempoFinDelDia,' __hora_actual ',hora_actual)
+            #print("Diccionario de hilos iniciados:", get.hilo_iniciado_panel_control)
             print("______________________________________________________________________________")
             schedule.run_pending()
             time.sleep(60)
@@ -120,8 +146,16 @@ def planificar_schedule(user_id, app,tiempoInicioDelDia,tiempoFinDelDia):
     hilo_schedule.start()
 
 def llama_tarea_cada_24_horas_estrategias(user_id, app):
-    get.hilo_iniciado_estrategia_usuario
+     
     with app.app_context():
+        
+        print("______________________________conexion________________________________________________")
+        environments = get.pyRofexInicializada.Environment.LIVE
+        cuenta = db.session.query(Cuenta).filter_by(user_id=user_id).first()
+        get.pyRofexInicializada.initialize(userCuenta=cuenta.user,passwordCuenta=cuenta.password,accountCuenta=cuenta.accountCuenta,environment=environments )
+        conexion(app)
+        print("______________________________conexion________________________________________________")
+   
         triggerEstrategias = db.session.query(TriggerEstrategia).all()    
         hilos = []
         
@@ -154,7 +188,7 @@ def llama_tarea_cada_24_horas_estrategias(user_id, app):
                     hilo.start()
                     hilos.append(hilo)
                     # Imprimir el diccionario de hilos iniciados
-                    print("Diccionario de hilos iniciados:", get.hilo_iniciado_panel_control)
+                  
                     
                     
                 else:
