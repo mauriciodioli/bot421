@@ -249,15 +249,27 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
     $('#btnArrancarShedule').click(function() {
         var horaInicio = $('#horaInicio').val(); // Obtener el valor de la hora de inicio
         var horaFin = $('#horaFin').val(); // Obtener el valor de la hora de fin
-
+        access_token = localStorage.getItem('access_token');
+        correo_electronico = localStorage.getItem('correo_electronico');
+        usuario =  localStorage.getItem('usuario');
+        cuenta =  localStorage.getItem('cuenta');
+        idUser = localStorage.getItem('usuario_id');
+        selector = localStorage.getItem('selector');
         // Realizar una solicitud AJAX
         $.ajax({
             type: 'POST',
             url: '/ArrancaShedule',
             contentType: 'application/json',
             data: JSON.stringify({
-                fechaInicioShedule: horaInicio,
-                fechaFinShedule: horaFin
+                'fechaInicioShedule': horaInicio,
+                'fechaFinShedule': horaFin,               
+                'userCuenta': cuenta,                
+                'access_token': access_token,
+                'idUser': idUser,
+                'correo_electronico': correo_electronico,
+                'cuenta': cuenta,
+                'selector' : selector
+              
             }),
             success: function(response) {
               $('#confirmationModal').modal('hide');

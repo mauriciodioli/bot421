@@ -2,6 +2,7 @@ from pipes import Template
 from unittest import result
 from flask import current_app
 import smtplib
+import pyRofex
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import requests
@@ -17,7 +18,7 @@ import schedule
 import functools
 import time
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
-from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
+from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexion
 import routes.api_externa_conexion.get_login as get
 import strategies.estrategias as estrategias
 from utils.common import Marshmallow, db
@@ -50,8 +51,16 @@ def ArrancaShedule():
         if request.method == 'POST':
             
             data = request.json  # Obtener los datos JSON de la solicitud POST
-            fecha_inicio_shedule = data.get('fechaInicioShedule')  # Obtener el valor de fechaInicioShedule
-            fecha_fin_shedule = data.get('fechaFinShedule')  # Obtener el valor de fechaFinShedule
+            fecha_inicio_shedule = data['fechaInicioShedule']  # Obtener el valor de fechaInicioShedule
+            fecha_fin_shedule = data['fechaFinShedule'] # Obtener el valor de fechaFinShedule
+            get.accountLocalStorage = data['userCuenta']
+            access_token = data['access_token']
+            idUser = data['idUser']
+            correo_electronico = data['correo_electronico']
+            cuenta = data['cuenta']     
+            selector = data['selector']  
+            
+       
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
             #print('Hora de inicio:', fecha_inicio_shedule)
@@ -59,7 +68,7 @@ def ArrancaShedule():
              # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
             app = current_app._get_current_object() 
             hilo_principal = threading.Thread(target=planificar_schedule, 
-                                                args=('1', app, fecha_inicio_shedule, fecha_fin_shedule))
+                                                args=(app,idUser,fecha_inicio_shedule, fecha_fin_shedule,cuenta,correo_electronico,selector ))
 
             hilo_principal.start()
 
@@ -92,15 +101,23 @@ def DetenerShedule():
 def terminar_hilos():
     # Aquí detienes los hilos iniciados desde planificar_schedule
     # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden
+    get.pyRofexInicializada.close_websocket_connection()
+    print('_______________________________________')
+    print('_______________________________________')
+    print('__________TERMINO CONEXION WS__________')
+    print('_______________________________________')
+    print('_______________________________________')
     for hilo_id, hilo in get.hilo_iniciado_panel_control.items():
         if hilo.is_alive():
-            print('_______________________________________')
-            print('_______________________________________')
-            print('__________TERMINO CONEXION WS__________')
-            print('_______________________________________')
-            print('_______________________________________')
+           
             get.pyRofexInicializada.close_websocket_connection()
             hilo.join()  # Espera a que el hilo termine su ejecución si aún está vivo
+        else:
+           
+            print('_______________________________________')
+            print('__NO HAY HILOS ACTIVOS PARA EL SCHEDULE')
+            print('_______________________________________')
+          
     get.hilo_iniciado_panel_control.clear()  # Limpia el diccionario de hilos iniciados
 
 def reiniciar_hilos():
@@ -111,25 +128,28 @@ def reiniciar_hilos():
         else:
             print(f"El hilo {hilo_id} aún está en ejecución y no será reiniciado.")
 
-def planificar_schedule(user_id, app,tiempoInicioDelDia,tiempoFinDelDia):
+def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,correo_electronico,selector ):
     def ejecutar_schedule():
-        llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, user_id, app)
+        llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, app,user_id, cuenta,correo_electronico,selector)
         #tiempoInicioDelDia = '12:00'
         #tiempoFinDelDia = '14:20'
         #schedule.every().day.at(get.hora_inicio_manana.strftime('%H:%M')).do(llama_tarea)
         #INICIA LOS HILOS AL PRINCIPIO DEL DIA
+       
         schedule.every().day.at(tiempoInicioDelDia).do(llama_tarea)
         
         #REINICIA LOS HILOS HASTA EL FIN DEL DIA
         # Calcula la hora 10 minutos antes de tiempoFinDelDia
+        
         hora_fin =datetime.strptime(tiempoFinDelDia, '%H:%M')
         hora_fin_10_minutos_antes = (hora_fin  - timedelta(minutes=10)).strftime('%H:%M')
-
+        
         #schedule.every().day.at(hora_fin_10_minutos_antes).do(reiniciar_hilos)
 
         #DETIENE LOS HILOS LAS FINAL DEL DIA
+        
         schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos)
-
+       
 
         while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
             hora_actual = datetime.now().strftime("%H:%M:%S")
@@ -145,16 +165,13 @@ def planificar_schedule(user_id, app,tiempoInicioDelDia,tiempoFinDelDia):
     hilo_schedule = threading.Thread(target=ejecutar_schedule)
     hilo_schedule.start()
 
-def llama_tarea_cada_24_horas_estrategias(user_id, app):
+def llama_tarea_cada_24_horas_estrategias(app,user_id, cuenta,correo_electronico,selector):
      
     with app.app_context():
         
-        print("______________________________conexion________________________________________________")
-        environments = get.pyRofexInicializada.Environment.LIVE
-        cuenta = db.session.query(Cuenta).filter_by(user_id=user_id).first()
-        get.pyRofexInicializada.initialize(userCuenta=cuenta.user,passwordCuenta=cuenta.password,accountCuenta=cuenta.accountCuenta,environment=environments )
-        conexion(app)
-        print("______________________________conexion________________________________________________")
+        print("____________________________Intentando__conexion__desde Shedule_______________________")
+        conexion(app,Cuenta,cuenta,user_id,correo_electronico,selector)
+        print("_____________________________Se conecto con exito al WS________________________________")
    
         triggerEstrategias = db.session.query(TriggerEstrategia).all()    
         hilos = []
