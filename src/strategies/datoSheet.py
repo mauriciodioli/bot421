@@ -128,6 +128,7 @@ def leerDb(app):
      with app.app_context():   
         all_ins = db.session.query(InstrumentoSuscriptos).all()
         db.session.close()
+        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         return all_ins
 
 def modificar_columna_ut(Symbol,new_ut_values):
@@ -161,6 +162,12 @@ def OperacionWs(Symbol, tipo_de_activo, trade_en_curso, ut, senial, mepCedear, m
     ut = abs(int(ut))
     saldoExiste = False
     print('______________________OperacionWs___________________________')
+    print('______________________OperacionWs___________________________')
+    print('______________________OperacionWs___________________________')
+    print('______________________OperacionWs___________________________')
+    print('______________________OperacionWs___________________________')
+    print('______________________OperacionWs___________________________')
+    
     try:
         # La clave "price" existe en message["marketData"]["OF"][0]  ???
         if "OF" in message["marketData"]:
