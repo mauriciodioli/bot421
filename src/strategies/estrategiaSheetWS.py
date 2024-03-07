@@ -101,9 +101,9 @@ def estrategia_001():
      
 def SuscripcionDeSheet(app):
     # Trae los instrumentos para suscribirte
-    
-    ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
    
+    ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
+    
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
     ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
@@ -119,7 +119,7 @@ def SuscripcionDeSheet(app):
     longitudLista = len(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
     ContenidoSheet_list_solo_symbol_db = cargaSymbolParaValidarDb(ContenidoSheet_list_db)
-   
+    
    
    # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
    # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
@@ -175,7 +175,7 @@ def cargaSymbolParaValidarDb(message):
     listado_final = []
     for instrumento  in message: 
         listado_final.append(instrumento.symbol)
-        print(instrumento.symbol)
+        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         
     return listado_final
 
@@ -275,6 +275,7 @@ def market_data_handler_estrategia(message):
             #tiempoAhora = datetime.now()
             #print('aqui va hacia la estrategia 001')
             estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
@@ -582,10 +583,12 @@ def es_numero(numero):
   
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
+        
         order_data = order_report['orderReport']
         clOrdId = order_data['clOrdId']        
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']  
+        print('___________order_report_handler_______OPERADA__ ',status)
         timestamp_order_report = order_data['transactTime']  
         # se fija que cuando venga el reporte el diccionario tenga elementos
         if es_numero(clOrdId):#esto se pone por que el clOrdId puede traer basura
@@ -601,7 +604,7 @@ def _operada(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']   
-   
+    print('__________________OPERADA_____________ ',status)
    
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
@@ -848,6 +851,7 @@ def endingOperacionBot (endingGlobal,endingEnviadas):
         print("###############################################") 
         print("###############################################") 
         print("###############################################") 
+        get.pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia)
           #      return render_template('home.html')    
 
 def error_handler(message):
