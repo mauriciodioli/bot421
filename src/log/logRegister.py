@@ -6,7 +6,8 @@ from unittest import result
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-
+import logging
+import time
 
 
 
@@ -44,3 +45,22 @@ def registroLogs(datos):
             escritor_csv.writerow(fila)
 
     print(f'Se ha creado el archivo csv en "{ruta_archivo_csv}"')   
+    
+
+def generate_logs():
+
+
+    # Iterar sobre los registros de logs y enviarlos al cliente
+    while True:
+       
+        # Leer los registros del archivo de logs
+        with open('logs.log', 'r') as f:           
+            logs = f.readlines()            
+        # Enviar los registros al cliente uno por uno
+        for log in logs:
+            
+            yield f"data: {log}\n\n"
+
+        # Esperar antes de leer los registros nuevamente
+        time.sleep(1)
+
