@@ -84,9 +84,11 @@ diccionario_global_sheet_intercambio = {}
 ya_ejecutado_hilo_panelControl = False
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
 hilo_iniciado_estrategia_usuario = {}
+hilos_iniciados_shedule = []
 ultima_entrada = time.time()
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
 ContenidoSheet_list = None
+
 # Calcula la hora de inicio del día siguiente a las 9:00 AM
 #hora_inicio_manana = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=1), datetime.time(9, 0))
 

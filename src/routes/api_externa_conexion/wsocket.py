@@ -23,7 +23,7 @@ reporte_de_instrumentos = []
 
 
 def websocketConexionShedule(app,Cuenta,cuenta,user_id,correo_electronico,selector):
-  
+      get.pyRofexInicializada = pyRofex
       cuenta = db.session.query(Cuenta).filter_by(user_id=user_id, accountCuenta=cuenta).first()
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
