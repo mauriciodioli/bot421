@@ -84,6 +84,7 @@ def ArrancaShedule():
 def DetenerShedule():
     try:
        get.detener_proceso_automatico_triggers = True
+       terminar_hilos_shedule()
        print('DetenerShedule get.detener_proceso_automatico_triggers ',get.detener_proceso_automatico_triggers)
             # Retornar una respuesta si es necesario
               # Retornar una respuesta indicando éxito
@@ -98,27 +99,38 @@ def DetenerShedule():
 ##############################################################################################################
 ################# INICIA LA AUTOMATIZACION ###############################
 #############################################################################################################
-def terminar_hilos():
-    # Aquí detienes los hilos iniciados desde planificar_schedule
-    # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden
+def terminar_hilos(hilo):
+    # Aquí detienes los hilos iniciados desde planificar_schedule, excepto el hilo ejecutar_schedule
+    # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden, excepto el hilo ejecutar_schedule
     get.pyRofexInicializada.close_websocket_connection()
     print('_______________________________________')
     print('_______________________________________')
     print('__________TERMINO CONEXION WS__________')
     print('_______________________________________')
     print('_______________________________________')
-    for hilo_id, hilo in get.hilo_iniciado_panel_control.items():
-        if hilo.is_alive():
-           
-            get.pyRofexInicializada.close_websocket_connection()
-            hilo.join()  # Espera a que el hilo termine su ejecución si aún está vivo
+    for indice, (hilo_id, h) in enumerate(get.hilo_iniciado_panel_control.items()):
+        if h is not hilo and h.is_alive():
+            print(f'Índice: {indice}, ID del hilo: {hilo_id}, Hilo: {h}')
+            print('_________temina hilo________ ', h)
+            h.join()  # Espera a que el hilo termine su ejecución si aún está vivo
         else:
-           
             print('_______________________________________')
             print('__NO HAY HILOS ACTIVOS PARA EL SCHEDULE')
             print('_______________________________________')
-          
+
     get.hilo_iniciado_panel_control.clear()  # Limpia el diccionario de hilos iniciados
+
+def terminar_hilos_shedule():
+    # Terminar solo los hilos del schedule
+    # Iterar sobre la lista de hilos iniciados
+    for indice, hilo in enumerate(get.hilos_iniciados_shedule):
+        hilo.join()  # Esperar a que el hilo termine su ejecución
+        print(f"Hilo ID: {indice}, Hilo: {hilo}")
+    # Limpiar la lista de hilos iniciados
+    get.hilos_iniciados_shedule.clear()
+
+    
+      
 
 def reiniciar_hilos():
     # Reiniciar solo los hilos que han terminado
@@ -128,8 +140,11 @@ def reiniciar_hilos():
         else:
             print(f"El hilo {hilo_id} aún está en ejecución y no será reiniciado.")
 
+
 def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,correo_electronico,selector ):
     def ejecutar_schedule():
+          # Variable local para mantener un registro de los hilos iniciados aquí
+    
         llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, app,user_id, cuenta,correo_electronico,selector)
         #tiempoInicioDelDia = '12:00'
         #tiempoFinDelDia = '14:20'
@@ -148,7 +163,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 
         #DETIENE LOS HILOS LAS FINAL DEL DIA
         
-        schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos)
+        schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos, hilo_schedule)
        
 
         while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
@@ -164,7 +179,12 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 
     hilo_schedule = threading.Thread(target=ejecutar_schedule)
     hilo_schedule.start()
-
+    get.hilos_iniciados_shedule.append(hilo_schedule)
+    
+    
+    
+    
+    
 def llama_tarea_cada_24_horas_estrategias(app,user_id, cuenta,correo_electronico,selector):
      
     with app.app_context():
