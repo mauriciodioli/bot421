@@ -86,6 +86,7 @@ hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por p
 hilo_iniciado_estrategia_usuario = {}
 hilos_iniciados_shedule = []
 ultima_entrada = time.time()
+CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
 ContenidoSheet_list = None
 

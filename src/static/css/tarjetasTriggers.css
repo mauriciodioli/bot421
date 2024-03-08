@@ -234,3 +234,18 @@
 .luz.roja {
     background-color: rgb(255, 0, 0);
 }
+
+#updates p {
+  color: white;  /* Color del texto en blanco */
+}
+ /* Estilos para el contenedor de registros */
+ #logContainer {
+  border: 1px solid #ccc;
+  padding: 10px;
+  max-height: 300px; /* Altura máxima para mostrar */
+  overflow-y: auto; /* Habilitar desplazamiento vertical si hay demasiados registros */
+}
+/* Estilos para cada registro */
+.logEntry {
+  margin-bottom: 5px;
+}
