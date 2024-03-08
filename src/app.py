@@ -1,12 +1,15 @@
 #from re import template
 
-from flask import (Flask,Blueprint,render_template,request,redirect,url_for,flash,jsonify)
+from flask import (Flask,Blueprint,Response,render_template,request,redirect,url_for,flash,jsonify)
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
 # Importar create_engine y NullPool
 import logging
+import os
+from log.logRegister import generate_logs
+
 from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
@@ -70,7 +73,7 @@ from flask_dance.contrib.google import make_google_blueprint, google
 import schedule
 import time
 
-
+from routes.api_externa_conexion.get_login import CUSTOM_LEVEL
 
 # desde aqui se llama la aplicacion al inicio
 #app = Flask(__name__)
@@ -79,19 +82,37 @@ import time
 #celery_app.start()
 app = Flask(__name__, static_folder='static')
 
+
 # Configurar el manejo de errores para la aplicación
 login_manager = LoginManager(app)
 
 # Configurar CORS
 CORS(app)
-
+# Configurar el nivel de logging de la aplicación Flask
+app.logger.setLevel(logging.DEBUG)
+# Definir el nuevo nivel de registro
+CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
+logging.addLevelName(CUSTOM_LEVEL, "CUSTOM")
 # Configurar la generación de logs para la aplicación
 logging.basicConfig(level=logging.DEBUG)  # Configura el nivel de log a DEBUG
 
-# Configurar el logger de la aplicación Flask
-app.logger.setLevel(logging.DEBUG)  # Configura el nivel de log a DEBUG para la aplicación Flask
 
+# Configurar un formateador para los logs
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
+# Obtener la ruta al directorio 'src' de tu proyecto
+src_directory = os.path.dirname(os.path.abspath(__file__))
+#if os.path.exists(src_directory):
+    # Eliminar el archivo
+#    os.remove(src_directory)
+# Ruta al archivo de logs dentro del directorio 'src'
+logs_file_path = os.path.join(src_directory, 'logs.log')
+
+# Crear un manejador de logs que escriba en el archivo 'logs.log' en el directorio 'src'
+file_handler = logging.FileHandler(logs_file_path)
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+app.logger.addHandler(file_handler)
 # Configura el manejo de autenticación JWT
 app.config['JWT_SECRET_KEY'] = '621289'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
@@ -175,8 +196,18 @@ ma = Marshmallow(app)
 # Contador para la cantidad de conexiones
 connection_count = 0
 
-# Inicia los workers de Celery
+# Definir una función de registro personalizada para el nuevo nivel
+def custom_log(self, message, *args, **kwargs):
+    if self.isEnabledFor(CUSTOM_LEVEL):
+        self._log(CUSTOM_LEVEL, message, args, **kwargs)
+
+# Agregar la función de registro personalizada al logger de la aplicación Flask
+app.logger.custom = custom_log
 # Programar la tarea para que se ejecute a una hora específica
+@app.route('/logs')
+def logs():
+    print("Se está accediendo a la ruta /logs")
+    return Response(generate_logs(), mimetype='text/event-stream')
 
 
 def log_connection_info(dbapi_connection, connection_record):

@@ -85,6 +85,13 @@
   </div>   
 </div>
 
+
+<div id="logContainer">
+  <!-- Aquí se mostrarán los registros -->
+</div>
+
+
+
 <!-- Modal -->
 <div class="modal fade modal-gold" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -289,6 +296,55 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
         });
     });
 });
+
+
+
+
+// Contador para llevar el seguimiento del número de líneas mostradas
+let lineCount = 0;
+
+
+
+//para local
+const updatesDiv = document.getElementById('logContainer');
+
+        // Inicializar lineCount antes de usarlo
+
+
+// Función para manejar los eventos SSE
+function handleEvent(event) {
+    const newUpdate = document.createElement('p');
+    newUpdate.textContent = event.data;
+    updatesDiv.appendChild(newUpdate);
+    
+    // Incrementar el contador de líneas después de agregar la actualización
+    lineCount++;
+    
+    // Verificar si el número de líneas es múltiplo de 10 para limpiar el contenedor
+    if (lineCount > 5) {
+      // Eliminar las líneas adicionales
+      while (updatesDiv.childElementCount > 5) {
+          updatesDiv.removeChild(updatesDiv.firstChild);
+      }
+        // Limpiar el contenedor
+        //updatesDiv.innerHTML = '';
+    }
+}
+
+// Crear un EventSource para recibir eventos del servidor
+const eventSource = new EventSource('/logs');
+
+// Asignar el manejador de eventos
+eventSource.onmessage = handleEvent;
+
+// Manejar errores de conexión
+eventSource.onerror = function(event) {
+    const errorMessage = document.createElement('p');
+    errorMessage.textContent = "No se puede acceder a los logs momentáneamente.";
+    updatesDiv.appendChild(errorMessage);
+}
+
+
 
   </script>
   

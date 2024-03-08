@@ -2,6 +2,7 @@ from pipes import Template
 from unittest import result
 from flask import current_app
 import smtplib
+import os
 import pyRofex
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -99,19 +100,22 @@ def DetenerShedule():
 ##############################################################################################################
 ################# INICIA LA AUTOMATIZACION ###############################
 #############################################################################################################
-def terminar_hilos(hilo):
+def terminar_hilos(app,hilo):
     # Aquí detienes los hilos iniciados desde planificar_schedule, excepto el hilo ejecutar_schedule
     # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden, excepto el hilo ejecutar_schedule
     get.pyRofexInicializada.close_websocket_connection()
+    
+    app.logger.info("_______________TERMINA CONEXION WS__________________________")
     print('_______________________________________')
     print('_______________________________________')
-    print('__________TERMINO CONEXION WS__________')
+    print('__________TERMINA CONEXION WS__________')
     print('_______________________________________')
     print('_______________________________________')
     for indice, (hilo_id, h) in enumerate(get.hilo_iniciado_panel_control.items()):
         if h is not hilo and h.is_alive():
             print(f'Índice: {indice}, ID del hilo: {hilo_id}, Hilo: {h}')
             print('_________temina hilo________ ', h)
+            app.logger.info("_______________TERMINA HILO__________________________")
             h.join()  # Espera a que el hilo termine su ejecución si aún está vivo
         else:
             print('_______________________________________')
@@ -126,6 +130,7 @@ def terminar_hilos_shedule():
     for indice, hilo in enumerate(get.hilos_iniciados_shedule):
         hilo.join()  # Esperar a que el hilo termine su ejecución
         print(f"Hilo ID: {indice}, Hilo: {hilo}")
+        #app.logger.info("_______________TERMINA SHEDULE__________________________")
     # Limpiar la lista de hilos iniciados
     get.hilos_iniciados_shedule.clear()
 
@@ -137,14 +142,26 @@ def reiniciar_hilos():
     for hilo_id, hilo in get.hilo_iniciado_panel_control.items():
         if not hilo.is_alive():
             hilo.start()
+            
         else:
             print(f"El hilo {hilo_id} aún está en ejecución y no será reiniciado.")
 
 
 def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,correo_electronico,selector ):
     def ejecutar_schedule():
+        #busca el directorio src/logs.log
+        src_directory = os.path.dirname(os.path.abspath(__file__))
+       # if os.path.exists(src_directory):
+            # Eliminar el archivo
+        #    os.remove(src_directory)
+        # Ruta al archivo de logs dentro del directorio 'src'
+        logs_file_path = os.path.join(src_directory, 'logs.log')
+        # Abrir el archivo en modo de escritura para borrar su contenido
+        with open(logs_file_path, 'w') as f:
+            pass  # No es necesario escribir nada, solo abrir y cerrar el archivo borrará su contenido
+        print("El contenido del archivo logs.log ha sido borrado.")
           # Variable local para mantener un registro de los hilos iniciados aquí
-    
+        app.logger.info("Se accedió a la página de inicio")
         llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, app,user_id, cuenta,correo_electronico,selector)
         #tiempoInicioDelDia = '12:00'
         #tiempoFinDelDia = '14:20'
@@ -163,11 +180,19 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 
         #DETIENE LOS HILOS LAS FINAL DEL DIA
         
-        schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos, hilo_schedule)
-       
+        schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos,app, hilo_schedule)
+        
+      
 
         while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
             hora_actual = datetime.now().strftime("%H:%M:%S")
+            # Obtener la ruta al directorio 'src' de tu proyecto
+           
+            # Escribir la nueva información en el archivo de logs
+            with open(logs_file_path, 'a') as f:
+                f.write(f'__inicio {tiempoInicioDelDia} ___fin {tiempoFinDelDia}\n') 
+            app.logger.log(get.CUSTOM_LEVEL, '__inicio %s ___fin %s __hora_actual %s', tiempoInicioDelDia, tiempoFinDelDia, hora_actual)
+
 
             print("______________________________________________________________________________")
             print("comprobando schedule.run_pending() automatizacion shedule_trigger planificar_shedule  " )
@@ -188,9 +213,11 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 def llama_tarea_cada_24_horas_estrategias(app,user_id, cuenta,correo_electronico,selector):
      
     with app.app_context():
-        
+        app.logger.info("_______________Intentando__conexion__con WS__________________________")
         print("____________________________Intentando__conexion__desde Shedule_______________________")
         conexion(app,Cuenta,cuenta,user_id,correo_electronico,selector)
+        app.logger.info("_______________TERMINA CONEXION WS__________________________")
+        app.logger.info("___________________Se conecto con exito al WS______________________")
         print("_____________________________Se conecto con exito al WS________________________________")
    
         triggerEstrategias = db.session.query(TriggerEstrategia).all()    
@@ -222,6 +249,7 @@ def llama_tarea_cada_24_horas_estrategias(app,user_id, cuenta,correo_electronico
                     # Establece un atributo personalizado en el hilo para las horas de inicio y fin
                    # hilo.hora_inicio = hora_inicio
                    # hilo.hora_fin = hora_fin
+                    app.logger.info("___________________Se se inicia hilo de estrategia______________________")
                     hilo.start()
                     hilos.append(hilo)
                     # Imprimir el diccionario de hilos iniciados
