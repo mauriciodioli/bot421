@@ -29,6 +29,8 @@ import threading
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import logging
+
 
 shedule_triggers = Blueprint('shedule_triggers', __name__)
 
@@ -101,6 +103,8 @@ def DetenerShedule():
 ################# INICIA LA AUTOMATIZACION ###############################
 #############################################################################################################
 def terminar_hilos(app,hilo):
+    src_directory = os.path.dirname(os.path.abspath(__file__))
+    logs_file_path = os.path.join(src_directory, 'logs.log')
     # Aquí detienes los hilos iniciados desde planificar_schedule, excepto el hilo ejecutar_schedule
     # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden, excepto el hilo ejecutar_schedule
     get.pyRofexInicializada.close_websocket_connection()
@@ -111,16 +115,26 @@ def terminar_hilos(app,hilo):
     print('__________TERMINA CONEXION WS__________')
     print('_______________________________________')
     print('_______________________________________')
+    
+    
     for indice, (hilo_id, h) in enumerate(get.hilo_iniciado_panel_control.items()):
+        app.logger.info("______HILO EXAMINADO___________")
+        with open(logs_file_path, 'a') as f:
+                f.write(f'Índice {indice} ID del hilo: {hilo_id} , Hilo: {h}\n') 
+        app.logger.log(get.CUSTOM_LEVEL, 'Índice %s ID del hilo %s Hilo %s', indice, hilo_id, h)
+        
         if h is not hilo and h.is_alive():
+            print(f'El hilo con ID {hilo_id} está vivo.')
             print(f'Índice: {indice}, ID del hilo: {hilo_id}, Hilo: {h}')
+             # Escribir la nueva información en el archivo de logs
+           
             print('_________temina hilo________ ', h)
-            app.logger.info("_______________TERMINA HILO__________________________")
+            app.logger.info("______TERMINA CONEXION WS___________")
+            app.logger.info("______TERMINA HILO__________________")
             h.join()  # Espera a que el hilo termine su ejecución si aún está vivo
         else:
-            print('_______________________________________')
-            print('__NO HAY HILOS ACTIVOS PARA EL SCHEDULE')
-            print('_______________________________________')
+            app.logger.info("________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________")
+           
 
     get.hilo_iniciado_panel_control.clear()  # Limpia el diccionario de hilos iniciados
 
@@ -130,19 +144,19 @@ def terminar_hilos_shedule():
     for indice, hilo in enumerate(get.hilos_iniciados_shedule):
         hilo.join()  # Esperar a que el hilo termine su ejecución
         print(f"Hilo ID: {indice}, Hilo: {hilo}")
-        #app.logger.info("_______________TERMINA SHEDULE__________________________")
+        print('FUNC__terminar_hilos_shedule___ TERMINA HILO EN SHEDULE____')
     # Limpiar la lista de hilos iniciados
     get.hilos_iniciados_shedule.clear()
 
     
       
 
-def reiniciar_hilos():
+def reiniciar_hilos(app):
     # Reiniciar solo los hilos que han terminado
     for hilo_id, hilo in get.hilo_iniciado_panel_control.items():
         if not hilo.is_alive():
             hilo.start()
-            
+            app.logger.info("_______________REINICIA HILO_______________________")
         else:
             print(f"El hilo {hilo_id} aún está en ejecución y no será reiniciado.")
 
@@ -210,60 +224,44 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
     
     
     
-def llama_tarea_cada_24_horas_estrategias(app,user_id, cuenta,correo_electronico,selector):
-     
+def llama_tarea_cada_24_horas_estrategias(app, user_id, cuenta, correo_electronico, selector):
     with app.app_context():
-        app.logger.info("_______________Intentando__conexion__con WS__________________________")
-        print("____________________________Intentando__conexion__desde Shedule_______________________")
-        conexion(app,Cuenta,cuenta,user_id,correo_electronico,selector)
-        app.logger.info("_______________TERMINA CONEXION WS__________________________")
-        app.logger.info("___________________Se conecto con exito al WS______________________")
-        print("_____________________________Se conecto con exito al WS________________________________")
+        try:
+            app.logger.info("_______________Intentando__conexion__con WS__________________________")
+            print("____________________________Intentando__conexion__desde Shedule_______________________")
+            conexion(app, Cuenta, cuenta, user_id, correo_electronico, selector)           
+            app.logger.info("___________________Se conecto con exito al WS______________________")
+            print("_____________________________Se conecto con exito al WS________________________________")
    
-        triggerEstrategias = db.session.query(TriggerEstrategia).all()    
-        hilos = []
-        
-        for triggerEstrategia in triggerEstrategias:
-         
-            if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
-                
-                usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
-                if usuario:
-                    print("El usuario existe en la lista triggerEstrategias.")
-                    
-                    # Verifica si ya hay un hilo iniciado para este usuario
-                    if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
-                        print(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
-                        continue
-                    
-                    print("usuario ",usuario.id," nombre estrategia ",triggerEstrategia.nombreEstrategia," Hora de inicio:", triggerEstrategia.horaInicio)
-                    
-                # # Si no hay un hilo iniciado para este usuario, lo inicia
-                    hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
-                    hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategia, usuario))
-                    get.hilo_iniciado_panel_control[hilo_id] = hilo
-                    # Define las horas de inicio y fin para el hilo
-                    hora_inicio = triggerEstrategia.horaInicio
-                    hora_fin = triggerEstrategia.horaFin
-                    
-                    # Establece un atributo personalizado en el hilo para las horas de inicio y fin
-                   # hilo.hora_inicio = hora_inicio
-                   # hilo.hora_fin = hora_fin
-                    app.logger.info("___________________Se se inicia hilo de estrategia______________________")
-                    hilo.start()
-                    hilos.append(hilo)
-                    # Imprimir el diccionario de hilos iniciados
-                  
-                    
-                    
-                else:
-                    print("El usuario no existe en la lista triggerEstrategias.")  
+            triggerEstrategias = db.session.query(TriggerEstrategia).all()    
+            hilos = []
+
+            for triggerEstrategia in triggerEstrategias:
+                if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
+                    usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
+                    if usuario:
+                        print("El usuario existe en la lista triggerEstrategias.")
+                        # Verifica si ya hay un hilo iniciado para este usuario
+                        if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
+                            print(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
+                            continue
+                        print("usuario ", usuario.id, " nombre estrategia ", triggerEstrategia.nombreEstrategia, " Hora de inicio:", triggerEstrategia.horaInicio)
+                        # Si no hay un hilo iniciado para este usuario, lo inicia
+                        hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
+                        hilo = threading.Thread(target=tarea_inicio, args=(user_id, app, triggerEstrategia, usuario))
+                        get.hilo_iniciado_panel_control[hilo_id] = hilo
+                        app.logger.info("___________________Se se inicia hilo de estrategia______________________")
+                        hilo.start()
+                        hilos.append(hilo)
+                    else:
+                        print("El usuario no existe en la lista triggerEstrategias.")
+        except Exception as e:
+            # Agregar el mensaje de error al registro de logs con nivel de error
+            logging.error(str(e), exc_info=True)
 
         # Esperar a que todos los hilos terminen antes de finalizar
         for hilo in hilos:
             hilo.join()
-
-
 
 def tarea_inicio(user_id,app,triggerEstrategia,usuario):
     
