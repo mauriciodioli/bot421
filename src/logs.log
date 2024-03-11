@@ -1,55 +1,79 @@
-2024-03-08 15:49:12,574 - INFO - Se accedió a la página de inicio
-2024-03-08 15:49:12,579 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:49:12
-2024-03-08 15:50:12,584 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:50:12
-2024-03-08 15:51:12,588 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:51:12
-2024-03-08 15:52:22,179 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:52:22
-2024-03-08 15:52:22,194 - CUSTOM - TERMINA CONEXION WS
-2024-03-08 15:52:22,196 - INFO - _______________TERMINO CONEXION WS__________________________
-2024-03-08 15:53:22,201 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:53:22
-2024-03-08 15:54:22,208 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:54:22
-2024-03-08 15:54:45,168 - INFO - Se accedió a la página de inicio
-2024-03-08 15:54:45,172 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:54:45
-2024-03-08 15:55:22,212 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:55:22
-2024-03-08 15:55:39,545 - INFO - Se accedió a la página de inicio
-2024-03-08 15:55:39,547 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:55:39
-2024-03-08 15:55:45,174 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:55:45
-2024-03-08 15:56:22,215 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:56:22
-2024-03-08 15:56:39,551 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:56:39
-2024-03-08 15:56:45,191 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:56:45
-2024-03-08 15:57:22,221 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:57:22
-2024-03-08 15:57:39,554 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:57:39
-2024-03-08 15:57:45,206 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:57:45
-2024-03-08 15:58:22,224 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:58:22
-2024-03-08 15:58:39,559 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:58:39
-2024-03-08 15:58:45,209 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:58:45
-2024-03-08 15:59:22,229 - CUSTOM - __inicio 15:51 ___fin 15:52 __hora_actual 15:59:22
-2024-03-08 15:59:39,563 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:59:39
-2024-03-08 16:02:34,872 - INFO - Se accedió a la página de inicio
-2024-03-08 16:02:34,878 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:02:34
-2024-03-08 16:03:34,881 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:03:34
-2024-03-08 16:03:39,871 - INFO - Se accedió a la página de inicio
-2024-03-08 16:03:39,873 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:03:39
-2024-03-08 16:04:25,654 - INFO - Se accedió a la página de inicio
-2024-03-08 16:04:25,657 - CUSTOM - __inicio 16:06 ___fin 16:08 __hora_actual 16:04:25
-2024-03-08 16:04:34,886 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:04:34
-2024-03-08 16:04:39,877 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:04:39
-2024-03-08 16:05:25,660 - CUSTOM - __inicio 16:06 ___fin 16:08 __hora_actual 16:05:25
-2024-03-08 16:05:34,890 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:05:34
-2024-03-08 16:05:39,881 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:05:39
-2024-03-08 16:06:25,663 - CUSTOM - __inicio 16:06 ___fin 16:08 __hora_actual 16:06:25
-2024-03-08 16:06:34,915 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:06:34
-2024-03-08 16:06:39,887 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:06:39
-2024-03-08 16:07:44,066 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:07:44
-2024-03-08 16:07:49,243 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:07:49
-2024-03-08 16:08:44,099 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:08:44
-2024-03-08 16:08:44,112 - INFO - _______________TERMINA CONEXION WS__________________________
-2024-03-08 16:08:49,246 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 16:08:49
-2024-03-08 16:10:03,201 - INFO - Se accedió a la página de inicio
-2024-03-08 16:10:03,207 - CUSTOM - __inicio 16:11 ___fin 16:13 __hora_actual 16:10:03
-2024-03-08 16:11:03,232 - CUSTOM - __inicio 16:11 ___fin 16:13 __hora_actual 16:11:03
-2024-03-08 16:11:03,236 - INFO - _______________Intentando__conexion__con WS__________________________
-2024-03-08 16:11:11,370 - INFO - _______________TERMINA CONEXION WS__________________________
-2024-03-08 16:11:11,371 - INFO - ___________________Se conecto con exito al WS______________________
-2024-03-08 16:12:12,694 - CUSTOM - __inicio 16:11 ___fin 16:13 __hora_actual 16:12:12
-2024-03-08 16:13:26,091 - INFO - Se accedió a la página de inicio
-2024-03-08 16:13:26,097 - CUSTOM - __inicio 16:15 ___fin 16:16 __hora_actual 16:13:26
+2024-03-11 11:50:04,018 - INFO - Se accedió a la página de inicio
+2024-03-11 11:50:04,024 - CUSTOM - __inicio 11:51 ___fin 11:53 __hora_actual 11:50:04
+2024-03-11 11:51:04,031 - CUSTOM - __inicio 11:51 ___fin 11:53 __hora_actual 11:51:04
+2024-03-11 11:51:04,036 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-11 11:51:19,246 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-11 11:51:19,248 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-11 11:51:19,574 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-11 11:52:20,575 - CUSTOM - __inicio 11:51 ___fin 11:53 __hora_actual 11:52:20
+2024-03-11 11:53:20,582 - CUSTOM - __inicio 11:51 ___fin 11:53 __hora_actual 11:53:20
+2024-03-11 11:54:49,353 - INFO - Se accedió a la página de inicio
+2024-03-11 11:54:49,358 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 11:54:49
+2024-03-11 11:55:49,363 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 11:55:49
+2024-03-11 11:56:49,369 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 11:56:49
+2024-03-11 11:56:49,373 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-11 11:57:02,156 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-11 11:57:02,488 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-11 11:58:03,506 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 11:58:03
+2024-03-11 11:58:03,517 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-11 11:58:03,522 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-11 11:59:03,528 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 11:59:03
+2024-03-11 12:00:03,534 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 12:00:03
+2024-03-11 12:01:03,541 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 12:01:03
+2024-03-11 12:02:03,547 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 12:02:03
+2024-03-11 12:03:03,551 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 12:03:03
+2024-03-11 12:04:03,558 - CUSTOM - __inicio 11:56 ___fin 11:58 __hora_actual 12:04:03
+2024-03-11 12:05:09,102 - INFO - Se accedió a la página de inicio
+2024-03-11 12:05:09,108 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:05:09
+2024-03-11 12:06:09,113 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:06:09
+2024-03-11 12:06:09,120 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-11 12:06:24,856 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-11 12:06:25,569 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-11 12:07:26,546 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:07:26
+2024-03-11 12:07:26,562 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-11 12:07:26,566 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-11 12:08:26,569 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:08:26
+2024-03-11 12:09:26,572 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:09:26
+2024-03-11 12:10:26,580 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:10:26
+2024-03-11 12:11:26,584 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:11:26
+2024-03-11 12:12:53,950 - INFO - Se accedió a la página de inicio
+2024-03-11 12:12:53,957 - CUSTOM - __inicio 12:13 ___fin 12:15 __hora_actual 12:12:53
+2024-03-11 12:13:53,972 - CUSTOM - __inicio 12:13 ___fin 12:15 __hora_actual 12:13:53
+2024-03-11 12:13:53,978 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-11 12:14:07,747 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-11 12:14:08,078 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-11 12:15:09,601 - CUSTOM - __inicio 12:13 ___fin 12:15 __hora_actual 12:15:09
+2024-03-11 12:15:09,618 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-11 12:15:09,624 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-11 12:16:09,626 - CUSTOM - __inicio 12:13 ___fin 12:15 __hora_actual 12:16:09
+2024-03-11 12:17:09,631 - CUSTOM - __inicio 12:13 ___fin 12:15 __hora_actual 12:17:09
+2024-03-11 12:18:09,637 - CUSTOM - __inicio 12:13 ___fin 12:15 __hora_actual 12:18:09
+2024-03-11 12:19:09,641 - CUSTOM - __inicio 12:13 ___fin 12:15 __hora_actual 12:19:09
+2024-03-11 12:19:49,593 - INFO - Se accedió a la página de inicio
+2024-03-11 12:19:49,601 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:19:49
+2024-03-11 12:20:49,605 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:20:49
+2024-03-11 12:20:49,610 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-11 12:21:05,226 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-11 12:21:05,553 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-11 12:22:06,599 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:22:06
+2024-03-11 12:22:06,615 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-11 12:22:06,616 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-10, stopped daemon 14044)>
+2024-03-11 12:22:06,618 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-11 12:23:06,620 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:23:06
+2024-03-11 12:24:06,625 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:24:06
+2024-03-11 12:25:06,628 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:25:06
+2024-03-11 12:26:06,633 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:26:06
+2024-03-11 12:27:06,638 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:27:06
+2024-03-11 12:28:06,646 - CUSTOM - __inicio 12:20 ___fin 12:22 __hora_actual 12:28:06
+2024-03-11 12:28:31,518 - INFO - Se accedió a la página de inicio
+2024-03-11 12:28:31,525 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:28:31
+2024-03-11 12:29:31,529 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:29:31
+2024-03-11 12:29:31,533 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-11 12:29:45,392 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-11 12:29:45,709 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-11 12:30:46,747 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:30:46
+2024-03-11 12:31:46,750 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:31:46
+2024-03-11 12:31:46,754 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-11 12:31:46,756 - INFO - ______HILO EXAMINADO___________
+2024-03-11 12:31:46,757 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-9, stopped daemon 12380)>
+2024-03-11 12:31:46,757 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
