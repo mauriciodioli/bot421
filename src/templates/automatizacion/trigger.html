@@ -309,7 +309,10 @@ let lineCount = 0;
 const updatesDiv = document.getElementById('logContainer');
 
         // Inicializar lineCount antes de usarlo
-
+// Función para hacer scroll hacia abajo
+function scrollToBottom() {
+  logContainer.scrollTop = logContainer.scrollHeight;
+}
 
 // Función para manejar los eventos SSE
 function handleEvent(event) {
@@ -321,29 +324,39 @@ function handleEvent(event) {
     lineCount++;
     
     // Verificar si el número de líneas es múltiplo de 10 para limpiar el contenedor
-    if (lineCount > 5) {
+    if (lineCount > 150) {
       // Eliminar las líneas adicionales
-      while (updatesDiv.childElementCount > 5) {
+      while (updatesDiv.childElementCount > 150) {
           updatesDiv.removeChild(updatesDiv.firstChild);
       }
         // Limpiar el contenedor
         //updatesDiv.innerHTML = '';
+    
     }
+        // Hacer scroll hacia abajo después de cada actualización
+        scrollToBottom();
+}
+// Llamar a la función scrollToBottom() inicialmente para asegurarse de que el scroll esté en la parte inferior al cargar la página
+scrollToBottom();
+// Función para actualizar las actualizaciones cada 30 segundos
+function actualizarActualizaciones() {
+  // Crear un EventSource para recibir eventos del servidor
+  const eventSource = new EventSource('/logs');
+
+  // Asignar el manejador de eventos
+  eventSource.onmessage = handleEvent;
+
+  // Manejar errores de conexión
+  eventSource.onerror = function(event) {
+      const errorMessage = document.createElement('p');
+      errorMessage.textContent = "No se puede acceder a los logs momentáneamente.";
+      updatesDiv.appendChild(errorMessage);
+  }
 }
 
-// Crear un EventSource para recibir eventos del servidor
-const eventSource = new EventSource('/logs');
-
-// Asignar el manejador de eventos
-eventSource.onmessage = handleEvent;
-
-// Manejar errores de conexión
-eventSource.onerror = function(event) {
-    const errorMessage = document.createElement('p');
-    errorMessage.textContent = "No se puede acceder a los logs momentáneamente.";
-    updatesDiv.appendChild(errorMessage);
-}
-
+// Actualizar las actualizaciones cada 30 segundos
+actualizarActualizaciones()
+//setInterval(actualizarActualizaciones, 3000);
 
 
   </script>

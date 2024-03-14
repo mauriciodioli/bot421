@@ -32,9 +32,9 @@
           <input type="hidden" name="environment" id="environment" class="mb-3"> 
           <input type="hidden" name="origin_page" value="registrarCuentaBroker" class="mb-3">
         
-          <input type="text" name="usuario" class="mb-3">  
-          <input type="text" name="contraseña" class="mb-3">
-          <input type="text" name="cuenta" class="mb-3">
+          <input type="text" name="usuario" class="mb-3" placeholder="user">  
+          <input type="text" name="contraseña" class="mb-3" placeholder="password">
+          <input type="text" name="cuenta" class="mb-3" placeholder="account">
             
           <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment" id="selctorEnvironment">
             <option selected>Open this select menu</option>
@@ -55,9 +55,41 @@
               <button type="submit" class="btn btn-secondary my-2">Cuentas existentes</button> 
           </div>
         </form>
-        <div class="col">
-          <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#modalSeleccionPais">Signals</button>
-        </div>
+
+
+
+
+        <div class="container" id="cardIndex">                
+          <div class="card-body cardIndexTriggers">
+              <div class="row">
+                  <div class="col text-start">
+                      <label for="lanzar" style="color: gold;">Signals</label>
+                  </div>
+              </div>
+             
+              <div class="row mt-3">
+                  <div class="col text-center">
+                      <label for="lanzar" style="color: gold;">Press Enter to lock the signal for operation.</label>
+                      
+                      <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
+                              onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                              data-bs-toggle="modal" data-bs-target="#modalSeleccionPais">Signals</button>
+                  </div>
+              </div>
+              
+          </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
       </div>  
     </div>  
 

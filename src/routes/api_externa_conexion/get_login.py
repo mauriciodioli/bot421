@@ -94,10 +94,11 @@ ContenidoSheet_list = None
 #hora_inicio_manana = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=1), datetime.time(9, 0))
 
 # Configurar las URLs de la instancia de BMB
-api_url = "https://api.bull.xoms.com.ar/"
-ws_url = "wss://api.bull.xoms.com.ar/"
+#api_url = "https://api.bull.xoms.com.ar/"
+#ws_url = "wss://api.bull.xoms.com.ar/"
 
-
+api_url = "https://api.cocos.xoms.com.ar/"
+ws_url = "wss://api.cocos.xoms.com.ar/"
 
 
 
@@ -192,14 +193,10 @@ def loginExtAutomatico():
                             fecha_actual =   datetime.utcnow()
                             if fecha_actual > exp_date:
                                 environment = pyRofexInicializada.Environment.LIVE
-                
+                                
                                 pyRofexInicializada._set_environment_parameter("url", api_url,environment)
                                 pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
-                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
-                                print(cuentas.userCuenta)
-                                print(passwordCuenta)
-                                print(cuentas.accountCuenta)
-                                print(environment)
+                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)                                
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion(app)
                                 #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
