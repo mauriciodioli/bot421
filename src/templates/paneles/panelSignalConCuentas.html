@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
           var dato = response.datos[i];
         
           
-          //console.log(dato[6]);
+         // console.log(dato[6]);
         
           
           if ((dato[1] == 'USA' || dato[1] == 'ARG' || dato[1] == 'CEDEAR') && 
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       if (dato[6] !== null) { 
                        // var campana = document.getElementById('Campana');
                        // campana.play();
-                        mostrarNotificacion()
+                       // mostrarNotificacion()
                       }            
                         var row = document.createElement('tr');
                         var numeroDeOrden = i + 1; // Empieza desde 1
@@ -479,6 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
       valorPrecioLimiteInput.disabled = false;
   });
 });
+
 
 
 
