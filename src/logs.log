@@ -77,3 +77,544 @@
 2024-03-11 12:31:46,756 - INFO - ______HILO EXAMINADO___________
 2024-03-11 12:31:46,757 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-9, stopped daemon 12380)>
 2024-03-11 12:31:46,757 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-11 12:32:46,759 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:32:46
+2024-03-11 12:33:46,763 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:33:46
+2024-03-11 12:34:46,766 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:34:46
+2024-03-11 12:35:46,773 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:35:46
+2024-03-11 12:36:46,782 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:36:46
+2024-03-11 12:37:46,786 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:37:46
+2024-03-11 12:38:46,791 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:38:46
+2024-03-11 12:39:46,796 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:39:46
+2024-03-11 12:40:46,799 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:40:46
+2024-03-11 12:41:46,802 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:41:46
+2024-03-11 12:42:46,808 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:42:46
+2024-03-11 12:43:46,814 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:43:46
+2024-03-11 12:44:46,818 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:44:46
+2024-03-11 12:45:46,823 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:45:46
+2024-03-11 12:46:46,828 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:46:46
+2024-03-11 12:47:46,831 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:47:46
+2024-03-11 12:48:46,836 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:48:46
+2024-03-11 12:49:46,849 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:49:46
+2024-03-11 12:50:46,854 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:50:46
+2024-03-11 12:51:46,857 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:51:46
+2024-03-11 12:52:46,861 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:52:46
+2024-03-11 12:53:46,864 - CUSTOM - __inicio 12:29 ___fin 12:31 __hora_actual 12:53:46
+2024-03-11 15:06:49,208 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-03-11 15:06:49,218 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:06:49
+2024-03-11 15:07:49,230 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:07:49
+2024-03-11 15:08:16,419 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-03-11 15:08:16,425 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:08:16
+2024-03-11 15:09:16,430 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:09:16
+2024-03-11 15:10:16,434 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:10:16
+2024-03-11 15:11:21,091 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-03-11 15:11:21,097 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 15:11:21
+2024-03-12 10:10:49,716 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-03-12 10:10:49,726 - CUSTOM - __inicio 10:12 ___fin 10:15 __hora_actual 10:10:49
+2024-03-12 10:11:49,735 - CUSTOM - __inicio 10:12 ___fin 10:15 __hora_actual 10:11:49
+2024-03-12 10:12:49,741 - CUSTOM - __inicio 10:12 ___fin 10:15 __hora_actual 10:12:49
+2024-03-12 10:12:49,746 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 10:12:49,747 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 10:13:04,523 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 10:13:04,854 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-12 10:14:05,849 - CUSTOM - __inicio 10:12 ___fin 10:15 __hora_actual 10:14:05
+2024-03-12 10:15:05,855 - CUSTOM - __inicio 10:12 ___fin 10:15 __hora_actual 10:15:05
+2024-03-12 10:15:05,872 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 10:15:05,877 - INFO - ______HILO EXAMINADO___________
+2024-03-12 10:15:05,879 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-134, started daemon 5980)>
+2024-03-12 10:15:05,882 - INFO - ______TERMINA CONEXION WS___________
+2024-03-12 10:15:05,883 - INFO - ______TERMINA HILO__________________
+2024-03-12 10:18:03,870 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-03-12 10:18:03,877 - CUSTOM - __inicio 10:19 ___fin 10:22 __hora_actual 10:18:03
+2024-03-12 10:19:03,881 - CUSTOM - __inicio 10:19 ___fin 10:22 __hora_actual 10:19:03
+2024-03-12 10:19:03,887 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 10:19:03,888 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 10:19:18,701 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 10:19:19,036 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-12 10:20:20,072 - CUSTOM - __inicio 10:19 ___fin 10:22 __hora_actual 10:20:20
+2024-03-12 10:21:20,079 - CUSTOM - __inicio 10:19 ___fin 10:22 __hora_actual 10:21:20
+2024-03-12 10:22:20,087 - CUSTOM - __inicio 10:19 ___fin 10:22 __hora_actual 10:22:20
+2024-03-12 10:22:20,136 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 10:22:20,140 - INFO - ______HILO EXAMINADO___________
+2024-03-12 10:22:20,142 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-10, stopped daemon 3620)>
+2024-03-12 10:22:20,143 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-12 10:23:17,130 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:23:17,138 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:23:17
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:24:17,142 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:24:17
+2024-03-12 10:24:17,148 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 10:24:17,148 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 10:24:30,631 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 10:24:31,258 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:25:32,242 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:25:32
+2024-03-12 10:25:32,262 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 10:25:32,268 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-9, stopped daemon 9348)>
+2024-03-12 10:25:32,269 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-9, stopped daemon 9348)>
+2024-03-12 10:25:32,270 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:26:32,273 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:26:32
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:27:32,279 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:27:32
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:28:32,283 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:28:32
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:29:32,289 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:29:32
+__inicio 10:24 ___fin 10:25
+2024-03-12 10:30:32,295 - CUSTOM - __inicio 10:24 ___fin 10:25 __hora_actual 10:30:32
+2024-03-12 14:03:57,806 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:00 ___fin 17:00
+2024-03-12 14:03:57,813 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 14:03:57
+__inicio 12:00 ___fin 17:00
+2024-03-12 14:04:57,816 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 14:04:57
+__inicio 12:00 ___fin 17:00
+2024-03-12 14:05:57,820 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 14:05:57
+__inicio 12:00 ___fin 17:00
+2024-03-12 14:06:57,825 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 14:06:57
+__inicio 12:00 ___fin 17:00
+2024-03-12 14:07:57,831 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 14:07:57
+2024-03-12 14:16:55,686 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:18 ___fin 14:20
+2024-03-12 14:16:55,691 - CUSTOM - __inicio 14:18 ___fin 14:20 __hora_actual 14:16:55
+__inicio 14:18 ___fin 14:20
+2024-03-12 14:17:55,698 - CUSTOM - __inicio 14:18 ___fin 14:20 __hora_actual 14:17:55
+__inicio 14:18 ___fin 14:20
+2024-03-12 14:18:55,703 - CUSTOM - __inicio 14:18 ___fin 14:20 __hora_actual 14:18:55
+2024-03-12 14:18:55,715 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 14:18:55,716 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 14:19:09,115 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 14:19:09,445 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 00:01:00 Hora de fin: 01:01:00
+2024-03-12 14:19:09,446 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 14:18 ___fin 14:20
+2024-03-12 14:20:10,469 - CUSTOM - __inicio 14:18 ___fin 14:20 __hora_actual 14:20:10
+2024-03-12 14:20:10,487 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 14:20:10,490 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-9, stopped 11496)>
+2024-03-12 14:20:10,492 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-9, stopped 11496)>
+2024-03-12 14:20:10,492 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 14:18 ___fin 14:20
+2024-03-12 14:21:10,496 - CUSTOM - __inicio 14:18 ___fin 14:20 __hora_actual 14:21:10
+__inicio 14:18 ___fin 14:20
+2024-03-12 14:22:10,502 - CUSTOM - __inicio 14:18 ___fin 14:20 __hora_actual 14:22:10
+2024-03-12 14:46:04,322 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:47 ___fin 14:56
+2024-03-12 14:46:04,327 - CUSTOM - __inicio 14:47 ___fin 14:56 __hora_actual 14:46:04
+2024-03-12 14:46:42,127 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:48 ___fin 14:47
+2024-03-12 14:46:42,129 - CUSTOM - __inicio 14:48 ___fin 14:47 __hora_actual 14:46:42
+__inicio 14:47 ___fin 14:56
+2024-03-12 14:47:04,331 - CUSTOM - __inicio 14:47 ___fin 14:56 __hora_actual 14:47:04
+2024-03-12 14:47:04,336 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 14:47:04,337 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 14:47:11,913 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 14:47:12,232 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 00:01:00 Hora de fin: 01:01:00
+2024-03-12 14:47:12,233 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-12 14:47:13,240 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 14:47:13,243 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-113, stopped 8780)>
+2024-03-12 14:47:13,244 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-113, stopped 8780)>
+2024-03-12 14:47:13,249 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 14:48 ___fin 14:47
+2024-03-12 14:47:42,135 - CUSTOM - __inicio 14:48 ___fin 14:47 __hora_actual 14:47:42
+__inicio 14:47 ___fin 14:56
+2024-03-12 14:48:13,251 - CUSTOM - __inicio 14:47 ___fin 14:56 __hora_actual 14:48:13
+2024-03-12 14:48:13,254 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 14:48:13,255 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 14:48:20,051 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 14:48:20,370 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 00:01:00 Hora de fin: 01:01:00
+2024-03-12 14:48:20,372 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 14:48 ___fin 14:47
+2024-03-12 14:48:42,139 - CUSTOM - __inicio 14:48 ___fin 14:47 __hora_actual 14:48:42
+2024-03-12 15:03:08,269 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:05 ___fin 15:07
+2024-03-12 15:03:08,272 - CUSTOM - __inicio 15:05 ___fin 15:07 __hora_actual 15:03:08
+2024-03-12 15:03:08,297 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 15:03:08,300 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-117, stopped 5732)>
+2024-03-12 15:03:08,301 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-117, stopped 5732)>
+2024-03-12 15:03:08,301 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-12 15:03:08,302 - INFO - ______HILO EXAMINADO___________
+Índice 1 ID del hilo: argentina , Hilo: <Thread(Thread-197, started daemon 8512)>
+2024-03-12 15:03:08,303 - CUSTOM - Índice 1 ID del hilo argentina Hilo <Thread(Thread-197, started daemon 8512)>
+2024-03-12 15:03:08,304 - INFO - ______TERMINA CONEXION WS___________
+2024-03-12 15:03:08,305 - INFO - ______TERMINA HILO__________________
+2024-03-12 15:06:12,824 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:08 ___fin 15:10
+2024-03-12 15:06:12,827 - CUSTOM - __inicio 15:08 ___fin 15:10 __hora_actual 15:06:12
+2024-03-12 15:06:12,831 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 15:06:12,846 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-117, stopped 5732)>
+2024-03-12 15:06:12,848 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-117, stopped 5732)>
+2024-03-12 15:06:12,848 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-12 15:06:12,849 - INFO - ______HILO EXAMINADO___________
+Índice 1 ID del hilo: argentina , Hilo: <Thread(Thread-197, started daemon 8512)>
+2024-03-12 15:06:12,850 - CUSTOM - Índice 1 ID del hilo argentina Hilo <Thread(Thread-197, started daemon 8512)>
+2024-03-12 15:06:12,851 - INFO - ______TERMINA CONEXION WS___________
+2024-03-12 15:06:12,852 - INFO - ______TERMINA HILO__________________
+2024-03-12 15:10:30,064 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:12 ___fin 15:15
+2024-03-12 15:10:30,070 - CUSTOM - __inicio 15:12 ___fin 15:15 __hora_actual 15:10:30
+__inicio 15:12 ___fin 15:15
+2024-03-12 15:11:30,075 - CUSTOM - __inicio 15:12 ___fin 15:15 __hora_actual 15:11:30
+__inicio 15:12 ___fin 15:15
+2024-03-12 15:12:30,080 - CUSTOM - __inicio 15:12 ___fin 15:15 __hora_actual 15:12:30
+2024-03-12 15:12:30,083 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 15:12:30,083 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 15:12:43,513 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 15:12:43,850 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 00:01:00 Hora de fin: 01:01:00
+2024-03-12 15:12:43,851 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 15:12 ___fin 15:15
+2024-03-12 15:13:44,820 - CUSTOM - __inicio 15:12 ___fin 15:15 __hora_actual 15:13:44
+__inicio 15:12 ___fin 15:15
+2024-03-12 15:14:44,934 - CUSTOM - __inicio 15:12 ___fin 15:15 __hora_actual 15:14:44
+__inicio 15:12 ___fin 15:15
+2024-03-12 15:15:45,030 - CUSTOM - __inicio 15:12 ___fin 15:15 __hora_actual 15:15:45
+2024-03-12 15:15:45,036 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-12 15:15:45,039 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-9, stopped 7676)>
+2024-03-12 15:15:45,040 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-9, stopped 7676)>
+2024-03-12 15:15:45,041 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+2024-03-12 15:15:45,042 - INFO - ______HILO EXAMINADO___________
+Índice 1 ID del hilo: argentina , Hilo: <Thread(Thread-12, started daemon 1408)>
+2024-03-12 15:15:45,043 - CUSTOM - Índice 1 ID del hilo argentina Hilo <Thread(Thread-12, started daemon 1408)>
+2024-03-12 15:15:45,047 - INFO - ______TERMINA CONEXION WS___________
+2024-03-12 15:15:45,048 - INFO - ______TERMINA HILO__________________
+2024-03-12 15:42:34,342 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:45 ___fin 15:00
+2024-03-12 15:42:34,350 - CUSTOM - __inicio 15:45 ___fin 15:00 __hora_actual 15:42:34
+__inicio 15:45 ___fin 15:00
+2024-03-12 15:43:34,355 - CUSTOM - __inicio 15:45 ___fin 15:00 __hora_actual 15:43:34
+__inicio 15:45 ___fin 15:00
+2024-03-12 15:44:34,358 - CUSTOM - __inicio 15:45 ___fin 15:00 __hora_actual 15:44:34
+__inicio 15:45 ___fin 15:00
+2024-03-12 15:45:34,361 - CUSTOM - __inicio 15:45 ___fin 15:00 __hora_actual 15:45:34
+2024-03-12 15:45:34,363 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-12 15:45:34,363 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-12 15:45:45,473 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-12 15:45:45,823 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 00:01:00 Hora de fin: 01:01:00
+2024-03-12 15:45:45,825 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 15:45 ___fin 15:00
+2024-03-12 15:46:46,878 - CUSTOM - __inicio 15:45 ___fin 15:00 __hora_actual 15:46:46
+__inicio 15:45 ___fin 15:00
+2024-03-12 15:47:46,882 - CUSTOM - __inicio 15:45 ___fin 15:00 __hora_actual 15:47:46
+__inicio 15:45 ___fin 15:00
+2024-03-12 15:48:46,886 - CUSTOM - __inicio 15:45 ___fin 15:00 __hora_actual 15:48:46
+2024-03-13 09:54:37,754 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 09:56 ___fin 09:59
+2024-03-13 09:54:37,766 - CUSTOM - __inicio 09:56 ___fin 09:59 __hora_actual 09:54:37
+__inicio 09:56 ___fin 09:59
+2024-03-13 09:55:37,769 - CUSTOM - __inicio 09:56 ___fin 09:59 __hora_actual 09:55:37
+__inicio 09:56 ___fin 09:59
+2024-03-13 09:56:37,775 - CUSTOM - __inicio 09:56 ___fin 09:59 __hora_actual 09:56:37
+2024-03-13 09:56:37,794 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 09:56:37,795 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 09:56:47,150 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 09:56:47,479 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 09:56:47,481 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 09:56 ___fin 09:59
+2024-03-13 09:57:48,431 - CUSTOM - __inicio 09:56 ___fin 09:59 __hora_actual 09:57:48
+__inicio 09:56 ___fin 09:59
+2024-03-13 09:58:48,435 - CUSTOM - __inicio 09:56 ___fin 09:59 __hora_actual 09:58:48
+__inicio 09:56 ___fin 09:59
+2024-03-13 09:59:48,438 - CUSTOM - __inicio 09:56 ___fin 09:59 __hora_actual 09:59:48
+2024-03-13 09:59:48,459 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-13 09:59:48,463 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-48, started daemon 1244)>
+2024-03-13 09:59:48,465 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-48, started daemon 1244)>
+2024-03-13 09:59:48,469 - INFO - ______TERMINA CONEXION WS___________
+2024-03-13 09:59:48,470 - INFO - ______TERMINA HILO__________________
+2024-03-13 10:15:02,985 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:15:02,991 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:15:02
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:16:03,002 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:16:03
+2024-03-13 10:16:03,038 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 10:16:03,043 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 10:16:13,797 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 10:16:14,121 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 10:16:14,123 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:17:15,136 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:17:15
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:18:15,141 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:18:15
+2024-03-13 10:18:15,160 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-13 10:18:15,173 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-10, stopped daemon 13356)>
+2024-03-13 10:18:15,175 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-10, stopped daemon 13356)>
+2024-03-13 10:18:15,176 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:19:15,179 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:19:15
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:20:15,183 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:20:15
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:21:15,188 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:21:15
+__inicio 10:16 ___fin 10:18
+2024-03-13 10:22:15,194 - CUSTOM - __inicio 10:16 ___fin 10:18 __hora_actual 10:22:15
+2024-03-13 10:22:49,914 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:23 ___fin 10:24
+2024-03-13 10:22:49,924 - CUSTOM - __inicio 10:23 ___fin 10:24 __hora_actual 10:22:49
+__inicio 10:23 ___fin 10:24
+2024-03-13 10:23:49,932 - CUSTOM - __inicio 10:23 ___fin 10:24 __hora_actual 10:23:49
+2024-03-13 10:23:49,940 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 10:23:49,942 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 10:23:59,331 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 10:23:59,650 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 10:23:59,651 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:23 ___fin 10:24
+2024-03-13 10:25:00,665 - CUSTOM - __inicio 10:23 ___fin 10:24 __hora_actual 10:25:00
+2024-03-13 10:25:00,698 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-13 10:25:00,702 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-10, stopped daemon 9636)>
+2024-03-13 10:25:00,703 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-10, stopped daemon 9636)>
+2024-03-13 10:25:00,704 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 10:23 ___fin 10:24
+2024-03-13 10:26:00,706 - CUSTOM - __inicio 10:23 ___fin 10:24 __hora_actual 10:26:00
+__inicio 10:23 ___fin 10:24
+2024-03-13 10:27:00,714 - CUSTOM - __inicio 10:23 ___fin 10:24 __hora_actual 10:27:00
+2024-03-13 10:27:50,913 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:28 ___fin 10:29
+2024-03-13 10:27:50,919 - CUSTOM - __inicio 10:28 ___fin 10:29 __hora_actual 10:27:50
+__inicio 10:28 ___fin 10:29
+2024-03-13 10:28:50,922 - CUSTOM - __inicio 10:28 ___fin 10:29 __hora_actual 10:28:50
+2024-03-13 10:28:50,925 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 10:28:50,926 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 10:29:01,399 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 10:29:01,726 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 10:29:01,727 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:28 ___fin 10:29
+2024-03-13 10:30:03,581 - CUSTOM - __inicio 10:28 ___fin 10:29 __hora_actual 10:30:03
+2024-03-13 10:30:03,597 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-13 10:30:03,601 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-10, stopped daemon 1324)>
+2024-03-13 10:30:03,602 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-10, stopped daemon 1324)>
+2024-03-13 10:30:03,603 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 10:28 ___fin 10:29
+2024-03-13 10:31:03,606 - CUSTOM - __inicio 10:28 ___fin 10:29 __hora_actual 10:31:03
+__inicio 10:28 ___fin 10:29
+2024-03-13 10:32:03,612 - CUSTOM - __inicio 10:28 ___fin 10:29 __hora_actual 10:32:03
+2024-03-13 10:34:55,197 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:35 ___fin 10:36
+2024-03-13 10:34:55,202 - CUSTOM - __inicio 10:35 ___fin 10:36 __hora_actual 10:34:55
+__inicio 10:35 ___fin 10:36
+2024-03-13 10:35:55,206 - CUSTOM - __inicio 10:35 ___fin 10:36 __hora_actual 10:35:55
+2024-03-13 10:35:55,211 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 10:35:55,212 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 10:36:05,464 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 10:36:05,780 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 10:36:05,781 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:35 ___fin 10:36
+2024-03-13 10:37:06,744 - CUSTOM - __inicio 10:35 ___fin 10:36 __hora_actual 10:37:06
+2024-03-13 10:37:06,758 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-13 10:37:06,761 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-9, stopped daemon 14008)>
+2024-03-13 10:37:06,762 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-9, stopped daemon 14008)>
+2024-03-13 10:37:06,774 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 10:35 ___fin 10:36
+2024-03-13 10:38:06,775 - CUSTOM - __inicio 10:35 ___fin 10:36 __hora_actual 10:38:06
+__inicio 10:35 ___fin 10:36
+2024-03-13 10:39:06,779 - CUSTOM - __inicio 10:35 ___fin 10:36 __hora_actual 10:39:06
+__inicio 10:35 ___fin 10:36
+2024-03-13 10:40:06,783 - CUSTOM - __inicio 10:35 ___fin 10:36 __hora_actual 10:40:06
+__inicio 10:35 ___fin 10:36
+2024-03-13 10:41:06,787 - CUSTOM - __inicio 10:35 ___fin 10:36 __hora_actual 10:41:06
+2024-03-13 10:42:30,470 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:42:30,477 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:42:30
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:43:30,482 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:43:30
+2024-03-13 10:43:30,485 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 10:43:30,486 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 10:43:41,923 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 10:43:42,250 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 10:43:42,251 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:44:43,273 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:44:43
+2024-03-13 10:44:43,289 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-13 10:44:43,292 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-19, stopped daemon 4036)>
+2024-03-13 10:44:43,293 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-19, stopped daemon 4036)>
+2024-03-13 10:44:43,295 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:45:43,297 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:45:43
+2024-03-13 10:47:15,491 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:47:15,497 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:47:15
+2024-03-13 10:55:04,595 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:55:04,602 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:55:04
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:56:04,615 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:56:04
+2024-03-13 10:56:36,791 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:56:36,799 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:56:36
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:57:36,803 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:57:36
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:58:36,808 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:58:36
+2024-03-13 10:59:24,142 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:43 ___fin 10:44
+2024-03-13 10:59:24,150 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 10:59:24
+__inicio 10:43 ___fin 10:44
+2024-03-13 11:00:24,153 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 11:00:24
+__inicio 10:43 ___fin 10:44
+2024-03-13 11:01:24,157 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 11:01:24
+2024-03-13 11:01:40,926 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:43 ___fin 10:44
+2024-03-13 11:01:40,932 - CUSTOM - __inicio 10:43 ___fin 10:44 __hora_actual 11:01:40
+2024-03-13 11:04:31,923 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:00 ___fin 17:00
+2024-03-13 11:04:31,928 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 11:04:31
+2024-03-13 11:08:34,614 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:09 ___fin 11:10
+2024-03-13 11:08:34,621 - CUSTOM - __inicio 11:09 ___fin 11:10 __hora_actual 11:08:34
+__inicio 11:09 ___fin 11:10
+2024-03-13 11:09:34,624 - CUSTOM - __inicio 11:09 ___fin 11:10 __hora_actual 11:09:34
+2024-03-13 11:09:34,627 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 11:09:34,627 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 11:09:47,549 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 11:09:47,893 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 11:09:47,894 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:09 ___fin 11:10
+2024-03-13 11:10:48,863 - CUSTOM - __inicio 11:09 ___fin 11:10 __hora_actual 11:10:48
+2024-03-13 11:10:48,882 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-13 11:10:48,887 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: madioli26@hotmail.com_estrategia-001 , Hilo: <Thread(Thread-9, stopped daemon 292)>
+2024-03-13 11:10:48,889 - CUSTOM - Índice 0 ID del hilo madioli26@hotmail.com_estrategia-001 Hilo <Thread(Thread-9, stopped daemon 292)>
+2024-03-13 11:10:48,891 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 11:09 ___fin 11:10
+2024-03-13 11:11:48,893 - CUSTOM - __inicio 11:09 ___fin 11:10 __hora_actual 11:11:48
+__inicio 11:09 ___fin 11:10
+2024-03-13 11:12:48,898 - CUSTOM - __inicio 11:09 ___fin 11:10 __hora_actual 11:12:48
+__inicio 11:09 ___fin 11:10
+2024-03-13 11:13:48,903 - CUSTOM - __inicio 11:09 ___fin 11:10 __hora_actual 11:13:48
+2024-03-13 11:24:46,143 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:25 ___fin 17:00
+2024-03-13 11:24:46,149 - CUSTOM - __inicio 11:25 ___fin 17:00 __hora_actual 11:24:46
+__inicio 11:25 ___fin 17:00
+2024-03-13 11:25:46,151 - CUSTOM - __inicio 11:25 ___fin 17:00 __hora_actual 11:25:46
+2024-03-13 11:25:46,154 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 11:25:46,154 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 11:26:02,436 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 11:26:02,789 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 11:26:02,791 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:25 ___fin 17:00
+2024-03-13 11:27:04,713 - CUSTOM - __inicio 11:25 ___fin 17:00 __hora_actual 11:27:04
+__inicio 11:25 ___fin 17:00
+2024-03-13 11:28:04,716 - CUSTOM - __inicio 11:25 ___fin 17:00 __hora_actual 11:28:04
+__inicio 11:25 ___fin 17:00
+2024-03-13 11:29:04,719 - CUSTOM - __inicio 11:25 ___fin 17:00 __hora_actual 11:29:04
+__inicio 11:25 ___fin 17:00
+2024-03-13 11:30:04,722 - CUSTOM - __inicio 11:25 ___fin 17:00 __hora_actual 11:30:04
+2024-03-13 11:30:48,222 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:31 ___fin 17:00
+2024-03-13 11:30:48,227 - CUSTOM - __inicio 11:31 ___fin 17:00 __hora_actual 11:30:48
+__inicio 11:31 ___fin 17:00
+2024-03-13 11:31:48,230 - CUSTOM - __inicio 11:31 ___fin 17:00 __hora_actual 11:31:48
+2024-03-13 11:31:48,232 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 11:31:48,233 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 11:32:02,067 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 11:32:02,396 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 11:32:02,397 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:31 ___fin 17:00
+2024-03-13 11:33:03,399 - CUSTOM - __inicio 11:31 ___fin 17:00 __hora_actual 11:33:03
+2024-03-13 11:34:17,776 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:35 ___fin 17:00
+2024-03-13 11:34:17,781 - CUSTOM - __inicio 11:35 ___fin 17:00 __hora_actual 11:34:17
+__inicio 11:35 ___fin 17:00
+2024-03-13 11:35:17,785 - CUSTOM - __inicio 11:35 ___fin 17:00 __hora_actual 11:35:17
+2024-03-13 11:35:17,790 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 11:35:17,791 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 11:35:29,785 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 11:35:30,107 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 11:35:30,108 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:35 ___fin 17:00
+2024-03-13 11:36:31,529 - CUSTOM - __inicio 11:35 ___fin 17:00 __hora_actual 11:36:31
+__inicio 11:35 ___fin 17:00
+2024-03-13 11:37:31,532 - CUSTOM - __inicio 11:35 ___fin 17:00 __hora_actual 11:37:31
+__inicio 11:35 ___fin 17:00
+2024-03-13 11:38:31,534 - CUSTOM - __inicio 11:35 ___fin 17:00 __hora_actual 11:38:31
+2024-03-13 11:40:43,947 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:41 ___fin 17:00
+2024-03-13 11:40:43,949 - CUSTOM - __inicio 11:41 ___fin 17:00 __hora_actual 11:40:43
+__inicio 11:41 ___fin 17:00
+2024-03-13 11:41:43,953 - CUSTOM - __inicio 11:41 ___fin 17:00 __hora_actual 11:41:43
+2024-03-13 11:41:43,956 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 11:41:43,958 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 11:41:55,867 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 11:41:56,184 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 11:41:56,185 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-13 11:48:46,668 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:49 ___fin 17:00
+2024-03-13 11:48:46,675 - CUSTOM - __inicio 11:49 ___fin 17:00 __hora_actual 11:48:46
+__inicio 11:49 ___fin 17:00
+2024-03-13 11:49:46,693 - CUSTOM - __inicio 11:49 ___fin 17:00 __hora_actual 11:49:46
+2024-03-13 11:49:46,696 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 11:49:46,697 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 11:49:59,262 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 11:49:59,573 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 11:49:59,574 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:49 ___fin 17:00
+2024-03-13 11:51:00,577 - CUSTOM - __inicio 11:49 ___fin 17:00 __hora_actual 11:51:00
+__inicio 11:49 ___fin 17:00
+2024-03-13 11:52:00,579 - CUSTOM - __inicio 11:49 ___fin 17:00 __hora_actual 11:52:00
+2024-03-13 11:53:10,948 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:54 ___fin 17:00
+2024-03-13 11:53:10,950 - CUSTOM - __inicio 11:54 ___fin 17:00 __hora_actual 11:53:10
+__inicio 11:54 ___fin 17:00
+2024-03-13 11:54:10,952 - CUSTOM - __inicio 11:54 ___fin 17:00 __hora_actual 11:54:10
+2024-03-13 11:54:10,954 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-13 11:54:10,955 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-13 11:54:26,683 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-13 11:54:27,010 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-13 11:54:27,010 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-14 13:31:55,831 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 13:33 ___fin 17:00
+2024-03-14 13:31:55,838 - CUSTOM - __inicio 13:33 ___fin 17:00 __hora_actual 13:31:55
+2024-03-14 15:23:05,939 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:23:05,942 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:23:05
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:24:05,947 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:24:05
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:25:05,950 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:25:05
+2024-03-14 15:25:05,953 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-14 15:25:05,953 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-14 15:25:42,197 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-14 15:25:42,534 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-14 15:25:42,535 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:26:44,603 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:26:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:27:44,613 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:27:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:28:44,617 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:28:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:29:44,621 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:29:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:30:44,628 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:30:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:31:44,642 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:31:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:32:44,646 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:32:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:33:44,651 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:33:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:34:44,654 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:34:44
+__inicio 15:25 ___fin 17:00
+2024-03-14 15:35:44,657 - CUSTOM - __inicio 15:25 ___fin 17:00 __hora_actual 15:35:44
+2024-03-14 15:37:39,083 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:39 ___fin 17:00
+2024-03-14 15:37:39,092 - CUSTOM - __inicio 15:39 ___fin 17:00 __hora_actual 15:37:39
+__inicio 15:39 ___fin 17:00
+2024-03-14 15:38:39,095 - CUSTOM - __inicio 15:39 ___fin 17:00 __hora_actual 15:38:39
+2024-03-14 15:41:17,226 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:43 ___fin 17:00
+2024-03-14 15:41:17,228 - CUSTOM - __inicio 15:43 ___fin 17:00 __hora_actual 15:41:17
+2024-03-14 15:41:17,231 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-14 15:41:17,232 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-14 15:41:29,587 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-14 15:41:29,936 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-14 15:41:29,937 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 15:43 ___fin 17:00
+2024-03-14 15:42:30,896 - CUSTOM - __inicio 15:43 ___fin 17:00 __hora_actual 15:42:30

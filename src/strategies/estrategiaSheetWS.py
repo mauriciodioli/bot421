@@ -4,6 +4,7 @@ from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
 import jwt
+import csv
 import json
 import random
 import routes.api_externa_conexion.get_login as get
@@ -271,7 +272,7 @@ def market_data_handler_estrategia(message):
         elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
             print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
         else:
-        
+            
             #tiempoAhora = datetime.now()
             #print('aqui va hacia la estrategia 001')
             estrategiaSheetNuevaWS(message, banderaLecturaSheet)
@@ -351,7 +352,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
     
     if Symbol in get.diccionario_global_operaciones:
         #print('___________________________________________________________')    
-        #print(message['instrumentId']['symbol']) 
+       # print(message['instrumentId']['symbol']) 
+        #rutaMDH = 'C:\\Users\\mDioli\\Documents\\tmp\\operacionesMDH_01.csv'
+        
+        #append_order_report_to_csv(Symbol, rutaMDH)
         tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
         senial = get.diccionario_global_operaciones[Symbol]['senial']
         TradeEnCurso =  get.diccionario_global_operaciones[Symbol]['tradeEnCurso']
@@ -367,16 +371,14 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                             
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
                                 
-                                FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
-                                porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30 
+                                #FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
+                               
                                 mepCedear=1                              
-                                if FlagCCLCedear == 1:
+                                if mepCedear == 1:
                                 
-                                    if senial == 'OPEN.':
-                                  
+                                    if senial == 'OPEN.':                                        
                                         #if message["marketData"]["OF"] != None:
-                                        if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar
-                                 
+                                        if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar                                 
                                             Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
                                         else:
                                    
@@ -388,29 +390,22 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                     if senial == 'closed.':  
                                         print("punto de control 1012")
                                         #if message["marketData"]["BI"] != None: 
-                                        if isinstance(message["marketData"]["BI"][0]["size"], int):
-                                  
+                                        if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
                                             Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        else:
-                                      
+                                        else:                                      
                                             #if message["marketData"]["LA"] != None:
                                             if isinstance(message["marketData"]["LA"]["size"], int):
                                                 print("punto de control 1015")
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                       
-                                    if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
-                                        print("punto de control 1016")
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
+                                  
+                                    if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
+                                        if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                            print("punto de control 1016")
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
+                                        else:
                                            
-                                           datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
-                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
-                                    else:
-                                                                        
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                           
-                                           datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
-                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
-                                         
+                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
+
                             if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
                                     
                                     mepCe =0
@@ -432,16 +427,14 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                             #if message["marketData"]["LA"] != None:
                                             if isinstance(message["marketData"]["LA"]["size"], int):                                  
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                        
-
-                                    if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                           
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
-                                    else:                                          
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and message != '':
-                                          
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
+                                    
+                                    if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
+                                        if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                                #print('operacionews')
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
+                                        else:                                          
+                                               
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
    # else:  
         #print(message['instrumentId']['symbol'])  
     #    print('______________________________________________________')                                   
@@ -501,8 +494,8 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
                 #print(' elemento1[0] ', elemento1 )
                 if elemento1[2] == 'LONG_':
                      if elemento1[3] != '0':
-                          if elemento1[4] == 'OPEN.':
-                  #        if elemento1[3] == 'OPEN.' or elemento1[3] == 'closed.':
+                         # if elemento1[4] == 'OPEN.':
+                          if elemento1[4] == 'OPEN.' or elemento1[4] == 'closed.':
                             if elemento1[0] == elemento2:
                                 coincidencias.append(elemento1)
                                # print(' elemento1[] ', elemento1[0])
@@ -558,7 +551,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
        
          if elemento[0] in get.diccionario_global_operaciones:
             contenido = get.diccionario_global_operaciones[elemento[0]]
-            print('cargó las operaciones correctmente en el diccionario global de operaciones')
+            print('cargó la operacion de ',elemento[0],' correctmente en diccionario global de operaciones')
          else:
             print("La clave", elemento[0], "no existe en el diccionario.")
 
@@ -590,6 +583,10 @@ def order_report_handler( order_report):
         status = order_data['status']  
         print('___________order_report_handler_______OPERADA__ ',status)
         timestamp_order_report = order_data['transactTime']  
+        
+        rutaORH = 'C:\\Users\\mDioli\\Documents\\tmp\\operacionesORH_01.csv'
+        
+        append_order_report_to_csv(order_report, rutaORH)
         # se fija que cuando venga el reporte el diccionario tenga elementos
         if es_numero(clOrdId):#esto se pone por que el clOrdId puede traer basura
             if len(get.diccionario_operaciones_enviadas) != 0:
@@ -862,3 +859,34 @@ def exception_error(message):
 
 def exception_handler(e):
     print("Exception Occurred: {0}".format(e.msg))
+
+
+
+
+
+
+def append_order_report_to_csv(report, rutaORH):
+    with open(rutaORH, mode='a', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        
+        # Comprobar si el archivo está vacío para escribir las cabeceras
+        file.seek(0)
+        if file.tell() == 0:
+            headers = []
+            for key, value in report.items():
+                if isinstance(value, dict):
+                    for sub_key in value.keys():
+                        headers.append(f"{key}_{sub_key}")
+                else:
+                    headers.append(key)
+            writer.writerow(headers)
+        
+        # Escribir los valores
+        values = []
+        for key, value in report.items():
+            if isinstance(value, dict):
+                for sub_value in value.values():
+                    values.append(sub_value)
+            else:
+                values.append(value)
+        writer.writerow(values)

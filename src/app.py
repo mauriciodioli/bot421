@@ -206,7 +206,7 @@ app.logger.custom = custom_log
 # Programar la tarea para que se ejecute a una hora específica
 @app.route('/logs')
 def logs():
-    print("Se está accediendo a la ruta /logs")
+    print("FUNC_ app.py Se está accediendo a la ruta /logs")
     return Response(generate_logs(), mimetype='text/event-stream')
 
 
