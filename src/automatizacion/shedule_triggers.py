@@ -133,6 +133,11 @@ def terminar_hilos(app):
                 app.logger.info("______TERMINA CONEXION WS___________")
                 app.logger.info("______TERMINA HILO__________________")
                 h.join()  # Espera a que el hilo termine su ejecución si aún está vivo
+   
+                if os.path.exists(logs_file_path):
+                # Eliminar el archivo
+                   os.remove(logs_file_path)
+                   app.logger.info("__________SE ELIMINO EL ARCHIVO LOGS.LOG______________")
         else:
                 app.logger.info("________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________")
            

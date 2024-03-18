@@ -94,11 +94,11 @@ ContenidoSheet_list = None
 #hora_inicio_manana = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=1), datetime.time(9, 0))
 
 # Configurar las URLs de la instancia de BMB
-#api_url = "https://api.bull.xoms.com.ar/"
-#ws_url = "wss://api.bull.xoms.com.ar/"
+api_url = "https://api.bull.xoms.com.ar/"
+ws_url = "wss://api.bull.xoms.com.ar/"
 
-api_url = "https://api.cocos.xoms.com.ar/"
-ws_url = "wss://api.cocos.xoms.com.ar/"
+#api_url = "https://api.cocos.xoms.com.ar/"
+#ws_url = "wss://api.cocos.xoms.com.ar/"
 
 
 

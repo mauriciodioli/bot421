@@ -141,7 +141,7 @@ def registrar_cuenta():
             
             try:
                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-               crea_tabla_cuenta()
+               #crea_tabla_cuenta()
                
                usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario correspondiente al user_id
                if selector == '1':
