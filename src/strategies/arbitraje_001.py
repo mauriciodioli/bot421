@@ -43,7 +43,7 @@ moving_average_window = deque(maxlen=window_size)
 
 
 
-arbitrador_activo = 3       # 1: Cci V48, 2: V48 Cci, 3:Ratio
+arbitrador_activo = 1       # 1: Cci V48, 2: V48 Cci, 3:Ratio
 miid_vg_a = 0
 miid_g_ca = 0
 miid_g_va = 0

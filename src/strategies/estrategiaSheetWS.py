@@ -3,6 +3,7 @@ import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
+import re
 import jwt
 import csv
 import json
@@ -68,7 +69,8 @@ def estrategia_001():
             get.VariableParaBotonPanico = 0
            
            
-            #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
+            CargOperacionAnterioDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
+            carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia)
             get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler)
@@ -80,16 +82,13 @@ def estrategia_001():
        #                             exception_handler=exception_handler
        #                             )
             #get.pyRofexInicializada.run_websocket()
-            carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
+           # carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
             # Crear una instancia de RofexMarketDataHandler
             
 
             
             
-    #  except:  
-    #      print("_EstrategyUno_contraseña o usuario incorrecto")  
-    #      flash('Loggin Incorrect')    
-    #      return render_template("errorLogueo.html" ) 
+        
     
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
@@ -265,16 +264,21 @@ def market_data_handler_estrategia(message):
         # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
         # para cumplir con el evento de mercado market data
 
+
+
         if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
         elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
         elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
-            print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
         else:
             
             #tiempoAhora = datetime.now()
-            #print('aqui va hacia la estrategia 001')
+            #print('*')
             estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             
             #tiempoDespues = datetime.now()
@@ -365,50 +369,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                
                 if get.diccionario_global_operaciones[Symbol]['ut'] !="0": 
                                                  
-                    if TradeEnCurso == 'LONG_':  
-                                          
-                        if senial != "":
-                            
-                            if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
-                                
-                                #FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
-                               
-                                mepCedear=1                              
-                                if mepCedear == 1:
-                                
-                                    if senial == 'OPEN.':                                        
-                                        #if message["marketData"]["OF"] != None:
-                                        if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar                                 
-                                            Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
-                                        else:
-                                   
-                                            #if message["marketData"]["LA"] != None:                                         
-                                            if isinstance(message["marketData"]["LA"]["size"], int):
-                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                            
-
-                                    if senial == 'closed.':  
-                                        print("punto de control 1012")
-                                        #if message["marketData"]["BI"] != None: 
-                                        if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
-                                            Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        else:                                      
-                                            #if message["marketData"]["LA"] != None:
-                                            if isinstance(message["marketData"]["LA"]["size"], int):
-                                                print("punto de control 1015")
-                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                  
-                                    if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear != 0 and message != '':
-                                        if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
-                                            print("punto de control 1016")
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
-                                        else:
-                                           
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
-
-                            if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
-                                    
-                                    mepCe =0
+                    if senial != "":
+                        
+                       if TradeEnCurso == 'LONG_': 
+                           
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:     
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):                                  
@@ -419,14 +383,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                         
 
-                                    if senial == 'closed.':  
-                                        #if message["marketData"]["BI"] != None: 
-                                        if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
-                                             Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        else:
-                                            #if message["marketData"]["LA"] != None:
-                                            if isinstance(message["marketData"]["LA"]["size"], int):                                  
-                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                  
                                     
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
@@ -435,6 +392,27 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                         else:                                          
                                                
                                                 datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
+                       else:
+                            
+                              if senial == 'closed.':  
+                                        #if message["marketData"]["BI"] != None: 
+                                 if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
+                                       Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
+                                       Liquidez_ahora_cedear = Liquidez_ahora_cedear
+                                 else:
+                                       #if message["marketData"]["LA"] != None:
+                                       if isinstance(message["marketData"]["LA"]["size"], int):                                  
+                                          Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                          Liquidez_ahora_cedear = Liquidez_ahora_cedear
+                               
+                                 if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
+                                        if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                                #print('Symbol ',Symbol)
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
+                                        else:                                          
+                                                #print('Symbol ',Symbol)       
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)    
+                                    
    # else:  
         #print(message['instrumentId']['symbol'])  
     #    print('______________________________________________________')                                   
@@ -481,10 +459,20 @@ def ConsultarFlagCCLCedearsWS(message):
 
 
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
-      
-     #filtrar las coincidencias entre las dos listas
-     #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
      coincidencias = []
+     contador_1=0
+     #filtrar las coincidencias entre las dos listas
+     for elemento1 in ContenidoSheet_list:
+        if contador_1 >= 2:
+          if elemento1[4] == 'closed.':   
+            for key, elemento2 in get.diccionario_operaciones_enviadas.items():
+              # print('elemento1 ', elemento1[0] ,' elemento2 ',elemento2['Symbol'])      
+               if elemento1[0] == elemento2['Symbol']:
+                    print(' elemento1[0] **********************', elemento1 )
+                    coincidencias.append(elemento1)
+        contador_1 += 1                           
+     #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
+    
      contador = 0
      for elemento1 in ContenidoSheet_list:
         if contador >= 2:
@@ -495,7 +483,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
                 if elemento1[2] == 'LONG_':
                      if elemento1[3] != '0':
                          # if elemento1[4] == 'OPEN.':
-                          if elemento1[4] == 'OPEN.' or elemento1[4] == 'closed.':
+                          if elemento1[4] == 'OPEN.':
                             if elemento1[0] == elemento2:
                                 coincidencias.append(elemento1)
                                # print(' elemento1[] ', elemento1[0])
@@ -551,7 +539,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
        
          if elemento[0] in get.diccionario_global_operaciones:
             contenido = get.diccionario_global_operaciones[elemento[0]]
-            print('cargó la operacion de ',elemento[0],' correctmente en diccionario global de operaciones')
+            print('cargó la operacion de ',elemento[0],' ut ',elemento[3],' correctmente en diccionario global de operaciones')
          else:
             print("La clave", elemento[0], "no existe en el diccionario.")
 
@@ -594,25 +582,37 @@ def order_report_handler( order_report):
                     
                     # if status == 'EXECUTED':
                 if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                    _operada(order_report)             
+                    _operada(order_report)   
+                       
         
 def _operada(order_report):
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']   
-    print('__________________OPERADA_____________ ',status)
-   
+    print(symbol,' _______************  OPERADA ****************_____________ ',order_data['text'])
+    
+    stock_para_closed = obtenerStock(order_data['text']) 
+    stock_para_closed = int(float(stock_para_closed))
+    print('stock_para_closed ',stock_para_closed)
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
                 for key, operacion in get.diccionario_operaciones_enviadas.items():
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
-                                ut_a_devolver = operacion['_ut_']                                
-                                operacion['status'] = 'TERMINADA'
+                                ut_a_devolver = operacion['_ut_']   
+                                if status == 'REJECTED':
+                                    ut_a_devolver = operacion['_ut_'] + stock_para_closed  
+                                    
+                                    print('ut_a_devolver ',ut_a_devolver) 
+                                    operacion['status'] = '0'
+                                else:                            
+                                    operacion['status'] = 'TERMINADA'
                                 for key, operacionGlobal in get.diccionario_global_operaciones.items():
                                     if operacionGlobal['symbol'] == symbol :
                                         #pprint.pprint(get.diccionario_global_operaciones)
-                                        operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
+                                        print(' antes operacionGlobal[ut] ', operacionGlobal['ut'], ' ut_a_devolver ',ut_a_devolver)
+                                        operacionGlobal['ut'] = int(operacionGlobal['ut']) + int(ut_a_devolver)
+                                        print(' operacionGlobal[ut] ', operacionGlobal['ut'])
                                         #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
                                         #pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
@@ -778,13 +778,57 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
-def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
+def CargOperacionAnterioDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
    try:        
-        repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+        repuesta_operacion = get.pyRofexInicializada.get_account_position()
+     
+        reporte = repuesta_operacion['positions']
         
-        datos = repuesta_operacion['orders']
+       
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
         diccionario = {}
+        get.diccionario_operaciones_enviadas.clear()
+        for posicion in reporte:
+            # Accedemos al símbolo de cada posición y lo almacenamos en el diccionario
+            symbol = posicion['symbol']
+            #print(symbol)
+        
+            diccionario = {
+                            "Symbol": symbol,
+                            "_t_": 'None',
+                            "_tr_": 'None',
+                            "_s_": 'None',
+                            "_ut_": 'orderQty',
+                            "precio Offer": 'None',
+                            "_ws_client_order_id": 'None',
+                            "_cliOrderId": 0,
+                            "timestamp": datetime.now(),
+                            "status": 'ANTERIOR',
+                            "statusActualBotonPanico":'ANTERIOR',
+                            "user_id": user_id,
+                            "userCuenta": userCuenta,
+                            "accountCuenta": accountCuenta
+                                }
+            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+            #pprint.pprint( get.diccionario_operaciones_enviadas)
+            #for key, valor in g et.diccionario_operaciones_enviadas.items():
+            #    print(key," : ",valor['_cliOrderId'])
+        return 'ok'
+   except Exception as e:       
+        print("error de carga de diccionario de enviados", e)  
+        flash(' error de carga de diccionario de enviados')    
+   return 'ok'                   
+def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
+   try:        
+        repuesta_operacion = get.pyRofexInicializada.get_detailed_position()
+     
+        reporte = repuesta_operacion['positions']
+        
+        datos = {}
+      
+        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
+        diccionario = {}
+        print(datos)
         get.diccionario_operaciones_enviadas.clear()
         for dato in datos:
           if dato['orderId'] is not None:
@@ -832,10 +876,37 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
             #for key, valor in g et.diccionario_operaciones_enviadas.items():
             #    print(key," : ",valor['_cliOrderId'])
         return 'ok'
-   except:  
-        print("error de carga de diccionario de enviados")  
+   except Exception as e:       
+        print("error de carga de diccionario de enviados", e)  
         flash(' error de carga de diccionario de enviados')    
    return 'ok'                   
+
+def obtenerStock(cadena):
+# Verificar si la cadena contiene la frase "Stock insuficiente"
+    if "Stock insuficiente" in cadena:
+        # Buscar el índice del signo "="
+        index = cadena.find("=")
+        # Extraer el valor después del signo "=" y eliminar los espacios en blanco al principio y al final
+        valor_despues_de_igual = cadena[index:].strip()
+        
+        #print('valor_despues_de_igual ' ,valor_despues_de_igual)
+       
+        # Buscar el número después del signo "=" utilizando una expresión regular
+        match = re.search(r'(?<== )-?\d+\.\d+', valor_despues_de_igual)
+       # print('match ' ,match)
+        # Verificar si se encontró una coincidencia
+        if match:
+            valor_despues_de_igual = match.group()
+           # print("El primer número después del signo '=' es:", valor_despues_de_igual)
+            valor = int(float(valor_despues_de_igual))
+           # print(valor)
+        
+            return valor_despues_de_igual
+        else:
+           return '0'
+    else:
+       return '0' 
+
 
 def endingOperacionBot (endingGlobal,endingEnviadas):
      if endingGlobal == 'SI' and endingEnviadas == 'SI' and get.diccionario_operaciones_enviadas:
@@ -850,6 +921,8 @@ def endingOperacionBot (endingGlobal,endingEnviadas):
         print("###############################################") 
         get.pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia)
           #      return render_template('home.html')    
+
+
 
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
