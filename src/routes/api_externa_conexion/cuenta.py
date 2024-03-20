@@ -127,10 +127,7 @@ def registrar_cuenta():
          passwordCuenta = request.form['contraseña']
          accountCuenta = request.form['cuenta']
          selector = request.form['environment']
-         print("___________cuentas___________userCuenta",userCuenta)
-        
-         print("___________cuentas___________accountCuenta",accountCuenta)
-         print("___________cuentas___________correo_electronico",correo_electronico)
+       
          # Codificar las cadenas usando UTF-8
          userCuenta_encoded = userCuenta.encode('utf-8')
          passwordCuenta_encoded = passwordCuenta.encode('utf-8')
