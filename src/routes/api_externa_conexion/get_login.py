@@ -99,7 +99,9 @@ ws_url = "wss://api.bull.xoms.com.ar/"
 
 #api_url = "https://api.cocos.xoms.com.ar/"
 #ws_url = "wss://api.cocos.xoms.com.ar/"
-
+ 
+#api_url = "https://api.veta.xoms.com.ar/"
+#ws_url = "wss://api.veta.xoms.com.ar/"
 
 
 # Creating  Routes

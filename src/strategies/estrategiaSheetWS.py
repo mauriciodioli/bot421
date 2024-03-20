@@ -240,7 +240,8 @@ def market_data_handler_estrategia(message):
    
     
     if response != 1: ### si es 1 el boton de panico fue activado
-        _cancela_orden(300)
+       # _cancela_orden(300)
+        _cancela_orden(30)
       #  print(" FUN: market_data_handler_estrategia: _")
         
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
@@ -278,8 +279,8 @@ def market_data_handler_estrategia(message):
         else:
             
             #tiempoAhora = datetime.now()
-            #print('*')
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            print('*')
+            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
@@ -416,60 +417,25 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
    # else:  
         #print(message['instrumentId']['symbol'])  
     #    print('______________________________________________________')                                   
-def ConsultarFlagCCLCedearsWS(message):
-     
-    # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
-    # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
-    # size = resultado2['BI'][0]['size']
-    # print("__________ko_ci____________",ko_ci)
-    # print("__________koD_ci____________",koD_ci)
-    # print("__________size____________",size)
-    # mep= ko_ci / koD_ci
-     
-     """"
-     if len(resultado['OF']) > 0:
-        offer_price = resultado['OF'][0]['price'] #vendedora OF
-     else:
-        offer_price=0
-        
-     if len(resultado['BI']) > 0:
-        bid_price =resultado['BI'][0]['price'] #compradora BI
-     else:
-        bid_price=0
-     """
-     offer_price=0      # borrar y programar bien
-     bid_price=0        # borrar y programar bien
-     mep=380            # borrar y programar bien
-     size=10
-     dato = [mep,size,offer_price,bid_price]
-     return dato
- 
- 
- 
- 
- 
-
-
-
-
-
-
-
 
 
 
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
      coincidencias = []
      contador_1=0
+     símbolos_vistos = set()
+
      #filtrar las coincidencias entre las dos listas
      for elemento1 in ContenidoSheet_list:
         if contador_1 >= 2:
           if elemento1[4] == 'closed.':   
             for key, elemento2 in get.diccionario_operaciones_enviadas.items():
-              # print('elemento1 ', elemento1[0] ,' elemento2 ',elemento2['Symbol'])      
+               #print('elemento1 ', elemento1[0] ,' elemento2 ',elemento2['Symbol'])      
                if elemento1[0] == elemento2['Symbol']:
-                    print(' elemento1[0] **********************', elemento1 )
-                    coincidencias.append(elemento1)
+                    if elemento2['Symbol'] not in símbolos_vistos: 
+                        print(' elemento1[0] **********************', elemento1 )
+                        coincidencias.append(elemento1)
+                        símbolos_vistos.add(elemento2['Symbol'])    
         contador_1 += 1                           
      #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
     
@@ -479,7 +445,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
             #print('elemento1 ', elemento1)        
             for elemento2 in message:
               #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
-                #print(' elemento1[0] ', elemento1 )
+               # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
                 if elemento1[2] == 'LONG_':
                      if elemento1[3] != '0':
                          # if elemento1[4] == 'OPEN.':
@@ -488,7 +454,8 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
                                 coincidencias.append(elemento1)
                                # print(' elemento1[] ', elemento1[0])
                                # print(coincidencias)
-        contador += 1        
+        contador += 1  
+          
     
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
      
@@ -569,11 +536,11 @@ def order_report_handler( order_report):
         clOrdId = order_data['clOrdId']        
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']  
-        print('___________order_report_handler_______OPERADA__ ',status)
+        #print('___________order_report_handler_______OPERADA__ ',status)
         timestamp_order_report = order_data['transactTime']  
         
         rutaORH = 'C:\\Users\\mDioli\\Documents\\tmp\\operacionesORH_01.csv'
-        
+        print('status ',status)
         append_order_report_to_csv(order_report, rutaORH)
         # se fija que cuando venga el reporte el diccionario tenga elementos
         if es_numero(clOrdId):#esto se pone por que el clOrdId puede traer basura
@@ -590,29 +557,25 @@ def _operada(order_report):
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']   
-    print(symbol,' _______************  OPERADA ****************_____________ ',order_data['text'])
+    #print(symbol,' _______************  OPERADA ****************_____________ ',order_data['text'])
     
     stock_para_closed = obtenerStock(order_data['text']) 
     stock_para_closed = int(float(stock_para_closed))
-    print('stock_para_closed ',stock_para_closed)
+    #print('stock_para_closed ',stock_para_closed)
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
                 for key, operacion in get.diccionario_operaciones_enviadas.items():
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
                                 ut_a_devolver = operacion['_ut_']   
                                 if status == 'REJECTED':
-                                    ut_a_devolver = operacion['_ut_'] + stock_para_closed  
-                                    
-                                    print('ut_a_devolver ',ut_a_devolver) 
+                                    ut_a_devolver = operacion['_ut_'] + stock_para_closed 
+                                   # print('ut_a_devolver ',ut_a_devolver) 
                                     operacion['status'] = '0'
                                 else:                            
                                     operacion['status'] = 'TERMINADA'
                                 for key, operacionGlobal in get.diccionario_global_operaciones.items():
                                     if operacionGlobal['symbol'] == symbol :
-                                        #pprint.pprint(get.diccionario_global_operaciones)
-                                        print(' antes operacionGlobal[ut] ', operacionGlobal['ut'], ' ut_a_devolver ',ut_a_devolver)
                                         operacionGlobal['ut'] = int(operacionGlobal['ut']) + int(ut_a_devolver)
-                                        print(' operacionGlobal[ut] ', operacionGlobal['ut'])
                                         #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
                                         #pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
@@ -622,24 +585,26 @@ def _operada(order_report):
                                 operacion['status'] = 'TERMINADA'
                                # pprint.pprint(g et.diccionario_global_operaciones_)
                                # pprint.pprint(g et.diccionario_operaciones_enviadas) 
+                          
+                
 
     if status == 'FILLED': 
+            endingGlobal = 'SI'  # Suponiendo inicialmente que todas las operaciones son 'si'
             endingEnviadas = 'SI'
-            endingGlobal = 'SI'  
-              
             for operacion_enviada in get.diccionario_operaciones_enviadas.values():  
-                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA':
-                    operacion_enviada['status'] = 'TERMINADA'
-                if  operacion_enviada['status'] != 'TERMINADA':
-                    endingEnviadas = 'NO'
-                 
+                print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas,'  operacion_enviada[status] ', operacion_enviada['status'])
+                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA' :
+                    operacion_enviada['status'] = 'TERMINADA'                     
+                    print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas)
+         
+
             for key, operacionGlobal in get.diccionario_global_operaciones.items():  
-               # print(key," : ",operacionGlobal['ut'])
-                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':
-                   operacionGlobal['status'] = '1'
-                   
-                if  operacionGlobal['status'] == '0':
+                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':                    
+                    operacionGlobal['status'] = '1'
+                    print(key," : ",operacionGlobal['status']," :",operacionGlobal['ut'])
+                else:  # Si alguna operación no es 'si'
                     endingGlobal = 'NO'
+               
             
             endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
@@ -671,7 +636,7 @@ def _cancela_orden(delay):
     timestamp_order_report = convert_datetime(timestamp_order_report, example_timezone_str)
      
     timestamp_order_report = str(timestamp_order_report)
-  
+    
     # Recorrer los elementos del diccionario_enviados
     for key, valor in get.diccionario_operaciones_enviadas.items():    
            
@@ -696,17 +661,18 @@ def _cancela_orden(delay):
             
             #if diferencia >= 300:
             if diferencia_segundos >= delay:
-            
+               #print('diferencia_segundos ',diferencia_segundos,' delay ',delay)
                _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])       
       
 def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
 
-    #print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
+    
     try:
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
+            print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
             get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
@@ -718,7 +684,9 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
                         
                         break  # Salir del bucle después de eliminar el elemento encontrado    
                 print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
-       
+        else:
+            print('No se puede cancelar la Orden, ya fue OPERADA') 
+            print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId) 
     except Exception as e:
         print("Error en Envio de Cancelacion de orden:", e)
     #    print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
@@ -784,35 +752,51 @@ def CargOperacionAnterioDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
      
         reporte = repuesta_operacion['positions']
         
+# Crear un conjunto para almacenar los símbolos ya vistos
+        símbolos_vistos = set()
+
+        for item in reporte:
+                símbolo = item['symbol']
+            # Verificar si el símbolo ya ha sido visto antes
+           # if símbolo not in símbolos_vistos:
+                # Si es la primera vez que se ve el símbolo, mostrar los detalles
+                print("Símbolo:", símbolo)
+                print("Cantidad de stock buySize:", item['buySize'])
+                print("Cantidad de stock sellSize:", item['sellSize'])
+                print()
+                # Agregar el símbolo al conjunto de símbolos vistos
+                símbolos_vistos.add(símbolo)
        
-        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
+        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",reporte)
         diccionario = {}
         get.diccionario_operaciones_enviadas.clear()
         for posicion in reporte:
             # Accedemos al símbolo de cada posición y lo almacenamos en el diccionario
-            symbol = posicion['symbol']
-            #print(symbol)
-        
-            diccionario = {
-                            "Symbol": symbol,
-                            "_t_": 'None',
-                            "_tr_": 'None',
-                            "_s_": 'None',
-                            "_ut_": 'orderQty',
-                            "precio Offer": 'None',
-                            "_ws_client_order_id": 'None',
-                            "_cliOrderId": 0,
-                            "timestamp": datetime.now(),
-                            "status": 'ANTERIOR',
-                            "statusActualBotonPanico":'ANTERIOR',
-                            "user_id": user_id,
-                            "userCuenta": userCuenta,
-                            "accountCuenta": accountCuenta
-                                }
-            get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
-            #pprint.pprint( get.diccionario_operaciones_enviadas)
-            #for key, valor in g et.diccionario_operaciones_enviadas.items():
-            #    print(key," : ",valor['_cliOrderId'])
+                symbol = posicion['symbol']
+           # if símbolo not in símbolos_vistos:
+             #   print('**************************** ',symbol)
+            
+                diccionario = {
+                                "Symbol": symbol,
+                                "_t_": 'None',
+                                "_tr_": 'None',
+                                "_s_": 'None',
+                                "_ut_": 'orderQty',
+                                "precio Offer": 'None',
+                                "_ws_client_order_id": 'None',
+                                "_cliOrderId": 0,
+                                "timestamp": datetime.now(),
+                                "status": 'ANTERIOR',
+                                "statusActualBotonPanico":'ANTERIOR',
+                                "user_id": user_id,
+                                "userCuenta": userCuenta,
+                                "accountCuenta": accountCuenta
+                                    }
+                get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+                #pprint.pprint( get.diccionario_operaciones_enviadas)
+                #for key, valor in g et.diccionario_operaciones_enviadas.items():
+                #    print(key," : ",valor['_cliOrderId'])
+                símbolos_vistos.add(símbolo)
         return 'ok'
    except Exception as e:       
         print("error de carga de diccionario de enviados", e)  
@@ -820,16 +804,12 @@ def CargOperacionAnterioDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
    return 'ok'                   
 def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
    try:        
-        repuesta_operacion = get.pyRofexInicializada.get_detailed_position()
-     
-        reporte = repuesta_operacion['positions']
+        repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
         
-        datos = {}
-      
+        datos = repuesta_operacion['orders']
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
         diccionario = {}
-        print(datos)
-        get.diccionario_operaciones_enviadas.clear()
+        get.diccionario_operaciones_enviadas.clear()        
         for dato in datos:
           if dato['orderId'] is not None:
             if es_numero(dato['clOrdId']):  
@@ -909,6 +889,7 @@ def obtenerStock(cadena):
 
 
 def endingOperacionBot (endingGlobal,endingEnviadas):
+     print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas)
      if endingGlobal == 'SI' and endingEnviadas == 'SI' and get.diccionario_operaciones_enviadas:
          
         get.diccionario_operaciones_enviadas.clear()

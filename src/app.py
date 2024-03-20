@@ -35,10 +35,13 @@ from routes.api_externa_conexion.comprar import comprar
 from routes.api_externa_conexion.operaciones import operaciones
 from routes.api_externa_conexion.validaInstrumentos import validaInstrumentos
 from routes.api_externa_conexion.cuenta import cuenta
+
 from routes.api_externa_conexion.wsocket import wsocket
 from routes.suscripciones import suscripciones
 
 from cuentas.cuentaUsuarioBroker import cuentas
+from cuentas.endPointBrokers import endPointBrokers
+
 from fichasTokens.fichas import fichas
 
 from usuarios.autenticacion import autenticacion
@@ -62,6 +65,7 @@ from models.orden import orden
 from models.ficha import ficha
 from models.trazaFicha import trazaFicha
 from models.operacion import operacion
+from models.brokers import brokers
 from models.operacionHF import operacionHF
 from models.logs import logs
 from models.creaTablas import creaTabla
@@ -137,6 +141,8 @@ app.register_blueprint(instrumentosGet)
 app.register_blueprint(get_login)
 app.register_blueprint(cuenta)
 app.register_blueprint(cuentas)
+app.register_blueprint(endPointBrokers)
+app.register_blueprint(brokers)
 app.register_blueprint(orden)
 app.register_blueprint(comprar)
 app.register_blueprint(operacion)

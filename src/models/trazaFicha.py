@@ -7,13 +7,12 @@ from sqlalchemy.orm import relationship
 ma = Marshmallow()
 
 trazaFicha = Blueprint('trazaFicha', __name__)
-
 class TrazaFicha(db.Model):
     __tablename__ = 'trazaFichas'
     id = db.Column(Integer, primary_key=True, autoincrement=True)
     idFicha = db.Column(Integer, ForeignKey('ficha.id'))  
     user_id_traspaso = db.Column(Integer, ForeignKey('usuarios.id'))  
-    
+    broker_id = db.Column(db.Integer, db.ForeignKey('brokers.id'), nullable=True)
     cuenta_broker_id_traspaso = db.Column(Integer, ForeignKey('cuentas.id'))  
     fecha_traspaso = db.Column(DateTime)
     fecha_habilitacion = db.Column(DateTime)
@@ -28,7 +27,7 @@ class TrazaFicha(db.Model):
     ficha = relationship('Ficha', back_populates='trazaFichas')    
     usuario = relationship('Usuario', back_populates='trazaFichas')  
     cuentas = relationship("Cuenta", back_populates="trazaFichas", overlaps="cuenta")
-
+    broker = relationship("Broker", back_populates="traza_fichas")
      
     def __init__(self, idFicha, user_id_traspaso, cuenta_broker_id_traspaso, fecha_traspaso, 
                  fecha_habilitacion, fecha_denuncia, fecha_baja, user_id_denuncia, user_id_alta, 

@@ -13,14 +13,16 @@ cuentas = Blueprint('cuentas',__name__)
 class Cuenta(db.Model):
     __tablename__ = 'cuentas'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('usuarios.id'))  
+    user_id = Column(Integer, ForeignKey('usuarios.id'))      
+    broker_id = db.Column(db.Integer, db.ForeignKey('brokers.id'), nullable=True)
     userCuenta = db.Column(db.String(120), unique=True, nullable=False)
     passwordCuenta = db.Column(db.LargeBinary(128), nullable=False)
     accountCuenta = db.Column(db.String(500), nullable=True)
     selector = db.Column(db.String(500), nullable=True)
     ficha = relationship("Ficha", back_populates="cuentas")
     trazaFichas = relationship('TrazaFicha', backref='cuenta')    
-    usuarios = relationship("Usuario", back_populates="cuentas")
+    usuarios = relationship("Usuario", back_populates="cuentas")   
+    broker = relationship("Broker", back_populates="cuentas")
 
     
  # constructor

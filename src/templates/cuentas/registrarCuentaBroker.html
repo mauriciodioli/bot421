@@ -35,12 +35,15 @@
           <input type="text" name="usuario" class="mb-3" placeholder="user">  
           <input type="text" name="contraseña" class="mb-3" placeholder="password">
           <input type="text" name="cuenta" class="mb-3" placeholder="account">
-            
+          <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment" id="selctorEnvironment">
+          <option selected>Open this select menu</option>
+          </select>
           <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment" id="selctorEnvironment">
             <option selected>Open this select menu</option>
             <option value="1">Simulacion</option>
             <option value="2">Produccion</option>     
-          </select>  
+          </select> 
+           
           <div class="col mb-3">           
             <button type="submit" class="btn btn-primary my-2">Agregar cuenta</button>
           </div>
@@ -49,15 +52,10 @@
       </div>
 
       <div class="col-md-6">
-        <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
-          <input type="hidden" name="access_token" id="access_token">
-          <div class="col">  
-              <button type="submit" class="btn btn-secondary my-2">Cuentas existentes</button> 
-          </div>
-        </form>
+      
 
-        <div class="container" id="cardIndex">                
-          <div class="card-body cardIndexTriggers">
+        <div class="container" id="cardCuentaBroker">                
+          <div class="card-body cardIndexCuentaBroker">
               <div class="row">
                   <div class="col text-start">
                       <label for="lanzar" style="color: gold;">Cuentas de Brokers</label>
@@ -67,10 +65,15 @@
               <div class="row mt-3">
                   <div class="col text-center">
                       <label for="lanzar" style="color: gold;">Press Enter to lock the account for operation.</label>
-                      
-                      <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
+                      <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
+                        <input type="hidden" name="access_token" id="access_token">
+                        <div class="col">                            
+                            <button id="enviarSolicitud" type="submit" class="btn btn-secondary w-100" style="transition: box-shadow 0.3s;"
                               onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
-                              data-bs-toggle="modal" data-bs-target="#modalSeleccionPais">Cuentas existentes</button>
+                              data-bs-toggle="modal" >Cuentas existentes</button>
+                        </div>
+                      </form>
+                      
                   </div>
               </div>
               
@@ -184,6 +187,45 @@
     $("input[name='access_token']").val(access_token);
     $("input[name='access_token_form2']").val(access_token);
   });
+
+
+
+
+// Función para cargar las opciones del combo
+function cargarOpcionesCombo() {
+  // Realizar una solicitud Ajax para obtener las opciones del combo
+  fetch('/cuenta-endpoint-all/', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          accessToken: access_token // Reemplaza 'TOKEN_AQUI' con el token adecuado
+      })
+  })
+  .then(response => response.json())
+  .then(data => {
+      const selectElement = document.getElementById('selctorEnvironment');
+      // Limpiar las opciones existentes
+      selectElement.innerHTML = '';
+
+      // Agregar las nuevas opciones desde los datos obtenidos
+      data.endpoints.forEach(endpoint => {
+          const optionElement = document.createElement('option');
+          optionElement.value = endpoint.id; // Cambiar por el valor correcto
+          optionElement.textContent = endpoint.nombre; // Cambiar por el texto correcto
+          selectElement.appendChild(optionElement);
+      });
+  })
+  .catch(error => console.error('Error al cargar opciones del combo:', error));
+}
+
+// Llamar a la función para cargar las opciones del combo cuando la página se cargue
+window.addEventListener('DOMContentLoaded', cargarOpcionesCombo);
+
+
+
+
      
     </script>
     
