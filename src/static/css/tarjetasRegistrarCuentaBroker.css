@@ -1,5 +1,5 @@
 /* Estilos para el contenedor de las tarjetas */
-#cardIndex {
+#cardCuentaBroker {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -10,7 +10,7 @@
   }
   
   /* Estilos para las tarjetas */
-  .cardIndexTriggers {
+  .cardIndexCuentaBroker {
     flex: 1 0 300px;
     transition: box-shadow 0.3s;
     cursor: pointer; /* Cambia el cursor al pasar por encima de las tarjetas */
@@ -22,12 +22,12 @@
   }
   
   /* Estilos adicionales para aplicar sombra más grande al pasar el mouse o seleccionar */
-  .cardIndexTriggers:hover,
-  .cardIndexTriggers:focus {
+  .cardIndexCuentaBroker:hover,
+  .cardIndexCuentaBroker:focus {
     box-shadow: 0 10px 20px rgb(255, 20, 243); /* Sombra más grande al pasar el mouse o seleccionar */
   }
   /* Estilos para las tarjetas */
-  .cardIndexTriggersAzul {
+  .cardIndexCuentaBrokerAzul {
     flex: 1 0 300px;
     transition: box-shadow 0.3s;
     cursor: pointer; /* Cambia el cursor al pasar por encima de las tarjetas */
@@ -39,13 +39,13 @@
   }
   
   /* Estilos adicionales para aplicar sombra más grande al pasar el mouse o seleccionar */
-  .cardIndexTriggersAzul:hover,
-  .cardIndexTriggersAzul:focus {
+  .cardIndexCuentaBrokerAzul:hover,
+  .cardIndexCuentaBrokerAzul:focus {
     box-shadow: 0 10px 20px rgb(52, 133, 255); /* Sombra más grande al pasar el mouse o seleccionar */
   }
   /* Estilos adicionales para que las tarjetas sean responsive en pantallas pequeñas */
   @media (max-width: 768px) {
-    .cardIndexTriggersAzul {
+    .cardIndexCuentaBrokerAzul {
       flex-basis: 100%; /* Ocupar todo el ancho en pantallas pequeñas */
     }
   }
@@ -152,7 +152,7 @@
   }
   
   .image svg {
-    color: #dc2635;
+    color: #DC2626;
     width: 1.5rem;
     height: 1.5rem;
   }

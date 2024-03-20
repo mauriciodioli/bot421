@@ -24,8 +24,9 @@
           <th scope="col">id</th>
           <th scope="col">Usuario</th>
           <th scope="col">Cuenta</th>  
-          <th scope="col">Password</th>  
-          <th scope="col">Tipo</th>                                                     
+          <th scope="col">Password</th>
+          <th scope="col">Broker</th>  
+          <th scope="col">Tipo</th>                                                               
           <th scope="col">Select Account</th>
           <th scope="col">Quitar</th>                                                                         
         </tr>            
@@ -38,6 +39,7 @@
                 <th scope="row">{{ dato.userCuenta }}</th> 
                 <th scope="row">{{ dato.accountCuenta }}</th>
                 <th scope="row">{{ dato.passwordCuenta }}</th> 
+                <th scope="row">{{ dato.broker_id }}</th> 
                 <th scope="row">{{ dato.selector }}</th> 
                 <td>
                 <form  id="splash-form" action="/loginExtCuentaSeleccionadaBroker" method="POST">

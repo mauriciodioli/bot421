@@ -21,7 +21,7 @@
           <th scope="col">id</th>          
           <th scope="col">user_id</th>
           <th scope="col">userCuenta</th>
-          <th scope="col">accountCuenta</th>
+          <th scope="col">accountCuenta</th>         
           <th scope="col">Acciones</th>
         </tr>            
       </thead>
@@ -32,8 +32,7 @@
           <td>{{ Cuenta.id }}</td>
           <td>{{ Cuenta.user_id }}</td>          
           <td>{{ Cuenta.userCuenta }}</td>
-          <td>{{ Cuenta.accountCuenta }}</td>          
-         
+          <td>{{ Cuenta.accountCuenta }}</td> 
           <td class="d-flex">          
             <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarCuentaModal" data-Cuenta-id="{{ Cuenta.id }}" onclick="setUserData(this.getAttribute('data-Cuenta-id'))">Eliminar</button>
 
