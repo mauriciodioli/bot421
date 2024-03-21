@@ -106,6 +106,8 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
             orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
 
             if orden_existente:
+                print(dato[4])
+                print('symbol ',dato[0] ,' orden_existente.clOrdId_alta_timestamp ',orden_existente.clOrdId_alta_timestamp,'orden_existente.senial ',orden_existente.senial)
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
                 dato += dato_extra
             else:
@@ -113,7 +115,8 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
 
             dato.append(i+1)
             datos_procesados.append(tuple(dato))
-
+            #for tupla in datos_procesados:
+                #print(tupla)
     return datos_procesados
 
 def llenar_diccionario_cada_15_segundos_sheet(pais):
