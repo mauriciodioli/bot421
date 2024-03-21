@@ -33,16 +33,22 @@
           <input type="hidden" name="origin_page" value="registrarCuentaBroker" class="mb-3">
         
           <input type="text" name="usuario" class="mb-3" placeholder="user">  
-          <input type="text" name="contraseña" class="mb-3" placeholder="password">
           <input type="text" name="cuenta" class="mb-3" placeholder="account">
-          <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment" id="selctorEnvironment">
-          <option selected>Open this select menu</option>
+          <input type="text" name="contraseña" class="mb-3" placeholder="password">
+          
+
+          <input type="hidden" name="broker_id" id="broker_id" class="mb-3">
+          <input type="hidden" name="broker_nombre" id="broker_nombre" class="mb-3">
+
+          <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment1" id="selctorEnvironment1">
+            <option selected>Open this select menu</option>
           </select>
-          <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment" id="selctorEnvironment">
+          <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment2" id="selctorEnvironment2">
             <option selected>Open this select menu</option>
             <option value="1">Simulacion</option>
             <option value="2">Produccion</option>     
-          </select> 
+        </select> 
+        
            
           <div class="col mb-3">           
             <button type="submit" class="btn btn-primary my-2">Agregar cuenta</button>
@@ -174,21 +180,31 @@
   document.getElementById("correo_electronico").value = correo_electronico;
 
   $(document).ready(function() {
-    // Escuchar el evento de cambio en el combobox
-    $("#selctorEnvironment").change(function() {
+    // Escuchar el evento de cambio en el combobox 1
+    $("#selctorEnvironment1").change(function() {
       // Obtener el valor seleccionado
+      
       var selectedValue = $(this).val();
-
-      // Asignar el valor al campo de entrada oculto "environment" en ambos formularios
-      $("input[name='environment']").val(selectedValue);
+    
+  
+      // Asignar el valor al campo de entrada oculto "environment" en el formulario 1
+      $("input[name='broker_id']").val(selectedValue);
     });
-
+  
+    // Escuchar el evento de cambio en el combobox 2
+    $("#selctorEnvironment2").change(function() {
+      // Obtener el valor seleccionado
+      var selectedValue2 = $(this).val();
+     
+  
+      // Asignar el valor al campo de entrada oculto "environment" en el formulario 2
+      $("input[name='environment']").val(selectedValue2);
+    });
+  
     // Asignar el valor del access token al campo oculto en ambos formularios
     $("input[name='access_token']").val(access_token);
     $("input[name='access_token_form2']").val(access_token);
   });
-
-
 
 
 // Función para cargar las opciones del combo
@@ -205,7 +221,7 @@ function cargarOpcionesCombo() {
   })
   .then(response => response.json())
   .then(data => {
-      const selectElement = document.getElementById('selctorEnvironment');
+      const selectElement = document.getElementById('selctorEnvironment1');
       // Limpiar las opciones existentes
       selectElement.innerHTML = '';
 
@@ -216,6 +232,19 @@ function cargarOpcionesCombo() {
           optionElement.textContent = endpoint.nombre; // Cambiar por el texto correcto
           selectElement.appendChild(optionElement);
       });
+
+       // Agregar un event listener para el cambio en el selector de entorno
+       selectElement.addEventListener('change', function() {
+        // Obtener el valor y el texto seleccionados
+        const selectedOption = this.options[this.selectedIndex];
+        const brokerId = selectedOption.value;
+        const brokerNombre = selectedOption.textContent;
+
+        // Actualizar los campos ocultos con los valores seleccionados
+        document.getElementById('broker_id').value = brokerId;
+        document.getElementById('broker_nombre').value = brokerNombre;
+    });
+
   })
   .catch(error => console.error('Error al cargar opciones del combo:', error));
 }

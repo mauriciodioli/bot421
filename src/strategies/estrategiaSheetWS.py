@@ -241,7 +241,7 @@ def market_data_handler_estrategia(message):
     
     if response != 1: ### si es 1 el boton de panico fue activado
        # _cancela_orden(300)
-        _cancela_orden(30)
+        _cancela_orden(300)
       #  print(" FUN: market_data_handler_estrategia: _")
         
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
@@ -279,8 +279,8 @@ def market_data_handler_estrategia(message):
         else:
             
             #tiempoAhora = datetime.now()
-            print('*')
-            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            #pass
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
@@ -564,13 +564,18 @@ def _operada(order_report):
     #print('stock_para_closed ',stock_para_closed)
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
-                for key, operacion in get.diccionario_operaciones_enviadas.items():
+                for key, operacion in get.diccionario_operaciones_enviadas.items():#11111
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
                                 ut_a_devolver = operacion['_ut_']   
-                                if status == 'REJECTED':
+                                if status == 'REJECTED' :
                                     ut_a_devolver = operacion['_ut_'] + stock_para_closed 
-                                   # print('ut_a_devolver ',ut_a_devolver) 
-                                    operacion['status'] = '0'
+                                    print('ut_a_devolver ',ut_a_devolver) 
+                                    
+                                    if ut_a_devolver <= 0:
+                                       print('ut_a_devolver  == 0',ut_a_devolver)
+                                       operacion['status'] = 'TERMINADA'
+                                    else: 
+                                       operacion['status'] = '0'
                                 else:                            
                                     operacion['status'] = 'TERMINADA'
                                 for key, operacionGlobal in get.diccionario_global_operaciones.items():
@@ -638,6 +643,7 @@ def _cancela_orden(delay):
     timestamp_order_report = str(timestamp_order_report)
     
     # Recorrer los elementos del diccionario_enviados
+    
     for key, valor in get.diccionario_operaciones_enviadas.items():    
            
             tiempo_diccionario = valor["timestamp"]
@@ -661,18 +667,16 @@ def _cancela_orden(delay):
             
             #if diferencia >= 300:
             if diferencia_segundos >= delay:
-               #print('diferencia_segundos ',diferencia_segundos,' delay ',delay)
+              # print('diferencia_segundos ',diferencia_segundos,' delay ',delay)
                _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])       
       
 def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
-
-    
     try:
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
-            print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
+            print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
             get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
@@ -681,12 +685,13 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
                     if operacion_enviada["status"] != 'PENDING_CANCEL':
                         operacion_enviada["status"] = 'PENDING_CANCEL'  
                         operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL' 
-                        
+                        print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
                         break  # Salir del bucle después de eliminar el elemento encontrado    
-                print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
+               
         else:
-            print('No se puede cancelar la Orden, ya fue OPERADA') 
-            print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId) 
+            pass
+            #print('No se puede cancelar la Orden order_status no corresponde') 
+            #print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId) 
     except Exception as e:
         print("Error en Envio de Cancelacion de orden:", e)
     #    print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
@@ -906,7 +911,7 @@ def endingOperacionBot (endingGlobal,endingEnviadas):
 
 
 def error_handler(message):
-  print("Mensaje de error: {0}".format(message))
+  print("error_handler Mensaje de error: {0}".format(message))
   
 def exception_error(message):
   print("Mensaje de excepción: {0}".format(message))  

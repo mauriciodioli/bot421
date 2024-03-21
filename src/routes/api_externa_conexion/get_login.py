@@ -23,6 +23,7 @@ import routes.api_externa_conexion.cuenta as cuenta
 import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from models.brokers import Broker
 
 import automatizacion.programar_trigger as trigger
 import automatizacion.shedule_triggers as shedule_triggers
@@ -195,9 +196,9 @@ def loginExtAutomatico():
                             fecha_actual =   datetime.utcnow()
                             if fecha_actual > exp_date:
                                 environment = pyRofexInicializada.Environment.LIVE
-                                
-                                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
-                                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
+                                endPoint = inicializar_variables(cuentas.accountCuenta)
+                                pyRofexInicializada._set_environment_parameter("url", endPoint[0],environment)
+                                pyRofexInicializada._set_environment_parameter("ws", endPoint[1],environment)                                
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)                                
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion(app)
@@ -271,7 +272,7 @@ def loginExtCuentaSeleccionadaBroker():
             return redirect(url_for('autenticacion.index'))
 
         try:
-            inicializar_variables_globales()
+           
             app = current_app._get_current_object() 
             #creaJsonParaConextarseSheetGoogle()
             if selector == 'simulado':
@@ -286,9 +287,9 @@ def loginExtCuentaSeleccionadaBroker():
             else:
                 # Configurar para el entorno LIVE
                 environments = pyRofexInicializada.Environment.LIVE
-                
-                pyRofexInicializada._set_environment_parameter("url", api_url,environments)
-                pyRofexInicializada._set_environment_parameter("ws", ws_url,environments) 
+                endPoint = inicializar_variables(accountCuenta)
+                pyRofexInicializada._set_environment_parameter("url", endPoint[0],environments)
+                pyRofexInicializada._set_environment_parameter("ws", endPoint[1],environments) 
                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
                
 
@@ -334,8 +335,28 @@ def loginExtCuentaSeleccionadaBroker():
 
     
 
-def inicializar_variables_globales():
-    global pyRofexInicializada, pyConectionWebSocketInicializada, pyWsSuscriptionInicializada
+def inicializar_variables(accountCuenta):
+    valores = []  # Inicializar la lista
+    
+        # Buscar la cuenta asociada a la cuentaCuenta proporcionada
+    cuenta = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
+
+    if cuenta:
+        # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
+        broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
+        
+        if broker:
+              # Agregar los valores de api_url y ws_url a la lista 'valores'
+            valores = [broker.api_url, broker.ws_url]
+            # Hacer algo con el objeto Broker encontrado
+            print(f"El broker asociado a la cuenta es: {broker.nombre}")
+        else:
+            print("No se encontró el broker asociado a la cuenta.")
+    else:
+        print("No se encontró la cuenta.")
+
+        
+    return valores
     
     
    
