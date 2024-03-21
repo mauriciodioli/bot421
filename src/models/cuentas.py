@@ -26,17 +26,18 @@ class Cuenta(db.Model):
 
     
  # constructor
-    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,selector):
+    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,selector,broker_id):
         self.id = id
         self.user_id = user_id
         self.userCuenta = userCuenta
         self.passwordCuenta = passwordCuenta
         self.accountCuenta = accountCuenta
         self.selector = selector
+        self.broker_id = broker_id
 
    
     def __repr__(self):
-        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector})"
+        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector} broker_id={self.broker_id})"
     @classmethod
     def crear_tabla_cuentas(self):
          insp = inspect(db.engine)
@@ -47,7 +48,7 @@ class Cuenta(db.Model):
         
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta","selector")
+        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta","selector","broker_id")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
