@@ -106,8 +106,8 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
             orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
 
             if orden_existente:
-                print(dato[4])
-                print('symbol ',dato[0] ,' orden_existente.clOrdId_alta_timestamp ',orden_existente.clOrdId_alta_timestamp,'orden_existente.senial ',orden_existente.senial)
+                
+               # print('symbol ',dato[0] ,' dato[4] ',dato[4],' orden_existente.clOrdId_alta_timestamp ',orden_existente.clOrdId_alta_timestamp,'orden_existente.senial ',orden_existente.senial)
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
                 dato += dato_extra
             else:
