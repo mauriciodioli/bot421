@@ -11,6 +11,7 @@
       <hr class="my-4">  
     </div> 
    <!-- <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>-->
+   <div class="table-responsive"> 
     <table class="table table-dark table-striped"  id="signalTable">
       <thead>           
         <tr>
@@ -33,7 +34,7 @@
            
       </tbody>
     </table>
-    
+  </div>
         <div class="modal-content" style="color: black;">
           <form id="registro-usuario-form" action="/operaciones_desde_seniales_sin_cuenta" method="POST">
             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
@@ -185,11 +186,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (dato[4] === 'OPEN.'  && dato[8] === null){
                                                                   
                       //if (dato[4] !== dato[8]) {
-                        if (dato[7] !== null) {
+                        //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
                           // campana.play();
-                              mostrarNotificacion(dato);
-                          }
+                       //       mostrarNotificacion(dato);
+                       //   }
                           var row = document.createElement('tr');
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
@@ -234,11 +235,11 @@ document.addEventListener('DOMContentLoaded', function() {
                  if (dato[4] === 'closed.' && dato[8] !== null) {    
                                                             
                       if (dato[4] !== dato[8]) {
-                        if (dato[7] !== null) {
+                        //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
                           // campana.play();
-                              mostrarNotificacion(dato);
-                          }
+                        //      mostrarNotificacion(dato);
+                       //   }
                           var row = document.createElement('tr');
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
@@ -282,6 +283,134 @@ document.addEventListener('DOMContentLoaded', function() {
                   
                 }
           
+                if (
+                  (dato[1] === 'USA') &&
+                  (dato[2] === 'LONG_' || (dato[2] === 'SHORT'))
+                 ) {
+                        if (dato[4] === 'OPEN.'  && dato[8] === null){
+                                                                      
+                          //if (dato[4] !== dato[8]) {
+                          //  if (dato[7] !== null) {
+                              // var campana = document.getElementById('Campana');
+                              // campana.play();
+                          //        mostrarNotificacion(dato);
+                          //    }
+                              var row = document.createElement('tr');
+                              var numeroDeOrden = i + 1; // Empieza desde 1
+                              var filaId = 'fila-' + i;
+                              row.setAttribute('id', filaId);
+                              row.innerHTML = `
+                                <td>${numeroDeOrden}</td>
+                                <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                                <td>${dato[1]}</td>
+                                <td>${dato[4]}</td>
+                                <td>${dato[2]}</td>
+                                <td>${dato[3]}</td>
+                                <td>${dato[8]}</td>
+                                <td>${dato[7]}</td>
+                                <td>
+                                  <div class="form-group">
+                                    <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                                  </div>
+                                  <div class="form-group">
+                                    <input type="hidden" name="senial" value="{{ senial }}">
+                                    <input type="hidden" name="ut" value="{{ ut }}">
+                                    <input type="hidden" id="datoValor" class="form-control">
+                                    ${
+                                      dato[4] == 'OPEN.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                    ${
+                                      dato[4] == 'closed.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                  </div>
+                                </td>
+                              `;
+                              tableBody.appendChild(row);
+                          }
+    
+                       // }
+    
+    
+                        
+                     if (dato[4] === 'closed.' && dato[8] !== null) {    
+                                                                
+                          if (dato[4] !== dato[8]) {
+                           // if (dato[7] !== null) {
+                              // var campana = document.getElementById('Campana');
+                              // campana.play();
+                                 // mostrarNotificacion(dato);
+                           //   }
+                              var row = document.createElement('tr');
+                              var numeroDeOrden = i + 1; // Empieza desde 1
+                              var filaId = 'fila-' + i;
+                              row.setAttribute('id', filaId);
+                              row.innerHTML = `
+                                <td>${numeroDeOrden}</td>
+                                <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                                <td>${dato[1]}</td>
+                                <td>${dato[4]}</td>
+                                <td>${dato[2]}</td>
+                                <td>${dato[3]}</td>
+                                <td>${dato[8]}</td>
+                                <td>${dato[7]}</td>
+                                <td>
+                                  <div class="form-group">
+                                    <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                                  </div>
+                                  <div class="form-group">
+                                    <input type="hidden" name="senial" value="{{ senial }}">
+                                    <input type="hidden" name="ut" value="{{ ut }}">
+                                    <input type="hidden" id="datoValor" class="form-control">
+                                    ${
+                                      dato[4] == 'OPEN.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                    ${
+                                      dato[4] == 'closed.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                  </div>
+                                </td>
+                              `;
+                              tableBody.appendChild(row);
+                          }
+                         
+                        }
+    
+                    
+                      
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           
           $(document).ready(function () {
             // Iterar sobre las filas de la tabla
