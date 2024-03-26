@@ -1,0 +1,39 @@
+#modalContent {
+    color: black; /* Cambiar el color del texto a negro */
+    display: flex; /* Mostrar como flexbox para controlar el diseño */
+}
+
+
+.table-container {
+    flex: 1; /* Hace que los contenedores ocupen el mismo ancho */
+    margin-right: 10px; /* Añade espacio entre las tablas */
+}
+
+.table-ventas,
+.table-compras {
+    width: 100%; /* Hace que las tablas ocupen todo el ancho del contenedor */
+}
+#precioLA {
+    color: green;
+}
+
+#listadoPreciosLabel{
+    color: green;
+}
+
+
+#fechaActual {
+    color: rgb(34, 7, 133);
+}
+#encabezado {
+    color: rgb(34, 7, 133);
+}
+/* Estilos para el precio de compra */
+.compra {
+    color: green; /* Color verde para el precio de compra */
+}
+
+/* Estilos para el precio de venta */
+.venta {
+    color: red; /* Color rojo para el precio de venta */
+}

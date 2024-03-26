@@ -99,15 +99,14 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
     datos_procesados = []
 
-    for i, tupla_exterior in enumerate(datos_desempaquetados):
-        dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
+    # Abrir la sesión de la base de datos fuera del bucle
+    with db.session.begin():
+        for i, tupla_exterior in enumerate(datos_desempaquetados):
+            dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
 
-        with db.session.begin(subtransactions=True):
             orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
 
             if orden_existente:
-                
-               # print('symbol ',dato[0] ,' dato[4] ',dato[4],' orden_existente.clOrdId_alta_timestamp ',orden_existente.clOrdId_alta_timestamp,'orden_existente.senial ',orden_existente.senial)
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
                 dato += dato_extra
             else:
@@ -115,9 +114,13 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
 
             dato.append(i+1)
             datos_procesados.append(tuple(dato))
-            #for tupla in datos_procesados:
-                #print(tupla)
+            # No es necesario imprimir las tuplas aquí
+
+    # Cerrar la sesión de la base de datos después del bucle
+    db.session.close()
+
     return datos_procesados
+
 
 def llenar_diccionario_cada_15_segundos_sheet(pais):
     get.hilo_iniciado_panel_control
