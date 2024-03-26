@@ -618,3 +618,560 @@ __inicio 15:43 ___fin 17:00
 2024-03-14 15:41:29,937 - INFO - ___________________Se se inicia hilo de estrategia______________________
 __inicio 15:43 ___fin 17:00
 2024-03-14 15:42:30,896 - CUSTOM - __inicio 15:43 ___fin 17:00 __hora_actual 15:42:30
+2024-03-22 12:01:41,381 - INFO - 00000000000000000000000000000 cuentaaaaaaaaaaa 
+2024-03-22 12:10:09,103 - INFO - https://api.veta.xoms.com.ar/
+2024-03-22 12:17:04,007 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 12:51:58,533 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 12:54:41,869 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 14:39:34,548 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 14:54:39,695 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 15:41:35,184 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 15:43:28,051 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 15:48:15,476 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-22 15:50:01,710 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 09:28:33,192 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:00 ___fin 17:00
+2024-03-25 09:28:33,198 - CUSTOM - __inicio 12:00 ___fin 17:00 __hora_actual 09:28:33
+2024-03-25 09:29:59,154 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 09:31 ___fin 09:33
+2024-03-25 09:29:59,160 - CUSTOM - __inicio 09:31 ___fin 09:33 __hora_actual 09:29:59
+__inicio 09:31 ___fin 09:33
+2024-03-25 09:30:59,164 - CUSTOM - __inicio 09:31 ___fin 09:33 __hora_actual 09:30:59
+__inicio 09:31 ___fin 09:33
+2024-03-25 09:31:59,167 - CUSTOM - __inicio 09:31 ___fin 09:33 __hora_actual 09:31:59
+2024-03-25 09:31:59,170 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 09:31:59,171 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 09:32:08,117 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 09:32:08,440 - INFO - <Usuario 10>
+2024-03-25 09:32:08,443 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 09:32:08,444 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 09:32:08,606 - INFO - <Usuario 1>
+2024-03-25 09:32:08,607 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 09:32:08,608 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 09:31 ___fin 09:33
+2024-03-25 09:33:10,751 - CUSTOM - __inicio 09:31 ___fin 09:33 __hora_actual 09:33:10
+2024-03-25 09:33:10,766 - INFO - _______________TERMINA CONEXION WS__________________________
+2024-03-25 09:33:10,770 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-142, started daemon 12328)>
+2024-03-25 09:33:10,771 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-142, started daemon 12328)>
+2024-03-25 09:33:10,773 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 09:33:10,774 - INFO - ______TERMINA HILO__________________
+2024-03-25 09:36:13,376 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 09:37:07,224 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 09:38 ___fin 09:40
+2024-03-25 09:37:07,230 - CUSTOM - __inicio 09:38 ___fin 09:40 __hora_actual 09:37:07
+__inicio 09:38 ___fin 09:40
+2024-03-25 09:38:07,234 - CUSTOM - __inicio 09:38 ___fin 09:40 __hora_actual 09:38:07
+2024-03-25 09:38:07,237 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 09:38:07,238 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 09:47:45,675 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 09:49 ___fin 09:51
+2024-03-25 09:47:45,681 - CUSTOM - __inicio 09:49 ___fin 09:51 __hora_actual 09:47:45
+__inicio 09:49 ___fin 09:51
+2024-03-25 09:48:45,686 - CUSTOM - __inicio 09:49 ___fin 09:51 __hora_actual 09:48:45
+__inicio 09:49 ___fin 09:51
+2024-03-25 09:49:45,690 - CUSTOM - __inicio 09:49 ___fin 09:51 __hora_actual 09:49:45
+2024-03-25 09:49:45,693 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 09:49:45,694 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 09:50:47,150 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 09:51:22,720 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 09:53 ___fin 09:55
+2024-03-25 09:51:22,724 - CUSTOM - __inicio 09:53 ___fin 09:55 __hora_actual 09:51:22
+2024-03-25 09:51:22,729 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 09:51:22,731 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 09:51:32,049 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 09:51:32,668 - INFO - <Usuario 10>
+2024-03-25 09:51:32,669 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 09:51:32,669 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 09:51:32,827 - INFO - <Usuario 1>
+2024-03-25 09:51:32,829 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 09:51:32,830 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 09:51:33,885 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-60, started daemon 11616)>
+2024-03-25 09:51:33,887 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-60, started daemon 11616)>
+2024-03-25 09:51:33,889 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 09:51:33,890 - INFO - ______TERMINA HILO__________________
+2024-03-25 10:38:54,220 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 10:39:28,747 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:41 ___fin 10:43
+2024-03-25 10:39:28,754 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:39:28
+__inicio 10:41 ___fin 10:43
+2024-03-25 10:40:28,759 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:40:28
+__inicio 10:41 ___fin 10:43
+2024-03-25 10:41:28,775 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:41:28
+2024-03-25 10:41:28,778 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 10:41:28,778 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 10:41:39,140 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 10:41:39,464 - INFO - <Usuario 10>
+2024-03-25 10:41:39,465 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 10:41:39,466 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 10:41:39,626 - INFO - <Usuario 1>
+2024-03-25 10:41:39,627 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 10:41:39,628 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:41 ___fin 10:43
+2024-03-25 10:42:40,642 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:42:40
+__inicio 10:41 ___fin 10:43
+2024-03-25 10:43:40,650 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:43:40
+2024-03-25 10:43:40,667 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-40, started daemon 12696)>
+2024-03-25 10:43:40,668 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-40, started daemon 12696)>
+2024-03-25 10:43:40,670 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 10:43:40,671 - INFO - ______TERMINA HILO__________________
+2024-03-25 10:46:33,882 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 10:47:54,605 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:49 ___fin 10:51
+2024-03-25 10:47:54,613 - CUSTOM - __inicio 10:49 ___fin 10:51 __hora_actual 10:47:54
+__inicio 10:49 ___fin 10:51
+2024-03-25 10:48:54,616 - CUSTOM - __inicio 10:49 ___fin 10:51 __hora_actual 10:48:54
+__inicio 10:49 ___fin 10:51
+2024-03-25 10:49:54,620 - CUSTOM - __inicio 10:49 ___fin 10:51 __hora_actual 10:49:54
+2024-03-25 10:49:54,623 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 10:49:54,623 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 10:50:06,329 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 10:50:06,649 - INFO - <Usuario 10>
+2024-03-25 10:50:06,650 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 10:50:06,651 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 10:50:06,810 - INFO - <Usuario 1>
+2024-03-25 10:50:06,811 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 10:50:06,812 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 10:49 ___fin 10:51
+2024-03-25 10:51:07,870 - CUSTOM - __inicio 10:49 ___fin 10:51 __hora_actual 10:51:07
+2024-03-25 10:51:07,899 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-56, started daemon 4980)>
+2024-03-25 10:51:07,901 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-56, started daemon 4980)>
+2024-03-25 10:51:07,903 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 10:51:07,904 - INFO - ______TERMINA HILO__________________
+2024-03-25 10:55:04,017 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:49 ___fin 10:55
+2024-03-25 10:55:04,022 - CUSTOM - __inicio 10:49 ___fin 10:55 __hora_actual 10:55:04
+2024-03-25 10:55:45,820 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:49 ___fin 10:57
+2024-03-25 10:55:45,822 - CUSTOM - __inicio 10:49 ___fin 10:57 __hora_actual 10:55:45
+__inicio 10:49 ___fin 10:55
+2024-03-25 10:56:04,026 - CUSTOM - __inicio 10:49 ___fin 10:55 __hora_actual 10:56:04
+2024-03-25 10:58:42,983 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:49 ___fin 11:00
+2024-03-25 10:58:42,985 - CUSTOM - __inicio 10:49 ___fin 11:00 __hora_actual 10:58:42
+2024-03-25 11:00:24,362 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 11:01:05,384 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:02 ___fin 11:04
+2024-03-25 11:01:05,388 - CUSTOM - __inicio 11:02 ___fin 11:04 __hora_actual 11:01:05
+2024-03-25 11:01:05,417 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-73, started daemon 11508)>
+2024-03-25 11:01:05,419 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-73, started daemon 11508)>
+2024-03-25 11:01:05,420 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 11:01:05,420 - INFO - ______TERMINA HILO__________________
+2024-03-25 11:04:21,639 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 11:05:14,615 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:07 ___fin 11:09
+2024-03-25 11:05:14,622 - CUSTOM - __inicio 11:07 ___fin 11:09 __hora_actual 11:05:14
+__inicio 11:07 ___fin 11:09
+2024-03-25 11:06:14,625 - CUSTOM - __inicio 11:07 ___fin 11:09 __hora_actual 11:06:14
+__inicio 11:07 ___fin 11:09
+2024-03-25 11:07:14,629 - CUSTOM - __inicio 11:07 ___fin 11:09 __hora_actual 11:07:14
+2024-03-25 11:07:14,633 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 11:07:14,633 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 11:07:27,921 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 11:07:28,243 - INFO - <Usuario 10>
+2024-03-25 11:07:28,244 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:07:28,245 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 11:07:28,406 - INFO - <Usuario 1>
+2024-03-25 11:07:28,406 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:07:28,407 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:07 ___fin 11:09
+2024-03-25 11:08:29,731 - CUSTOM - __inicio 11:07 ___fin 11:09 __hora_actual 11:08:29
+__inicio 11:07 ___fin 11:09
+2024-03-25 11:09:29,735 - CUSTOM - __inicio 11:07 ___fin 11:09 __hora_actual 11:09:29
+2024-03-25 11:09:29,751 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-134, started daemon 12456)>
+2024-03-25 11:09:29,752 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-134, started daemon 12456)>
+2024-03-25 11:09:29,753 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 11:09:29,754 - INFO - ______TERMINA HILO__________________
+2024-03-25 11:26:10,791 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 11:27:43,124 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:29 ___fin 11:31
+2024-03-25 11:27:43,133 - CUSTOM - __inicio 11:29 ___fin 11:31 __hora_actual 11:27:43
+__inicio 11:29 ___fin 11:31
+2024-03-25 11:28:43,144 - CUSTOM - __inicio 11:29 ___fin 11:31 __hora_actual 11:28:43
+__inicio 11:29 ___fin 11:31
+2024-03-25 11:29:43,148 - CUSTOM - __inicio 11:29 ___fin 11:31 __hora_actual 11:29:43
+2024-03-25 11:29:43,150 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 11:29:43,150 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 11:29:58,465 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 11:29:58,782 - INFO - <Usuario 10>
+2024-03-25 11:29:58,783 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:29:58,783 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 11:29:59,321 - INFO - <Usuario 1>
+2024-03-25 11:29:59,322 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:29:59,322 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:29 ___fin 11:31
+2024-03-25 11:31:00,900 - CUSTOM - __inicio 11:29 ___fin 11:31 __hora_actual 11:31:00
+2024-03-25 11:31:00,918 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-443, started daemon 14912)>
+2024-03-25 11:31:00,919 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-443, started daemon 14912)>
+2024-03-25 11:31:00,920 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 11:31:00,921 - INFO - ______TERMINA HILO__________________
+2024-03-25 11:39:06,668 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:40 ___fin 11:42
+2024-03-25 11:39:06,674 - CUSTOM - __inicio 11:40 ___fin 11:42 __hora_actual 11:39:06
+__inicio 11:40 ___fin 11:42
+2024-03-25 11:40:06,678 - CUSTOM - __inicio 11:40 ___fin 11:42 __hora_actual 11:40:06
+2024-03-25 11:40:06,680 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 11:40:06,681 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 11:41:09,960 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 11:41:47,356 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:43 ___fin 11:45
+2024-03-25 11:41:47,359 - CUSTOM - __inicio 11:43 ___fin 11:45 __hora_actual 11:41:47
+2024-03-25 11:41:47,361 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 11:41:47,362 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 11:41:58,899 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 11:41:59,212 - INFO - <Usuario 10>
+2024-03-25 11:41:59,213 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:41:59,213 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 11:41:59,370 - INFO - <Usuario 1>
+2024-03-25 11:41:59,371 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:41:59,373 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:43 ___fin 11:45
+2024-03-25 11:43:00,484 - CUSTOM - __inicio 11:43 ___fin 11:45 __hora_actual 11:43:00
+2024-03-25 11:43:00,500 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-61, started daemon 7632)>
+2024-03-25 11:43:00,501 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-61, started daemon 7632)>
+2024-03-25 11:43:43,214 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 11:44:12,527 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:45 ___fin 11:47
+2024-03-25 11:44:12,535 - CUSTOM - __inicio 11:45 ___fin 11:47 __hora_actual 11:44:12
+__inicio 11:45 ___fin 11:47
+2024-03-25 11:45:12,539 - CUSTOM - __inicio 11:45 ___fin 11:47 __hora_actual 11:45:12
+2024-03-25 11:45:12,543 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 11:45:12,544 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 11:45:24,018 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 11:45:24,360 - INFO - <Usuario 10>
+2024-03-25 11:45:24,363 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:45:24,364 - INFO - ___________________Se se inicia hilo de estrategia______________________
+2024-03-25 11:45:24,560 - INFO - <Usuario 1>
+2024-03-25 11:45:24,563 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:45:24,564 - INFO - ___________________Se se inicia hilo de estrategia______________________
+__inicio 11:45 ___fin 11:47
+2024-03-25 11:46:25,615 - CUSTOM - __inicio 11:45 ___fin 11:47 __hora_actual 11:46:25
+__inicio 11:45 ___fin 11:47
+2024-03-25 11:47:25,618 - CUSTOM - __inicio 11:45 ___fin 11:47 __hora_actual 11:47:25
+2024-03-25 11:47:25,670 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-56, started daemon 12284)>
+2024-03-25 11:47:25,671 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-56, started daemon 12284)>
+2024-03-25 11:47:25,672 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 11:47:25,673 - INFO - <Thread(Thread-56, started daemon 12284)>
+2024-03-25 11:47:25,673 - INFO - ______TERMINA HILO__________________
+2024-03-25 11:49:44,174 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 11:50:21,042 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:51 ___fin 11:52
+2024-03-25 11:50:21,048 - CUSTOM - __inicio 11:51 ___fin 11:52 __hora_actual 11:50:21
+__inicio 11:51 ___fin 11:52
+2024-03-25 11:51:21,051 - CUSTOM - __inicio 11:51 ___fin 11:52 __hora_actual 11:51:21
+2024-03-25 11:51:21,060 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 11:51:21,061 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 11:51:32,960 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 11:51:33,312 - INFO - <Usuario 10>
+2024-03-25 11:51:33,312 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:51:33,313 - INFO - ___________________Se inicia hilo de estrategia______________________
+2024-03-25 11:51:33,478 - INFO - <Usuario 1>
+2024-03-25 11:51:33,478 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 11:51:33,479 - INFO - ___________________Se inicia hilo de estrategia______________________
+__inicio 11:51 ___fin 11:52
+2024-03-25 11:52:34,569 - CUSTOM - __inicio 11:51 ___fin 11:52 __hora_actual 11:52:34
+2024-03-25 11:52:34,585 - INFO - ______HILO EXAMINADO___________
+Índice 0 ID del hilo: argentina , Hilo: <Thread(Thread-54, started daemon 10048)>
+2024-03-25 11:52:34,586 - CUSTOM - Índice 0 ID del hilo argentina Hilo <Thread(Thread-54, started daemon 10048)>
+2024-03-25 11:52:34,587 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 11:52:34,588 - INFO - <Thread(Thread-54, started daemon 10048)>
+2024-03-25 11:52:34,588 - INFO - ______TERMINA HILO__________________
+2024-03-25 12:00:32,085 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:01 ___fin 12:02
+2024-03-25 12:00:32,092 - CUSTOM - __inicio 12:01 ___fin 12:02 __hora_actual 12:00:32
+__inicio 12:01 ___fin 12:02
+2024-03-25 12:01:32,097 - CUSTOM - __inicio 12:01 ___fin 12:02 __hora_actual 12:01:32
+2024-03-25 12:01:32,099 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 12:01:32,099 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 12:01:51,604 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 12:01:51,931 - INFO - <Usuario 10>
+2024-03-25 12:01:51,931 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 12:01:51,932 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-25 12:01:52,093 - INFO - <Usuario 1>
+2024-03-25 12:01:52,094 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 12:01:52,095 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+__inicio 12:01 ___fin 12:02
+2024-03-25 12:02:53,181 - CUSTOM - __inicio 12:01 ___fin 12:02 __hora_actual 12:02:53
+2024-03-25 12:02:53,186 - INFO - ______HILO EXAMINADO___________
+2024-03-25 12:02:53,186 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 12:02:53,187 - INFO - <Thread(Thread-52, started daemon 5412)>
+2024-03-25 12:02:53,187 - INFO - ______TERMINA HILO__________________
+2024-03-25 12:08:51,161 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:09:38,426 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:10 ___fin 12:11
+2024-03-25 12:09:38,433 - CUSTOM - __inicio 12:10 ___fin 12:11 __hora_actual 12:09:38
+__inicio 12:10 ___fin 12:11
+2024-03-25 12:10:38,438 - CUSTOM - __inicio 12:10 ___fin 12:11 __hora_actual 12:10:38
+2024-03-25 12:10:38,440 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-25 12:10:38,440 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-25 12:11:03,459 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-25 12:11:04,089 - INFO - <Usuario 10>
+2024-03-25 12:11:04,109 - INFO - usuario 10 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 12:11:04,110 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-25 12:11:04,277 - INFO - <Usuario 1>
+2024-03-25 12:11:04,278 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-25 12:11:04,278 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-25 12:11:05,142 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-25 12:11:05,143 - INFO - {'userCuenta': 'apipuntillo22583398', 'idTrigger': 24, 'access_token': 'access_token', 'idUser': 10, 'correo_electronico': 'dpuntillo@gmail.com', 'cuenta': '10861', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+2024-03-25 12:11:05,363 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-25 12:11:05,364 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 12:10 ___fin 12:11
+2024-03-25 12:12:05,366 - CUSTOM - __inicio 12:10 ___fin 12:11 __hora_actual 12:12:05
+2024-03-25 12:12:05,412 - INFO - ______HILO EXAMINADO___________
+2024-03-25 12:12:05,412 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 12:12:05,413 - INFO - <Thread(Thread-55, started daemon 3912)>
+2024-03-25 12:12:05,413 - INFO - ______TERMINA HILO__________________
+2024-03-25 12:17:06,898 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:17 ___fin 12:19
+2024-03-25 12:17:06,903 - CUSTOM - __inicio 12:17 ___fin 12:19 __hora_actual 12:17:06
+2024-03-25 12:17:39,554 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:18:12,434 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:19 ___fin 12:21
+2024-03-25 12:18:12,436 - CUSTOM - __inicio 12:19 ___fin 12:21 __hora_actual 12:18:12
+__inicio 12:19 ___fin 12:21
+2024-03-25 12:19:12,439 - CUSTOM - __inicio 12:19 ___fin 12:21 __hora_actual 12:19:12
+2024-03-25 12:19:12,454 - INFO - ______HILO EXAMINADO___________
+2024-03-25 12:19:12,455 - INFO - ______TERMINA CONEXION WS___________
+2024-03-25 12:19:12,455 - INFO - <Thread(Thread-61, started daemon 7980)>
+2024-03-25 12:19:12,456 - INFO - ______TERMINA HILO__________________
+2024-03-25 12:21:17,107 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:37:55,347 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:41:05,977 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:43:47,499 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:47:24,590 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:48:52,018 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:51:22,927 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 12:53:54,823 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:00:09,394 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:08:53,208 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:14:47,939 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:18:48,235 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:21:53,375 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:27:35,714 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:31:15,386 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:39:12,584 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:45:38,826 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:49:21,966 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:55:39,512 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 13:59:58,463 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 14:01:37,387 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 14:12:17,452 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 14:16:45,243 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-25 14:20:12,230 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 09:58:11,329 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 10:00:29,520 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 10:01:19,642 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:03 ___fin 10:04
+2024-03-26 10:01:19,679 - CUSTOM - __inicio 10:03 ___fin 10:04 __hora_actual 10:01:19
+__inicio 10:03 ___fin 10:04
+2024-03-26 10:02:19,783 - CUSTOM - __inicio 10:03 ___fin 10:04 __hora_actual 10:02:19
+__inicio 10:03 ___fin 10:04
+2024-03-26 10:03:19,816 - CUSTOM - __inicio 10:03 ___fin 10:04 __hora_actual 10:03:19
+2024-03-26 10:03:19,830 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 10:03:19,832 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 10:03:35,378 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 10:05:48,643 - INFO - <Usuario 1>
+2024-03-26 10:06:14,114 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 10:07:36,335 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 10:07:37,023 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 10:07:37,025 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 10:03 ___fin 10:04
+2024-03-26 10:08:37,033 - CUSTOM - __inicio 10:03 ___fin 10:04 __hora_actual 10:08:37
+2024-03-26 10:08:37,063 - INFO - ______HILO EXAMINADO___________
+2024-03-26 10:08:37,065 - INFO - ______TERMINA CONEXION WS___________
+2024-03-26 10:08:37,067 - INFO - <Thread(Thread-9, started daemon 16348)>
+2024-03-26 10:08:37,070 - INFO - ______TERMINA HILO__________________
+2024-03-26 10:13:17,187 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 10:13:51,143 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:15 ___fin 10:16
+2024-03-26 10:13:51,158 - CUSTOM - __inicio 10:15 ___fin 10:16 __hora_actual 10:13:51
+__inicio 10:15 ___fin 10:16
+2024-03-26 10:14:51,166 - CUSTOM - __inicio 10:15 ___fin 10:16 __hora_actual 10:14:51
+__inicio 10:15 ___fin 10:16
+2024-03-26 10:15:51,176 - CUSTOM - __inicio 10:15 ___fin 10:16 __hora_actual 10:15:51
+2024-03-26 10:15:51,190 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 10:15:51,192 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 10:16:05,670 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 10:16:22,409 - INFO - <Usuario 1>
+2024-03-26 10:16:22,412 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 10:16:22,413 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 10:16:55,364 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 10:16:55,365 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 10:15 ___fin 10:16
+2024-03-26 10:17:55,377 - CUSTOM - __inicio 10:15 ___fin 10:16 __hora_actual 10:17:55
+2024-03-26 10:17:55,409 - INFO - ______HILO EXAMINADO___________
+2024-03-26 10:17:55,411 - INFO - ______TERMINA CONEXION WS___________
+2024-03-26 10:17:55,412 - INFO - <Thread(Thread-62, started daemon 3068)>
+2024-03-26 10:17:55,413 - INFO - ______TERMINA HILO__________________
+2024-03-26 10:30:52,965 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-03-26 10:40:14,934 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:41 ___fin 10:43
+2024-03-26 10:40:14,960 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:40:14
+__inicio 10:41 ___fin 10:43
+2024-03-26 10:41:14,990 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:41:14
+2024-03-26 10:41:15,014 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 10:41:15,018 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 10:41:23,473 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 10:41:23,819 - INFO - <Usuario 1>
+2024-03-26 10:41:23,824 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 10:41:59,587 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 10:43:42,630 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 10:43:42,633 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 10:41 ___fin 10:43
+2024-03-26 10:44:42,711 - CUSTOM - __inicio 10:41 ___fin 10:43 __hora_actual 10:44:42
+2024-03-26 10:46:17,477 - INFO - ______HILO EXAMINADO___________
+2024-03-26 10:46:17,481 - INFO - ______TERMINA CONEXION WS___________
+2024-03-26 10:46:17,544 - INFO - <Thread(Thread-154, started daemon 6496)>
+2024-03-26 10:46:17,555 - INFO - ______TERMINA HILO__________________
+2024-03-26 10:55:10,428 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 10:56:05,148 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:57 ___fin 10:59
+2024-03-26 10:56:05,167 - CUSTOM - __inicio 10:57 ___fin 10:59 __hora_actual 10:56:05
+__inicio 10:57 ___fin 10:59
+2024-03-26 10:57:05,201 - CUSTOM - __inicio 10:57 ___fin 10:59 __hora_actual 10:57:05
+2024-03-26 10:57:05,210 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 10:57:05,213 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 10:57:18,966 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 10:57:19,279 - INFO - <Usuario 1>
+2024-03-26 10:57:19,282 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 11:05:37,783 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 11:06:04,710 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 11:06:04,712 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 10:57 ___fin 10:59
+2024-03-26 11:07:04,799 - CUSTOM - __inicio 10:57 ___fin 10:59 __hora_actual 11:07:04
+2024-03-26 11:30:30,009 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:31 ___fin 11:32
+2024-03-26 11:30:30,024 - CUSTOM - __inicio 11:31 ___fin 11:32 __hora_actual 11:30:30
+__inicio 11:31 ___fin 11:32
+2024-03-26 11:31:30,039 - CUSTOM - __inicio 11:31 ___fin 11:32 __hora_actual 11:31:30
+2024-03-26 11:31:30,050 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 11:31:30,053 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 11:31:45,818 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 11:31:46,144 - INFO - <Usuario 1>
+2024-03-26 11:31:46,147 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 11:41:43,831 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 11:43:40,179 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:45 ___fin 11:46
+2024-03-26 11:43:40,193 - CUSTOM - __inicio 11:45 ___fin 11:46 __hora_actual 11:43:40
+__inicio 11:45 ___fin 11:46
+2024-03-26 11:44:40,205 - CUSTOM - __inicio 11:45 ___fin 11:46 __hora_actual 11:44:40
+__inicio 11:45 ___fin 11:46
+2024-03-26 11:45:40,215 - CUSTOM - __inicio 11:45 ___fin 11:46 __hora_actual 11:45:40
+2024-03-26 11:45:40,224 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 11:45:40,226 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 11:45:57,564 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 11:45:58,252 - INFO - <Usuario 1>
+2024-03-26 11:45:58,416 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 11:46:13,873 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 11:46:18,567 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 11:46:18,571 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 11:45 ___fin 11:46
+2024-03-26 11:47:18,617 - CUSTOM - __inicio 11:45 ___fin 11:46 __hora_actual 11:47:18
+2024-03-26 11:47:27,573 - INFO - ______HILO EXAMINADO___________
+2024-03-26 11:50:36,891 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 11:54:39,489 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:56 ___fin 11:57
+2024-03-26 11:54:39,504 - CUSTOM - __inicio 11:56 ___fin 11:57 __hora_actual 11:54:39
+__inicio 11:56 ___fin 11:57
+2024-03-26 11:55:39,521 - CUSTOM - __inicio 11:56 ___fin 11:57 __hora_actual 11:55:39
+__inicio 11:56 ___fin 11:57
+2024-03-26 11:56:39,532 - CUSTOM - __inicio 11:56 ___fin 11:57 __hora_actual 11:56:39
+2024-03-26 11:56:39,541 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 11:56:39,544 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 11:56:53,566 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 11:56:53,899 - INFO - <Usuario 1>
+2024-03-26 11:56:53,940 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 11:56:59,470 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 11:57:05,094 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 11:57:05,095 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 11:56 ___fin 11:57
+2024-03-26 11:58:05,111 - CUSTOM - __inicio 11:56 ___fin 11:57 __hora_actual 11:58:05
+2024-03-26 11:58:09,954 - INFO - ______HILO EXAMINADO___________
+2024-03-26 12:00:33,644 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:01 ___fin 12:02
+2024-03-26 12:00:33,657 - CUSTOM - __inicio 12:01 ___fin 12:02 __hora_actual 12:00:33
+__inicio 12:01 ___fin 12:02
+2024-03-26 12:01:33,664 - CUSTOM - __inicio 12:01 ___fin 12:02 __hora_actual 12:01:33
+2024-03-26 12:01:33,672 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 12:01:33,674 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 12:05:18,891 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:06 ___fin 12:07
+2024-03-26 12:05:18,905 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:05:18
+__inicio 12:06 ___fin 12:07
+2024-03-26 12:06:18,918 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:06:18
+2024-03-26 12:06:18,929 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 12:06:18,931 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 12:06:39,579 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 12:06:39,917 - INFO - <Usuario 1>
+2024-03-26 12:06:39,919 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 12:06:45,971 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 12:06:50,636 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 12:06:50,641 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 12:06 ___fin 12:07
+2024-03-26 12:07:57,580 - CUSTOM - __inicio 12:06 ___fin 12:07 __hora_actual 12:07:57
+2024-03-26 12:12:25,243 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:13 ___fin 12:14
+2024-03-26 12:12:25,277 - CUSTOM - __inicio 12:13 ___fin 12:14 __hora_actual 12:12:25
+__inicio 12:13 ___fin 12:14
+2024-03-26 12:13:25,286 - CUSTOM - __inicio 12:13 ___fin 12:14 __hora_actual 12:13:25
+2024-03-26 12:13:25,294 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 12:13:25,297 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 12:13:38,538 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 12:13:39,274 - INFO - <Usuario 1>
+2024-03-26 12:13:39,337 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 12:13:54,313 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 12:13:55,527 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 12:13:55,529 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 12:13 ___fin 12:14
+2024-03-26 12:14:55,543 - CUSTOM - __inicio 12:13 ___fin 12:14 __hora_actual 12:14:55
+2024-03-26 12:15:18,583 - INFO - ______HILO EXAMINADO___________
+2024-03-26 12:15:35,121 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:16 ___fin 12:17
+2024-03-26 12:15:35,134 - CUSTOM - __inicio 12:16 ___fin 12:17 __hora_actual 12:15:35
+__inicio 12:16 ___fin 12:17
+2024-03-26 12:16:35,167 - CUSTOM - __inicio 12:16 ___fin 12:17 __hora_actual 12:16:35
+2024-03-26 12:16:35,175 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 12:16:35,177 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 12:18:45,045 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:19 ___fin 12:20
+2024-03-26 12:18:45,050 - CUSTOM - __inicio 12:19 ___fin 12:20 __hora_actual 12:18:45
+2024-03-26 12:18:45,076 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 12:18:45,078 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 12:19:03,132 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 12:19:03,463 - INFO - <Usuario 1>
+2024-03-26 12:19:03,465 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 12:19:09,005 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 12:19:09,378 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 12:19:09,380 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+2024-03-26 12:19:19,008 - INFO - ______HILO EXAMINADO___________
+2024-03-26 12:27:18,454 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:28 ___fin 12:29
+2024-03-26 12:27:18,472 - CUSTOM - __inicio 12:28 ___fin 12:29 __hora_actual 12:27:18
+__inicio 12:28 ___fin 12:29
+2024-03-26 12:28:18,503 - CUSTOM - __inicio 12:28 ___fin 12:29 __hora_actual 12:28:18
+2024-03-26 12:28:18,511 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-03-26 12:28:18,513 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-03-26 12:28:34,968 - INFO - ___________________Se conecto con exito al WS______________________
+2024-03-26 12:28:35,296 - INFO - <Usuario 1>
+2024-03-26 12:28:35,298 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-03-26 12:29:07,354 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-03-26 12:29:08,532 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-03-26 12:29:08,535 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 12:28 ___fin 12:29
+2024-03-26 12:30:08,556 - CUSTOM - __inicio 12:28 ___fin 12:29 __hora_actual 12:30:08
+2024-03-26 12:30:15,636 - INFO - ______HILO EXAMINADO___________
+2024-03-26 12:31:07,059 - INFO - ________NO HAY HILOS ACTIVOS PARA EL SCHEDULE_____________
+__inicio 12:28 ___fin 12:29
+2024-03-26 12:32:17,488 - CUSTOM - __inicio 12:28 ___fin 12:29 __hora_actual 12:32:17
+2024-03-26 12:58:41,504 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 13:07:31,876 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 13:11:14,529 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-03-26 14:12:00,556 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']

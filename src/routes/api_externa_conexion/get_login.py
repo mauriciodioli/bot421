@@ -90,19 +90,22 @@ ultima_entrada = time.time()
 CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
 ContenidoSheet_list = None
+api_url = None
+ws_url = None
 
 # Calcula la hora de inicio del día siguiente a las 9:00 AM
 #hora_inicio_manana = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=1), datetime.time(9, 0))
 
 # Configurar las URLs de la instancia de BMB
-api_url = "https://api.bull.xoms.com.ar/"
-ws_url = "wss://api.bull.xoms.com.ar/"
+#api_url = "https://api.bull.xoms.com.ar/"
+#ws_url = "wss://api.bull.xoms.com.ar/"
 
 #api_url = "https://api.cocos.xoms.com.ar/"
 #ws_url = "wss://api.cocos.xoms.com.ar/"
  
 #api_url = "https://api.veta.xoms.com.ar/"
 #ws_url = "wss://api.veta.xoms.com.ar/"
+
 
 
 # Creating  Routes
@@ -194,11 +197,18 @@ def loginExtAutomatico():
                         else:
                             exp_date = datetime.utcfromtimestamp(exp_timestamp)
                             fecha_actual =   datetime.utcnow()
-                            if fecha_actual > exp_date:
+                            endPoint = inicializar_variables(cuentas.accountCuenta)
+                            global api_url
+                            global ws_url
+                            api_url = endPoint[0]
+                            ws_url = endPoint[1]
+                            print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
+                            if fecha_actual > exp_date:#hay que corregir el direccionamiento de esto_________
+                              
                                 environment = pyRofexInicializada.Environment.LIVE
-                                endPoint = inicializar_variables(cuentas.accountCuenta)
-                                pyRofexInicializada._set_environment_parameter("url", endPoint[0],environment)
-                                pyRofexInicializada._set_environment_parameter("ws", endPoint[1],environment)                                
+                                
+                                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
+                                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment)                                
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)                                
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion(app)
@@ -216,8 +226,9 @@ def loginExtAutomatico():
                                 #refrescoValorActualCuentaFichas(user_id)
                                 print("pasa hilo hilo_principal.start() planificar_schedule")
                                 if rutaDeLogeo != 'Home':      
-                                 return render_template("/paneles/panelDeControlBroker.html")   
+                                    return render_template("/paneles/panelDeControlBroker.html")   
                                 else:
+                                    
                                     resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                     resp.headers['Content-Type'] = 'application/json'
                                     set_access_cookies(resp, access_token)
@@ -226,7 +237,20 @@ def loginExtAutomatico():
                             else:
                                  
                                   # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-                                  resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                  # Supongamos que `accountCuenta`, `user`, y `selector` son los datos que quieres enviar
+                                  cuenta = {
+                                        'accountCuenta': account,
+                                        'user': user,
+                                        'selector': selector
+                                  }
+                                  # Crear una respuesta JSON con los datos de la cuenta y la redirección
+                                  resp_data = {
+                                        'redirect': 'panel_control_broker',
+                                        'cuenta': cuenta  # Aquí incluimos los datos de la cuenta en el cuerpo de la respuesta
+                                  }
+                                  # Crear la respuesta utilizando jsonify y make_response
+                                  resp = make_response(jsonify(resp_data))
+                                  #resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                   resp.headers['Content-Type'] = 'application/json'
                                   set_access_cookies(resp, access_token)
                                   set_refresh_cookies(resp, refresh_token)
@@ -255,8 +279,19 @@ def loginExtCuentaSeleccionadaBroker():
         user = request.form.get('usuario')
         password = request.form.get('contraseña')
         accountCuenta = request.form.get('cuenta')
-        access_token = request.form.get('access_token')
-        
+        access_token = request.form.get('access_token')       
+        src_directory1 = os.getcwd()#busca directorio raiz src o app 
+        logs_file_path = os.path.join(src_directory1, 'logs.log')
+       
+       # logs_file_path = os.path.join(src_directory, 'logs.log')
+       
+
+        # Abrir el archivo en modo de escritura para borrar su contenido
+#        with open(logs_file_path, 'w') as f:
+#            pass  # No es necesario escribir nada, solo abrir y cerrar el archivo borrará su contenido
+#        print("El contenido del archivo logs.log ha sido borrado.")
+          # Variable local para mantener un registro de los hilos iniciados aquí
+      
         if origin_page == 'login':
             selector = request.form.get('environment')
             print('selector ',selector)
@@ -287,9 +322,15 @@ def loginExtCuentaSeleccionadaBroker():
             else:
                 # Configurar para el entorno LIVE
                 environments = pyRofexInicializada.Environment.LIVE
+                
                 endPoint = inicializar_variables(accountCuenta)
-                pyRofexInicializada._set_environment_parameter("url", endPoint[0],environments)
-                pyRofexInicializada._set_environment_parameter("ws", endPoint[1],environments) 
+                app.logger.info(endPoint)
+                global api_url
+                global ws_url
+                api_url = endPoint[0]
+                ws_url = endPoint[1]
+                pyRofexInicializada._set_environment_parameter("url", api_url,environments)
+                pyRofexInicializada._set_environment_parameter("ws", ws_url,environments) 
                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
                
 
@@ -340,7 +381,7 @@ def inicializar_variables(accountCuenta):
     
         # Buscar la cuenta asociada a la cuentaCuenta proporcionada
     cuenta = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
-
+    
     if cuenta:
         # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
         broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()

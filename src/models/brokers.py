@@ -16,10 +16,10 @@ class Broker(db.Model):
     api_url = db.Column(db.String(120), unique=True, nullable=True)
     ws_url = db.Column(db.String(120), unique=True, nullable=True)
     nombre = db.Column(db.String(500), unique=True, nullable=True)
-    descripcion = db.Column(db.String(500), nullable=True)
-    cuentas = relationship("Cuenta", back_populates="broker")  # Corregido el uso de uselist
+    descripcion = db.Column(db.String(500), nullable=True) 
     ficha = relationship("Ficha", back_populates="broker")   
     traza_fichas = relationship('TrazaFicha', back_populates='broker')
+    #cuentas = relationship("Cuenta", back_populates="broker")  # Corregido el uso de uselist
    # usuarios = relationship("Usuario", back_populates="brokers")
 
     
