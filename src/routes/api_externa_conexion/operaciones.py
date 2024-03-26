@@ -278,7 +278,10 @@ def operaciones_desde_seniales():
                                   status='operado'
                               )
                               db.session.add(nueva_orden)
-                          db.session.commit() 
+                              
+                          if signal == 'closed.':
+                            db.session.delete(orden_existente)   
+                          db.session.commit()  
                               #get.current_session = db.session
                           db.session.close()
                     else:

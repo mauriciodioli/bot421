@@ -9,7 +9,7 @@
       <hr class="my-4">
     
     </div>
-    <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>
+    <!--<audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>-->
     <table class="table table-dark table-striped"  id="signalTable">
       <thead>           
         <tr>
@@ -116,6 +116,8 @@
                                                       
                   </div>
                   <div class="modal-footer">
+                  
+                    <button type="button" class="btn btn-warning me-auto" id="verPreciosBtn" data-bs-toggle="modal" data-bs-target="#listadoPrecios" data-symbol="SYMBOL_A">Ver Precios</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>      
                     <button type="submit" id="confirmBtn" class="btn btn-primary my-2" disabled>Confirmar</button>
 
@@ -124,7 +126,69 @@
               </div>
             </div>
           </form>
-        </div>  
+        </div> 
+        
+        
+
+
+
+
+
+
+
+<!-- Nuevo modal para el listado de precios -->
+<div class="modal fade" id="listadoPrecios" tabindex="-1" aria-labelledby="listadoPreciosLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        
+      <div class="modal-header">
+        <h5 class="modal-title" id="listadoPreciosLabel">Precio Actual: <span id="precioLA"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div id="modalContent">
+          <div class="table-container">
+            <!-- Tabla para ventas -->
+            <table class="table-ventas">
+              <!-- Contenido de la tabla de ventas -->
+            </table>
+          </div>
+          <div class="table-container">
+            <!-- Tabla para compras -->
+            <table class="table-compras">
+              <!-- Contenido de la tabla de compras -->
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Footer del modal -->
+      <div class="modal-footer">
+        <span id="fechaActual"></span>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   </div>  
 <script>
 document.addEventListener('DOMContentLoaded', function() {  
@@ -226,51 +290,270 @@ document.addEventListener('DOMContentLoaded', function() {
           var dato = response.datos[i];
         
           
+
+
+
+
+
+
+
          // console.log(dato[6]);
         
           
-          if ((dato[1] == 'USA' || dato[1] == 'ARG' || dato[1] == 'CEDEAR') && 
-            dato[2] == 'LONG_' || (dato[2] == 'SHORT' && dato[1] != 'ARG' && dato[1] != 'CEDEAR')) {
-            if (dato[3] > '0') {  
-                if (dato[4] == 'OPEN.' || dato[4] == 'closed.') { 
-                    if (dato[4] !== dato[6]) {   
-                    
-                      if (dato[6] !== null) { 
-                       // var campana = document.getElementById('Campana');
-                       // campana.play();
-                       // mostrarNotificacion()
-                      }            
-                        var row = document.createElement('tr');
-                        var numeroDeOrden = i + 1; // Empieza desde 1
-                        var filaId = 'fila-' + i;
-                        row.setAttribute('id', filaId);
-                        row.innerHTML = `
+         if (
+          (dato[1] == 'USA' || dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
+          (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
+         ) {
+                if (dato[4] === 'OPEN.'  && dato[8] === null){
+                                                              
+                  //if (dato[4] !== dato[8]) {
+                    //if (dato[7] !== null) {
+                      // var campana = document.getElementById('Campana');
+                      // campana.play();
+                   //       mostrarNotificacion(dato);
+                   //   }
+                      var row = document.createElement('tr');
+                      var numeroDeOrden = i + 1; // Empieza desde 1
+                      var filaId = 'fila-' + i;
+                      row.setAttribute('id', filaId);
+                      row.innerHTML = `
+                        <td>${numeroDeOrden}</td>
+                        <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                        <td>${dato[1]}</td>
+                        <td>${dato[4]}</td>
+                        <td>${dato[2]}</td>
+                        <td>${dato[3]}</td>
+                        <td>${dato[8]}</td>
+                        <td>${dato[7]}</td>
+                        <td>
+                          <div class="form-group">
+                            <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <input type="hidden" name="senial" value="{{ senial }}">
+                            <input type="hidden" name="ut" value="{{ ut }}">
+                            <input type="hidden" id="datoValor" class="form-control">
+                            ${
+                              dato[4] == 'OPEN.'
+                                ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                : ''
+                            }
+                            ${
+                              dato[4] == 'closed.'
+                                ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                : ''
+                            }
+                          </div>
+                        </td>
+                      `;
+                      tableBody.appendChild(row);
+                  }
+
+               // }
+
+
+                
+             if (dato[4] === 'closed.' && dato[8] !== null) {    
+                                                        
+                  if (dato[4] !== dato[8]) {
+                    //if (dato[7] !== null) {
+                      // var campana = document.getElementById('Campana');
+                      // campana.play();
+                    //      mostrarNotificacion(dato);
+                   //   }
+                      var row = document.createElement('tr');
+                      var numeroDeOrden = i + 1; // Empieza desde 1
+                      var filaId = 'fila-' + i;
+                      row.setAttribute('id', filaId);
+                      row.innerHTML = `
+                        <td>${numeroDeOrden}</td>
+                        <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                        <td>${dato[1]}</td>
+                        <td>${dato[4]}</td>
+                        <td>${dato[2]}</td>
+                        <td>${dato[3]}</td>
+                        <td>${dato[8]}</td>
+                        <td>${dato[7]}</td>
+                        <td>
+                          <div class="form-group">
+                            <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                          </div>
+                          <div class="form-group">
+                            <input type="hidden" name="senial" value="{{ senial }}">
+                            <input type="hidden" name="ut" value="{{ ut }}">
+                            <input type="hidden" id="datoValor" class="form-control">
+                            ${
+                              dato[4] == 'OPEN.'
+                                ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                : ''
+                            }
+                            ${
+                              dato[4] == 'closed.'
+                                ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                : ''
+                            }
+                          </div>
+                        </td>
+                      `;
+                      tableBody.appendChild(row);
+                  }
+                 
+                }
+
+            
+              
+            }
+      
+            if (
+              (dato[1] === 'USA') &&
+              (dato[2] === 'LONG_' || (dato[2] === 'SHORT'))
+             ) {
+                    if (dato[4] === 'OPEN.'  && dato[8] === null){
+                                                                  
+                      //if (dato[4] !== dato[8]) {
+                      //  if (dato[7] !== null) {
+                          // var campana = document.getElementById('Campana');
+                          // campana.play();
+                      //        mostrarNotificacion(dato);
+                      //    }
+                          var row = document.createElement('tr');
+                          var numeroDeOrden = i + 1; // Empieza desde 1
+                          var filaId = 'fila-' + i;
+                          row.setAttribute('id', filaId);
+                          row.innerHTML = `
                             <td>${numeroDeOrden}</td>
-                            <td>${dato[0]}</td>
+                            <td>${dato[0].replace('MERV - XMEV -', '')}</td>
                             <td>${dato[1]}</td>
                             <td>${dato[4]}</td>
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
-                            <td>${dato[6]}</td>
-                            <td>${dato[5]}</td>
+                            <td>${dato[8]}</td>
+                            <td>${dato[7]}</td>
                             <td>
-                              <div class="form-group">  
+                              <div class="form-group">
                                 <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
-                              </div> 
-                              <div class="form-group">                   
+                              </div>
+                              <div class="form-group">
                                 <input type="hidden" name="senial" value="{{ senial }}">
                                 <input type="hidden" name="ut" value="{{ ut }}">
-                                <input type="hidden" id="datoValor" class="form-control"> 
-                                ${dato[4] == 'OPEN.' ?  `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}"   data-ut="${ dato[3] }">Submit</button>`:''}
-                                ${dato[4] == 'closed.' ? `<button  id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${ dato[4] }" data-symbol="${ dato[0] }"  data-ut="${ dato[3] }">Submit</button>` : ''}  
-                              </div>                             
+                                <input type="hidden" id="datoValor" class="form-control">
+                                ${
+                                  dato[4] == 'OPEN.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                                ${
+                                  dato[4] == 'closed.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                              </div>
                             </td>
-                        `;
-                        tableBody.appendChild(row);
+                          `;
+                          tableBody.appendChild(row);
+                      }
+
+                   // }
+
+
+                    
+                 if (dato[4] === 'closed.' && dato[8] !== null) {    
+                                                            
+                      if (dato[4] !== dato[8]) {
+                       // if (dato[7] !== null) {
+                          // var campana = document.getElementById('Campana');
+                          // campana.play();
+                             // mostrarNotificacion(dato);
+                       //   }
+                          var row = document.createElement('tr');
+                          var numeroDeOrden = i + 1; // Empieza desde 1
+                          var filaId = 'fila-' + i;
+                          row.setAttribute('id', filaId);
+                          row.innerHTML = `
+                            <td>${numeroDeOrden}</td>
+                            <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                            <td>${dato[1]}</td>
+                            <td>${dato[4]}</td>
+                            <td>${dato[2]}</td>
+                            <td>${dato[3]}</td>
+                            <td>${dato[8]}</td>
+                            <td>${dato[7]}</td>
+                            <td>
+                              <div class="form-group">
+                                <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                              </div>
+                              <div class="form-group">
+                                <input type="hidden" name="senial" value="{{ senial }}">
+                                <input type="hidden" name="ut" value="{{ ut }}">
+                                <input type="hidden" id="datoValor" class="form-control">
+                                ${
+                                  dato[4] == 'OPEN.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                                ${
+                                  dato[4] == 'closed.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                              </div>
+                            </td>
+                          `;
+                          tableBody.appendChild(row);
+                      }
+                     
                     }
+
+                
+                  
                 }
-            }
-          }
+
+
+
+
+
+
+
+
+
+
+
+                $(document).ready(function () {
+                  // Iterar sobre las filas de la tabla
+                  $('#signalTable tbody tr').each(function () {
+                    // Obtener el texto de la columna Signal
+                    var signalText = $(this).find('td:nth-child(4)').text().trim();
+                    var typeText = $(this).find('td:nth-child(3)').text().trim();
+                    var inProgres = $(this).find('td:nth-child(5)').text().trim();
+                    // Verificar si es OPEN o Closed y aplicar el color correspondiente
+                    if (signalText === 'OPEN.') {
+                      $(this).find('td:nth-child(4)').css('color', 'green');
+                    } else if (signalText === 'closed.') {
+                      $(this).find('td:nth-child(4)').css('color', 'red');
+                    }
+                
+                    if (typeText === 'CEDEAR') {
+                      $(this).find('td:nth-child(3)').css('color', 'brown ');
+                    } else if (typeText === 'ARG') {
+                      $(this).find('td:nth-child(3)').css('color', 'cyan');
+                    }
+                
+                    if (inProgres === 'SHORT') {
+                      $(this).find('td:nth-child(5)').css('color', 'pink');
+                    } else if (inProgres === 'LONG_') {
+                      $(this).find('td:nth-child(5)').css('color', 'cyan');
+                    }
+                         
+                  });
+                });
+                
+
+
+
+
+
+
+
 
         
         }
@@ -280,14 +563,14 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('contenido').style.display = 'block';
       //var cambiosDespues = compararCambios();
 
-    //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
-  //   var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
+     //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
+     //   var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
 
-    // console.log('Cambios en estado OPEN:', openChanged);
-    //  console.log('Cambios en estado closed:', closedChanged);
+     // console.log('Cambios en estado OPEN:', openChanged);
+     //  console.log('Cambios en estado closed:', closedChanged);
       // Oculta las filas que no cambiaron
     
-      } else {
+    } else {
         // Hubo un error en la solicitud
         showError('Error al obtener los datos: ' + xhr.statusText);
       }
@@ -443,7 +726,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var valorPrecioLimiteInput = document.getElementById('ValorPrecioLimite');
   var labelPrecioMercado = document.querySelector('label[for="PrecioMercado"]');
   var labelPrecioLimite = document.querySelector('label[for="PrecioLimite"]');
-
+  var symbolInput = document.getElementById('symbol');
   cantidadRadio.addEventListener('change', function() {
       if (this.checked) {
           valorMontoInput.disabled = true;
@@ -478,7 +761,108 @@ document.addEventListener('DOMContentLoaded', function() {
   precioLimiteRadio.addEventListener('change', function() {
       valorPrecioLimiteInput.disabled = false;
   });
+
+
+
+
+
+//listado de precios
+document.getElementById('verPreciosBtn').addEventListener('click', function() {
+   // Obtener el botón "Ver Precios"
+  
+   //debugger;
+   // Obtener el campo de símbolo
+  
+   console.log(symbolInput.value);
+  
+   var requestData = {
+       symbol: symbolInput.value
+   };
+
+   // Realizar la solicitud AJAX
+   $.ajax({
+       url: '/routes-instrumentos-lista-precios/',  // Ruta de la función de ruta en tu backend
+       method: 'POST',  // Utilizar el método POST
+       data: JSON.stringify(requestData),  // Convertir los datos a formato JSON
+       contentType: 'application/json',  // Especificar el tipo de contenido como JSON
+       success: function(response) {
+        // Obtener el elemento del modal
+        var modalContent = document.getElementById('modalContent');
+    
+        // Construir el HTML para la tabla de ventas
+        var htmlVentas = '<table>';
+        htmlVentas += '<thead>';
+        htmlVentas += '<tr>';
+        htmlVentas += '<th scope="col" id="encabezado">Cant Venta</th>';
+        htmlVentas += '<th scope="col" id="encabezado">Precio Venta</th>';
+       
+        htmlVentas += '</tr>';
+        htmlVentas += '</thead>';
+        htmlVentas += '<tbody>';
+              // Iterar sobre las ofertas de venta y agregar filas a la tabla
+          for (var i = 1; i < 5; i++) {
+            debugger;
+            console.log(response);
+            htmlVentas += '<tr>';
+            htmlVentas += '<td>' + response.size + '</td>';
+            htmlVentas += '<td class="venta">' + response.price + '</td>';
+            htmlVentas += '</tr>';
+        }
+        htmlVentas += '</tbody>';
+        htmlVentas += '</table>';
+    
+        // Construir el HTML para la tabla de compras
+        var htmlCompras = '<table>';
+        htmlCompras += '<thead>';
+        htmlCompras += '<tr>';
+        htmlCompras += '<th scope="col" id="encabezado">Precio Compra</th>';
+        htmlCompras += '<th scope="col" id="encabezado">Cant Compra</th>';
+        htmlCompras += '</tr>';
+        htmlCompras += '</thead>';
+        htmlCompras += '<tbody>';
+        response.BI.forEach(function(ofertaCompra) {
+            htmlCompras += '<tr>';
+            htmlCompras += '<td class="compra">' + ofertaCompra.price + '</td>';
+            htmlCompras += '<td>' + ofertaCompra.size + '</td>';
+            htmlCompras += '</tr>';
+        });
+        htmlCompras += '</tbody>';
+        htmlCompras += '</table>';
+    
+      
+        // Insertar las tablas y la información en el cuerpo del modal
+        modalContent.innerHTML = htmlVentas + htmlCompras ;    
+    
+       
+        // Mostrar el modal
+        // Establecer el precio LA en el span correspondiente
+         document.getElementById('precioLA').textContent = response.LA.price;
+         document.getElementById('fechaActual').textContent = new Date(response.LA.date)
+        $('#listadoPrecios').modal('show');
+    },
+    
+   });
 });
+
+
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

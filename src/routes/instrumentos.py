@@ -7,6 +7,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as valida
+import time
+
 
 from utils.db import db
 
@@ -251,15 +253,43 @@ def instrumentos_detalles():
         listado_instrumentos = repuesta_listado_instrumento['instruments']
         
         
-
-       
         print("listado_instrumentos en instrumentos_detalles en intrumentos.py")
         return render_template("instrumentos.html", datos = listado_instrumentos   )
 
     except:        
         return render_template("login.html" )
    
+@instrumentos.route("/routes-instrumentos-lista-precios/", methods=['POST'])
+def routes_instrumentos_lista_precios():
+     # Obtener el símbolo del instrumento de la solicitud AJAX
+    symbol = request.json.get('symbol')
 
+    respuesta_instrumento = []
+    try:
+        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                   get.pyRofexInicializada.MarketDataEntry.OFFERS,
+                   get.pyRofexInicializada.MarketDataEntry.LAST]
+ 
+       
+       # Definir el rango de profundidades que deseas obtener
+        profundidades = [1, 2, 3, 4, 5]
+
+         # Lista para almacenar todos los precios
+        precios = []
+
+        # Iterar sobre cada profundidad y obtener los datos de mercado
+        for profundidad in profundidades:
+            response = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=profundidad)
+            datos = response['marketData']
+            precios.extend(datos)  # Agregar los precios a la lista
+            print(precios)  # Imprimir los precios obtenidos
+           
+        return jsonify(precios)
+
+    except:
+        flash('Symbol Incorrect')
+        return render_template("instrumentos.html")
+    
 @instrumentos.route("/carga")
 def carga():
      return "salida"
