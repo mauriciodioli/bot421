@@ -178,19 +178,10 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
   </div>  
 <script>
+
+
 document.addEventListener('DOMContentLoaded', function() {  
   document.getElementById('splash').style.display = 'block';
   //{% if cuenta is defined %}
@@ -207,9 +198,11 @@ document.addEventListener('DOMContentLoaded', function() {
   localStorage.setItem("usuario", usuario);
   localStorage.setItem("selector", selector);
   //{% endif %}
+
+
   document.addEventListener('click', function(event) {
     if (event.target && event.target.id == "boton-despues-carga-tabla") {
-        
+      
         access_token = localStorage.getItem('access_token');
         var cuentaEnvioAjax = localStorage.getItem('correo_electronico');
         var symbol = event.target.dataset.symbol;
@@ -226,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('correo_electronico').value = cuentaEnvioAjax;
         document.getElementById('paisSeleccionado').value = paisS;
         // Cerrar el modal
-        $('#confirmModal').modal('hide');
+      
     }
   });
 
@@ -768,9 +761,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //listado de precios
 document.getElementById('verPreciosBtn').addEventListener('click', function() {
-   // Obtener el botón "Ver Precios"
   
-   //debugger;
+   // Obtener el botón "Ver Precios"
+  // Evitar que se cierre el modal anterior
+   event.stopPropagation();
+    //debugger;
    // Obtener el campo de símbolo
   
    console.log(symbolInput.value);
@@ -799,15 +794,19 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
         htmlVentas += '</tr>';
         htmlVentas += '</thead>';
         htmlVentas += '<tbody>';
-              // Iterar sobre las ofertas de venta y agregar filas a la tabla
-          for (var i = 1; i < 5; i++) {
-            debugger;
-            console.log(response);
-            htmlVentas += '<tr>';
-            htmlVentas += '<td>' + response.size + '</td>';
-            htmlVentas += '<td class="venta">' + response.price + '</td>';
-            htmlVentas += '</tr>';
-        }
+        // Iterar sobre los datos de ventas (OF)              
+          if (response && Array.isArray(response)) {
+            response.forEach(function(data) {
+                if (data && data.OF && Array.isArray(data.OF)) {
+                    data.OF.forEach(function(ofertaVenta) {
+                        htmlVentas += '<tr>';
+                        htmlVentas += '<td>' + ofertaVenta.size + '</td>';
+                        htmlVentas += '<td><button class="venta-btn" data-precio="' + ofertaVenta.price + '">' + ofertaVenta.price + '</button></td>';
+                        htmlVentas += '</tr>';
+                    });
+                }
+            });
+          }
         htmlVentas += '</tbody>';
         htmlVentas += '</table>';
     
@@ -820,12 +819,20 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
         htmlCompras += '</tr>';
         htmlCompras += '</thead>';
         htmlCompras += '<tbody>';
-        response.BI.forEach(function(ofertaCompra) {
-            htmlCompras += '<tr>';
-            htmlCompras += '<td class="compra">' + ofertaCompra.price + '</td>';
-            htmlCompras += '<td>' + ofertaCompra.size + '</td>';
-            htmlCompras += '</tr>';
-        });
+        //itera sobre los elementos de BI        
+          if (response && Array.isArray(response)) {
+            response.forEach(function(data) {
+                if (data && data.BI && Array.isArray(data.BI)) {
+                    data.BI.forEach(function(ofertaCompra) {
+                        htmlCompras += '<tr>';                       
+                        htmlCompras += '<td><button class="compra-btn" data-precio="' + ofertaCompra.price + '">' + ofertaCompra.price + '</button></td>';
+                        htmlCompras += '<td>' + ofertaCompra.size + '</td>';
+                        htmlCompras += '</tr>';
+                    });
+                }
+            });
+          }
+       
         htmlCompras += '</tbody>';
         htmlCompras += '</table>';
     
@@ -835,16 +842,80 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
     
        
         // Mostrar el modal
-        // Establecer el precio LA en el span correspondiente
-         document.getElementById('precioLA').textContent = response.LA.price;
-         document.getElementById('fechaActual').textContent = new Date(response.LA.date)
+            // Establecer el precio LA en el span correspondiente
+            if (response && Array.isArray(response)) {
+              response.forEach(function(data) {
+                  if (data && data.LA) {
+                      // Accede a las propiedades de data.LA
+                      var precioLA = data.LA.price;
+                      var fechaLA = new Date(data.LA.date);
+                      
+                      // Actualiza los elementos HTML con los valores
+                      document.getElementById('precioLA').textContent = precioLA;
+                      console.log(precioLA);
+                      document.getElementById('fechaActual').textContent = fechaLA;
+                  }
+              });
+          }
+      
+
+
+
+
+        
+          // Agregar eventos de clic a los botones de venta
+          var ventaButtons = document.getElementsByClassName('venta-btn');
+          for (var i = 0; i < ventaButtons.length; i++) {
+              ventaButtons[i].addEventListener('click', function() {
+                  // Obtener el precio del botón clicado
+                  var precio = this.getAttribute('data-precio');
+                  // Cerrar el modal
+                  closeModal(precio);
+                  // Cargar el precio en el modal anterior
+                 
+              });
+          }
+
+          // Agregar eventos de clic a los botones de compra
+          var compraButtons = document.getElementsByClassName('compra-btn');
+          for (var j = 0; j < compraButtons.length; j++) {
+              compraButtons[j].addEventListener('click', function() {
+                  // Obtener el precio del botón clicado
+                  var precio = this.getAttribute('data-precio');
+                 // console.log('precio ',precio)
+                  // Cerrar el modal
+                  closeModal(precio);
+                  // Cargar el precio en el modal anterior
+                 
+              });
+          }
+
+
+
+
+
+
+
+
+
+
+
+
         $('#listadoPrecios').modal('show');
     },
     
    });
 });
 
-
+// Función para cerrar el modal
+function closeModal(precio) {
+  // Código para cerrar el modal, por ejemplo: 
+   
+   $('#listadoPrecios').modal('hide');   
+   $('#confirmModal').modal('show');
+   document.getElementById('ValorPrecioLimite').value = precio;
+  
+}
 
 
 

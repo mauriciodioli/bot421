@@ -272,7 +272,7 @@ def routes_instrumentos_lista_precios():
  
        
        # Definir el rango de profundidades que deseas obtener
-        profundidades = [1, 2, 3, 4, 5]
+        profundidades = [4]
 
          # Lista para almacenar todos los precios
         precios = []
@@ -281,7 +281,7 @@ def routes_instrumentos_lista_precios():
         for profundidad in profundidades:
             response = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=profundidad)
             datos = response['marketData']
-            precios.extend(datos)  # Agregar los precios a la lista
+            precios.append(datos)  # Agregar los precios a la lista
             print(precios)  # Imprimir los precios obtenidos
            
         return jsonify(precios)
