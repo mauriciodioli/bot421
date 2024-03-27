@@ -29,11 +29,20 @@
     color: rgb(34, 7, 133);
 }
 /* Estilos para el precio de compra */
-.compra {
+.compra-btn {
     color: green; /* Color verde para el precio de compra */
 }
 
 /* Estilos para el precio de venta */
-.venta {
+.venta-btn {
     color: red; /* Color rojo para el precio de venta */
 }
+
+.modal-title.black-text {
+    color: black;
+  }
+#ValorPrecioLimite {
+    color: rgb(34, 7, 133);
+    font-weight: bold;
+}  
+  
