@@ -30,38 +30,39 @@
         <button type="button" class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#IngresaValorFicha"><strong>RECIBIR</strong></button>
 
     </div>
-                    
-    <table class="table table-dark table-striped"  id="tablaDatos">
-        <thead>           
-            <tr>
-                <th scope="col">Fecha</th>               
-                <th scope="col">Inicial</th>               
-                <th scope="col">Capitalizacion</th>
-                <th scope="col">Estado</th>                     
-                <th scope="col">Operaciones</th>
-            </tr>            
-        </thead>
-        <tbody>
-            {% for fichas in datos %}
-                {% if fichas.ficha.user_id != usuario_id %}
-                    <tr>
-                        <th scope="row">{{fichas.fecha_traspaso}}</th>                      
-                        <td>{{ fichas.ficha.monto_efectivo }}</td>                        
-                        <td>{{ fichas.ficha.interes }}%</td>
-                        <td>{{fichas.estado_traza }}</td>                                                       
-                        <td class="d-flex"> 
-            
-                        
-                                <button type="button" class="btn btn-primary  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.ficha.random_number }}"  data-ficha-monto="{{ fichas.ficha.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}><srtrong>Asignar</strong></button>
-                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#reportarFichaModal"  data-ficha-id="{{ fichas.id }}" data-ficha-idFicha="{{ fichas.idFicha }}" onclick="setFichaDataReportar( this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))">Reportar</button>
-                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}"  data-ficha-idFicha="{{ fichas.idFicha }}"  onclick="setFichaData( this.getAttribute('data-ficha-id') , this.getAttribute('data-ficha-idFicha'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>Recibido</button>
-                              </td>
-                    </tr>
-                {% endif %}    
-            {% endfor %}
-        </tbody>
-    </table>
-
+    <div class="table-responsive">                  
+        <table class="table table-dark table-striped"  id="tablaDatos">
+            <thead>           
+                <tr>
+                    <th scope="col">Fecha</th>               
+                    <th scope="col">Inicial</th>               
+                    <th scope="col">Capitalizacion</th>
+                    <th scope="col">Estado</th>                     
+                    <th scope="col">Operaciones</th>
+                </tr>            
+            </thead>
+            <tbody>
+                {% for fichas in datos %}
+                    {% if fichas.ficha.user_id != usuario_id %}
+                        <tr>
+                            <th scope="row">{{fichas.fecha_traspaso}}</th>                      
+                            <td>{{ fichas.ficha.monto_efectivo }}</td>                        
+                            <td>{{ fichas.ficha.interes }}%</td>
+                            <td>{{fichas.estado_traza }}</td>                                                       
+                            <td class="d-flex"> 
+                
+                            
+                                    <button type="button" class="btn btn-primary  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.ficha.random_number }}"  data-ficha-monto="{{ fichas.ficha.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}><srtrong>Asignar</strong></button>
+                                    <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#reportarFichaModal"  data-ficha-id="{{ fichas.id }}" data-ficha-idFicha="{{ fichas.idFicha }}" onclick="setFichaDataReportar( this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))">Reportar</button>
+                                    <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}"  data-ficha-idFicha="{{ fichas.idFicha }}"  onclick="setFichaData( this.getAttribute('data-ficha-id') , this.getAttribute('data-ficha-idFicha'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>Recibido</button>
+                                </td>
+                        </tr>
+                    {% endif %}    
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>   
+</div>
 
     <div class="modal fade" id="IngresaValorFicha" tabindex="-1" aria-labelledby="IngresaValorFichaModalLabel" aria-hidden="true">
         <div class="modal-dialog ">
