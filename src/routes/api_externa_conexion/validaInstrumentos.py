@@ -18,10 +18,11 @@ def validar_existencia_instrumentos(mi_listado,listado_instrumentos):
   listado_final = []
   for instrumento in mi_listado:
     if instrumento in listado_instrumentos:
-      print(f'El instrumento {instrumento} existe en el mercado')
+      #print(f'El instrumento {instrumento} existe en el mercado')
       listado_final.append(instrumento)
    # else:
    #   print(f'El instrumento {instrumento} NO existe en el mercado')
+  print('termina de validar si existen en el mercado correctamente')
   return listado_final
 
 

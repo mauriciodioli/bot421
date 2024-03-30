@@ -11,15 +11,22 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.triggerEstrategia import TriggerEstrategia
 from datetime import datetime, timedelta, time
+
 import smtplib
 import schedule
+import functools
 import time
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
+from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
+import routes.api_externa_conexion.get_login as get
 import strategies.estrategias as estrategias
 from utils.common import Marshmallow, db
 from datetime import datetime
 import jwt
+import threading
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 programar_trigger = Blueprint('programar_trigger', __name__)
 
 # Crear la tabla cuenta si no existe
@@ -51,7 +58,7 @@ def trigger():
 @programar_trigger.route('/programador_trigger/', methods=['POST'])
 def programador_trigger():
     
-    crea_tabla_triggerEstrategia()
+    #crea_tabla_triggerEstrategia()
     # Obtener las horas ingresadas por el usuario desde los datos enviados en el cuerpo de la solicitud
     horaInicio = request.json["horaInicio"]
     horaFin = request.json["horaFin"]
@@ -141,37 +148,13 @@ def programar_tareas(horaInicio, horaFin):
     schedule.every().day.at(horaInicio_deseada.strftime("%H:%M")).do(tarea_inicio)
     schedule.every().day.at(horaFin_deseada.strftime("%H:%M")).do(tarea_fin)
 
-def tarea_inicio():
-    print("Tarea de inicio ejecutada")
-    # Programar la próxima ejecución después de 24 horas
-    schedule.every(24).hours.do(tarea_inicio)
 
-    # Aquí puedes enviar los datos a otra ruta en otro archivo Python
-    # utilizando la librería requests o similar
-    datos_usuario = {
-        "nombre": "Usuario",
-        "email": "usuario@example.com"
-    }
-    response = requests.post(url_for('estrategia_sheet_WS.estrategia_sheet_WS'), data=datos_usuario)
 
-    if response.status_code == 200:
-        print("Datos de usuario enviados con éxito")
-    else:
-        print("Error al enviar los datos de usuario")
 
-def tarea_fin():
-    print("Tarea de finalización ejecutada")
-    # Programar la próxima ejecución después de 24 horas
-    schedule.every(24).hours.do(tarea_fin)
 
-    
-    response = requests.get(url_for('estrategias.detenerWS'))
 
-    if response.status_code == 200:
-        print("Detener WS exitoso")
-    else:
-        print("Error al detener WS")
-        
+
+
 
 
 

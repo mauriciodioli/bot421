@@ -35,6 +35,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/pickr.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasRegistrarCuentaBroker.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/subirImagen.css')}}>
     <link rel=   "stylesheet" href="{{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
     <link rel=   "stylesheet" href="{{ url_for('static', filename='css/social/estiloTarjetaImagen.css') }}">
@@ -69,6 +71,8 @@
                           <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/SuscripcionPorWebSocket/">Procesos</a></li>                          
                         </ul>                        

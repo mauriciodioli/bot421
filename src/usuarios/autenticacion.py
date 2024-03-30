@@ -36,7 +36,6 @@ from utils.db import db
 import jwt
 from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy import event
 
 autenticacion = Blueprint("autenticacion", __name__)
 
@@ -259,16 +258,10 @@ def loginUsuario():
         #crea_tabla_usuario()
         ##usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
         # Registra la función para el evento 'connect'
-        try:
-            usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
-           
-        except Exception as e:
-            # Handle exceptions, for example:
-            print("An error occurred:", str(e))
-            return 'An error occurred while processing your request'
-        finally:
-            db.session.close()
        
+        with session_scope() as session:
+            usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
+        usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
 
        # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):

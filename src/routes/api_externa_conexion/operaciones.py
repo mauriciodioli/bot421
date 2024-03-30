@@ -103,7 +103,7 @@ def operaciones_desde_seniales_sin_cuenta():
             access_token = request.form['access_token']
             ticker = request.form['symbol']
             ut1 = request.form['ut']
-            signal = request.form['senial']
+            signal = request.form['senial']           
             cuentaUser = request.form['correo_electronico']
             pais = request.form['paisSeleccionado']
             layouts = 'layout_signal'
@@ -123,7 +123,7 @@ def operaciones_desde_seniales_sin_cuenta():
                 orden_existente.ut = ut1
                 orden_existente.senial = signal
                 orden_existente.clOrdId_alta_timestamp=datetime.now()
-                orden_existente.status = 'operado'
+                orden_existente.status = 'terminado'              
             else:
                 # Si no existe, creamos un nuevo registro
                 nueva_orden = Orden(
@@ -145,7 +145,10 @@ def operaciones_desde_seniales_sin_cuenta():
                     senial=signal,
                     status='operado'
                 )
+               
                 db.session.add(nueva_orden)
+            if signal == 'closed.' :                  
+                   db.session.delete(orden_existente)
             db.session.commit() 
                 #get.current_session = db.session
             db.session.close()
@@ -243,7 +246,7 @@ def operaciones_desde_seniales():
                           print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
                               
                           # Intentamos encontrar el registro con el symbol específico
-                          orden_existente = Orden.query.filter_by(symbol=ticker).first()
+                          orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
 
                           if orden_existente:
                               # Si el registro existe, lo actualizamos
@@ -275,7 +278,10 @@ def operaciones_desde_seniales():
                                   status='operado'
                               )
                               db.session.add(nueva_orden)
-                          db.session.commit() 
+                              
+                          if signal == 'closed.':
+                            db.session.delete(orden_existente)   
+                          db.session.commit()  
                               #get.current_session = db.session
                           db.session.close()
                     else:

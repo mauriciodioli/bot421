@@ -13,28 +13,32 @@ cuentas = Blueprint('cuentas',__name__)
 class Cuenta(db.Model):
     __tablename__ = 'cuentas'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey('usuarios.id'))  
+    user_id = Column(Integer, ForeignKey('usuarios.id'))      
+    broker_id = db.Column(db.Integer, db.ForeignKey('brokers.id'), nullable=True)
+    
     userCuenta = db.Column(db.String(120), unique=True, nullable=False)
     passwordCuenta = db.Column(db.LargeBinary(128), nullable=False)
     accountCuenta = db.Column(db.String(500), nullable=True)
     selector = db.Column(db.String(500), nullable=True)
     ficha = relationship("Ficha", back_populates="cuentas")
     trazaFichas = relationship('TrazaFicha', backref='cuenta')    
-    usuarios = relationship("Usuario", back_populates="cuentas")
+    usuarios = relationship("Usuario", back_populates="cuentas")   
+    #broker = relationship("Broker", back_populates="cuentas")
 
     
  # constructor
-    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,selector):
+    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,selector,broker_id):
         self.id = id
         self.user_id = user_id
         self.userCuenta = userCuenta
         self.passwordCuenta = passwordCuenta
         self.accountCuenta = accountCuenta
         self.selector = selector
+        self.broker_id = broker_id
 
    
     def __repr__(self):
-        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector})"
+        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector} broker_id={self.broker_id})"
     @classmethod
     def crear_tabla_cuentas(self):
          insp = inspect(db.engine)
@@ -45,7 +49,7 @@ class Cuenta(db.Model):
         
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta","selector")
+        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta","selector","broker_id")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
