@@ -12,6 +12,7 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from models.brokers import Broker
 
 
 
@@ -127,10 +128,11 @@ def registrar_cuenta():
          passwordCuenta = request.form['contraseña']
          accountCuenta = request.form['cuenta']
          selector = request.form['environment']
-         print("___________cuentas___________userCuenta",userCuenta)
+         
+          # Aquí recibimos los campos broker_id y broker_nombre
+         broker_id = request.form['broker_id']
+         broker_nombre = request.form['broker_nombre']
         
-         print("___________cuentas___________accountCuenta",accountCuenta)
-         print("___________cuentas___________correo_electronico",correo_electronico)
          # Codificar las cadenas usando UTF-8
          userCuenta_encoded = userCuenta.encode('utf-8')
          passwordCuenta_encoded = passwordCuenta.encode('utf-8')
@@ -141,20 +143,22 @@ def registrar_cuenta():
             
             try:
                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-               crea_tabla_cuenta()
+               #crea_tabla_cuenta()
                
                usuario = Usuario.query.get(user_id)  # Obtener el objeto Usuario correspondiente al user_id
+              
                if selector == '1':
                   selectorStr = 'simulado'
                else: 
                   selectorStr = 'produccion'
-
+               
                cuenta = Cuenta( 
                      id=None,   
                      user_id=user_id,
                      userCuenta=userCuenta_encoded,
                      passwordCuenta=passwordCuenta_encoded,
                      accountCuenta=accountCuenta_encoded,
+                     broker_id=broker_id,
                      selector=selectorStr              
                      )
                cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
@@ -234,19 +238,42 @@ def registrar_cuenta_administracion():
 
 def get_cuentas_de_broker(user_id):
     
-    print("_______________________get_cuentas_de_broker_usuario",user_id)
     todasCuentas = []
     try:
         # Obtener el objeto Usuario correspondiente al user_id
         usuario = Usuario.query.get(user_id)         
-        # Buscar todas las cuentas asociadas a ese usuario
+        # Buscar todas las cuentas asociadas a ese usuario       
         cuentas = db.session.query(Cuenta).filter(Cuenta.user_id == user_id).all()
+
+        # Obtener todos los IDs de los brokers asociados a las cuentas
+        broker_ids = [cuenta.broker_id for cuenta in cuentas if cuenta.broker_id is not None]
+
+        # Obtener todos los brokers correspondientes a los IDs obtenidos
+        brokers = db.session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
+
+       # Crear un diccionario que mapee IDs de broker a nombres de broker
+        id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
+     
+        
         if cuentas:
-            print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
-            for cuenta in cuentas:
-                password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                todasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta, 'selector':cuenta.selector})
-                print(cuenta.accountCuenta)    
+         print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+         for cuenta in cuentas:
+            password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+            
+            # Obtener el nombre del broker asociado a esta cuenta (si existe)
+            nombre_broker = id_nombre_broker.get(cuenta.broker_id)
+            
+            todasCuentas.append({
+                  'id': cuenta.id,
+                  'accountCuenta': cuenta.accountCuenta,
+                  'userCuenta': cuenta.userCuenta,
+                  'passwordCuenta': password_cuenta,
+                  'selector': cuenta.selector,
+                  'broker_id': cuenta.broker_id,
+                  'nombre_broker': nombre_broker  # Agregar el nombre del broker
+            })
+            
+            print(cuenta.accountCuenta)  
         else:
             print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
     except:
@@ -260,7 +287,7 @@ def get_cuentas_de_broker(user_id):
 @cuenta.route("/get_cuentas_de_broker_usuario",  methods=["POST"])   
 def get_cuentas_de_broker_usuario():
      if request.method == 'POST':
-       
+         
          access_token = request.form['access_token']
          todasLasCuentas = []
          if access_token:
@@ -274,18 +301,37 @@ def get_cuentas_de_broker_usuario():
                usuario = Usuario.query.get(user_id)         
               # Buscar todas las cuentas asociadas a ese usuario
                cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
+               # Obtener el objeto Usuario correspondiente al user_id     
 
+               # Obtener todos los IDs de los brokers asociados a las cuentas
+               broker_ids = [cuenta.broker_id for cuenta in cuentas if cuenta.broker_id is not None]
+
+               # Obtener todos los brokers correspondientes a los IDs obtenidos
+               brokers = db.session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
+
+               # Crear un diccionario que mapee IDs de broker a nombres de broker
+               id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
+     
+        
                if cuentas:
                   print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
-                  
                   for cuenta in cuentas:
-                   todasLasCuentas.append(cuenta.accountCuenta)
-                   password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                   todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta,'selector':cuenta.selector})
-     
-                   print(cuenta.accountCuenta)	
-                  
-                
+                     password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                     
+                     # Obtener el nombre del broker asociado a esta cuenta (si existe)
+                     nombre_broker = id_nombre_broker.get(cuenta.broker_id)
+                     
+                     todasLasCuentas.append({
+                           'id': cuenta.id,
+                           'accountCuenta': cuenta.accountCuenta,
+                           'userCuenta': cuenta.userCuenta,
+                           'passwordCuenta': password_cuenta,
+                           'selector': cuenta.selector,
+                           'broker_id': cuenta.broker_id,
+                           'nombre_broker': nombre_broker  # Agregar el nombre del broker
+                     })
+                     
+                     print(cuenta.accountCuenta)  
                else:
                   print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
                   flash('No registra cuenta para el usuario: ',usuario.nombre)
@@ -367,8 +413,7 @@ def delete_cuenta_usuario_broker():
             return render_template('cuentas/cuentasDeUsuario.html', datos=all_cuenta) 
          
 @cuenta.route("/logOutAccount")   
-def logOutAccount():
-   get.inicializar_variables_globales()
+def logOutAccount():   
    get.diccionario_global_operaciones = {}
    get.diccionario_operaciones_enviadas = {}
    return render_template('cuentas/logOutAccount.html')

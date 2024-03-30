@@ -23,9 +23,12 @@
 
 
 {% block content%}
- <body>
-    <div class="container" id="cardIndex">
-        <div class="card card-body cardIndexFichas">
+
+ <body> 
+    
+    
+    <div class="container" id="cardIndex">       
+        <div class="card card-body " id="cardIndexFichas">
           <h2>Ficha</h2>
           <h4 class="planes-titulo" style="color: gold; font-size: 24px;">$ {{total_para_fichas }} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Disponible</span></h4>
           <h4 class="planes-titulo" style="color: white; font-size: 24px;">60% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">De cuenta</span></h4>
@@ -126,6 +129,7 @@
     
 
     <div class = 'container p-4'>
+        <div class="table-responsive">  
             <table class="table table-dark table-striped"  id="tablaDatos">
                 <thead>           
                     <tr>
@@ -154,6 +158,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>    
     </div>
 </div>
 
