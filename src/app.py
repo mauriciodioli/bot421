@@ -4,6 +4,7 @@ from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,ge
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
+
 # Importar create_engine y NullPool
 import logging
 from sqlalchemy import create_engine, event
@@ -133,7 +134,7 @@ app.config['SQLALCHEMY_POOL_SIZE'] = 100
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000, max_overflow=10)
-
+event.listen(engine, 'connect', log_connection_info)
 db = SQLAlchemy(app)
 # Configurar el pool de conexiones para SQLAlchemy
 db.init_app(app)
