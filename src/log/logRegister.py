@@ -35,7 +35,7 @@ def registroLogs(datos):
 
 
     # Ruta relativa para guardar el archivo JSON en el subdirectorio "strategies"
-    ruta_archivo_csv = os.path.join(ruta_hasta_src, 'log/', 'logs.csv')
+    ruta_archivo_csv = os.path.join(ruta_hasta_src, 'log/', 'logs.log')
 
     # Escribir el diccionario en el archivo JSON
     with open(ruta_archivo_csv, 'w', newline='') as archivo_csv:
