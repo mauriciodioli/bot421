@@ -1,6 +1,6 @@
 from pipes import Template
 from unittest import result
-from flask import current_app
+from flask import current_app,session
 import smtplib
 import os
 import pyRofex
@@ -59,13 +59,14 @@ def ArrancaShedule():
             fecha_inicio_shedule = data['fechaInicioShedule']  # Obtener el valor de fechaInicioShedule
             fecha_fin_shedule = data['fechaFinShedule'] # Obtener el valor de fechaFinShedule
             get.accountLocalStorage = data['userCuenta']
+            session['userCuenta'] =  data['userCuenta']
             access_token = data['access_token']
             idUser = data['idUser']
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
             selector = data['selector']  
             
-       
+            
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
             #print('Hora de inicio:', fecha_inicio_shedule)
