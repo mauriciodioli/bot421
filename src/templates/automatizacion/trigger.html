@@ -342,7 +342,7 @@ scrollToBottom();
 function actualizarActualizaciones() {
   // Crear un EventSource para recibir eventos del servidor
   const eventSource = new EventSource('/logs');
-
+  console.log('eventSource ',eventSource)
   // Asignar el manejador de eventos
   eventSource.onmessage = handleEvent;
 

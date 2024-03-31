@@ -47,20 +47,38 @@ def registroLogs(datos):
     print(f'Se ha creado el archivo csv en "{ruta_archivo_csv}"')   
     
 
+
 def generate_logs():
+    directorio_actual = os.path.dirname(__file__)
+    partes_ruta = directorio_actual.split(os.path.sep)
+    indice_src = partes_ruta.index('src')
+    ruta_hasta_src = os.path.sep.join(partes_ruta[:indice_src + 1])
 
+    ruta_archivo_csv = os.path.join(ruta_hasta_src, 'logs.log')
 
-    # Iterar sobre los registros de logs y enviarlos al cliente
-    while True:
-       
-        # Leer los registros del archivo de logs
-        with open('logs.log', 'r') as f:           
-            logs = f.readlines()            
-        # Enviar los registros al cliente uno por uno
-        for log in logs:
-            
-            yield f"data: {log}\n\n"
+    encodings = ['utf-8', 'latin-1', 'iso-8859-1']  # Lista de encodings a intentar
 
-        # Esperar antes de leer los registros nuevamente
-        time.sleep(1)
+    # Iterar sobre los encodings y abrir el archivo
+    for encoding in encodings:
+        try:
+            with open(ruta_archivo_csv, 'r', encoding=encoding) as f:
+                for line_number, log in enumerate(f, start=1):  # Contar las líneas para rastrear el número de línea
+                    try:
+                        yield f"data: {log}\n\n"
+                    except UnicodeDecodeError as e:
+                        # Imprimir el número de línea y la línea problemática
+                        print(f"Error de decodificación Unicode en la línea {line_number}: {str(e)}")
+                        print(f"Línea problemática: {log}")
+                break  # Salir del bucle si se abre el archivo correctamente
+        except UnicodeDecodeError as e:
+            # Obtener el mensaje de error y los bytes problemáticos
+            error_message = str(e)
+            problem_bytes = e.object[e.start:e.end]
+            print(f"Error de decodificación Unicode: {error_message}")
+            print(f"Bytes problemáticos: {problem_bytes}")
+            continue  # Continuar con el siguiente encoding si hay un error de decodificación
+
+    # Esperar antes de leer los registros nuevamente
+    time.sleep(1)
+
 
