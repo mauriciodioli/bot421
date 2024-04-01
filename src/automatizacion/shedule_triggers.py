@@ -55,7 +55,8 @@ def calculaHoraActual(tiempo):
     adjusted_client_time = client_time.replace(hour=server_time.hour, minute=server_time.minute)
     print("Hora ajustada del cliente:", adjusted_client_time)
 
-    return str(adjusted_client_time)
+    # Devolver la hora ajustada en el formato 'HH:MM'
+    return adjusted_client_time.strftime('%H:%M')
 
 @shedule_triggers.route("/muestraTriggers/")
 def muestraTriggers():
@@ -85,7 +86,8 @@ def ArrancaShedule():
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
             selector = data['selector']  
-            inicio_shedule = calculaHoraActual(fecha_inicio_shedule)
+            fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule)
+            fecha_fin_shedule = calculaHoraActual(fecha_inicio_shedule)
             
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
