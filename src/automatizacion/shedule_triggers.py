@@ -37,19 +37,24 @@ import logging
 shedule_triggers = Blueprint('shedule_triggers', __name__)
 
 
+   
 def calculaHoraActual(tiempo):
-   
+    # Paso 1: Convertir la cadena de tiempo del cliente a un objeto datetime
     client_time = datetime.strptime(tiempo, '%H:%M')
+    print("Hora del cliente:", client_time)
 
-    # Obtener la hora actual del servidor
+    # Paso 2: Obtener la hora actual del servidor
     server_time = datetime.now()
-   
+    print("Hora del servidor:", server_time)
 
-    # Calcular la diferencia de tiempo entre el servidor y el cliente
-    time_difference = server_time - client_time
+    # Paso 3: Calcular la diferencia de horas entre el servidor y el cliente
+    hour_difference = client_time.hour - server_time.hour
+    print("Diferencia de horas entre cliente y servidor:", hour_difference)
 
-    # Ajustar la hora del servidor según la diferencia de tiempo
-    adjusted_server_time = server_time - time_difference
+    # Paso 4: Ajustar la hora del servidor según la diferencia de horas
+    adjusted_server_time = server_time + timedelta(hours=hour_difference)
+    print("Hora ajustada del servidor:", adjusted_server_time)
+
     return str(adjusted_server_time)
 
 @shedule_triggers.route("/muestraTriggers/")
