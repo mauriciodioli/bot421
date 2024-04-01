@@ -87,7 +87,7 @@ def ArrancaShedule():
             cuenta = data['cuenta']     
             selector = data['selector']  
             fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule)
-            fecha_fin_shedule = calculaHoraActual(fecha_inicio_shedule)
+            fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule)
             
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
