@@ -48,14 +48,14 @@ def calculaHoraActual(tiempo):
     print("Hora del servidor:", server_time)
 
     # Paso 3: Calcular la diferencia de horas entre el servidor y el cliente
-    hour_difference = client_time.hour - server_time.hour
-    print("Diferencia de horas entre cliente y servidor:", hour_difference)
+    hour_difference = server_time.hour - client_time.hour
+    print("Diferencia de horas entre servidor y cliente:", hour_difference)
 
-    # Paso 4: Ajustar la hora del servidor según la diferencia de horas
-    adjusted_server_time = server_time + timedelta(hours=hour_difference)
-    print("Hora ajustada del servidor:", adjusted_server_time)
+    # Paso 4: Ajustar la hora del cliente a la hora del servidor
+    adjusted_client_time = client_time.replace(hour=server_time.hour, minute=server_time.minute)
+    print("Hora ajustada del cliente:", adjusted_client_time)
 
-    return str(adjusted_server_time)
+    return str(adjusted_client_time)
 
 @shedule_triggers.route("/muestraTriggers/")
 def muestraTriggers():
