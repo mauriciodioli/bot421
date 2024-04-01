@@ -21,3 +21,12 @@ jobs:
         repository: ${{ github.repository_owner }}/202302i
         tag_with_ref: true
         tags: ${{ github.sha }}
+        
+    - name: Copy Docker image to AWS instance
+          uses: appleboy/ssh-action@master
+          with:
+            host: ec2-18-207-114-83.compute-1.amazonaws.com
+            username: ubuntu
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            script: |
+              docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
