@@ -1258,3 +1258,23 @@ __inicio 13:59 ___fin 17:00
 2024-04-01 14:57:20,221 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
 __inicio 13:59 ___fin 17:00
 2024-04-01 14:57:20,239 - CUSTOM - __inicio 13:59 ___fin 17:00 __hora_actual 14:57:20
+2024-04-01 15:03:33,517 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:03 ___fin 15:03
+2024-04-01 15:03:50,193 - CUSTOM - __inicio 15:03 ___fin 15:03 __hora_actual 15:03:50
+2024-04-01 15:03:50,207 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:03 ___fin 15:03
+2024-04-01 15:03:50,214 - CUSTOM - __inicio 15:03 ___fin 15:03 __hora_actual 15:03:50
+2024-04-01 15:05:02,662 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:03 ___fin 15:04
+2024-04-01 15:05:02,672 - CUSTOM - __inicio 15:03 ___fin 15:04 __hora_actual 15:05:02
+__inicio 15:03 ___fin 15:04
+2024-04-01 15:06:03,928 - CUSTOM - __inicio 15:03 ___fin 15:04 __hora_actual 15:06:03
+__inicio 15:03 ___fin 15:04
+2024-04-01 15:07:39,501 - CUSTOM - __inicio 15:03 ___fin 15:04 __hora_actual 15:07:39
+2024-04-01 15:07:39,526 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:05 ___fin 15:06
+2024-04-01 15:07:39,538 - CUSTOM - __inicio 15:05 ___fin 15:06 __hora_actual 15:07:39
+__inicio 15:03 ___fin 15:04
+2024-04-01 15:08:39,555 - CUSTOM - __inicio 15:03 ___fin 15:04 __hora_actual 15:08:39
+__inicio 15:05 ___fin 15:06
+2024-04-01 15:08:39,569 - CUSTOM - __inicio 15:05 ___fin 15:06 __hora_actual 15:08:39
