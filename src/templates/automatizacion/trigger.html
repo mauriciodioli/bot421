@@ -256,6 +256,10 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
     $('#btnArrancarShedule').click(function() {
         var horaInicio = $('#horaInicio').val(); // Obtener el valor de la hora de inicio
         var horaFin = $('#horaFin').val(); // Obtener el valor de la hora de fin
+          // Obtener la zona horaria del cliente
+        var clienteTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+
         access_token = localStorage.getItem('access_token');
         correo_electronico = localStorage.getItem('correo_electronico');
         usuario =  localStorage.getItem('usuario');
@@ -275,8 +279,8 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
                 'idUser': idUser,
                 'correo_electronico': correo_electronico,
                 'cuenta': cuenta,
-                'selector' : selector
-              
+                'selector' : selector,
+                'clienteTimezone': clienteTimezone // Enviar la zona horaria del cliente                           
             }),
             success: function(response) {
               $('#confirmationModal').modal('hide');

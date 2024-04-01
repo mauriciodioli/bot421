@@ -38,7 +38,7 @@ shedule_triggers = Blueprint('shedule_triggers', __name__)
 
 
    
-def calculaHoraActual(tiempo):
+def calculaHoraActual(tiempo,clienteTimezone):
     # Paso 1: Convertir la cadena de tiempo del cliente a un objeto datetime
     client_time = datetime.strptime(tiempo, '%H:%M')
     print("Hora del cliente:", client_time)
@@ -86,8 +86,9 @@ def ArrancaShedule():
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
             selector = data['selector']  
-            fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule)
-            fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule)
+            clienteTimezone = data['clienteTimezone']
+            fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone)
+            fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone)
             
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
