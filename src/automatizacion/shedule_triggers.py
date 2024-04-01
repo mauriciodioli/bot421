@@ -37,6 +37,21 @@ import logging
 shedule_triggers = Blueprint('shedule_triggers', __name__)
 
 
+def calculaHoraActual(tiempo):
+   
+    client_time = datetime.strptime(tiempo, '%H:%M')
+
+    # Obtener la hora actual del servidor
+    server_time = datetime.now()
+   
+
+    # Calcular la diferencia de tiempo entre el servidor y el cliente
+    time_difference = server_time - client_time
+
+    # Ajustar la hora del servidor según la diferencia de tiempo
+    adjusted_server_time = server_time - time_difference
+    return str(adjusted_server_time)
+
 @shedule_triggers.route("/muestraTriggers/")
 def muestraTriggers():
     try:
@@ -65,7 +80,7 @@ def ArrancaShedule():
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
             selector = data['selector']  
-            
+            inicio_shedule = calculaHoraActual(fecha_inicio_shedule)
             
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
@@ -175,14 +190,14 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
         #busca el directorio src/logs.log
         src_directory1 = os.getcwd()#busca directorio raiz src o app   
 
-        logs_file_path = os.path.join(src_directory1, 'logs.log')
+        logs_file_path = os.path.join(src_directory1,'src' ,'logs.log')
         
        # src_directory = os.path.dirname(os.path.abspath(__file__)) #busca directorio acutal automatizacion
        # if os.path.exists(src_directory):
             # Eliminar el archivo
         #    os.remove(src_directory)
         # Ruta al archivo de logs dentro del directorio 'src'
-        print('logs_file_path0000000000000000000000000000000000')
+       
         print(logs_file_path)
        # logs_file_path = os.path.join(src_directory, 'logs.log')
        
@@ -227,8 +242,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 
             print("______________________________________________________________________________")
             print("comprobando schedule.run_pending() automatizacion shedule_trigger planificar_shedule  " )
-            print('__inicio ',tiempoInicioDelDia,' ___fin ',tiempoFinDelDia,' __hora_actual ',hora_actual)
-            #print("Diccionario de hilos iniciados:", get.hilo_iniciado_panel_control)
+            print('__inicio ',tiempoInicioDelDia,' ___fin ',tiempoFinDelDia,' __hora_actual ',hora_actual)          
             print("______________________________________________________________________________")
             schedule.run_pending()
             time.sleep(60)
