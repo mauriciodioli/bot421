@@ -1203,3 +1203,40 @@ __inicio 12:28 ___fin 12:29
 2024-03-31 13:34:46,446 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
 2024-03-31 13:37:43,252 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
 2024-03-31 14:12:56,277 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-01 13:40:09,712 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-04-01 13:40:09,742 - CUSTOM - __inicio 10:42 ___fin 17:00 __hora_actual 13:40:09
+2024-04-01 13:41:09,812 - CUSTOM - __inicio 10:42 ___fin 17:00 __hora_actual 13:41:09
+2024-04-01 13:42:09,867 - CUSTOM - __inicio 10:42 ___fin 17:00 __hora_actual 13:42:09
+2024-04-01 13:43:09,936 - CUSTOM - __inicio 10:42 ___fin 17:00 __hora_actual 13:43:09
+2024-04-01 13:44:10,008 - CUSTOM - __inicio 10:42 ___fin 17:00 __hora_actual 13:44:10
+2024-04-01 13:45:45,743 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-04-01 13:45:45,752 - CUSTOM - __inicio 10:46 ___fin 17:00 __hora_actual 13:45:45
+2024-04-01 13:46:05,788 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 10:47 ___fin 17:00
+2024-04-01 13:46:05,802 - CUSTOM - __inicio 10:47 ___fin 17:00 __hora_actual 13:46:05
+__inicio 10:47 ___fin 17:00
+2024-04-01 13:47:05,873 - CUSTOM - __inicio 10:47 ___fin 17:00 __hora_actual 13:47:05
+__inicio 10:47 ___fin 17:00
+2024-04-01 13:48:14,271 - CUSTOM - __inicio 10:47 ___fin 17:00 __hora_actual 13:48:05
+__inicio 10:47 ___fin 17:00
+2024-04-01 13:49:38,832 - CUSTOM - __inicio 10:47 ___fin 17:00 __hora_actual 13:49:38
+__inicio 10:47 ___fin 17:00
+2024-04-01 13:50:38,903 - CUSTOM - __inicio 10:47 ___fin 17:00 __hora_actual 13:50:38
+2024-04-01 13:51:29,139 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 13:53 ___fin 17:00
+2024-04-01 13:51:32,981 - CUSTOM - __inicio 13:53 ___fin 17:00 __hora_actual 13:51:32
+2024-04-01 13:51:45,195 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 13:53 ___fin 17:00
+2024-04-01 13:51:50,682 - CUSTOM - __inicio 13:53 ___fin 17:00 __hora_actual 13:51:50
+__inicio 13:53 ___fin 17:00
+2024-04-01 13:52:50,749 - CUSTOM - __inicio 13:53 ___fin 17:00 __hora_actual 13:52:50
+__inicio 13:53 ___fin 17:00
+2024-04-01 13:53:50,766 - CUSTOM - __inicio 13:53 ___fin 17:00 __hora_actual 13:53:50
+2024-04-01 13:53:58,886 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-01 13:53:58,889 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-01 14:09:39,371 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-04-01 14:10:24,749 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-04-01 14:10:52,649 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-04-01 14:14:45,073 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 13:59 ___fin 17:00
+2024-04-01 14:14:45,077 - CUSTOM - __inicio 13:59 ___fin 17:00 __hora_actual 14:14:45
