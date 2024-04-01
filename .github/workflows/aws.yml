@@ -40,10 +40,11 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-           IMAGE_ID=$(docker images -q | grep "${{ github.repository_owner }}/202302i")
-           if [ ! -z "$IMAGE_ID" ]; then
-             docker rmi $IMAGE_ID
-           fi
+                IMAGE_ID=$(docker images -q ${GITHUB_REPOSITORY_OWNER}/202302i)
+                if [ ! -z "$IMAGE_ID" ]; then
+                  docker rmi $IMAGE_ID
+                fi
+         
   
     - name: Copy Docker image to AWS instance
       uses: appleboy/ssh-action@master
