@@ -12,6 +12,10 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+    
+    - name: Set Dockerfile WORKDIR to /src
+      run: |
+          sed -i 's/WORKDIR \/app/WORKDIR \/src/' Dockerfile
 
     - name: Build and Push to Docker Hub
       uses: docker/build-push-action@v1

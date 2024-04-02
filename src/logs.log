@@ -1317,3 +1317,10 @@ __inicio 15:05 ___fin 15:06
 2024-04-01 15:26:52,268 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
 __inicio 15:17 ___fin 15:26
 2024-04-01 15:26:52,285 - CUSTOM - __inicio 15:17 ___fin 15:26 __hora_actual 15:26:52
+2024-04-02 13:00:36,219 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-02 13:03:34,656 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-02 13:05:21,896 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-02 13:06:46,082 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-02 13:07:38,434 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-02 13:09:42,717 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-02 13:12:07,795 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']

@@ -18,6 +18,7 @@ import smtplib
 import schedule
 import functools
 import time
+import pytz
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
 from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexion
 import routes.api_externa_conexion.get_login as get
@@ -39,24 +40,29 @@ shedule_triggers = Blueprint('shedule_triggers', __name__)
 
    
 def calculaHoraActual(tiempo,clienteTimezone):
-    # Paso 1: Convertir la cadena de tiempo del cliente a un objeto datetime
+   # Paso 1: Convertir la cadena de tiempo del cliente a un objeto datetime y ajustar a la zona horaria del cliente
     client_time = datetime.strptime(tiempo, '%H:%M')
+    client_time = pytz.timezone(clienteTimezone).localize(client_time)
     print("Hora del cliente:", client_time)
 
-    # Paso 2: Obtener la hora actual del servidor
-    server_time = datetime.now()
+    # Paso 2: Obtener la hora actual del servidor y ajustar a la zona horaria del cliente
+    server_time = datetime.now(pytz.utc)
+    server_time = server_time.astimezone(pytz.timezone(clienteTimezone))
     print("Hora del servidor:", server_time)
 
     # Paso 3: Calcular la diferencia de horas entre el servidor y el cliente
     hour_difference = server_time.hour - client_time.hour
     print("Diferencia de horas entre servidor y cliente:", hour_difference)
 
-    # Paso 4: Ajustar la hora del cliente a la hora del servidor
-    adjusted_client_time = client_time.replace(hour=server_time.hour, minute=server_time.minute)
-    print("Hora ajustada del cliente:", adjusted_client_time)
+    # Paso 4: Ajustar la hora del servidor según la diferencia de horas
+    if hour_difference < 0:
+        adjusted_server_time = server_time + timedelta(hours=-hour_difference)
+    else:
+        adjusted_server_time = server_time - timedelta(hours=hour_difference)
+    print("Hora ajustada del servidor:", adjusted_server_time)
 
     # Devolver la hora ajustada en el formato 'HH:MM'
-    return adjusted_client_time.strftime('%H:%M')
+    return adjusted_server_time.strftime('%H:%M')
 
 @shedule_triggers.route("/muestraTriggers/")
 def muestraTriggers():
