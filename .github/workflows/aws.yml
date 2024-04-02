@@ -1,62 +1,67 @@
+name: deploy
+
 on:
   push:
     branches:
       - master
-
-name: deploy
 
 jobs:
   deploy-to-cluster:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-    
-    - name: Set Dockerfile WORKDIR to /src
-      run: |
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Dockerfile WORKDIR to /src
+        run: |
           sed -i 's/WORKDIR \/app/WORKDIR \/src/' Dockerfile
 
-    - name: Build and Push to Docker Hub
-      uses: docker/build-push-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: ${{ github.repository_owner }}/202302i
-        tag_with_ref: true
-        tags: ${{ github.sha }}
+      - name: Tag Docker image
+        run: docker tag vsc-volume-bootstrap docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Stop and remove existing container
-      uses: appleboy/ssh-action@master
-      with:
-        host: ec2-18-207-114-83.compute-1.amazonaws.com
-        username: ubuntu
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-           docker stop 202404 || true
-           docker rm 202404 || true
+      - name: Push Docker image to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          repository: docker.io/${{ github.repository_owner }}/202302i
+          tag_with_ref: true
 
-    - name: Remove existing Docker image
-      uses: appleboy/ssh-action@master
-      with:
-        host: ec2-18-207-114-83.compute-1.amazonaws.com
-        username: ubuntu
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-               IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
-               echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
-               if [ ! -z "$IMAGE_ID" ]; then
-                 docker rmi $IMAGE_ID
-               fi
-         
-  
-    - name: Copy Docker image to AWS instance
-      uses: appleboy/ssh-action@master
-      with:
-        host: ec2-18-207-114-83.compute-1.amazonaws.com
-        username: ubuntu
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-           docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
-           docker run -d --name 202404 -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+      - name: Stop and remove existing container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-18-207-114-83.compute-1.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+             docker stop 202404 || true
+             docker rm 202404 || true
+
+      - name: Remove existing Docker image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-18-207-114-83.compute-1.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
+            echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
+            if [ ! -z "$IMAGE_ID" ]; then
+              docker rmi $IMAGE_ID
+            fi
+
+      - name: Copy Docker image to AWS instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-18-207-114-83.compute-1.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+             docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+             docker run -d --name 202404 -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
