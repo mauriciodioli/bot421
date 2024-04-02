@@ -77,7 +77,7 @@ def autenticar_y_abrir_sheet(sheetId, sheet_name):
     try:
         scope = ['https://spreadsheets.google.com/feeds', 
                  'https://www.googleapis.com/auth/drive']
-        newPath = os.path.join(os.getcwd(), 'src/strategies/pruebasheetpython.json')
+        newPath = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
         creds = ServiceAccountCredentials.from_json_keyfile_name(newPath, scope)
         client = gspread.authorize(creds)
         sheet = client.open_by_key(sheetId).worksheet(sheet_name)  # Abre el sheet especificado
