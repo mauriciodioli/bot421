@@ -222,8 +222,9 @@ def loginExtAutomatico():
                                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)                                
                                 pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
                                 conexion(app)
+                                app.logger.info("______está logueado en produccion en LIVE___________") 
                                 #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-                                print("está logueado en produccion en LIVE")
+                              
                                 # Crear un objeto que represente los argumentos que deseas pasar a la función planificar_schedule
                                
 
