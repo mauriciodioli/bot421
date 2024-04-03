@@ -71,3 +71,7 @@ jobs:
           docker exec -i $(docker ps -q --filter name=202404) pip uninstall -y websocket-client
           docker exec -i $(docker ps -q --filter name=202404) pip install websocket-client==0.57.0
           docker exec -i $(docker ps -q --filter name=202404) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
+
+          # Detener y luego iniciar el contenedor
+          docker stop 202404
+          docker start 202404
