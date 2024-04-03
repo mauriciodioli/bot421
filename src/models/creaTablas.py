@@ -10,6 +10,7 @@ from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 from models.trades import Trade
 from models.trazaFicha import TrazaFicha
+from models.brokers import Broker
 from models.triggerEstrategia import TriggerEstrategia
 
 from datetime import datetime
@@ -31,6 +32,8 @@ def crea_tablas_DB():
     InstrumentoGet.crear_tabla_instrumentoGet()
     InstrumentoSuscriptos.crear_tabla_instrumentoSuscriptos()
     InstrumentoEstrategiaUno.crear_tabla_instrumentoEstrategiaUno()
+    Broker.crear_tabla_brokers()
+    
     
     
     
