@@ -30,7 +30,7 @@ jobs:
     - name: Stop and remove existing container
       uses: appleboy/ssh-action@master
       with:
-        host: ec2-18-207-114-83.compute-1.amazonaws.com
+        host: ec2-44-223-20-210.compute-1.amazonaws.com
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
