@@ -33,7 +33,7 @@ from utils.db import db
 from datetime import datetime
 import time
 from flask_jwt_extended import (
-    JWTManager,
+    JWTManager,    
     jwt_required,
     create_access_token,
     get_jwt_identity,
@@ -53,6 +53,7 @@ from flask import (
     jsonify,
     current_app,
     g,
+    session,
     make_response
 )
 
@@ -147,6 +148,14 @@ def loginExtAutomatico():
             user = request.json.get('usuario')
             account = request.json.get('cuenta')
             simuladoOproduccion = request.json.get('simuladoOproduccion')
+            session['selector'] = selector
+            session['access_token'] = access_token
+            session['rutaDeLogeo'] = rutaDeLogeo
+            session['refresh_token'] = refresh_token
+            session['correo_electronico'] = correo_electronico
+            session['user'] = user
+            session['account'] = account
+            session['simuladoOproduccion'] = simuladoOproduccion
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
            # print('correo_electronico ',correo_electronico)
@@ -175,7 +184,7 @@ def loginExtAutomatico():
                                           #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                          
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion() 
+                                            conexion(app) 
                                             refrescoValorActualCuentaFichas(user_id)                                    
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
@@ -197,13 +206,14 @@ def loginExtAutomatico():
                         else:
                             exp_date = datetime.utcfromtimestamp(exp_timestamp)
                             fecha_actual =   datetime.utcnow()
-                            endPoint = inicializar_variables(cuentas.accountCuenta)
-                            global api_url
-                            global ws_url
+                            endPoint = inicializar_variables(cuentas.accountCuenta)                          
                             api_url = endPoint[0]
                             ws_url = endPoint[1]
+                            session['api_url']=endPoint[0]
+                            session['ws_url']=endPoint[1]
+                            
                             print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
-                            if fecha_actual > exp_date:#hay que corregir el direccionamiento de esto_________
+                            if fecha_actual < exp_date:#hay que corregir el direccionamiento de esto_________
                               
                                 environment = pyRofexInicializada.Environment.LIVE
                                 
@@ -226,7 +236,12 @@ def loginExtAutomatico():
                                 #refrescoValorActualCuentaFichas(user_id)
                                 print("pasa hilo hilo_principal.start() planificar_schedule")
                                 if rutaDeLogeo != 'Home':      
-                                    return render_template("/paneles/panelDeControlBroker.html")   
+                                      resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                      resp.headers['Content-Type'] = 'application/json'
+                                      set_access_cookies(resp, access_token)
+                                      set_refresh_cookies(resp, refresh_token)
+                                      return resp
+                                 
                                 else:
                                     
                                     resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
@@ -282,10 +297,14 @@ def loginExtCuentaSeleccionadaBroker():
         access_token = request.form.get('access_token')       
         src_directory1 = os.getcwd()#busca directorio raiz src o app 
         logs_file_path = os.path.join(src_directory1, 'logs.log')
-       
+        session['token'] = access_token
+        session['user'] = user
+        session['accountCuenta'] = accountCuenta
+        session['password'] = password
+        session['origin_page'] = origin_page
        # logs_file_path = os.path.join(src_directory, 'logs.log')
        
-
+       
         # Abrir el archivo en modo de escritura para borrar su contenido
 #        with open(logs_file_path, 'w') as f:
 #            pass  # No es necesario escribir nada, solo abrir y cerrar el archivo borrará su contenido
@@ -325,12 +344,12 @@ def loginExtCuentaSeleccionadaBroker():
                 
                 endPoint = inicializar_variables(accountCuenta)
                 app.logger.info(endPoint)
-                global api_url
-                global ws_url
                 api_url = endPoint[0]
                 ws_url = endPoint[1]
-                pyRofexInicializada._set_environment_parameter("url", api_url,environments)
-                pyRofexInicializada._set_environment_parameter("ws", ws_url,environments) 
+                session['api_url']=endPoint[0]
+                session['ws_url']=endPoint[1]
+                pyRofexInicializada._set_environment_parameter("url",api_url,environments)
+                pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
                
 
