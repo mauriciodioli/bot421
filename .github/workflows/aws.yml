@@ -60,6 +60,7 @@ jobs:
         script: |
            docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
            docker run -d --name 202404 -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+    
     - name: Modify _app.py in websocket library
       uses: appleboy/ssh-action@master
       with:
@@ -67,4 +68,6 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          docker exec -i $(docker ps -q --filter name=202404) pip uninstall -y websocket-client
+          docker exec -i $(docker ps -q --filter name=202404) pip install websocket-client==0.57.0
           docker exec -i $(docker ps -q --filter name=202404) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
