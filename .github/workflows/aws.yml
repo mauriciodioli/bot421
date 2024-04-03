@@ -37,41 +37,57 @@ jobs:
            docker stop 202404 || true
            docker rm 202404 || true
 
-    - name: Remove existing Docker image
+      # Verificar si existe una imagen con el nombre del repositorio
+    - name: Check if image exists
       uses: appleboy/ssh-action@master
       with:
-        host: ec2-18-207-114-83.compute-1.amazonaws.com
+        host: ec2-44-223-20-210.compute-1.amazonaws.com
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-               IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
-               echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
-               if [ ! -z "$IMAGE_ID" ]; then
-                 docker rmi $IMAGE_ID
-               fi
-         
-  
+           if docker images -q ${{ github.repository_owner }}/202302i; then
+             echo "Image ${{ github.repository_owner }}/202302i exists."
+             exit 1
+           else
+             echo "Image ${{ github.repository_owner }}/202302i does not exist."
+             exit 0
+           fi
+      id: check_image
+
+    - name: Remove existing Docker image if it exists
+      if: steps.check_image.outputs.exit_code == '1'
+      uses: appleboy/ssh-action@master
+      with:
+          host: ec2-44-223-20-210.compute-1.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
+            echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
+            if [ ! -z "$IMAGE_ID" ]; then
+              docker rmi $IMAGE_ID
+            fi
+
+      # Continuar con las siguientes tareas
     - name: Copy Docker image to AWS instance
       uses: appleboy/ssh-action@master
       with:
-        host: ec2-18-207-114-83.compute-1.amazonaws.com
+        host: ec2-44-223-20-210.compute-1.amazonaws.com
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-           docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
-           docker run -d --name 202404 -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
-    
+            docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+            docker run -d --name 202404 -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+
     - name: Modify _app.py in websocket library
       uses: appleboy/ssh-action@master
       with:
-        host: ec2-18-207-114-83.compute-1.amazonaws.com
+        host: ec2-44-223-20-210.compute-1.amazonaws.com
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          docker exec -i $(docker ps -q --filter name=202404) pip uninstall -y websocket-client
-          docker exec -i $(docker ps -q --filter name=202404) pip install websocket-client==0.57.0
-          docker exec -i $(docker ps -q --filter name=202404) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
-
-          # Detener y luego iniciar el contenedor
-          docker stop 202404
-          docker start 202404
+            docker exec -i $(docker ps -q --filter name=202404) pip uninstall -y websocket-client
+            docker exec -i $(docker ps -q --filter name=202404) pip install websocket-client==0.57.0
+            docker exec -i $(docker ps -q --filter name=202404) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
+            docker stop 202404 || true
+            docker start 202404
