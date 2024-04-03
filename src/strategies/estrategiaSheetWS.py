@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
+from flask import Blueprint, render_template,session, request, redirect, url_for, flash,jsonify,g
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
+import os
 import re
 import jwt
 import csv
@@ -142,7 +143,7 @@ def SuscripcionDeSheet(app):
    
     #for elemento in resultado_lista:
     #    print(elemento)
-
+    
     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
@@ -209,7 +210,9 @@ def get_instrumento_para_suscripcion_db(app):
 
 def get_instrumento_para_suscripcion_json():
    try:
-        ruta_archivo_json = 'strategies/listadoInstrumentos/instrumentos_001.json'    
+        src_directory = os.getcwd() # Busca directorio raíz src o app 
+        ruta_archivo_json = os.path.join(src_directory, 'strategies/listadoInstrumentos/instrumentos_001.json')
+       # ruta_archivo_json = 'strategies/listadoInstrumentos/instrumentos_001.json'    
         with open(ruta_archivo_json , 'r') as archivo:
             contenido = archivo.read()
             datos = json.loads(contenido)

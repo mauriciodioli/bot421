@@ -1,6 +1,6 @@
 from pipes import Template
 from unittest import result
-from flask import current_app
+from flask import current_app,session
 import smtplib
 import os
 import pyRofex
@@ -18,6 +18,7 @@ import smtplib
 import schedule
 import functools
 import time
+import pytz
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
 from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexion
 import routes.api_externa_conexion.get_login as get
@@ -36,6 +37,32 @@ import logging
 
 shedule_triggers = Blueprint('shedule_triggers', __name__)
 
+
+   
+def calculaHoraActual(tiempo,clienteTimezone):
+   # Paso 1: Convertir la cadena de tiempo del cliente a un objeto datetime y ajustar a la zona horaria del cliente
+    client_time = datetime.strptime(tiempo, '%H:%M')
+    client_time = pytz.timezone(clienteTimezone).localize(client_time)
+    print("Hora del cliente:", client_time)
+
+    # Paso 2: Obtener la hora actual del servidor y ajustar a la zona horaria del cliente
+    server_time = datetime.now(pytz.utc)
+    server_time = server_time.astimezone(pytz.timezone(clienteTimezone))
+    print("Hora del servidor:", server_time)
+
+    # Paso 3: Calcular la diferencia de horas entre el servidor y el cliente
+    hour_difference = server_time.hour - client_time.hour
+    print("Diferencia de horas entre servidor y cliente:", hour_difference)
+
+    # Paso 4: Ajustar la hora del servidor según la diferencia de horas
+    if hour_difference < 0:
+        adjusted_server_time = server_time + timedelta(hours=-hour_difference)
+    else:
+        adjusted_server_time = server_time - timedelta(hours=hour_difference)
+    print("Hora ajustada del servidor:", adjusted_server_time)
+
+    # Devolver la hora ajustada en el formato 'HH:MM'
+    return adjusted_server_time.strftime('%H:%M')
 
 @shedule_triggers.route("/muestraTriggers/")
 def muestraTriggers():
@@ -59,13 +86,16 @@ def ArrancaShedule():
             fecha_inicio_shedule = data['fechaInicioShedule']  # Obtener el valor de fechaInicioShedule
             fecha_fin_shedule = data['fechaFinShedule'] # Obtener el valor de fechaFinShedule
             get.accountLocalStorage = data['userCuenta']
+            session['userCuenta'] =  data['userCuenta']
             access_token = data['access_token']
             idUser = data['idUser']
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
             selector = data['selector']  
+            clienteTimezone = data['clienteTimezone']
+            fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone)
+            fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone)
             
-       
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
             #print('Hora de inicio:', fecha_inicio_shedule)
@@ -174,14 +204,14 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
         #busca el directorio src/logs.log
         src_directory1 = os.getcwd()#busca directorio raiz src o app   
 
-        logs_file_path = os.path.join(src_directory1, 'logs.log')
+        logs_file_path = os.path.join(src_directory1,'src' ,'logs.log')
         
        # src_directory = os.path.dirname(os.path.abspath(__file__)) #busca directorio acutal automatizacion
        # if os.path.exists(src_directory):
             # Eliminar el archivo
         #    os.remove(src_directory)
         # Ruta al archivo de logs dentro del directorio 'src'
-        print('logs_file_path0000000000000000000000000000000000')
+       
         print(logs_file_path)
        # logs_file_path = os.path.join(src_directory, 'logs.log')
        
@@ -226,8 +256,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 
             print("______________________________________________________________________________")
             print("comprobando schedule.run_pending() automatizacion shedule_trigger planificar_shedule  " )
-            print('__inicio ',tiempoInicioDelDia,' ___fin ',tiempoFinDelDia,' __hora_actual ',hora_actual)
-            #print("Diccionario de hilos iniciados:", get.hilo_iniciado_panel_control)
+            print('__inicio ',tiempoInicioDelDia,' ___fin ',tiempoFinDelDia,' __hora_actual ',hora_actual)          
             print("______________________________________________________________________________")
             schedule.run_pending()
             time.sleep(60)

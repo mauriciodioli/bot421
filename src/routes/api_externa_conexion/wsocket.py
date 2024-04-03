@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, session,request, redirect, url_for, flash,jsonify
 from utils.common import Marshmallow, db, get
 import routes.instrumentosGet as instrumentosGet
 import routes.api_externa_conexion.validaInstrumentos as val
@@ -24,7 +24,7 @@ reporte_de_instrumentos = []
 
 def websocketConexionShedule(app,Cuenta,cuenta,user_id,correo_electronico,selector):
       get.pyRofexInicializada = pyRofex
-      cuenta = db.session.query(Cuenta).filter_by(user_id=user_id, accountCuenta=cuenta).first()
+      cuenta = db.session.query(Cuenta).filter_by(user_id=session.get('user'), accountCuenta=session.get('accountCuenta')).first()
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
       
@@ -35,8 +35,10 @@ def websocketConexionShedule(app,Cuenta,cuenta,user_id,correo_electronico,select
       else: 
         
         environments = get.pyRofexInicializada.Environment.LIVE
-        get.pyRofexInicializada._set_environment_parameter("url", get.api_url,environments)
-        get.pyRofexInicializada._set_environment_parameter("ws", get.ws_url,environments) 
+        api_url=session.gte['api_url']
+        ws_url=session.get['ws_url']
+        get.pyRofexInicializada._set_environment_parameter("url",api_url,environments)
+        get.pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
         get.pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
       
         get.pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
