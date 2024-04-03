@@ -37,7 +37,6 @@ import jwt
 from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker
 
-
 autenticacion = Blueprint("autenticacion", __name__)
 
 # Clave secreta para generar los tokens

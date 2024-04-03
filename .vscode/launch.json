@@ -1,8 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
-    
-
+ 
         {
             "name": "Python: Flask",
             "type": "python",
@@ -18,8 +17,8 @@
             "args": [
                 "run"
             ],
-            "jinja": true,
-            "justMyCode": true,
+            "jinja":true,
+            "justMyCode":true,
             "cwd": "C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src"
             
             
