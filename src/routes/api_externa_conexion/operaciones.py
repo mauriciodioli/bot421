@@ -223,7 +223,7 @@ def operaciones_desde_seniales():
                    # Verificar el saldo y enviar la orden si hay suficiente
                    
                 #se verifica el tipo de orden   
-                if modalidad_seleccionada=='2':
+                if modalidad_seleccionada=='1':
                    tipoOrder = get.pyRofexInicializada.OrderType.LIMIT 
                    tipo_orden = 'LIMIT'
                    print("tipoOrder ",tipoOrder)  
@@ -234,10 +234,11 @@ def operaciones_desde_seniales():
                   
                 #se debe controlar cuando sea mayor a 1 minuto
                  # Inicia el hilo para consultar el saldo después de un minuto
-                if  tipo_orden == 'LIMIT':
+                if tipo_orden == 'LIMIT' or tipo_orden == 'MARKET':
                     
                     orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
                     ticker = symbol
+                
                     if orden_.enviar_orden(cuenta=cuentaBroker):
                           print("Orden enviada con éxito.")
                           flash('Operacion enviada exitosamente')
@@ -339,7 +340,7 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
 
 def obtenerCuentaBroker(user_id):
    todasLasCuentas = []
-   usuario = Usuario.query.get(user_id)  
+   usuario = db.session.query(Usuario).get(user_id)  
 # Buscar todas las cuentas asociadas a ese usuario
    cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
 
