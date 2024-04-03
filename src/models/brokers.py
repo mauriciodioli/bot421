@@ -34,9 +34,9 @@ class Broker(db.Model):
 
    
     def __repr__(self):
-        return f"Cuenta(id={self.id}, api_url={self.api_url}, ws_url={self.ws_url}, nombre={self.nombre}, descripcion={self.descripcion})"
+        return f"Broker(id={self.id}, api_url={self.api_url}, ws_url={self.ws_url}, nombre={self.nombre}, descripcion={self.descripcion})"
     @classmethod
-    def crear_tabla_cuentas(self):
+    def crear_tabla_brokers(self):
          insp = inspect(db.engine)
          if not insp.has_table("brokers"):
               db.create_all()
