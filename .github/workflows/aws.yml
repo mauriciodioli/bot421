@@ -44,11 +44,11 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-               IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
-               echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
-               if [ ! -z "$IMAGE_ID" ]; then
-                 docker rmi $IMAGE_ID
-               fi
+            IMAGE_ID=$(docker images -q ***:202302i)
+            echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
+            if [ ! -z "$IMAGE_ID" ]; then
+              docker rmi --force $IMAGE_ID
+            fi
          
   
     - name: Copy Docker image to AWS instance
