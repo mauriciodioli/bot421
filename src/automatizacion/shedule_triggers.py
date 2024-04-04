@@ -39,30 +39,54 @@ shedule_triggers = Blueprint('shedule_triggers', __name__)
 
 
    
-def calculaHoraActual(tiempo,clienteTimezone):
-   # Paso 1: Convertir la cadena de tiempo del cliente a un objeto datetime y ajustar a la zona horaria del cliente
-    client_time = datetime.strptime(tiempo, '%H:%M')
+def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
+   
+     # Parsear la fecha actual (en formato ISO 8601) a un objeto datetime
+    fecha = datetime.strptime(fechaActual, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+    # Obtener la hora y los minutos de la fecha actual
+    horas = fecha.hour
+    minutos = fecha.minute
+
+    # Formatear la hora y los minutos como cadena en formato HH:MM
+    horaFormateada = '{:02d}:{:02d}'.format(horas, minutos)
+
+    # Paso 1: Convertir la cadena de tiempo del cliente a un objeto datetime y ajustar a la zona horaria del cliente
+    client_time = datetime.strptime(horaFormateada, '%H:%M')
     client_time = pytz.timezone(clienteTimezone).localize(client_time)
     print("Hora del cliente:", client_time)
 
     # Paso 2: Obtener la hora actual del servidor y ajustar a la zona horaria del cliente
-    server_time = datetime.now(pytz.utc)
-    server_time = server_time.astimezone(pytz.timezone(clienteTimezone))
-    print("Hora del servidor:", server_time)
+    # Obtener la zona horaria local del servidor
+    zona_horaria_servidor = pytz.timezone(pytz.country_timezones['US'][2])  # Ejemplo para EE. UU.
+    # Obtener el nombre de la zona horaria del servidor
+    nombre_zona_horaria_servidor = zona_horaria_servidor.zone
+    # Obtener la hora actual del servidor
+    hora_actual_servidor = datetime.now().astimezone(zona_horaria_servidor)
+    print("hora_actual_servidor servidor :", hora_actual_servidor)
+    # Convertir la hora del cliente ajustada a la zona horaria del servidor
+    client_time_en_servidor = client_time.astimezone(zona_horaria_servidor)
 
-    # Paso 3: Calcular la diferencia de horas entre el servidor y el cliente
-    hour_difference = server_time.hour - client_time.hour
-    print("Diferencia de horas entre servidor y cliente:", hour_difference)
+    # Paso 3: Calcular la diferencia de tiempo entre el servidor y el cliente de manera precisa
+    time_difference = client_time_en_servidor- hora_actual_servidor 
+    print("Diferencia de tiempo entre servidor y cliente:", time_difference)
+        # Obtener la diferencia de horas, minutos y segundos por separado
+    hours_difference = time_difference.seconds // 3600  # Convertir segundos a horas
 
     # Paso 4: Ajustar la hora del servidor según la diferencia de horas
-    if hour_difference < 0:
-        adjusted_server_time = server_time + timedelta(hours=-hour_difference)
-    else:
-        adjusted_server_time = server_time - timedelta(hours=hour_difference)
-    print("Hora ajustada del servidor:", adjusted_server_time)
+    tiempo_dt = datetime.strptime(tiempo, '%H:%M')    
 
-    # Devolver la hora ajustada en el formato 'HH:MM'
-    return adjusted_server_time.strftime('%H:%M')
+    if hours_difference < 0:         
+        adjusted_server_time = tiempo_dt + timedelta(hours=-hours_difference)
+    else:
+        adjusted_server_time = tiempo_dt + timedelta(hours=hours_difference)
+
+    # Formatear el resultado en formato HH:MM
+    tiempo_modificado_str = adjusted_server_time.strftime('%H:%M')
+    print("Hora ajustada del servidor:", tiempo_modificado_str)
+
+        # Devolver la hora ajustada en el formato 'HH:MM'
+    return tiempo_modificado_str
 
 @shedule_triggers.route("/muestraTriggers/")
 def muestraTriggers():
@@ -85,6 +109,7 @@ def ArrancaShedule():
             data = request.json  # Obtener los datos JSON de la solicitud POST
             fecha_inicio_shedule = data['fechaInicioShedule']  # Obtener el valor de fechaInicioShedule
             fecha_fin_shedule = data['fechaFinShedule'] # Obtener el valor de fechaFinShedule
+            fechaActual = data['fechaActual']
             get.accountLocalStorage = data['userCuenta']
             session['userCuenta'] =  data['userCuenta']
             access_token = data['access_token']
@@ -93,8 +118,9 @@ def ArrancaShedule():
             cuenta = data['cuenta']     
             selector = data['selector']  
             clienteTimezone = data['clienteTimezone']
-            fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone)
-            fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone)
+            
+            fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone,fechaActual)
+            fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone,fechaActual)
             
             get.detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
@@ -204,7 +230,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
         #busca el directorio src/logs.log
         src_directory1 = os.getcwd()#busca directorio raiz src o app   
 
-        logs_file_path = os.path.join(src_directory1,'src' ,'logs.log')
+        logs_file_path = os.path.join(src_directory1,'logs.log')
         
        # src_directory = os.path.dirname(os.path.abspath(__file__)) #busca directorio acutal automatizacion
        # if os.path.exists(src_directory):

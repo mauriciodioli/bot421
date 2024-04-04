@@ -258,7 +258,9 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
         var horaFin = $('#horaFin').val(); // Obtener el valor de la hora de fin
           // Obtener la zona horaria del cliente
         var clienteTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
+        // Obtener la hora actual en formato ISO 8601
+        var horaActual = new Date().toISOString(); // Formato: 'YYYY-MM-DDTHH:MM:SSZ'
+ 
 
         access_token = localStorage.getItem('access_token');
         correo_electronico = localStorage.getItem('correo_electronico');
@@ -280,7 +282,8 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
                 'correo_electronico': correo_electronico,
                 'cuenta': cuenta,
                 'selector' : selector,
-                'clienteTimezone': clienteTimezone // Enviar la zona horaria del cliente                           
+                'clienteTimezone': clienteTimezone, // Enviar la zona horaria del cliente  
+                'fechaActual':horaActual                         
             }),
             success: function(response) {
               $('#confirmationModal').modal('hide');
