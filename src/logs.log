@@ -1324,3 +1324,43 @@ __inicio 15:17 ___fin 15:26
 2024-04-02 13:07:38,434 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
 2024-04-02 13:09:42,717 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
 2024-04-02 13:12:07,795 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-04 10:48:51,133 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-04 11:31:15,572 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:13 ___fin 17:31
+2024-04-04 11:31:15,579 - CUSTOM - __inicio 12:13 ___fin 17:31 __hora_actual 11:31:15
+2024-04-04 11:31:15,622 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 12:31 ___fin 17:31
+2024-04-04 11:31:15,626 - CUSTOM - __inicio 12:31 ___fin 17:31 __hora_actual 11:31:15
+2024-04-04 11:50:30,468 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-04 11:59:53,249 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:59 ___fin 16:59
+2024-04-04 12:01:47,066 - CUSTOM - __inicio 15:59 ___fin 16:59 __hora_actual 12:01:47
+2024-04-04 12:01:47,094 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:59 ___fin 16:59
+2024-04-04 12:01:47,098 - CUSTOM - __inicio 15:59 ___fin 16:59 __hora_actual 12:01:47
+__inicio 15:59 ___fin 16:59
+__inicio 15:59 ___fin 16:59
+2024-04-04 12:02:54,477 - CUSTOM - __inicio 15:59 ___fin 16:59 __hora_actual 12:02:54
+2024-04-04 12:02:54,478 - CUSTOM - __inicio 15:59 ___fin 16:59 __hora_actual 12:02:54
+2024-04-04 12:04:15,087 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 16:02 ___fin 17:04
+2024-04-04 12:04:15,090 - CUSTOM - __inicio 16:02 ___fin 17:04 __hora_actual 12:04:15
+2024-04-04 12:08:18,987 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 16:04 ___fin 17:08
+2024-04-04 12:08:18,991 - CUSTOM - __inicio 16:04 ___fin 17:08 __hora_actual 12:08:18
+2024-04-04 12:12:45,224 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 16:08 ___fin 17:12
+2024-04-04 12:12:45,233 - CUSTOM - __inicio 16:08 ___fin 17:12 __hora_actual 12:12:45
+2024-04-04 12:14:37,389 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-04 12:21:09,216 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 16:19 ___fin 17:21
+2024-04-04 12:21:09,222 - CUSTOM - __inicio 16:19 ___fin 17:21 __hora_actual 12:21:09
+2024-04-04 12:32:49,253 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 13:00 ___fin 14:00
+2024-04-04 12:32:50,569 - CUSTOM - __inicio 13:00 ___fin 14:00 __hora_actual 12:32:50
+2024-04-04 12:34:55,522 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 13:00 ___fin 14:00
+2024-04-04 12:34:55,527 - CUSTOM - __inicio 13:00 ___fin 14:00 __hora_actual 12:34:55
+2024-04-04 12:35:46,652 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 13:00 ___fin 14:00
+2024-04-04 12:35:46,659 - CUSTOM - __inicio 13:00 ___fin 14:00 __hora_actual 12:35:46
