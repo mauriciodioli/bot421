@@ -114,7 +114,7 @@ src_directory = os.path.dirname(os.path.abspath(__file__))
 logs_file_path = os.path.join(src_directory, 'logs.log')
 
 # Crear un manejador de logs que escriba en el archivo 'logs.log' en el directorio 'src'
-file_handler = logging.FileHandler(logs_file_path)
+file_handler = logging.FileHandler(logs_file_path, encoding='utf-8')
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
 app.logger.addHandler(file_handler)
