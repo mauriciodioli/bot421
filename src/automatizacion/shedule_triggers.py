@@ -58,7 +58,7 @@ def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
 
     # Paso 2: Obtener la hora actual del servidor y ajustar a la zona horaria del cliente
     # Obtener la zona horaria local del servidor
-    zona_horaria_servidor = pytz.timezone(pytz.country_timezones['US'][2])  # Ejemplo para EE. UU.
+    zona_horaria_servidor = pytz.timezone(pytz.country_timezones['US'][0])  # Ejemplo para EE. UU.
     # Obtener el nombre de la zona horaria del servidor
     nombre_zona_horaria_servidor = zona_horaria_servidor.zone
     # Obtener la hora actual del servidor
@@ -77,9 +77,9 @@ def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
     tiempo_dt = datetime.strptime(tiempo, '%H:%M')    
 
     if hours_difference < 0:         
-        adjusted_server_time = tiempo_dt + timedelta(hours=-hours_difference)
+        adjusted_server_time = tiempo_dt + timedelta(hours=-hours_difference-1)
     else:
-        adjusted_server_time = tiempo_dt + timedelta(hours=hours_difference)
+        adjusted_server_time = tiempo_dt + timedelta(hours=hours_difference-1)
 
     # Formatear el resultado en formato HH:MM
     tiempo_modificado_str = adjusted_server_time.strftime('%H:%M')
