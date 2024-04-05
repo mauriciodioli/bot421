@@ -114,6 +114,8 @@ def ArrancaShedule():
             session['userCuenta'] =  data['userCuenta']
             access_token = data['access_token']
             idUser = data['idUser']
+            session['idUser'] =  data['userCuenta']
+            
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
             selector = data['selector']  
