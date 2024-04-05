@@ -788,8 +788,9 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
         var htmlVentas = '<table>';
         htmlVentas += '<thead>';
         htmlVentas += '<tr>';
-        htmlVentas += '<th scope="col" id="encabezado">Cant Venta</th>';
         htmlVentas += '<th scope="col" id="encabezado">Precio Venta</th>';
+        htmlVentas += '<th scope="col" id="encabezado">Cant Venta</th>';
+        
        
         htmlVentas += '</tr>';
         htmlVentas += '</thead>';
@@ -799,9 +800,9 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
             response.forEach(function(data) {
                 if (data && data.OF && Array.isArray(data.OF)) {
                     data.OF.forEach(function(ofertaVenta) {
-                        htmlVentas += '<tr>';
-                        htmlVentas += '<td>' + ofertaVenta.size + '</td>';
+                        htmlVentas += '<tr>';                        
                         htmlVentas += '<td><button class="venta-btn" data-precio="' + ofertaVenta.price + '">' + ofertaVenta.price + '</button></td>';
+                        htmlVentas += '<td>' + ofertaVenta.size + '</td>';
                         htmlVentas += '</tr>';
                     });
                 }
@@ -814,8 +815,8 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
         var htmlCompras = '<table>';
         htmlCompras += '<thead>';
         htmlCompras += '<tr>';
-        htmlCompras += '<th scope="col" id="encabezado">Precio Compra</th>';
         htmlCompras += '<th scope="col" id="encabezado">Cant Compra</th>';
+        htmlCompras += '<th scope="col" id="encabezado">Precio Compra</th>';
         htmlCompras += '</tr>';
         htmlCompras += '</thead>';
         htmlCompras += '<tbody>';
@@ -824,9 +825,9 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
             response.forEach(function(data) {
                 if (data && data.BI && Array.isArray(data.BI)) {
                     data.BI.forEach(function(ofertaCompra) {
-                        htmlCompras += '<tr>';                       
+                        htmlCompras += '<tr>';        
+                        htmlCompras += '<td>' + ofertaCompra.size + '</td>';               
                         htmlCompras += '<td><button class="compra-btn" data-precio="' + ofertaCompra.price + '">' + ofertaCompra.price + '</button></td>';
-                        htmlCompras += '<td>' + ofertaCompra.size + '</td>';
                         htmlCompras += '</tr>';
                     });
                 }
@@ -838,7 +839,7 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
     
       
         // Insertar las tablas y la información en el cuerpo del modal
-        modalContent.innerHTML = htmlVentas + htmlCompras ;    
+        modalContent.innerHTML = htmlCompras + htmlVentas   ;    
     
        
         // Mostrar el modal
