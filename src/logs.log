@@ -1364,3 +1364,316 @@ __inicio 13:00 ___fin 14:00
 2024-04-04 12:35:46,652 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
 __inicio 13:00 ___fin 14:00
 2024-04-04 12:35:46,659 - CUSTOM - __inicio 13:00 ___fin 14:00 __hora_actual 12:35:46
+2024-04-04 12:38:30,875 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+2024-04-04 12:38:30,899 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 19:00 ___fin 20:00
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:38:30,912 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:38:30
+2024-04-04 12:38:30,913 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:38:30
+__inicio 19:00 ___fin 20:00
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:39:30,952 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:39:30
+2024-04-04 12:39:30,953 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:39:30
+__inicio 19:00 ___fin 20:00
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:40:30,970 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:40:30
+2024-04-04 12:40:30,973 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:40:30
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:41:31,016 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:41:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:41:31,020 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:41:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:42:31,043 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:42:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:42:31,071 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:42:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:43:31,085 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:43:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:43:31,086 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:43:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:44:31,102 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:44:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:44:31,107 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:44:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:45:31,151 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:45:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:45:31,153 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:45:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:46:31,183 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:46:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:46:31,186 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:46:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:47:31,229 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:47:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:47:31,234 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:47:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:48:31,265 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:48:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:48:31,268 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:48:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:49:31,288 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:49:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:49:31,290 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:49:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:50:31,301 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:50:31
+__inicio 19:00 ___fin 20:00
+2024-04-04 12:50:31,327 - CUSTOM - __inicio 19:00 ___fin 20:00 __hora_actual 12:50:31
+2024-04-04 14:38:33,085 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-04 14:39:02,504 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 17:40 ___fin 20:00
+2024-04-04 14:39:02,514 - CUSTOM - __inicio 17:40 ___fin 20:00 __hora_actual 14:39:02
+2024-04-04 14:40:50,289 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:42 ___fin 20:00
+2024-04-04 14:40:50,295 - CUSTOM - __inicio 14:42 ___fin 20:00 __hora_actual 14:40:50
+__inicio 14:42 ___fin 20:00
+2024-04-04 14:41:50,343 - CUSTOM - __inicio 14:42 ___fin 20:00 __hora_actual 14:41:50
+__inicio 14:42 ___fin 20:00
+2024-04-04 14:42:50,354 - CUSTOM - __inicio 14:42 ___fin 20:00 __hora_actual 14:42:50
+2024-04-04 14:42:50,366 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 14:42:50,388 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 14:45:11,391 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:46 ___fin 20:00
+2024-04-04 14:45:11,396 - CUSTOM - __inicio 14:46 ___fin 20:00 __hora_actual 14:45:11
+__inicio 14:46 ___fin 20:00
+2024-04-04 14:46:11,427 - CUSTOM - __inicio 14:46 ___fin 20:00 __hora_actual 14:46:11
+2024-04-04 14:46:11,435 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 14:46:11,438 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 14:47:24,629 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:49 ___fin 20:00
+2024-04-04 14:47:24,632 - CUSTOM - __inicio 14:49 ___fin 20:00 __hora_actual 14:47:24
+2024-04-04 14:47:24,640 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 14:47:24,641 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 14:47:44,649 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:49 ___fin 20:00
+2024-04-04 14:47:44,653 - CUSTOM - __inicio 14:49 ___fin 20:00 __hora_actual 14:47:44
+2024-04-04 14:47:44,672 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 14:47:44,693 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 14:50:58,160 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-04 14:51:42,643 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:53 ___fin 20:00
+2024-04-04 14:51:42,650 - CUSTOM - __inicio 14:53 ___fin 20:00 __hora_actual 14:51:42
+2024-04-04 14:51:42,684 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 14:51:42,686 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 14:56:40,296 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-04 14:58:04,735 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-04 14:58:41,360 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:00 ___fin 20:00
+2024-04-04 14:58:41,370 - CUSTOM - __inicio 15:00 ___fin 20:00 __hora_actual 14:58:41
+__inicio 15:00 ___fin 20:00
+2024-04-04 14:59:41,394 - CUSTOM - __inicio 15:00 ___fin 20:00 __hora_actual 14:59:41
+__inicio 15:00 ___fin 20:00
+2024-04-04 15:00:41,401 - CUSTOM - __inicio 15:00 ___fin 20:00 __hora_actual 15:00:41
+2024-04-04 15:00:41,432 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:00:41,437 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:04:21,167 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:06 ___fin 20:00
+2024-04-04 15:04:21,174 - CUSTOM - __inicio 15:06 ___fin 20:00 __hora_actual 15:04:21
+__inicio 15:06 ___fin 20:00
+2024-04-04 15:05:21,191 - CUSTOM - __inicio 15:06 ___fin 20:00 __hora_actual 15:05:21
+__inicio 15:06 ___fin 20:00
+2024-04-04 15:06:21,203 - CUSTOM - __inicio 15:06 ___fin 20:00 __hora_actual 15:06:21
+2024-04-04 15:06:21,211 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:06:21,212 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:13:49,431 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:15 ___fin 20:00
+2024-04-04 15:13:49,440 - CUSTOM - __inicio 15:15 ___fin 20:00 __hora_actual 15:13:49
+__inicio 15:15 ___fin 20:00
+2024-04-04 15:14:49,450 - CUSTOM - __inicio 15:15 ___fin 20:00 __hora_actual 15:14:49
+__inicio 15:15 ___fin 20:00
+2024-04-04 15:15:49,466 - CUSTOM - __inicio 15:15 ___fin 20:00 __hora_actual 15:15:49
+2024-04-04 15:15:49,507 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:15:49,509 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:20:14,068 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:22 ___fin 20:00
+2024-04-04 15:20:14,077 - CUSTOM - __inicio 15:22 ___fin 20:00 __hora_actual 15:20:14
+__inicio 15:22 ___fin 20:00
+2024-04-04 15:21:14,103 - CUSTOM - __inicio 15:22 ___fin 20:00 __hora_actual 15:21:14
+__inicio 15:22 ___fin 20:00
+2024-04-04 15:22:14,139 - CUSTOM - __inicio 15:22 ___fin 20:00 __hora_actual 15:22:14
+2024-04-04 15:22:14,147 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:22:14,148 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:22:45,777 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:24 ___fin 20:00
+2024-04-04 15:22:45,802 - CUSTOM - __inicio 15:24 ___fin 20:00 __hora_actual 15:22:45
+__inicio 15:24 ___fin 20:00
+2024-04-04 15:23:45,812 - CUSTOM - __inicio 15:24 ___fin 20:00 __hora_actual 15:23:45
+__inicio 15:24 ___fin 20:00
+2024-04-04 15:24:45,864 - CUSTOM - __inicio 15:24 ___fin 20:00 __hora_actual 15:24:45
+2024-04-04 15:24:45,872 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:24:45,874 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:25:22,048 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:26 ___fin 20:00
+2024-04-04 15:25:22,052 - CUSTOM - __inicio 15:26 ___fin 20:00 __hora_actual 15:25:22
+2024-04-04 15:25:22,061 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:25:22,063 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:27:36,897 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-04 15:28:27,501 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:30 ___fin 20:00
+2024-04-04 15:28:27,505 - CUSTOM - __inicio 15:30 ___fin 20:00 __hora_actual 15:28:27
+2024-04-04 15:28:27,521 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:28:27,525 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:35:42,667 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-04 15:36:16,657 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:36:16,670 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:36:16
+2024-04-04 15:36:16,686 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:36:16,689 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:36:16
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:37:16,707 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:37:16
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:37:16,709 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:37:16
+__inicio 15:36 ___fin 20:00
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:38:16,747 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:38:16
+2024-04-04 15:38:16,748 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:38:16
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:39:16,804 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:39:16
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:39:16,814 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:39:16
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:40:16,811 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:40:16
+__inicio 15:36 ___fin 20:00
+2024-04-04 15:40:16,824 - CUSTOM - __inicio 15:36 ___fin 20:00 __hora_actual 15:40:16
+2024-04-04 15:42:46,071 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:42:46,078 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:42:46
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:43:46,114 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:43:46
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:44:46,124 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:44:46
+2024-04-04 15:44:46,161 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-04-04 15:44:46,162 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-04-04 15:45:07,506 - INFO - ___________________Se conecto con exito al WS______________________
+2024-04-04 15:45:07,829 - INFO - <Usuario 1>
+2024-04-04 15:45:07,831 - INFO - usuario 1 nombre estrategia estrategia-001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-04-04 15:45:07,833 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-04-04 15:45:09,285 - INFO - http://127.0.0.1:5001/estrategia-001
+2024-04-04 15:45:09,297 - INFO - {'userCuenta': '23246212899', 'idTrigger': 25, 'access_token': 'access_token', 'idUser': 1, 'correo_electronico': 'madioli26@hotmail.com', 'cuenta': '44593', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-001'}
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:46:09,341 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:46:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:47:09,371 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:47:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:48:09,403 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:48:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:49:09,413 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:49:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:50:09,431 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:50:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:51:09,440 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:51:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:52:09,461 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:52:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:53:09,471 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:53:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:54:09,505 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:54:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:55:09,516 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:55:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:56:09,528 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:56:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:57:09,555 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:57:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:58:09,677 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:58:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 15:59:09,687 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 15:59:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:00:09,760 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:00:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:01:09,799 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:01:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:02:09,829 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:02:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:03:09,851 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:03:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:04:09,859 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:04:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:05:09,879 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:05:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:06:09,908 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:06:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:07:09,923 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:07:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:08:09,933 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:08:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:09:09,952 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:09:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:10:09,986 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:10:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:11:09,995 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:11:09
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:12:10,004 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:12:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:13:10,044 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:13:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:14:10,055 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:14:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:15:10,068 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:15:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:16:10,081 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:16:10
+2024-04-04 16:17:01,644 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:17:10,094 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:17:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:18:10,105 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:18:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:19:10,147 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:19:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:20:10,156 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:20:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:21:10,251 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:21:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:22:10,396 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:22:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:23:10,412 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:23:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:24:10,478 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:24:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:25:10,628 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:25:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:26:10,680 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:26:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:27:10,689 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:27:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:28:10,718 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:28:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:29:10,761 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:29:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:30:10,791 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:30:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:31:10,804 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:31:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:32:10,838 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:32:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:33:10,858 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:33:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:34:10,888 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:34:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:35:10,903 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:35:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:36:10,946 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:36:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:37:10,956 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:37:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:38:10,971 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:38:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:39:10,995 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:39:10
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:40:11,032 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:40:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:41:11,087 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:41:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:42:11,111 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:42:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:43:11,151 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:43:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:44:11,161 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:44:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:45:11,170 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:45:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:46:11,195 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:46:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:47:11,210 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:47:11
+__inicio 15:44 ___fin 20:00
+2024-04-04 16:48:11,241 - CUSTOM - __inicio 15:44 ___fin 20:00 __hora_actual 16:48:11

@@ -206,7 +206,8 @@ def loginExtAutomatico():
                         else:
                             exp_date = datetime.utcfromtimestamp(exp_timestamp)
                             fecha_actual =   datetime.utcnow()
-                            endPoint = inicializar_variables(cuentas.accountCuenta)                          
+                            endPoint = inicializar_variables(cuentas.accountCuenta)
+                            global api_url, ws_url                          
                             api_url = endPoint[0]
                             ws_url = endPoint[1]
                             session['api_url']=endPoint[0]
@@ -345,6 +346,7 @@ def loginExtCuentaSeleccionadaBroker():
                 
                 endPoint = inicializar_variables(accountCuenta)
                 app.logger.info(endPoint)
+                global api_url, ws_url    
                 api_url = endPoint[0]
                 ws_url = endPoint[1]
                 session['api_url']=endPoint[0]
