@@ -301,6 +301,7 @@ def operaciones_desde_seniales():
                                 db.session.close()
                           else:
                               print("No se pudo enviar la orden debido a saldo insuficiente.")
+                              return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
                         
                           
                           
@@ -324,7 +325,28 @@ def operaciones_desde_seniales():
 
     return render_template('errorOperacion.html')
 
+######## FALTA IMPLEMENTAR LAS OPERACIONES AUTOMATICAS DESDE PANEL CON CUENTA #############
+@operaciones.route("/operaciones_automatico_desde_senial_con_cuenta/", methods=["POST "])
+def operaciones_automatico_desde_senial_con_cuenta():
+  try:
+        if request.method == 'POST':
+            access_token = request.form['access_token']
+            symbol = request.form['symbol']
+            ut = request.form['ut']
+            signal = request.form['senial']
+            cuentaA = request.form['correo_electronico']
+       
+            return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
+  except Exception as e:
+      # Si se genera una excepción, crear un registro en Logs
+      error_msg = str(e)  # Obtener el mensaje de error
 
+      # Crear un nuevo registro en Logs
+    #  new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
+    #  db.session.add(new_log)
+      db.session.commit()
+
+  return render_template('errorOperacion.html')
 def calculaUt(precios,valor_cantidad,valor_monto,signal):
   
   
@@ -378,7 +400,9 @@ def obtenerCuentaBroker(user_id):
         todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta,'selector':cuenta.selector})
      
         print(cuenta.accountCuenta)
-   return cuenta.accountCuenta                  	
+   return cuenta.accountCuenta    
+ 
+               	
 @operaciones.route("/comprar",  methods=["POST"])
 def comprar():
   try:  
