@@ -282,8 +282,8 @@ def market_data_handler_estrategia(message):
         else:
             
             #tiempoAhora = datetime.now()
-            pass
-           # estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            #pass
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
