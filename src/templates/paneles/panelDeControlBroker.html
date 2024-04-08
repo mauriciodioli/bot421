@@ -12,7 +12,7 @@
     <table class="table table-dark table-striped" id="signalTable">
       <thead>           
         <tr>
-          <th scope="col">Id</th>
+          <th scope="col">Date</th>
           <th scope="col">Symbol</th>
           <th scope="col">type </th>
           <th scope="col">Signal</th>
@@ -22,13 +22,47 @@
       </thead>
       <tbody>
         {% for dato in datos %}
-        
-          <tr class="fila-{{ dato[7] }}">
-            <th scope="row">{{ dato[7] }}</th>
+          
+            
+          
+            <tr class="fila-{{ dato[7] }}">
+             
+              {% if dato[7] != None %}
+                 <th scope="row" style="color: rgb(0, 255, 255);">{{ dato[7] }}</th>
+              {% else %}
+                 <th scope="row">{{ dato[7] }}</th>
+              {% endif %}
+            
             <td>{{ dato[0].replace('MERV - XMEV -', '') }}</td>
-            <td>{{ dato[1].replace('MERV - XMEV -', '') }}</td>
-            <td>{{ dato[4].replace('MERV - XMEV -', '') }}</td>
-            <td>{{ dato[2].replace('MERV - XMEV -', '') }}</td>
+
+            {% if dato[1].replace('MERV - XMEV -', '') != 'CEDEAR' %}
+              <td style="color: rgb(0, 255, 255);">{{ dato[1].replace('MERV - XMEV -', '') }}</td>
+            {% else %}
+               <td style="color: rgb(165, 42, 42);">{{ dato[1].replace('MERV - XMEV -', '') }}</td>
+            {% endif %}
+
+            {% if dato[4].replace('MERV - XMEV -', '') != '' %}
+              {% if dato[4].replace('MERV - XMEV -', '') != 'OPEN.' %}
+                <td style="color: rgb(165, 42, 42);">{{ dato[4].replace('MERV - XMEV -', '') }}</td>
+              {% else %}
+                <td style="color: rgb(50, 205, 50);">{{ dato[4].replace('MERV - XMEV -', '') }}</td>
+              {% endif %}
+            {% else %}            
+              <td style="color: yellow;">inProgress</td>
+            {% endif %}
+            
+           
+            {% if dato[2].replace('MERV - XMEV -', '') == 'LONG_' or dato[2].replace('MERV - XMEV -', '') == 'SHORT' %}
+              {% if dato[2].replace('MERV - XMEV -', '') == 'LONG_' %}
+                  <td style="color: rgb(50, 205, 50);">{{ dato[2].replace('MERV - XMEV -', '') }}</td>
+              {% else %}
+                  <td style="color: rgb(255, 192, 203);">{{ dato[2].replace('MERV - XMEV -', '') }}</td>
+              {% endif %}
+              {% else %}            
+              <td style="color: green;">Finalized</td>
+            {% endif %}
+            
+
             <td>{{ dato[3].replace('MERV - XMEV -', '') }}</td>                             
           </tr>
         {% endfor %}
