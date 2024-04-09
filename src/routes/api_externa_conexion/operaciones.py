@@ -222,6 +222,7 @@ def operaciones_desde_seniales():
                 if precios != '':
                   
                       resultado = calculaUt(precios,valor_cantidad,valor_monto,signal)
+                      
                       if isinstance(resultado, int):
                         price = float(precios)
                         cantidad_a_comprar_abs = resultado
@@ -388,7 +389,8 @@ def operaciones_automatico_desde_senial_con_cuenta():
 def calculaUt(precios,valor_cantidad,valor_monto,signal):
   
   
-  if not isinstance(precios, dict):
+  if not isinstance(precios, zip):
+    precio=precios
     pass
   else:  
       for item in precios:
@@ -414,10 +416,10 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
       cantidad_a_comprar =int(valor_cantidad)  # Aseguramos que valor_cantidad sea un entero
   
   else:
-      cantidad_a_comprar = int(int(valor_monto) / precio)
+      cantidad_a_comprar = int(int(valor_monto) / int(precio))
       
   cantidad_a_comprar_abs = abs(cantidad_a_comprar)  
-  if not isinstance(precios, dict):
+  if not isinstance(precios, zip):
     return cantidad_a_comprar_abs
   else: 
     return cantidad_a_comprar_abs, LA['price'], BI[0]['price'], OF[0]['price']
