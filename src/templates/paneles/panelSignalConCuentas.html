@@ -58,6 +58,7 @@
                       </div>  
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="correo_electronico" name="correo_electronico">
+                        <input type="hidden" class="form-control" id="accountCuenta" name="accountCuenta">
                       </div>  
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="paisSeleccionado" name="paisSeleccionado">
@@ -205,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
         access_token = localStorage.getItem('access_token');
         var cuentaEnvioAjax = localStorage.getItem('correo_electronico');
+        var cuentaAcount = localStorage.getItem('cuenta');
         var symbol = event.target.dataset.symbol;
         var senial = event.target.dataset.senial;      
         var ut = event.target.dataset.ut;
@@ -218,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('access_token').value = access_token;
         document.getElementById('correo_electronico').value = cuentaEnvioAjax;
         document.getElementById('paisSeleccionado').value = paisS;
+        document.getElementById('accountCuenta').value = cuentaAcount;
         // Cerrar el modal
       
     }

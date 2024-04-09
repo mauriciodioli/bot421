@@ -93,6 +93,8 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
                         <ul class="dropdown-menu">              
                             <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="selector_form_GenerarFicha"  id="selector_form_GenerarFicha"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="accounCuenta_form_GenerarFicha"  id="accounCuenta_form_GenerarFicha"  class="form-control"></div>  
                                 <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
                                 <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
                           
@@ -113,8 +115,8 @@
                              <div class="col">  
                                 <li><button type="submit" class="dropdown-item">Listar</button></li>   
                                  
-                          </div>
-                        </form> 
+                             </div>
+                          </form> 
                                               
                         </ul>
                     </li>
@@ -180,7 +182,28 @@
                         <ul class="dropdown-menu">                        
                           <li><a class="dropdown-item" href="/posicionCuenta">Posicion</a></li>                        
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/detalleCuenta">Detalle</a></li>
+
+                         
+
+                          <li>
+                                     
+                                <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
+                                    <div class="form-group"><input type="hidden" name="selector_form_GenerarFicha"  id="selector_form_GenerarFicha"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="accounCuenta_form_GenerarFicha"  id="accounCuenta_form_GenerarFicha"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                              
+                                    <div class="col">  
+                                        <li><button type="submit" class="dropdown-item">Detalle</button></li>   
+                                         
+                                  </div>
+                                </form>    
+                               
+                          
+                        
+                        
+                        
+                        </li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/reporteCuenta">Reporte</a></li>      
                           <li><hr class="dropdown-divider"></li>
@@ -256,7 +279,7 @@
         }
          correo_electronico = localStorage.getItem("correo_electronico");  
          cuentaBroker = localStorage.getItem("cuenta");  
-         simulado = localStorage.getItem("selector");  
+         selector = localStorage.getItem("selector");  
          access_token = localStorage.getItem("access_token")
          rol = localStorage.getItem('roll');
       
@@ -265,9 +288,11 @@
         document.getElementById("access_token_form_GenerarFicha").value = access_token;
         document.getElementById("access_token_form_ListarFicha").value = access_token;
         document.getElementById("access_token_est").value = access_token;
+        document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaBroker;
+        document.getElementById("selector_form_GenerarFicha").value = selector;
+      
         
-        
-        if (simulado == 'simulado') {
+        if (selector == 'simulado') {
              cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
           
@@ -277,7 +302,7 @@
              mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
             document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
             
-            } else if (simulado == 'produccion') {
+            } else if (selector == 'produccion') {
 
              cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;

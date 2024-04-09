@@ -1693,3 +1693,41 @@ __inicio 15:44 ___fin 20:00
 2024-04-08 10:34:53,050 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
 2024-04-08 10:34:57,113 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
 2024-04-08 10:38:58,744 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 14:22:09,198 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-08 14:48:26,284 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 15:04:02,019 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 15:10:57,782 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 15:15:46,305 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 15:33:08,037 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 15:36:43,993 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 15:41:21,860 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-08 15:44:20,679 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-08 15:51:06,630 - INFO - ______está logueado en produccion en LIVE___________
+2024-04-09 11:56:29,473 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-09 11:57:28,659 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:20:21,239 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:20:49,553 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:21:36,025 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-09 12:23:00,424 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-09 12:26:35,013 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:28:11,959 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-09 12:33:33,415 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:34:23,605 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:37:19,628 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:39:17,539 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:40:11,702 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 12:40:33,692 - INFO - ['https://api.veta.xoms.com.ar/', 'wss://api.veta.xoms.com.ar/']
+2024-04-09 12:41:53,879 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 13:02:08,409 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 13:40:18,166 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 13:46:21,212 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 14:06:00,289 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 14:08:07,840 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 14:09:51,820 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 14:18:03,900 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 14:36:19,726 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 14:39:27,891 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 15:01:50,017 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 15:04:28,072 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 15:07:27,177 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
+2024-04-09 15:11:32,404 - INFO - ['https://api.bull.xoms.com.ar/', 'wss://api.bull.xoms.com.ar/']
