@@ -53,10 +53,13 @@ def cuentas():
      ##~######datos de la cuenta
 def obtenerSaldoCuenta(cuenta):
   # print("_______________obtenerSaldoCuenta__________________")
+  
    resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
    return resumenCuenta["accountData"]["availableToCollateral"]
 
 def obtenerCuenta(cuenta=None):
+   
+           
    resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
    return resumenCuenta
 

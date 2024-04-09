@@ -159,7 +159,7 @@ def loginExtAutomatico():
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
            # print('correo_electronico ',correo_electronico)
-           
+            pyRofexInicializada = pyRofex
             if access_token:
                 app = current_app._get_current_object()                    
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -184,7 +184,7 @@ def loginExtAutomatico():
                                           #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                          
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion(app) 
+                                            conexion(app,pyRofexInicializada) 
                                             refrescoValorActualCuentaFichas(user_id)                                    
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
@@ -306,7 +306,7 @@ def loginExtCuentaSeleccionadaBroker():
         session['origin_page'] = origin_page
        # logs_file_path = os.path.join(src_directory, 'logs.log')
        
-       
+        pyRofexInicializada1 = pyRofex
         # Abrir el archivo en modo de escritura para borrar su contenido
 #        with open(logs_file_path, 'w') as f:
 #            pass  # No es necesario escribir nada, solo abrir y cerrar el archivo borrará su contenido
@@ -333,7 +333,7 @@ def loginExtCuentaSeleccionadaBroker():
             #creaJsonParaConextarseSheetGoogle()
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
-                environments = pyRofexInicializada.Environment.REMARKET
+                environments = pyRofexInicializada1.Environment.REMARKET
               #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
               #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
               #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environments)
@@ -342,7 +342,7 @@ def loginExtCuentaSeleccionadaBroker():
                                          
             else:
                 # Configurar para el entorno LIVE
-                environments = pyRofexInicializada.Environment.LIVE
+                environments = pyRofexInicializada1.Environment.LIVE
                 
                 endPoint = inicializar_variables(accountCuenta)
                 app.logger.info(endPoint)
@@ -351,9 +351,10 @@ def loginExtCuentaSeleccionadaBroker():
                 ws_url = endPoint[1]
                 session['api_url']=endPoint[0]
                 session['ws_url']=endPoint[1]
-                pyRofexInicializada._set_environment_parameter("url",api_url,environments)
-                pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
-                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+                
+                pyRofexInicializada1._set_environment_parameter("url",api_url,environments)
+                pyRofexInicializada1._set_environment_parameter("ws",ws_url,environments) 
+                pyRofexInicializada1._set_environment_parameter("proprietary", "PBCP", environments)
                
 
                     
@@ -362,8 +363,9 @@ def loginExtCuentaSeleccionadaBroker():
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
           
-            pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-            conexion(app)
+            pyRofexInicializada1.initialize(user=user,password=password,account=accountCuenta,environment=environments )
+            
+            conexion(app,pyRofexInicializada1)
             #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
             
             refrescoValorActualCuentaFichas(user_id)

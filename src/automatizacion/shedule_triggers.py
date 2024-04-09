@@ -306,7 +306,8 @@ def llama_tarea_cada_24_horas_estrategias(app, user_id, cuenta, correo_electroni
     with app.app_context():
         try:
             app.logger.info("_______________Intentando__conexion__con WS__________________________")
-            conexion(app, Cuenta, cuenta, user_id, correo_electronico, selector)           
+            pyRofexInicializada1 = pyRofex
+            conexion(app, Cuenta, cuenta, user_id, correo_electronico, selector,pyRofexInicializada1)           
             app.logger.info("___________________Se conecto con exito al WS______________________")
             triggerEstrategias = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()    
             hilos = []

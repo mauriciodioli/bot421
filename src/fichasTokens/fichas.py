@@ -337,19 +337,27 @@ def fichasToken_fichas_generar():
    try:  
         total_cuenta = 0.0
         access_token = request.form['access_token_form_GenerarFicha'] 
-        layouts = request.form['layoutOrigen']
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
-        reporte = repuesta_cuenta['accountData']
-        if reporte!=None:
-            available_to_collateral = reporte['availableToCollateral']
-            portfolio = reporte['portfolio']
-           # layouts = 'layout'
-        # print("detalle  ",available_to_collateral)
-        # print("detalle ",portfolio)
+        layouts = request.form['layoutOrigen']  
+        cuenta = request.form['accounCuenta_form_GenerarFicha']
+        selector = request.form['selector_form_GenerarFicha']      
+              
         
             
-            if access_token:
-                    user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        if access_token:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            
+            
+           
+            respuesta_cuenta = Cuenta.getReporteCuenta(user_id=user_id,account=cuenta,selector=selector)
+            reporte = respuesta_cuenta['accountData']
+            if reporte!=None:
+                available_to_collateral = reporte['availableToCollateral']
+                portfolio = reporte['portfolio']
+            # layouts = 'layout'
+            # print("detalle  ",available_to_collateral)
+            # print("detalle ",portfolio)
+            
+            
             # Consulta todas las fichas del usuario dado
             #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
             total_cuenta = available_to_collateral + portfolio
