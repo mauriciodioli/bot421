@@ -181,12 +181,16 @@ def operaciones_desde_seniales():
             ut = request.form['ut']
             signal = request.form['senial']
             cuentaA = request.form['correo_electronico']
+            cuentaAcount = request.form['accountCuenta']
+            paisSeleccionado = request.form['paisSeleccionado']
            
             #aqui controlo los checkbox y los input del modal de operacion enviado por POST
             if 'CantidadMonto' in request.form:
                cantidad_monto = request.form['CantidadMonto']
             if 'ValorCantidad' in request.form:
                 valor_cantidad = request.form['ValorCantidad']
+            else:
+                valor_cantidad='0' 
             if 'ValorMonto' in request.form:   
               valor_monto = request.form['ValorMonto']  
             else: 
@@ -258,50 +262,73 @@ def operaciones_desde_seniales():
                                 flash('Operacion enviada exitosamente')
                                 repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
                                 operaciones = repuesta_operacion['orders']
-                                print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-                                    
-                                # Intentamos encontrar el registro con el symbol específico
-                                orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+                                print(operaciones)#muestra el listado de todas las operaciones
+                                clOrdId = None
+                                orderStatus = None
+                                timepoTransaccion = None
+                                for orden in operaciones:
+                                  if orden['instrumentId']['symbol'] == ticker:
+                                    transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
+                                    if timepoTransaccion is None or transacTime > timepoTransaccion:
+                                        timepoTransaccion = transacTime
 
-                                if orden_existente:
-                                    # Si el registro existe, lo actualizamos
-                                    orden_existente.user_id = user_id
-                                    orden_existente.userCuenta = cuentaA
-                                    orden_existente.ut = cantidad_a_comprar_abs
-                                    orden_existente.senial = signal
-                                    orden_existente.clOrdId_alta_timestamp=datetime.now()
-                                    orden_existente.status = 'operado'
-                                else:
-                                    # Si no existe, creamos un nuevo registro
-                                    nueva_orden = Orden(
-                                        user_id=user_id,
-                                        userCuenta=cuentaA,
-                                        accountCuenta=cuentaA,
-                                        clOrdId_alta=random.randint(1,100000),
-                                        clOrdId_baja='',
-                                        clientId=0,
-                                        wsClOrdId_timestamp=datetime.now(),
-                                        clOrdId_alta_timestamp=datetime.now(),
-                                        clOrdId_baja_timestamp=None,
-                                        proprietary=True,
-                                        marketId='',
-                                        symbol=ticker,
-                                        tipo=tipo_orden,
-                                        tradeEnCurso="si",
-                                        ut=cantidad_a_comprar_abs,
-                                        senial=signal,
-                                        status='operado'
-                                    )
-                                    db.session.add(nueva_orden)
-                                    
-                                if signal == 'closed.':
-                                  db.session.delete(orden_existente)   
-                                db.session.commit()  
-                                    #get.current_session = db.session
-                                db.session.close()
+                                                
+                                for orden in operaciones:
+                                    if orden['instrumentId']['symbol'] == ticker:
+                                        transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
+                                        if transacTime == timepoTransaccion:                                                                   
+                                            clOrdId = orden['clOrdId'] 
+                                            orderStatus = orden['status']
+                                            break
+                                      
+                                if orderStatus != 'REJECTED':     
+                                    # Intentamos encontrar el registro con el symbol específico
+                                    orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+
+                                    if orden_existente:
+                                        # Si el registro existe, lo actualizamos
+                                        orden_existente.user_id = user_id
+                                        orden_existente.userCuenta = cuentaAcount
+                                        orden_existente.ut = cantidad_a_comprar_abs
+                                        orden_existente.senial = signal
+                                        orden_existente.clOrdId_alta = clOrdId
+                                        orden_existente.clOrdId_alta_timestamp=datetime.now()
+                                        orden_existente.status =  orderStatus
+                                    else:
+                                        # Si no existe, creamos un nuevo registro
+                                        nueva_orden = Orden(
+                                            user_id=user_id,
+                                            userCuenta=cuentaA,
+                                            accountCuenta=cuentaAcount,
+                                            clOrdId_alta=clOrdId,
+                                            clOrdId_baja='',
+                                            clientId=0,
+                                            wsClOrdId_timestamp=datetime.now(),
+                                            clOrdId_alta_timestamp=datetime.now(),
+                                            clOrdId_baja_timestamp=None,
+                                            proprietary=True,
+                                            marketId='',
+                                            symbol=ticker,
+                                            tipo=tipo_orden,
+                                            tradeEnCurso="si",
+                                            ut=cantidad_a_comprar_abs,
+                                            senial=signal,
+                                            status= orderStatus
+                                        )
+                                        db.session.add(nueva_orden)
+                                        
+                                    if signal == 'closed.':
+                                      db.session.delete(orden_existente)   
+                                    db.session.commit()  
+                                        #get.current_session = db.session
+                                    db.session.close()
+                                else:  
+                                  print("No se pudo enviar la orden debido a REJECTED")
+                                  return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
+                                  
                           else:
-                              print("No se pudo enviar la orden debido a saldo insuficiente.")
-                              return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
+                                  print("No se pudo enviar la orden debido a saldo insuficiente.")
+                                  return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
                         
                           
                           
@@ -312,8 +339,19 @@ def operaciones_desde_seniales():
                     # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
                     # operaciones = repuesta_operacion['orders']   
                     # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
-                    # 
-                      return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
+                    #  
+                      if paisSeleccionado == "argentina":
+                          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+                      elif paisSeleccionado == "usa":
+                            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+                      else:
+                          return "País no válido"
+          
+          
+                      datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,user_id)
+                     
+                      return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
+                     # return jsonify({'redirect': url_for('paneles.panelDeControlBroker', datos=datos_desempaquetados)}) 
     except Exception as e:
       # Si se genera una excepción, crear un registro en Logs
       error_msg = str(e)  # Obtener el mensaje de error
@@ -352,8 +390,7 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
   
   if not isinstance(precios, dict):
     pass
-  else:
-  
+  else:  
       for item in precios:
                       print(item[0])
                       print(item[1])

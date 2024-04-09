@@ -100,7 +100,7 @@ def estrategia_001():
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
-def SuscripcionDeSheet(app):
+def SuscripcionDeSheet(app,pyRofexInicializada1):
     # Trae los instrumentos para suscribirte
    
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
@@ -144,7 +144,7 @@ def SuscripcionDeSheet(app):
     #for elemento in resultado_lista:
     #    print(elemento)
     
-    repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+    repuesta_listado_instrumento = pyRofexInicializada1.get_detailed_instruments()
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
     #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
@@ -157,13 +157,13 @@ def SuscripcionDeSheet(app):
     
     
     #### aqui define el MarketDataEntry
-    entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-               get.pyRofexInicializada.MarketDataEntry.OFFERS,
-               get.pyRofexInicializada.MarketDataEntry.LAST]
+    entries = [pyRofexInicializada1.MarketDataEntry.BIDS,
+               pyRofexInicializada1.MarketDataEntry.OFFERS,
+               pyRofexInicializada1.MarketDataEntry.LAST]
     
       
     #### aqui se subscribe   **55
-    mensaje = get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3)
+    mensaje = pyRofexInicializada1.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3)
    
     #print("instrumento_suscriptio",mensaje)
     datos = ContenidoSheet_list #COMENTADO POR SHEET
