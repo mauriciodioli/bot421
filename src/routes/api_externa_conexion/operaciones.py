@@ -325,7 +325,9 @@ def operaciones_desde_seniales():
                                     db.session.close()
                                 else:  
                                   print("No se pudo enviar la orden debido a REJECTED")
-                                  return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
+                                  return jsonify({'success': True})
+
+                                 # return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
                                   
                           else:
                                   print("No se pudo enviar la orden debido a saldo insuficiente.")

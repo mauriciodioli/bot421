@@ -18,24 +18,29 @@
                     <thead>           
                         <tr>
                             <th scope="col">account</th>
-                            <th scope="col">report</th>
+                            <th scope="col">MiemMarket</th>
+                            <th scope="col">portfolio</th>                            
                             <th scope="col">lastCalculation</th>
+                            <th scope="col">currenCash</th>
+                            <th scope="col">uncoveredMargin</th>
+                            <th scope="col">availabreToColateral</th>
+                            <th scope="col">name</th>
+
                         </tr>            
                     </thead>
                     <tbody>
                       
                      
                         <tr>
-                            <th scope="row">{{datos.account}}</th>
-                            <td>{{datos.report.FUTURE}}</td>
+                            <th scope="row">{{datos.accountName}}</th>
+                            <td>{{datos.marketMember}}</td>
+                            <td>{{datos.portfolio}}</td>
                             <td>{{datos.lastCalculation}}</td>  
-                           
-                           
-                           
-                            
+                            <td>{{datos.currentCash}}</td>  
+                            <td>{{datos.uncoveredMargin}}</td> 
+                            <td>{{datos.availableToCollateral}}</td>  
+                            <td>{{datos.personName}}</td>  
                           </tr>  
-                       
-
                     </tbody>
                 </table>
             </div>

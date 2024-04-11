@@ -45,53 +45,60 @@ class Cuenta(db.Model):
         insp = inspect(db.engine)
         if not insp.has_table("cuentas"):
             db.create_all()
+            
+            
+    def inicializar_variables(accountCuenta):
+        valores = []  # Inicializar la lista
+        
+            # Buscar la cuenta asociada a la cuentaCuenta proporcionada
+        cuenta = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
+        
+        if cuenta:
+            # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
+            broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
+            
+            if broker:
+                # Agregar los valores de api_url y ws_url a la lista 'valores'
+                valores = [broker.api_url, broker.ws_url]
+                # Hacer algo con el objeto Broker encontrado
+                print(f"El broker asociado a la cuenta es: {broker.nombre}")
+            else:
+                print("No se encontró el broker asociado a la cuenta.")
+        else:
+            print("No se encontró la cuenta.")
 
+            
+        return valores
+    
     @classmethod
-    def getReporteCuenta(cls, user_id, account, selector):
+    def getReporteCuenta(cls, userCuenta, passwordCuenta_decoded,account,selector):      
         pyRofexInicializada = pyRofex
-        todasLasCuentas = cls.get_cuentas_de_broker(user_id)
-        for cuenta in todasLasCuentas:          
-             if cuenta['accountCuenta'] == account:
-                   userCuenta = cuenta['userCuenta']
-                   passwordCuenta = cuenta['passwordCuenta']
-                   passwordCuenta_decoded = passwordCuenta.decode('utf-8')
-                   if selector == 'simulado':
-                       environments = pyRofexInicializada.Environment.REMARKET
-                   else:
-                        environments = pyRofexInicializada.Environment.LIVE
-                       
-                
-                   pyRofexInicializada.initialize(user=userCuenta, password=passwordCuenta_decoded, account=account, environment=environments)
-                   return pyRofexInicializada.get_account_report(account=account)
-        return None           
+        endPoint = cls.inicializar_variables(account)
+        api_url = endPoint[0]
+               
+        if selector == 'simulado':
+                environments =pyRofexInicializada.Environment.REMARKET
+        else:
+               environments = pyRofexInicializada.Environment.LIVE
+        pyRofexInicializada._set_environment_parameter("url",api_url,environments) 
+        pyRofexInicializada.initialize(user=userCuenta, password=passwordCuenta_decoded, account=account, environment=environments)
+        return pyRofexInicializada.get_account_report(account=account)
+                  
 
-    @staticmethod
-    def get_cuentas_de_broker(user_id):
-        todasCuentas = []
-        from models.cuentas import Cuenta
-        try:
-            usuario = Usuario.query.get(user_id)
-            cuentas = Cuenta.query.filter_by(user_id=user_id).all()
-            broker_ids = [cuenta.broker_id for cuenta in cuentas if cuenta.broker_id is not None]
-            brokers = Broker.query.filter(Broker.id.in_(broker_ids)).all()
-            id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
-            if cuentas:
-                for cuenta in cuentas:
-                    password_cuenta = cuenta.passwordCuenta  # No es necesario decodificar la contraseña aquí
-                    nombre_broker = id_nombre_broker.get(cuenta.broker_id)
-                    todasCuentas.append({
-                        'id': cuenta.id,
-                        'accountCuenta': cuenta.accountCuenta,
-                        'userCuenta': cuenta.userCuenta,
-                        'passwordCuenta': password_cuenta,
-                        'selector': cuenta.selector,
-                        'broker_id': cuenta.broker_id,
-                        'nombre_broker': nombre_broker
-                    })
-        except Exception as e:
-            print("Error al obtener las cuentas del usuario:", e)
-        return todasCuentas
-
+    def getDetalleCuenta(cls, userCuenta, passwordCuenta_decoded,account,selector):
+        pyRofexInicializada = pyRofex
+        endPoint = cls.inicializar_variables(account)
+        api_url = endPoint[0]
+               
+        if selector == 'simulado':
+                environments =pyRofexInicializada.Environment.REMARKET
+        else:
+               environments = pyRofexInicializada.Environment.LIVE
+        pyRofexInicializada._set_environment_parameter("url",api_url,environments) 
+        pyRofexInicializada.initialize(user=userCuenta, password=passwordCuenta_decoded, account=account, environment=environments)
+        return pyRofexInicializada.get_detailed_position(account=account, environment=environments)
+          
+        
 class MerShema(ma.Schema):
     class Meta:
         fields = ("id", "user_id", "userCuenta", "passwordCuenta", "accountCuenta", "selector", "broker_id")
