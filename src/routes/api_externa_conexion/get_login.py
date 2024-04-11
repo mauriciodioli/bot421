@@ -376,7 +376,8 @@ def loginExtCuentaSeleccionadaBroker():
                     userCuentaBroker=user,
                     passwordCuentaBroker=password,
                     api_url=api_url1,
-                    ws_url=ws_url1
+                    ws_url=ws_url1,
+                    selector=selector
                 )
                 # Inicializar pyRofexInicializada
                
