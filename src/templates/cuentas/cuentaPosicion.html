@@ -1,0 +1,66 @@
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% extends 'layouts/layoutConexBroker.html'%}
+{% block content%}
+
+            <div class = 'container p-4'>                
+                  <div class = 'container p-4'>
+                 <div class="table-responsive">
+                  <table class="table table-dark table-striped">
+                    <thead>           
+                        <tr>
+                           
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Buy Size</th>
+                            <th scope="col"> scope="col"Buy Price</th>
+                            <th>Sell Size</th>
+                            <th scope="col">Sell Price</th>
+                            <th scope="col">Total Daily Difference</th>
+                            <th scope="col">Total Difference</th>
+                            <th scope="col">Trading Symbol</th>
+                            <th scope="col">Original Buy Price</th>
+                            <th scope="col">Original Sell Price</th>
+                            <th scope="col">Original Buy Size</th>
+                            <th scope="col">Original Sell Size</th>
+                        </tr>            
+                    </thead>
+                    <tbody>
+                      
+                     
+                        <tr>
+                          <!--<th scope="row">{{datos[0].instrument.symbolReference}}</th>-->  
+                            {% for instrumento in datos %}
+                                <tr>
+                                    <td>{{ instrumento['symbol'] }}</td>
+                                    <td>{{ instrumento['buySize'] }}</td>
+                                    <td>{{ instrumento['buyPrice'] }}</td>
+                                    <td>{{ instrumento['sellSize'] }}</td>
+                                    <td>{{ instrumento['sellPrice'] }}</td>
+                                    <td>{{ instrumento['totalDailyDiff'] }}</td>
+                                    <td>{{ instrumento['totalDiff'] }}</td>
+                                    <td>{{ instrumento['tradingSymbol'] }}</td>
+                                    <td>{{ instrumento['originalBuyPrice'] }}</td>
+                                    <td>{{ instrumento['originalSellPrice'] }}</td>
+                                    <td>{{ instrumento['originalBuySize'] }}</td>
+                                    <td>{{ instrumento['originalSellSize'] }}</td>
+                                </tr>
+                                {% endfor %}
+                            
+                          </tr>  
+                       
+
+                    </tbody>
+                </table>
+            </div> 
+            </div>
+        </div>
+{%endblock%}
+ 
