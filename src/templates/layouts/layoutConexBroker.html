@@ -178,19 +178,30 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Cuenta</a>
+                      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Cuenta</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/posicionCuenta">Posicion</a></li>                        
+                          <li><form  name="cuenta_posicion_cuenta" action="/cuenta_posicion_cuenta" method="post" class="btn-guardar_inst">
+                            <div class="form-group"><input type="hidden" name="selector_form_posicionCuenta"  id="selector_form_posicionCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="accounCuenta_form_posicionCuenta"  id="accounCuenta_form_posicionCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="access_token_form_posicionCuenta"  id="access_token_form_posicionCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                      
+                            <div class="col">  
+                                <li><button type="submit" class="dropdown-item">Posicion</button></li>   
+                                 
+                          </div>
+                        </form>   
+                    </li>                        
                           <li><hr class="dropdown-divider"></li>
 
                          
 
                           <li>
                                      
-                                <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
-                                    <div class="form-group"><input type="hidden" name="selector_form_GenerarFicha"  id="selector_form_GenerarFicha"  class="form-control"></div>  
-                                    <div class="form-group"><input type="hidden" name="accounCuenta_form_GenerarFicha"  id="accounCuenta_form_GenerarFicha"  class="form-control"></div>  
-                                    <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
+                                <form  name="cuenta_detalle_cuenta" action="/cuenta_detalle_cuenta" method="post" class="btn-guardar_inst">
+                                    <div class="form-group"><input type="hidden" name="selector_form_detalleCuenta"  id="selector_form_detalleCuenta"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="accounCuenta_form_detalleCuenta"  id="accounCuenta_form_detalleCuenta"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="access_token_form_detalleCuenta"  id="access_token_form_detalleCuenta"  class="form-control"></div>  
                                     <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
                               
                                     <div class="col">  
@@ -290,6 +301,14 @@
         document.getElementById("access_token_est").value = access_token;
         document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaBroker;
         document.getElementById("selector_form_GenerarFicha").value = selector;
+       // detalleCuenta
+        document.getElementById("access_token_form_detalleCuenta").value = access_token;
+        document.getElementById("accounCuenta_form_detalleCuenta").value = cuentaBroker;
+        document.getElementById("selector_form_detalleCuenta").value = selector;
+        //posicion cuenta
+        document.getElementById("access_token_form_posicionCuenta").value = access_token;
+        document.getElementById("accounCuenta_form_posicionCuenta").value = cuentaBroker;
+        document.getElementById("selector_form_posicionCuenta").value = selector;
       
         
         if (selector == 'simulado') {

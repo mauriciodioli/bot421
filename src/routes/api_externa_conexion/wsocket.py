@@ -22,39 +22,39 @@ wsocket = Blueprint('wsocket',__name__)
 reporte_de_instrumentos = []
 
 
-def websocketConexionShedule(app,Cuenta,cuentaid,idUser,correo_electronico,selector,pyRofexInicializada1):
+def websocketConexionShedule(app,Cuenta,cuentaid,idUser,correo_electronico,selector):
   
-      
+      pyRofexInicializada = pyRofex
      
       cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=cuentaid).first()
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
       
       if selector == 'simulado':
-          environments = pyRofexInicializada1.Environment.REMARKET         
-          pyRofexInicializada1.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
+          environments = pyRofexInicializada.Environment.REMARKET         
+          pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
           
       else: 
         
-        environments = pyRofexInicializada1.Environment.LIVE
+        environments = pyRofexInicializada.Environment.LIVE
         
-        pyRofexInicializada1._set_environment_parameter("url",get.api_url,environments)
-        pyRofexInicializada1._set_environment_parameter("ws",get.ws_url,environments) 
-        pyRofexInicializada1._set_environment_parameter("proprietary", "PBCP", environments)
+        pyRofexInicializada._set_environment_parameter("url",get.api_url,environments)
+        pyRofexInicializada._set_environment_parameter("ws",get.ws_url,environments) 
+        pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
       
-        get.pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
-      wsocketConexion(app,pyRofexInicializada1)
+        pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
+      wsocketConexion(app,pyRofexInicializada)
       return True
 
-def wsocketConexion(app,pyRofexInicializada1):
+def wsocketConexion(app,pyRofexInicializada):
    
-   get.ContenidoSheet_list = shWS.SuscripcionDeSheet(app,pyRofexInicializada1)  # <<-- aca se suscribe al mkt data
+   get.ContenidoSheet_list = shWS.SuscripcionDeSheet(app,pyRofexInicializada)  # <<-- aca se suscribe al mkt data
   # get.pyRofexInicializada.order_report_subscription()
   # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
    
-   pyRofexWebSocket = pyRofexInicializada1.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
-   pyRofexInicializada1.remove_websocket_market_data_handler(market_data_handler_0)
-   pyRofexInicializada1.remove_websocket_order_report_handler(order_report_handler_0)
+   pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
+   pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0)
+   pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0)
  
 
 def market_data_handler_0(message):
