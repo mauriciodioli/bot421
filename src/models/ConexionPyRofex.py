@@ -19,21 +19,27 @@ class ConexionPyRofex(db.Model):
     cuenta = Column(String(500), nullable=True)
     userCuentaBroker = Column(String(500), nullable=True)
     passwordCuentaBroker = Column(String(500), nullable=True)
+    selector =  Column(String(500), nullable=True)
    
     
-    def __init__(self, id_user: str, cuenta: str, userCuentaBroker: str, passwordCuentaBroker: str, api_url: str, ws_url: str):
+    def __init__(self, id_user: str, cuenta: str, userCuentaBroker: str, passwordCuentaBroker: str, api_url: str, ws_url: str, selector):
         self.id_user = id_user
         self.cuenta = cuenta
         self.userCuentaBroker = userCuentaBroker
         self.passwordCuentaBroker = passwordCuentaBroker
         self.api_url = api_url
         self.ws_url = ws_url
+        self.selector = selector
         self.inicializar_pyrofex()  # Llamamos al método para inicializar pyRofex
 
     def inicializar_pyrofex(self):
-       
         pyRofexInicializada = pyRofex  # Importamos pyRofex aquí
-        environments = pyRofexInicializada.Environment.LIVE
+        if self.selector == 'simulado':
+            environments = pyRofexInicializada.Environment.REMARKET
+        else:
+             environments = pyRofexInicializada.Environment.LIVE
+      
+       
         pyRofexInicializada._set_environment_parameter("url", self.api_url, environments)
         pyRofexInicializada._set_environment_parameter("ws", self.ws_url, environments) 
         pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
