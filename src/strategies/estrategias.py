@@ -53,7 +53,7 @@ def estrategias_usuario_nadmin():
     
     except:
        print('no hay estrategias en strategies/estrategias.py') 
-    return  render_template("/notificaciones/errorEstrategiaVacia.html")
+    return  render_template("/notificaciones/errorEstrategiaABM.html")
 
 @estrategias.route("/estrategias-usuario",  methods=["POST"])
 def estrategias_usuario():
@@ -181,8 +181,9 @@ def alta_estrategias_trig():
 
     except:
         print('no hay estrategias')
-
-    return render_template("/notificaciones/errorEstrategiaVacia.html")
+    flash('No se puede regitrar la estrategia.')
+    return  render_template("/notificaciones/errorEstrategiaABM.html")
+  
 
 @estrategias.route('/inicioEstrategias/')
 def inicioEstrategias():

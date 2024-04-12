@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,session, request, redirect, url_for, flash,jsonify,g
+from flask import Blueprint, current_app,render_template,session, request, redirect, url_for, flash,jsonify,g
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
@@ -13,14 +13,17 @@ import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
 import strategies.datoSheet as datoSheet 
+from models.cuentas import Cuenta
 import requests
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
+from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexion
 
 
 from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
 import enum
+import pyRofex
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 import socket
 import pprint
@@ -30,7 +33,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+estrategiaSheet_01 = Blueprint('estrategiaSheet_01',__name__)
 
 
 class States(enum.Enum):
@@ -38,12 +41,14 @@ class States(enum.Enum):
     WAITING_CANCEL = 1
     WAITING_ORDERS = 2
 
+objetoCuentaConexion = None
 
 
 
-@estrategiaSheetWS.route('/estrategia-002/', methods=['POST'])
-def estrategia_002():
-    print('00000000000000000000000estrategia-00200000000000000000000000000')
+
+@estrategiaSheet_01.route('/estrategia-003/', methods=['POST'])
+def estrategia_003():
+    print('00000000000000000000000estrategia-00300000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -61,6 +66,7 @@ def estrategia_002():
             correo_electronico = data['correo_electronico']
             
             get.accountLocalStorage = data['cuenta']
+            CuentaOperar = data['cuenta']
             #get.accountLocalStorage = "20225833983"
             
             tiempoInicio = data['tiempoInicio']
@@ -70,22 +76,53 @@ def estrategia_002():
             get.VariableParaBotonPanico = 0
            
            
-            CargOperacionAnterioDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
-            carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
-            get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
-            get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia)
-            get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler)
-         
-       #     pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
-       #                             market_data_handler=market_data_handler_estrategia,
-       #                             order_report_handler=order_report_handler,
-       #                             error_handler=error_handler,
-       #                             exception_handler=exception_handler
-       #                             )
-            #get.pyRofexInicializada.run_websocket()
-           # carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
-            # Crear una instancia de RofexMarketDataHandler
-            
+          
+            if access_token:
+                        user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        
+                
+                        for key, conexion_pyrofex in get.ConexionesBroker.items():
+                
+                            id_usuario, accountCuenta, environments = key
+                            objetoCuentaConexion = conexion_pyrofex
+                                #  print(f"id_user: {id_usuario}, cuenta: {accountCuenta}, environments: {environments}")
+                            if id_usuario == user_id and accountCuenta == CuentaOperar:
+                                
+                                print(f" dentro del if id_user: {id_usuario}, cuenta: {accountCuenta}")
+                                conexion_pyrofex.tipoEndPointWs = 'ws'
+                               # pyRofex_inicializado = conexion_pyrofex.inicializar_pyrofex()
+                            
+                        
+                        
+                       # pyRofexInicializada1 = pyRofex
+                       # environments = pyRofexInicializada1.Environment.LIVE
+                      # pyRofexInicializada1._set_environment_parameter('url','https://api.bull.xoms.com.ar/', environments)
+                       # pyRofexInicializada1._set_environment_parameter('ws','wss://api.bull.xoms.com.ar/', environments) 
+                       # pyRofexInicializada1._set_environment_parameter("proprietary", "PBCP", environments)
+                        
+                        user = conexion_pyrofex.userCuentaBroker
+                        password = conexion_pyrofex.passwordCuentaBroker
+                        accountCuenta = conexion_pyrofex.cuenta
+                        app = current_app._get_current_object() 
+                        conexion(app, Cuenta, accountCuenta, user_id, correo_electronico, 'produccion') 
+                        get.pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
+                       
+                        CargOperacionAnterioDiccionarioEnviadas(get.pyRofexInicializada, conexion_pyrofex.cuenta, conexion_pyrofex.userCuentaBroker,correo_electronico)
+                        carga_operaciones(get.ContenidoSheet_list[0], conexion_pyrofex.cuenta ,conexion_pyrofex.userCuentaBroker,correo_electronico,get.ContenidoSheet_list[1])
+                        get.pyRofexInicializada.order_report_subscription(account=accountCuenta , snapshot=True,handler = market_data_handler_estrategia_003)
+                        get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia_003)
+                        get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler_003)
+                
+            #     pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
+            #                             market_data_handler=market_data_handler_estrategia,
+            #                             order_report_handler=order_report_handler,
+            #                             error_handler=error_handler,
+            #                             exception_handler=exception_handler
+            #                             )
+                    #get.pyRofexInicializada.run_websocket()
+                # carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
+                    # Crear una instancia de RofexMarketDataHandler
+                
 
             
             
@@ -180,8 +217,6 @@ def cargaSymbolParaValidarDb(message):
         
     return listado_final
 
-
-
 def cargaSymbolParaValidar(message):
     listado_final = []
     for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado  in message: 
@@ -225,7 +260,7 @@ def get_instrumento_para_suscripcion_json():
    except json.JSONDecodeError:
         print("Error al decodificar el JSON.")
        
-def market_data_handler_estrategia(message):
+def market_data_handler_estrategia_003(message):
     
     
     #Arbitrador001(message)
@@ -262,7 +297,7 @@ def market_data_handler_estrategia(message):
 
 
         if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos
-            get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
+            get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( objetoCuentaConexion )# cada mas de 5 segundos
             get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
         
         # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
@@ -281,8 +316,7 @@ def market_data_handler_estrategia(message):
             #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
         else:
             
-            #tiempoAhora = datetime.now()
-            print('"FUN market_data_handler_estrategia')
+            print("FUN market_data_handler_estrategia")
             #pass
             #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             
@@ -291,7 +325,7 @@ def market_data_handler_estrategia(message):
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
           #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
  
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@estrategiaSheet_01.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -310,7 +344,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@estrategiaSheet_01.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)
@@ -422,8 +456,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
         #print(message['instrumentId']['symbol'])  
     #    print('______________________________________________________')                                   
 
-
-
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
      coincidencias = []
      contador_1=0
@@ -533,7 +565,7 @@ def es_numero(numero):
     except:
         return False
   
-def order_report_handler( order_report):
+def order_report_handler_003( order_report):
         # Obtener el diccionario de datos del reporte de orden
         
         order_data = order_report['orderReport']
@@ -555,7 +587,6 @@ def order_report_handler( order_report):
                 if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
                     _operada(order_report)   
                        
-        
 def _operada(order_report):
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']
@@ -755,9 +786,9 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
-def CargOperacionAnterioDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
+def CargOperacionAnterioDiccionarioEnviadas(pyRofex_inicializado,accountCuenta,userCuenta,user_id):
    try:        
-        repuesta_operacion = get.pyRofexInicializada.get_account_position()
+        repuesta_operacion = pyRofex_inicializado.get_account_position()
      
         reporte = repuesta_operacion['positions']
         
@@ -811,6 +842,7 @@ def CargOperacionAnterioDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
         print("error de carga de diccionario de enviados", e)  
         flash(' error de carga de diccionario de enviados')    
    return 'ok'                   
+
 def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
    try:        
         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
@@ -922,10 +954,6 @@ def exception_error(message):
 
 def exception_handler(e):
     print("Exception Occurred: {0}".format(e.msg))
-
-
-
-
 
 
 def append_order_report_to_csv(report, rutaORH):
