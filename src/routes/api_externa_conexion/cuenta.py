@@ -51,9 +51,15 @@ def cuentas():
         flash('Loggin Incorrect')    
         return render_template("errorLogueo.html" ) 
      ##~######datos de la cuenta
-def obtenerSaldoCuenta(cuenta):
+
+def obtenerSaldoCuenta(objetoCuentaConexion):
   # print("_______________obtenerSaldoCuenta__________________")
-  
+   objetoCuentaConexion.tipoEndPointWs = ''
+   pyRofex_inicializado = objetoCuentaConexion.inicializar_pyrofex()
+   resumenCuenta = pyRofex_inicializado.get_account_report(account=cuenta.cuenta)
+   return resumenCuenta["accountData"]["availableToCollateral"]
+##################obtenerSaldoCuenta#######VIEJO QUEDARA OBSOLETO########
+def obtenerSaldoCuenta(cuenta):  
    resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
    return resumenCuenta["accountData"]["availableToCollateral"]
 
@@ -116,6 +122,7 @@ def cuenta_detalle_cuenta():
                   print(f" dentro del if id_user: {id_usuario}, cuenta: {accountCuenta}")
               
                   pyRofex_inicializado = conexion_pyrofex.inicializar_pyrofex()
+                 # respuesta_cuenta = conexion_pyrofex.pyRofexConex.get_account_report(account=conexion_pyrofex.cuenta, environment=environments)
                   respuesta_cuenta = pyRofex_inicializado.get_account_report(account=conexion_pyrofex.cuenta, environment=environments)
                   reporte = respuesta_cuenta['accountData']
                   if reporte!=None:

@@ -20,9 +20,12 @@ class ConexionPyRofex(db.Model):
     userCuentaBroker = Column(String(500), nullable=True)
     passwordCuentaBroker = Column(String(500), nullable=True)
     selector =  Column(String(500), nullable=True)
+    tipoEndPointApi = Column(String(500), nullable=True)
+    tipoEndPointWs = Column(String(500), nullable=True)
+    pyRofexConex = None
    
     
-    def __init__(self, id_user: str, cuenta: str, userCuentaBroker: str, passwordCuentaBroker: str, api_url: str, ws_url: str, selector):
+    def __init__(self, id_user: str, cuenta: str, userCuentaBroker: str, passwordCuentaBroker: str, api_url: str, ws_url: str, selector, tipoEndPointApi,tipoEndPointWs):
         self.id_user = id_user
         self.cuenta = cuenta
         self.userCuentaBroker = userCuentaBroker
@@ -30,7 +33,10 @@ class ConexionPyRofex(db.Model):
         self.api_url = api_url
         self.ws_url = ws_url
         self.selector = selector
-        self.inicializar_pyrofex()  # Llamamos al método para inicializar pyRofex
+        self.tipoEndPointApi = tipoEndPointApi
+        self.tipoEndPointWs = tipoEndPointWs
+        
+      #  self.inicializar_pyrofex()  # Llamamos al método para inicializar pyRofex
 
     def inicializar_pyrofex(self):
         pyRofexInicializada = pyRofex  # Importamos pyRofex aquí
@@ -40,10 +46,20 @@ class ConexionPyRofex(db.Model):
              environments = pyRofexInicializada.Environment.LIVE
       
        
-        pyRofexInicializada._set_environment_parameter("url", self.api_url, environments)
-        pyRofexInicializada._set_environment_parameter("ws", self.ws_url, environments) 
-        pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
-        pyRofexInicializada.initialize(user=self.userCuentaBroker, password=self.passwordCuentaBroker, account=self.cuenta, environment=environments)
-        return pyRofexInicializada
-               
+        try:
+            if self.tipoEndPointWs == '':
+                pyRofexInicializada._set_environment_parameter(self.tipoEndPointApi, self.api_url, environments)
+            else:
+                pyRofexInicializada._set_environment_parameter(self.tipoEndPointApi, self.api_url, environments)
+                pyRofexInicializada._set_environment_parameter(self.tipoEndPointWs, self.ws_url, environments) 
+                
+            #    pyRofexInicializada._set_environment_parameter('url','https://api.bull.xoms.com.ar/', environments)
+            #    pyRofexInicializada._set_environment_parameter('ws','wss://api.bull.xoms.com.ar/', environments) 
+            pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+            pyRofexInicializada.initialize(user=self.userCuentaBroker, password=self.passwordCuentaBroker, account=self.cuenta, environment=environments)
+            self.pyRofexConex = pyRofexInicializada
+            return pyRofexInicializada
+        except Exception as e:
+            # Manejar el error de inicialización de PyRofex según tu lógica de aplicación
+            print("Error durante la inicialización de PyRofex:", e)
                 

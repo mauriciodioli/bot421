@@ -3,6 +3,7 @@ from ast import Return
 from http.client import UnimplementedFileMode
 
 import json
+import copy
 from datetime import datetime
 from re import template
 from socket import socket
@@ -329,6 +330,8 @@ def loginExtCuentaSeleccionadaBroker():
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
                 environments = pyRofexInicializada.Environment.REMARKET
+                api_url1 = ''
+                ws_url1 = ''
               #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
               #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
               #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environments)
@@ -377,11 +380,13 @@ def loginExtCuentaSeleccionadaBroker():
                     passwordCuentaBroker=password,
                     api_url=api_url1,
                     ws_url=ws_url1,
-                    selector=selector
+                    selector=selector,
+                    tipoEndPointApi = 'url',
+                    tipoEndPointWs = ''
                 )
                 # Inicializar pyRofexInicializada
-               
-               
+                conexion_pyrofex.tipoEndPointWs = 'ws'
+                #conexion_pyrofex.inicializar_pyrofex()
                 ConexionesBroker[(user_id, accountCuenta, environments)] = conexion_pyrofex
             
             conexion(app,pyRofexInicializada)

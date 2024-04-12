@@ -38,8 +38,13 @@ def websocketConexionShedule(app,Cuenta,cuentaid,idUser,correo_electronico,selec
         
         environments = pyRofexInicializada.Environment.LIVE
         
-        pyRofexInicializada._set_environment_parameter("url",get.api_url,environments)
-        pyRofexInicializada._set_environment_parameter("ws",get.ws_url,environments) 
+        endPoint = get.inicializar_variables(cuenta.accountCuenta)
+        #app.logger.info(endPoint)
+        api_url = endPoint[0]
+        ws_url = endPoint[1]
+        
+        pyRofexInicializada._set_environment_parameter("url",api_url,environments)
+        pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
         pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
       
         pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
