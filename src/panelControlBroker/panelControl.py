@@ -125,17 +125,17 @@ def llenar_diccionario_cada_15_segundos_sheet(pais):
         return f"Hilo para {pais} ya está en funcionamiento"
 
     # Si no hay un hilo iniciado para este país, lo inicia
-    hilo = threading.Thread(target=ejecutar_en_hilo, args=(pais,))
-    get.hilo_iniciado_panel_control[pais] = hilo
-    hilo.start()
+    #hilo = threading.Thread(target=ejecutar_en_hilo, args=(pais,))
+    #get.hilo_iniciado_panel_control[pais] = hilo
+    #hilo.start()
 
     return f"Hilo iniciado para {pais}"
 
 def ejecutar_en_hilo(pais):
     while True:
-        time.sleep(120)
+        #time.sleep(120)
         print("ENTRA A THREAD Y LEE EL SHEET")
-        enviar_leer_sheet(pais)
+        #enviar_leer_sheet(pais)
         
 
 def enviar_leer_sheet(pais):

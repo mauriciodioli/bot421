@@ -78,8 +78,8 @@ diccionario_global_sheet_intercambio = {}
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
 ultima_entrada = time.time()
 # Configurar las URLs de la instancia de BMB
-api_url = "https://api.bull.xoms.com.ar/"
-ws_url = "wss://api.bull.xoms.com.ar/"
+api_url = "https://api.cocos.xoms.com.ar/"
+ws_url = "wss://api.cocos.xoms.com.ar/"
 
 
 

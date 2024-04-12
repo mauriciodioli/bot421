@@ -16,6 +16,8 @@ from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
 from strategies.Experimental.arbitraje_001 import arbitraje_001
+from strategies.Experimental.arbitrador_001 import arbitrador_001
+
 from strategies.utils.testWS import testWS
 
 from tokens.token import token
@@ -116,6 +118,8 @@ app.register_blueprint(ficha)
 app.register_blueprint(trazaFicha)
 app.register_blueprint(fichas)
 app.register_blueprint(arbitraje_001)
+app.register_blueprint(arbitrador_001)
+
 
 print(DATABASE_CONNECTION_URI)
 app.secret_key = '*0984632'
