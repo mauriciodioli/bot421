@@ -36,9 +36,9 @@ from tokens.token import generar_token
 fichas = Blueprint('fichas',__name__)
 
 
-def refrescoValorActualCuentaFichas(user_id):    
+def refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta):    
       try:
-            repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+            repuesta_cuenta = pyRofexInicializada.get_account_report(account=accountCuenta,environment=accountCuenta)
             if repuesta_cuenta and 'accountData' in repuesta_cuenta:
                 reporte = repuesta_cuenta['accountData']
                 available_to_collateral = reporte['availableToCollateral']
