@@ -1,13 +1,15 @@
 from utils.common import Marshmallow, db
 from ast import Return
 from http.client import UnimplementedFileMode
-
+import websockets
 import json
 import copy
 from datetime import datetime
 from re import template
 from socket import socket
 import pyRofex
+
+import importlib
 # datetime.date.today()
 import websocket
 import requests
@@ -15,6 +17,7 @@ import jwt
 import re
 import os
 import routes.api_externa_conexion.validaInstrumentos as valida
+import asyncio
 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 from fichasTokens.fichas import refrescoValorActualCuentaFichas
@@ -26,6 +29,9 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.brokers import Broker
 from models.ConexionPyRofex import ConexionPyRofex
+from pyRofex.clients.rest_rfx import RestClient
+from pyRofex.clients.websocket_rfx import WebSocketClient
+from pyRofex.components.globals import environment_config
 
 import automatizacion.programar_trigger as trigger
 import automatizacion.shedule_triggers as shedule_triggers
@@ -81,6 +87,7 @@ VariableParaSaldoCta = 0
 pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
+
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {}
 diccionario_global_sheet = {}
@@ -95,6 +102,26 @@ detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detene
 ContenidoSheet_list = None
 api_url = None
 ws_url = None
+api_url_veta = None
+ws_url_veta = None
+envNuevo =  {"url": "https://api.primary.com.ar/",
+        "ws": "wss://api.primary.com.ar/",
+        "ssl": True,
+        "proxies": None,
+        "rest_client": None,
+        "ws_client": None,
+        "user": None,
+        "password": None,
+        "account": None,
+        "initialized": False,
+        "proprietary": "api",
+        "heartbeat": 30,
+        "ssl_opt": None }
+
+
+  
+    # Si la cuenta no existe en el diccionario o si ninguna entrada tiene la cuenta accountCuenta, entra en el if
+          
 
 # Calcula la hora de inicio del día siguiente a las 9:00 AM
 #hora_inicio_manana = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=1), datetime.time(9, 0))
@@ -300,8 +327,11 @@ def loginExtCuentaSeleccionadaBroker():
         accountCuenta = request.form.get('cuenta')
         access_token = request.form.get('access_token')       
         src_directory1 = os.getcwd()#busca directorio raiz src o app 
-        logs_file_path = os.path.join(src_directory1, 'logs.log')     
-        pyRofexInicializada = pyRofex
+        logs_file_path = os.path.join(src_directory1, 'logs.log') 
+        global api_url, ws_url  
+       
+            
+       
        # logs_file_path = os.path.join(src_directory, 'logs.log')
         # Abrir el archivo en modo de escritura para borrar su contenido
 #        with open(logs_file_path, 'w') as f:
@@ -330,8 +360,8 @@ def loginExtCuentaSeleccionadaBroker():
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
                 environments = pyRofexInicializada.Environment.REMARKET
-                api_url1 = ''
-                ws_url1 = ''
+                api_url = ''
+                ws_url = ''
               #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
               #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
               #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environments)
@@ -339,90 +369,166 @@ def loginExtCuentaSeleccionadaBroker():
               #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
                                          
             else:
-                # Configurar para el entorno LIVE
-             
-                environments = pyRofexInicializada.Environment.LIVE
                 
+                
+                # Configurar para el entorno LIVE
+               # accountCuenta = '10861'
                 endPoint = inicializar_variables(accountCuenta)
-                app.logger.info(endPoint)
-                global api_url, ws_url    
+               # app.logger.info(endPoint)
+              
                 api_url = endPoint[0]
                 ws_url = endPoint[1]
-                api_url1 = api_url
-                ws_url1 = ws_url
                 
-                session['api_url']=endPoint[0]
-                session['ws_url']=endPoint[1]
+                accountCuentaVeta = '44593'
+                endPoint_veta = inicializar_variables(accountCuentaVeta)
+               # app.logger.info(endPoint_veta)
+              
+                api_url_veta = endPoint_veta[0]
+                ws_url_veta = endPoint_veta[1]
+                global ConexionesBroker
                 
-                pyRofexInicializada._set_environment_parameter("url",api_url,environments)
-                pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
-                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
-               
+                user_veta ='23246212899'
+                password_veta = 'EceQE5lU_'
                 
+                if access_token:
+                    user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                           
                     
-            print(f"Está enviando a {environments}")
-            if access_token:
-                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
-            
-            pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-            
-            # Almacenar la conexión en el diccionario global
-            global ConexionesBroker
-         
-             # Verificar si el usuario ya tiene una conexión almacenada en ConexionesBroker
-            if (user_id, accountCuenta) not in ConexionesBroker:
-                # Si no existe, crear una nueva conexión y almacenarla
-                conexion_pyrofex = ConexionPyRofex(
-                    id_user=user_id,                    
-                    cuenta=accountCuenta,
-                    userCuentaBroker=user,
-                    passwordCuentaBroker=password,
-                    api_url=api_url1,
-                    ws_url=ws_url1,
-                    selector=selector,
-                    tipoEndPointApi = 'url',
-                    tipoEndPointWs = ''
-                )
-                # Inicializar pyRofexInicializada
-                conexion_pyrofex.tipoEndPointWs = 'ws'
-                #conexion_pyrofex.inicializar_pyrofex()
-                ConexionesBroker[(user_id, accountCuenta, environments)] = conexion_pyrofex
-            
-            conexion(app,pyRofexInicializada)
-            #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-            
-            refrescoValorActualCuentaFichas(user_id)
-           
-           
-            print(f"Está logueado en {selector} en {environments}")
-             # Se inicia el programa principal en un hilo separado
-           # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
-            #hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
-             #                     args=('1', app, "12:00", "17:00"))
+                    # Buscar "bull" en la cadena
+                    
 
-            #hilo_principal.start()
+                      
+                # Verificar si la cuenta con el valor accountCuenta no existe en el diccionario
+                    if not ConexionesBroker or all(entry['cuenta'] != accountCuenta for entry in ConexionesBroker.values()):
+                        
+                            pyRofexInicializada = pyRofex
+                            ambiente = copy.deepcopy(envNuevo)
+                            pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
+                            
+                            if selector == 'simulado':
+                                environments = pyRofexInicializada.Environment.REMARKET
+                            else:
+                                environments = accountCuenta
+                                # environments = pyRofexInicializada.Environment.LIVE
+                            
+                            pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
+                            pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
+                            pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
+                            pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                            resultado1 =  pyRofexInicializada.get_account_report(account=accountCuenta, environment=environments)
+                            restClientEnv = RestClient(environments)
+                            wsClientEnv = WebSocketClient(environments)
+                           
+                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'restClientEnv':restClientEnv,'wsClientEnv':wsClientEnv,'identificador': False}
+                           
+                                    
+                          
+                          
+                           
+                                    
+                    # Buscar "veta" en la cadena
+                    #if re.search(r'veta', endPoint_veta[1]):
+                       # print("Se encontró 'veta' en la URL.")
+                       # prefijo = "pyRofexInicializada_veta_" + accountCuentaVeta
+                        # Verificar si la cuenta con el valor accountCuenta no existe en el diccionario
+                       # if not ConexionesBroker or all(entry['cuenta'] != accountCuentaVeta for entry in ConexionesBroker.values()):
+                          
+                        
+                       #     pyRofex_veta = pyRofex
+                        
+                       #     pyRofex_veta._add_environment_config(enumCuenta=accountCuentaVeta,env=env)
+                           
+                      #      if selector == 'simulado':
+                      #          environmentsVeta = pyRofex_veta.Environment.REMARKET
+                      #      else:
+                      #          environmentsVeta = accountCuentaVeta
+                           
+                      #      pyRofex_veta._set_environment_parameter("url", api_url_veta, environmentsVeta)                          
+                          #  pyRofex_veta._set_environment_parameter("ws", ws_url_veta, environmentsVeta)                            
+                      #      pyRofex_veta._set_environment_parameter("proprietary", "PBCP", environmentsVeta)                           
+                      #      pyRofex_veta.initialize(user=user_veta, password=password_veta, account=accountCuentaVeta, environment=environmentsVeta)
+                      #      resultado =  pyRofex_bull.get_account_report(account=accountCuenta,environment=environmentsBull)
+                      #      resultado1 =  pyRofex_veta.get_account_report(account=accountCuentaVeta,environment=environmentsVeta)
+                            
+                            
+                       #     ConexionesBroker[accountCuentaVeta] = {'pyRofex': pyRofex_veta, 'cuenta': accountCuentaVeta, 'identificador': False}
+                       #     ConexionesBroker[accountCuentaVeta]['identificador'] = True
+                        
+                     
+                    for elemento in ConexionesBroker:
+                        print("Variable agregada:", elemento)
+                        cuenta = ConexionesBroker[elemento]['cuenta']
+                   
+                        if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
+                           
+                            #variable=connect_to_pyrofex(selector, user, accountCuenta, password, 'url', 'ws', api_url, ws_url)
+                    
+                # pyRofexInicializada._set_environment_parameter("url",api_url,environments)
+                # pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
+                # pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+        # pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
+            
+                    
+                            # conexion_encontrada = buscar_conexion(user, accountCuenta)
+                
+                
+                    # Recuperar la instancia de pyRofexInicializada desde la conexión              
+                                
+    # Y así sucesivamente para cada conexión que desees establecer
+
+                            conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
+                
+                            refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
             
             
+                            print(f"Está logueado en {selector} en {environments}")
+                            ConexionesBroker[accountCuenta]['identificador'] = True
+                        else:                  
+                                            
+                            pass
+                       
+                # Se inicia el programa principal en un hilo separado
+            # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
+                #hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
+                #                     args=('1', app, "12:00", "17:00"))
+
+                #hilo_principal.start()
+                
+            
+    
+            
+# Redirige a la página de origen según el valor de origin_page
+                if origin_page == 'login':
+                    return render_template('home.html', cuenta=[accountCuenta, user, selector])
+                elif origin_page == 'cuentasDeUsusario':
+                    return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
+                else:
+                    # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
+                    return render_template('registrarCuentaBroker.html')
+
         except jwt.ExpiredSignatureError:
             flash("El token ha expirado")
         except jwt.InvalidTokenError:
             flash("El token es inválido")
-        except Exception as e:
-            print('Error inesperado:', e)
-            flash('No se pudo iniciar sesión')
-            return render_template('errorLogueo.html')
-            
- # Redirige a la página de origen según el valor de origin_page
-        if origin_page == 'login':
-            return render_template('home.html', cuenta=[accountCuenta, user, selector])
-        elif origin_page == 'cuentasDeUsusario':
-            return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-        else:
-            # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
-            return render_template('registrarCuentaBroker.html')
+      #  except Exception as e:
+      #      print('Error inesperado:', e)
+      #      flash('No se pudo iniciar sesión')
+      #      return render_template('errorLogueo.html')
 
-    
+
+
+
+
+def buscar_conexion(client_id, cuenta):
+    for key, websocket in ConexionesBroker.items():
+        print(f"Comparando clave: (client_id={key[0]}, cuenta={key[1]})")  # Print para mostrar la clave que está siendo comparada
+        if key[:2] == (client_id, cuenta):
+            print(f"Comparando clave: (client_id={key[0]}, cuenta={key[1]})")
+            resumenCuenta = websocket.get_account_report(account=cuenta)
+            return websocket  # Retorna la conexión si se encuentra
+
+    return None  # Retorna None si no se encuentra ninguna conexión
 
 def inicializar_variables(accountCuenta):
     valores = []  # Inicializar la lista

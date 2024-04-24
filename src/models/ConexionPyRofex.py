@@ -13,28 +13,22 @@ class ConexionPyRofex(db.Model):
     __tablename__ = 'conexiones_pyrofex'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    api_url = Column(String(120), unique=True, nullable=True)
-    ws_url = Column(String(120), unique=True, nullable=True)
-    id_user = Column(String(120), unique=True, nullable=True)
-    cuenta = Column(String(500), nullable=True)
-    userCuentaBroker = Column(String(500), nullable=True)
-    passwordCuentaBroker = Column(String(500), nullable=True)
-    selector =  Column(String(500), nullable=True)
-    tipoEndPointApi = Column(String(500), nullable=True)
-    tipoEndPointWs = Column(String(500), nullable=True)
-    pyRofexConex = None
+    url = Column(String(120), unique=True, nullable=True)
+    ws = Column(String(120), unique=True, nullable=True)   
+    user = Column(String(500), nullable=True)
+    password = Column(String(500), nullable=True)
+    account = Column(String(500), nullable=True)
+   
    
     
-    def __init__(self, id_user: str, cuenta: str, userCuentaBroker: str, passwordCuentaBroker: str, api_url: str, ws_url: str, selector, tipoEndPointApi,tipoEndPointWs):
-        self.id_user = id_user
-        self.cuenta = cuenta
-        self.userCuentaBroker = userCuentaBroker
-        self.passwordCuentaBroker = passwordCuentaBroker
-        self.api_url = api_url
-        self.ws_url = ws_url
-        self.selector = selector
-        self.tipoEndPointApi = tipoEndPointApi
-        self.tipoEndPointWs = tipoEndPointWs
+    def __init__(self,account,user,password,url,ws ):
+       
+        self.account = account
+        self.user = user,
+        self.password = password
+        self.url = url
+        self.ws = ws
+      
         
       #  self.inicializar_pyrofex()  # Llamamos al método para inicializar pyRofex
 
@@ -58,7 +52,7 @@ class ConexionPyRofex(db.Model):
             pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
             pyRofexInicializada.initialize(user=self.userCuentaBroker, password=self.passwordCuentaBroker, account=self.cuenta, environment=environments)
             self.pyRofexConex = pyRofexInicializada
-            return pyRofexInicializada
+            return pyRofexInicializada,environments
         except Exception as e:
             # Manejar el error de inicialización de PyRofex según tu lógica de aplicación
             print("Error durante la inicialización de PyRofex:", e)
