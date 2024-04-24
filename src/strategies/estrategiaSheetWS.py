@@ -3,6 +3,7 @@ import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
+from pyRofex.clients.websocket_rfx import WebSocketClient
 import os
 import re
 import jwt
@@ -100,7 +101,7 @@ def estrategia_002():
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
-def SuscripcionDeSheet(app,pyRofexInicializada):
+def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
     # Trae los instrumentos para suscribirte
    
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
@@ -143,32 +144,39 @@ def SuscripcionDeSheet(app,pyRofexInicializada):
    
     #for elemento in resultado_lista:
     #    print(elemento)
-    
-    repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments()
-    
-    listado_instrumentos = repuesta_listado_instrumento['instruments']   
-    #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
-   
-    tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-    
-    # Validamos existencia
-    instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
+    for elemento in get.ConexionesBroker:
+        cuenta = get.ConexionesBroker[elemento]['cuenta']
+        if cuenta == accountCuenta:  
+            
+            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(cuenta)
     
     
-    
-    #### aqui define el MarketDataEntry
-    entries = [pyRofexInicializada.MarketDataEntry.BIDS,
-               pyRofexInicializada.MarketDataEntry.OFFERS,
-               pyRofexInicializada.MarketDataEntry.LAST]
-    
-      
-    #### aqui se subscribe   **55
-    mensaje = pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3)
-   
-    #print("instrumento_suscriptio",mensaje)
-    datos = ContenidoSheet_list #COMENTADO POR SHEET
-    
-   
+            listado_instrumentos = repuesta_listado_instrumento['instruments']   
+            #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
+        
+            tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+            
+            # Validamos existencia
+            instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
+            
+            
+            
+            #### aqui define el MarketDataEntry
+            entries = [pyRofexInicializada.MarketDataEntry.BIDS,
+                        pyRofexInicializada.MarketDataEntry.OFFERS,
+                        pyRofexInicializada.MarketDataEntry.LAST]
+            merdado_id = pyRofexInicializada.Market.ROFEX
+            mensaje = pyRofexInicializada.market_data_subscription(
+                                        tickers=repuesta_listado_instrumento,
+                                        entries=entries,                                       
+                                        depth=3,
+                                        handler=None, environment=cuenta
+                                    )
+        
+            #print("instrumento_suscriptio",mensaje)
+            datos = ContenidoSheet_list #COMENTADO POR SHEET
+            
+        
     #return instrumentos_existentes
     return [ContenidoSheet_list,instrumentos_existentes]
 

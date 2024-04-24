@@ -33,7 +33,7 @@ import sys
 
 
 
-estrategiaSheet_01 = Blueprint('estrategiaSheet_01',__name__)
+estrategiaSheet_02 = Blueprint('estrategiaSheet_02',__name__)
 
 
 class States(enum.Enum):
@@ -52,9 +52,10 @@ def buscar_conexion(client_id, cuenta):
             resumenCuenta = websocket.get_account_report(account=cuenta)
             return websocket  # Retorna la conexión si se encuentra
 
-@estrategiaSheet_01.route('/estrategia-003/', methods=['POST'])
-def estrategia_003():
-    print('00000000000000000000000estrategia-00300000000000000000000000000')
+
+@estrategiaSheet_02.route('/estrategia-004/', methods=['POST'])
+def estrategia_004():
+    print('00000000000000000000000estrategia-00400000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -85,11 +86,15 @@ def estrategia_003():
           
             if access_token:
                         user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                        
-                       
+                        conexion_encontrada = get.globalPrueba[CuentaOperar]
+                        reporte= conexion_encontrada.get_account_report(account=CuentaOperar)
+                      # No es necesario usar 'get' si globalPrueba es una variable global
+                        primer_valor = None
+
+                        # Iterar sobre los elementos del diccionario globalPrueba
                         for key, value in get.globalPrueba.items():
                             print(f"Clave: {key}, Valor: {value}")
-                            reporte=value.get_account_report(account=CuentaOperar)
+                           
                         buscar_conexion(usuario, CuentaOperar)
                         for key, conexion_pyrofex in get.ConexionesBroker.items():
                 
@@ -110,18 +115,17 @@ def estrategia_003():
                             # pyRofexInicializada1._set_environment_parameter('url','https://api.bull.xoms.com.ar/', environments)
                             # pyRofexInicializada1._set_environment_parameter('ws','wss://api.bull.xoms.com.ar/', environments) 
                             # pyRofexInicializada1._set_environment_parameter("proprietary", "PBCP", environments)
-                                
+                             
                                 user = conexion_pyrofex.userCuentaBroker
                                 password = conexion_pyrofex.passwordCuentaBroker
                                 accountCuenta = conexion_pyrofex.cuenta
                                 objetoCuentaConexion =   conexion_pyrofex.cuenta
-                                
                                 pyRofexInicializada, environments = conexion_pyrofex.inicializar_pyrofex()
                                 pyRofexInicializadaObjeto = pyRofexInicializada
                                 app = current_app._get_current_object() 
                                 conexion(app,pyRofexInicializada) 
                                # pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-                            
+                                 
                                 CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada, conexion_pyrofex.cuenta, conexion_pyrofex.userCuentaBroker,correo_electronico)
                                 carga_operaciones(get.ContenidoSheet_list[0], conexion_pyrofex.cuenta ,conexion_pyrofex.userCuentaBroker,correo_electronico,get.ContenidoSheet_list[1])
                                 pyRofexInicializada.order_report_subscription(account=accountCuenta , snapshot=True,handler = market_data_handler_estrategia_003)
@@ -340,7 +344,7 @@ def market_data_handler_estrategia_003(message):
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
           #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
  
-@estrategiaSheet_01.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@estrategiaSheet_02.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -359,7 +363,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheet_01.route('/botonPanico/', methods = ['POST']) 
+@estrategiaSheet_02.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)

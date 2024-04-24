@@ -52,11 +52,10 @@ def cuentas():
         return render_template("errorLogueo.html" ) 
      ##~######datos de la cuenta
 
-def obtenerSaldoCuenta(objetoCuentaConexion):
+def obtenerSaldoCuentaConObjeto(pyRofexInicializadaObjeto,objetoCuentaConexion):
   # print("_______________obtenerSaldoCuenta__________________")
-   objetoCuentaConexion.tipoEndPointWs = ''
-   pyRofex_inicializado = objetoCuentaConexion.inicializar_pyrofex()
-   resumenCuenta = pyRofex_inicializado.get_account_report(account=cuenta.cuenta)
+  
+   resumenCuenta = pyRofexInicializadaObjeto.get_account_report(account=objetoCuentaConexion)
    return resumenCuenta["accountData"]["availableToCollateral"]
 ##################obtenerSaldoCuenta#######VIEJO QUEDARA OBSOLETO########
 def obtenerSaldoCuenta(cuenta):  
@@ -88,8 +87,8 @@ def cuenta_posicion_cuenta():
                if id_usuario == user_id and accountCuenta == cuenta:
                
                   print(f" dentro del if id_user: {id_usuario}, cuenta: {accountCuenta}")
-              
-                  pyRofex_inicializado = conexion_pyrofex.inicializar_pyrofex()
+                  conexion_pyrofex.tipoEndPointWs = ''
+                  pyRofex_inicializado, environments = conexion_pyrofex.inicializar_pyrofex()
                   respuesta_cuenta = pyRofex_inicializado.get_account_position(account=conexion_pyrofex.cuenta, environment=environments)
                   reporte = respuesta_cuenta['positions']  
                   if reporte!=None:                       
@@ -112,23 +111,22 @@ def cuenta_detalle_cuenta():
             
         if access_token:
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-      
-            for key, conexion_pyrofex in get.ConexionesBroker.items():
-   
-               id_usuario, accountCuenta, environments = key
+            for elemento in get.ConexionesBroker:
+                print("Variable agregada:", elemento)
+                accountCuenta = get.ConexionesBroker[elemento]['cuenta']
+                
              #  print(f"id_user: {id_usuario}, cuenta: {accountCuenta}, environments: {environments}")
-               if id_usuario == user_id and accountCuenta == cuenta:
+                if accountCuenta == cuenta:
                
-                  print(f" dentro del if id_user: {id_usuario}, cuenta: {accountCuenta}")
-              
-                  pyRofex_inicializado = conexion_pyrofex.inicializar_pyrofex()
-                 # respuesta_cuenta = conexion_pyrofex.pyRofexConex.get_account_report(account=conexion_pyrofex.cuenta, environment=environments)
-                  respuesta_cuenta = pyRofex_inicializado.get_account_report(account=conexion_pyrofex.cuenta, environment=environments)
+                  print(f" dentro del if id_user: {user_id}, cuenta: {accountCuenta}")
+               
+                  respuesta_cuenta = get.ConexionesBroker[elemento]['pyRofex'].get_account_report(account=accountCuenta, environment=accountCuenta)
                   reporte = respuesta_cuenta['accountData']
+                  
                   if reporte!=None:
                      available_to_collateral = reporte['availableToCollateral']
                      portfolio = reporte['portfolio']
-        
+    #    return render_template("cuentas/cuentaDetalles.html")
         return render_template("cuentas/cuentaDetalles.html",datos = reporte)
      
    except:  

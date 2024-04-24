@@ -21,6 +21,7 @@ from models.creaTablas import crea_tablas_DB
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 from strategies.estrategiaSheet_01 import estrategiaSheet_01
+from strategies.estrategiaSheet_02 import estrategiaSheet_02
 from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
@@ -156,6 +157,7 @@ app.register_blueprint(suscripciones)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(estrategiaSheet_01)
+app.register_blueprint(estrategiaSheet_02)
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
