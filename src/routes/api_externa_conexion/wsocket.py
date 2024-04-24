@@ -53,11 +53,12 @@ def websocketConexionShedule(app,Cuenta,cuentaid,idUser,correo_electronico,selec
 
 def wsocketConexion(app,pyRofexInicializada,accountCuenta):
    
-   get.ContenidoSheet_list = shWS.SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta)  # <<-- aca se suscribe al mkt data
-  # get.pyRofexInicializada.order_report_subscription()
+   # get.pyRofexInicializada.order_report_subscription()
   # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
    
-   pyRofexWebSocket = pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler,environment=accountCuenta)
+   pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler,environment=accountCuenta)
+   get.ContenidoSheet_list = shWS.SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta)  # <<-- aca se suscribe al mkt data
+ 
    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
  
