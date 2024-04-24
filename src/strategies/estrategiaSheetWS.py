@@ -39,6 +39,11 @@ class States(enum.Enum):
     WAITING_CANCEL = 1
     WAITING_ORDERS = 2
 
+pyRofexInicializada = None
+cuentaGlobal = None
+VariableParaSaldoCta = None
+VariableParaTiemposMDHandler = None
+
 
 
 
@@ -62,6 +67,7 @@ def estrategia_002():
             correo_electronico = data['correo_electronico']
             
             get.accountLocalStorage = data['cuenta']
+            
             #get.accountLocalStorage = "20225833983"
             
             tiempoInicio = data['tiempoInicio']
@@ -69,13 +75,22 @@ def estrategia_002():
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
-           
-           
-            CargOperacionAnterioDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
-            carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
-            get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
-            get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia)
-            get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler)
+            for elemento in get.ConexionesBroker:
+                print("Variable agregada:", elemento)
+                accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
+             
+                if accountCuenta ==  data['cuenta']:              
+                
+                  global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta,VariableParaTiemposMDHandler
+   
+                  cuentaGlobal = data['cuenta']
+                  pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
+                  cuentaGlobal = accountCuenta
+            CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
+            carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1])
+            pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
+            pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
+            pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
          
        #     pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
        #                             market_data_handler=market_data_handler_estrategia,
@@ -159,21 +174,22 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
             # Validamos existencia
             instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
             
-            
+            #instruments = ["DLR/OCT24", "DLR/OCT24"]
             
             #### aqui define el MarketDataEntry
             entries = [pyRofexInicializada.MarketDataEntry.BIDS,
                         pyRofexInicializada.MarketDataEntry.OFFERS,
                         pyRofexInicializada.MarketDataEntry.LAST]
             merdado_id = pyRofexInicializada.Market.ROFEX
-            mensaje = pyRofexInicializada.market_data_subscription(
-                                        tickers=repuesta_listado_instrumento,
+            pyRofexInicializada.market_data_subscription(
+                                        tickers=instrumentos_existentes,
                                         entries=entries,                                       
                                         depth=3,
-                                        handler=None, environment=cuenta
+                                        handler=None, 
+                                        environment=cuenta
                                     )
         
-            #print("instrumento_suscriptio",mensaje)
+           
             datos = ContenidoSheet_list #COMENTADO POR SHEET
             
         
@@ -270,8 +286,8 @@ def market_data_handler_estrategia(message):
 
 
         if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 10000: # 10 segundos
-            get.VariableParaSaldoCta=cuenta.obtenerSaldoCuenta( get.accountLocalStorage )# cada mas de 5 segundos
-            get.VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
+            VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
+            VariableParaTiemposMDHandler = message["timestamp"]# milisegundos
         
         # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
         # para cumplir con el evento de mercado market data
@@ -763,9 +779,10 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
-def CargOperacionAnterioDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
+def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
+   accountCuenta = account
    try:        
-        repuesta_operacion = get.pyRofexInicializada.get_account_position()
+        repuesta_operacion = pyRofexInicializada.get_account_position(account=account,environment=account)
      
         reporte = repuesta_operacion['positions']
         
@@ -933,6 +950,7 @@ def exception_handler(e):
 
 
 
+    
 
 
 
