@@ -80,7 +80,7 @@ SPREADSHEET_ID_PRUEBA='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de
 SPREADSHEET_ID_PRODUCCION='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
 SPREADSHEET_ID_USA='1sxbKe5pjF3BsGgUCUzBDGmI-zV5hWbd6nzJwRFw3yyU'#de produccion USA
 
-VariableParaTiemposMDHandler = 0
+
 accountLocalStorage = ""
 VariableParaBotonPanico = 0
 VariableParaSaldoCta = 0
@@ -88,8 +88,7 @@ pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
 
-diccionario_global_operaciones = {}
-diccionario_operaciones_enviadas = {}
+
 diccionario_global_sheet = {}
 diccionario_global_sheet_intercambio = {}
 ya_ejecutado_hilo_panelControl = False
@@ -361,15 +360,8 @@ def loginExtCuentaSeleccionadaBroker():
                 # Configurar para el entorno de simulación
                 environments = pyRofexInicializada.Environment.REMARKET
                 api_url = ''
-                ws_url = ''
-              #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
-              #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
-              #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environments)
-              #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environments) 
-              #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
-                                         
+                ws_url = ''          
             else:
-                
                 
                 # Configurar para el entorno LIVE
                # accountCuenta = '10861'
