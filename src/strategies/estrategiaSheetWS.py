@@ -4,7 +4,7 @@ from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
 from pyRofex.clients.websocket_rfx import WebSocketClient
-import os
+
 import re
 import jwt
 import csv
@@ -116,138 +116,6 @@ def estrategia_002():
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
-def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
-    # Trae los instrumentos para suscribirte
-   
-    ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
-    
-    ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
-    #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
-    ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
-    ContenidoSheet_list = list(ContenidoSheet)
-
-    
-    ContenidoSheetDb = get_instrumento_para_suscripcion_db(app)
-    ContenidoSheet_list_db = list(ContenidoSheetDb)
-    
-    
-    
-  
-    longitudLista = len(ContenidoSheet_list)
-    ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
-    ContenidoSheet_list_solo_symbol_db = cargaSymbolParaValidarDb(ContenidoSheet_list_db)
-    
-   
-   # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
-   # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
-   # for item in ContenidoSheet_list_solo_symbol:
-   #     print(item)
-
-  # Convertir listas a conjuntos para eliminar duplicados
-    set_contenido_ws = set(ContenidoSheet_list_solo_symbol) #comentado parte de sheet
-    set_contenido_db = set(ContenidoSheet_list_solo_symbol_db)
-    set_contenido_json = set(ContenidoJsonDb_list_db)
-
-    # Combinar conjuntos y eliminar duplicados
-    resultado_set = set_contenido_db.union(set_contenido_json,set_contenido_ws)
-    
-    # Convertir conjunto resultante en una lista
-    resultado_lista = list(resultado_set)
-    
-    # Ahora 'resultado_lista' contiene todos los instrumentos sin duplicados
-
-   
-    #for elemento in resultado_lista:
-    #    print(elemento)
-    for elemento in get.ConexionesBroker:
-        cuenta = get.ConexionesBroker[elemento]['cuenta']
-        if cuenta == accountCuenta:  
-            
-            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(cuenta)
-    
-    
-            listado_instrumentos = repuesta_listado_instrumento['instruments']   
-            #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
-        
-            tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-            
-            # Validamos existencia
-            instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
-            
-            #instruments = ["DLR/OCT24", "DLR/OCT24"]
-            
-            #### aqui define el MarketDataEntry
-            entries = [pyRofexInicializada.MarketDataEntry.BIDS,
-                        pyRofexInicializada.MarketDataEntry.OFFERS,
-                        pyRofexInicializada.MarketDataEntry.LAST]
-            merdado_id = pyRofexInicializada.Market.ROFEX
-            pyRofexInicializada.market_data_subscription(
-                                        tickers=instrumentos_existentes,
-                                        entries=entries,                                       
-                                        depth=3,
-                                        handler=None, 
-                                        environment=cuenta
-                                    )
-        
-           
-            datos = ContenidoSheet_list #COMENTADO POR SHEET
-            
-        
-    #return instrumentos_existentes
-    return [ContenidoSheet_list,instrumentos_existentes]
-
-def cargaSymbolParaValidarDb(message):
-    listado_final = []
-    for instrumento  in message: 
-        listado_final.append(instrumento.symbol)
-        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
-        
-    return listado_final
-
-
-
-def cargaSymbolParaValidar(message):
-    listado_final = []
-    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado  in message: 
-        if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
-                                if Symbol != '':
-                                #if trade_en_curso == 'LONG_':
-                                    if senial != '':
-                                            
-                                                if tipo_de_activo =='CEDEAR':
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
-                                                 listado_final.append(Symbol)
-                                                if tipo_de_activo =='ARG':
-                                                 listado_final.append(Symbol)
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
- 
-    return listado_final
-  
-def get_instrumento_para_suscripcion_ws():#   **77
-      ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-    
-      return ContenidoSheet
-
-def get_instrumento_para_suscripcion_db(app):
-    ContenidoDb = datoSheet.leerDb(app)
-    return ContenidoDb    
-
-def get_instrumento_para_suscripcion_json():
-   try:
-        src_directory = os.getcwd() # Busca directorio raíz src o app 
-        ruta_archivo_json = os.path.join(src_directory, 'strategies/listadoInstrumentos/instrumentos_001.json')
-       # ruta_archivo_json = 'strategies/listadoInstrumentos/instrumentos_001.json'    
-        with open(ruta_archivo_json , 'r') as archivo:
-            contenido = archivo.read()
-            datos = json.loads(contenido)
-            
-            # Acceder a los datos
-           
-            return datos
-   except FileNotFoundError:
-        print("El archivo no se encuentra.")
-   except json.JSONDecodeError:
-        print("Error al decodificar el JSON.")
        
 def market_data_handler_estrategia(message):
     
@@ -268,7 +136,7 @@ def market_data_handler_estrategia(message):
     
     if response != 1: ### si es 1 el boton de panico fue activado
        # _cancela_orden(300)
-        _cancela_orden(300)
+        _cancela_orden(300000)
       #  print(" FUN: market_data_handler_estrategia: _")
         
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
