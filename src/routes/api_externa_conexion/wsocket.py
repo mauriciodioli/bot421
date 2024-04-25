@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, session,request, redirect, url_for
 from utils.common import Marshmallow, db, get
 import routes.instrumentosGet as instrumentosGet
 import routes.api_externa_conexion.validaInstrumentos as val
-import strategies.estrategiaSheetWS as shWS 
+
+import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
 from datetime import datetime
 
@@ -13,6 +14,7 @@ import asyncio
 import websockets
 import websocket
 import json
+import os
 
 
 wsocket = Blueprint('wsocket',__name__)
@@ -57,7 +59,7 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta):
   # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
    
    pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler,environment=accountCuenta)
-   get.ContenidoSheet_list = shWS.SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta)  # <<-- aca se suscribe al mkt data
+   get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta)  # <<-- aca se suscribe al mkt data
  
    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
@@ -177,6 +179,140 @@ def SuscripcionWs():
         #return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
 
 
+
+def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
+    # Trae los instrumentos para suscribirte
+   
+    ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
+    
+    ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
+    #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
+    ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
+    ContenidoSheet_list = list(ContenidoSheet)
+
+    
+    ContenidoSheetDb = get_instrumento_para_suscripcion_db(app)
+    ContenidoSheet_list_db = list(ContenidoSheetDb)
+    
+    
+    
+  
+    longitudLista = len(ContenidoSheet_list)
+    ContenidoSheet_list_solo_symbol = cargaSymbolParaValidar(ContenidoSheet_list)
+    ContenidoSheet_list_solo_symbol_db = cargaSymbolParaValidarDb(ContenidoSheet_list_db)
+    
+   
+   # print("Cantidad de elementos a suscribir: ",len(ContenidoSheet_list_solo_symbol))
+   # print("<<<<<---------------------Instrumentos a Suscribir --------------------------->>>>>> ")
+   # for item in ContenidoSheet_list_solo_symbol:
+   #     print(item)
+
+  # Convertir listas a conjuntos para eliminar duplicados
+    set_contenido_ws = set(ContenidoSheet_list_solo_symbol) #comentado parte de sheet
+    set_contenido_db = set(ContenidoSheet_list_solo_symbol_db)
+    set_contenido_json = set(ContenidoJsonDb_list_db)
+
+    # Combinar conjuntos y eliminar duplicados
+    resultado_set = set_contenido_db.union(set_contenido_json,set_contenido_ws)
+    
+    # Convertir conjunto resultante en una lista
+    resultado_lista = list(resultado_set)
+    
+    # Ahora 'resultado_lista' contiene todos los instrumentos sin duplicados
+
+   
+    #for elemento in resultado_lista:
+    #    print(elemento)
+    for elemento in get.ConexionesBroker:
+        cuenta = get.ConexionesBroker[elemento]['cuenta']
+        if cuenta == accountCuenta:  
+            
+            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(cuenta)
+    
+    
+            listado_instrumentos = repuesta_listado_instrumento['instruments']   
+            #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
+        
+            tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+            
+            # Validamos existencia
+            instrumentos_existentes = val.validar_existencia_instrumentos(resultado_lista,tickers_existentes)
+            
+            #instruments = ["DLR/OCT24", "DLR/OCT24"]
+            
+            #### aqui define el MarketDataEntry
+            entries = [pyRofexInicializada.MarketDataEntry.BIDS,
+                        pyRofexInicializada.MarketDataEntry.OFFERS,
+                        pyRofexInicializada.MarketDataEntry.LAST]
+            merdado_id = pyRofexInicializada.Market.ROFEX
+            pyRofexInicializada.market_data_subscription(
+                                        tickers=instrumentos_existentes,
+                                        entries=entries,                                       
+                                        depth=3,
+                                        handler=None, 
+                                        environment=cuenta
+                                    )
+        
+           
+            datos = ContenidoSheet_list #COMENTADO POR SHEET
+            
+        
+    #return instrumentos_existentes
+    return [ContenidoSheet_list,instrumentos_existentes]
+  
+
+def cargaSymbolParaValidarDb(message):
+    listado_final = []
+    for instrumento  in message: 
+        listado_final.append(instrumento.symbol)
+        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
+        
+    return listado_final
+
+
+
+def cargaSymbolParaValidar(message):
+    listado_final = []
+    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado  in message: 
+        if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
+                                if Symbol != '':
+                                #if trade_en_curso == 'LONG_':
+                                    if senial != '':
+                                            
+                                                if tipo_de_activo =='CEDEAR':
+                                                # print(f'El instrumento {Symbol} existe en el mercado')
+                                                 listado_final.append(Symbol)
+                                                if tipo_de_activo =='ARG':
+                                                 listado_final.append(Symbol)
+                                                # print(f'El instrumento {Symbol} existe en el mercado')
+ 
+    return listado_final
+  
+def get_instrumento_para_suscripcion_ws():#   **77
+      ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+    
+      return ContenidoSheet
+
+def get_instrumento_para_suscripcion_db(app):
+    ContenidoDb = datoSheet.leerDb(app)
+    return ContenidoDb    
+
+def get_instrumento_para_suscripcion_json():
+   try:
+        src_directory = os.getcwd() # Busca directorio raíz src o app 
+        ruta_archivo_json = os.path.join(src_directory, 'strategies/listadoInstrumentos/instrumentos_001.json')
+       # ruta_archivo_json = 'strategies/listadoInstrumentos/instrumentos_001.json'    
+        with open(ruta_archivo_json , 'r') as archivo:
+            contenido = archivo.read()
+            datos = json.loads(contenido)
+            
+            # Acceder a los datos
+           
+            return datos
+   except FileNotFoundError:
+        print("El archivo no se encuentra.")
+   except json.JSONDecodeError:
+        print("Error al decodificar el JSON.")
 ##########################esto es para ws#############################
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 
@@ -235,61 +371,8 @@ def order_report_handler(message):
   get.reporte_de_ordenes.append(message)
   
   
-def actualizarTablaMD():
-  print("actualizarTablaMD")
-  
-  df = pd.DataFrame(columns=pd.Index(['Ticker','Timestamp','Vol. Compra','Precio Compra', 'Precio Venta', 'Vol. Venta', 'Ult. Precio Operado']))
-  for md in get.market_data_recibida: 
-    reporte_de_instrumentos.append({
-          'Ticker': md['ticker'],
-          'Timestamp':datetime.fromtimestamp(int(md['timestamp'])/1000),
-          'Vol. Compra':md['bid'][0]['size'],
-          'Precio Compra':md['bid'][0]['price'],
-          'Precio Venta': md['offer'][0]['price'],
-          'Vol. Venta': md['offer'][0]['size'],
-          'Ult. Precio Operado': md['last']})
-    df = df.append(
-        {
-          'Ticker': md['ticker'],
-          'Timestamp':datetime.fromtimestamp(int(md['timestamp'])/1000),
-          'Vol. Compra':md['bid'][0]['size'],
-          'Precio Compra':md['bid'][0]['price'],
-          'Precio Venta': md['offer'][0]['price'],
-          'Vol. Venta': md['offer'][0]['size'],
-          'Ult. Precio Operado': md['last']}, 
-          ignore_index=True)
- 
-  return df.style.set_table_styles(
-      [{'selector': 'tr:hover',
-        'props': [('background-color', 'yellow'),('color', 'black')]},
-      {'selector': 'thead',
-        'props': [('font-size', '16px'),('padding', '8px'),('background-color','brown')]}]
-      )
-   #return  render_template("suscripcion.html")
-
-async def muestraTabla(webSocket,path):
-  name = await webSocket.recv()
-  print(f"< {name}")
-  
-  greeting = f"hello {name}!"
-  
-  await webSocket.send(greeting)
-  print(f"< {greeting}")
-        
-  start_server = websockets.serve(muestraTabla,"localhost",8765)
-  asyncio.get_event_loop().run_untill_complete(start_server)
-  asyncio.get_event_loop().run_forever()
 
 
-def on_message(message):
-  # Se conecta al servidor local WebSocket
-    local_websocket = websocket.WebSocket()
-    local_websocket.connect("ws://localhost:8765/")
-    # Convierte el mensaje de cadena JSON a un objeto Python
-    market_data = json.loads(message)
 
-    # Envía el mensaje al servidor local WebSocket
-    print(json.dumps(market_data))
-    local_websocket.send(json.dumps(market_data))
-    
-    
+
+
