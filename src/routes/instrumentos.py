@@ -263,28 +263,31 @@ def routes_instrumentos_lista_precios():
      # Obtener el símbolo del instrumento de la solicitud AJAX
      
     symbol = request.json.get('symbol')
+    account = request.json.get('accountCuenta')
 
     respuesta_instrumento = []
     try:
-        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-                   get.pyRofexInicializada.MarketDataEntry.OFFERS,
-                   get.pyRofexInicializada.MarketDataEntry.LAST]
- 
-       
-       # Definir el rango de profundidades que deseas obtener
-        profundidades = [4]
+        pyRofexInicializada = get.ConexionesBroker.get(account)
+        if pyRofexInicializada:            
+            entries = [pyRofexInicializada['pyRofex'].MarketDataEntry.BIDS,
+                       pyRofexInicializada['pyRofex'].MarketDataEntry.OFFERS,
+                       pyRofexInicializada['pyRofex'].MarketDataEntry.LAST]
+    
+        
+        # Definir el rango de profundidades que deseas obtener
+            profundidades = [4]
 
-         # Lista para almacenar todos los precios
-        precios = []
+            # Lista para almacenar todos los precios
+            precios = []
 
-        # Iterar sobre cada profundidad y obtener los datos de mercado
-        for profundidad in profundidades:
-            response = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=profundidad)
-            datos = response['marketData']
-            precios.append(datos)  # Agregar los precios a la lista
-            print(precios)  # Imprimir los precios obtenidos
-           
-        return jsonify(precios)
+            # Iterar sobre cada profundidad y obtener los datos de mercado
+            for profundidad in profundidades:
+                response =  pyRofexInicializada['pyRofex'].get_market_data(ticker=symbol, entries=entries, depth=profundidad,environment=account)
+                datos = response['marketData']
+                precios.append(datos)  # Agregar los precios a la lista
+                print(precios)  # Imprimir los precios obtenidos
+            
+            return jsonify(precios)
 
     except:
         flash('Symbol Incorrect')

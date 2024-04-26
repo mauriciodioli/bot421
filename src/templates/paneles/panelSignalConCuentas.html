@@ -767,9 +767,11 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
    // Obtener el campo de símbolo
   
    console.log(symbolInput.value);
-  
+   accountCuenta = localStorage.getItem('cuenta');
+   
    var requestData = {
-       symbol: symbolInput.value
+       symbol: symbolInput.value,
+       accountCuenta: accountCuenta
    };
 
    // Realizar la solicitud AJAX
