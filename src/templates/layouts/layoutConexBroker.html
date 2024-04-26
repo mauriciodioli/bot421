@@ -175,17 +175,23 @@
                     </li>                  
                     <li class="nav-item">
                       <form id="instrumentos_form" action="/estadoOperacion" method="post">
-                        <!-- Aquí puedes agregar los campos adicionales que desees -->
-                        <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
-                        <!-- El botón de enviar el formulario -->
-                        <button type="submit" class="dropdown-item">Portfolio</button>
-                    </form>
-                       
+                          <!-- Aquí puedes agregar los campos adicionales que desees -->
+                          <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
+                          <!-- El botón de enviar el formulario -->
+                          <button type="submit" class="btn text-white">Portfolio</button>
+                      </form>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Ordenes</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/estadoOperacion">Estado</a></li>                        
+                          <li>
+                            <form id="instrumentos_form" action="/estadoOperacion" method="post">
+                              <!-- Aquí puedes agregar los campos adicionales que desees -->
+                              <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
+                              <!-- El botón de enviar el formulario -->
+                              <button type="submit" class="dropdown-item">Estado</button>
+                            </form>
+                          </li>                        
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/operar">Operar</a></li>                          
                         </ul>
@@ -326,6 +332,8 @@
         document.getElementById('accounCuenta_form_instrumentos_detalles').value = cuentaBroker;
         //estado de cuentas
         document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
+    
+        
         
         if (selector == 'simulado') {
              cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";

@@ -66,9 +66,9 @@ def obtenerSaldoCuentaConObjeto(pyRofexInicializada,account=None):
 # Función para obtener el saldo de una cuenta
 def obtenerSaldoCuenta(account=None):
    if account is not None:
-    datos_cuenta = get.ConexionesBroker.get(account)
-    if datos_cuenta:
-        respuesta_cuenta = datos_cuenta['pyRofex'].get_account_report(account=account, environment=account)
+    pyRofexInicializada = get.ConexionesBroker.get(account)
+    if pyRofexInicializada:
+        respuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account, environment=account)
         return respuesta_cuenta['accountData']
    return None
  

@@ -15,7 +15,7 @@ import websockets
 import websocket
 import json
 import os
-
+import copy
 
 wsocket = Blueprint('wsocket',__name__)
 
@@ -24,32 +24,43 @@ wsocket = Blueprint('wsocket',__name__)
 reporte_de_instrumentos = []
 
 
-def websocketConexionShedule(app,Cuenta,cuentaid,idUser,correo_electronico,selector):
+def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,cuentaid=None,idUser=None,correo_electronico=None,selector=None):
   
-      pyRofexInicializada = pyRofex
      
       cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=cuentaid).first()
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
-      
-      if selector == 'simulado':
-          environments = pyRofexInicializada.Environment.REMARKET         
-          pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
-          
-      else: 
+      endPoint = get.inicializar_variables(cuenta.accountCuenta)
+      #app.logger.info(endPoint)
+      api_url = endPoint[0]
+      ws_url = endPoint[1]
         
-        environments = pyRofexInicializada.Environment.LIVE
-        
-        endPoint = get.inicializar_variables(cuenta.accountCuenta)
-        #app.logger.info(endPoint)
-        api_url = endPoint[0]
-        ws_url = endPoint[1]
-        
-        pyRofexInicializada._set_environment_parameter("url",api_url,environments)
-        pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
-        pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
-      
-        pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
+      if (not get.ConexionesBroker or 
+          all(entry['cuenta'] != Cuenta for entry in get.ConexionesBroker.values()) or 
+                        (Cuenta in get.ConexionesBroker and get.ConexionesBroker[Cuenta].get('identificador') == False)):
+  
+
+            #pyRofexInicializada = pyRofex
+            sobreEscituraPyRofex = True
+            if sobreEscituraPyRofex == True:
+                ambiente = copy.deepcopy(get.envNuevo)
+                pyRofexInicializada._add_environment_config(enumCuenta=Cuenta,env=ambiente)
+                environments = Cuenta
+            else:    
+                if selector == 'simulado':
+                    environments = pyRofexInicializada.Environment.REMARKET
+                else:                                    
+                    environments = pyRofexInicializada.Environment.LIVE
+            
+            pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
+            pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
+            pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
+            pyRofexInicializada.initialize(user=cuenta.userCuenta, password=passwordCuenta, account=Cuenta, environment=environments)                       
+           # restClientEnv = RestClient(environments)
+           # wsClientEnv = WebSocketClient(environments)
+            
+            get.ConexionesBroker[Cuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': Cuenta, 'restClientEnv':restClientEnv,'wsClientEnv':wsClientEnv,'identificador': True}
+               
       wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta)
       return True
 
