@@ -82,7 +82,7 @@ class Cuenta(db.Model):
                environments = pyRofexInicializada.Environment.LIVE
         pyRofexInicializada._set_environment_parameter("url",api_url,environments) 
         pyRofexInicializada.initialize(user=userCuenta, password=passwordCuenta_decoded, account=account, environment=environments)
-        return pyRofexInicializada.get_account_report(account=account)
+        return pyRofexInicializada.get_account_report(account=account,environment=account)
                   
 
     def getDetalleCuenta(cls, userCuenta, passwordCuenta_decoded,account,selector):

@@ -88,7 +88,7 @@ pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
 
-
+indice_cuentas = {}
 diccionario_global_sheet = {}
 diccionario_global_sheet_intercambio = {}
 ya_ejecutado_hilo_panelControl = False
@@ -385,10 +385,13 @@ def loginExtCuentaSeleccionadaBroker():
                 if access_token:
                     user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                            
-              
+                  
                 # Verificar si la cuenta con el valor accountCuenta no existe en el diccionario
-                    if not ConexionesBroker or all(entry['cuenta'] != accountCuenta for entry in ConexionesBroker.values()):
-                        
+                    if (not ConexionesBroker or 
+                        all(entry['cuenta'] != accountCuenta for entry in ConexionesBroker.values()) or 
+                        (accountCuenta in ConexionesBroker and ConexionesBroker[accountCuenta].get('identificador') == False)):
+  
+   
                             #pyRofexInicializada = pyRofex
                             if sobreEscituraPyRofex == True:
                                 ambiente = copy.deepcopy(envNuevo)
@@ -407,8 +410,8 @@ def loginExtCuentaSeleccionadaBroker():
                             restClientEnv = RestClient(environments)
                             wsClientEnv = WebSocketClient(environments)
                            
-                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'restClientEnv':restClientEnv,'wsClientEnv':wsClientEnv,'identificador': False}
-                           
+                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'restClientEnv':restClientEnv,'wsClientEnv':wsClientEnv,'identificador': True}
+                            ConexionesBroker[accountCuenta]['identificador'] = True
                                     
                     # Buscar "veta" en la cadena
                     #if re.search(r'veta', endPoint_veta[1]):

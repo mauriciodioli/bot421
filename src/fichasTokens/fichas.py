@@ -28,12 +28,14 @@ from datetime import datetime, timedelta
 import random
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+import routes.api_externa_conexion.cuenta as cuentas
 from models.ficha import Ficha
 from models.trazaFicha import TrazaFicha
 import hashlib
 from tokens.token import generar_token
 
 fichas = Blueprint('fichas',__name__)
+
 
 
 def refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta):    
@@ -334,7 +336,7 @@ def crear_ficha():
 
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
-   try:  
+   #try:  
         total_cuenta = 0.0
         access_token = request.form['access_token_form_GenerarFicha'] 
         layouts = request.form['layoutOrigen']  
@@ -345,11 +347,9 @@ def fichasToken_fichas_generar():
             
         if access_token:
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            
-            
-           
-            respuesta_cuenta = Cuenta.getReporteCuenta(user_id=user_id,account=cuenta,selector=selector)
-            reporte = respuesta_cuenta['accountData']
+            #cuentas.indiceCuentas()            
+            reporte = cuentas.obtenerSaldoCuenta(account=cuenta)
+          
             if reporte!=None:
                 available_to_collateral = reporte['availableToCollateral']
                 portfolio = reporte['portfolio']
@@ -400,12 +400,12 @@ def fichasToken_fichas_generar():
         else:
              flash('no posee datos') 
              return render_template("notificaciones/noPoseeDatos.html")   
-   except:  
-        print("no llama correctamente")  
-        flash('no hay fichas creadas aún')   
-        if total_cuenta < 1:
-              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
-        return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+ #  except:  
+ #       print("no llama correctamente")  
+ #       flash('no hay fichas creadas aún')   
+#        if total_cuenta < 1:
+#              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
+#        return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         
           
   # return render_template("login.html" )
