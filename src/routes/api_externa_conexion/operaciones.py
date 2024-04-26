@@ -80,7 +80,7 @@ def estadoOperacion():
         account = request.form['accounCuenta_form_estadoOperacion']
         pyRofexInicializada = get.ConexionesBroker.get(account)
         if pyRofexInicializada:
-            repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status()
+            repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=account,environment=account)
       
        
             operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
@@ -96,7 +96,7 @@ def estadoOperacion():
         print(f"Error inesperado: {e}")
         flash("Ocurrió un error inesperado al obtener los datos de operaciones")
 
-    return render_template("login.html")
+    return render_template("notificaciones/noPoseeDatos.html")
 
 @operaciones.route("/operaciones_desde_seniales_sin_cuenta/", methods=["POST"]) 
 def operaciones_desde_seniales_sin_cuenta():
