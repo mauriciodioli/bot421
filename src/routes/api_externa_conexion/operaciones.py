@@ -247,11 +247,11 @@ def operaciones_desde_seniales():
                             
                           #se verifica el tipo de orden   
                           if modalidad_seleccionada=='1':
-                            tipoOrder = get.pyRofexInicializada.OrderType.LIMIT 
+                            tipoOrder = pyRofexInicializada['pyRofex'].OrderType.LIMIT 
                             tipo_orden = 'LIMIT'
                             print("tipoOrder ",tipoOrder)  
                           else:        
-                            tipoOrder = get.pyRofexInicializada.OrderType.MARKET
+                            tipoOrder = pyRofexInicializada['pyRofex'].OrderType.MARKET
                             tipo_orden = 'MARKET'
                             print("tipoOrder ",tipoOrder)
                             
@@ -266,7 +266,7 @@ def operaciones_desde_seniales():
                                         print("Orden enviada con éxito.")
                                         flash('Operacion enviada exitosamente')
                                       
-                                        repuesta_operacion = datos_cuenta['pyRofex'].pyRofexInicializada.get_all_orders_status(account=cuentaAcount,environment=cuentaAcount)
+                                        repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=cuentaAcount,environment=cuentaAcount)
                                         operaciones = repuesta_operacion['orders']
                                         print(operaciones)#muestra el listado de todas las operaciones
                                         clOrdId = None
