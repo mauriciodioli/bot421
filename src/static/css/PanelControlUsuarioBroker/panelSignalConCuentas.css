@@ -13,7 +13,7 @@
 .table-compras {
     width: 100%; /* Hace que las tablas ocupen todo el ancho del contenedor */
 }
-#precioLA {
+#precioLA  {
     color: green;
 }
 
@@ -27,6 +27,12 @@
 }
 #encabezado {
     color: rgb(34, 7, 133);
+}
+#precio-venta-rojo {
+    color: rgb(133, 7, 7);
+}
+#precio-compra-verde {
+    color: rgb(5, 148, 0);
 }
 /* Estilos para el precio de compra */
 .compra-btn {
