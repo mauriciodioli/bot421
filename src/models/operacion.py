@@ -16,7 +16,7 @@ class Operacion:
         self.price = price
         self.order_type = order_type
 
-    def validar_saldo(self, cuenta):
+    def validar_saldo(self, cuenta=None,pyRofexInicializada=None):
      
 
         # Obtener el tiempo actual
@@ -31,7 +31,7 @@ class Operacion:
             get.ultima_entrada = tiempo_actual
 
             # Realizar las operaciones que deseas hacer después de 60 segundos
-            resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
+            resumenCuenta = pyRofexInicializada.get_account_report(account=cuenta,environment=cuenta)
             saldo = resumenCuenta["accountData"]["availableToCollateral"]
             # Resto de las operaciones...
 
@@ -46,10 +46,10 @@ class Operacion:
             # Si no han pasado 60 segundos, no hacemos nada
             return False
 
-    def enviar_orden(self, cuenta):
-        if self.validar_saldo(cuenta):
-            #pass
-            get.pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
+    def enviar_orden(self, cuenta=None,pyRofexInicializada=None):
+        if self.validar_saldo(cuenta=cuenta,pyRofexInicializada=pyRofexInicializada):
+            pass
+            #pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
            
             return True
         else:

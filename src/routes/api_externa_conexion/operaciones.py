@@ -257,82 +257,85 @@ def operaciones_desde_seniales():
                           
                           orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
                           ticker = symbol
-                      
-                          if orden_.enviar_orden(cuenta=cuentaBroker):
-                                print("Orden enviada con éxito.")
-                                flash('Operacion enviada exitosamente')
-                                repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-                                operaciones = repuesta_operacion['orders']
-                                print(operaciones)#muestra el listado de todas las operaciones
-                                clOrdId = None
-                                orderStatus = None
-                                timepoTransaccion = None
-                                for orden in operaciones:
-                                  if orden['instrumentId']['symbol'] == ticker:
-                                    transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
-                                    if timepoTransaccion is None or transacTime > timepoTransaccion:
-                                        timepoTransaccion = transacTime
-
-                                                
-                                for orden in operaciones:
-                                    if orden['instrumentId']['symbol'] == ticker:
-                                        transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
-                                        if transacTime == timepoTransaccion:                                                                   
-                                            clOrdId = orden['clOrdId'] 
-                                            orderStatus = orden['status']
-                                            break
+                          datos_cuenta = get.ConexionesBroker.get(cuentaAcount)
+                          if datos_cuenta:
+                              if orden_.enviar_orden(cuenta=cuentaAcount,pyRofexInicializada=datos_cuenta['pyRofex']):
+                                        print("Orden enviada con éxito.")
+                                        flash('Operacion enviada exitosamente')
                                       
-                                if orderStatus != 'REJECTED':     
-                                    # Intentamos encontrar el registro con el symbol específico
-                                    orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+                                        repuesta_operacion = datos_cuenta['pyRofex'].pyRofexInicializada.get_all_orders_status(account=cuentaAcount,environment=cuentaAcount)
+                                        operaciones = repuesta_operacion['orders']
+                                        print(operaciones)#muestra el listado de todas las operaciones
+                                        clOrdId = None
+                                        orderStatus = None
+                                        timepoTransaccion = None
+                                        for orden in operaciones:
+                                          if orden['instrumentId']['symbol'] == ticker:
+                                            transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
+                                            if timepoTransaccion is None or transacTime > timepoTransaccion:
+                                                timepoTransaccion = transacTime
 
-                                    if orden_existente:
-                                        # Si el registro existe, lo actualizamos
-                                        orden_existente.user_id = user_id
-                                        orden_existente.userCuenta = cuentaAcount
-                                        orden_existente.ut = cantidad_a_comprar_abs
-                                        orden_existente.senial = signal
-                                        orden_existente.clOrdId_alta = clOrdId
-                                        orden_existente.clOrdId_alta_timestamp=datetime.now()
-                                        orden_existente.status =  orderStatus
-                                    else:
-                                        # Si no existe, creamos un nuevo registro
-                                        nueva_orden = Orden(
-                                            user_id=user_id,
-                                            userCuenta=cuentaA,
-                                            accountCuenta=cuentaAcount,
-                                            clOrdId_alta=clOrdId,
-                                            clOrdId_baja='',
-                                            clientId=0,
-                                            wsClOrdId_timestamp=datetime.now(),
-                                            clOrdId_alta_timestamp=datetime.now(),
-                                            clOrdId_baja_timestamp=None,
-                                            proprietary=True,
-                                            marketId='',
-                                            symbol=ticker,
-                                            tipo=tipo_orden,
-                                            tradeEnCurso="si",
-                                            ut=cantidad_a_comprar_abs,
-                                            senial=signal,
-                                            status= orderStatus
-                                        )
-                                        db.session.add(nueva_orden)
-                                        
-                                    if signal == 'closed.':
-                                      db.session.delete(orden_existente)   
-                                    db.session.commit()  
-                                        #get.current_session = db.session
-                                    db.session.close()
-                                else:  
-                                  print("No se pudo enviar la orden debido a REJECTED")
-                                  return jsonify({'success': True})
+                                                        
+                                        for orden in operaciones:
+                                            if orden['instrumentId']['symbol'] == ticker:
+                                                transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
+                                                if transacTime == timepoTransaccion:                                                                   
+                                                    clOrdId = orden['clOrdId'] 
+                                                    orderStatus = orden['status']
+                                                    break
+                                              
+                                        if orderStatus != 'REJECTED':     
+                                            # Intentamos encontrar el registro con el symbol específico
+                                            orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
 
-                                 # return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
-                                  
+                                            if orden_existente:
+                                                # Si el registro existe, lo actualizamos
+                                                orden_existente.user_id = user_id
+                                                orden_existente.userCuenta = cuentaAcount
+                                                orden_existente.ut = cantidad_a_comprar_abs
+                                                orden_existente.senial = signal
+                                                orden_existente.clOrdId_alta = clOrdId
+                                                orden_existente.clOrdId_alta_timestamp=datetime.now()
+                                                orden_existente.status =  orderStatus
+                                            else:
+                                                # Si no existe, creamos un nuevo registro
+                                                nueva_orden = Orden(
+                                                    user_id=user_id,
+                                                    userCuenta=cuentaA,
+                                                    accountCuenta=cuentaAcount,
+                                                    clOrdId_alta=clOrdId,
+                                                    clOrdId_baja='',
+                                                    clientId=0,
+                                                    wsClOrdId_timestamp=datetime.now(),
+                                                    clOrdId_alta_timestamp=datetime.now(),
+                                                    clOrdId_baja_timestamp=None,
+                                                    proprietary=True,
+                                                    marketId='',
+                                                    symbol=ticker,
+                                                    tipo=tipo_orden,
+                                                    tradeEnCurso="si",
+                                                    ut=cantidad_a_comprar_abs,
+                                                    senial=signal,
+                                                    status= orderStatus
+                                                )
+                                                db.session.add(nueva_orden)
+                                                
+                                            if signal == 'closed.':
+                                              db.session.delete(orden_existente)   
+                                            db.session.commit()  
+                                                #get.current_session = db.session
+                                            db.session.close()
+                                        else:  
+                                          print("No se pudo enviar la orden debido a REJECTED")
+                                          return jsonify({'success': True})
+
+                                        # return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
+                            
+                              else:
+                                      print("No se pudo enviar la orden debido a saldo insuficiente.")
+                                      return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
                           else:
-                                  print("No se pudo enviar la orden debido a saldo insuficiente.")
-                                  return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
-                        
+                               return None 
                           
                           
                         
