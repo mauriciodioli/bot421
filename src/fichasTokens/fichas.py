@@ -336,7 +336,7 @@ def crear_ficha():
 
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
-   #try:  
+  try:  
         total_cuenta = 0.0
         access_token = request.form['access_token_form_GenerarFicha'] 
         layouts = request.form['layoutOrigen']  
@@ -400,12 +400,12 @@ def fichasToken_fichas_generar():
         else:
              flash('no posee datos') 
              return render_template("notificaciones/noPoseeDatos.html")   
- #  except:  
- #       print("no llama correctamente")  
- #       flash('no hay fichas creadas aún')   
-#        if total_cuenta < 1:
-#              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
-#        return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+  except:  
+        print("no llama correctamente")  
+        flash('no hay fichas creadas aún')   
+        if total_cuenta < 1:
+              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
+        return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         
           
   # return render_template("login.html" )
@@ -616,6 +616,7 @@ def fichasToken_fichas_usuarios_get():
 def eliminar_ficha():
   if request.method == 'POST':
     access_token = request.form['access_token']
+    account = request.form['eliminarFichaCuenta']
     layouts = request.form['layoutOrigen']
     if access_token:
         app = current_app._get_current_object()
@@ -625,7 +626,8 @@ def eliminar_ficha():
         user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                
         # Buscar y eliminar la ficha
-        ficha = Ficha.query.filter_by(id=ficha_id, user_id=user_id).first()
+        ficha = db.session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()
+
         
         if ficha:
           if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
@@ -640,37 +642,39 @@ def eliminar_ficha():
         fichas_usuario = []  # o asigna la lista que corresponda
 
         fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-        
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
-        reporte = repuesta_cuenta['accountData']
-        available_to_collateral = reporte['availableToCollateral']
-        portfolio = reporte['portfolio']
-        
-        total_cuenta = available_to_collateral + portfolio
-        total_para_fichas =  total_cuenta * 0.6
-        
-        for ficha in fichas_usuario:
-           # print(ficha.token)
-            llave_bytes = ficha.llave
-            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-            # Luego, si necesitas obtener la llave original como bytes nuevamente
-            llave_original_bytes = bytes.fromhex(llave_hex)
-            #obtenemos el valor
-            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+        pyRofexInicializada = get.ConexionesBroker.get(account)
+        if pyRofexInicializada:
+            repuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
+            reporte = repuesta_cuenta['accountData']
+            available_to_collateral = reporte['availableToCollateral']
+            portfolio = reporte['portfolio']
             
-            #obtenemos el numero
-            random_number = decoded_token.get('random_number')
-            # Agregamos random_number a la ficha
-            ficha.random_number = random_number
+            total_cuenta = available_to_collateral + portfolio
+            total_para_fichas =  total_cuenta * 0.6
             
-     
-        if not fichas_usuario:
-            fichas_usuario = []
-       
+            for ficha in fichas_usuario:
+            # print(ficha.token)
+                llave_bytes = ficha.llave
+                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                llave_original_bytes = bytes.fromhex(llave_hex)
+                #obtenemos el valor
+                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                
+                #obtenemos el numero
+                random_number = decoded_token.get('random_number')
+                # Agregamos random_number a la ficha
+                ficha.random_number = random_number
+                
+        
+            if not fichas_usuario:
+                fichas_usuario = []
+        
 
+            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+        else:
+            return render_template('notificaciones/noPoseeDatos.html')
 
 @fichas.route("/reportar-ficha/",  methods=["POST"])
 def reportar_ficha():
