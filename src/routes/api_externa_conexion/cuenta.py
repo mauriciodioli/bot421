@@ -19,6 +19,8 @@ from models.brokers import Broker
 
 cuenta = Blueprint('cuenta',__name__)
 
+
+
 # Crear la tabla cuenta si no existe
 def crea_tabla_cuenta():
     cuenta = Cuenta(    
@@ -52,15 +54,24 @@ def cuentas():
         return render_template("errorLogueo.html" ) 
      ##~######datos de la cuenta
 
+def indiceCuentas():
+ get.indice_cuentas = {datos['cuenta']: datos for datos in get.ConexionesBroker.values()}
+ return get.indice_cuentas
 def obtenerSaldoCuentaConObjeto(pyRofexInicializada,account=None):
   # print("_______________obtenerSaldoCuenta__________________")
   
    resumenCuenta = pyRofexInicializada.get_account_report(account=account, environment=account)
    return resumenCuenta["accountData"]["availableToCollateral"]
-##################obtenerSaldoCuenta#######VIEJO QUEDARA OBSOLETO########
-def obtenerSaldoCuenta(cuenta):  
-   resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
-   return resumenCuenta["accountData"]["availableToCollateral"]
+
+# Función para obtener el saldo de una cuenta
+def obtenerSaldoCuenta(account=None):
+   if account is not None:
+    datos_cuenta = get.ConexionesBroker.get(account)
+    if datos_cuenta:
+        respuesta_cuenta = datos_cuenta['pyRofex'].get_account_report(account=account, environment=account)
+        return respuesta_cuenta['accountData']
+   return None
+ 
 
 def obtenerCuenta(cuenta=None):
    

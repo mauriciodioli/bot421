@@ -43,9 +43,9 @@ class States(enum.Enum):
 pyRofexInicializada = None
 cuentaGlobal = None
 VariableParaSaldoCta = None
+VariableParaTiemposMDHandler = 0
 
-VariableParaTiemposMDHandler = 0  
-    
+
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {} 
 
@@ -86,10 +86,7 @@ def estrategia_002():
              
                 if accountCuenta ==  data['cuenta']:              
                 
-                  global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta,VariableParaTiemposMDHandler
-                  time = datetime.now()
-                  tiempoInicio = int(time.timestamp())*1000
-                  VariableParaTiemposMDHandler = tiempoInicio
+                  global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta
                   cuentaGlobal = data['cuenta']
                   pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
                   cuentaGlobal = accountCuenta
@@ -126,7 +123,7 @@ def estrategia_002():
      
        
 def market_data_handler_estrategia(message):
-    
+    global VariableParaTiemposMDHandler
    
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -147,10 +144,14 @@ def market_data_handler_estrategia(message):
         
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
         marca_de_tiempo = message["timestamp"]
-        time = datetime.now()
-        tiempoInicio = int(time.timestamp())*1000
-       
-       # print('timeuno: ',timeuno, " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", timeuno - marca_de_tiempo   )
+         
+        if VariableParaTiemposMDHandler < 300000:
+            time = datetime.now()
+            tiempoInicio = int(time.timestamp())*1000
+            VariableParaTiemposMDHandler = marca_de_tiempo - tiempoInicio
+            print('timeuno: ',timeuno, " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", timeuno - marca_de_tiempo   )
+        else:
+            VariableParaTiemposMDHandler = 0
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
@@ -164,6 +165,7 @@ def market_data_handler_estrategia(message):
             if  resta_para_cuenta >= 10000: # 10 segundos
                 VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
                 tiempoInicio =  message["timestamp"]
+                #otroTiempo = 300000
             if  resta >= 300000: # 5 minutos
                 # esto hay que hacerlo aca, solo cada x segundos
                 banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
