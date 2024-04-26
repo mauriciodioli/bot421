@@ -224,10 +224,10 @@ def instrumentos_existentes(listado):
       listado_final.append(inst['instrumentId']['symbol'])
      return listado_final
 
-def instrumentos_existentes_by_symbol(message):
+def instrumentos_existentes_by_symbol(pyRofexInicializada=None,message=None,account=None):
     listado_final = []
 
-    repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+    repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
     listado_instrumentos = repuesta_listado_instrumento['instruments']
     tickers_existentes = obtener_array_tickers(listado_instrumentos)
 

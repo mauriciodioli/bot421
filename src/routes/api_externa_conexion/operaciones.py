@@ -186,83 +186,83 @@ def operaciones_desde_seniales():
             cuentaA = request.form['correo_electronico']
             cuentaAcount = request.form['accountCuenta']
             paisSeleccionado = request.form['paisSeleccionado']
-           
-            #aqui controlo los checkbox y los input del modal de operacion enviado por POST
-            if 'CantidadMonto' in request.form:
-               cantidad_monto = request.form['CantidadMonto']
-            if 'ValorCantidad' in request.form:
-                valor_cantidad = request.form['ValorCantidad']
-            else:
-                valor_cantidad='0' 
-            if 'ValorMonto' in request.form:   
-              valor_monto = request.form['ValorMonto']  
-            else: 
-              valor_monto='0'            
-            if 'Modalidad' in request.form:
-                # El checkbox de modalidad fue seleccionado
-                modalidad_seleccionada = request.form['Modalidad']
-            else:
-                modalidad_seleccionada = '2'
-           
-              
-           
-          
-          
-            #logs_table = Logs()  # Crea una instancia de Logs
-            #logs_table.crear_tabla()  # Llama a la función crear_tabla
-            if access_token:
-                app = current_app._get_current_object()  
-                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                cuentaBroker = obtenerCuentaBroker(user_id)
-                
-                if 'ValorPrecioLimite' in request.form: 
-                    precios = request.form['ValorPrecioLimite']                 
+            pyRofexInicializada = get.ConexionesBroker.get(cuentaAcount)
+            if pyRofexInicializada:
+                #aqui controlo los checkbox y los input del modal de operacion enviado por POST
+                if 'CantidadMonto' in request.form:
+                  cantidad_monto = request.form['CantidadMonto']
+                if 'ValorCantidad' in request.form:
+                    valor_cantidad = request.form['ValorCantidad']
                 else:
-                  existencia = inst.instrumentos_existentes_by_symbol(symbol)                   
-                  if existencia == True:           
-                    precios = inst.instrument_por_symbol(symbol)    
-                          
-                if precios != '':
+                    valor_cantidad='0' 
+                if 'ValorMonto' in request.form:   
+                  valor_monto = request.form['ValorMonto']  
+                else: 
+                  valor_monto='0'            
+                if 'Modalidad' in request.form:
+                    # El checkbox de modalidad fue seleccionado
+                    modalidad_seleccionada = request.form['Modalidad']
+                else:
+                    modalidad_seleccionada = '2'
+              
                   
-                      resultado = calculaUt(precios,valor_cantidad,valor_monto,signal)
+              
+              
+              
+                #logs_table = Logs()  # Crea una instancia de Logs
+                #logs_table.crear_tabla()  # Llama a la función crear_tabla
+                if access_token:
+                    app = current_app._get_current_object()  
+                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                    cuentaBroker = obtenerCuentaBroker(user_id)
+                    
+                    if 'ValorPrecioLimite' in request.form: 
+                        precios = request.form['ValorPrecioLimite']                 
+                    else:
+                      existencia = inst.instrumentos_existentes_by_symbol(yRofexInicializada=pyRofexInicializada['pyRofex'],message=symbol,account=cuentaAcount)                   
+                      if existencia == True:           
+                        precios = inst.instrument_por_symbol(symbol)    
+                              
+                    if precios != '':
                       
-                      if isinstance(resultado, int):
-                        price = float(precios)
-                        cantidad_a_comprar_abs = resultado
-                        if signal == 'closed.':               
-                            accion = 'vender'                                                    
-                        elif signal == 'OPEN.':
-                            accion = 'comprar'                
+                          resultado = calculaUt(precios,valor_cantidad,valor_monto,signal)
                           
-                      else:
-                        cantidad_a_comprar_abs, precio_LA, BI_price, OF_price = resultado
-                        if signal == 'closed.':               
-                            accion = 'vender' 
-                            price = OF_price#envio precio de la oferta                               
-                        elif signal == 'OPEN.':
-                            accion = 'comprar'                 
-                            price = BI_price#envio precio de la demanda
-                          # Verificar el saldo y enviar la orden si hay suficiente
-                        
-                      #se verifica el tipo de orden   
-                      if modalidad_seleccionada=='1':
-                        tipoOrder = get.pyRofexInicializada.OrderType.LIMIT 
-                        tipo_orden = 'LIMIT'
-                        print("tipoOrder ",tipoOrder)  
-                      else:        
-                        tipoOrder = get.pyRofexInicializada.OrderType.MARKET
-                        tipo_orden = 'MARKET'
-                        print("tipoOrder ",tipoOrder)
-                        
-                      #se debe controlar cuando sea mayor a 1 minuto
-                      # Inicia el hilo para consultar el saldo después de un minuto
-                      if tipo_orden == 'LIMIT' or tipo_orden == 'MARKET':
-                          
-                          orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
-                          ticker = symbol
-                          datos_cuenta = get.ConexionesBroker.get(cuentaAcount)
-                          if datos_cuenta:
-                              if orden_.enviar_orden(cuenta=cuentaAcount,pyRofexInicializada=datos_cuenta['pyRofex']):
+                          if isinstance(resultado, int):
+                            price = float(precios)
+                            cantidad_a_comprar_abs = resultado
+                            if signal == 'closed.':               
+                                accion = 'vender'                                                    
+                            elif signal == 'OPEN.':
+                                accion = 'comprar'                
+                              
+                          else:
+                            cantidad_a_comprar_abs, precio_LA, BI_price, OF_price = resultado
+                            if signal == 'closed.':               
+                                accion = 'vender' 
+                                price = OF_price#envio precio de la oferta                               
+                            elif signal == 'OPEN.':
+                                accion = 'comprar'                 
+                                price = BI_price#envio precio de la demanda
+                              # Verificar el saldo y enviar la orden si hay suficiente
+                            
+                          #se verifica el tipo de orden   
+                          if modalidad_seleccionada=='1':
+                            tipoOrder = get.pyRofexInicializada.OrderType.LIMIT 
+                            tipo_orden = 'LIMIT'
+                            print("tipoOrder ",tipoOrder)  
+                          else:        
+                            tipoOrder = get.pyRofexInicializada.OrderType.MARKET
+                            tipo_orden = 'MARKET'
+                            print("tipoOrder ",tipoOrder)
+                            
+                          #se debe controlar cuando sea mayor a 1 minuto
+                          # Inicia el hilo para consultar el saldo después de un minuto
+                          if tipo_orden == 'LIMIT' or tipo_orden == 'MARKET':
+                              
+                              orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
+                              ticker = symbol
+                            
+                              if orden_.enviar_orden(cuenta=cuentaAcount,pyRofexInicializada=pyRofexInicializada['pyRofex']):
                                         print("Orden enviada con éxito.")
                                         flash('Operacion enviada exitosamente')
                                       
@@ -337,30 +337,31 @@ def operaciones_desde_seniales():
                               else:
                                       print("No se pudo enviar la orden debido a saldo insuficiente.")
                                       return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
-                          else:
-                               return None 
-                          
-                          
+                              
+                              
+                              
+                            
                         
+                                                
                     
-                                            
-                
-                    # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-                    # operaciones = repuesta_operacion['orders']   
-                    # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
-                    #  
-                      if paisSeleccionado == "argentina":
-                          ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-                      elif paisSeleccionado == "usa":
-                            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
-                      else:
-                          return "País no válido"
-          
-          
-                      datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,user_id)
-                     
-                      return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
-                     # return jsonify({'redirect': url_for('paneles.panelDeControlBroker', datos=datos_desempaquetados)}) 
+                        # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+                        # operaciones = repuesta_operacion['orders']   
+                        # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
+                        #  
+                          if paisSeleccionado == "argentina":
+                              ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+                          elif paisSeleccionado == "usa":
+                                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+                          else:
+                              return "País no válido"
+              
+              
+                          datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,user_id)
+                        
+                          return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
+                        # return jsonify({'redirect': url_for('paneles.panelDeControlBroker', datos=datos_desempaquetados)})
+            else:
+               return None     
     except Exception as e:
       # Si se genera una excepción, crear un registro en Logs
       error_msg = str(e)  # Obtener el mensaje de error
