@@ -74,14 +74,17 @@ def get_trade_history_by_symbol():
         flash('Loggin Incorrect')    
   return render_template("login.html" )
 
-@operaciones.route("/estadoOperacion")
+@operaciones.route("/estadoOperacion",  methods=["POST"])
 def estadoOperacion():
     try:
-        print(get.pyRofexInicializada)
-        repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+        account = request.form['accounCuenta_form_estadoOperacion']
+        pyRofexInicializada = get.ConexionesBroker.get(account)
+        if pyRofexInicializada:
+            repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status()
+      
        
-        operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
-        return render_template('tablaOrdenesRealizadas.html', datos=operaciones)
+            operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
+            return render_template('tablaOrdenesRealizadas.html', datos=operaciones)
     
     except KeyError as e:
         # Manejar el caso en que 'orders' no está en la respuesta

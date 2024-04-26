@@ -138,13 +138,21 @@
                     
                   
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Get Instruments</a>
-                        <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/instrumentos_detalles">Instrumentos</a></li>                        
+                      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Get Instruments</a>
+                      <ul class="dropdown-menu">                        
+                          <li>
+                              <form id="instrumentos_form" action="/instrumentos_detalles" method="post">
+                                  <!-- Aquí puedes agregar los campos adicionales que desees -->
+                                  <input type="hidden" name="accounCuenta_form_instrumentos_detalles" id="accounCuenta_form_instrumentos_detalles">
+                                  <!-- El botón de enviar el formulario -->
+                                  <button type="submit" class="dropdown-item">Instrumentos</button>
+                              </form>
+                          </li>                        
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/suscripcionDb">Listado</a></li>                          
-                        </ul>
-                    </li>
+                      </ul>
+                  </li>
+                  
                      
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Estrategias</a>
@@ -164,10 +172,15 @@
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/inicioEstrategias/">Test</a></li>                          
                         </ul>
-                    </li>
-                    
+                    </li>                  
                     <li class="nav-item">
-                        <a class="nav-link" href="/estadoOperacion">Portfolio</a>
+                      <form id="instrumentos_form" action="/estadoOperacion" method="post">
+                        <!-- Aquí puedes agregar los campos adicionales que desees -->
+                        <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
+                        <!-- El botón de enviar el formulario -->
+                        <button type="submit" class="dropdown-item">Portfolio</button>
+                    </form>
+                       
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Ordenes</a>
@@ -309,7 +322,10 @@
         document.getElementById("access_token_form_posicionCuenta").value = access_token;
         document.getElementById("accounCuenta_form_posicionCuenta").value = cuentaBroker;
         document.getElementById("selector_form_posicionCuenta").value = selector;
-      
+        //detalle instrumentos_form
+        document.getElementById('accounCuenta_form_instrumentos_detalles').value = cuentaBroker;
+        //estado de cuentas
+        document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
         
         if (selector == 'simulado') {
              cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";

@@ -47,7 +47,7 @@ def instrument_por_symbol(symbol):
                    get.pyRofexInicializada.MarketDataEntry.OFFERS,
                    get.pyRofexInicializada.MarketDataEntry.LAST]
        # repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
-        repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries)
+        repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries,environment=account)
 
         objeto = repuesta_instrumento['marketData']
 
@@ -239,29 +239,29 @@ def instrumentos_existentes_by_symbol(message):
   
 
 
-@instrumentos.route("/instrumentos_detalles/" )
+@instrumentos.route("/instrumentos_detalles/", methods=['POST'] )
 def instrumentos_detalles():
     try:
+        account = request.form['accounCuenta_form_instrumentos_detalles']
         #listadoSymbolos = Getinstrumentos()#aqui consulto los instrumentos pero no los estoy cargando
         #11
         #for listadoSymbolos in listadoSymbolos:
      #   print(listadoSymbolos)
-   
-        
-        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
-        #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
-        listado_instrumentos = repuesta_listado_instrumento['instruments']
-        
-        
-        print("listado_instrumentos en instrumentos_detalles en intrumentos.py")
-        return render_template("instrumentos.html", datos = listado_instrumentos   )
+        if account is not None:
+            pyRofexInicializada = get.ConexionesBroker.get(account)
+            if pyRofexInicializada:        
+                repuesta_listado_instrumento = pyRofexInicializada['pyRofex'].get_detailed_instruments(environment=account)
+                #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
+                listado_instrumentos = repuesta_listado_instrumento['instruments']
+                return render_template("instrumentos.html", datos = listado_instrumentos   )
 
     except:        
-        return render_template("login.html" )
+        return render_template("notificaciones/noPoseeDatos.html" )
    
 @instrumentos.route("/routes-instrumentos-lista-precios/", methods=['POST'])
 def routes_instrumentos_lista_precios():
      # Obtener el símbolo del instrumento de la solicitud AJAX
+     
     symbol = request.json.get('symbol')
 
     respuesta_instrumento = []
