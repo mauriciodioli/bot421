@@ -44,6 +44,7 @@ pyRofexInicializada = None
 cuentaGlobal = None
 VariableParaSaldoCta = None
 VariableParaTiemposMDHandler = 0
+VariableParaTiempoLeerSheet = 0
 
 
 diccionario_global_operaciones = {}
@@ -123,7 +124,7 @@ def estrategia_002():
      
        
 def market_data_handler_estrategia(message):
-    global VariableParaTiemposMDHandler
+    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet
    
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -145,60 +146,57 @@ def market_data_handler_estrategia(message):
         #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
         marca_de_tiempo = message["timestamp"]
          
-        if VariableParaTiemposMDHandler < 300000:
+        if VariableParaTiemposMDHandler < 10000:
             time = datetime.now()
             tiempoInicio = int(time.timestamp())*1000
-            VariableParaTiemposMDHandler = marca_de_tiempo - tiempoInicio
-            print('timeuno: ',timeuno, " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", timeuno - marca_de_tiempo   )
+            VariableParaTiemposMDHandler =  tiempoInicio - marca_de_tiempo
+         #   print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
         else:
             VariableParaTiemposMDHandler = 0
+            VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
+            
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
         banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-        try:
-            resta = tiempoInicio - marca_de_tiempo
-            resta_para_cuenta = tiempoInicio - marca_de_tiempo
-            print('tiempoInicio: ',tiempoInicio, " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", resta_para_cuenta   )
-      
-            if  resta_para_cuenta >= 10000: # 10 segundos
-                VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
-                tiempoInicio =  message["timestamp"]
-                #otroTiempo = 300000
-            if  resta >= 300000: # 5 minutos
+        if VariableParaTiempoLeerSheet < 300000: # 5 minutos
+            time = datetime.now()
+            tiempoInicio2 = int(time.timestamp())*1000
+            VariableParaTiempoLeerSheet =  tiempoInicio2 - marca_de_tiempo
+            print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
+        else:
+                VariableParaTiempoLeerSheet = 0
                 # esto hay que hacerlo aca, solo cada x segundos
                 banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
-                tiempoInicio =  message["timestamp"]
-            # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
-            # para cumplir con el evento de mercado market data
+    
+            
+        # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
+        # para cumplir con el evento de mercado market data
 
 
 
-            if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
-                pass
-                #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
-            elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
-                pass
-                #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
-            elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
-                pass
-                #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
-            else:
-                
-                #tiempoAhora = datetime.now()
-                #print('"FUN market_data_handler_estrategia')
-                #pass
-                estrategiaSheetNuevaWS(message, banderaLecturaSheet)
-                
-                #tiempoDespues = datetime.now()
-                #teimporAhoraInt = tiempoDespues - tiempoAhora
-                #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-            #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
-        except NameError:
-                # Asignar un valor a la variable si no ha sido asignada
-                timedos =  message["timestamp"]
-                timeuno =  message["timestamp"]
+        if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+        elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+        else:
+            
+            #tiempoAhora = datetime.now()
+            #print('"FUN market_data_handler_estrategia')
+            pass
+            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            
+            #tiempoDespues = datetime.now()
+            #teimporAhoraInt = tiempoDespues - tiempoAhora
+            #tiempomili =  teimporAhoraInt.total_seconds() * 1000
+        #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+    
         
 @estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
