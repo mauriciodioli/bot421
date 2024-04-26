@@ -168,7 +168,9 @@ def terminar_hilos(app):
     
     # Aquí detienes los hilos iniciados desde planificar_schedule, excepto el hilo ejecutar_schedule
     # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden, excepto el hilo ejecutar_schedule
-    get.pyRofexInicializada.close_websocket_connection()
+    pyRofexInicializada = get.ConexionesBroker.get(account)
+    if pyRofexInicializada:
+       pyRofexInicializada['pyRofex'].close_websocket_connection(environment=account)
     
     print('_______________________________________')
     print('_______________________________________')
@@ -306,11 +308,12 @@ def llama_tarea_cada_24_horas_estrategias(app, user_id, cuenta, correo_electroni
     with app.app_context():
         try:
             app.logger.info("_______________Intentando__conexion__con WS__________________________")
-            
-            conexion(app, Cuenta, cuenta, user_id, correo_electronico, selector)           
-            app.logger.info("___________________Se conecto con exito al WS______________________")
-            triggerEstrategias = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()    
-            hilos = []
+            pyRofexInicializada = get.ConexionesBroker.get(cuenta)
+            if pyRofexInicializada:
+                conexion(app, pyRofexInicializada=pyRofexInicializada,Cuenta=Cuenta, cuentaid=cuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+                app.logger.info("___________________Se conecto con exito al WS______________________")
+                triggerEstrategias = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()    
+                hilos = []
 
             for triggerEstrategia in triggerEstrategias:
                 if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
