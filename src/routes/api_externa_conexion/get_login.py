@@ -174,7 +174,7 @@ def loginExtAutomatico():
             refresh_token = request.json.get('refresh_token')
             correo_electronico = request.json.get('correo_electronico')
             user = request.json.get('usuario')
-            account = request.json.get('cuenta')
+            accountCuenta = request.json.get('cuenta')
             simuladoOproduccion = request.json.get('simuladoOproduccion')
             session['selector'] = selector
             session['access_token'] = access_token
@@ -187,7 +187,8 @@ def loginExtAutomatico():
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
            # print('correo_electronico ',correo_electronico)
-            pyRofexInicializada = pyRofex
+           
+            sobreEscituraPyRofex = True
             if access_token:
                 app = current_app._get_current_object()                    
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -201,7 +202,7 @@ def loginExtAutomatico():
                    passwordCuenta = passwordCuenta.decode('utf-8')
                     
                    if  simuladoOproduccion !='':
-                        if simuladoOproduccion =='simulado':
+                        if simuladoOproduccion =='smulado':
                             try:
                                             environment =pyRofexInicializada.Environment.REMARKET
                                             
@@ -244,14 +245,32 @@ def loginExtAutomatico():
                             print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
                             if fecha_actual < exp_date:#hay que corregir el direccionamiento de esto_________
                               
-                                environment = pyRofexInicializada.Environment.LIVE
-                                
-                                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
-                                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment)                                
-                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)                                
-                                pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                conexion(app,pyRofexInicializada)
-                                app.logger.info("______está logueado en produccion en LIVE___________") 
+                                if (not ConexionesBroker or 
+                                        all(entry['cuenta'] != accountCuenta for entry in ConexionesBroker.values()) or 
+                                        (accountCuenta in ConexionesBroker and ConexionesBroker[accountCuenta].get('identificador') == False)):
+  
+   
+                                    #pyRofexInicializada = pyRofex
+                                    if sobreEscituraPyRofex == True:
+                                        ambiente = copy.deepcopy(envNuevo)
+                                        pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
+                                        environments = accountCuenta
+                                    else:    
+                                        if selector == 'simulado':
+                                            environments = pyRofexInicializada.Environment.REMARKET
+                                        else:                                    
+                                            environments = pyRofexInicializada.Environment.LIVE
+                                    
+                                            pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
+                                            pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
+                                            pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
+                                            pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                                        #  restClientEnv = RestClient(environments)
+                                        #  wsClientEnv = WebSocketClient(environments)
+                                        
+                                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
+                                            conexion(app,pyRofexInicializada)
+                                            app.logger.info("______está logueado en produccion en LIVE___________") 
                                 #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
                               
                                 # Crear un objeto que represente los argumentos que deseas pasar a la función planificar_schedule
@@ -407,11 +426,11 @@ def loginExtCuentaSeleccionadaBroker():
                             pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
                             pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
                             pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
-                            restClientEnv = RestClient(environments)
-                            wsClientEnv = WebSocketClient(environments)
+                          #  restClientEnv = RestClient(environments)
+                          #  wsClientEnv = WebSocketClient(environments)
                            
-                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'restClientEnv':restClientEnv,'wsClientEnv':wsClientEnv,'identificador': True}
-                            ConexionesBroker[accountCuenta]['identificador'] = True
+                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
+                            #ConexionesBroker[accountCuenta]['identificador'] = True
                                     
                     # Buscar "veta" en la cadena
                     #if re.search(r'veta', endPoint_veta[1]):
