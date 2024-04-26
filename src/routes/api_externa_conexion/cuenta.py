@@ -44,7 +44,7 @@ def cuentas():
       if request.method == 'GET': 
    ####   AQUI TENGO QUE COMPARA LA FECHA ####     
       
-         infoCuenta = obtenerCuenta()
+         infoCuenta = obtenerSaldoCuenta(account=cuenta,enviroment=cuenta)
          print(infoCuenta)
          
          return render_template("cuenta.html",datos = infoCuenta)
@@ -72,12 +72,6 @@ def obtenerSaldoCuenta(account=None):
         return respuesta_cuenta['accountData']
    return None
  
-
-def obtenerCuenta(cuenta=None):
-   
-           
-   resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
-   return resumenCuenta
 
 @cuenta.route("/cuenta_posicion_cuenta", methods=['POST'])
 def cuenta_posicion_cuenta():
