@@ -13,6 +13,7 @@ from models.triggerEstrategia import TriggerEstrategia
 from models.brokers import Broker
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from models.ficha import Ficha
 from fichasTokens.fichas import crear_ficha
 
 import jwt
@@ -332,26 +333,30 @@ def alta_estrategias_trig():
                 #######################################################################
                 # Aquí debes tener los datos que deseas pasar a la función crear_ficha#
                 #######################################################################
-                reporte = obtenerSaldoCuenta(account=cuentas.accountCuenta)   
-                valor = reporte['availableToCollateral'] 
-                cash = reporte['currentCash'] 
-                total_cuenta = int(valor) + int(cash)
-                data = {
-                    'valor': total_cuenta,
-                    'accessToken': access_token,
-                    'cuenta': cuentas.accountCuenta,
-                    'correoElectronico': correo_electronico,
-                    'total_cuenta': total_cuenta,
-                    'layoutOrigen': layouts
-                }
+                fichaStatic = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').all()
+                
+                if not fichaStatic:
+                    reporte = obtenerSaldoCuenta(account=cuentas.accountCuenta)   
+                    valor = reporte['availableToCollateral'] 
+                    cash = reporte['currentCash'] 
+                    total_cuenta = int(valor) + int(cash)
+                    data = {
+                        'valor': total_cuenta,
+                        'accessToken': access_token,
+                        'cuenta': cuentas.accountCuenta,
+                        'correoElectronico': correo_electronico,
+                        'total_cuenta': total_cuenta,
+                        'layoutOrigen': layouts,
+                        'estado_ficha' :'STATIC'
+                    }
 
-                 # URL a la que enviar la solicitud POST
-                url = url_for('fichas.crear_ficha', _external=True)  # Utiliza _external=True para obtener la URL completa
+                    # URL a la que enviar la solicitud POST
+                    url = url_for('fichas.crear_ficha', _external=True)  # Utiliza _external=True para obtener la URL completa
 
-              
-                # Realizar la solicitud POST con los datos
-                response = requests.post(url, json=data)
-               # agregar_estrategia_nueva_app(nombreEstrategia)
+                
+                    # Realizar la solicitud POST con los datos
+                    response = requests.post(url, json=data)
+                # agregar_estrategia_nueva_app(nombreEstrategia)
                 return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias])
            
    # except:
