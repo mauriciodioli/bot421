@@ -83,10 +83,11 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |                                                 
-           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '76 a\def _add_environment_config(enumCuenta, env):' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
-           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '77 a\    enum = enumCuenta' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
-           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '78 a\    setattr(Environment, enumCuenta, enum)' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
-           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '79 a\    globals.environment_config[enumCuenta] = env' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo 'def _add_environment_config(enumCuenta, env):' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    enum = enumCuenta' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    setattr(Environment, enumCuenta, enum)' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    globals.environment_config[enumCuenta] = env' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+        
         
     - name: Add line to position 39 in __init__.py of pyRofex library
       uses: appleboy/ssh-action@master
