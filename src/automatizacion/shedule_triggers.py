@@ -37,7 +37,7 @@ import logging
 
 shedule_triggers = Blueprint('shedule_triggers', __name__)
 
-
+detener_proceso_automatico_triggers = False
    
 def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
    
@@ -111,10 +111,10 @@ def ArrancaShedule():
             fecha_fin_shedule = data['fechaFinShedule'] # Obtener el valor de fechaFinShedule
             fechaActual = data['fechaActual']
             get.accountLocalStorage = data['userCuenta']
-            session['userCuenta'] =  data['userCuenta']
+        
             access_token = data['access_token']
             idUser = data['idUser']
-            session['idUser'] =  data['userCuenta']
+          
             
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
@@ -123,8 +123,8 @@ def ArrancaShedule():
             
             fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone,fechaActual)
             fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone,fechaActual)
-            
-            get.detener_proceso_automatico_triggers = False
+            global detener_proceso_automatico_triggers
+            detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
             #print('Hora de inicio:', fecha_inicio_shedule)
             #print('Hora de fin:', fecha_fin_shedule)
@@ -146,9 +146,9 @@ def ArrancaShedule():
 @shedule_triggers.route("/DetenerShedule/")
 def DetenerShedule():
     try:
-       get.detener_proceso_automatico_triggers = True
+       detener_proceso_automatico_triggers = True
        terminar_hilos_shedule()
-       print('DetenerShedule get.detener_proceso_automatico_triggers ',get.detener_proceso_automatico_triggers)
+       print('DetenerShedule get.detener_proceso_automatico_triggers ',detener_proceso_automatico_triggers)
             # Retornar una respuesta si es necesario
               # Retornar una respuesta indicando éxito
        return jsonify({'success': True, 'message': 'Proceso Shedule detenido'})
@@ -274,7 +274,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
         
       
 
-        while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
+        while not detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
             hora_actual = datetime.now().strftime("%H:%M:%S")
             # Obtener la ruta al directorio 'src' de tu proyecto
            
@@ -303,14 +303,14 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
     
     
     
-def llama_tarea_cada_24_horas_estrategias(app, user_id, cuenta, correo_electronico, selector):
+def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electronico, selector):
     app.logger.info("_______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________")
     with app.app_context():
         try:
-            app.logger.info("_______________Intentando__conexion__con WS__________________________")
-            pyRofexInicializada = get.ConexionesBroker.get(cuenta)
-            if pyRofexInicializada:
-                conexion(app, pyRofexInicializada=pyRofexInicializada,Cuenta=Cuenta, cuentaid=cuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+                app.logger.info("_______________Intentando__conexion__con WS__________________________")
+                pyRofexInicializada = get.ConexionesBroker.get(account)
+            
+                conexion(app, pyRofexInicializada=pyRofexInicializada,Cuenta=Cuenta, account=account, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
                 app.logger.info("___________________Se conecto con exito al WS______________________")
                 triggerEstrategias = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()    
                 hilos = []
