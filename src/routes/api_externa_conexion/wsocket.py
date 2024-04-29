@@ -24,28 +24,27 @@ wsocket = Blueprint('wsocket',__name__)
 reporte_de_instrumentos = []
 
 
-def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,cuentaid=None,idUser=None,correo_electronico=None,selector=None):
+def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=None,idUser=None,correo_electronico=None,selector=None):
   
      
-      cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=cuentaid).first()
+      cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
       endPoint = get.inicializar_variables(cuenta.accountCuenta)
       #app.logger.info(endPoint)
       api_url = endPoint[0]
       ws_url = endPoint[1]
-        
-      if (not get.ConexionesBroker or 
+         
+      if ( get.ConexionesBroker or 
           all(entry['cuenta'] != Cuenta for entry in get.ConexionesBroker.values()) or 
                         (Cuenta in get.ConexionesBroker and get.ConexionesBroker[Cuenta].get('identificador') == False)):
   
-
-            #pyRofexInicializada = pyRofex
             sobreEscituraPyRofex = True
             if sobreEscituraPyRofex == True:
                 ambiente = copy.deepcopy(get.envNuevo)
-                pyRofexInicializada._add_environment_config(enumCuenta=Cuenta,env=ambiente)
-                environments = Cuenta
+                pyRofexInicializada = pyRofex
+                pyRofexInicializada._add_environment_config(enumCuenta=account,env=ambiente)
+                environments = account
             else:    
                 if selector == 'simulado':
                     environments = pyRofexInicializada.Environment.REMARKET
@@ -55,11 +54,9 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,cuentaid=N
             pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
             pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
             pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
-            pyRofexInicializada.initialize(user=cuenta.userCuenta, password=passwordCuenta, account=Cuenta, environment=environments)                       
-           # restClientEnv = RestClient(environments)
-           # wsClientEnv = WebSocketClient(environments)
-            
-            get.ConexionesBroker[Cuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': Cuenta, 'restClientEnv':restClientEnv,'wsClientEnv':wsClientEnv,'identificador': True}
+            pyRofexInicializada.initialize(user=cuenta.userCuenta, password=passwordCuenta, account=account, environment=environments)                       
+             
+            get.ConexionesBroker[Cuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': account,'identificador': True}
                
       wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta)
       return True
@@ -235,10 +232,10 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
     #for elemento in resultado_lista:
     #    print(elemento)
     for elemento in get.ConexionesBroker:
-        cuenta = get.ConexionesBroker[elemento]['cuenta']
-        if cuenta == accountCuenta:  
+        account = get.ConexionesBroker[elemento]['cuenta']
+        if account == accountCuenta:  
             
-            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(cuenta)
+            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(account)
     
     
             listado_instrumentos = repuesta_listado_instrumento['instruments']   
@@ -261,7 +258,7 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
                                         entries=entries,                                       
                                         depth=3,
                                         handler=None, 
-                                        environment=cuenta
+                                        environment=account
                                     )
         
            
