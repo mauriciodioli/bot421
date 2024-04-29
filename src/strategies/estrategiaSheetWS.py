@@ -153,6 +153,7 @@ def market_data_handler_estrategia(message):
          #   print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
         else:
             VariableParaTiemposMDHandler = 0
+            print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
             VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
             
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
@@ -167,6 +168,7 @@ def market_data_handler_estrategia(message):
             print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
         else:
                 VariableParaTiempoLeerSheet = 0
+                print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
                 # esto hay que hacerlo aca, solo cada x segundos
                 banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
     

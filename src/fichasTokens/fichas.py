@@ -417,7 +417,8 @@ def fichasToken_fichas_listar():
     try:  
         access_token = request.form['access_token_form_ListarFicha'] 
         layouts = request.form['layoutOrigen']
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+        account = request.form['accounCuenta_form_ListarFicha']
+        repuesta_cuenta = get.ConexionesBroker.get_account_report(account=account,environment=account)
         reporte = repuesta_cuenta['accountData']
         available_to_collateral = reporte['availableToCollateral']
         portfolio = reporte['portfolio']

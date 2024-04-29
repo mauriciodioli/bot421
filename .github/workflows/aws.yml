@@ -76,6 +76,40 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip uninstall -y websocket-client
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip install websocket-client==0.57.0
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
+    - name: Modify service.py in pyRofex library
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo 'def _add_environment_config(enumCuenta, env):' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
+          echo '    enum = enumCuenta' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
+          echo '    setattr(Environment, enumCuenta, enum)' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
+          echo '    globals.environment_config[enumCuenta] = env' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
+    - name: Add line to position 39 in __init__.py of pyRofex library
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          sed -i '39i\from .service import _add_environment_config' /usr/local/lib/python3.9/site-packages/pyRofex/__init__.py
+        
+    - name: Add Environment class to enums.py of pyRofex library
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo 'class Environment:' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
+          echo '    """Available environments to used.' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
+          echo '    REMARKET: Demo environment used for testing purpose.' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
+          echo '    LIVE: ROFEX production environment."""' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
+          echo '    REMARKET = 1' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
+          echo '    LIVE = 2' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
+
 
           # Detener el contenedor
           docker stop ${{ env.DEPLOYMENT_VERSION }} || true

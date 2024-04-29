@@ -20,9 +20,7 @@
       <table class="table table-dark table-striped" id="tabla-trigger">
         <thead>           
           <tr>
-            <th scope="col">BOTON PANICO</th> 
-            <th scope="col">IdTrigger</th>  
-            <th scope="col">IdUser</th>
+            <th scope="col">BOTON PANICO</th>           
             <th scope="col">UserCuenta</th>
             <th scope="col">Cuenta</th>
             <th scope="col">TiempoInicio</th>
@@ -41,9 +39,7 @@
                 <input type="hidden" name="account" id="account">
                 <button type="submit" id="boton-panico-estrategia-usuario-noadmin" class="btn btn-danger my-2"></button>
               </form>
-            </td>  
-            <td>{{ estrategia.id }}</td>
-            <td>{{ estrategia.user_id }}</td>          
+            </td>                    
             <td>{{ estrategia.userCuenta }}</td>
             <td>{{ estrategia.accountCuenta }}</td>
             <td>{{ estrategia.horaInicio }}</td>          
@@ -70,7 +66,7 @@
                 <button type="button" class="btn btn-primary my-2 botonA" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
 
 
-                <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>
+              <!--<button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button>-->  
                 <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
                 </td>
@@ -84,20 +80,19 @@
   <div>
     <form id="registro-usuario-form" action="/alta-estrategias-trig" method="POST">
       <div class="form-group">
+        <div class="form-group"><input type="hidden" name="access_token_form_altaEstrategia"  id="access_token_form_altaEstrategia"  class="form-control"></div>
+        <div class="form-group"><input type="hidden" name="correo_electronico_form_altaEstrategia"  id="correo_electronico_form_altaEstrategia"  class="form-control"></div>    
+        <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+  
         <input type="hidden" class="form-control" id="usuario_id" name="usuario_id" value="{{ datos.0 }}">
-      </div> 
-      <div class="form-group">
-        <input type="hidden" class="form-control" id="correo_electronico" name="correo_electronico" value="{{ correo_electronico }}" required>
-      </div>  
+      </div>         
       <div class="form-group">
         <input type="hidden" class="form-control" id="cuenta" name="cuenta" value="{{ cuenta_estrategia }}" required>
-      </div>         
-      <label for="nombreEstrategia">Nombre:</label>
-      <input type="text" class="form-control" id="nombreEstrategia" name="nombreEstrategia" required>  
+      </div>    
       <label for="cuentaBroker">Cuenta:</label>
-      <input type="text" class="form-control" id="cuentaBroker" name="cuentaBroker" required>         
+      <input type="text" class="form-control" id="cuentaBroker" name="cuentaBroker" readonly>         
       <button type="submit" class="btn btn-primary my-2" >Registrar estrategia</button>
-      <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarCuentaModal">Seleccionar Cuenta</button>
+     <!-- <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarCuentaModal">Seleccionar Cuenta</button>-->
     </form>
   </div>
 
@@ -227,12 +222,18 @@
   // Retrieve data from localStorage
   var correo_electronico_estrategia = localStorage.getItem("correo_electronico");
   var cuenta_estrategia = localStorage.getItem("cuenta");
+  access_token = localStorage.getItem("access_token");
 
   // Set values of input elements
-  document.getElementById("correo_electronico").value = correo_electronico_estrategia;
   document.getElementById("cuenta").value = cuenta_estrategia;
+  document.getElementById('cuentaBroker').value = cuenta_estrategia;
+  
+  document.getElementById("access_token_form_altaEstrategia").value = access_token;
+  document.getElementById("correo_electronico_form_altaEstrategia").value = correo_electronico_estrategia;
+ 
 
-
+  document.getElementById("selector_form_reporteCuenta").value = selector;
+  document.getElementById("correo_electronico_form_reporteCuenta").value = correo_electronico_estrategia;
 
   const editButtons = document.querySelectorAll('[data-bs-target="#editarEstrategiaModal"]');
   editButtons.forEach(button => {
@@ -348,10 +349,12 @@
                       console.log("userCuenta:", userCuenta);*/
 
                      
-                      nombreEstrategia = '/'+nombre+'/' ;
-                      //console.log("nombreEstrategia:", nombreEstrategia);   
-
-                        
+                     
+                      // Reemplazamos los guiones bajos por guiones
+                      var nombreSinGuionesBajos = nombre.replace(/_/g, "-");
+                      // Luego, puedes usar el resultado en tu cadena
+                      var nombreEstrategia = '/' + nombreSinGuionesBajos + '/';
+                                            
                           
                           // Realiza la solicitud AJAX
                           $.ajax({
@@ -367,7 +370,7 @@
                                 'tiempoInicio': tiempoInicio,
                                 'tiempoFin': tiempoFin,
                                 'automatico': automatico,
-                                'nombre': nombre
+                                'nombre': nombreSinGuionesBajos
                             }),
                             contentType: 'application/json',
                             success: function (response) {

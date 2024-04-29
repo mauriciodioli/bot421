@@ -17,6 +17,7 @@ from models.brokers import Broker
 
 
 
+
 cuenta = Blueprint('cuenta',__name__)
 
 
@@ -134,9 +135,17 @@ def cuenta_detalle_cuenta():
    return render_template("notificaciones/noPoseeDatos.html" )
 
 
-@cuenta.route("/reporteCuenta")
+@cuenta.route("/reporteCuenta/", methods=['POST'])
 def reporteCuenta():
-   try:        
+   try:    
+        
+        total_cuenta = 0.0
+        access_token = request.form['access_token_form_reporteCuenta'] 
+        layouts = request.form['layoutOrigen']  
+        cuenta = request.form['accounCuenta_form_reporteCuenta']
+        selector = request.form['selector_form_reporteCuenta']  
+        correoElec = request.form['correo_electronico_form_reporteCuenta'] 
+       
         #repuesta_cuenta = get.pyRofexInicializada.get_account_report()
         #reporte = repuesta_cuenta['accountData']
         
@@ -146,7 +155,7 @@ def reporteCuenta():
    except:  
       print("contraseña o usuario incorrecto")  
       flash('Loggin Incorrect')    
-      return render_template("login.html" )
+      return render_template("notificaciones/noPoseeDatos.html" )
    
 @cuenta.route("/registrar_cuenta_broker")
 def registrar_cuenta_broker():
