@@ -296,7 +296,7 @@ def alta_estrategias_trig():
 
                 nombreEstrategia = nombre_broker+'_'+numero_nuevo
             estrategia_copiar = 'estrategia-002'
-          #  generarArchivoEstrategia(nombreEstrategia,estrategia_copiar)
+            generarArchivoEstrategia(nombreEstrategia,estrategia_copiar)
            
          
             if cuentas:
@@ -329,7 +329,9 @@ def alta_estrategias_trig():
                 estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == user_id,TriggerEstrategia.accountCuenta == cuentas.accountCuenta).all()
                 
                 db.session.close()
-                # Aquí debes tener los datos que deseas pasar a la función crear_ficha
+                #######################################################################
+                # Aquí debes tener los datos que deseas pasar a la función crear_ficha#
+                #######################################################################
                 reporte = obtenerSaldoCuenta(account=cuentas.accountCuenta)   
                 valor = reporte['availableToCollateral'] 
                 cash = reporte['currentCash'] 
