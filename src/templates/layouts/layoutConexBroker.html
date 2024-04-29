@@ -109,7 +109,8 @@
 
 
                           <form  name="fichasToken_fichas_generar" action="/fichasToken-fichas-listar/" method="post" class="btn-guardar_inst">
-                            <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div>
+                            <div class="form-group"><input type="hidden" name="accounCuenta_form_ListarFicha"  id="accounCuenta_form_ListarFicha"  class="form-control"></div>    
                             <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
                              
                              <div class="col">  
@@ -235,7 +236,24 @@
                         
                         </li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/reporteCuenta">Reporte</a></li>      
+                          <li>
+                            <form  name="reporteCuenta" action="/reporteCuenta/" method="post" class="btn-guardar_inst">
+                             <!--<form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">--> 
+                              <div class="form-group"><input type="hidden" name="selector_form_reporteCuenta"  id="selector_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="accounCuenta_form_reporteCuenta"  id="accounCuenta_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="access_token_form_reporteCuenta"  id="access_token_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="correo_electronico_form_reporteCuenta"  id="correo_electronico_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                        
+                              <div class="col">  
+                                  <li><button type="submit" class="dropdown-item">Reporte</button></li>
+                              </div>
+                          </form>  
+                          
+                          
+                          
+                          
+                          </li>      
                           <li><hr class="dropdown-divider"></li>
                           <form  name="get_cuentas_de_broker_usuario_Abm" action="/get_cuentas_de_broker_usuario_Abm" method="post" class="btn-guardar_inst">
                             <div class="form-group"><input type="hidden" name="access_token_form_Abm"  id="access_token_form_Abm"  class="form-control"></div>  
@@ -316,7 +334,10 @@
 
         document.getElementById("access_token_form_Abm").value = access_token;
         document.getElementById("access_token_form_GenerarFicha").value = access_token;
+        //listar fichas
         document.getElementById("access_token_form_ListarFicha").value = access_token;
+        document.getElementById("accounCuenta_form_ListarFicha").value = cuentaBroker;
+        
         document.getElementById("access_token_est").value = access_token;
         document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaBroker;
         document.getElementById("selector_form_GenerarFicha").value = selector;
@@ -332,6 +353,13 @@
         document.getElementById('accounCuenta_form_instrumentos_detalles').value = cuentaBroker;
         //estado de cuentas
         document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
+        //repoteCuentas
+       
+        document.getElementById("access_token_form_reporteCuenta").value = access_token;
+        document.getElementById("accounCuenta_form_reporteCuenta").value = cuentaBroker;
+        document.getElementById("selector_form_reporteCuenta").value = selector;
+        document.getElementById("correo_electronico_form_reporteCuenta").value = correo_electronico;
+        
     
         
         
