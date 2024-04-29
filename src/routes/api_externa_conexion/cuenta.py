@@ -13,6 +13,7 @@ import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.brokers import Broker
+from models.ficha import Ficha
 
 
 
@@ -145,17 +146,65 @@ def reporteCuenta():
         cuenta = request.form['accounCuenta_form_reporteCuenta']
         selector = request.form['selector_form_reporteCuenta']  
         correoElec = request.form['correo_electronico_form_reporteCuenta'] 
+            
+        if access_token:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            #cuentas.indiceCuentas()            
+            reporte = obtenerSaldoCuenta(account=cuenta)
+          
+            if reporte!=None:
+                available_to_collateral = reporte['availableToCollateral']
+                portfolio = reporte['portfolio']
        
-        #repuesta_cuenta = get.pyRofexInicializada.get_account_report()
-        #reporte = repuesta_cuenta['accountData']
+            # Consulta todas las fichas del usuario dado
+            #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+            total_cuenta = available_to_collateral + portfolio
+           
+            ficha = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').first()
+            
+            try:
+                
+                    #print(ficha.monto_efectivo)
+                    total_para_fichas = ficha.monto_efectivo
+                    diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                    porcien= diferencia*100
+                    interes = porcien/available_to_collateral
+                    interes = int(interes)
+                    ficha.interes = interes
+                    
+                # print(interes)  
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    # Agregamos random_number a la ficha
+                    ficha.random_number = random_number
+                    ficha.interes = interes
+                    db.session.commit()
+            except Exception as e:
+                db.session.rollback()   
+            
         
-        #print("detalle cuentaaaaaaaaaaaaaaaaaaaaaa ",reporte)
-        #return render_template("cuentas/cuenta.html",datos = reporte)
-        return render_template("notificaciones/noPoseeDatos.html" )
+            print(total_para_fichas)    
+           
+            return render_template("cuentas/cuentaReporte.html", datos=ficha,total_para_fichas=total_cuenta,total_cuenta=total_cuenta, layout = layouts)
+        else:
+             flash('no posee datos') 
+             return render_template("notificaciones/noPoseeDatos.html")   
    except:  
-      print("contraseña o usuario incorrecto")  
-      flash('Loggin Incorrect')    
-      return render_template("notificaciones/noPoseeDatos.html" )
+        print("no llama correctamente")  
+        flash('no hay fichas creadas aún')   
+        if total_cuenta < 1:
+              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
+   return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+        
+          
    
 @cuenta.route("/registrar_cuenta_broker")
 def registrar_cuenta_broker():

@@ -252,7 +252,7 @@
                 // Utiliza jQuery para abrir el modal
                 $('#CrearFichas').modal('show');
             });
-       
+            var estado_ficha = 'PENDIENTE'
             var total_cuenta_paraAjax = parseFloat(" {{total_cuenta}}");
             var modoCantidad = document.getElementById('modoCantidad');
             var comboCantidad = document.getElementById('comboCantidad');           
@@ -343,7 +343,8 @@
                         cuenta: cuenta,
                         correoElectronico: correoElectronico,
                         layoutOrigen:layoutOrigen,
-                        total_cuenta: total_cuenta_paraAjax
+                        total_cuenta: total_cuenta_paraAjax,
+                        estado_ficha: estado_ficha
                     });
 
                     xhr.send(data);

@@ -241,6 +241,7 @@ def crear_ficha():
         correoElectronico = data.get('correoElectronico')
         total_cuenta = data.get('total_cuenta')
         layouts = data.get('layoutOrigen')
+        estado_ficha = data.get('estado_ficha')
        
    
         
@@ -273,7 +274,7 @@ def crear_ficha():
                 porcentaje_creacion=porcentajeCreacion, 
                 valor_cuenta_creacion=total_cuenta, 
                 valor_cuenta_actual=total_cuenta,  
-                estado="PENDIENTE",  
+                estado=estado_ficha,  
                 fecha_generacion=datetime.now(), 
                 interes=0.0 
             )
