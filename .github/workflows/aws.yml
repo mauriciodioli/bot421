@@ -82,11 +82,12 @@ jobs:
         host: ${{ env.EC2_HOST }}
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          echo 'def _add_environment_config(enumCuenta, env):' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
-          echo '    enum = enumCuenta' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
-          echo '    setattr(Environment, enumCuenta, enum)' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
-          echo '    globals.environment_config[enumCuenta] = env' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py
+        script: |                                                 
+           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '76 a\def _add_environment_config(enumCuenta, env):' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '77 a\    enum = enumCuenta' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '78 a\    setattr(Environment, enumCuenta, enum)' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '79 a\    globals.environment_config[enumCuenta] = env' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+        
     - name: Add line to position 39 in __init__.py of pyRofex library
       uses: appleboy/ssh-action@master
       with:
@@ -94,7 +95,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          sed -i '39i\from .service import _add_environment_config' /usr/local/lib/python3.9/site-packages/pyRofex/__init__.py
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sed -i '39i\from .service import _add_environment_config' /usr/local/lib/python3.9/site-packages/pyRofex/__init__.py
         
     - name: Add Environment class to enums.py of pyRofex library
       uses: appleboy/ssh-action@master
@@ -103,13 +104,10 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          echo 'class Environment:' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
-          echo '    """Available environments to used.' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
-          echo '    REMARKET: Demo environment used for testing purpose.' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
-          echo '    LIVE: ROFEX production environment."""' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
-          echo '    REMARKET = 1' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
-          echo '    LIVE = 2' >> /usr/local/lib/python3.9/site-packages/pyRofex/enums.py
-
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '9i\class Environment:' /usr/local/lib/python3.9/site-packages/pyRofex/enums.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '10i\    REMARKET = 1' /usr/local/lib/python3.9/site-packages/pyRofex/enums.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '11i\    LIVE = 2' /usr/local/lib/python3.9/site-packages/pyRofex/enums.py"
+        
 
           # Detener el contenedor
           docker stop ${{ env.DEPLOYMENT_VERSION }} || true
