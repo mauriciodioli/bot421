@@ -88,12 +88,14 @@ def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
         # Devolver la hora ajustada en el formato 'HH:MM'
     return tiempo_modificado_str
 
-@shedule_triggers.route("/muestraTriggers/")
+@shedule_triggers.route("/muestraTriggers/", methods=['POST'])
 def muestraTriggers():
-    try:
+    try: 
+       
+         account = request.form.get('Shedule_accounCuenta')
          # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
-         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO").all()        
- 
+         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()        
+      
          total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          

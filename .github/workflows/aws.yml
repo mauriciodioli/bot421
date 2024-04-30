@@ -87,8 +87,7 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    enum = enumCuenta' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    setattr(Environment, enumCuenta, enum)' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    globals.environment_config[enumCuenta] = env' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
-          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '/^if not isinstance(environment, Environment):/d' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
-          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '/^    raise ApiException("Invalid Environment.")/d' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '/^def _validate_environment(environment):$/,/^ *raise ApiException(\"Invalid Environment.\")/ s/^ *if not isinstance(environment, Environment):/#&/' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
 
             
         
