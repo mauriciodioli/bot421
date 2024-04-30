@@ -89,10 +89,10 @@
       <div class="form-group">
         <input type="hidden" class="form-control" id="cuenta" name="cuenta" value="{{ cuenta_estrategia }}" required>
       </div>    
-      <label for="cuentaBroker">Cuenta:</label>
-      <input type="text" class="form-control" id="cuentaBroker" name="cuentaBroker" readonly>         
+      <label for="estrategia">Estrategia:</label>
+      <input type="text" class="form-control" id="estrategia" name="estrategia" readonly>         
       <button type="submit" class="btn btn-primary my-2" >Registrar estrategia</button>
-     <!-- <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarCuentaModal">Seleccionar Cuenta</button>-->
+      <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarEstrategiaModal">Seleccionar Estrategia</button>
     </form>
   </div>
 
@@ -189,11 +189,11 @@
   </div>
   
 
-  <div class="modal fade" id="seleccionarCuentaModal" tabindex="-1" aria-labelledby="seleccionarCuentaModalLabel" aria-hidden="true">
+  <div class="modal fade" id="seleccionarEstrategiaModal" tabindex="-1" aria-labelledby="seleccionarEstrategiaModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="seleccionarCuentaModalLabel" style="color: black;" >Seleccionar Cuenta</h5>
+          <h5 class="modal-title" id="seleccionarEstrategiaModalLabel" style="color: black;" >Seleccionar Estrategia</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -202,7 +202,7 @@
             <ul>
             </ul>
               <li>
-                <button type="button" class="btn btn-primary" onclick="seleccionarCuenta('{{ cuenta.id }}', '{{ cuenta.userCuenta }}')">{{ cuenta.accountCuenta }}</button>
+                <button type="button" class="btn btn-primary" onclick="seleccionarEstrategia()"></button>
               </li>
             
             {% endfor %}
@@ -223,10 +223,11 @@
   var correo_electronico_estrategia = localStorage.getItem("correo_electronico");
   var cuenta_estrategia = localStorage.getItem("cuenta");
   access_token = localStorage.getItem("access_token");
+  selector = localStorage.getItem('selector')
 
   // Set values of input elements
   document.getElementById("cuenta").value = cuenta_estrategia;
-  document.getElementById('cuentaBroker').value = cuenta_estrategia;
+  
   
   document.getElementById("access_token_form_altaEstrategia").value = access_token;
   document.getElementById("correo_electronico_form_altaEstrategia").value = correo_electronico_estrategia;
@@ -425,22 +426,24 @@
   });
   
   
- 
-  function seleccionarCuenta(cuentaId, cuentaUserId, cuentaUser,accountCuenta) {
-    document.getElementById('cuentaBroker').value = accountCuenta;
+   //#################### seleccionarEstrategia ######################//
+  function seleccionarEstrategia(estrategiaId, api_url, ws_url, nombre,descripcion) {
+    document.getElementById('estrategia').value = nombre;
+    
+    debugger;
     // Puedes almacenar el ID del usuario seleccionado en un campo oculto para enviarlo junto con el formulario de registro
    
     // Cierra el modal de selección de usuario
-    const modal = document.getElementById('seleccionarCuentaModal');
+    const modal = document.getElementById('seleccionarEstrategiaModal');
     const bootstrapModal = bootstrap.Modal.getInstance(modal);
     bootstrapModal.hide();
   }
 
   ////cuando se abre el modal se llama la funcion para cargar los usuarios
-  document.getElementById('seleccionarCuentaModal').addEventListener('shown.bs.modal', function () {
-    cargarCuentas();
+  document.getElementById('seleccionarEstrategiaModal').addEventListener('shown.bs.modal', function () {
+    cargarEstrategias();
   });
-  function cargarCuentas() {
+  function cargarEstrategias() {
     // Obtener el accessToken del localStorage
     const accessToken = localStorage.getItem("access_token");
     
@@ -460,23 +463,24 @@
       body: JSON.stringify({ accessToken: accessToken })
     };
      
-    fetch('/cuentaUsuarioBroker_all_cuentas_post/', requestOptions)
+    fetch('/abm-estrategias-all/', requestOptions)
       .then(response => response.json())
       .then(data => {
-        const cuentas = data.cuentas;  // Accede a data.cuentas en lugar de data.usuarios
+        const estrategia = data.estrategias;  // Accede a data.cuentas en lugar de data.usuarios
   
         const ul = document.querySelector('.modal-body ul');
         ul.innerHTML = '';  // Limpia la lista existente
+        
   
-        cuentas.forEach(cuenta => {
+        estrategia.forEach(estrategia => {
           const li = document.createElement('li');
           const button = document.createElement('button');
           button.type = 'button';
           button.className = 'btn btn-primary';
-          button.innerText = cuenta.accountCuenta; // Mostrar el nombre de la cuenta
+          button.innerText = estrategia.nombre; // Mostrar el nombre de la cuenta
           button.addEventListener('click', () => {
             // Llamar a seleccionarCuenta con los datos deseados
-            seleccionarCuenta(cuenta.id, cuenta.user_id, cuenta.userCuenta, cuenta.accountCuenta);
+            seleccionarEstrategia(estrategia.id, estrategia.api_url, estrategia.ws_url, estrategia.nombre,estrategia.descripcion);
           });
   
           li.appendChild(button);

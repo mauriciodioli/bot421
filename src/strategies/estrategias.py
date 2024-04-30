@@ -211,17 +211,17 @@ def agregar_estrategia_nueva_app(nombreEstrategia):
 
 
 
-def generarArchivoEstrategia(nombreEstrategia,estrategia_copiar):
+def generarArchivoEstrategia(nombreEstrategia,estrategia_copiar,archivoEstrategia):
     try:
         # Ruta del archivo a leer
-        path_estrategia_modelo = os.path.join(os.getcwd(), 'strategies/estrategiaSheetWS.py')
+        path_estrategia_modelo = os.path.join(os.getcwd(), 'strategies/'+archivoEstrategia+'.py')
 
         # Leer el contenido del archivo original
         with open(path_estrategia_modelo, "r", encoding="utf-8") as archivo_entrada:
             contenido = archivo_entrada.read()
 
         # Reemplazar la cadena "estrategiaSheetWS" con el contenido de nombreEstrategia
-        contenido_modificado = contenido.replace("estrategiaSheetWS", nombreEstrategia)
+        contenido_modificado = contenido.replace(archivoEstrategia, nombreEstrategia)
 
         # Reemplazar la cadena "estrategia-002" con el contenido de nombreEstrategia
         nombreEstrategiaNuevo = nombreEstrategia.replace("_", "-")
@@ -230,7 +230,7 @@ def generarArchivoEstrategia(nombreEstrategia,estrategia_copiar):
         # Ruta del  # Reemplazar la definición de la función con el nuevo nombre
         nuevo_nombre_funcion = nombreEstrategia.replace("_", "")
         contenido_modificado = contenido_modificado.replace("def estrategia_002():", f"def {nuevo_nombre_funcion}():")
-        nuevo_path_estrategia_modelo = path_estrategia_modelo.replace("estrategiaSheetWS.py", "")
+        nuevo_path_estrategia_modelo = path_estrategia_modelo.replace(archivoEstrategia+'.py', "")
         directorio_destino = os.path.join(os.getcwd(), nuevo_path_estrategia_modelo)
 
         # Ruta del nuevo archivo
@@ -258,9 +258,10 @@ def alta_estrategias_trig():
         if request.method == 'POST':
             user_id = request.form['usuario_id']          
             correo_electronico = request.form['correo_electronico_form_altaEstrategia']
-            account = request.form['cuentaBroker']
+            account = request.form['cuenta']
             access_token = request.form['access_token_form_altaEstrategia']
             layouts = request.form['layoutOrigen']
+            archivoEstrategia = request.form['estrategia']
             #nombreEstrategia = request.form['nombreEstrategia']
             cuentas = db.session.query(Cuenta).filter_by(user_id=user_id, accountCuenta=account).first()
             nombre_broker = db.session.query(Broker.nombre).filter_by(id=cuentas.broker_id).first()
@@ -297,7 +298,7 @@ def alta_estrategias_trig():
 
                 nombreEstrategia = nombre_broker+'_'+numero_nuevo
             estrategia_copiar = 'estrategia-002'
-            generarArchivoEstrategia(nombreEstrategia,estrategia_copiar)
+            generarArchivoEstrategia(nombreEstrategia,estrategia_copiar,archivoEstrategia)
            
          
             if cuentas:
