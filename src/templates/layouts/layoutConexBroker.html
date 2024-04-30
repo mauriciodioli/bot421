@@ -171,7 +171,16 @@
                              </form>
                         </li>  
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item dropdown-toggle" href="/muestraTriggers/">Shedule</a></li>    
+                          <li>
+                            <form id="instrumentos_form" action="/muestraTriggers/" method="post">
+                              <!-- Aquí puedes agregar los campos adicionales que desees -->
+                              <input type="hidden" name="Shedule_accounCuenta" id="Shedule_accounCuenta">  
+                              <!-- El botón de enviar el formulario -->
+                              <button type="submit" class="btn text-black">Shedule</button>
+                            </form>
+                      
+                          </li>  
+                          
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/inicioEstrategias/">Test</a></li>                          
                         </ul>
@@ -361,6 +370,9 @@
         document.getElementById("accounCuenta_form_reporteCuenta").value = cuentaBroker;
         document.getElementById("selector_form_reporteCuenta").value = selector;
         document.getElementById("correo_electronico_form_reporteCuenta").value = correo_electronico;
+
+        //shedule
+        document.getElementById('Shedule_accounCuenta').value = cuentaBroker;
         
     
         
