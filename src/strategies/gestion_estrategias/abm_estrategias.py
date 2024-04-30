@@ -12,42 +12,41 @@ from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
 from models.usuario import Usuario
+from models.strategy import Strategy
 from models.brokers import Broker
 
-endPointBrokers = Blueprint('endPointBrokers',__name__)
+abm_estrategias = Blueprint('abm_estrategias',__name__)
 
-@endPointBrokers.route("/cuentas_endPointBrokers/")
-def cuentas_endPointBrokers():
-    try:
+@abm_estrategias.route("/abm-estrategias-mostrar/")
+def abm_estrategias_mostrar():
+    #try:
          # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
         
-         todos_brokers = db.session.query(Broker).all()        
+         todas_estrategias = db.session.query(Strategy).all()        
        
-         total_brokers = len(todos_brokers)  # Obtener el total de instancias de TriggerEstrategia
+         total = len(todas_estrategias)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          
-         return render_template("brokers/broker.html", datos=todos_brokers)
-    except:        
-        return render_template("notificaciones/noPoseeDatos.html" )
+         return render_template("estrategias/ABMestrategias.html", datos=todas_estrategias)
+    #except:        
+     #   return render_template("notificaciones/noPoseeDatos.html" )
 
 
-@endPointBrokers.route("/cuentas-endPointBrokers-alta/",  methods=["POST"])
-def cuentas_endPointBrokers_alta():
+@abm_estrategias.route("/abm-estrategias-alta/",  methods=["POST"])
+def abm_estrategias_alta():
    if request.method == 'POST':
          todasLasCuentas = []
          api_url = request.form['api_url']
          ws_url = request.form['ws_url']
          nombre = request.form['nombre']
          descripcion = request.form['descripcion']
-         print("api_url ",api_url)        
-         print("ws_url",ws_url)
-         print("nombre",nombre)
+     
          # Codificar las cadenas usando UTF-8
         
         # crea_tabla_cuenta()
          try:     
             
-            endpoint = Broker( 
+            endpoint = Strategy( 
                         id=None,   
                         api_url=api_url,
                         ws_url=ws_url,
@@ -64,12 +63,12 @@ def cuentas_endPointBrokers_alta():
             print("endPoint registrado exitosamente id !",endpoint_id)
          #   todasLasCuentas = get_cuentas_de_broker(user_id)
             
-            todos_brokers = db.session.query(Broker).all()
+            todos_brokers = db.session.query(Strategy).all()
             
             db.session.close()
             print("Cuenta registrada exitosamente!")            
 
-            return render_template("brokers/broker.html",datos = todos_brokers)
+            return render_template("estrategias/ABMestrategias.html",datos = todos_brokers)
              
          except:               
                 db.session.rollback()  # Hacer rollback de la sesión
@@ -79,30 +78,30 @@ def cuentas_endPointBrokers_alta():
 
 
 
-@endPointBrokers.route("/cuentas-endPointBrokers-eliminar/",  methods=["POST"])   
-def cuentas_endPointBrokers_eliminar():
+@abm_estrategias.route("/abm-estrategias-eliminar/",  methods=["POST"])   
+def abm_estrategias_eliminar():
     try:
          if request.method == 'POST':
-            id = request.form['eliminarEndPointId']  
-            dato = db.session.query(Broker).get(id)  
+            id = request.form['eliminarEstrategiaId']  
+            dato = db.session.query(Strategy).get(id)  
             
             print(dato)
             db.session.delete(dato)
             db.session.commit()
             flash('Operation Removed successfully')
-            todos_brokers = db.session.query(Broker).all()
+            todas = db.session.query(Strategy).all()
             db.session.close()
-            return render_template("cuentas/cuentasDeUsuario.html", datos =  todos_brokers)
+            return render_template("estrategias/ABMestrategias.html", datos =  todas)
     except: 
             flash('Operation No Removed')       
-            todos_brokers = db.session.query(Broker).all()
+            todos_brokers = db.session.query(Strategy).all()
             db.session.close()
             
-            return render_template('cuentas/cuentasDeUsuario.html', datos=todos_brokers) 
+            return render_template('cuentas/cuentasDeUsuario.html', datos=todas) 
 
 
-@endPointBrokers.route("/cuentas-editar-endpoint", methods=["POST"])
-def cuentas_editar_endpoint():
+@abm_estrategias.route("/abm-estrategias-editar", methods=["POST"])
+def abm_estrategias_editar():
     try:
         if request.method == 'POST':
             id = request.form['id']
@@ -111,7 +110,7 @@ def cuentas_editar_endpoint():
             nombre = request.form['nombre']
             descripcion = request.form['descripcion']
 
-            endpoint = Broker.query.get(id)
+            endpoint = Strategy.query.get(id)
             endpoint.api_url = api_url
             endpoint.ws_url = ws_url
             endpoint.nombre = nombre
@@ -119,16 +118,57 @@ def cuentas_editar_endpoint():
 
             db.session.commit()
             flash('Los cambios se han guardado correctamente')
-            todos_brokers = db.session.query(Broker).all()
+            todas = db.session.query(Strategy).all()
             db.session.close()
-            return render_template("cuentas/cuentasDeUsuario.html", datos =  todos_brokers)
+            return render_template("estrategias/ABMestrategias.html", datos =  todas)
     except Exception as e:
         flash('Error al guardar los cambios: ' + str(e))
-  
+    
     
 
-@endPointBrokers.route("/cuenta-endpoint-all/", methods=["POST"])
-def cuenta_endpoint_all():
+@abm_estrategias.route("/abm-estrategias-all-Brokers-post/", methods=["POST"])   
+def abm_estrategias_all_Brokers_post():
+    if request.method == 'POST':
+        
+        access_token = request.json.get('accessToken')
+
+        todasLosBrokers = []
+
+        if access_token:
+            app = current_app._get_current_object()
+            
+            try:
+                user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                brokers = db.session.query(Broker).all()
+
+                if brokers:
+                    data = []  # Lista para almacenar los datos de las cuentas
+                    
+                    for broker in brokers:
+                       
+                        data.append({
+                            'id': broker.id,
+                            'api_url': broker.api_url,
+                            'ws_url': broker.ws_url,
+                            'nombre': broker.nombre,
+                            'descripcion': broker.descripcion                         
+                        })
+                    
+                    return jsonify({'brokers': data})  # Devolver los datos en formato JSON
+                
+                else:
+                    return jsonify({'message': 'No se encontraron brokers.'}), 404
+                  
+            except Exception as e:
+                print("Error:", str(e))
+                print("No se pudo registrar los brokers.")
+                db.session.rollback()  # Hacer rollback de la sesión
+                return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
+    
+    return jsonify({'message': 'Solicitud no válida.'}), 400
+
+@abm_estrategias.route("/abm-estrategias-all/", methods=["POST"])
+def abm_estrategias_all():
     access_token = request.json.get('accessToken')
 
     if access_token:
@@ -137,19 +177,21 @@ def cuenta_endpoint_all():
         try:
             user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                     
-            endPointBrokers = db.session.query(Broker).all()
+            estrategias = db.session.query(Strategy).all()
 
-            if endPointBrokers:
+            if estrategias:
                 data = []  # Lista para almacenar los datos de las cuentas
                 
-                for cuenta in endPointBrokers:
+                for estrategia in estrategias:
                     data.append({
-                        'id': cuenta.id,
-                        'nombre': cuenta.nombre,
-                        # Agrega otros campos que desees incluir en las opciones del combo
-                    })
+                            'id': estrategia.id,
+                            'api_url': estrategia.api_url,
+                            'ws_url': estrategia.ws_url,
+                            'nombre': estrategia.nombre,
+                            'descripcion': estrategia.descripcion                         
+                        })
                 
-                return jsonify({'endpoints': data})  # Devolver los datos en formato JSON
+                return jsonify({'estrategias': data})  # Devolver los datos en formato JSON
                 
             else:
                 return jsonify({'message': 'No se encontraron cuentas asociadas a este usuario.'}), 404
@@ -162,8 +204,8 @@ def cuenta_endpoint_all():
 
     return jsonify({'message': 'Solicitud no válida.'}), 400
 
-@endPointBrokers.route("/cuentas-Broker/",  methods=["GET"])
-def cuentas_Usuario_Broker():
+@abm_estrategias.route("/abm-estrategias-estrategias/",  methods=["GET"])
+def abm_estrategias_estrategias():
    try:
       if request.method == 'GET': 
            cuentasBroker = db.session.query(Cuenta).all()
@@ -173,8 +215,8 @@ def cuentas_Usuario_Broker():
        print('no hay usuarios') 
    return 'problemas con la base de datos'
 
-@endPointBrokers.route("/eliminar-broker-administracion/",  methods=["POST"])
-def eliminar_cuenta_broker_administracion():
+@abm_estrategias.route("/abm-estrategias-eliminar-estrategia-administracion/",  methods=["POST"])
+def abm_estrategias_eliminar_estrategia_administracion():
 
     cuenta_id = request.form['eliminarCuentaId']
     cuenta = Cuenta.query.get(cuenta_id)
