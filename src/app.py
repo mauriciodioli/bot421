@@ -27,6 +27,7 @@ from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
 from strategies.arbitraje_001 import arbitraje_001
 from strategies.utils.testWS import testWS
+from strategies.gestion_estrategias.abm_estrategias import abm_estrategias
 
 from tokens.token import token
 
@@ -64,6 +65,7 @@ import subprocess
 
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
+from models.strategy import strategy
 from models.orden import orden
 from models.ficha import ficha
 from models.trazaFicha import trazaFicha
@@ -154,6 +156,8 @@ app.register_blueprint(operacionHF)
 app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
+app.register_blueprint(abm_estrategias)
+app.register_blueprint(strategy)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
 app.register_blueprint(estrategiaSheet_01)

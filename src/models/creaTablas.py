@@ -12,6 +12,7 @@ from models.trades import Trade
 from models.trazaFicha import TrazaFicha
 from models.brokers import Broker
 from models.triggerEstrategia import TriggerEstrategia
+from models.strategy import Strategy
 
 from datetime import datetime
 from flask import Blueprint
@@ -33,6 +34,7 @@ def crea_tablas_DB():
     InstrumentoSuscriptos.crear_tabla_instrumentoSuscriptos()
     InstrumentoEstrategiaUno.crear_tabla_instrumentoEstrategiaUno()
     Broker.crear_tabla_brokers()
+    Strategy.crear_tabla_strategy()
     
     
     
