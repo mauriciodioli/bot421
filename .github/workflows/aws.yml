@@ -88,7 +88,8 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    setattr(Environment, enumCuenta, enum)' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    globals.environment_config[enumCuenta] = env' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i 's/^if not isinstance(environment, Environment):/#&/' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
-          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i 's/^    raise ApiException("Invalid Environment.")/#&/' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i 's/^    raise ApiException(\"Invalid Environment.\")/#&/' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+
             
         
     - name: Add line to position 39 in __init__.py of pyRofex library
