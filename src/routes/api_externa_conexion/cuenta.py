@@ -158,19 +158,22 @@ def reporteCuenta():
        
             # Consulta todas las fichas del usuario dado
             #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-            total_cuenta = available_to_collateral + portfolio
+            total_cuenta = round(available_to_collateral + portfolio,2)
            
             ficha = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').first()
             
             try:
                 
-                    #print(ficha.monto_efectivo)
-                    total_para_fichas = ficha.monto_efectivo
+                    #print(ficha.monto_efectivo)                    
                     diferencia = available_to_collateral - ficha.valor_cuenta_creacion
                     porcien= diferencia*100
-                    interes = porcien/available_to_collateral
+                    interes = round(porcien/available_to_collateral,0)
                     interes = int(interes)
                     ficha.interes = interes
+                    interes_ganado = round(ficha.valor_cuenta_creacion * (interes / 100),2)
+                    total_mas_interes = round(ficha.valor_cuenta_creacion + interes_ganado, 2)
+
+                   
                     
                 # print(interes)  
                     llave_bytes = ficha.llave
@@ -188,12 +191,10 @@ def reporteCuenta():
                     ficha.interes = interes
                     db.session.commit()
             except Exception as e:
-                db.session.rollback()   
-            
-        
-            print(total_para_fichas)    
+                db.session.rollback() 
+             
            
-            return render_template("cuentas/cuentaReporte.html", datos=ficha,total_para_fichas=total_cuenta,total_cuenta=total_cuenta, layout = layouts)
+            return render_template("cuentas/cuentaReporte.html", interes=interes,total_cuenta=total_cuenta,total_mas_interes=total_mas_interes,interes_ganado=interes_ganado, layout = layouts)
         else:
              flash('no posee datos') 
              return render_template("notificaciones/noPoseeDatos.html")   
@@ -202,7 +203,7 @@ def reporteCuenta():
         flash('no hay fichas creadas aún')   
         if total_cuenta < 1:
               return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
-   return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+   return render_template("cuentas/cuentaReporte.html", datos=[], total_cuenta=total_cuenta, total_mas_interes=total_mas_interes, interes_ganado=interes_ganado,layout=layouts)
         
           
    
