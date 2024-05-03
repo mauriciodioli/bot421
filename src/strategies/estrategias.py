@@ -66,15 +66,34 @@ def estrategias_usuario_nadmin():
             
             usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
             estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
-               
-            
+          
+         
             db.session.close()
             ut_por_trigger = {}
-            for estrategia in estrategias:
-                ut = db.session.query(UnidadTrader).filter_by(trigger_id=estrategia.id).all()
-                ut_por_trigger[estrategia.id] = 0
-                if ut:
-                    ut_por_trigger[estrategia.id] = ut
+            
+            for trigger in estrategias:
+                # Obtener 'ut' para el trigger actual
+                ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
+                
+                # Inicializar una lista para almacenar los valores de 'ut'
+                ut_values = []
+                
+                # Iterar sobre los objetos UnidadTrader y recopilar los valores de 'ut'
+                for ut_object in ut_objects:
+                    ut_values.append(ut_object.ut)
+                    print("Valor de 'ut':", ut_object.ut)
+                
+                # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
+                if not ut_values:
+                    # Si la lista está vacía, asignar 0 al atributo 'ut'
+                    trigger.ut = 0
+                else:
+                    # Si la lista no está vacía, asignar los valores recopilados al atributo 'ut'
+                    trigger.ut =  ut_object.ut
+        
+# Ahora cada objeto en 'trigger_estrategias' tiene un atributo 'ut' que contiene los valores de 'ut' asociados, o 0 si no hay ningún valor
+
+           
                    
             #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
             return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
