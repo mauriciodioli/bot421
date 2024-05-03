@@ -20,6 +20,7 @@ import routes.api_externa_conexion.validaInstrumentos as valida
 import asyncio
 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
+from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexionShedule
 from fichasTokens.fichas import refrescoValorActualCuentaFichas
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
@@ -182,7 +183,7 @@ def loginExtAutomatico():
             session['refresh_token'] = refresh_token
             session['correo_electronico'] = correo_electronico
             session['user'] = user
-            session['account'] = account
+            session['account'] = accountCuenta
             session['simuladoOproduccion'] = simuladoOproduccion
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
@@ -193,10 +194,9 @@ def loginExtAutomatico():
                 app = current_app._get_current_object()                    
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
-                environment = pyRofexInicializada.Environment.REMARKET if selector == 'simulado' else pyRofexInicializada.Environment.LIVE
-                print(f"Está enviando a {environment}")
-                if account is not None and account != '':   
-                   cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == account).first()
+          
+                if accountCuenta is not None and accountCuenta != '':   
+                   cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
                    db.session.close()
                    passwordCuenta = cuentas.passwordCuenta
                    passwordCuenta = passwordCuenta.decode('utf-8')
@@ -244,46 +244,43 @@ def loginExtAutomatico():
                             
                             print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
                             if fecha_actual < exp_date:#hay que corregir el direccionamiento de esto_________
-                              
-                                if (not ConexionesBroker or 
-                                        all(entry['cuenta'] != accountCuenta for entry in ConexionesBroker.values()) or 
-                                        (accountCuenta in ConexionesBroker and ConexionesBroker[accountCuenta].get('identificador') == False)):
-  
-   
-                                    #pyRofexInicializada = pyRofex
-                                    if sobreEscituraPyRofex == True:
-                                        ambiente = copy.deepcopy(envNuevo)
-                                        pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
-                                        environments = accountCuenta
-                                    else:    
-                                        if selector == 'simulado':
-                                            environments = pyRofexInicializada.Environment.REMARKET
-                                        else:                                    
-                                            environments = pyRofexInicializada.Environment.LIVE
-                                    
-                                            pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
-                                            pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
-                                            pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
-                                            pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
-                                        #  restClientEnv = RestClient(environments)
-                                        #  wsClientEnv = WebSocketClient(environments)
+                                
+                                
+                                if (len(ConexionesBroker) > 0 ):
+                                    if accountCuenta in ConexionesBroker:
+                                        #if  ConexionesBroker[accountCuenta].get('identificador') == True:
+                                            pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
+                                            repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
+                                            if repuesta_operacion:
+                                                pass
+                                else:
+                                      
+                                        pyRofexInicializada = pyRofex
+                                        if sobreEscituraPyRofex == True:
+                                            ambiente = copy.deepcopy(envNuevo)
+                                            pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
+                                            environments = accountCuenta
+                                                             
+                                        ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
                                         
-                                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
-                                            conexion(app,pyRofexInicializada)
-                                            app.logger.info("______está logueado en produccion en LIVE___________") 
-                                #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-                              
-                                # Crear un objeto que represente los argumentos que deseas pasar a la función planificar_schedule
-                               
-
-                                # Crear el hilo sin llamar directamente a la función planificar_schedule
-                                # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
-                                #hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
-                                #args=('1', app, "12:00", "17:00"))
-
-                               # hilo_principal.start()
-                                #refrescoValorActualCuentaFichas(user_id)
-                                print("pasa hilo hilo_principal.start() planificar_schedule")
+                                        for elemento in ConexionesBroker:
+                                            print("Variable agregada:", elemento)
+                                            cuenta = ConexionesBroker[elemento]['cuenta']
+                                    
+                                            if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
+                                            
+                            
+                                                conexionShedule(app, pyRofexInicializada=pyRofexInicializada,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+                                
+                                                refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                                
+                                
+                                                print(f"Está logueado en {selector} en {environments}")
+                                                ConexionesBroker[accountCuenta]['identificador'] = True
+                                                break  # Salir del bucle for si se completa correctamente
+                                            else:               
+                                                pass
+                                            print("pasa hilo hilo_principal.start() planificar_schedule")
                                 if rutaDeLogeo != 'Home':      
                                       resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                       resp.headers['Content-Type'] = 'application/json'
