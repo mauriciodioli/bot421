@@ -28,6 +28,7 @@ from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
 from strategies.arbitraje_001 import arbitraje_001
 from strategies.utils.testWS import testWS
 from strategies.gestion_estrategias.abm_estrategias import abm_estrategias
+from strategies.gestion_estrategias.unidad_trader import unidad_trader
 
 from tokens.token import token
 
@@ -157,6 +158,7 @@ app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
 app.register_blueprint(abm_estrategias)
+app.register_blueprint(unidad_trader)
 app.register_blueprint(strategy)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
