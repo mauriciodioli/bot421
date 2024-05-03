@@ -27,7 +27,7 @@ def unidad_trader_mostrar():
     UT_usuario_id = request.form.get('UT_usuario_id')
     UT_cuenta = request.form.get('UT_cuenta')
     UT_IdTrigger = request.form.get('UT_IdTrigger')
-    UT_unidadTrader = request.form.get('UT_unidadTrader')
+   
     
     
     ut_ars = []
@@ -57,14 +57,14 @@ def unidad_trader_mostrar():
 @unidad_trader.route("/unidad-trader-alta/", methods=['POST'])
 def unidad_trader_alta():
     # Obtener los datos de la solicitud POST
-    UT_cuenta = int(request.form.get('UT_cuenta'))
+    UT_cuenta = request.form.get('UT_cuenta')
     UT_usuario_id = int(request.form.get('UT_usuario_id'))
     UT_IdTrigger = int(request.form.get('UT_IdTrigger'))
     UT_unidadTrader = int(request.form.get('UT_unidadTrader'))
-    trigger = db.session.query(TriggerEstrategia).filter_by(id=UT_IdTrigger).first()
+   
 
     # Verificar si ya existe una entrada para la combinación cuenta_id, usuario_id y trigger_id
-    existing_ut = UnidadTrader.query.filter_by(cuenta_id=UT_cuenta, usuario_id=UT_usuario_id, trigger_id=UT_IdTrigger).first()
+    existing_ut = UnidadTrader.query.filter_by(accountCuenta=UT_cuenta, usuario_id=UT_usuario_id, trigger_id=UT_IdTrigger).first()
 
     if existing_ut:
         # Si existe, actualizar la entrada existente
@@ -72,7 +72,7 @@ def unidad_trader_alta():
     else:
         # Si no existe, agregar una nueva entrada
         ut = UnidadTrader(
-            cuenta_id=UT_cuenta,
+            accountCuenta=UT_cuenta,
             usuario_id=UT_usuario_id,
             trigger_id=UT_IdTrigger,
             ut=UT_unidadTrader
@@ -83,17 +83,10 @@ def unidad_trader_alta():
         # Intentar realizar los cambios en la base de datos
         db.session.commit()
         
-        # Devuelve la respuesta en formato JSON
-        response_data = {
-            'cuenta_id': ut.cuenta_id,
-            'tiempoInicio': trigger.horaInicio,  # Ajusta según tus necesidades
-            'tiempoFin': trigger.horaFin,  # Ajusta según tus necesidades
-            'automatico': trigger.ManualAutomatico,  # Ajusta según tus necesidades
-            'nombre': trigger.nombreEstrategia,  # Ajusta según tus necesidades
-            'ut': ut.ut
-        }
-        
-        return jsonify(response_data)
+        resultado = cargaUT( UT_IdTrigger,UT_unidadTrader)
+    
+        return jsonify({'resultado': 'Operación exitosa', 'trigger_data': resultado})
+      
     except IntegrityError as e:
         # Manejar errores de integridad (por ejemplo, violaciones de restricciones únicas)
         db.session.rollback()
@@ -101,3 +94,28 @@ def unidad_trader_alta():
     finally:
         # Cerrar la sesión
         db.session.close()
+
+def cargaUT(trigger_id,UT_unidadTrader):
+    try:
+        trigger = db.session.query(TriggerEstrategia).filter_by(id=trigger_id).first()
+        if not trigger:
+            return None  # Retorna None si no se encuentra ningún objeto con el ID dado
+        
+        trigger_data = {
+            'id': trigger.id,
+            'userId': trigger.user_id,
+            'userCuenta': trigger.userCuenta,
+            'accountCuenta': trigger.accountCuenta,
+            'horaInicio': trigger.horaInicio.strftime('%H:%M:%S'),
+            'horaFin': trigger.horaFin.strftime('%H:%M:%S'),
+            'ManualAutomatico': trigger.ManualAutomatico,
+            'nombreEstrategia': trigger.nombreEstrategia,
+            'ut':UT_unidadTrader
+        }
+        return trigger_data
+    except Exception as e:
+        print(f"Error al cargar datos del trigger: {e}")
+        return None
+    finally:
+        db.session.close()
+

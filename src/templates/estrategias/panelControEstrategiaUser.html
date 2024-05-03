@@ -26,7 +26,7 @@
             <th scope="col">TiempoFin</th>
             <th scope="col">Automatico</th>
             <th scope="col">Nombre</th>
-            <th scope="col">Unidad Inversion</th>
+            <th scope="col">Unid. Invers.</th>
             <th scope="col">Acciones</th>
           </tr>            
         </thead>
@@ -46,7 +46,7 @@
             <td>{{ estrategia.horaFin }}</td>
             <td>{{ estrategia.ManualAutomatico }}</td>
             <td>{{ estrategia.nombreEstrategia }}</td>
-            <td>{{ estrategia.ut }}</td>
+            <td id="ut-{{ estrategia.id }}">{{ estrategia.ut }}</td>           
             <td class="d-flex">
             
             <!-- <form method="POST" class="btn-guardar_inst">
@@ -68,7 +68,9 @@
                 <button type="button" class="btn btn-primary my-2 botonA" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
                 <span>&nbsp;</span>
                 <span>&nbsp;</span>
-                <button type="button" class="btn btn-primary btn-block my-2" id="boton-unidadTrader-estrategia-usuario-noadmin"data-bs-toggle="modal" data-bs-target="#editarUnidadTraderModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}" data-user-cuenta="{{ estrategia.ut }}">UT</button>
+                <button type="button" class="btn btn-primary btn-block my-2" id="boton-unidadTrader-estrategia-usuario-noadmin" data-bs-toggle="modal" data-bs-target="#editarUnidadTraderModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}" data-user-ut="{{ estrategia.ut }}" onclick="cargarDatosUsuario(this.getAttribute('data-trigger-user-id'), this.getAttribute('data-user-cuenta'), this.getAttribute('data-trigger-id'))">UT</button>
+
+
                 <!--<button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button> -->  
                 <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
                 <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
@@ -143,7 +145,7 @@
           <div class="modal-body">
             <input type="hidden" id="eliminarEstrategiaUserId" name="user_id" value="">
             <input type="hidden" id="eliminarEstrategiaIdTrigger" name="IdTrigger" value="">
-            <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta estrategia?</p>
+            <p class="fw-bold text-dark" style="color:black;">¿Está seguro de que desea eliminar esta estrategia?</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -165,7 +167,7 @@
         <form id="editarTriggerForm" action="/editar-Trigger" method="POST">
           <div class="modal-body">
             
-              <label for="horaInicio"  style="color: black;">Hora de inicio:</label>
+              <label for="horaInicio"  style="color:black;">Hora de inicio:</label>
               <input type="time" id="horaInicio" name="horaInicio" required>
             
             
@@ -227,31 +229,29 @@
           <h5 class="modal-title" id="editarUnidadTraderModalLabel" style="color: black;">Monto a invertir por instrumento</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form id="editarUnidadTraderModalForm" action="/unidad-trader-alta/" method="POST">
-          <div class="modal-body">
-            <!-- Subtítulo en color azul -->
-            <h6 style="color: blue;">Monto mínimo sugerido para esta estrategia</h6>
-            <!-- Label para el valor cargado desde AJAX -->
-            <label id="montoMinimoLabel" style="font-size: larger;"></label>
-            <div class="form-group">
-              <input type="hidden" id="UT_usuario_id" name="UT_usuario_id" value="" />
-            </div>
-            <div class="form-group">
-              <input type="hidden" class="form-control" id="UT_cuenta" name="UT_cuenta">
-            </div>
-            <div class="form-group">
-              <input type="hidden" class="form-control" id="UT_IdTrigger" name="UT_IdTrigger">
-            </div> 
-            <div class="form-group">
-              <label for="TriggerNombre" style="color: black;">Cantidad:</label>
-              <input type="text" class="form-control" id="UT_unidadTrader" name="UT_unidadTrader" required>
-            </div>
+        <div class="modal-body">
+          <!-- Subtítulo en color azul -->
+          <h6 style="color: blue;">Monto mínimo sugerido para esta estrategia</h6>
+          <!-- Label para el valor cargado desde AJAX -->
+          <label id="montoMinimoLabel" style="font-size: larger;"></label>
+          <div class="form-group">
+            <input type="hidden" id="UT_usuario_id" name="UT_usuario_id" value="">
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
+          <div class="form-group">
+            <input type="hidden" class="form-control" id="UT_cuenta" name="UT_cuenta">
           </div>
-        </form>
+          <div class="form-group">
+            <input type="hidden" class="form-control" id="UT_IdTrigger" name="UT_IdTrigger">
+          </div>
+          <div class="form-group">
+            <label for="TriggerNombre" style="color: black;">Cantidad:</label>
+            <input type="text" class="form-control" id="UT_unidadTrader" name="UT_unidadTrader" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="boton_guardar_ut" class="btn btn-primary">Guardar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -533,88 +533,103 @@
   
   //############# aqui carga la unidad de tradeo #######################
   //########### Encuentra el modal editarUnidadTraderModal###############
-  var modal = document.getElementById('editarUnidadTraderModal');
-  // Agrega un evento cuando el modal se muestre
-  modal.addEventListener('shown.bs.modal', function () {
-    // Encuentra los input dentro del modal
-    var usuarioIdInput = document.getElementById('UT_usuario_id');
-    var cuentaInput = document.getElementById('UT_cuenta');
-    var idTriggerInput = document.getElementById('UT_IdTrigger');
-    var unidadTraderInput = document.getElementById('UT_unidadTrader');
+  function cargarDatosUsuario(userId, cuenta, triggerId) {
+    document.getElementById('UT_usuario_id').value = userId;
+    document.getElementById('UT_cuenta').value = cuenta;
+    document.getElementById('UT_IdTrigger').value = triggerId;
+  }
 
-    // Encuentra el botón que abrió el modal
-    var boton = document.getElementById('boton-unidadTrader-estrategia-usuario-noadmin');
 
-    // Obtiene los datos pasados desde el botón
-    var userId = boton.dataset.triggerUserId;
-    var cuenta = boton.dataset.userCuenta;
-    var idTrigger = boton.dataset.triggerId;
-    var ut = boton.dataset.userUt;
 
-    // Establece los valores en los input
-    usuarioIdInput.value = userId;
-    cuentaInput.value = cuenta;
-    idTriggerInput.value = idTrigger;
-    unidadTraderInput.value = ut;
-    
-    // Realiza una solicitud AJAX al backend para obtener el valor máximo de ut
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '/unidad-trader-mostrar/', true);
-    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);
-            // Actualiza el contenido del label con el valor máximo de ut
-            montoMinimoLabel.textContent = response.max_ut_ars;
-            // Cambia el color del texto del label a rojo
-            montoMinimoLabel.style.color = 'red';
+
+   
+  
+
+  $(document).ready(function() {
+    $('#editarUnidadTraderModal').on('shown.bs.modal', function () {
+      var UT_usuario_id = $('#UT_usuario_id').val();
+      var UT_cuenta = $('#UT_cuenta').val();
+      var UT_IdTrigger = $('#UT_IdTrigger').val();
+
+      // Objeto con los datos a enviar
+      var datos = {
+        UT_usuario_id: UT_usuario_id,
+        UT_cuenta: UT_cuenta,
+        UT_IdTrigger: UT_IdTrigger
+      };
+
+      // Envío AJAX
+      $.ajax({
+        type: 'POST',
+        url: '/unidad-trader-mostrar/', // URL del endpoint en Flask
+        data: datos,
+        success: function(response) {
+          debugger;
+          // Actualiza el contenido del label con el valor máximo de ut
+          $('#montoMinimoLabel').text(response.max_ut_ars);
+          // Cambia el color del texto del label a rojo
+          $('#montoMinimoLabel').css('color', 'red');
+        },
+        error: function(xhr, status, error) {
+          // Manejo de errores
+          console.error(xhr.responseText);
+          // Aquí puedes agregar código para manejar errores, como mostrar un mensaje de error al usuario
         }
-    };
-    // Envía los datos del formulario al backend
-    xhr.send('UT_usuario_id=' + userId + '&UT_cuenta=' + cuenta + '&UT_IdTrigger=' + idTrigger + '&UT_unidadTrader=' + ut);
+      });
+    });
   });
+
+
+  $(document).ready(function() {
+    $('#boton_guardar_ut').click(function() {
+      var UT_usuario_id = $('#UT_usuario_id').val();
+      var UT_cuenta = $('#UT_cuenta').val();
+      var UT_IdTrigger = $('#UT_IdTrigger').val();
+      var UT_unidadTrader = $('#UT_unidadTrader').val();
+
+      // Objeto con los datos a enviar
+      var datos = {
+        UT_usuario_id: UT_usuario_id,
+        UT_cuenta: UT_cuenta,
+        UT_IdTrigger: UT_IdTrigger,
+        UT_unidadTrader: UT_unidadTrader
+      };
+
+      // Envío AJAX
+      $.ajax({
+        type: 'POST',
+        url: '/unidad-trader-alta/', // URL del endpoint en Flask
+        data: datos,
+        success: function(response) {
+          // Manejar la respuesta del servidor
+          console.log(response);
+          $('#ut-' + response.trigger_data.id).text(response.trigger_data.ut);
+          // Por ejemplo, mostrar un mensaje de éxito al usuario
+          alert(response.resultado);
+          // Cerrar el modal después de guardar los datos
+          $('#editarUnidadTraderModal').modal('hide');
+        },
+        error: function(xhr, status, error) {
+          // Manejo de errores
+          console.error(xhr.responseText);
+          // Mostrar un mensaje de error al usuario
+          alert('Error al guardar los datos. Por favor, inténtalo de nuevo.');
+        }
+      });
+    });
+  });
+
+
+
+
+
+
+  
 
   
    
-  $('#editarUnidadTraderModalForm').submit(function(event) {
-    // Evita que se envíe el formulario de manera predeterminada
-    event.preventDefault();
+  
 
-    // Realiza la solicitud POST usando AJAX
-    $.ajax({
-        type: "POST",
-        url: $(this).attr('action'),
-        data: $(this).serialize(), // Serializa los datos del formulario
-        success: function(response) {
-            // Actualiza la tabla con la respuesta del servidor
-            $('#tabla-trigger tbody').append(
-                '<tr>' +
-                '<td></td>' + // Agrega los datos correspondientes a cada columna
-                '<td>' + response.cuenta_id + '</td>' +
-                '<td>' + response.tiempoInicio + '</td>' +
-                '<td>' + response.tiempoFin + '</td>' +
-                '<td>' + response.automatico + '</td>' +
-                '<td>' + response.nombre + '</td>' +
-                '<td>' + response.ut + '</td>' +
-                '<td class="d-flex">' +
-                '<!-- Agrega los botones de acción -->' +
-                '</td>' +
-                '</tr>'
-            );
-
-            // Cierra el modal después de enviar el formulario
-            $('#editarUnidadTraderModal').modal('hide');
-
-            // Limpia el formulario
-            $('#editarUnidadTraderModalForm')[0].reset();
-        },
-        error: function(xhr, status, error) {
-            // Maneja los errores de la solicitud AJAX
-            console.error(error);
-            alert('Error al procesar la solicitud. Por favor, inténtalo de nuevo.');
-        }
-    });
-});
 
 
 </script>
