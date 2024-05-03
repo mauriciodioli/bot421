@@ -16,7 +16,7 @@ from models.strategy import Strategy
 from models.unidadTrader import UnidadTrader
 
 from datetime import datetime
-from flask import Blueprint
+from flask import Blueprint,flash
 
 creaTabla = Blueprint('creaTabla',__name__)
 
@@ -37,6 +37,8 @@ def crea_tablas_DB():
     Broker.crear_tabla_brokers()
     Strategy.crear_tabla_strategy()
     UnidadTrader.crear_tabla_ut()
+    flash('Tablas creadas exitosamente', 'success')
+    print('tablas creadas exitosamente')
     
     
     

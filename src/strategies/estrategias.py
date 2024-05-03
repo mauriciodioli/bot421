@@ -72,12 +72,12 @@ def estrategias_usuario_nadmin():
             ut_por_trigger = {}
             for estrategia in estrategias:
                 ut = db.session.query(UnidadTrader).filter_by(trigger_id=estrategia.id).all()
-                
+                ut_por_trigger[estrategia.id] = 0
                 if ut:
                     ut_por_trigger[estrategia.id] = ut
                    
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
-            #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
     except:
        print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/notificaciones/errorEstrategiaABM.html")

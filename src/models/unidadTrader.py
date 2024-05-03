@@ -10,20 +10,20 @@ ma = Marshmallow()
 unidad_trader = Blueprint('unidad_trader',__name__) 
 class UnidadTrader(db.Model):
     __tablename__ = 'unidadTrader'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    cuenta_id = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)    
+    accountCuenta = db.Column(db.String(500), nullable=True)
     usuario_id = db.Column(db.Integer)
     trigger_id = db.Column(db.Integer)   
     ut = db.Column(db.Integer)  
 
-    def __init__(self, cuenta_id, usuario_id, trigger_id, ut):
-        self.cuenta_id = cuenta_id
+    def __init__(self, accountCuenta, usuario_id, trigger_id, ut):
+        self.accountCuenta = accountCuenta
         self.usuario_id = usuario_id
         self.trigger_id = trigger_id
         self.ut = ut
 
     def __repr__(self):
-        return f"UnidadTrader(id={self.id}, cuenta_id={self.cuenta_id}, usuario_id={self.usuario_id}, trigger_id={self.trigger_id}, ut={self.ut})"
+        return f"UnidadTrader(id={self.id}, cuenta_id={self.accountCuenta}, usuario_id={self.usuario_id}, trigger_id={self.trigger_id}, ut={self.ut})"
     @classmethod
     def crear_tabla_ut(cls):
         insp = inspect(db.engine)
@@ -34,7 +34,7 @@ class UnidadTrader(db.Model):
         
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id",  "cuenta_id","usuario_id","trigger_id","ut")
+        fields = ("id",  "accountCuenta","usuario_id","trigger_id","ut")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
