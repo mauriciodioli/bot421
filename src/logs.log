@@ -795,3 +795,4 @@ __inicio 14:11 ___fin 19:00
 2024-04-29 14:13:30,097 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
 2024-04-29 14:13:48,111 - INFO - http://127.0.0.1:5001/estrategia-002
 2024-04-29 14:13:48,112 - INFO - {'userCuenta': 'apipuntillo22583398', 'idTrigger': 27, 'access_token': 'access_token', 'idUser': 10, 'correo_electronico': 'dpuntillo@gmail.com', 'cuenta': '10861', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-002'}
+2024-05-03 16:09:23,485 - INFO - ______está logueado en produccion en LIVE___________
