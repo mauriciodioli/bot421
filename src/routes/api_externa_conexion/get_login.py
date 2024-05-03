@@ -267,7 +267,7 @@ def loginExtAutomatico():
                                             print("Variable agregada:", elemento)
                                             cuenta = ConexionesBroker[elemento]['cuenta']
                                     
-                                            if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
+                                            if accountCuenta ==  cuenta :
                                             
                             
                                                 conexionShedule(app, pyRofexInicializada=pyRofexInicializada,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
