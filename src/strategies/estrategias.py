@@ -14,6 +14,7 @@ from models.brokers import Broker
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.ficha import Ficha
+from models.unidadTrader import UnidadTrader
 from fichasTokens.fichas import crear_ficha
 
 import jwt
@@ -33,9 +34,24 @@ class States(enum.Enum):
 def estrategias_usuario_general():
     try:
       if request.method == 'GET': 
-           triggerEstrategia = db.session.query(TriggerEstrategia).all()
-           db.session.close()
-           return render_template("/estrategias/panelControEstrategiaUser.html",datos = [0,triggerEstrategia])
+            triggerEstrategia = db.session.query(TriggerEstrategia).all()
+            ut_por_trigger = {}
+
+            for trigger in triggerEstrategia:
+                ut = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
+                if ut:
+                    ut_por_trigger[trigger.id] = ut
+
+            db.session.close()
+
+            # Si no hay ningún dato de 'ut', envía solo 'triggerEstrategia'
+            if not ut_por_trigger:
+                return render_template("/estrategias/panelControEstrategiaUser.html",datos = [0,triggerEstrategia])
+
+            # Si hay datos de 'ut', envía 'ut_por_trigger'
+            return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,ut_por_trigger])
+
+          
     except:
        print('no hay usuarios') 
     return 'problemas con la base de datos'
@@ -50,14 +66,18 @@ def estrategias_usuario_nadmin():
             
             usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
             estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+               
+            
             db.session.close()
+            ut_por_trigger = {}
             for estrategia in estrategias:
-                print("ID:", estrategia.id)
-                print("Name:", estrategia.userCuenta)
-                # Print other attributes as needed
-                print()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
-    
+                ut = db.session.query(UnidadTrader).filter_by(trigger_id=estrategia.id).all()
+                
+                if ut:
+                    ut_por_trigger[estrategia.id] = ut
+                   
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
+            #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
     except:
        print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/notificaciones/errorEstrategiaABM.html")

@@ -21,7 +21,8 @@ class TriggerEstrategia(db.Model):
     nombreEstrategia = db.Column(db.String(500), nullable=False)
     
     
-    usuarios = relationship("Usuario", back_populates="triggerEstrategia")
+    usuarios = relationship("Usuario", back_populates="triggerEstrategia")   
+  
     
  # constructor
     def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,horaInicio,horaFin,ManualAutomatico,nombreEstrategia):
