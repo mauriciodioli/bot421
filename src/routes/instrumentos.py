@@ -19,8 +19,8 @@ instrumentos = Blueprint('instrumentos',__name__)
 
 ##########################AQUI ES LA ENTRADA A LA PAGINA INSTRUMENTOS####################
 
-def Getinstrumentos(): 
-     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()    
+def Getinstrumentos(account=None): 
+     repuesta_listado_instrumento = get.ConexionesBroker['pyRofex'].get_detailed_instruments(environment=account)    
      listado_instrumento = repuesta_listado_instrumento["instruments"]
      
      #for listado_instrumento in listado_instrumento:     
@@ -41,13 +41,16 @@ def delete_mer(id):
     flash('Operation Removed successfully')
     return redirect('/')
 
-def instrument_por_symbol(symbol):
+def instrument_por_symbol(symbol,account):
     try:
-        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-                   get.pyRofexInicializada.MarketDataEntry.OFFERS,
-                   get.pyRofexInicializada.MarketDataEntry.LAST]
+        pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+        entries = [pyRofexInicializada.MarketDataEntry.BIDS,
+                        pyRofexInicializada.MarketDataEntry.OFFERS,
+                        pyRofexInicializada.MarketDataEntry.LAST]
+        merdado_id = pyRofexInicializada.Market.ROFEX
+       
        # repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
-        repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries,environment=account)
+        repuesta_instrumento = pyRofexInicializada.get_market_data(ticker=symbol, entries=entries,environment=account)
 
         objeto = repuesta_instrumento['marketData']
 
@@ -75,26 +78,28 @@ def instrument_by_symbol():
         if request.method == 'POST': 
             symbol = request.form.get('symbol')
             marketId = request.form.get('selctorEnvironment')
+            account = request.form.get('accountCuenta')
             print("llego aquiiiiiiiiiiiiii",symbol)
             #print("llego aquiiiiiiiiiiiiii",marketId)
             #if marketId == '1':
             #   rofex = 'ROFX'
             #   print(rofex)
-            entries =  [ get.pyRofexInicializada.MarketDataEntry.BIDS,
-                        get.pyRofexInicializada.MarketDataEntry.OFFERS,
-                        get.pyRofexInicializada.MarketDataEntry.LAST,
-                        get.pyRofexInicializada.MarketDataEntry.CLOSING_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.OPENING_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.HIGH_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.LOW_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.SETTLEMENT_PRICE,
-                        get.pyRofexInicializada.MarketDataEntry.NOMINAL_VOLUME,
-                        get.pyRofexInicializada.MarketDataEntry.TRADE_EFFECTIVE_VOLUME,
-                        get.pyRofexInicializada.MarketDataEntry.TRADE_VOLUME,
-                        get.pyRofexInicializada.MarketDataEntry.OPEN_INTEREST]
+            pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+            entries =  [ pyRofexInicializada.MarketDataEntry.BIDS,
+                        pyRofexInicializada.MarketDataEntry.OFFERS,
+                        pyRofexInicializada.MarketDataEntry.LAST,
+                        pyRofexInicializada.MarketDataEntry.CLOSING_PRICE,
+                        pyRofexInicializada.MarketDataEntry.OPENING_PRICE,
+                        pyRofexInicializada.MarketDataEntry.HIGH_PRICE,
+                        pyRofexInicializada.MarketDataEntry.LOW_PRICE,
+                        pyRofexInicializada.MarketDataEntry.SETTLEMENT_PRICE,
+                        pyRofexInicializada.MarketDataEntry.NOMINAL_VOLUME,
+                        pyRofexInicializada.MarketDataEntry.TRADE_EFFECTIVE_VOLUME,
+                        pyRofexInicializada.MarketDataEntry.TRADE_VOLUME,
+                        pyRofexInicializada.MarketDataEntry.OPEN_INTEREST]
             print("symbol ",symbol)
            #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
-            repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+            repuesta_instrumento = pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
            
             
             #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)
@@ -212,10 +217,10 @@ def get_instrumento(id):
     return render_template("editarInstrumento.html", dato = registroAEditar)
   
  
-def instrumentos_existentes(listado):
+def instrumentos_existentes(account,listado):
      listado_final = []
-     
-     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+     pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+     repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
      listado_instrumentos = repuesta_listado_instrumento['instruments']
      tickers_existentes = obtener_array_tickers(listado_instrumentos)
      #print(tickers_existentes)     

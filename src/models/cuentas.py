@@ -26,6 +26,9 @@ class Cuenta(db.Model):
     ficha = relationship("Ficha", back_populates="cuentas")
     trazaFichas = relationship('TrazaFicha', backref='cuenta')
     usuarios = relationship("Usuario", back_populates="cuentas")
+    
+   
+   
 
     # constructor
     def __init__(self, id, user_id, userCuenta, passwordCuenta, accountCuenta, selector, broker_id):
