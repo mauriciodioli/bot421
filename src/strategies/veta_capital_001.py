@@ -32,7 +32,7 @@ import sys
 
 
 
-veta_capital_006 = Blueprint('veta_capital_006',__name__)
+veta_capital_001 = Blueprint('veta_capital_001',__name__)
 
 
 class States(enum.Enum):
@@ -53,9 +53,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@veta_capital_006.route('/veta-capital-006/', methods=['POST'])
-def vetacapital006():
-    print('00000000000000000000000veta-capital-00600000000000000000000000000')
+@veta_capital_001.route('/estrategia-002/', methods=['POST'])
+def vetacapital001():
+    print('00000000000000000000000estrategia-00200000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -119,7 +119,7 @@ def vetacapital006():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en veta_capital_006.py ")
+           print("no pudo conectar el websocket en veta_capital_001.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -197,10 +197,10 @@ def market_data_handler_estrategia(message):
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-        #  print("FUN_ veta_capital_006 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+        #  print("FUN_ veta_capital_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
     
         
-@veta_capital_006.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@veta_capital_001.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -219,7 +219,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@veta_capital_006.route('/botonPanico/', methods = ['POST']) 
+@veta_capital_001.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)
