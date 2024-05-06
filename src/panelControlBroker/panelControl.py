@@ -70,23 +70,32 @@ def panel_control():
      usuario_id = request.args.get('usuario_id')
      access_token = request.args.get('access_token')
      if access_token:
-        user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-   
-     
-        respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+        try:  
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
         
-        if  determinar_pais(pais) is not None:
-            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-        else:
-            enviar_leer_sheet(pais)
-            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
- 
-         
-        if layout == 'layout_signal':
-            return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
-        if layout == 'layout' or layout == 'layoutConexBroker':      
-            return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
-        return "Página no encontrada"  # Cambia el mensaje según sea necesario
+            
+                respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+                
+                if  determinar_pais(pais) is not None:
+                    datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+                else:
+                    enviar_leer_sheet(pais)
+                    datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+        
+                
+                if layout == 'layout_signal':
+                    return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+                if layout == 'layout' or layout == 'layoutConexBroker':      
+                    return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
+                return "Página no encontrada"  # Cambia el mensaje según sea necesario
+        except jwt.ExpiredSignatureError:
+            # El token ha expirado
+            # Maneja el caso en que el token ha expirado
+            pass
+        except jwt.InvalidTokenError:
+            # El token es inválido
+            # Maneja el caso en que el token no es válido
+            pass
      else:
         return render_template('notificaciones/logeeNuevamente.html',layout = layout)
 
