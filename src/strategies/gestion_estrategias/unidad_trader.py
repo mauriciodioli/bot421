@@ -31,6 +31,7 @@ def unidad_trader_mostrar():
     
     
     ut_ars = []
+    ut_cedears = []
     
     # Iterar sobre las listas de datos y filtrar los valores para 'tipo_de_activo' igual a 'ARS'
    # Iterar sobre los elementos de la lista a partir del segundo elemento
@@ -46,10 +47,29 @@ def unidad_trader_mostrar():
                 # Accede al precio dentro del diccionario
                 precio = data[0]['price']
                 ut_ars.append(precio)
+        else:
+            if value[1] == 'CEDEAR':
+                print(value[1])
+                resultado = instrument_por_symbol(value[0],UT_cuenta)
+                for item in resultado:
+                    # Convierte el string JSON a un diccionario
+                    json_string = item[3].replace("'", '"')
+                    data = json.loads(json_string)
+                    # Accede al precio dentro del diccionario
+                    precio = data[0]['price']
+                    ut_cedears.append(precio)
+
 
     # Encontrar el valor más alto de 'ut' para 'tipo_de_activo' igual a 'ARS'
     max_ut_ars = max(ut_ars)
-    return jsonify({'max_ut_ars': max_ut_ars})
+    max_ut_cedears = max(ut_cedears)
+    data = {
+    'max_ut_ars': max_ut_ars,
+    'max_ut_cedears': max_ut_cedears
+    }
+
+    # Enviar la respuesta JSON con los datos
+    return jsonify(data)
     
    
 

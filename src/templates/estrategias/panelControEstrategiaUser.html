@@ -232,8 +232,15 @@
         <div class="modal-body">
           <!-- Subtítulo en color azul -->
           <h6 style="color: blue;">Monto mínimo sugerido para esta estrategia</h6>
-          <!-- Label para el valor cargado desde AJAX -->
-          <label id="montoMinimoLabel" style="font-size: larger;"></label>
+           <!-- Subtítulo en negrita para ARS -->
+           <strong style="color: blue;">ARG:</strong>
+          <!-- Label para el valor máximo de ARS cargado desde AJAX -->
+          <label id="montoMinimoLabelARG" style="font-size: larger;"></label>
+          <!-- Subtítulo en negrita para CEDEAR -->
+          <strong style="color: red;">CEDEAR:</strong>
+          <!-- Label para el valor máximo de CEDEAR cargado desde AJAX -->
+          <label id="montoMinimoLabelCedears" style="font-size: larger;"></label>
+          
           <div class="form-group">
             <input type="hidden" id="UT_usuario_id" name="UT_usuario_id" value="">
           </div>
@@ -463,6 +470,17 @@
                   }
               }
               
+              document.getElementById('registro-usuario-form').addEventListener('submit', function(event) {
+                // Obtener el valor del campo "estrategia"
+                var estrategiaValue = document.getElementById('estrategia').value;
+          
+                // Validar si el campo "estrategia" tiene valor
+                if (!estrategiaValue) {
+                  // Si el campo "estrategia" está vacío, evitar el envío del formulario
+                  event.preventDefault();
+                  alert('Por favor, selecciona una estrategia antes de enviar el formulario.');
+                }
+              });         
     
   });
   
@@ -566,9 +584,13 @@
         success: function(response) {
           debugger;
           // Actualiza el contenido del label con el valor máximo de ut
-          $('#montoMinimoLabel').text(response.max_ut_ars);
+          $('#montoMinimoLabelARG').text(response.max_ut_ars);
           // Cambia el color del texto del label a rojo
-          $('#montoMinimoLabel').css('color', 'red');
+          $('#montoMinimoLabelARG').css('color', 'red');
+           // Actualiza el contenido del label con el valor máximo de UT para cedears
+          $('#montoMinimoLabelCedears').text(response.max_ut_cedears);
+          // Cambia el color del texto del label a rojo
+          $('#montoMinimoLabelCedears').css('color', 'red');
         },
         error: function(xhr, status, error) {
           // Manejo de errores

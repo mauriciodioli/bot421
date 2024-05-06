@@ -293,7 +293,7 @@ def generarArchivoEstrategia(nombreEstrategia,estrategia_copiar,archivoEstrategi
 
 @estrategias.route("/alta-estrategias-trig", methods=["POST"])
 def alta_estrategias_trig():
-  #  try:
+    try:
         if request.method == 'POST':
             user_id = request.form['usuario_id']          
             correo_electronico = request.form['correo_electronico_form_altaEstrategia']
@@ -306,10 +306,11 @@ def alta_estrategias_trig():
             nombre_broker = db.session.query(Broker.nombre).filter_by(id=cuentas.broker_id).first()
             estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
 
-            if estrategias is None:
+            if estrategias is None or  len(estrategias) == 0:
                 if nombre_broker:
-                    
-                    nombreEstrategia = nombre_broker[0]+'-001'
+                    nombre_broker = nombre_broker[0].replace(" ", "_")
+                    nombreEstrategia = nombre_broker+'_001'
+                   
             else:    
                 # Lista para almacenar los nombres
                 # Lista para almacenar los últimos tres números de los nombres
@@ -336,7 +337,7 @@ def alta_estrategias_trig():
                 nombre_broker = nombre_broker[0].replace(" ", "_")
 
                 nombreEstrategia = nombre_broker+'_'+numero_nuevo
-            estrategia_copiar = 'estrategia-002'
+            estrategia_copiar = archivoEstrategia
             generarArchivoEstrategia(nombreEstrategia,estrategia_copiar,archivoEstrategia)
            
          
@@ -399,10 +400,10 @@ def alta_estrategias_trig():
                 # agregar_estrategia_nueva_app(nombreEstrategia)
                 return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias])
            
-   # except:
-   #     print('no hay estrategias')
-   # flash('No se puede regitrar la estrategia.')
-   # return  render_template("/notificaciones/errorEstrategiaABM.html")
+    except:
+        print('no hay estrategias')
+    flash('No se puede regitrar la estrategia.')
+    return  render_template("/notificaciones/errorEstrategiaABM.html")
   
 
 @estrategias.route('/inicioEstrategias/')
