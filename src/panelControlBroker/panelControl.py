@@ -34,49 +34,61 @@ def panel_control_sin_cuenta():
     pais = request.args.get('country')
     layout = request.args.get('layoutOrigen')
     usuario_id = request.args.get('usuario_id')
+    access_token = request.args.get('access_token')
     
    
-    respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+   
+    if access_token:
+        respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+        user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+      
+        if determinar_pais(pais)  is not None:
+        
+            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+            if len(datos_desempaquetados) != 0:
+                            get.diccionario_global_sheet_intercambio = datos_desempaquetados
+            else:
+                            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+        else:
+                enviar_leer_sheet(pais)
+                datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
     
-    if determinar_pais(pais)  is not None:
-     
-     datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-     if len(datos_desempaquetados) != 0:
-       get.diccionario_global_sheet_intercambio = datos_desempaquetados
-     else:
-       datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+        if layout == 'layout_signal':
+            return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
+        if layout == 'layout': 
+            return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
+        if layout == 'layout' or layout == 'layoutConexBroker':        
+            return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
+        return "Página no encontrada"  # Cambia el mensaje según sea necesario
     else:
-      enviar_leer_sheet(pais)
-      datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-    
-    if layout == 'layout_signal':
-        return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
-    if layout == 'layout': 
-        return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
-    if layout == 'layout' or layout == 'layoutConexBroker':        
-        return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
-    return "Página no encontrada"  # Cambia el mensaje según sea necesario
+        return render_template('notificaciones/logeeNuevamente.html',layout = layout)
 
 @panelControl.route("/panel_control")
 def panel_control():
      pais = request.args.get('country')
      layout = request.args.get('layoutOrigen')
      usuario_id = request.args.get('usuario_id')
+     access_token = request.args.get('access_token')
+     if access_token:
+        user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+   
      
-     
-     respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
-     if  determinar_pais(pais) is not None:
-        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-     else:
-        enviar_leer_sheet(pais)
-        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+        respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
+        
+        if  determinar_pais(pais) is not None:
+            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+        else:
+            enviar_leer_sheet(pais)
+            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
  
          
-     if layout == 'layout_signal':
-        return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
-     if layout == 'layout' or layout == 'layoutConexBroker':      
-        return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
-     return "Página no encontrada"  # Cambia el mensaje según sea necesario
+        if layout == 'layout_signal':
+            return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+        if layout == 'layout' or layout == 'layoutConexBroker':      
+            return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
+        return "Página no encontrada"  # Cambia el mensaje según sea necesario
+     else:
+        return render_template('notificaciones/logeeNuevamente.html',layout = layout)
 
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>")
 def panel_control_atomatico(pais,usuario_id):
