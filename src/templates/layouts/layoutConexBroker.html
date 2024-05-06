@@ -317,9 +317,10 @@
             localStorage.setItem('paisSeleccionado', pais);
         
             usuario_id = localStorage.getItem('usuario_id');
+            access_token = localStorage.getItem('access_token');
         
             var layoutOrigen = 'layoutConexBroker';
-            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
+            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
             window.location.href = url;
           }); 
         
@@ -331,9 +332,10 @@
             localStorage.setItem('paisSeleccionado', pais);
         
             var usuario_id = localStorage.getItem('usuario_id');
+            access_token = localStorage.getItem('access_token');
         
             var layoutOrigen = 'layoutConexBroker';
-            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
+            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
             window.location.href = url;
         }
          correo_electronico = localStorage.getItem("correo_electronico");  

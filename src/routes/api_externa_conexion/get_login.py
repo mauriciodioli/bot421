@@ -167,7 +167,7 @@ def panel_control_broker():
 def loginExtAutomatico():
     print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
-        try:
+       # try:
             #selector = request.form.get('environment')
             selector = request.json.get('simuladoOproduccion')
             access_token = request.json.get('access_token')
@@ -256,32 +256,22 @@ def loginExtAutomatico():
                                 else:
                                       
                                         pyRofexInicializada = pyRofex
-                                        if sobreEscituraPyRofex == True:
-                                            ambiente = copy.deepcopy(envNuevo)
-                                            pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
-                                            environments = accountCuenta
-                                                             
-                                        ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
-                                        
-                                        for elemento in ConexionesBroker:
-                                            print("Variable agregada:", elemento)
-                                            cuenta = ConexionesBroker[elemento]['cuenta']
-                                    
-                                            if accountCuenta ==  cuenta :
-                                            
-                            
-                                                conexionShedule(app, pyRofexInicializada=pyRofexInicializada,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
-                                
-                                                refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
-                                
-                                
-                                                print(f"Está logueado en {selector} en {environments}")
-                                                ConexionesBroker[accountCuenta]['identificador'] = True
-                                                break  # Salir del bucle for si se completa correctamente
-                                            else:               
-                                                pass
-                                            print("pasa hilo hilo_principal.start() planificar_schedule")
-                                if rutaDeLogeo != 'Home':      
+                                       
+                                        conexionShedule(app,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+                                        pyRofexInicializada1 = ConexionesBroker[accountCuenta]['pyRofex']
+                                        accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada1,accountCuenta1)
+                                        ConexionesBroker[accountCuenta]['identificador'] = True
+                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                        resp.headers['Content-Type'] = 'application/json'
+                                        set_access_cookies(resp, access_token)
+                                        set_refresh_cookies(resp, refresh_token)
+                                        return resp
+                                      
+                                if rutaDeLogeo != 'Home':  
+                                      pyRofexInicializada1 = ConexionesBroker[accountCuenta]['pyRofex']
+                                      accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                      refrescoValorActualCuentaFichas(user_id,pyRofexInicializada1,accountCuenta1)
                                       resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                       resp.headers['Content-Type'] = 'application/json'
                                       set_access_cookies(resp, access_token)
@@ -321,13 +311,13 @@ def loginExtAutomatico():
             else:
                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                     
-        except jwt.InvalidTokenError:
-            print("El token es inválido")
-        except jwt.ExpiredSignatureError:
-            print("El token ha expirado")
-        except Exception as e:
-            print("Otro error:", str(e))
-        return render_template("cuentas/registrarCuentaBroker.html")
+       # except jwt.InvalidTokenError:
+       #     print("El token es inválido")
+       # except jwt.ExpiredSignatureError:
+       #     print("El token ha expirado")
+        #except Exception as e:
+        #    print("Otro error:", str(e))
+        #return render_template("cuentas/registrarCuentaBroker.html")
 
 
 
