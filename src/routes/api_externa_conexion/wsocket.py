@@ -34,31 +34,36 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=No
       #app.logger.info(endPoint)
       api_url = endPoint[0]
       ws_url = endPoint[1]
-         
-      if ( get.ConexionesBroker or 
-          all(entry['cuenta'] != Cuenta for entry in get.ConexionesBroker.values()) or 
-                        (Cuenta in get.ConexionesBroker and get.ConexionesBroker[Cuenta].get('identificador') == False)):
-  
-            sobreEscituraPyRofex = True
-            if sobreEscituraPyRofex == True:
-                ambiente = copy.deepcopy(get.envNuevo)
-                pyRofexInicializada = pyRofex
-                pyRofexInicializada._add_environment_config(enumCuenta=account,env=ambiente)
-                environments = account
-            else:    
-                if selector == 'simulado':
-                    environments = pyRofexInicializada.Environment.REMARKET
-                else:                                    
-                    environments = pyRofexInicializada.Environment.LIVE
-            
-            pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
-            pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
-            pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
-            pyRofexInicializada.initialize(user=cuenta.userCuenta, password=passwordCuenta, account=account, environment=environments)                       
-             
-            get.ConexionesBroker[Cuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': account,'identificador': True}
-               
-      wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta)
+      if (len(get.ConexionesBroker) > 0 ):
+          if account in get.ConexionesBroker:
+              #if  ConexionesBroker[accountCuenta].get('identificador') == True:
+                  pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+                  repuesta_operacion = pyRofexInicializada.get_account_report(account=account, environment=account)
+                  if repuesta_operacion:
+                      pass
+      else:   
+        
+              sobreEscituraPyRofex = True
+              if sobreEscituraPyRofex == True:
+                  ambiente = copy.deepcopy(get.envNuevo)
+                  pyRofexInicializada = pyRofex
+                  pyRofexInicializada._add_environment_config(enumCuenta=account,env=ambiente)
+                  environments = account
+              else:    
+                  if selector == 'simulado':
+                      environments = pyRofexInicializada.Environment.REMARKET
+                  else:                                    
+                      environments = pyRofexInicializada.Environment.LIVE
+              
+              pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
+              pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
+              pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
+              pyRofexInicializada.initialize(user=cuenta.userCuenta, password=passwordCuenta, account=account, environment=environments)                       
+              
+              get.ConexionesBroker[account] = {'pyRofex': pyRofexInicializada, 'cuenta': account,'identificador': True}
+                
+              wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta)
+              return True
       return True
 
 def wsocketConexion(app,pyRofexInicializada,accountCuenta):
