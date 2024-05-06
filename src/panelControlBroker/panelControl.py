@@ -90,8 +90,8 @@ def panel_control():
      else:
         return render_template('notificaciones/logeeNuevamente.html',layout = layout)
 
-@panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>")
-def panel_control_atomatico(pais,usuario_id):
+@panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/")
+def panel_control_atomatico(pais,usuario_id,access_token):
      
      if  determinar_pais(pais) is not None:
        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)

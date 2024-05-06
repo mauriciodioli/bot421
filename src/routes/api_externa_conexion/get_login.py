@@ -307,7 +307,7 @@ def loginExtAutomatico():
                                   set_refresh_cookies(resp, refresh_token)
                                   return resp 
                 else: 
-                    return render_template('home.html', cuenta=[account,user,simuladoOproduccion]) 
+                    return render_template('home.html', cuenta=[accountCuenta,user,simuladoOproduccion]) 
             else:
                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
                     
@@ -418,34 +418,7 @@ def loginExtCuentaSeleccionadaBroker():
                            
                             ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
                             #ConexionesBroker[accountCuenta]['identificador'] = True
-                                    
-                    # Buscar "veta" en la cadena
-                    #if re.search(r'veta', endPoint_veta[1]):
-                       # print("Se encontró 'veta' en la URL.")
-                       # prefijo = "pyRofexInicializada_veta_" + accountCuentaVeta
-                        # Verificar si la cuenta con el valor accountCuenta no existe en el diccionario
-                       # if not ConexionesBroker or all(entry['cuenta'] != accountCuentaVeta for entry in ConexionesBroker.values()):
-                          
-                        
-                       #     pyRofex_veta = pyRofex
-                        
-                       #     pyRofex_veta._add_environment_config(enumCuenta=accountCuentaVeta,env=env)
-                           
-                      #      if selector == 'simulado':
-                      #          environmentsVeta = pyRofex_veta.Environment.REMARKET
-                      #      else:
-                      #          environmentsVeta = accountCuentaVeta
-                           
-                      #      pyRofex_veta._set_environment_parameter("url", api_url_veta, environmentsVeta)                          
-                          #  pyRofex_veta._set_environment_parameter("ws", ws_url_veta, environmentsVeta)                            
-                      #      pyRofex_veta._set_environment_parameter("proprietary", "PBCP", environmentsVeta)                           
-                      #      pyRofex_veta.initialize(user=user_veta, password=password_veta, account=accountCuentaVeta, environment=environmentsVeta)
-                      #      resultado =  pyRofex_bull.get_account_report(account=accountCuenta,environment=environmentsBull)
-                      #      resultado1 =  pyRofex_veta.get_account_report(account=accountCuentaVeta,environment=environmentsVeta)
-                            
-                            
-                       #     ConexionesBroker[accountCuentaVeta] = {'pyRofex': pyRofex_veta, 'cuenta': accountCuentaVeta, 'identificador': False}
-                       #     ConexionesBroker[accountCuentaVeta]['identificador'] = True
+            
                         
                     while True:
                         try:  
