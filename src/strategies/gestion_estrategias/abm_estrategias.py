@@ -14,6 +14,7 @@ import jwt
 from models.usuario import Usuario
 from models.strategy import Strategy
 from models.brokers import Broker
+import strategies.gestion_estrategias.unidad_trader as utABM 
 
 abm_estrategias = Blueprint('abm_estrategias',__name__)
 
@@ -88,6 +89,7 @@ def abm_estrategias_eliminar():
             print(dato)
             db.session.delete(dato)
             db.session.commit()
+            
             flash('Operation Removed successfully')
             todas = db.session.query(Strategy).all()
             db.session.close()
