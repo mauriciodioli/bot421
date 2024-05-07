@@ -110,7 +110,12 @@ def panel_control_atomatico(pais,usuario_id,access_token):
  
      if datos_desempaquetados:
      # print(datos_desempaquetados)
-      return jsonify(datos=datos_desempaquetados)
+       return jsonify(datos=datos_desempaquetados)
+     else:
+        # Si datos_desempaquetados está vacío, devuelve una respuesta vacía
+        return jsonify(datos={})
+      # Si ninguna de las condiciones anteriores se cumple, devuelve una respuesta predeterminada
+     return jsonify(message="No se encontraron datos disponibles")
 
 
 def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
