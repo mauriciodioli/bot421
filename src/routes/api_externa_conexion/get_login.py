@@ -104,6 +104,20 @@ api_url = None
 ws_url = None
 api_url_veta = None
 ws_url_veta = None
+REMARKET ={"url": "https://api.remarkets.primary.com.ar/",
+        "ws": "wss://api.remarkets.primary.com.ar/",
+        "ssl": True,
+        "proxies": None,
+        "rest_client": None,
+        "ws_client": None,
+        "token": None,
+        "user": None,
+        "password": None,
+        "account": None,
+        "initialized": False,
+        "proprietary": "PBCP",
+        "heartbeat": 30,
+        "ssl_opt": None}
 envNuevo =  {"url": "https://api.primary.com.ar/",
         "ws": "wss://api.primary.com.ar/",
         "ssl": True,
@@ -325,7 +339,9 @@ def loginExtAutomatico():
 
 @get_login.route("/loginExtCuentaSeleccionadaBroker", methods=['POST'])
 def loginExtCuentaSeleccionadaBroker():
-     if request.method == 'POST':
+   
+    try:
+      if request.method == 'POST':
         origin_page = request.form.get('origin_page')
         user = request.form.get('usuario')
         password = request.form.get('contraseña')
@@ -333,136 +349,122 @@ def loginExtCuentaSeleccionadaBroker():
         access_token = request.form.get('access_token')       
         src_directory1 = os.getcwd()#busca directorio raiz src o app 
         logs_file_path = os.path.join(src_directory1, 'logs.log') 
-        global api_url, ws_url  
+        global ConexionesBroker,api_url, ws_url  
        
+        if access_token:
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+       
+                if origin_page == 'login':
+                    selector = request.form.get('environment')
+                    print('selector ',selector)
+                    
+                else: 
+                    selector = request.form.get('selectorEnvironment')
+                    print('selector ',selector)
+                
+                
             
-       
-       # logs_file_path = os.path.join(src_directory, 'logs.log')
-        # Abrir el archivo en modo de escritura para borrar su contenido
-#        with open(logs_file_path, 'w') as f:
-#            pass  # No es necesario escribir nada, solo abrir y cerrar el archivo borrará su contenido
-#        print("El contenido del archivo logs.log ha sido borrado.")
-          # Variable local para mantener un registro de los hilos iniciados aquí
-      
-        if origin_page == 'login':
-            selector = request.form.get('environment')
-            print('selector ',selector)
-            
-        else: 
-            selector = request.form.get('selectorEnvironment')
-            print('selector ',selector)
-        
-        
-       
-        if not selector or not user or not password or not accountCuenta:
-            flash('Falta información requerida')
-            return redirect(url_for('autenticacion.index'))
+                if not selector or not user or not password or not accountCuenta:
+                    flash('Falta información requerida')
+                    return redirect(url_for('autenticacion.index'))
 
-        try:
-           
-            app = current_app._get_current_object() 
-            #creaJsonParaConextarseSheetGoogle()
-            if selector == 'simulado':
-                # Configurar para el entorno de simulación
-                environments = pyRofexInicializada.Environment.REMARKET
-                api_url = ''
-                ws_url = ''          
-            else:
-                
-                # Configurar para el entorno LIVE
-               # accountCuenta = '10861'
-                endPoint = inicializar_variables(accountCuenta)
-               # app.logger.info(endPoint)
-              
-                api_url = endPoint[0]
-                ws_url = endPoint[1]
-                
-                accountCuentaVeta = '44593'
-                endPoint_veta = inicializar_variables(accountCuentaVeta)
-               # app.logger.info(endPoint_veta)
-              
-                api_url_veta = endPoint_veta[0]
-                ws_url_veta = endPoint_veta[1]
-                global ConexionesBroker
-                
-                user_veta ='23246212899'
-                password_veta = 'EceQE5lU_'
-                sobreEscituraPyRofex = True
-                if access_token:
-                    user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                           
-                  
-                # Verificar si la cuenta con el valor accountCuenta no existe en el diccionario
-                    if (not ConexionesBroker or 
-                        all(entry['cuenta'] != accountCuenta for entry in ConexionesBroker.values()) or 
-                        (accountCuenta in ConexionesBroker and ConexionesBroker[accountCuenta].get('identificador') == False)):
-  
-   
-                            #pyRofexInicializada = pyRofex
-                            if sobreEscituraPyRofex == True:
-                                ambiente = copy.deepcopy(envNuevo)
-                                pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
-                                environments = accountCuenta
-                            else:    
-                                if selector == 'simulado':
-                                    environments = pyRofexInicializada.Environment.REMARKET
-                                else:                                    
-                                    environments = pyRofexInicializada.Environment.LIVE
-                            
-                            pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
-                            pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
-                            pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
-                            pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
-                          #  restClientEnv = RestClient(environments)
-                          #  wsClientEnv = WebSocketClient(environments)
-                           
-                            ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
-                            #ConexionesBroker[accountCuenta]['identificador'] = True
             
+            
+                app = current_app._get_current_object() 
+                #creaJsonParaConextarseSheetGoogle()
+                if selector == 'simulado':
+                    ambiente = copy.deepcopy(REMARKET)
+                    pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
+                    environments = accountCuenta                                        
+                    pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
+                    pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                    ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
+                                            
+                else:
+                    
+                        # Configurar para el entorno LIVE              
+                        endPoint = inicializar_variables(accountCuenta)
+                    # app.logger.info(endPoint)
+                    
+                        api_url = endPoint[0]
+                        ws_url = endPoint[1]
                         
-                    while True:
-                        try:  
-                            for elemento in ConexionesBroker:
-                                print("Variable agregada:", elemento)
-                                cuenta = ConexionesBroker[elemento]['cuenta']
                         
-                                if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
+                    
+                        sobreEscituraPyRofex = True
+                            
+                    
+                    # Verificar si la cuenta con el valor accountCuenta no existe en el diccionario
+                        if (not ConexionesBroker or 
+                            all(entry['cuenta'] != accountCuenta for entry in ConexionesBroker.values()) or 
+                            (accountCuenta in ConexionesBroker and ConexionesBroker[accountCuenta].get('identificador') == False)):
+    
+    
+                                #pyRofexInicializada = pyRofex
+                                if sobreEscituraPyRofex == True:
+                                    ambiente = copy.deepcopy(envNuevo)
+                                    pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
+                                    environments = accountCuenta
+                                else:    
+                                    if selector == 'simulado':
+                                        environments = pyRofexInicializada.Environment.REMARKET
+                                    else:                                    
+                                        environments = pyRofexInicializada.Environment.LIVE
                                 
+                                pyRofexInicializada._set_environment_parameter("url", api_url, environments)                          
+                                pyRofexInicializada._set_environment_parameter("ws", ws_url, environments)                            
+                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
+                                pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                            #  restClientEnv = RestClient(environments)
+                            #  wsClientEnv = WebSocketClient(environments)
+                            
+                                ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
+                                #ConexionesBroker[accountCuenta]['identificador'] = True
                 
-                                    conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                            
+                while True:
+                            try:  
+                                for elemento in ConexionesBroker:
+                                    print("Variable agregada:", elemento)
+                                    cuenta = ConexionesBroker[elemento]['cuenta']
+                            
+                                    if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
+                                    
                     
-                                    refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
-                    
-                    
-                                    print(f"Está logueado en {selector} en {environments}")
-                                    ConexionesBroker[accountCuenta]['identificador'] = True
-                                    break  # Salir del bucle for si se completa correctamente
-                                else:               
-                                    pass
-                                
-                        except RuntimeError:
-                                # Manejar la excepción aquí
-                                print("Se produjo un RuntimeError durante la iteración. Reiniciando el bucle...")
-                                continue  # Volver al inicio del bucle while para intentar de nuevo    
-                            # Si llegamos aquí, significa que el bucle for se completó sin excepciones
-                        break  # Salir del bucle while ya que se completó correctamente
-# Redirige a la página de origen según el valor de origin_page
+                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                        
+                                        refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                        
+                        
+                                        print(f"Está logueado en {selector} en {environments}")
+                                        ConexionesBroker[accountCuenta]['identificador'] = True
+                                        break  # Salir del bucle for si se completa correctamente
+                                    else:               
+                                        pass
+                                    
+                            except RuntimeError:
+                                    # Manejar la excepción aquí
+                                    print("Se produjo un RuntimeError durante la iteración. Reiniciando el bucle...")
+                                    continue  # Volver al inicio del bucle while para intentar de nuevo    
+                                # Si llegamos aquí, significa que el bucle for se completó sin excepciones
+                            break  # Salir del bucle while ya que se completó correctamente
+    # Redirige a la página de origen según el valor de origin_page
                 if origin_page == 'login':
                     return render_template('home.html', cuenta=[accountCuenta, user, selector])
                 elif origin_page == 'cuentasDeUsusario':
-                    return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
+                        return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
                 else:
-                    # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
-                    return render_template('registrarCuentaBroker.html')
+                        # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
+                        return render_template('registrarCuentaBroker.html')
 
-        except jwt.ExpiredSignatureError:
-            flash("El token ha expirado")
-        except jwt.InvalidTokenError:
-            flash("El token es inválido")
-      #  except Exception as e:
-      #      print('Error inesperado:', e)
-      #      flash('No se pudo iniciar sesión')
-      #      return render_template('errorLogueo.html')
+    except jwt.ExpiredSignatureError:
+        flash("El token ha expirado")
+    except jwt.InvalidTokenError:
+        flash("El token es inválido")
+    #  except Exception as e:
+    #      print('Error inesperado:', e)
+    #      flash('No se pudo iniciar sesión')
+    #      return render_template('errorLogueo.html')
 
 
 

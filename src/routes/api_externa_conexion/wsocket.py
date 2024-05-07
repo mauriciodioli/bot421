@@ -93,96 +93,79 @@ def detenerWSSuscripcionInstrumentos():
    
 
 
-@wsocket.route('/suscriptos/')
+@wsocket.route('/suscriptos/', methods = ['POST'])
 def suscriptos():
       try:
-        #traigo los instrumentos para suscribirme
-        mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
-        longitudLista = len(mis_instrumentos)
-        print(len(mis_instrumentos),"<<<<<---------------------mis_instrumentos --------------------------->>>>>> ",mis_instrumentos)
-        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
-      # print("repuesta_listado_instrumento repuesta_listado_instrumento ",repuesta_listado_instrumento)
-        listado_instrumentos = repuesta_listado_instrumento['instruments']   
-        tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-        instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
-      
-      ##aqui se conecta al ws
+        if request.method == "POST":     
+     
+          Ticker = request.form["symbol"]                 
+          Ticker = Ticker.replace("*", " ")
+          account = request.form["websocketSuscricionCuenta"] 
+          access_token = request.form["websocketSuscricionToken"] 
+          #traigo los instrumentos para suscribirme
+          mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
+          longitudLista = len(mis_instrumentos)
+          pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']  
+          repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
+        # print("repuesta_listado_instrumento repuesta_listado_instrumento ",repuesta_listado_instrumento)
+          listado_instrumentos = repuesta_listado_instrumento['instruments']   
+          tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+          instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
         
-        get.pyRofexInicializada.init_websocket_connection(market_data_handler,order_report_handler,error_handler,exception_error)
-        print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")
-      
-        #### aqui define el MarketDataEntry
-        entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-                    get.pyRofexInicializada.MarketDataEntry.OFFERS,
-                    get.pyRofexInicializada.MarketDataEntry.LAST]
-       # while True: 
+        ##aqui se conecta al ws
+          
+          pyRofexInicializada.init_websocket_connection(market_data_handler,order_report_handler,error_handler,exception_error)
+          print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")
+        
+          #### aqui define el MarketDataEntry
+          entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
+                      get.pyRofexInicializada.MarketDataEntry.OFFERS,
+                      get.pyRofexInicializada.MarketDataEntry.LAST]
+        # while True: 
 
-          ###asi puedo llamar otra funcion para manejar los datos del ws#####      
-          #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
-          #### aqui se subscribe   
-        print("<<<-----------entries instrumento_suscriptio--------->>>>> ",entries)              
-        print("<<<-----------instrumentos_existentes a suscribir en wsocket.py--------->>>>>",instrumentos_existentes)       
-        mensaje =get.pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
+            ###asi puedo llamar otra funcion para manejar los datos del ws#####      
+            #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
+            #### aqui se subscribe   
+          print("<<<-----------entries instrumento_suscriptio--------->>>>> ",entries)              
+          print("<<<-----------instrumentos_existentes a suscribir en wsocket.py--------->>>>>",instrumentos_existentes)       
+          mensaje =pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
+          
+          print("instrumento_suscriptio",mensaje)
+            # Subscribes to an Invalid Instrument (Error Message Handler should be call)
+          # get.pyRofexInicializada.market_data_subscription(tickers=["InvalidInstrument"],entries=entries)
         
-        print("instrumento_suscriptio",mensaje)
-          # Subscribes to an Invalid Instrument (Error Message Handler should be call)
-        # get.pyRofexInicializada.market_data_subscription(tickers=["InvalidInstrument"],entries=entries)
-       
-        #print("report encontrado ",report) 
-       # time.sleep(100)
-       # time.sleep(1)  
-     # except KeyboardInterrupt:
-      #  pass
-       # get.pyRofexInicializad ºa.close_websocket_connection()
-       
-       
-        return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
+          #print("report encontrado ",report) 
+        # time.sleep(100)
+        # time.sleep(1)  
+      # except KeyboardInterrupt:
+        #  pass
+        # get.pyRofexInicializad ºa.close_websocket_connection()
+        
+        
+          return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
       except:  
            print("contraseña o usuario incorrecto")  
            flash('Loggin Incorrect')    
            return render_template("errorLogueo.html" ) 
 
-@wsocket.route('/SuscripcionWs/', methods = ['POST'])
+@wsocket.route('/SuscripcionWs/', methods=['POST'])
 def SuscripcionWs():
-  
-     if request.method == "POST":     
-     
-        Ticker = request.form["symbol"]                 
-        Ticker = Ticker.replace("*", " ")
+    if request.method == "POST":
+        # Obtener los valores enviados desde el formulario
+        Ticker = request.form.get('symbol')  # Obtener el valor del campo "symbol"
+        account = request.form.get('websocketSuscricionCuenta')  # Obtener el valor del campo "websocketSuscricionCuenta"
+        token = request.form.get('websocketSuscricionToken')  # Obtener el valor del campo "websocketSuscricionToken"
+        
        # print("websoooooooooooooooooketttt en wsocket.py ",Ticker)
         #almaceno los symbol a suscribirme
         instrumentosGet.guarda_instrumento_para_suscripcion_ws(Ticker)
         #traigo los instrumentos para suscribirme
-        #mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
-       
-        #print("llega aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiii mis_instrumentos ",mis_instrumentos)
-        #repuesta_listado_instrumento = get.pyConectionWebSocketInicializada.get_detailed_instruments()
-        #listado_instrumentos = repuesta_listado_instrumento['instruments']   
-        #tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-        #longitudLista = len(mis_instrumentos)
-        #instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
-        #print("instrumentos_existentes ",instrumentos_existentes)    
-    ##aqui se conecta al ws
-       
-        
-        
-        #### aqui define el MarketDataEntry
-      #  print("siiiiiiiiiiiiiiiiiiiiii paaaaaaaaaaaaaaaaaasaaaaaaaaaaaaaaaaa conexion")
-        #entries = [get.pyConectionWebSocketInicializada.MarketDataEntry.BIDS,
-        #            get.pyConectionWebSocketInicializada.MarketDataEntry.OFFERS,
-        #            get.pyConectionWebSocketInicializada.MarketDataEntry.LAST]
-         
-        ###asi puedo llamar otra funcion para manejar los datos del ws#####      
-        #get.pyRofexInicializada.add_websocket_market_data_handler(mostrar)
-         #### aqui se subscribe
-       
-        #get.pyConectionWebSocketInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries)
-        #print("instrumento_suscriptio",instrumento_suscriptio)
-        #get.pyConectionWebSocketInicializada.order_report_subscription(snapshot=True)
+      
         diccionario ={}
         #actualizarTablaMD()
         #diccionario.update(get.market_data_recibida)
-        repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
+        pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']       
+        repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
         #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
         listado_instrumentos = repuesta_listado_instrumento['instruments']
         #for listado_instrumentos in listado_instrumentos:
@@ -240,7 +223,7 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
         account = get.ConexionesBroker[elemento]['cuenta']
         if account == accountCuenta:  
             
-            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(account)
+            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
     
     
             listado_instrumentos = repuesta_listado_instrumento['instruments']   
