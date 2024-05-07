@@ -6,6 +6,7 @@ import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 from routes.api_externa_conexion.cuenta import obtenerSaldoCuenta
 import routes.instrumentos as inst
+import strategies.gestion_estrategias.unidad_trader as utABM
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
@@ -157,10 +158,12 @@ def modificar_app_elimina_estrategia(nombreEstrategia):
         
 @estrategias.route("/eliminar-trigger/",  methods=["POST"])
 def eliminar_trigger():
-    IdTrigger = request.form['IdTrigger']
-   
+    IdTrigger = request.form['IdTrigger']   
     usuario_id = request.form['user_id']
-    Trigger = TriggerEstrategia.query.get(IdTrigger)
+    access_token = request.form['eliminarEstrategiaToken']
+    account = request.form['eliminarEstrategiaCuenta']
+    Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
+    utABM.eliminarUT(IdTrigger)
     eliminarArhivoEstrategia(Trigger.nombreEstrategia)
     db.session.delete(Trigger)
     db.session.commit()

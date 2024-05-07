@@ -145,6 +145,9 @@
           <div class="modal-body">
             <input type="hidden" id="eliminarEstrategiaUserId" name="user_id" value="">
             <input type="hidden" id="eliminarEstrategiaIdTrigger" name="IdTrigger" value="">
+            <input type="hidden" id="eliminarEstrategiaToken" name="eliminarEstrategiaToken" value="">
+            <input type="hidden" id="eliminarEstrategiaCuenta" name="eliminarEstrategiaCuenta" value="">
+            
             <p class="fw-bold text-dark" style="color:black;">¿Está seguro de que desea eliminar esta estrategia?</p>
           </div>
           <div class="modal-footer">
@@ -299,8 +302,13 @@
 
  
     function setUserData(userId, triggerId) {
+      access_token = localStorage.getItem('access_token');
+      account = localStorage.getItem('cuenta');
       document.getElementById('eliminarEstrategiaUserId').value = userId;
       document.getElementById('eliminarEstrategiaIdTrigger').value = triggerId;
+      document.getElementById('eliminarEstrategiaCuenta').value = account
+      document.getElementById('eliminarEstrategiaToken').value = access_token
+      
     }
 
     function setTriggerData(userId,triggerId) {
