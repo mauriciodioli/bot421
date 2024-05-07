@@ -135,6 +135,8 @@
         <form action="/abm-estrategias-eliminar/" method="POST">
           <div class="modal-body">
             <input type="hidden" id="eliminarEstrategiaId" name="eliminarEstrategiaId" value = "">
+            <input type="hidden" id="eliminarEstrategiaToken" name="eliminarEstrategiaToken" value = "">
+            <input type="hidden" id="eliminarEstrategiaCuenta" name="eliminarEstrategiaCuenta" value = "">
             <p class="fw-bold text-dark"  style="color: black;">¿Está seguro de que desea eliminar esta Estrategia?</p>
           </div>
           <div class="modal-footer">
@@ -227,7 +229,13 @@
 
 
   function setUserData(estrategiaId) {
+    access_token = localStorage.getItem('access_token');
+    account = localStorage.getItem('cuenta');
     document.getElementById('eliminarEstrategiaId').value = estrategiaId;
+    document.getElementById('eliminarEstrategiaToken').value = access_token
+    document.getElementById('eliminarEstrategiaCuenta').value = account
+    
+
   
   }
 

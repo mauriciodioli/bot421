@@ -4,6 +4,7 @@ from pipes import Template
 from unittest import result
 from flask import current_app
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import UnmappedInstanceError
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -16,6 +17,7 @@ from models.cuentas import Cuenta
 from models.triggerEstrategia import TriggerEstrategia
 from models.unidadTrader import UnidadTrader
 from routes.instrumentos import instrument_por_symbol
+
 
 
 
@@ -114,6 +116,24 @@ def unidad_trader_alta():
     finally:
         # Cerrar la sesión
         db.session.close()
+
+def eliminarUT(IdTrigger):
+    
+    
+    dato = db.session.query(UnidadTrader).filter_by(trigger_id=int(IdTrigger)).first() 
+    if dato is None:
+        # Si no se encuentra el objeto, imprimir un mensaje de error o manejarlo según sea necesario
+        print("No se encontró ningún objeto con el IdTrigger proporcionado.")
+        return
+    
+    try:
+        # Intenta eliminar el objeto de la base de datos
+        db.session.delete(dato)
+        db.session.commit()
+        print("Objeto eliminado correctamente.")
+    except UnmappedInstanceError as e:
+        # Maneja el caso en que se intente eliminar un objeto no mapeado
+        print("Error al eliminar el objeto:", e)
 
 def cargaUT(trigger_id,UT_unidadTrader):
     try:
