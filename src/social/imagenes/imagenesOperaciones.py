@@ -176,7 +176,7 @@ def mostrar_imagenes():
         except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, jwt.DecodeError) as e:
             # Manejar errores específicos de JWT
             flash("Error en el token JWT", "error")
-            return render_template("login.html")
+            return render_template("notificaciones/noPoseeDatos.html")
             
         except Exception as e:
             # Manejar otras excepciones

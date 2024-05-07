@@ -200,12 +200,21 @@
                             <form id="instrumentos_form" action="/estadoOperacion" method="post">
                               <!-- Aquí puedes agregar los campos adicionales que desees -->
                               <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
+                             
                               <!-- El botón de enviar el formulario -->
                               <button type="submit" class="dropdown-item">Estado</button>
                             </form>
                           </li>                        
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/operar">Operar</a></li>                          
+                          <li>
+                            <form id="operar_form" action="/operar-vacio" method="post">
+                              <input type="hidden" name="accounCuenta_form_operacion" id="accounCuenta_form_operacion">
+                              <input type="hidden" name="token_form_operacion" id="token_form_operacion">
+                              <button type="submit" class="dropdown-item">Operar</button>
+                            
+                          </form>
+                          
+                          </li>                          
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -344,7 +353,10 @@
          access_token = localStorage.getItem("access_token")
          rol = localStorage.getItem('roll');
       
-
+        //peraciones
+        document.getElementById("token_form_operacion").value = access_token;
+        document.getElementById("accounCuenta_form_operacion").value = cuentaBroker;
+        
         document.getElementById("access_token_form_Abm").value = access_token;
         document.getElementById("access_token_form_GenerarFicha").value = access_token;
         //listar fichas

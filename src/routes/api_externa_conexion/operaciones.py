@@ -38,12 +38,30 @@ ultima_entrada = 0
 @operaciones.route("/operar",methods=["GET"])
 def operar():
   try:
-   orderQty = '0'
-   symbol = 'x'
-   price = '0'
-   repuesta_listado_instrumento = get.pyRofexInicializada.get_account_position()
-   lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
-   return render_template('operaciones.html', datos = lista)
+     if request.method == 'POST': 
+        symbol = request.form.get('symbol')
+        
+        orderQty = '0'
+        symbol = 'x'
+        price = '0'
+       
+        lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
+        return render_template('operaciones/operaciones.html', datos = lista)
+  except:        
+    return render_template("notificaciones/errorLogueo.html" )
+@operaciones.route("/operar-vacio",methods=["POST"])
+def operar_vacio():
+  try:
+     if request.method == 'POST': 
+        token_form_operacion = request.form.get('token_form_operacion')
+        accounCuenta_form_operacion = request.form.get('accounCuenta_form_operacion')
+        
+        orderQty = '0'
+        symbol = 'x'
+        price = '0'
+       
+        lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
+        return render_template('operaciones/operaciones.html', datos = lista)
   except:        
     return render_template("errorLogueo.html" )
   
@@ -68,11 +86,11 @@ def get_trade_history_by_symbol():
            
             operaciones = historic_trades.get('trades', []) 
             print("historic_trades operacionnnnnnnnnnnnnnnnnnnnneeesss ",symbol)
-        return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+        return render_template('paneles/tablaOrdenesRealizadas.html', datos = operaciones)
   except:  
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
-  return render_template("login.html" )
+  return render_template("notificaciones/noPoseeDatos.html" )
 
 @operaciones.route("/estadoOperacion",  methods=["POST"])
 def estadoOperacion():
@@ -84,7 +102,7 @@ def estadoOperacion():
       
        
             operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
-            return render_template('tablaOrdenesRealizadas.html', datos=operaciones)
+            return render_template('paneles/tablaOrdenesRealizadas.html', datos=operaciones)
     
     except KeyError as e:
         # Manejar el caso en que 'orders' no está en la respuesta
@@ -371,7 +389,7 @@ def operaciones_desde_seniales():
       db.session.add(new_log)
       db.session.commit()
 
-    return render_template('errorOperacion.html')
+    return render_template('notificaciones/errorOperacion.html')
 
 ######## FALTA IMPLEMENTAR LAS OPERACIONES AUTOMATICAS DESDE PANEL CON CUENTA #############
 @operaciones.route("/operaciones_automatico_desde_senial_con_cuenta/", methods=["POST "])
@@ -394,7 +412,7 @@ def operaciones_automatico_desde_senial_con_cuenta():
     #  db.session.add(new_log)
       db.session.commit()
 
-  return render_template('errorOperacion.html')
+  return render_template('notificaciones/errorOperacion.html')
 def calculaUt(precios,valor_cantidad,valor_monto,signal):
   
   
@@ -495,7 +513,7 @@ def comprar():
               #return format(nuevaOrden)
               estadoOperacion()
               flash('No hay suficiente saldo para enviar la orden de compra')
-              return render_template("errorOperacion.html" )
+              return render_template("notificaciones/errorOperacion.html" )
         else:
           
           sendOrderWS()
@@ -503,10 +521,10 @@ def comprar():
           repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
           operaciones = repuesta_operacion['orders']
           print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-          return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+          return render_template('paneles/tablaOrdenesRealizadas.html', datos = operaciones)
   except:        
     flash('Datos Incorrect')  
-    return render_template("operaciones.html" )
+    return render_template("operaciones/operaciones.html" )
 ################# AQUI SE MUESTRAN LOS VALORES QUE SE QUIEREN VENDER#########
 @operaciones.route("/mostrarLaVenta/" , methods = ['POST'])
 def mostrarLaVenta(): 
@@ -731,7 +749,7 @@ def sendOrderWS():
              
             estadoOperacion()
             flash('No hay suficiente saldo para enviar la orden de compra')
-            return render_template("errorOperacion.html" )
+            return render_template("notificaciones/errorOperacion.html" )
    #except:        
    # flash('Datos Incorrect')  
    # print('datos incorrectos')
