@@ -409,7 +409,7 @@ def fichasToken_fichas_generar():
         return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         
           
-  # return render_template("login.html" )
+ 
     
  
 

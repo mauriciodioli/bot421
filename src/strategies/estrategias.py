@@ -417,7 +417,7 @@ def inicioEstrategias():
  except:  
      print("contraseña o usuario incorrecto")  
      flash('Loggin Incorrect')    
-     return render_template("login.html" )    
+     return render_template("notificaciones/noPoseeDatos.html" )    
  
 @estrategias.route('/detenerWS/', methods=["GET", "POST"])
 def detenerWS():
