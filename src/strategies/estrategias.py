@@ -20,6 +20,7 @@ from fichasTokens.fichas import crear_ficha
 
 import jwt
 import os
+import re
 import socket
 
 estrategias = Blueprint('estrategias',__name__)
@@ -122,7 +123,7 @@ def estrategias_usuario():
 
 def eliminarArhivoEstrategia(nombreEstrategia):    
        # Construye la ruta al archivo
-    ruta_archivo = os.path.join("src", "strategies", nombreEstrategia + ".py")
+    ruta_archivo = os.path.join("src", "strategies/estrategiasUsuarios", nombreEstrategia + ".py")
     
     try:
         # Intenta eliminar el archivo
@@ -261,20 +262,26 @@ def generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
         # Leer el contenido del archivo original
         with open(path_estrategia_modelo, "r", encoding="utf-8") as archivo_entrada:
             contenido = archivo_entrada.read()
+        # Patrón de expresión regular para coincidir con la cadena exacta
+        patron = r'(?<![-/])\b' + re.escape(archivoEstrategia) + r'\b(?![-/])'
 
-        # Reemplazar la cadena "estrategiaSheetWS" con el contenido de nombreEstrategia
-        contenido_modificado = contenido.replace(archivoEstrategia, nombreEstrategia)
+        # Realizar el reemplazo solo en coincidencias exactas
+         # Reemplazar la cadena "estrategiaSheetWS" con el contenido de nombreEstrategia
+        contenido_modificado = re.sub(patron, nombreEstrategia, contenido)
+     
 
-        # Reemplazar la cadena "estrategia-002" con el contenido de nombreEstrategia
-        nombreEstrategiaNuevo = nombreEstrategia.replace("_", "-")
-        contenido_modificado = contenido_modificado.replace(ruta_estrategia, nombreEstrategiaNuevo)
         
         # Ruta del  # Reemplazar la definición de la función con el nuevo nombre
         nuevo_nombre_funcion = nombreEstrategia.replace("_", "")
-        contenido_modificado = contenido_modificado.replace("def estrategia_002():", f"def {nuevo_nombre_funcion}():")
-        nuevo_path_estrategia_modelo = path_estrategia_modelo.replace(archivoEstrategia+'.py', "estrategiasUsuarios")
+        nombre_estrategia = ruta_estrategia.replace("-", "_")
+        contenido_modificado = contenido_modificado.replace("def "+nombre_estrategia+"():", f"def {nuevo_nombre_funcion}():")
         
+       # Reemplazar la cadena "estrategia-002" con el contenido de nombreEstrategia
+        nombreEstrategiaNuevo = nombreEstrategia.replace("_", "-")
+        contenido_modificado = contenido_modificado.replace(ruta_estrategia, nombreEstrategiaNuevo)
        
+       # Arma la nueva direccion a donde guardar
+        nuevo_path_estrategia_modelo = path_estrategia_modelo.replace(archivoEstrategia+'.py', "estrategiasUsuarios")
         directorio_destino = os.path.join(os.getcwd(), nuevo_path_estrategia_modelo)
 
         # Ruta del nuevo archivo
@@ -314,10 +321,10 @@ def alta_estrategias_trig():
             cuentas = db.session.query(Cuenta).filter_by(user_id=user_id, accountCuenta=account).first()
             nombre_broker = db.session.query(Broker.nombre).filter_by(id=cuentas.broker_id).first()
             estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
-
+            ruta_estrategia = archivoEstrategia+'-001'
             if estrategias is None or  len(estrategias) == 0:
                 if nombre_broker:
-                    ruta_estrategia = archivoEstrategia+'-001'
+                    
                     nombre_broker = nombre_broker[0].replace(" ", "_")
                     nombreEstrategia = nombre_broker+'_001'
                    
@@ -347,7 +354,7 @@ def alta_estrategias_trig():
                 nombre_broker = nombre_broker[0].replace(" ", "_")
 
                 nombreEstrategia = nombre_broker+'_'+numero_nuevo
-                ruta_estrategia = archivoEstrategia+'-'+numero_nuevo
+              
            
             generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
            

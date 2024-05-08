@@ -53,9 +53,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-002/', methods=['POST'])
-def estrategiaSheetWS_002():
-    print('00000000000000000000000estrategiaSheetWS-00200000000000000000000000000')
+@estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
+def estrategiaSheetWS_001():
+    print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
             
