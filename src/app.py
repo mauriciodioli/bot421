@@ -20,6 +20,13 @@ from models.creaTablas import crea_tablas_DB
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
+
+######################zona de estrategias de usuarios####################
+
+
+########################################################################
+
+
 from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
@@ -136,7 +143,9 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
+#####################zona estrategias de usuarios##############
 
+###############################################################
 app.register_blueprint(logs)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
