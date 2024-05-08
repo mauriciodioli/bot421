@@ -33,14 +33,17 @@ opera_estrategias = Blueprint('opera_estrategias',__name__)
 
 
 ################ AQUI DEFINO LA COMPRA POR WS ################
-def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, senial, mepCedear, message,saldocta):
+def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear,senial, mepCedear, message,saldocta):
     trade_en_curso = diccionario_global_operaciones[Symbol]['tradeEnCurso']
-    ut = diccionario_global_operaciones[Symbol]['ut']
+    cantidad_operar = diccionario_global_operaciones[Symbol]['ut']
     #saldocta = 1000000
+    denominador = message["marketData"]["LA"]["price"]
+    if denominador > 0:
+       ut = cantidad_operar/denominador
     ut = abs(int(ut))
     saldoExiste = False
     
-    
+   
     try:
         # La clave "price" existe en message["marketData"]["OF"][0]  ???
         if "OF" in message["marketData"]:
@@ -115,12 +118,12 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                         #precio = float(message["marketData"]["OF"][0]["price"])#
                     print('_______________000000000000000000000___________________________')
                     print(Symbol)
-                #    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
-                #                                                 size=ut,
-                #                                                 side=pyRofexInicializada.Side.BUY,
-                #                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
-                #                                                 ws_client_order_id=_ws_client_order_id,
-                #                                                 price=precio)
+                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
+                                                                 size=ut,
+                                                                 side=pyRofexInicializada.Side.BUY,
+                                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
+                                                                 ws_client_order_id=_ws_client_order_id,
+                                                                 price=precio)
 
                     ws_client_order_id = _ws_client_order_id
                         
@@ -167,12 +170,12 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     #precio = float(message["marketData"]["OF"][0]["price"])
                     print('_______________000000000000000000000___________________________ut ', ut,' ',_ws_client_order_id,' ',precio)
                     print(Symbol)
-                #    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
-                #                                                 side=pyRofexInicializada.Side.SELL,
-                #                                                 size=ut,
-                #                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
-                #                                                 ws_client_order_id=_ws_client_order_id,
-                #                                                 price=precio)
+                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
+                                                                 side=pyRofexInicializada.Side.SELL,
+                                                                 size=ut,
+                                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
+                                                                 ws_client_order_id=_ws_client_order_id,
+                                                                 price=precio)
                     ws_client_order_id = _ws_client_order_id
                     
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
