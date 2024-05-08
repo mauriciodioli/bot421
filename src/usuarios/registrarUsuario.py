@@ -78,7 +78,7 @@ def registro_usuario():
     print('password:', password)
     
     # Verificar si el usuario ya está registrado
-    usuario_existente = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+    usuario_existente = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
 
     if usuario_existente:
         flash('El correo electrónico ya está registrado.')
