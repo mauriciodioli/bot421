@@ -258,7 +258,7 @@ def instrumentos_detalles():
                 repuesta_listado_instrumento = pyRofexInicializada['pyRofex'].get_detailed_instruments(environment=account)
                 #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
                 listado_instrumentos = repuesta_listado_instrumento['instruments']
-                return render_template("instrumentos.html", datos = listado_instrumentos   )
+                return render_template("instrumentos/instrumentos.html", datos = listado_instrumentos   )
 
     except:        
         return render_template("notificaciones/noPoseeDatos.html" )
