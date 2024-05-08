@@ -253,7 +253,7 @@ def agregar_estrategia_nueva_app(nombreEstrategia):
 
 
 
-def generarArchivoEstrategia(nombreEstrategia,estrategia_copiar,archivoEstrategia):
+def generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia):
     try:
         # Ruta del archivo a leer
         path_estrategia_modelo = os.path.join(os.getcwd(), 'strategies/'+archivoEstrategia+'.py')
@@ -267,17 +267,23 @@ def generarArchivoEstrategia(nombreEstrategia,estrategia_copiar,archivoEstrategi
 
         # Reemplazar la cadena "estrategia-002" con el contenido de nombreEstrategia
         nombreEstrategiaNuevo = nombreEstrategia.replace("_", "-")
-        contenido_modificado = contenido_modificado.replace(estrategia_copiar, nombreEstrategiaNuevo)
+        contenido_modificado = contenido_modificado.replace(ruta_estrategia, nombreEstrategiaNuevo)
         
         # Ruta del  # Reemplazar la definición de la función con el nuevo nombre
         nuevo_nombre_funcion = nombreEstrategia.replace("_", "")
         contenido_modificado = contenido_modificado.replace("def estrategia_002():", f"def {nuevo_nombre_funcion}():")
-        nuevo_path_estrategia_modelo = path_estrategia_modelo.replace(archivoEstrategia+'.py', "")
+        nuevo_path_estrategia_modelo = path_estrategia_modelo.replace(archivoEstrategia+'.py', "estrategiasUsuarios")
+        
+       
         directorio_destino = os.path.join(os.getcwd(), nuevo_path_estrategia_modelo)
 
         # Ruta del nuevo archivo
         nombreNuevo_py = nombreEstrategia+'.py'
         ruta_nuevo_archivo = os.path.join(directorio_destino, nombreNuevo_py)
+
+        # Si el directorio de destino no existe, lo creamos
+        if not os.path.exists(directorio_destino):
+            os.makedirs(directorio_destino)
 
         # Verificar si ya existe un archivo con el mismo nombre
         if os.path.exists(ruta_nuevo_archivo):
@@ -311,6 +317,7 @@ def alta_estrategias_trig():
 
             if estrategias is None or  len(estrategias) == 0:
                 if nombre_broker:
+                    ruta_estrategia = archivoEstrategia+'-001'
                     nombre_broker = nombre_broker[0].replace(" ", "_")
                     nombreEstrategia = nombre_broker+'_001'
                    
@@ -340,8 +347,9 @@ def alta_estrategias_trig():
                 nombre_broker = nombre_broker[0].replace(" ", "_")
 
                 nombreEstrategia = nombre_broker+'_'+numero_nuevo
-            estrategia_copiar = archivoEstrategia
-            generarArchivoEstrategia(nombreEstrategia,estrategia_copiar,archivoEstrategia)
+                ruta_estrategia = archivoEstrategia+'-'+numero_nuevo
+           
+            generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
            
          
             if cuentas:

@@ -32,7 +32,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+Bull_Market_002 = Blueprint('Bull_Market_002',__name__)
 
 
 class States(enum.Enum):
@@ -53,9 +53,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-002/', methods=['POST'])
-def estrategiaSheetWS_002():
-    print('00000000000000000000000estrategiaSheetWS-00200000000000000000000000000')
+@Bull_Market_002.route('/Bull-Market-002/', methods=['POST'])
+def BullMarket002():
+    print('00000000000000000000000Bull-Market-00200000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -119,7 +119,7 @@ def estrategiaSheetWS_002():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           print("no pudo conectar el websocket en Bull_Market_002.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -197,10 +197,10 @@ def market_data_handler_estrategia(message):
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-        #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+        #  print("FUN_ Bull_Market_002 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
     
         
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@Bull_Market_002.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -219,7 +219,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@Bull_Market_002.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)
