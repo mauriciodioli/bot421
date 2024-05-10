@@ -18,6 +18,7 @@ import time
 import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.instrumentos as inst
+import tokens.token as Token
 import strategies.datoSheet as datoSheet
 from panelControlBroker.panelControl import panel_control
 from panelControlBroker.panelControl import forma_datos_para_envio_paneles
@@ -128,7 +129,7 @@ def operaciones_desde_seniales_sin_cuenta():
             cuentaUser = request.form['correo_electronico']
             pais = request.form['paisSeleccionado']
             layouts = 'layout_signal'
-            if access_token:
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()  
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
               
@@ -229,7 +230,7 @@ def operaciones_desde_seniales():
               
                 #logs_table = Logs()  # Crea una instancia de Logs
                 #logs_table.crear_tabla()  # Llama a la función crear_tabla
-                if access_token:
+                if access_token and Token.validar_expiracion_token(access_token=access_token): 
                     app = current_app._get_current_object()  
                     user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                     cuentaBroker = obtenerCuentaBroker(user_id)

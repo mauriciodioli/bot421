@@ -17,6 +17,7 @@ from models.cuentas import Cuenta
 from models.ficha import Ficha
 from models.unidadTrader import UnidadTrader
 from fichasTokens.fichas import crear_ficha
+import tokens.token as Token
 
 import jwt
 import os
@@ -63,7 +64,7 @@ def estrategias_usuario_nadmin():
     try:
       if request.method == 'POST': 
           access_token = request.form.get('access_token_est') 
-          if access_token:
+          if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()  
             
             usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    

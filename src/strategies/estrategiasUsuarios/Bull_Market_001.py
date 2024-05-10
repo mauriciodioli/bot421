@@ -166,10 +166,10 @@ def market_data_handler_estrategia(message):
             time = datetime.now()
             tiempoInicio2 = int(time.timestamp())*1000
             VariableParaTiempoLeerSheet =  tiempoInicio2 - marca_de_tiempo
-            print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
+            #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
         else:
                 VariableParaTiempoLeerSheet = 0
-                print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
+           #     print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
                 # esto hay que hacerlo aca, solo cada x segundos
                 banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
     
@@ -192,8 +192,8 @@ def market_data_handler_estrategia(message):
             
             #tiempoAhora = datetime.now()
             #print('"FUN market_data_handler_estrategia')
-            #pass
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet,VariableParaSaldoCta)
+            pass
+            #estrategiaSheetNuevaWS(message, banderaLecturaSheet,VariableParaSaldoCta)
             
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora

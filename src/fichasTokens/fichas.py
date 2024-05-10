@@ -33,6 +33,7 @@ from models.ficha import Ficha
 from models.trazaFicha import TrazaFicha
 import hashlib
 from tokens.token import generar_token
+import tokens.token as Token
 
 fichas = Blueprint('fichas',__name__)
 
@@ -247,7 +248,7 @@ def crear_ficha():
         
         
         # obtener los valores del accesToken
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()                    
             userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
@@ -346,7 +347,7 @@ def fichasToken_fichas_generar():
               
         
             
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             #cuentas.indiceCuentas()            
             reporte = cuentas.obtenerSaldoCuenta(account=cuenta)
@@ -427,7 +428,7 @@ def fichasToken_fichas_listar():
        # print("detalle ",portfolio)
         #layouts = 'layout'
         
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
             traza_fichas = db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
@@ -483,7 +484,7 @@ def fichasToken_fichas_listar_sin_cuenta():
        # print("detalle ",portfolio)
        
         
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
         # Consulta todas las fichas del usuario dado
         #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
@@ -568,7 +569,7 @@ def fichasToken_fichas_all():
 
         todasLasCuentas = []
 
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -620,7 +621,7 @@ def eliminar_ficha():
     access_token = request.form['access_token']
     account = request.form['eliminarFichaCuenta']
     layouts = request.form['layoutOrigen']
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
             
         ficha_id = request.form['eliminarFichaId']
@@ -683,7 +684,7 @@ def reportar_ficha():
   if request.method == 'POST':
     access_token = request.form['access_token']
     layouts = request.form['layoutOrigen']
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
             
         ficha_id = request.form['reportarFichaId']
@@ -768,7 +769,7 @@ def recibir_ficha():
   if request.method == 'POST':
     access_token = request.form['recibir_access_token']
     layouts = request.form['layoutOrigen']
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
             
         ficha_id = request.form['recibirFichaId']

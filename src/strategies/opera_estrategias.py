@@ -38,7 +38,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
     cantidad_operar = diccionario_global_operaciones[Symbol]['ut']
     #saldocta = 1000000
     denominador = message["marketData"]["LA"]["price"]
-    if denominador > 0:
+    if denominador is not None and int(denominador) > 0:
        ut = cantidad_operar/denominador
     ut = abs(int(ut))
     saldoExiste = False
