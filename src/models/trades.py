@@ -11,7 +11,7 @@ trades = Blueprint('trades',__name__)
 
 
 class Trade(db.Model):
-    __tablename__ = 'orden'
+    __tablename__ = 'trades'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey('usuarios.id'))  
     userCuenta = db.Column(db.String(120)) 
@@ -29,8 +29,8 @@ class Trade(db.Model):
     ut = db.Column(db.Integer)      
     status = db.Column(db.String(500))
     
-    
-    usuarios = relationship("Usuario", back_populates="orden")
+    usuario = relationship("Usuario", back_populates="trades")
+
 
     
  # constructor
@@ -71,10 +71,10 @@ class Trade(db.Model):
 
    
 
-
-    def crear_tabla(self):
+    @classmethod
+    def crear_tabla_trades(self):
          insp = inspect(db.engine)
-         if not insp.has_table("orden"):
+         if not insp.has_table("trades"):
               db.create_all()
              
     

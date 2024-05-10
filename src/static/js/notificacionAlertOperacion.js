@@ -11,11 +11,15 @@ function solicitarPermiso() {
 }
 
 // Mostrar una notificación
-function mostrarNotificacion() {
+function mostrarNotificacion(dato) {
+    //console.log(Notification.permission)
     if (Notification.permission === "granted") {
-        const notificacion = new Notification("¡Operacion nueva!", {
-            body: "¡Debe operar nuevamente!",
-            icon: "/static/img/icono.png" // Ruta de la imagen del icono
+        const tituloOriginal = "¡Operación nueva!";
+        const tituloModificado = dato[0].replace('MERV - XMEV -','')+' - '+dato[4]+' - '+dato[3]; // Modifica el título de la notificación
+
+        const notificacion = new Notification(tituloOriginal, {
+            body: tituloModificado + "\n¡Debe operar nuevamente!", // Agrega el título modificado al cuerpo de la notificación
+            icon: "/static/img/icono.png"
         });
 
         // Puedes añadir un evento click para que algo suceda cuando se hace clic en la notificación

@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, session,request, redirect, url_for, flash,jsonify
 from utils.common import Marshmallow, db, get
 import routes.instrumentosGet as instrumentosGet
 import routes.api_externa_conexion.validaInstrumentos as val
 import strategies.estrategiaSheetWS as shWS 
 import routes.instrumentos as inst
 from datetime import datetime
+
 import pandas as pd
 import pyRofex #lo utilizo para test
 import time    #lo utilizo para test
@@ -21,19 +22,46 @@ wsocket = Blueprint('wsocket',__name__)
 reporte_de_instrumentos = []
 
 
-def wsocketConexion():
-   ContenidoSheet_list = shWS.SuscripcionDeSheet()  # <<-- aca se suscribe al mkt data
+def websocketConexionShedule(app,Cuenta,cuentaid,idUser,correo_electronico,selector):
+  
+      get.pyRofexInicializada = pyRofex
+     
+      cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=cuentaid).first()
+      passwordCuenta = cuenta.passwordCuenta
+      passwordCuenta = passwordCuenta.decode('utf-8')
+      
+      if selector == 'simulado':
+          environments = get.pyRofexInicializada.Environment.REMARKET         
+          get.pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
+          
+      else: 
+        
+        environments = get.pyRofexInicializada.Environment.LIVE
+        
+        get.pyRofexInicializada._set_environment_parameter("url",get.api_url,environments)
+        get.pyRofexInicializada._set_environment_parameter("ws",get.ws_url,environments) 
+        get.pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+      
+        get.pyRofexInicializada.initialize(user=cuenta.userCuenta,password=passwordCuenta,account=cuenta.accountCuenta,environment=environments )
+      wsocketConexion(app)
+      return True
+
+def wsocketConexion(app):
+   
+   get.ContenidoSheet_list = shWS.SuscripcionDeSheet(app)  # <<-- aca se suscribe al mkt data
   # get.pyRofexInicializada.order_report_subscription()
+  # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
+   
    pyRofexWebSocket = get.pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler)
    get.pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0)
    get.pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0)
-
+ 
 
 def market_data_handler_0(message):
-    print(".")
+    print(message)
 
 def order_report_handler_0(message):
-  print(".")
+  print(message)
 
 
 

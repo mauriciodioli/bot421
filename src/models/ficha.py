@@ -12,7 +12,8 @@ class Ficha(db.Model):
     __tablename__ = 'ficha'
     id = db.Column(Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(Integer, ForeignKey('usuarios.id'))  
-    cuenta_broker_id = db.Column(Integer, ForeignKey('cuentas.id'))  
+    broker_id = db.Column(db.Integer, db.ForeignKey('brokers.id'), nullable=True)
+    cuenta_broker_id = db.Column(Integer, ForeignKey('cuentas.id'))    
     activo = db.Column(Boolean, nullable=False, default=False)   
     token = db.Column(String(500), nullable=True)
     llave = db.Column(db.LargeBinary(128), nullable=False)
@@ -27,6 +28,7 @@ class Ficha(db.Model):
     cuentas = relationship("Cuenta", back_populates="ficha")   
     usuarios = relationship("Usuario", back_populates="ficha")
     trazaFichas = relationship('TrazaFicha', back_populates='ficha')
+    broker = relationship("Broker", back_populates="ficha")
     
     def __init__(self, user_id, cuenta_broker_id, activo=False, token=None,llave=None, monto_efectivo=0.0, 
                  porcentaje_creacion=0, valor_cuenta_creacion=0.0, valor_cuenta_actual=0.0, 

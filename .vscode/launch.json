@@ -1,7 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
-
+ 
         {
             "name": "Python: Flask",
             "type": "python",
@@ -12,14 +12,15 @@
                 "FLASK_DEBUG": "1",
                 "FLASK_ENV": "development",
                 "FLASK_RUN_HOST": "127.0.0.1",
-                "FLASK_RUN_PORT": "5000"
+                "FLASK_RUN_PORT": "5001"
             },
             "args": [
                 "run"
             ],
-            "jinja": true,
-            "justMyCode": true,
-            "cwd": "C:\\Users\\dpuntillovirtual01\\Documents\\ITCOR\\bot421\\src"
+            "jinja":true,
+            "justMyCode":true,
+            "cwd": "C:\\Users\\dpuntillovirtual01\\Documents\\ITCOR\\bot421\\src"         
+            
             
             
         }

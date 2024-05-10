@@ -2,12 +2,13 @@
 {% block content %}
 
 <div class="jumbotron">
-  <h1 class="display-4">Signs!</h1>
+  <h1 class="display-4">Signals!</h1>
   <p class="lead">To operate you can go to Dashboard</p>
   <hr class="my-4">
 </div>
 
 <div class="container p-4">   
+  <div class="table-responsive">  
   <table class="table table-dark table-striped" id="signalTable">
     <thead>           
       <tr>
@@ -16,25 +17,80 @@
         <th scope="col">type </th>
         <th scope="col">Signal</th>
         <th scope="col">In Progress</th>
-        <th scope="col"> Ut</th>      
+        <th scope="col"> Ut</th> 
+        <th scope="col">Ganancia</th>
+        <th scope="col">Dias</th> 
+          
       </tr>            
     </thead>
     <tbody>
       {% for dato in datos %}
       
-        <tr class="fila-{{ dato[7] }}">
-          <th scope="row">{{ dato[7] }}</th>
+        <tr class="fila-{{ dato[9] }}">
+          <th scope="row">{{ dato[9] }}</th>
           <td>{{ dato[0].replace('MERV - XMEV -', '') }}</td>
           <td>{{ dato[1].replace('MERV - XMEV -', '') }}</td>
           <td>{{ dato[4].replace('MERV - XMEV -', '') }}</td>
           <td>{{ dato[2].replace('MERV - XMEV -', '') }}</td>
-          <td>{{ dato[3].replace('MERV - XMEV -', '') }}</td>                       
+          <td>{{ dato[3].replace('MERV - XMEV -', '') }}</td> 
+          <td>{{ dato[5] }}</td>
+          <td>{{ dato[6] }}</td>    
+                             
         </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+</div>
 
+
+<script>
+  $(document).ready(function() {
+    // Iterar sobre las filas de la tabla
+    $('#signalTable tbody tr').each(function() {
+      // Obtener el texto de la columna Signal
+      var signalText = $(this).find('td:nth-child(4)').text().trim();
+      var typeText = $(this).find('td:nth-child(3)').text().trim();     
+      var inProgres = $(this).find('td:nth-child(5)').text().trim();
+      var ganancias = $(this).find('td:nth-child(7)').text().trim();
+      var diasOperados = $(this).find('td:nth-child(8)').text().trim();
+      // Verificar si es OPEN o Closed y aplicar el color correspondiente
+      if (signalText === 'OPEN.') {
+        $(this).find('td:nth-child(4)').css('color', 'lime');
+      } else if (signalText === 'closed.') {
+        $(this).find('td:nth-child(4)').css('color', 'red');
+        $(this).find('td:nth-child(5)').text('Finalized').css('color', 'green');
+      }
+      
+      if (typeText === 'CEDEAR') {
+        $(this).find('td:nth-child(3)').css('color', 'brown ');
+      } else if (typeText === 'ARG') {
+        $(this).find('td:nth-child(3)').css('color', 'cyan');
+      }
+
+      if (inProgres === 'SHORT') {
+        $(this).find('td:nth-child(5)').css('color', 'pink');
+      } else if (inProgres === 'LONG_') {
+        $(this).find('td:nth-child(5)').css('color', 'cyan');
+      }
+      if (inProgres !== 'SHORT' && inProgres !== 'LONG_' && signalText != 'closed.' ) {
+        $(this).find('td:nth-child(5)').text('In Progress').css('color', 'yellow');
+      } 
+      
+      if (signalText === '') {
+        $(this).find('td:nth-child(5)').text('In Progress').css('color', 'yellow');
+      }
+      
+      if (ganancias === '0,00%') {
+        $(this).find('td:nth-child(7)').text('')
+      }
+      if (diasOperados === '0') {
+        $(this).find('td:nth-child(8)').text('')
+      }
+
+    });
+  });
+</script>
 
 
 {% endblock %}

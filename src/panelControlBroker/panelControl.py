@@ -35,6 +35,7 @@ def panel_control_sin_cuenta():
     layout = request.args.get('layoutOrigen')
     usuario_id = request.args.get('usuario_id')
     
+   
     respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
     
     if determinar_pais(pais)  is not None:
@@ -91,17 +92,18 @@ def panel_control_atomatico(pais,usuario_id):
       return jsonify(datos=datos_desempaquetados)
 
 
-def forma_datos_para_envio_paneles(ContenidoSheet,usuario_id):
+def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
     if not ContenidoSheet:
         return False
 
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
     datos_procesados = []
 
-    for i, tupla_exterior in enumerate(datos_desempaquetados):
-        dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
+    # Abrir la sesión de la base de datos fuera del bucle
+    with db.session.begin():
+        for i, tupla_exterior in enumerate(datos_desempaquetados):
+            dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
 
-        with db.session.begin(subtransactions=True):
             orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
 
             if orden_existente:
@@ -112,9 +114,12 @@ def forma_datos_para_envio_paneles(ContenidoSheet,usuario_id):
 
             dato.append(i+1)
             datos_procesados.append(tuple(dato))
+            # No es necesario imprimir las tuplas aquí
+
+    # Cerrar la sesión de la base de datos después del bucle
+    db.session.close()
 
     return datos_procesados
-
 
 
 def llenar_diccionario_cada_15_segundos_sheet(pais):
@@ -132,10 +137,13 @@ def llenar_diccionario_cada_15_segundos_sheet(pais):
     return f"Hilo iniciado para {pais}"
 
 def ejecutar_en_hilo(pais):
-    while True:
-        #time.sleep(120)
-        print("ENTRA A THREAD Y LEE EL SHEET")
-        #enviar_leer_sheet(pais)
+    #if get.ya_ejecutado_hilo_panelControl == False:
+    #    get.ya_ejecutado_hilo_panelControl = True 
+    
+        while True:
+            time.sleep(420)
+            print("ENTRA A THREAD Y LEE EL SHEET")
+            enviar_leer_sheet(pais)
         
 
 def enviar_leer_sheet(pais):

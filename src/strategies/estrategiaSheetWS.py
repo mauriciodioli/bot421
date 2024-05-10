@@ -1,9 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,g
+from flask import Blueprint, render_template,session, request, redirect, url_for, flash,jsonify,g
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
+import os
+import re
 import jwt
+import csv
 import json
 import random
 import routes.api_externa_conexion.get_login as get
@@ -13,6 +16,7 @@ import strategies.datoSheet as datoSheet
 import requests
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
+
 
 from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
@@ -39,7 +43,7 @@ class States(enum.Enum):
 
 @estrategiaSheetWS.route('/estrategia-001/', methods=['POST'])
 def estrategia_001():
-    
+    print('00000000000000000000000estrategia-00100000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -64,8 +68,10 @@ def estrategia_001():
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
-            ContenidoSheet_list = SuscripcionDeSheet()# <<-- aca se suscribe al mkt data
-            #estadoOperacionAnterioCargaDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
+           
+           
+            CargOperacionAnterioDiccionarioEnviadas(get.accountLocalStorage,usuario,correo_electronico)
+            carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
             get.pyRofexInicializada.order_report_subscription(account= get.accountLocalStorage , snapshot=True,handler = order_report_handler)
             get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia)
             get.pyRofexInicializada.add_websocket_order_report_handler(order_report_handler)
@@ -77,16 +83,13 @@ def estrategia_001():
        #                             exception_handler=exception_handler
        #                             )
             #get.pyRofexInicializada.run_websocket()
-            carga_operaciones(ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,ContenidoSheet_list[1])
+           # carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
             # Crear una instancia de RofexMarketDataHandler
             
 
             
             
-    #  except:  
-    #      print("_EstrategyUno_contraseña o usuario incorrecto")  
-    #      flash('Loggin Incorrect')    
-    #      return render_template("errorLogueo.html" ) 
+        
     
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
@@ -95,19 +98,22 @@ def estrategia_001():
             print("El token es inválido")
         except:
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
-    return render_template('/estrategiaOperando.html')
+    return render_template('notificaciones/estrategiaOperando.html')
      
-def SuscripcionDeSheet():
+def SuscripcionDeSheet(app):
     # Trae los instrumentos para suscribirte
+   
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
+    
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
     ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
     ContenidoSheet_list = list(ContenidoSheet)
 
-
-    ContenidoSheetDb = get_instrumento_para_suscripcion_db()
+    
+    ContenidoSheetDb = get_instrumento_para_suscripcion_db(app)
     ContenidoSheet_list_db = list(ContenidoSheetDb)
+    
     
     
   
@@ -128,20 +134,21 @@ def SuscripcionDeSheet():
 
     # Combinar conjuntos y eliminar duplicados
     resultado_set = set_contenido_db.union(set_contenido_json,set_contenido_ws)
-
+    
     # Convertir conjunto resultante en una lista
     resultado_lista = list(resultado_set)
     
     # Ahora 'resultado_lista' contiene todos los instrumentos sin duplicados
 
-    
+   
     #for elemento in resultado_lista:
     #    print(elemento)
-
+    
     repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
     
     listado_instrumentos = repuesta_listado_instrumento['instruments']   
     #print("instrumentos desde el mercado para utilizarlos en la validacion: ",listado_instrumentos)
+   
     tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
     
     # Validamos existencia
@@ -169,7 +176,7 @@ def cargaSymbolParaValidarDb(message):
     listado_final = []
     for instrumento  in message: 
         listado_final.append(instrumento.symbol)
-        #print(instrumento.symbol)
+        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         
     return listado_final
 
@@ -177,7 +184,7 @@ def cargaSymbolParaValidarDb(message):
 
 def cargaSymbolParaValidar(message):
     listado_final = []
-    for Symbol,tipo_de_activo,trade_en_curso,ut,senial  in message: 
+    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado  in message: 
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                                 if Symbol != '':
                                 #if trade_en_curso == 'LONG_':
@@ -194,20 +201,22 @@ def cargaSymbolParaValidar(message):
   
 def get_instrumento_para_suscripcion_ws():#   **77
       ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-      datoSheet.crea_tabla_orden()  
+    
       return ContenidoSheet
 
-def get_instrumento_para_suscripcion_db():
-    ContenidoDb = datoSheet.leerDb()
+def get_instrumento_para_suscripcion_db(app):
+    ContenidoDb = datoSheet.leerDb(app)
     return ContenidoDb    
 
 def get_instrumento_para_suscripcion_json():
    try:
-        ruta_archivo_json = 'strategies\\listadoInstrumentos\\instrumentos_001.json'    
+        src_directory = os.getcwd() # Busca directorio raíz src o app 
+        ruta_archivo_json = os.path.join(src_directory, 'strategies/listadoInstrumentos/instrumentos_001.json')
+       # ruta_archivo_json = 'strategies/listadoInstrumentos/instrumentos_001.json'    
         with open(ruta_archivo_json , 'r') as archivo:
             contenido = archivo.read()
             datos = json.loads(contenido)
-
+            
             # Acceder a los datos
            
             return datos
@@ -234,6 +243,7 @@ def market_data_handler_estrategia(message):
    
     
     if response != 1: ### si es 1 el boton de panico fue activado
+       # _cancela_orden(300)
         _cancela_orden(300)
       #  print(" FUN: market_data_handler_estrategia: _")
         
@@ -258,16 +268,23 @@ def market_data_handler_estrategia(message):
         # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
         # para cumplir con el evento de mercado market data
 
+
+
         if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
         elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
-        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:
-            print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
         else:
-        
+            
             #tiempoAhora = datetime.now()
+            #pass
             estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
@@ -311,12 +328,14 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
+    
     if banderaLecturaSheet == 0:
+        print('entra en estrategiaSheetNuevaWS punto de control sheeeet')
         ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
-
-        for Symbol,tipo, TradeEnCurso,ut,senial in ContenidoSheet_list[2:]:
+        
+        for Symbol,tipo, TradeEnCurso,ut,senial,gan_tot, dias_operado in ContenidoSheet_list[2:]:
             if Symbol in get.diccionario_global_operaciones:
                 if senial != '':
                     #aqui entra en caso que tenga que cambiar la señal de trading
@@ -326,51 +345,38 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
 
             mepAl30 = 460 ####Calcula dolar MEP
-    Symbol = message["instrumentId"]["symbol"]
-    tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
-    senial = get.diccionario_global_operaciones[Symbol]['senial']
-    TradeEnCurso =  get.diccionario_global_operaciones[Symbol]['tradeEnCurso']
+     # Verificar si el diccionario de operaciones está vacío
+    #if not get.diccionario_global_operaciones:
+    #    print("El diccionario de operaciones está vacío.")
+    #else:
+        # Iterar sobre las claves y valores del diccionario
+    #    for clave, valor in get.diccionario_global_operaciones.items():
+            # Imprimir cada clave y su correspondiente valor
+   #         print("El diccionario de operaciones contiene esto")
+   #         print(clave)
+   #         print(valor)
+    
+    Symbol = message['instrumentId']['symbol']
+    
     if Symbol in get.diccionario_global_operaciones:
+        #print('___________________________________________________________')    
+       # print(message['instrumentId']['symbol']) 
+        #rutaMDH = 'C:\\Users\\mDioli\\Documents\\tmp\\operacionesMDH_01.csv'
+        
+        #append_order_report_to_csv(Symbol, rutaMDH)
+        tipo_de_activo = get.diccionario_global_operaciones[Symbol]['tipo_de_activo']
+        senial = get.diccionario_global_operaciones[Symbol]['senial']
+        TradeEnCurso =  get.diccionario_global_operaciones[Symbol]['tradeEnCurso']
+        
        # if get.diccionario_global_operaciones[Symbol] == message["instrumentId"]["symbol"]:
-            if get.diccionario_global_operaciones[Symbol]['status'] == "0":
-                if get.diccionario_global_operaciones[Symbol]['ut'] !="0":                                
-                    if TradeEnCurso == 'LONG_':                        
-                        if senial != "":
-                            if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'CEDEAR':
-                                FlagCCLCedear = ConsultarFlagCCLCedearsWS(message)#ConsultarFlagCCLCedearsWS
-                                porcentaje_de_diferencia = -1 #se compara el mepCedear con el mepAl30 
-                                mepCedear=1                              
-                                if FlagCCLCedear == 1:
-                                    if senial == 'OPEN.':
-                                        #if message["marketData"]["OF"] != None:
-                                        if isinstance(message["marketData"]["OF"][0]["size"], int):#sacar
-                                            Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
-                                        else:
-                                            #if message["marketData"]["LA"] != None:                                         
-                                            if isinstance(message["marketData"]["LA"]["size"], int):
-                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                            
-
-                                    if senial == 'closed.':  
-                                        #if message["marketData"]["BI"] != None: 
-                                        if isinstance(message["marketData"]["BI"][0]["size"], int):
-                                            Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        else:
-                                            #if message["marketData"]["LA"] != None:
-                                            if isinstance(message["marketData"]["LA"]["size"], int):
-                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                       
-                                    if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, mepCedear, message)
-                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
-                                    else:                                          
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and mepCedear[0] != 0 and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, mepCedear, message)
-                                           # datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'],'1', senial, mepCedear, message)
-                                         
-                            if get.diccionario_global_operaciones[Symbol]['tipo_de_activo'] == 'ARG':
-                                    mepCe =0
+        if get.diccionario_global_operaciones[Symbol]['status'] == "0":
+               
+                if get.diccionario_global_operaciones[Symbol]['ut'] !="0": 
+                                                 
+                    if senial != "":
+                        
+                       if TradeEnCurso == 'LONG_': 
+                           
                                     if senial == 'OPEN.':
                                         #if message["marketData"]["OF"] != None:     
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):                                  
@@ -381,71 +387,78 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                         
 
-                                    if senial == 'closed.':  
+                                  
+                                    
+                                    if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
+                                        if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                                #print('operacionews')
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
+                                        else:                                          
+                                               
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
+                       else:
+                            
+                              if senial == 'closed.':  
                                         #if message["marketData"]["BI"] != None: 
-                                        if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
-                                             Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                        else:
-                                            #if message["marketData"]["LA"] != None:
-                                            if isinstance(message["marketData"]["LA"]["size"], int):                                  
-                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                        
-
-                                    if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
-                                    else:                                          
-                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' and message != '':
-                                            datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)
-                                        
-def ConsultarFlagCCLCedearsWS(message):
-     
-    # ko_ci = resultado['OF'][0]['price'] #vendedora OF ko_ci punta vendedora (porque es lo que yo deberia comprar si quiero dolar mep)
-    # koD_ci =resultado2['BI'][0]['price'] #compradora BI koD_ci punta compradora (el que me compra lo bonos para tener mis dolares)
-    # size = resultado2['BI'][0]['size']
-    # print("__________ko_ci____________",ko_ci)
-    # print("__________koD_ci____________",koD_ci)
-    # print("__________size____________",size)
-    # mep= ko_ci / koD_ci
-     
-     """"
-     if len(resultado['OF']) > 0:
-        offer_price = resultado['OF'][0]['price'] #vendedora OF
-     else:
-        offer_price=0
-        
-     if len(resultado['BI']) > 0:
-        bid_price =resultado['BI'][0]['price'] #compradora BI
-     else:
-        bid_price=0
-     """
-     offer_price=0      # borrar y programar bien
-     bid_price=0        # borrar y programar bien
-     mep=380            # borrar y programar bien
-     size=10
-     dato = [mep,size,offer_price,bid_price]
-     return dato
- 
- 
- 
- 
- 
-
-
-
-
-
-
-
+                                 if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
+                                       Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
+                                       Liquidez_ahora_cedear = Liquidez_ahora_cedear
+                                 else:
+                                       #if message["marketData"]["LA"] != None:
+                                       if isinstance(message["marketData"]["LA"]["size"], int):                                  
+                                          Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                          Liquidez_ahora_cedear = Liquidez_ahora_cedear
+                               
+                                 if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
+                                        if int(Liquidez_ahora_cedear) < int(get.diccionario_global_operaciones[Symbol]['ut']):
+                                                #print('Symbol ',Symbol)
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], Liquidez_ahora_cedear, senial, 0, message)
+                                        else:                                          
+                                                #print('Symbol ',Symbol)       
+                                                datoSheet.OperacionWs(Symbol, tipo_de_activo, get.diccionario_global_operaciones[Symbol]['tradeEnCurso'], get.diccionario_global_operaciones[Symbol]['ut'], senial, 0, message)    
+                                    
+   # else:  
+        #print(message['instrumentId']['symbol'])  
+    #    print('______________________________________________________')                                   
 
 
 
 def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
-      
-     #filtrar las coincidencias entre las dos listas
-     coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
+     coincidencias = []
+     contador_1=0
+     símbolos_vistos = set()
 
-    # print(coincidencias)
+     #filtrar las coincidencias entre las dos listas
+     for elemento1 in ContenidoSheet_list:
+        if contador_1 >= 2:
+          if elemento1[4] == 'closed.':   
+            for key, elemento2 in get.diccionario_operaciones_enviadas.items():
+               #print('elemento1 ', elemento1[0] ,' elemento2 ',elemento2['Symbol'])      
+               if elemento1[0] == elemento2['Symbol']:
+                    if elemento2['Symbol'] not in símbolos_vistos: 
+                        print(' elemento1[0] **********************', elemento1 )
+                        coincidencias.append(elemento1)
+                        símbolos_vistos.add(elemento2['Symbol'])    
+        contador_1 += 1                           
+     #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
+    
+     contador = 0
+     for elemento1 in ContenidoSheet_list:
+        if contador >= 2:
+            #print('elemento1 ', elemento1)        
+            for elemento2 in message:
+              #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
+               # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
+                if elemento1[2] == 'LONG_':
+                     if elemento1[3] != '0':
+                         # if elemento1[4] == 'OPEN.':
+                          if elemento1[4] == 'OPEN.':
+                            if elemento1[0] == elemento2:
+                                coincidencias.append(elemento1)
+                               # print(' elemento1[] ', elemento1[0])
+                               # print(coincidencias)
+        contador += 1  
+          
     
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
      
@@ -483,7 +496,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
             'clOrdId_alta_timestamp': None,
             'clOrdId_baja_timestamp': None,
             'proprietary': True,
-            'marketId': '',
+            'marketId': '',           
             'symbol': elemento[0],
             'tipo_de_activo': elemento[1],
             'tradeEnCurso': elemento[2],
@@ -494,7 +507,12 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
     # Cargar cada objeto Orden en el diccionario global con una clave única
          get.diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
        
-        
+         if elemento[0] in get.diccionario_global_operaciones:
+            contenido = get.diccionario_global_operaciones[elemento[0]]
+            print('cargó la operacion de ',elemento[0],' ut ',elemento[3],' correctmente en diccionario global de operaciones')
+         else:
+            print("La clave", elemento[0], "no existe en el diccionario.")
+
         
     # Acceder al diccionario global y a los objetos Orden
      
@@ -516,11 +534,17 @@ def es_numero(numero):
   
 def order_report_handler( order_report):
         # Obtener el diccionario de datos del reporte de orden
+        
         order_data = order_report['orderReport']
         clOrdId = order_data['clOrdId']        
         symbol = order_data['instrumentId']['symbol']
         status = order_data['status']  
+        #print('___________order_report_handler_______OPERADA__ ',status)
         timestamp_order_report = order_data['transactTime']  
+        
+        rutaORH = 'C:\\Users\\mDioli\\Documents\\tmp\\operacionesORH_01.csv'
+        print('status ',status)
+        append_order_report_to_csv(order_report, rutaORH)
         # se fija que cuando venga el reporte el diccionario tenga elementos
         if es_numero(clOrdId):#esto se pone por que el clOrdId puede traer basura
             if len(get.diccionario_operaciones_enviadas) != 0:
@@ -528,25 +552,38 @@ def order_report_handler( order_report):
                     
                     # if status == 'EXECUTED':
                 if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                    _operada(order_report)             
+                    _operada(order_report)   
+                       
         
 def _operada(order_report):
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']   
-   
-   
+    #print(symbol,' _______************  OPERADA ****************_____________ ',order_data['text'])
+    
+    stock_para_closed = obtenerStock(order_data['text']) 
+    stock_para_closed = int(float(stock_para_closed))
+    #print('stock_para_closed ',stock_para_closed)
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in get.diccionario_global_operaciones:                  
-                for key, operacion in get.diccionario_operaciones_enviadas.items():
+                for key, operacion in get.diccionario_operaciones_enviadas.items():#11111
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
-                                ut_a_devolver = operacion['_ut_']                                
-                                operacion['status'] = 'TERMINADA'
+                                ut_a_devolver = operacion['_ut_']   
+                                if status == 'REJECTED' :
+                                    ut_a_devolver = operacion['_ut_'] + stock_para_closed 
+                                    print('ut_a_devolver ',ut_a_devolver) 
+                                    
+                                    if ut_a_devolver <= 0:
+                                       print('ut_a_devolver  == 0',ut_a_devolver)
+                                       operacion['status'] = 'TERMINADA'
+                                    else: 
+                                       operacion['status'] = '0'
+                                else:                            
+                                    operacion['status'] = 'TERMINADA'
                                 for key, operacionGlobal in get.diccionario_global_operaciones.items():
                                     if operacionGlobal['symbol'] == symbol :
-                                        #pprint.pprint(get.diccionario_global_operaciones)
-                                        operacionGlobal['ut'] ==  int(operacionGlobal['ut']) + int(ut_a_devolver)
+                                        operacionGlobal['ut'] = int(operacionGlobal['ut']) + int(ut_a_devolver)
                                         #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
                                         #pprint.pprint(get.diccionario_global_operaciones)
                                         if operacionGlobal['status'] != '0':
@@ -556,24 +593,26 @@ def _operada(order_report):
                                 operacion['status'] = 'TERMINADA'
                                # pprint.pprint(g et.diccionario_global_operaciones_)
                                # pprint.pprint(g et.diccionario_operaciones_enviadas) 
+                          
+                
 
     if status == 'FILLED': 
+            endingGlobal = 'SI'  # Suponiendo inicialmente que todas las operaciones son 'si'
             endingEnviadas = 'SI'
-            endingGlobal = 'SI'  
-              
             for operacion_enviada in get.diccionario_operaciones_enviadas.values():  
-                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA':
-                    operacion_enviada['status'] = 'TERMINADA'
-                if  operacion_enviada['status'] != 'TERMINADA':
-                    endingEnviadas = 'NO'
-                 
+                print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas,'  operacion_enviada[status] ', operacion_enviada['status'])
+                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA' :
+                    operacion_enviada['status'] = 'TERMINADA'                     
+                    print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas)
+         
+
             for key, operacionGlobal in get.diccionario_global_operaciones.items():  
-               # print(key," : ",operacionGlobal['ut'])
-                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':
-                   operacionGlobal['status'] = '1'
-                   
-                if  operacionGlobal['status'] == '0':
+                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':                    
+                    operacionGlobal['status'] = '1'
+                    print(key," : ",operacionGlobal['status']," :",operacionGlobal['ut'])
+                else:  # Si alguna operación no es 'si'
                     endingGlobal = 'NO'
+               
             
             endingOperacionBot (endingGlobal,endingEnviadas)                             
                                
@@ -605,8 +644,9 @@ def _cancela_orden(delay):
     timestamp_order_report = convert_datetime(timestamp_order_report, example_timezone_str)
      
     timestamp_order_report = str(timestamp_order_report)
-  
+    
     # Recorrer los elementos del diccionario_enviados
+    
     for key, valor in get.diccionario_operaciones_enviadas.items():    
            
             tiempo_diccionario = valor["timestamp"]
@@ -630,17 +670,16 @@ def _cancela_orden(delay):
             
             #if diferencia >= 300:
             if diferencia_segundos >= delay:
-            
+              # print('diferencia_segundos ',diferencia_segundos,' delay ',delay)
                _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])       
       
 def _cancel_if_orders(symbol,clOrdId,order_status):
     #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
-
-    #print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId)
     try:
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
+            print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
             get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
@@ -649,10 +688,13 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
                     if operacion_enviada["status"] != 'PENDING_CANCEL':
                         operacion_enviada["status"] = 'PENDING_CANCEL'  
                         operacion_enviada['statusActualBotonPanico'] = 'PENDING_CANCEL' 
-                        
+                        print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
                         break  # Salir del bucle después de eliminar el elemento encontrado    
-                print("FUN _cancel_if_orders:  Orden :", clOrdId," symbol ",symbol, " operacion_enviada[statusActualBotonPanico] ",operacion_enviada['statusActualBotonPanico'])      
-       
+               
+        else:
+            pass
+            #print('No se puede cancelar la Orden order_status no corresponde') 
+            #print("FUN _cancel_if_orders:  Orden order_status:", order_status," symbol ",symbol," clOrdId ",clOrdId) 
     except Exception as e:
         print("Error en Envio de Cancelacion de orden:", e)
     #    print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
@@ -712,6 +754,62 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
+def CargOperacionAnterioDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
+   try:        
+        repuesta_operacion = get.pyRofexInicializada.get_account_position()
+     
+        reporte = repuesta_operacion['positions']
+        
+# Crear un conjunto para almacenar los símbolos ya vistos
+        símbolos_vistos = set()
+
+        for item in reporte:
+                símbolo = item['symbol']
+            # Verificar si el símbolo ya ha sido visto antes
+           # if símbolo not in símbolos_vistos:
+                # Si es la primera vez que se ve el símbolo, mostrar los detalles
+                print("Símbolo:", símbolo)
+                print("Cantidad de stock buySize:", item['buySize'])
+                print("Cantidad de stock sellSize:", item['sellSize'])
+                print()
+                # Agregar el símbolo al conjunto de símbolos vistos
+                símbolos_vistos.add(símbolo)
+       
+        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",reporte)
+        diccionario = {}
+        get.diccionario_operaciones_enviadas.clear()
+        for posicion in reporte:
+            # Accedemos al símbolo de cada posición y lo almacenamos en el diccionario
+                symbol = posicion['symbol']
+           # if símbolo not in símbolos_vistos:
+             #   print('**************************** ',symbol)
+            
+                diccionario = {
+                                "Symbol": symbol,
+                                "_t_": 'None',
+                                "_tr_": 'None',
+                                "_s_": 'None',
+                                "_ut_": 'orderQty',
+                                "precio Offer": 'None',
+                                "_ws_client_order_id": 'None',
+                                "_cliOrderId": 0,
+                                "timestamp": datetime.now(),
+                                "status": 'ANTERIOR',
+                                "statusActualBotonPanico":'ANTERIOR',
+                                "user_id": user_id,
+                                "userCuenta": userCuenta,
+                                "accountCuenta": accountCuenta
+                                    }
+                get.diccionario_operaciones_enviadas[len(get.diccionario_operaciones_enviadas) + 1] = diccionario
+                #pprint.pprint( get.diccionario_operaciones_enviadas)
+                #for key, valor in g et.diccionario_operaciones_enviadas.items():
+                #    print(key," : ",valor['_cliOrderId'])
+                símbolos_vistos.add(símbolo)
+        return 'ok'
+   except Exception as e:       
+        print("error de carga de diccionario de enviados", e)  
+        flash(' error de carga de diccionario de enviados')    
+   return 'ok'                   
 def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user_id):
    try:        
         repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
@@ -719,7 +817,7 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
         datos = repuesta_operacion['orders']
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
         diccionario = {}
-        get.diccionario_operaciones_enviadas.clear()
+        get.diccionario_operaciones_enviadas.clear()        
         for dato in datos:
           if dato['orderId'] is not None:
             if es_numero(dato['clOrdId']):  
@@ -766,12 +864,40 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(accountCuenta,userCuenta,user
             #for key, valor in g et.diccionario_operaciones_enviadas.items():
             #    print(key," : ",valor['_cliOrderId'])
         return 'ok'
-   except:  
-        print("error de carga de diccionario de enviados")  
+   except Exception as e:       
+        print("error de carga de diccionario de enviados", e)  
         flash(' error de carga de diccionario de enviados')    
    return 'ok'                   
 
+def obtenerStock(cadena):
+# Verificar si la cadena contiene la frase "Stock insuficiente"
+    if "Stock insuficiente" in cadena:
+        # Buscar el índice del signo "="
+        index = cadena.find("=")
+        # Extraer el valor después del signo "=" y eliminar los espacios en blanco al principio y al final
+        valor_despues_de_igual = cadena[index:].strip()
+        
+        #print('valor_despues_de_igual ' ,valor_despues_de_igual)
+       
+        # Buscar el número después del signo "=" utilizando una expresión regular
+        match = re.search(r'(?<== )-?\d+\.\d+', valor_despues_de_igual)
+       # print('match ' ,match)
+        # Verificar si se encontró una coincidencia
+        if match:
+            valor_despues_de_igual = match.group()
+           # print("El primer número después del signo '=' es:", valor_despues_de_igual)
+            valor = int(float(valor_despues_de_igual))
+           # print(valor)
+        
+            return valor_despues_de_igual
+        else:
+           return '0'
+    else:
+       return '0' 
+
+
 def endingOperacionBot (endingGlobal,endingEnviadas):
+     print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas)
      if endingGlobal == 'SI' and endingEnviadas == 'SI' and get.diccionario_operaciones_enviadas:
          
         get.diccionario_operaciones_enviadas.clear()
@@ -782,13 +908,47 @@ def endingOperacionBot (endingGlobal,endingEnviadas):
         print("###############################################") 
         print("###############################################") 
         print("###############################################") 
+        get.pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia)
           #      return render_template('home.html')    
 
+
+
 def error_handler(message):
-  print("Mensaje de error: {0}".format(message))
+  print("error_handler Mensaje de error: {0}".format(message))
   
 def exception_error(message):
   print("Mensaje de excepción: {0}".format(message))  
 
 def exception_handler(e):
     print("Exception Occurred: {0}".format(e.msg))
+
+
+
+
+
+
+def append_order_report_to_csv(report, rutaORH):
+    with open(rutaORH, mode='a', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        
+        # Comprobar si el archivo está vacío para escribir las cabeceras
+        file.seek(0)
+        if file.tell() == 0:
+            headers = []
+            for key, value in report.items():
+                if isinstance(value, dict):
+                    for sub_key in value.keys():
+                        headers.append(f"{key}_{sub_key}")
+                else:
+                    headers.append(key)
+            writer.writerow(headers)
+        
+        # Escribir los valores
+        values = []
+        for key, value in report.items():
+            if isinstance(value, dict):
+                for sub_value in value.values():
+                    values.append(sub_value)
+            else:
+                values.append(value)
+        writer.writerow(values)

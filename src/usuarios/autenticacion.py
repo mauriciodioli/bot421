@@ -34,7 +34,8 @@ from models.cuentas import Cuenta
 from routes.api_externa_conexion.cuenta import cuenta
 from utils.db import db
 import jwt
-
+from contextlib import contextmanager
+from sqlalchemy.orm import sessionmaker
 
 autenticacion = Blueprint("autenticacion", __name__)
 
@@ -51,18 +52,6 @@ REFRESH_TOKEN_DURATION = 43200  # minutos
 login_manager = LoginManager()
 login_manager.init_app(autenticacion)
 
-# Crear la tabla usuarios si no existe
-def crea_tabla_usuario():
-    usuario = Usuario(
-        id=1,
-        correo_electronico="ejemplo@ejemplo.com",
-        token="1234",
-        refresh_token="5678",
-        activo=True,
-        password="12345678"        
-    )
-    usuario.crear_tabla()
-    print("Tabla creada!")
     
 #sale del sistema completo
 @autenticacion.route("/logOutSystem")   
@@ -246,6 +235,18 @@ def protegido():
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
+@contextmanager
+def session_scope():
+    """Proporciona un alcance de sesión que se maneja automáticamente."""
+    session = db.session
+    try:
+        yield session
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 #aqui se logea el usuario de manera manual y se genera el token y el refresh token y luego se envia para
 # ser almacenado en localStorage y en cookies
 @autenticacion.route('/loginUsuario', methods=['POST'])
@@ -255,8 +256,13 @@ def loginUsuario():
         password = request.form['password']
         # Buscar el usuario en la base de datos
         #crea_tabla_usuario()
-        usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+        ##usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
+        # Registra la función para el evento 'connect'
        
+        with session_scope() as session:
+            usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
+        usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
+
        # print("Valor de password: ", password," usuario.password ",usuario.password)
         if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
             flash('Correo electrónico o contraseña incorrectos', 'danger')
@@ -283,7 +289,7 @@ def loginUsuario():
             try:
               
                 cuenta = ''
-                selector = ''
+                selector = 'vacio'
                 user = ''               
             # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
                 resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user,usuario.id]))

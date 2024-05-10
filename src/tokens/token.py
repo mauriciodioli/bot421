@@ -11,7 +11,7 @@ def generar_token(user_id, valor, cuenta):
     llave = secrets.token_hex(32)
     print(llave)
     # Generar un número aleatorio utilizando el ID de usuario y el valor proporcionado
-    random_seed = user_id + int(valor)+int(llave, 16)
+   
     random_number = random.randint(1, 10000)
 
     # Obtener la fecha de generación actual
@@ -26,9 +26,7 @@ def generar_token(user_id, valor, cuenta):
         'cuenta': cuenta
     }
 
-    # Generar una clave aleatoria de 32 bytes (256 bits)
-   
-
+  
     # Crear el token
     token_generado = jwt.encode(token_data, llave , algorithm='HS256')
     dato = token_generado + llave

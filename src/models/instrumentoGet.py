@@ -1,6 +1,7 @@
 from utils.db import db
 from flask_marshmallow import Marshmallow
 from flask import Blueprint
+from sqlalchemy import inspect,Column, Integer, String, ForeignKey
 
 ma = Marshmallow()
 
@@ -65,7 +66,11 @@ class InstrumentoGet(db.Model):
         self.cficode = cficode
         self.marketId = marketId
         
-
+    @classmethod
+    def crear_tabla_instrumentoGet(self):
+        insp = inspect(db.engine)
+        if not insp.has_table("instrumentoGet"):
+            db.create_all()
         
 class MerShema(ma.Schema):
     class Meta:

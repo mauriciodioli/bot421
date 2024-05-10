@@ -17,9 +17,9 @@ class Usuario(db.Model):
     activo = db.Column(db.Boolean, nullable=False, default=False)    
     correo_electronico = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.LargeBinary(128), nullable=False)
-    token = db.Column(db.String(500), nullable=True)
+    token = db.Column(db.String(1000), nullable=True)
     roll = db.Column(db.String(20), nullable=False, default='regular')
-    refresh_token = db.Column(db.String(500), nullable=True)
+    refresh_token = db.Column(db.String(1000), nullable=True)
     cuentas = relationship("Cuenta", back_populates="usuarios")
     orden = relationship("Orden", back_populates="usuarios")
     imagenes = relationship("Image", back_populates="usuarios")
@@ -27,6 +27,10 @@ class Usuario(db.Model):
     ficha = relationship("Ficha", back_populates="usuarios")   
     trazaFichas = relationship('TrazaFicha', back_populates='usuario')
     logs = relationship("Logs", back_populates="usuarios")   
+    trades = relationship("Trade", back_populates="usuario")
+
+
+ 
    
  # constructor
     def __init__(self, id,correo_electronico,token,refresh_token,activo,password,roll='USUARIO'):
@@ -50,8 +54,8 @@ class Usuario(db.Model):
     def get_id(self):
         return str(self.id)
 
-
-    def crear_tabla(serlf):
+    @classmethod
+    def crear_tabla_usuarios(serlf):
          insp = inspect(db.engine)
          if not insp.has_table("usuarios"):
               db.create_all()

@@ -16,17 +16,24 @@ import os
 import routes.api_externa_conexion.validaInstrumentos as valida
 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
+from fichasTokens.fichas import refrescoValorActualCuentaFichas
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
 import ssl
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from models.brokers import Broker
+
+import automatizacion.programar_trigger as trigger
+import automatizacion.shedule_triggers as shedule_triggers
+import threading
+
 from utils.db import db
 from datetime import datetime
 import time
 from flask_jwt_extended import (
-    JWTManager,
+    JWTManager,    
     jwt_required,
     create_access_token,
     get_jwt_identity,
@@ -46,6 +53,7 @@ from flask import (
     jsonify,
     current_app,
     g,
+    session,
     make_response
 )
 
@@ -75,13 +83,30 @@ diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {}
 diccionario_global_sheet = {}
 diccionario_global_sheet_intercambio = {}
+ya_ejecutado_hilo_panelControl = False
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
+hilo_iniciado_estrategia_usuario = {}
+hilos_iniciados_shedule = []
 ultima_entrada = time.time()
+CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
+detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
+ContenidoSheet_list = None
+api_url = None
+ws_url = None
+
+# Calcula la hora de inicio del día siguiente a las 9:00 AM
+#hora_inicio_manana = datetime.datetime.combine(datetime.date.today() + datetime.timedelta(days=1), datetime.time(9, 0))
+
 # Configurar las URLs de la instancia de BMB
 api_url = "https://api.cocos.xoms.com.ar/"
 ws_url = "wss://api.cocos.xoms.com.ar/"
 
 
+#api_url = "https://api.cocos.xoms.com.ar/"
+#ws_url = "wss://api.cocos.xoms.com.ar/"
+ 
+#api_url = "https://api.veta.xoms.com.ar/"
+#ws_url = "wss://api.veta.xoms.com.ar/"
 
 
 
@@ -124,6 +149,14 @@ def loginExtAutomatico():
             user = request.json.get('usuario')
             account = request.json.get('cuenta')
             simuladoOproduccion = request.json.get('simuladoOproduccion')
+            session['selector'] = selector
+            session['access_token'] = access_token
+            session['rutaDeLogeo'] = rutaDeLogeo
+            session['refresh_token'] = refresh_token
+            session['correo_electronico'] = correo_electronico
+            session['user'] = user
+            session['account'] = account
+            session['simuladoOproduccion'] = simuladoOproduccion
            # print('access_token ',access_token)
            # print('refresh_token ',refresh_token)
            # print('correo_electronico ',correo_electronico)
@@ -144,8 +177,16 @@ def loginExtAutomatico():
                         if simuladoOproduccion =='simulado':
                             try:
                                             environment =pyRofexInicializada.Environment.REMARKET
+                                            
+                                          #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
+                                          #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
+                                          #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environment)
+                                          #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environment) 
+                                          #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
+                                         
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion()                                     
+                                            conexion(app) 
+                                            refrescoValorActualCuentaFichas(user_id)                                    
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
                                                 resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': cuentas.userCuenta, 'selector': selector}))
@@ -166,19 +207,46 @@ def loginExtAutomatico():
                         else:
                             exp_date = datetime.utcfromtimestamp(exp_timestamp)
                             fecha_actual =   datetime.utcnow()
-                            if fecha_actual > exp_date:
-                                environment = pyRofexInicializada.Environment.LIVE
-                
-                                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
-                                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment) 
-                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
-                                pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                conexion()
+                            endPoint = inicializar_variables(cuentas.accountCuenta)
+                            global api_url, ws_url                          
+                            api_url = endPoint[0]
+                            ws_url = endPoint[1]
+                            session['api_url']=endPoint[0]
+                            session['ws_url']=endPoint[1]
+                            
+                            print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
+                            if fecha_actual < exp_date:#hay que corregir el direccionamiento de esto_________
                               
-                                print("está logueado en produccion en LIVE")
+                                environment = pyRofexInicializada.Environment.LIVE
+                                
+                                pyRofexInicializada._set_environment_parameter("url", api_url,environment)
+                                pyRofexInicializada._set_environment_parameter("ws", ws_url,environment)                                
+                                pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)                                
+                                pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
+                                conexion(app)
+                                app.logger.info("______está logueado en produccion en LIVE___________") 
+                                #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
+                              
+                                # Crear un objeto que represente los argumentos que deseas pasar a la función planificar_schedule
+                               
+
+                                # Crear el hilo sin llamar directamente a la función planificar_schedule
+                                # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
+                                #hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
+                                #args=('1', app, "12:00", "17:00"))
+
+                               # hilo_principal.start()
+                                #refrescoValorActualCuentaFichas(user_id)
+                                print("pasa hilo hilo_principal.start() planificar_schedule")
                                 if rutaDeLogeo != 'Home':      
-                                 return render_template("/paneles/panelDeControlBroker.html")   
+                                      resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                      resp.headers['Content-Type'] = 'application/json'
+                                      set_access_cookies(resp, access_token)
+                                      set_refresh_cookies(resp, refresh_token)
+                                      return resp
+                                 
                                 else:
+                                    
                                     resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                     resp.headers['Content-Type'] = 'application/json'
                                     set_access_cookies(resp, access_token)
@@ -187,7 +255,20 @@ def loginExtAutomatico():
                             else:
                                  
                                   # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-                                  resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                  # Supongamos que `accountCuenta`, `user`, y `selector` son los datos que quieres enviar
+                                  cuenta = {
+                                        'accountCuenta': account,
+                                        'user': user,
+                                        'selector': selector
+                                  }
+                                  # Crear una respuesta JSON con los datos de la cuenta y la redirección
+                                  resp_data = {
+                                        'redirect': 'panel_control_broker',
+                                        'cuenta': cuenta  # Aquí incluimos los datos de la cuenta en el cuerpo de la respuesta
+                                  }
+                                  # Crear la respuesta utilizando jsonify y make_response
+                                  resp = make_response(jsonify(resp_data))
+                                  #resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                   resp.headers['Content-Type'] = 'application/json'
                                   set_access_cookies(resp, access_token)
                                   set_refresh_cookies(resp, refresh_token)
@@ -216,31 +297,63 @@ def loginExtCuentaSeleccionadaBroker():
         user = request.form.get('usuario')
         password = request.form.get('contraseña')
         accountCuenta = request.form.get('cuenta')
-        access_token = request.form.get('access_token')
-        
+        access_token = request.form.get('access_token')       
+        src_directory1 = os.getcwd()#busca directorio raiz src o app 
+        logs_file_path = os.path.join(src_directory1, 'logs.log')
+        session['token'] = access_token
+        session['user'] = user
+        session['accountCuenta'] = accountCuenta
+        session['password'] = password
+        session['origin_page'] = origin_page
+       # logs_file_path = os.path.join(src_directory, 'logs.log')
+       
+       
+        # Abrir el archivo en modo de escritura para borrar su contenido
+#        with open(logs_file_path, 'w') as f:
+#            pass  # No es necesario escribir nada, solo abrir y cerrar el archivo borrará su contenido
+#        print("El contenido del archivo logs.log ha sido borrado.")
+          # Variable local para mantener un registro de los hilos iniciados aquí
+      
         if origin_page == 'login':
             selector = request.form.get('environment')
+            print('selector ',selector)
+            
         else: 
             selector = request.form.get('selectorEnvironment')
+            print('selector ',selector)
         
         
        
-        if not selector or not user or not password or not account:
+        if not selector or not user or not password or not accountCuenta:
             flash('Falta información requerida')
             return redirect(url_for('autenticacion.index'))
 
         try:
-            inicializar_variables_globales()
-            creaJsonParaConextarseSheetGoogle()
+           
+            app = current_app._get_current_object() 
+            #creaJsonParaConextarseSheetGoogle()
             if selector == 'simulado':
                 # Configurar para el entorno de simulación
                 environments = pyRofexInicializada.Environment.REMARKET
+              #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
+              #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
+              #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environments)
+              #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environments) 
+              #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
+                                         
             else:
                 # Configurar para el entorno LIVE
                 environments = pyRofexInicializada.Environment.LIVE
                 
-                pyRofexInicializada._set_environment_parameter("url", api_url,environments)
-                pyRofexInicializada._set_environment_parameter("ws", ws_url,environments) 
+                endPoint = inicializar_variables(accountCuenta)
+                app.logger.info(endPoint)
+                global api_url, ws_url    
+                api_url = endPoint[0]
+                ws_url = endPoint[1]
+                session['api_url']=endPoint[0]
+                session['ws_url']=endPoint[1]
+                pyRofexInicializada._set_environment_parameter("url",api_url,environments)
+                pyRofexInicializada._set_environment_parameter("ws",ws_url,environments) 
                 pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)
                
 
@@ -249,12 +362,21 @@ def loginExtCuentaSeleccionadaBroker():
             if access_token:
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Aquí puedes realizar operaciones relacionadas con el usuario si es necesario.
-            
+          
             pyRofexInicializada.initialize(user=user,password=password,account=accountCuenta,environment=environments )
-            conexion()
+            conexion(app)
+            #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
+            
+            refrescoValorActualCuentaFichas(user_id)
            
            
             print(f"Está logueado en {selector} en {environments}")
+             # Se inicia el programa principal en un hilo separado
+           # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
+            #hilo_principal = threading.Thread(target=shedule_triggers.planificar_schedule, 
+             #                     args=('1', app, "12:00", "17:00"))
+
+            #hilo_principal.start()
             
             
         except jwt.ExpiredSignatureError:
@@ -275,10 +397,30 @@ def loginExtCuentaSeleccionadaBroker():
             # Si origin_page no coincide con ninguna ruta conocida, redirige a una página por defecto.
             return render_template('registrarCuentaBroker.html')
 
+    
 
+def inicializar_variables(accountCuenta):
+    valores = []  # Inicializar la lista
+    
+        # Buscar la cuenta asociada a la cuentaCuenta proporcionada
+    cuenta = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
+    
+    if cuenta:
+        # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
+        broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
+        
+        if broker:
+              # Agregar los valores de api_url y ws_url a la lista 'valores'
+            valores = [broker.api_url, broker.ws_url]
+            # Hacer algo con el objeto Broker encontrado
+            print(f"El broker asociado a la cuenta es: {broker.nombre}")
+        else:
+            print("No se encontró el broker asociado a la cuenta.")
+    else:
+        print("No se encontró la cuenta.")
 
-def inicializar_variables_globales():
-    global pyRofexInicializada, pyConectionWebSocketInicializada, pyWsSuscriptionInicializada
+        
+    return valores
     
     
    
@@ -298,7 +440,7 @@ def creaJsonParaConextarseSheetGoogle():
 
     # Ruta al archivo de texto plano
     #ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
-    ruta_archivo_texto = 'C:\\Users\\dpuntillovirtual01\\Desktop\\clavesheet.txt'    
+    ruta_archivo_texto = 'C:/Users/mdioli/Desktop/clavesheet.txt'    
   
     print(ruta_archivo_texto)
     # Leer el texto plano desde el archivo

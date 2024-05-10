@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,current_app
 import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
@@ -11,6 +11,7 @@ import socket
 from models.triggerEstrategia import TriggerEstrategia
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+import jwt
 
 estrategias = Blueprint('estrategias',__name__)
 
@@ -36,7 +37,11 @@ def estrategias_usuario_general():
 def estrategias_usuario_nadmin():
     try:
       if request.method == 'POST': 
-            usuario_id = request.form['usuario_id']                      
+          access_token = request.form.get('access_token_est') 
+          if access_token:
+            app = current_app._get_current_object()  
+            
+            usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
             estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
             db.session.close()
             for estrategia in estrategias:
@@ -48,7 +53,7 @@ def estrategias_usuario_nadmin():
     
     except:
        print('no hay estrategias en strategies/estrategias.py') 
-    return  render_template("/estrategias/errorEstrategiaVacia.html")
+    return  render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route("/estrategias-usuario",  methods=["POST"])
 def estrategias_usuario():
@@ -66,7 +71,7 @@ def estrategias_usuario():
     
     except:
        print('no hay estrategias') 
-    return  render_template("/estrategias/errorEstrategiaVacia.html")
+    return  render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route("/eliminar-trigger/",  methods=["POST"])
 def eliminar_trigger():
@@ -127,7 +132,7 @@ def editar_Trigger():
                     
     except:
                 print('no hay estrategias')
-    return render_template("/estrategias/errorEstrategiaVacia.html")
+    return render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route("/alta-estrategias-trig", methods=["POST"])
 def alta_estrategias_trig():
@@ -177,7 +182,7 @@ def alta_estrategias_trig():
     except:
         print('no hay estrategias')
 
-    return render_template("/estrategias/errorEstrategiaVacia.html")
+    return render_template("/notificaciones/errorEstrategiaVacia.html")
 
 @estrategias.route('/inicioEstrategias/')
 def inicioEstrategias():
@@ -188,25 +193,29 @@ def inicioEstrategias():
      print("contraseña o usuario incorrecto")  
      flash('Loggin Incorrect')    
      return render_template("login.html" )    
-   
+ 
 @estrategias.route('/detenerWS/', methods=["GET", "POST"])
 def detenerWS():
     try:
+        # Cerrar la conexión del websocket
         get.pyRofexInicializada.close_websocket_connection()
-
-        # Obtener los datos por POST (cambia 'nombre_del_campo' al nombre correcto)
-        usuario_id = request.form['usuario_id']
-
-        # Llamar a la función estrategias_usuario_nadmin y pasar los datos por POST
-        resultado_estrategias = estrategias_usuario_nadmin()
-
-        # Hacer algo con el resultado de la función si es necesario
-
         
+        # Obtener el usuario_id si la solicitud es POST
+        if request.method == 'POST':
+            usuario_id = request.form.get('usuario_id')
+            # Llamar a la función estrategias_usuario_nadmin y pasar los datos por POST
+            resultado_estrategias = estrategias_usuario_nadmin(usuario_id)
+            # Hacer algo con el resultado de la función si es necesario
+
+        # Si la solicitud es GET, no se espera ningún parámetro, ya que no se está enviando ningún formulario
+        elif request.method == 'GET':
+           #resultado_estrategias = estrategias_usuario_nadmin()
+           return jsonify({'success': True, 'message': 'Procesos en Threads detenidos'})
+
     except Exception as e:
         print('Error al detener WS:', str(e))
         return render_template("errorOperacion.html")  # Puedes renderizar una plantilla de error específica
- 
+    
 @estrategias.route('/cargaDatosEstrategyUno/', methods = ['POST'])
 def cargaDatosEstrategyUno():   
     if request.method == 'POST':         

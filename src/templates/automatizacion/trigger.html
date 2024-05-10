@@ -9,218 +9,365 @@
   {% endif %}
 {% endwith %}
 
-{% extends 'layouts/layout.html' %}
+{% extends 'layouts/layoutConexBroker.html' %}
 
 {% block content %}
-
+<body>
+<div class="container">
   
-  <div>
-    <h2>Programar Trigger</h2>
-    <table class="table table-dark table-striped">
-      <thead>           
-        <tr>
-          <th scope="col">IdTrigger</th>  
-          <th scope="col">IdUser</th>
-          <th scope="col">UserCuenta</th>
-          <th scope="col">Cuenta</th>
-          <th scope="col">TiempoInicio</th>
-          <th scope="col">TiempoFin</th>
-          <th scope="col">Automatico</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Acciones</th>
-        </tr>            
-      </thead>
-      <tbody>
-        <!-- Aquí se mostrarán los usuarios -->
-        {% for estrategia in datos %}
-        <tr>
-          <td>{{ estrategia.id }}</td>
-          <td>{{ estrategia.user_id }}</td>          
-          <td>{{ estrategia.userCuenta }}</td>
-          <td>{{ estrategia.accountCuenta }}</td>
-          <td>{{ estrategia.horaInicio }}</td>          
-          <td>{{ estrategia.horaFin }}</td>
-          <td>{{ estrategia.ManualAutomatico }}</td>
-          <td>{{ estrategia.nombreEstrategia }}</td>
-          <td class="d-flex">
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.cuenta }}">Editar</button>
-            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-id="{{ estrategia.id }}">RUN EDIT</button>
+  <div class="container" id="cardIndex">                
+    <div class="card-body cardIndexTriggers">
+       
+          
+             <div id="luz" class="luz"></div> <!-- Elemento de la luz -->
+         
+       
+        <div class="row">
+            <div class="col text-start">
+                <label for="lanzar" style="color: gold;">Cantidad de Triggers</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-start">
+                <!-- Dentro de trigger.html -->
+                <span class="badge bg-primary">{% if num_triggers %}{{ num_triggers }}{% else %}0{% endif %}</span>
+            </div>
+        </div>
+        <div class="row"> 
+            <div class="col text-start">
+                <label for="horaInicio" style="color: gold;">Hora de inicio:</label>                
+                <input type="time" id="horaInicio" name="horaInicio" value="12:00">
+            </div>
+            <div class="col text-start">
+                <label for="horaFin" style="color: gold;">Hora de fin:</label>
+                <input type="time" id="horaFin" name="horaFin"  value="17:00">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col text-center">
+                <label for="lanzar" style="color: gold;">Lanza todos los triggers</label>
+                <button id="lanzar" type="button" class="btn btn-danger w-100 mb-2" style="transition: box-shadow 0.3s;"
+                        onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                        data-bs-toggle="modal" data-bs-target="#confirmationModal">Lanzar Shedule</button>
             
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  <div>
-    <form id="registro-usuario-form" action="/alta-estrategias-trig" method="POST">
-      <div class="form-group">
-        <input type="hidden" class="form-control" id="usuario_id" name="usuario_id" value="{{ datos.0 }}">
-      </div> 
-      <div class="form-group">
-        <input type="hidden" class="form-control" id="correo_electronico" name="correo_electronico" required>
-      </div>  
-      <div class="form-group">
-        <input type="hidden" class="form-control" id="cuenta" name="cuenta" required>
-      </div>         
-      <label for="nombre">Nombre:</label>
-      <input type="text" class="form-control" id="nombreEstrategia" name="nombreEstrategia" required>         
-      <button type="submit" class="btn btn-primary my-2">Registrar estrategia</button>
-    </form>
-  </div>
-
-  <div class="modal fade" id="editarEstrategiaModal" tabindex="-1" aria-labelledby="editarEstrategiaModal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editarEstrategiaModal" style="color: black;">Editar Estrategia</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
+                        onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                        data-bs-toggle="modal" data-bs-target="#confirmationModalDetenerShedule">Detener Shedule</button>
+            </div>
         </div>
-        <form id="editarEstrategiaModal" action="/editar-trigger-nombre" method="POST">
-          <div class="modal-body">
-            <div class="form-group">
-              <input type="hidden" id="usuario_id" name="usuario_id" value="" />
-            </div>
-            <div class="form-group">
-              <input type="hidden" class="form-control" id="cuenta" name="cuenta">
-            </div>
-            <div class="form-group">
-              <input type="hidden" class="form-control" id="IdTrigger" name="IdTrigger">
-            </div> 
-            <div class="form-group">
-              <label for="editarEstrategiaModal" style="color: black;">Nombre:</label>
-              <input type="text" class="form-control" id="TriggerNombre" name="TriggerNombre" required>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="eliminarEstrategiaModal" tabindex="-1" aria-labelledby="eliminarEstrategiaModal" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="eliminarEstrategiaModal">Eliminar Estrategia</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="eliminarEstrategiaForm" action="/eliminar-trigger" method="POST">
-          <div class="modal-body">
-            <input type="hidden" id="eliminarEstrategiaUserId" name="user_id" value="">
-            <input type="hidden" id="eliminarEstrategiaIdTrigger" name="IdTrigger" value="">
-            <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta estrategia?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-danger">Eliminar</button>
-          </div>
-        </form>
         
-      </div>
     </div>
-  </div>
+</div>
 
-  <div class="modal fade" id="editarTriggerModal" tabindex="-1" aria-labelledby="editarTriggerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="editarTriggerModalLabel">Editar Estrategia</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="editarTriggerForm" action="/editar-Trigger" method="POST">
-          <div class="modal-body">
-            
-              <label for="horaInicio"  style="color: black;">Hora de inicio:</label>
-              <input type="time" id="horaInicio" name="horaInicio" required>
-            
-            
-              <label for="horaFin" style="color: black;  margin-bottom: 10px;">Hora de finalización:</label>
-              <input type="time" id="horaFin" name="horaFin" required>
-              <input type="hidden" id="editarUsuarioId" name="id">
-                    
-                         
-              <select class="form-control" id="editarManualAutomaticol" name="ManualAutomatico">
-                <option value="MANUAL">Manual</option>
-                <option value="ADAUTOMATICO">Automatico</option>
-              </select>
-            
+
+  <div class="container" id="cardIndex">                
+      <div class="card-body cardIndexTriggersAzul">
+          <div class="row">
+              <div class="col text-start">
+                  <label for="detener" style="color: gold;">Cantidad de Threads</label>
+              </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary">Guardar</button>
+          <div class="row">
+              <div class="col text-start">
+                  <span class="badge bg-primary">{% if num_threads %}{{ num_threads }}{% else %}0{% endif %}</span>
+              </div>
           </div>
-        </form>
+          <div class="row mt-3">
+              <div class="col text-center">
+                  <label for="detener" style="color: gold;">Detiene todos los threads</label>
+                  <button id="detener" type="button" class="btn btn-primary w-100" style="transition: box-shadow 0.3s;"
+                      onmouseover="this.style.boxShadow='0 0 10px 5px blue';" onmouseout="this.style.boxShadow='none';"                    
+                      data-bs-toggle="modal" data-bs-target="#detenerModal">Detener</button>
+              
+              </div>
+          </div>
+      </div>
+  </div>   
+</div>
+
+
+<div id="logContainer">
+  <!-- Aquí se mostrarán los registros -->
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade modal-gold" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalLabel">Confirmación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Se lanzarán procesos automáticos permanentes.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="btnArrancarShedule" class="btn btn-success" >Aceptar</button>
       </div>
     </div>
   </div>
-  
-  
-<!-- Enlaces a scripts de JavaScript -->
+</div>
+
+
+
+
+<!-- Modal Detener Shedule-->
+<div class="modal fade modal-gold" id="confirmationModalDetenerShedule" tabindex="-1" aria-labelledby="confirmationModalDetenerSheduleLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmationModalDetenerSheduleLabel">Confirmación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Se detendran los procesos automáticos permanentes.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" id="btnDetenerShedule" class="btn btn-success" >Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<!-- Modal Detener threads-->
+<div class="modal fade modal-gold" id="detenerModal" tabindex="-1" aria-labelledby="detenerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detenerModalLabel">Advertencia</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Está por detener los procesos permanentes.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" id="btnDetenerThreads">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 <script>
-  // Retrieve data from localStorage
-  var correo_electronico_estrategia = localStorage.getItem("correo_electronico");
-  var cuenta_estrategia = localStorage.getItem("cuenta");
 
-  // Set values of input elements
-  document.getElementById("correo_electronico").value = correo_electronico_estrategia;
-  document.getElementById("cuenta").value = cuenta_estrategia;
+// Función para activar la luz verde parpadeante
+function activarLuzVerde() {
+  var luz = document.getElementById("luz");
+  luz.classList.remove("roja");
+  luz.classList.add("verde");
+  localStorage.setItem('luzEstado', 'verde');
+  var intervalo = setInterval(function () {
+      luz.classList.toggle("verde");
+  }, 3000);
+  localStorage.setItem('intervaloKey', intervalo.toString()); // Convertir a cadena
+}
+
+// Función para activar la luz roja
+function activarLuzRoja() {
+  var luz = document.getElementById("luz");
+  luz.classList.remove("verde");
+  luz.classList.add("roja");
+  localStorage.setItem('luzEstado', 'roja');
+  clearInterval(parseInt(localStorage.getItem('intervaloKey'))); // Convertir a entero
+}
+
+// Restaurar el estado de la luz al volver a la página
+document.addEventListener("DOMContentLoaded", function() {
+  var estadoLuz = localStorage.getItem('luzEstado');
+  if (estadoLuz === 'verde') {
+      activarLuzVerde();
+  } else if (estadoLuz === 'roja') {
+      activarLuzRoja();
+  }
+});
+
+
+// Escuchar eventos de los botones
+document.getElementById("lanzar").addEventListener("click", activarLuzVerde);
+document.getElementById("detener").addEventListener("click", activarLuzRoja);
+
+
+
+
+
 
 
   $(document).ready(function() {
-    // Validación del nombre
-    var nombre = document.getElementById("correo_electronico");
-    function validateNombre(event) {
-      if (nombre.value.indexOf(' ') >= 0) {
-        nombre.setCustomValidity("El correo_electronico no debe contener espacios en blanco");
-        event.preventDefault();
-      } else {
-        nombre.setCustomValidity("");
-      }
-    }
-  
-    // Validación de la confirmación de contraseña
-    var password = document.getElementById("password");
-    var confirm_password = document.getElementById("confirm_password");
-  
-    function validatePassword() {
-      if (password.value != confirm_password.value) {
-        confirm_password.setCustomValidity("Las contraseñas no coinciden");
-      } else {
-        confirm_password.setCustomValidity("");
-      }
-    }
-  
-    nombre.onchange = validateNombre;
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
+    $('#btnDetenerThreads').click(function() {
+    
+      $.ajax({
+          type: 'GET',
+          url: '/detenerWS/',
+          contentType: 'application/json',         
+          success: function(response) {
+            $('#detenerModal').modal('hide');
+            if (response.success) {
+              // Si la solicitud fue exitosa, mostrar una notificación
+             
+              alert('Se detuvo exitosamente el websoket con el broker');
+            } else {
+                // Si hubo un problema, mostrar un mensaje de error
+                alert('Hubo un problema al detener el hilo');
+            }
+             
+          },
+          error: function(xhr, status, error) {
+              alert('Hubo un problema con la solicitud.');
+          }
+      });
   });
 
-  const editButtons = document.querySelectorAll('[data-bs-target="#editarEstrategiaModal"]');
-  editButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const userId = button.dataset.triggerUserId;
-      const Id = button.dataset.triggerId;
-      const cuenta = button.dataset.userCuenta;
-      
-      document.querySelector('#IdTrigger').value = Id;
-      document.querySelector('#usuario_id').value = userId;
-      document.querySelector('#cuenta').value = cuenta;
+    $('#btnDetenerShedule').click(function() {
+    
+      $.ajax({
+          type: 'GET',
+          url: '/DetenerShedule/',
+          contentType: 'application/json',         
+          success: function(response) {
+            $('#confirmationModalDetenerShedule').modal('hide');
+            if (response.success) {
+              // Si la solicitud fue exitosa, mostrar una notificación
+             
+              alert('Se detuvo exitosamente el shedule');
+            } else {
+                // Si hubo un problema, mostrar un mensaje de error
+                alert('Hubo un problema al detener el hilo');
+            }
+             
+          },
+          error: function(xhr, status, error) {
+              alert('Hubo un problema con la solicitud.');
+          }
+      });
+  });
+
+    $('#btnArrancarShedule').click(function() {
+        var horaInicio = $('#horaInicio').val(); // Obtener el valor de la hora de inicio
+        var horaFin = $('#horaFin').val(); // Obtener el valor de la hora de fin
+          // Obtener la zona horaria del cliente
+        var clienteTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        // Obtener la hora actual en formato ISO 8601
+        var horaActual = new Date().toISOString(); // Formato: 'YYYY-MM-DDTHH:MM:SSZ'
+ 
+
+        access_token = localStorage.getItem('access_token');
+        correo_electronico = localStorage.getItem('correo_electronico');
+        usuario =  localStorage.getItem('usuario');
+        cuenta =  localStorage.getItem('cuenta');
+        idUser = localStorage.getItem('usuario_id');
+        selector = localStorage.getItem('selector');
+        // Realizar una solicitud AJAX
+        $.ajax({
+            type: 'POST',
+            url: '/ArrancaShedule',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                'fechaInicioShedule': horaInicio,
+                'fechaFinShedule': horaFin,               
+                'userCuenta': cuenta,                
+                'access_token': access_token,
+                'idUser': idUser,
+                'correo_electronico': correo_electronico,
+                'cuenta': cuenta,
+                'selector' : selector,
+                'clienteTimezone': clienteTimezone, // Enviar la zona horaria del cliente  
+                'fechaActual':horaActual                         
+            }),
+            success: function(response) {
+              $('#confirmationModal').modal('hide');
+              if (response.success) {
+                // Si la solicitud fue exitosa, mostrar una notificación
+               
+                alert('Hilo iniciado exitosamente');
+              } else {
+                  // Si hubo un problema, mostrar un mensaje de error
+                  alert('Hubo un problema al iniciar el hilo');
+              }
+               
+            },
+            error: function(xhr, status, error) {
+                alert('Hubo un problema con la solicitud.');
+            }
+        });
     });
-  });
+});
 
- 
-    function setUserData(userId, triggerId) {
-      document.getElementById('eliminarEstrategiaUserId').value = userId;
-      document.getElementById('eliminarEstrategiaIdTrigger').value = triggerId;
+
+
+
+// Contador para llevar el seguimiento del número de líneas mostradas
+let lineCount = 0;
+
+
+
+//para local
+const updatesDiv = document.getElementById('logContainer');
+
+        // Inicializar lineCount antes de usarlo
+// Función para hacer scroll hacia abajo
+function scrollToBottom() {
+  logContainer.scrollTop = logContainer.scrollHeight;
+}
+
+// Función para manejar los eventos SSE
+function handleEvent(event) {
+    const newUpdate = document.createElement('p');
+    newUpdate.textContent = event.data;
+    updatesDiv.appendChild(newUpdate);
+    
+    // Incrementar el contador de líneas después de agregar la actualización
+    lineCount++;
+    
+    // Verificar si el número de líneas es múltiplo de 10 para limpiar el contenedor
+    if (lineCount > 150) {
+      // Eliminar las líneas adicionales
+      while (updatesDiv.childElementCount > 150) {
+          updatesDiv.removeChild(updatesDiv.firstChild);
+      }
+        // Limpiar el contenedor
+        //updatesDiv.innerHTML = '';
+    
     }
- 
+        // Hacer scroll hacia abajo después de cada actualización
+        scrollToBottom();
+}
+// Llamar a la función scrollToBottom() inicialmente para asegurarse de que el scroll esté en la parte inferior al cargar la página
+scrollToBottom();
+// Función para actualizar las actualizaciones cada 30 segundos
+function actualizarActualizaciones() {
+  // Crear un EventSource para recibir eventos del servidor
+  const eventSource = new EventSource('/logs');
+  console.log('eventSource ',eventSource)
+  // Asignar el manejador de eventos
+  eventSource.onmessage = handleEvent;
+
+  // Manejar errores de conexión
+  eventSource.onerror = function(event) {
+      const errorMessage = document.createElement('p');
+      errorMessage.textContent = "No se puede acceder a los logs momentáneamente.";
+      updatesDiv.appendChild(errorMessage);
+  }
+}
+
+// Actualizar las actualizaciones cada 30 segundos
+actualizarActualizaciones()
+//setInterval(actualizarActualizaciones, 3000);
+
+
+  </script>
   
-  
-</script>
+
+</body>
 {% endblock %}

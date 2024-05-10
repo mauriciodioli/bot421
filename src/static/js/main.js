@@ -1,6 +1,16 @@
+// Cerrar el menú desplegable al ser seleccionado
+function cerrarMenuSeleccionado() {
+  $(document).ready(function() {
+      $(".navbar-nav a").click(function() {
+          var isSubmenu = $(this).next(".dropdown-menu").length > 0;
 
-
-
+          // Solo cierra el menú si el enlace no tiene un submenú
+          if (!isSubmenu) {
+              $(".navbar-collapse").collapse('hide');
+          }
+      });
+  });
+}
 
 
 document.addEventListener("DOMContentLoaded", function() {

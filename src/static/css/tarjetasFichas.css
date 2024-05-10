@@ -1,5 +1,5 @@
 /* Estilos para el contenedor de las tarjetas */
-#cardIndex {
+.cardIndex {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -10,7 +10,7 @@
   }
   
   /* Estilos para las tarjetas */
-  .cardIndexFichas {
+  #cardIndexFichas {
     flex: 1 0 300px;
     transition: box-shadow 0.3s;
     cursor: pointer; /* Cambia el cursor al pasar por encima de las tarjetas */
@@ -18,7 +18,7 @@
     background-color: #333; /* Fondo gris oscuro para las tarjetas */
     box-shadow: 0 6px 12px rgba(218, 165, 32, 0.5); /* Sombra dorada en las tarjetas */
     max-width: 300px;
-    margin: 10px;
+    margin: 20px;
   }
   
   /* Estilos adicionales para aplicar sombra más grande al pasar el mouse o seleccionar */
