@@ -9,6 +9,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.instrumento import Instrumento
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
+import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
@@ -84,7 +85,7 @@ def cuenta_posicion_cuenta():
         cuenta = request.form['accounCuenta_form_posicionCuenta']
         selector = request.form['selector_form_posicionCuenta']      
             
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
       
             for elemento in get.ConexionesBroker:
@@ -112,7 +113,7 @@ def cuenta_detalle_cuenta():
         cuenta = request.form['accounCuenta_form_detalleCuenta']
         selector = request.form['selector_form_detalleCuenta']      
             
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             for elemento in get.ConexionesBroker:
                 print("Variable agregada:", elemento)
@@ -147,7 +148,7 @@ def reporteCuenta():
         selector = request.form['selector_form_reporteCuenta']  
         correoElec = request.form['correo_electronico_form_reporteCuenta'] 
             
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             #cuentas.indiceCuentas()            
             reporte = obtenerSaldoCuenta(account=cuenta)
@@ -239,7 +240,7 @@ def registrar_cuenta():
          passwordCuenta_encoded = passwordCuenta.encode('utf-8')
          accountCuenta_encoded = accountCuenta.encode('utf-8')
 
-         if access_token:
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -391,7 +392,7 @@ def get_cuentas_de_broker_usuario():
          
          access_token = request.form['access_token']
          todasLasCuentas = []
-         if access_token:
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -455,7 +456,7 @@ def get_cuentas_de_broker_usuario_Abm():
        
          access_token = request.form['access_token_form_Abm']
          todasLasCuentas = []
-         if access_token:
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:

@@ -19,6 +19,7 @@ import time
 import strategies.estrategiaSheetWS as estrategiaSheetWS 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 import routes.api_externa_conexion.get_login as get
+import tokens.token as Token
 import strategies.estrategias as estrategias
 from utils.common import Marshmallow, db
 from datetime import datetime
@@ -68,7 +69,7 @@ def programador_trigger():
     access_token = request.json["tokenAcceso"]
     accesoManualAutomatico =request.json["accesoManualAutomatico"]
     ##passwordCuenta=passwordCuenta_encoded,
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
         try:
             user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']

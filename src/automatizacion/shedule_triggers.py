@@ -390,7 +390,7 @@ def tarea_inicio(user_id,app,triggerEstrategia,usuario):
                 #url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
                 #response = requests.post(url_for(url), data=datos)
                 # Construir la URL de destino
-                url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia
+                url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia.replace("_", "-")
                 
             
                 # Enviar los datos a la estrategia

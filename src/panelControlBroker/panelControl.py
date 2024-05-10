@@ -17,6 +17,7 @@ import threading
 import strategies.datoSheet as datoSheet
 import time
 from flask import abort
+import tokens.token as Token
 
 panelControl = Blueprint('panelControl',__name__)
 
@@ -35,13 +36,12 @@ def panel_control_sin_cuenta():
     layout = request.args.get('layoutOrigen')
     usuario_id = request.args.get('usuario_id')
     access_token = request.args.get('access_token')
-    
+    refresh_token = request.args.get('refresh_token')
    
    
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token):       
         respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
-        user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-      
+        
         if determinar_pais(pais)  is not None:
         
             datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
@@ -69,10 +69,9 @@ def panel_control():
      layout = request.args.get('layoutOrigen')
      usuario_id = request.args.get('usuario_id')
      access_token = request.args.get('access_token')
-     if access_token:
+     if access_token and Token.validar_expiracion_token(access_token=access_token): 
         try:  
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-        
             
                 respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
                 

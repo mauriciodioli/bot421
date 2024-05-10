@@ -22,6 +22,7 @@ import asyncio
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexionShedule
 from fichasTokens.fichas import refrescoValorActualCuentaFichas
+import tokens.token as Token
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
@@ -204,7 +205,7 @@ def loginExtAutomatico():
            # print('correo_electronico ',correo_electronico)
            
             sobreEscituraPyRofex = True
-            if access_token:
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()                    
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
@@ -351,7 +352,7 @@ def loginExtCuentaSeleccionadaBroker():
         logs_file_path = os.path.join(src_directory1, 'logs.log') 
         global ConexionesBroker,api_url, ws_url  
        
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
        
                 if origin_page == 'login':
