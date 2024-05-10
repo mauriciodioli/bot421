@@ -15,6 +15,7 @@ from models.usuario import Usuario
 from models.strategy import Strategy
 from models.brokers import Broker
 import strategies.gestion_estrategias.unidad_trader as utABM 
+import tokens.token as Token
 
 abm_estrategias = Blueprint('abm_estrategias',__name__)
 
@@ -136,11 +137,10 @@ def abm_estrategias_all_Brokers_post():
 
         todasLosBrokers = []
 
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
-                user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 brokers = db.session.query(Broker).all()
 
                 if brokers:
@@ -173,12 +173,11 @@ def abm_estrategias_all_Brokers_post():
 def abm_estrategias_all():
     access_token = request.json.get('accessToken')
 
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
         
         try:
-            user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                    
+                     
             estrategias = db.session.query(Strategy).all()
 
             if estrategias:

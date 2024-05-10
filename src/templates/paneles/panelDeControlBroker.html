@@ -88,6 +88,7 @@
     var isFirstTime = localStorage.getItem('hasVisited');
     debugger;
     if (isFirstTime=='false') {
+      
       access_token = localStorage.getItem("access_token")  
       refresh_token = localStorage.getItem('refresh_token');
       correo_electronico = localStorage.getItem('correo_electronico');
@@ -105,7 +106,7 @@
       var pais = 'argentina';  
       var layoutOrigen = 'layoutConexBroker';
       
-      var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
+      var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token;
       window.location.href = url;
     }
   });
