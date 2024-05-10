@@ -28,6 +28,7 @@ from datetime import datetime, timedelta
 import random
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+import routes.api_externa_conexion.cuenta as cuentas
 from models.ficha import Ficha
 from models.trazaFicha import TrazaFicha
 import hashlib
@@ -36,9 +37,10 @@ from tokens.token import generar_token
 fichas = Blueprint('fichas',__name__)
 
 
-def refrescoValorActualCuentaFichas(user_id):    
+
+def refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta):    
       try:
-            repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+            repuesta_cuenta = pyRofexInicializada.get_account_report(account=accountCuenta,environment=accountCuenta)
             if repuesta_cuenta and 'accountData' in repuesta_cuenta:
                 reporte = repuesta_cuenta['accountData']
                 available_to_collateral = reporte['availableToCollateral']
@@ -239,6 +241,7 @@ def crear_ficha():
         correoElectronico = data.get('correoElectronico')
         total_cuenta = data.get('total_cuenta')
         layouts = data.get('layoutOrigen')
+        estado_ficha = data.get('estado_ficha')
        
    
         
@@ -271,7 +274,7 @@ def crear_ficha():
                 porcentaje_creacion=porcentajeCreacion, 
                 valor_cuenta_creacion=total_cuenta, 
                 valor_cuenta_actual=total_cuenta,  
-                estado="PENDIENTE",  
+                estado=estado_ficha,  
                 fecha_generacion=datetime.now(), 
                 interes=0.0 
             )
@@ -334,22 +337,28 @@ def crear_ficha():
 
 @fichas.route("/fichasToken_fichas_generar/", methods=['POST'])   
 def fichasToken_fichas_generar():
-   try:  
+  try:  
         total_cuenta = 0.0
         access_token = request.form['access_token_form_GenerarFicha'] 
-        layouts = request.form['layoutOrigen']
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
-        reporte = repuesta_cuenta['accountData']
-        if reporte!=None:
-            available_to_collateral = reporte['availableToCollateral']
-            portfolio = reporte['portfolio']
-           # layouts = 'layout'
-        # print("detalle  ",available_to_collateral)
-        # print("detalle ",portfolio)
+        layouts = request.form['layoutOrigen']  
+        cuenta = request.form['accounCuenta_form_GenerarFicha']
+        selector = request.form['selector_form_GenerarFicha']      
+              
         
             
-            if access_token:
-                    user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        if access_token:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            #cuentas.indiceCuentas()            
+            reporte = cuentas.obtenerSaldoCuenta(account=cuenta)
+          
+            if reporte!=None:
+                available_to_collateral = reporte['availableToCollateral']
+                portfolio = reporte['portfolio']
+            # layouts = 'layout'
+            # print("detalle  ",available_to_collateral)
+            # print("detalle ",portfolio)
+            
+            
             # Consulta todas las fichas del usuario dado
             #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
             total_cuenta = available_to_collateral + portfolio
@@ -392,7 +401,7 @@ def fichasToken_fichas_generar():
         else:
              flash('no posee datos') 
              return render_template("notificaciones/noPoseeDatos.html")   
-   except:  
+  except:  
         print("no llama correctamente")  
         flash('no hay fichas creadas aún')   
         if total_cuenta < 1:
@@ -400,7 +409,7 @@ def fichasToken_fichas_generar():
         return render_template("fichas/fichasGenerar.html", datos=[],total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         
           
-  # return render_template("login.html" )
+ 
     
  
 
@@ -409,7 +418,8 @@ def fichasToken_fichas_listar():
     try:  
         access_token = request.form['access_token_form_ListarFicha'] 
         layouts = request.form['layoutOrigen']
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
+        account = request.form['accounCuenta_form_ListarFicha']
+        repuesta_cuenta = get.ConexionesBroker.get_account_report(account=account,environment=account)
         reporte = repuesta_cuenta['accountData']
         available_to_collateral = reporte['availableToCollateral']
         portfolio = reporte['portfolio']
@@ -608,6 +618,7 @@ def fichasToken_fichas_usuarios_get():
 def eliminar_ficha():
   if request.method == 'POST':
     access_token = request.form['access_token']
+    account = request.form['eliminarFichaCuenta']
     layouts = request.form['layoutOrigen']
     if access_token:
         app = current_app._get_current_object()
@@ -617,7 +628,8 @@ def eliminar_ficha():
         user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                
         # Buscar y eliminar la ficha
-        ficha = Ficha.query.filter_by(id=ficha_id, user_id=user_id).first()
+        ficha = db.session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()
+
         
         if ficha:
           if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
@@ -632,37 +644,39 @@ def eliminar_ficha():
         fichas_usuario = []  # o asigna la lista que corresponda
 
         fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-        
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
-        reporte = repuesta_cuenta['accountData']
-        available_to_collateral = reporte['availableToCollateral']
-        portfolio = reporte['portfolio']
-        
-        total_cuenta = available_to_collateral + portfolio
-        total_para_fichas =  total_cuenta * 0.6
-        
-        for ficha in fichas_usuario:
-           # print(ficha.token)
-            llave_bytes = ficha.llave
-            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-            # Luego, si necesitas obtener la llave original como bytes nuevamente
-            llave_original_bytes = bytes.fromhex(llave_hex)
-            #obtenemos el valor
-            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+        pyRofexInicializada = get.ConexionesBroker.get(account)
+        if pyRofexInicializada:
+            repuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
+            reporte = repuesta_cuenta['accountData']
+            available_to_collateral = reporte['availableToCollateral']
+            portfolio = reporte['portfolio']
             
-            #obtenemos el numero
-            random_number = decoded_token.get('random_number')
-            # Agregamos random_number a la ficha
-            ficha.random_number = random_number
+            total_cuenta = available_to_collateral + portfolio
+            total_para_fichas =  total_cuenta * 0.6
             
-     
-        if not fichas_usuario:
-            fichas_usuario = []
-       
+            for ficha in fichas_usuario:
+            # print(ficha.token)
+                llave_bytes = ficha.llave
+                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-        return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                llave_original_bytes = bytes.fromhex(llave_hex)
+                #obtenemos el valor
+                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                
+                #obtenemos el numero
+                random_number = decoded_token.get('random_number')
+                # Agregamos random_number a la ficha
+                ficha.random_number = random_number
+                
+        
+            if not fichas_usuario:
+                fichas_usuario = []
+        
 
+            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+        else:
+            return render_template('notificaciones/noPoseeDatos.html')
 
 @fichas.route("/reportar-ficha/",  methods=["POST"])
 def reportar_ficha():

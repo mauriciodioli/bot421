@@ -86,7 +86,7 @@
 
   document.addEventListener("DOMContentLoaded", function() {
     var isFirstTime = localStorage.getItem('hasVisited');
-    //debugger;
+    debugger;
     if (isFirstTime=='false') {
       access_token = localStorage.getItem("access_token")  
       refresh_token = localStorage.getItem('refresh_token');
@@ -104,7 +104,8 @@
       var usuario_id = localStorage.getItem('usuario_id');
       var pais = 'argentina';  
       var layoutOrigen = 'layoutConexBroker';
-      var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
+      
+      var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
       window.location.href = url;
     }
   });

@@ -24,7 +24,6 @@ from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
-from models.unidadTrader import UnidadTrader
 import socket
 import pprint
 instrumentos_existentes_arbitrador1=[]
@@ -33,7 +32,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+Bull_Market_002 = Blueprint('Bull_Market_002',__name__)
 
 
 class States(enum.Enum):
@@ -54,9 +53,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
-def estrategiaSheetWS_001():
-    print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
+@Bull_Market_002.route('/estrategia-002/', methods=['POST'])
+def BullMarket002():
+    print('00000000000000000000000estrategia-00200000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -94,7 +93,7 @@ def estrategiaSheetWS_001():
                   cuentaGlobal = accountCuenta
                   
             CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-            carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+            carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1])
             pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
             pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
             pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
@@ -120,12 +119,12 @@ def estrategiaSheetWS_001():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           print("no pudo conectar el websocket en Bull_Market_002.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
 def market_data_handler_estrategia(message):
-    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet,VariableParaSaldoCta
+    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet
    
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -154,8 +153,8 @@ def market_data_handler_estrategia(message):
          #   print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
         else:
             VariableParaTiemposMDHandler = 0
-           # print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
-           # VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
+            print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
+            VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
             
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
@@ -192,16 +191,16 @@ def market_data_handler_estrategia(message):
             
             #tiempoAhora = datetime.now()
             #print('"FUN market_data_handler_estrategia')
-            #pass
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            pass
+            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-        #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+        #  print("FUN_ Bull_Market_002 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
     
         
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@Bull_Market_002.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -220,7 +219,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@Bull_Market_002.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)
@@ -299,7 +298,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                         
 
                                   
-                                    VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )
+                                    
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
                                                 #print('operacionews')
@@ -334,7 +333,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
 
 
-def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
+def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
      coincidencias = []
      contador_1=0
      símbolos_vistos = set()
@@ -372,7 +371,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
           
     
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
-     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
+     
      for elemento  in coincidencias:  
        #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
          #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
@@ -411,7 +410,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
             'symbol': elemento[0],
             'tipo_de_activo': elemento[1],
             'tradeEnCurso': elemento[2],
-            'ut': unidadTrader.ut,
+            'ut': elemento[3],
             'senial': elemento[4],
             'status': '0'
         }

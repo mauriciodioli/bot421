@@ -20,11 +20,20 @@ from models.creaTablas import crea_tablas_DB
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
+
+######################zona de estrategias de usuarios####################
+from strategies.estrategiasUsuarios.Bull_Market_001 import Bull_Market_001
+
+########################################################################
+
+
 from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
 from strategies.arbitraje_001 import arbitraje_001
 from strategies.utils.testWS import testWS
+from strategies.gestion_estrategias.abm_estrategias import abm_estrategias
+from strategies.gestion_estrategias.unidad_trader import unidad_trader
 
 from tokens.token import token
 
@@ -62,6 +71,7 @@ import subprocess
 
 from models.usuario import Usuario
 from models.triggerEstrategia import triggerEstrategia
+from models.strategy import strategy
 from models.orden import orden
 from models.ficha import ficha
 from models.trazaFicha import trazaFicha
@@ -133,7 +143,9 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
+#####################zona estrategias de usuarios##############
 
+###############################################################
 app.register_blueprint(logs)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
@@ -152,8 +164,13 @@ app.register_blueprint(operacionHF)
 app.register_blueprint(validaInstrumentos)
 app.register_blueprint(wsocket)
 app.register_blueprint(suscripciones)
+app.register_blueprint(abm_estrategias)
+app.register_blueprint(unidad_trader)
+app.register_blueprint(strategy)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
+app.register_blueprint(Bull_Market_001)
+
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
@@ -233,7 +250,8 @@ def logs():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    crea_tablas_DB()
+    #crea_tablas_DB()
+    
     return redirect("index")
 
 @login_manager.user_loader

@@ -1,0 +1,233 @@
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+ 
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+
+{% block content%}
+
+ <body> 
+    
+    
+    <div class="container" id="cardIndex">       
+        <div class="card card-body " id="cardIndexFichas">
+          <h2>Estado de Cuenta</h2>
+          <h4 class="planes-titulo" style="color: gold; font-size: 24px;">$ {{ total_mas_interes }} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Disponible</span></h4>
+          <h4 class="planes-titulo" style="color: white; font-size: 24px;">{{interes }}% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">De cuenta</span></h4>
+          <hr class="separator">
+          <p style="margin-bottom: 5px;">Varia según mercado</p>
+          <p style="margin-bottom: 5px;">Valor variable: <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Si</span></p>
+          <p style="margin-bottom: 5px;">Monto ganado : {{interes_ganado }} <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Operando</span></p>
+          <p style="margin-bottom: 5px;">Total: {{total_cuenta }} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Cuenta</span></p>
+          <div class="card-corner-band">
+              <div class="card-corner-text">NUEVO</div>
+          </div>        
+        
+       
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="MuestraValorFicha" tabindex="-1" aria-labelledby="MuestraValorFichaModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content border shadow">
+                
+                <div class="modal-header">
+                </div>
+                
+                <div class="modal-body">
+                    <h6 id="llave" style="color: blue; margin-bottom: 10px;">{{random_number }}</h6>
+                    <h2 class="modal-title" id="valorllave" style="color: green; margin-left: 100px; text-align: center;">0</h2>
+                    
+                </div>
+                <div class="modal-footer">                  
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
+    
+</div>
+
+ 
+
+  
+
+
+
+
+
+      <script>
+      
+          function setFichaData(fichaId) {
+                var accessToken = localStorage.getItem('access_token');
+                var access_token_element = document.getElementById('access_token');
+                var eliminarFichaId_element = document.getElementById('eliminarFichaId');
+                Accountcuenta = localStorage.getItem('cuenta')
+                document.getElementById('eliminarFichaCuenta').value = Accountcuenta
+                
+
+                // Verifica si los elementos existen antes de intentar establecer sus valores
+                if (access_token_element && eliminarFichaId_element) {
+                    access_token_element.value = accessToken;
+                    eliminarFichaId_element.value = fichaId;
+                } else {
+                    console.error("Elementos no encontrados.");
+                }
+          }
+
+        function setFichaDataToken( llave,monto) {
+            document.getElementById('llaveFicha').textContent = llave;
+            document.getElementById('montoFicha').textContent = monto;
+        }
+        
+
+
+        // Espera a que el documento esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Encuentra el botón "Crear Ficha" por su ID
+            var btnCrearFicha = document.getElementById('btnCrearFicha');
+    
+            // Agrega un evento de clic al botón
+            btnCrearFicha.addEventListener('click', function() {
+                // Utiliza jQuery para abrir el modal
+                $('#CrearFichas').modal('show');
+            });
+       
+            var total_cuenta_paraAjax = parseFloat(" {{total_cuenta}}");
+            var modoCantidad = document.getElementById('modoCantidad');
+            var comboCantidad = document.getElementById('comboCantidad');           
+            var btnGuardarCantidad = document.getElementById('btnGuardarCantidad'); 
+            var inputCantidad1 = document.getElementById('inputCantidad1');
+            var accessToken = localStorage.getItem('access_token') || ''; // Si no existe en el localStorage, se asigna una cadena vacía
+                cuenta = localStorage.getItem('cuenta') || '';
+                correoElectronico = localStorage.getItem('correo_electronico') || '';
+               modoCantidad.addEventListener('change', function() {
+                if (modoCantidad.value === 'opcion1') {
+                    comboCantidad.style.display = 'block';
+                    inputCantidad.style.display = 'none';
+                } else {
+                    comboCantidad.style.display = 'none';
+                    inputCantidad.style.display = 'block';
+                }
+            });
+
+
+
+
+            comboCantidad.addEventListener('change', function() {
+                if (modoCantidad.value === 'opcion1') {
+                    comboCantidad.style.display = 'block';
+                    inputCantidad.style.display = 'none';
+                    //console.log('Combo cambiado',comboCantidad.value);
+                    var valorCombo = parseFloat( comboCantidad.options[comboCantidad.selectedIndex].text);
+                    var valorFichas = parseFloat("{{ total_para_fichas }}");
+                    // Verifica si los valores son números válidos
+                    if (!isNaN(valorCombo) && !isNaN(valorFichas)) {
+                        var porcentaje = ( valorCombo/100) * valorFichas;                    
+                        document.getElementById('valorComboSeleccionado').innerHTML =porcentaje;
+                    }
+                } else {
+                    comboCantidad.style.display = 'none';
+                    inputCantidad.style.display = 'block';
+                }
+                
+                
+            });
+
+           
+           
+            btnGuardarCantidad.addEventListener('click', function() {
+                var cantidad = parseFloat(inputCantidad1.value);
+                var totalParaFichas = parseFloat("{{total_para_fichas}}");
+              
+        
+                if (isNaN(cantidad)) {
+                    alert("Por favor ingresa un valor válido");
+                    return;
+                }
+        
+                if (cantidad < totalParaFichas) {
+                    document.getElementById('valorComboSeleccionado').innerHTML = cantidad;
+                } else {
+                    alert("La cantidad es mayor que {{total_para_fichas}}");
+                }
+        
+               // $('#CrearFichas').modal('hide');
+            });
+
+            
+            btnGuardarCrear.addEventListener('click', function() {
+               
+                var valorComboSeleccionadoValor = parseFloat(document.getElementById('valorComboSeleccionado').textContent);
+                var layoutOrigen = "{{ layout }}";
+                if (!isNaN(valorComboSeleccionadoValor)) {
+                    alert("El valor de cantidad es: " + valorComboSeleccionadoValor);
+
+                    // Realizar una solicitud AJAX
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/crearFicha', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                          
+                        } else {
+                            alert('Hubo un problema con la solicitud.');
+                        }
+                    };
+
+                    // Construir el objeto de datos que se enviará
+                    var data = JSON.stringify({
+                        valor: valorComboSeleccionadoValor,
+                        accessToken: accessToken,
+                        cuenta: cuenta,
+                        correoElectronico: correoElectronico,
+                        layoutOrigen:layoutOrigen,
+                        total_cuenta: total_cuenta_paraAjax
+                    });
+
+                    xhr.send(data);
+
+
+
+
+
+
+                } else {
+                    alert("El valor no es un número válido");
+                }
+            });
+            
+        });
+        
+      
+    </script>
+    
+ </body>          
+           
+{%endblock%}
+ 

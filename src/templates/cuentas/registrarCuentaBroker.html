@@ -164,11 +164,12 @@
         document.getElementById('contenido').style.display = 'none';
         var selectedCountry = document.getElementById('seleccionarPais').value;
         var usuario_id =localStorage.getItem('usuario_id');
+        access_token = localStorage.getItem('access_token');
         localStorage.setItem('paisSeleccionado', selectedCountry);
         $('#modalSeleccionPais').modal('hide'); // Esta línea cierra el modal
          // Redirigir a la ruta /panel_control_sin_cuenta
         layoutOrigen = 'layout'; // Cambia 'nombre_del_layout' por el valor deseado
-        var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id;
+        var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id+'&access_token='+access_token;
         window.location.href = url;
       });   
   // en este script cargo el correo electrónico almacenado en el localStorage

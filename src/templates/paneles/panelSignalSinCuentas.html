@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var cuenta = "{{ cuenta[0] }}";
   var usuario = "{{ cuenta[1] }}";
   var selector = "{{ cuenta[2] }}";
-
+  debugger;
   console.log("probanodo",cuenta)
   console.log(usuario)
   console.log(selector)
@@ -127,11 +127,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // var cambiosAntes = compararCambios();
     // Realizar una solicitud AJAX para obtener los nuevos datos
-
+    debugger;
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
+    var access_token = localStorage.getItem('access_token');
     var xhr = new XMLHttpRequest();
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id;
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token;
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type
@@ -177,10 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
           var dato = response.datos[i];
         
           debugger;
-          console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9])
+          //console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9])
          
           if (
-              (dato[1] == 'USA' || dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
+              (dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
               (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
              ) {
                     if (dato[4] === 'OPEN.'  && dato[8] === null){
@@ -449,11 +450,11 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('contenido').style.display = 'block';
       //var cambiosDespues = compararCambios();
 
-    //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
-  //   var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
+      //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
+      //   var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
 
-    // console.log('Cambios en estado OPEN:', openChanged);
-    //  console.log('Cambios en estado closed:', closedChanged);
+      // console.log('Cambios en estado OPEN:', openChanged);
+      //  console.log('Cambios en estado closed:', closedChanged);
       // Oculta las filas que no cambiaron
     
       } else {
@@ -462,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     };
 
-    xhr.onerror = function() {
+      xhr.onerror = function() {
       showError('Error de red al intentar obtener los datos');
     };
     //console.log('XHR:', xhr);

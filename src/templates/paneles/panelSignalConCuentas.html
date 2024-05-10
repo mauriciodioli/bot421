@@ -10,29 +10,30 @@
     
     </div>
     <!--<audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>-->
-    <table class="table table-dark table-striped"  id="signalTable">
-      <thead>           
-        <tr>
-          <th></th>
-          <th></th>
-          <th></th>         
-          <th></th>
-          <th></th>  
-        </tr>         
-      </thead>
-      <tbody>
-        
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>             
-                <td>CARGANDO DATOS, ESPERE</td>
-                <td></td>   
-              </tr>
-           
-      </tbody>
-    </table>
-    
+    <div class="table-responsive"> 
+      <table class="table table-dark table-striped"  id="signalTable">
+        <thead>           
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>         
+            <th></th>
+            <th></th>  
+          </tr>         
+        </thead>
+        <tbody>
+          
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>             
+                  <td>CARGANDO DATOS, ESPERE</td>
+                  <td></td>   
+                </tr>
+            
+        </tbody>
+      </table>
+    </div>
         <div class="modal-content" style="color: black;">
           <form id="registro-usuario-form" action="/operaciones_desde_seniales" method="POST">
             <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
@@ -58,6 +59,7 @@
                       </div>  
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="correo_electronico" name="correo_electronico">
+                        <input type="hidden" class="form-control" id="accountCuenta" name="accountCuenta">
                       </div>  
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="paisSeleccionado" name="paisSeleccionado">
@@ -205,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
         access_token = localStorage.getItem('access_token');
         var cuentaEnvioAjax = localStorage.getItem('correo_electronico');
+        var cuentaAcount = localStorage.getItem('cuenta');
         var symbol = event.target.dataset.symbol;
         var senial = event.target.dataset.senial;      
         var ut = event.target.dataset.ut;
@@ -218,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('access_token').value = access_token;
         document.getElementById('correo_electronico').value = cuentaEnvioAjax;
         document.getElementById('paisSeleccionado').value = paisS;
+        document.getElementById('accountCuenta').value = cuentaAcount;
         // Cerrar el modal
       
     }
@@ -237,8 +241,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
+    access_token = localStorage.getItem('access_token');
     var xhr = new XMLHttpRequest();
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id;
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/';
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type
@@ -294,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
           
          if (
-          (dato[1] == 'USA' || dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
+          ( dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
           (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
          ) {
                 if (dato[4] === 'OPEN.'  && dato[8] === null){
@@ -697,17 +702,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-//aqui está el manejo del modal
-
-
-
-
-  
-
+///////////////////////////////////////////////////////////////////
+///////////////aqui está el manejo del modal///////////////////////
+///////////////////////////////////////////////////////////////////
 
   var confirmBtn = document.getElementById('confirmBtn'); // Obtener el botón
-
 
 
   var cantidadRadio = document.getElementById('Cantidad');
@@ -769,9 +768,11 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
    // Obtener el campo de símbolo
   
    console.log(symbolInput.value);
-  
+   accountCuenta = localStorage.getItem('cuenta');
+   
    var requestData = {
-       symbol: symbolInput.value
+       symbol: symbolInput.value,
+       accountCuenta: accountCuenta
    };
 
    // Realizar la solicitud AJAX
@@ -788,8 +789,9 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
         var htmlVentas = '<table>';
         htmlVentas += '<thead>';
         htmlVentas += '<tr>';
-        htmlVentas += '<th scope="col" id="encabezado">Precio Venta</th>';
+        htmlVentas += '<th  scope="col" id="precio-venta-rojo">Precio Venta</th>';
         htmlVentas += '<th scope="col" id="encabezado">Cant Venta</th>';
+       
         
        
         htmlVentas += '</tr>';
@@ -816,7 +818,7 @@ document.getElementById('verPreciosBtn').addEventListener('click', function() {
         htmlCompras += '<thead>';
         htmlCompras += '<tr>';
         htmlCompras += '<th scope="col" id="encabezado">Cant Compra</th>';
-        htmlCompras += '<th scope="col" id="encabezado">Precio Compra</th>';
+        htmlCompras += '<th scope="col" id="precio-compra-verde">Precio Compra</th>';
         htmlCompras += '</tr>';
         htmlCompras += '</thead>';
         htmlCompras += '<tbody>';

@@ -37,7 +37,7 @@ import logging
 
 shedule_triggers = Blueprint('shedule_triggers', __name__)
 
-
+detener_proceso_automatico_triggers = False
    
 def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
    
@@ -88,12 +88,14 @@ def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
         # Devolver la hora ajustada en el formato 'HH:MM'
     return tiempo_modificado_str
 
-@shedule_triggers.route("/muestraTriggers/")
+@shedule_triggers.route("/muestraTriggers/", methods=['POST'])
 def muestraTriggers():
-    try:
+    try: 
+       
+         account = request.form.get('Shedule_accounCuenta')
          # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
-         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO").all()        
- 
+         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()        
+      
          total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          
@@ -111,10 +113,10 @@ def ArrancaShedule():
             fecha_fin_shedule = data['fechaFinShedule'] # Obtener el valor de fechaFinShedule
             fechaActual = data['fechaActual']
             get.accountLocalStorage = data['userCuenta']
-            session['userCuenta'] =  data['userCuenta']
+        
             access_token = data['access_token']
             idUser = data['idUser']
-            session['idUser'] =  data['userCuenta']
+          
             
             correo_electronico = data['correo_electronico']
             cuenta = data['cuenta']     
@@ -123,8 +125,8 @@ def ArrancaShedule():
             
             fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone,fechaActual)
             fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone,fechaActual)
-            
-            get.detener_proceso_automatico_triggers = False
+            global detener_proceso_automatico_triggers
+            detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
             #print('Hora de inicio:', fecha_inicio_shedule)
             #print('Hora de fin:', fecha_fin_shedule)
@@ -146,9 +148,9 @@ def ArrancaShedule():
 @shedule_triggers.route("/DetenerShedule/")
 def DetenerShedule():
     try:
-       get.detener_proceso_automatico_triggers = True
+       detener_proceso_automatico_triggers = True
        terminar_hilos_shedule()
-       print('DetenerShedule get.detener_proceso_automatico_triggers ',get.detener_proceso_automatico_triggers)
+       print('DetenerShedule get.detener_proceso_automatico_triggers ',detener_proceso_automatico_triggers)
             # Retornar una respuesta si es necesario
               # Retornar una respuesta indicando éxito
        return jsonify({'success': True, 'message': 'Proceso Shedule detenido'})
@@ -162,13 +164,15 @@ def DetenerShedule():
 ##############################################################################################################
 ################# INICIA LA AUTOMATIZACION ###############################
 #############################################################################################################
-def terminar_hilos(app):
+def terminar_hilos(app,account):
     src_directory = os.getcwd() # Busca directorio raíz src o app 
     logs_file_path = os.path.join(src_directory, 'logs.log')
     
     # Aquí detienes los hilos iniciados desde planificar_schedule, excepto el hilo ejecutar_schedule
     # Para ello, recorres el diccionario get.hilo_iniciado_panel_control y detienes los hilos que corresponden, excepto el hilo ejecutar_schedule
-    get.pyRofexInicializada.close_websocket_connection()
+    pyRofexInicializada = get.ConexionesBroker.get(account)
+    if pyRofexInicializada:
+       pyRofexInicializada['pyRofex'].close_websocket_connection(environment=account)
     
     print('_______________________________________')
     print('_______________________________________')
@@ -268,11 +272,11 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 
         #DETIENE LOS HILOS LAS FINAL DEL DIA
         
-        schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos,app)
+        schedule.every().day.at(tiempoFinDelDia).do(terminar_hilos,app,cuenta)
         
       
 
-        while not get.detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
+        while not detener_proceso_automatico_triggers:  # Bucle hasta que la bandera detener_proceso sea True
             hora_actual = datetime.now().strftime("%H:%M:%S")
             # Obtener la ruta al directorio 'src' de tu proyecto
            
@@ -301,43 +305,45 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
     
     
     
-def llama_tarea_cada_24_horas_estrategias(app, user_id, cuenta, correo_electronico, selector):
+def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electronico, selector):
     app.logger.info("_______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________")
     with app.app_context():
         try:
-            app.logger.info("_______________Intentando__conexion__con WS__________________________")
-            conexion(app, Cuenta, cuenta, user_id, correo_electronico, selector)           
-            app.logger.info("___________________Se conecto con exito al WS______________________")
-            triggerEstrategias = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()    
-            hilos = []
+                app.logger.info("_______________Intentando__conexion__con WS__________________________")
+                pyRofexInicializada = get.ConexionesBroker.get(account)
+            
+                conexion(app, pyRofexInicializada=pyRofexInicializada,Cuenta=Cuenta, account=account, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+                app.logger.info("___________________Se conecto con exito al WS______________________")
+                triggerEstrategias = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()    
+                hilos = []
 
-            for triggerEstrategia in triggerEstrategias:
-                if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
-                    usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
-                    app.logger.info(usuario)
-                    if usuario:
-                        print("El usuario existe en la lista triggerEstrategias.")
-                        # Verifica si ya hay un hilo iniciado para este usuario
-                        if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
-                            app.logger.info(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
-                            continue
-                        app.logger.info(f"usuario {usuario.id} nombre estrategia {triggerEstrategia.nombreEstrategia} Hora de inicio: {triggerEstrategia.horaInicio} Hora de fin: {triggerEstrategia.horaFin}")
+                for triggerEstrategia in triggerEstrategias:
+                    if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
+                        usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
+                        app.logger.info(usuario)
+                        if usuario:
+                            print("El usuario existe en la lista triggerEstrategias.")
+                            # Verifica si ya hay un hilo iniciado para este usuario
+                            if user_id in get.hilo_iniciado_estrategia_usuario and get.hilo_iniciado_estrategia_usuario[user_id].is_alive():
+                                app.logger.info(f"Hilo para {user_id} ya está en funcionamiento para la estrategia {triggerEstrategia.nombreEstrategia}")
+                                continue
+                            app.logger.info(f"usuario {usuario.id} nombre estrategia {triggerEstrategia.nombreEstrategia} Hora de inicio: {triggerEstrategia.horaInicio} Hora de fin: {triggerEstrategia.horaFin}")
 
-                        # Si no hay un hilo iniciado para este usuario, lo inicia
-                        hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
-                        hilo = threading.Thread(target=tarea_inicio, args=(hilo_id, app, triggerEstrategia, usuario))
-     #                  hilo_id = 'hilo_shedule'
-  #  hilo_schedule = threading.Thread(target=ejecutar_schedule, args=(hilo_id,))
-  #  hilo_schedule.start()
-  #  get.hilos_iniciados_shedule.append((hilo_id, hilo_schedule))  # Agregar tanto el ID como el hilo a la lista  
-                        # Crear el diccionario y almacenar los valores
-                        get.hilo_iniciado_panel_control = {hilo_id: hilo}          
-                        app.logger.info("___________________SE INICIA CON ESTRATEGIA______________________")
-                        hilo.start()
-                        hilos.append(hilo)
-                
-                    else:
-                        print("El usuario no existe en la lista triggerEstrategias.")
+                            # Si no hay un hilo iniciado para este usuario, lo inicia
+                            hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
+                            hilo = threading.Thread(target=tarea_inicio, args=(hilo_id, app, triggerEstrategia, usuario))
+        #                  hilo_id = 'hilo_shedule'
+    #  hilo_schedule = threading.Thread(target=ejecutar_schedule, args=(hilo_id,))
+    #  hilo_schedule.start()
+    #  get.hilos_iniciados_shedule.append((hilo_id, hilo_schedule))  # Agregar tanto el ID como el hilo a la lista  
+                            # Crear el diccionario y almacenar los valores
+                            get.hilo_iniciado_panel_control = {hilo_id: hilo}          
+                            app.logger.info("___________________SE INICIA CON ESTRATEGIA______________________")
+                            hilo.start()
+                            hilos.append(hilo)
+                    
+                        else:
+                            print("El usuario no existe en la lista triggerEstrategias.")
         except Exception as e:
             # Agregar el mensaje de error al registro de logs con nivel de error
             logging.error(str(e), exc_info=True)

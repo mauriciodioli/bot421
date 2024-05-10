@@ -67,7 +67,7 @@ def get_instrumento_para_suscripcion_ws():
      
      susc = []
     
-     all_ins = InstrumentoSuscriptos.query.all()
+     all_ins = db.session.query(InstrumentoSuscriptos).all()
      for instrumentoSuscriptos in all_ins:
          susc.append(instrumentoSuscriptos.symbol)	
          

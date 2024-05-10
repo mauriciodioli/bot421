@@ -197,6 +197,7 @@
             <div class="modal-body">
                 <input type="hidden" id="access_token" name="access_token">
                 <input type="hidden" id="eliminarFichaId" name="eliminarFichaId">
+                <input type="hidden" id="eliminarFichaCuenta" name="eliminarFichaCuenta">
                 <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
                                 
                 <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta ficha?</p>
@@ -221,6 +222,9 @@
                 var accessToken = localStorage.getItem('access_token');
                 var access_token_element = document.getElementById('access_token');
                 var eliminarFichaId_element = document.getElementById('eliminarFichaId');
+                Accountcuenta = localStorage.getItem('cuenta')
+                document.getElementById('eliminarFichaCuenta').value = Accountcuenta
+                
 
                 // Verifica si los elementos existen antes de intentar establecer sus valores
                 if (access_token_element && eliminarFichaId_element) {
@@ -248,7 +252,7 @@
                 // Utiliza jQuery para abrir el modal
                 $('#CrearFichas').modal('show');
             });
-       
+            var estado_ficha = 'PENDIENTE'
             var total_cuenta_paraAjax = parseFloat(" {{total_cuenta}}");
             var modoCantidad = document.getElementById('modoCantidad');
             var comboCantidad = document.getElementById('comboCantidad');           
@@ -339,7 +343,8 @@
                         cuenta: cuenta,
                         correoElectronico: correoElectronico,
                         layoutOrigen:layoutOrigen,
-                        total_cuenta: total_cuenta_paraAjax
+                        total_cuenta: total_cuenta_paraAjax,
+                        estado_ficha: estado_ficha
                     });
 
                     xhr.send(data);

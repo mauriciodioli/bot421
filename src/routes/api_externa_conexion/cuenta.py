@@ -1,7 +1,7 @@
 # Creating  Routes
 from pipes import Template
 from unittest import result
-from flask import current_app
+from flask import current_app,session
 
 import requests
 import json
@@ -13,11 +13,15 @@ import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.brokers import Broker
+from models.ficha import Ficha
+
 
 
 
 
 cuenta = Blueprint('cuenta',__name__)
+
+
 
 # Crear la tabla cuenta si no existe
 def crea_tabla_cuenta():
@@ -42,7 +46,7 @@ def cuentas():
       if request.method == 'GET': 
    ####   AQUI TENGO QUE COMPARA LA FECHA ####     
       
-         infoCuenta = obtenerCuenta()
+         infoCuenta = obtenerSaldoCuenta(account=cuenta,enviroment=cuenta)
          print(infoCuenta)
          
          return render_template("cuenta.html",datos = infoCuenta)
@@ -51,60 +55,157 @@ def cuentas():
         flash('Loggin Incorrect')    
         return render_template("errorLogueo.html" ) 
      ##~######datos de la cuenta
-def obtenerSaldoCuenta(cuenta):
+
+def indiceCuentas():
+ get.indice_cuentas = {datos['cuenta']: datos for datos in get.ConexionesBroker.values()}
+ return get.indice_cuentas
+def obtenerSaldoCuentaConObjeto(pyRofexInicializada,account=None):
   # print("_______________obtenerSaldoCuenta__________________")
-   resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
+  
+   resumenCuenta = pyRofexInicializada.get_account_report(account=account, environment=account)
    return resumenCuenta["accountData"]["availableToCollateral"]
 
-def obtenerCuenta(cuenta=None):
-   resumenCuenta = get.pyRofexInicializada.get_account_report(account=cuenta)
-   return resumenCuenta
+# Función para obtener el saldo de una cuenta
+def obtenerSaldoCuenta(account=None):
+   if account is not None:
+    pyRofexInicializada = get.ConexionesBroker.get(account)
+    if pyRofexInicializada:
+        respuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account, environment=account)
+        return respuesta_cuenta['accountData']
+   return None
+ 
 
-@cuenta.route("/posicionCuenta")
-def posicionCuenta():
+@cuenta.route("/cuenta_posicion_cuenta", methods=['POST'])
+def cuenta_posicion_cuenta():
      try:
-        
-        repuesta_cuenta = get.pyRofexInicializada.get_account_position()
-        reporte = repuesta_cuenta['positions']
-        if len(reporte)!=0:
-          print("posicion cuentaaaaaaaaaaaaaaaaaaaaaa ",reporte)
-          return render_template("cuentaPosicion.html",datos = reporte)
+                 
+        access_token = request.form['access_token_form_posicionCuenta'] 
+        layouts = request.form['layoutOrigen']  
+        cuenta = request.form['accounCuenta_form_posicionCuenta']
+        selector = request.form['selector_form_posicionCuenta']      
+            
+        if access_token:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+      
+            for elemento in get.ConexionesBroker:
+                print("Variable agregada:", elemento)
+                accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
+             
+                if accountCuenta == cuenta:
+                  respuesta_cuenta =  get.ConexionesBroker[elemento]['pyRofex'].get_account_position(account=accountCuenta, environment=accountCuenta)
+                  reporte = respuesta_cuenta['positions']  
+                  if reporte!=None:                       
+                        return render_template("cuentas/cuentaPosicion.html",datos = reporte)
         else:
           return render_template("notificaciones/noPoseeDatos.html")
      except:  
         print("contraseña o usuario incorrecto")  
         flash('No registra posicion')    
           
-     return render_template("login.html" )
+     return render_template("notificaciones/noPoseeDatos.html" )
 
-@cuenta.route("/detalleCuenta")
-def detalleCuenta():
-   try:        
-        repuesta_cuenta = get.pyRofexInicializada.get_detailed_position()
-        reporte = repuesta_cuenta['detailedPosition']
-        
-        print("detalle cuentaaaaaaaaaaaaaaaaaaaaaa ",reporte)
-        
-        return render_template("cuentaDetalles.html",datos = reporte)
+@cuenta.route("/cuenta_detalle_cuenta", methods=['POST'])
+def cuenta_detalle_cuenta():
+   try:          
+        access_token = request.form['access_token_form_detalleCuenta'] 
+        layouts = request.form['layoutOrigen']  
+        cuenta = request.form['accounCuenta_form_detalleCuenta']
+        selector = request.form['selector_form_detalleCuenta']      
+            
+        if access_token:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            for elemento in get.ConexionesBroker:
+                print("Variable agregada:", elemento)
+                accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
+             
+                if accountCuenta == cuenta:
+               
+                  respuesta_cuenta = get.ConexionesBroker[elemento]['pyRofex'].get_account_report(account=accountCuenta, environment=accountCuenta)
+                  reporte = respuesta_cuenta['accountData']
+                  
+                  if reporte!=None:
+                     available_to_collateral = reporte['availableToCollateral']
+                     portfolio = reporte['portfolio']
+    #    return render_template("cuentas/cuentaDetalles.html")
+        return render_template("cuentas/cuentaDetalles.html",datos = reporte)
      
    except:  
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
           
-   return render_template("login.html" )
+   return render_template("notificaciones/noPoseeDatos.html" )
 
-@cuenta.route("/reporteCuenta")
+
+@cuenta.route("/reporteCuenta/", methods=['POST'])
 def reporteCuenta():
-   try:        
-        repuesta_cuenta = get.pyRofexInicializada.get_account_report()
-        reporte = repuesta_cuenta['accountData']
+   try:    
         
-        print("detalle cuentaaaaaaaaaaaaaaaaaaaaaa ",reporte)
-        return render_template("cuenta.html",datos = reporte)
+        total_cuenta = 0.0
+        access_token = request.form['access_token_form_reporteCuenta'] 
+        layouts = request.form['layoutOrigen']  
+        cuenta = request.form['accounCuenta_form_reporteCuenta']
+        selector = request.form['selector_form_reporteCuenta']  
+        correoElec = request.form['correo_electronico_form_reporteCuenta'] 
+            
+        if access_token:
+            user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            #cuentas.indiceCuentas()            
+            reporte = obtenerSaldoCuenta(account=cuenta)
+          
+            if reporte!=None:
+                available_to_collateral = reporte['availableToCollateral']
+                portfolio = reporte['portfolio']
+       
+            # Consulta todas las fichas del usuario dado
+            #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+            total_cuenta = round(available_to_collateral + portfolio,2)
+           
+            ficha = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').first()
+            
+            try:
+                
+                    #print(ficha.monto_efectivo)                    
+                    diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                    porcien= diferencia*100
+                    interes = round(porcien/available_to_collateral,0)
+                    interes = int(interes)
+                    ficha.interes = interes
+                    interes_ganado = round(ficha.valor_cuenta_creacion * (interes / 100),2)
+                    total_mas_interes = round(ficha.valor_cuenta_creacion + interes_ganado, 2)
+
+                   
+                    
+                # print(interes)  
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    # Agregamos random_number a la ficha
+                    ficha.random_number = random_number
+                    ficha.interes = interes
+                    db.session.commit()
+            except Exception as e:
+                db.session.rollback() 
+             
+           
+            return render_template("cuentas/cuentaReporte.html", interes=interes,total_cuenta=total_cuenta,total_mas_interes=total_mas_interes,interes_ganado=interes_ganado, layout = layouts)
+        else:
+             flash('no posee datos') 
+             return render_template("notificaciones/noPoseeDatos.html")   
    except:  
-      print("contraseña o usuario incorrecto")  
-      flash('Loggin Incorrect')    
-      return render_template("login.html" )
+        print("no llama correctamente")  
+        flash('no hay fichas creadas aún')   
+        if total_cuenta < 1:
+              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
+   return render_template("cuentas/cuentaReporte.html", datos=[], total_cuenta=total_cuenta, total_mas_interes=total_mas_interes, interes_ganado=interes_ganado,layout=layouts)
+        
+          
    
 @cuenta.route("/registrar_cuenta_broker")
 def registrar_cuenta_broker():
@@ -417,4 +518,38 @@ def logOutAccount():
    get.diccionario_global_operaciones = {}
    get.diccionario_operaciones_enviadas = {}
    return render_template('cuentas/logOutAccount.html')
+
+def get_pass_cuenta_de_broker(user_id,account):
+        todasCuentas = []
+        from models.cuentas import Cuenta
+        try:
+            
+            todasLasCuentas = Cuenta.query.filter_by(user_id=user_id).all()
+            broker_ids = [todasLasCuentas.broker_id for todasLasCuentas in todasLasCuentas if todasLasCuentas.broker_id is not None]
+            brokers = Broker.query.filter(Broker.id.in_(broker_ids)).all()
+            id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
+            if todasLasCuentas:
+                for cuenta in todasLasCuentas:
+                    password_cuenta = cuenta.passwordCuenta  # No es necesario decodificar la contraseña aquí
+                    nombre_broker = id_nombre_broker.get(cuenta.broker_id)
+                    todasCuentas.append({
+                        'id': cuenta.id,
+                        'accountCuenta': cuenta.accountCuenta,
+                        'userCuenta': cuenta.userCuenta,
+                        'passwordCuenta': password_cuenta,
+                        'selector': cuenta.selector,
+                        'broker_id': cuenta.broker_id,
+                        'nombre_broker': nombre_broker
+                    })
+            
+                for cuentas in todasCuentas:          
+                        if cuentas['accountCuenta'] == account:
+                              userCuenta = cuentas['userCuenta']
+                              passwordCuenta = cuentas['passwordCuenta']
+                              passwordCuenta_decoded = passwordCuenta.decode('utf-8')                             
+                              return cuentas
+        except Exception as e:
+            print("Error al obtener las cuentas del usuario:", e)
+            
+   
 

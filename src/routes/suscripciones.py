@@ -43,7 +43,7 @@ def suscripcion_instrumentos():
         return render_template("suscripcion.html" )
 
     except:        
-        return render_template("login.html" )
+        return render_template("notificaciones/noPoseeDatos.html" )
 
 @suscripciones.route("/suscripcionDb/" )
 def suscripcionDb():
@@ -51,7 +51,7 @@ def suscripcionDb():
        
          all_ins = db.session.query(InstrumentoSuscriptos).all()
          db.session.close()
-         return render_template("suscripciones_db.html", datos =  all_ins)
+         return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
     except:        
         return render_template("errorLogueo.html" )
     
@@ -68,12 +68,12 @@ def suscDelete():
             flash('Operation Removed successfully')
             all_ins = db.session.query(InstrumentoSuscriptos).all()
             db.session.close()
-            return render_template("suscripciones_db.html", datos =  all_ins)
+            return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
     except: 
             flash('Operation No Removed')       
             all_ins = db.session.query(InstrumentoSuscriptos).all()
             db.session.close()
-            return render_template("suscripciones_db.html", datos =  all_ins)
+            return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
 
 @suscripciones.route('/ajax', methods=['POST'])
 def ajax():
@@ -82,7 +82,7 @@ def ajax():
         datos = request.get_json()['datos']  # Acc
        
         print(datos)
-        return render_template("suscripcion.html", datos_modificados=datos)
+        return render_template("instrumentos/suscripcion.html", datos_modificados=datos)
     
 # Función async para enviar datos al WebSocket
 async def send_data_to_websocket(data):
@@ -114,35 +114,44 @@ async def websocket_handler(websocket, path):
 
 @suscripciones.route("/SuscripcionPorWebSocket/")      
 async def SuscripcionPorWebSocket():
-    # Trae los instrumentos para suscribirte
-    mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
-    longitudLista = len(mis_instrumentos)
-    print(len(mis_instrumentos),"<<<<<---------------------mis_instrumentos --------------------------->>>>>> ",mis_instrumentos)
-    repuesta_listado_instrumento = get.pyRofexInicializada.get_detailed_instruments()
-    
-    listado_instrumentos = repuesta_listado_instrumento['instruments']   
-    
-    tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
-    instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos,tickers_existentes)
-    instrumentos_existentes_arbitrador1 = instrumentos_existentes.copy()
+    try:
+        # Trae los instrumentos para suscribirte
+        mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
+        longitudLista = len(mis_instrumentos)
+        print(len(mis_instrumentos),"<<<<<---------------------mis_instrumentos --------------------------->>>>>> ",mis_instrumentos)
+        
+        # Obtener la conexión PyRofex desde el diccionario
+        pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+        
+        # Obtener los instrumentos detallados
+        repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
+        listado_instrumentos = repuesta_listado_instrumento['instruments']
+        
+        # Validar existencia de los instrumentos
+        tickers_existentes = inst.obtener_array_tickers(listado_instrumentos) 
+        instrumentos_existentes = val.validar_existencia_instrumentos(mis_instrumentos, tickers_existentes)
+        instrumentos_existentes_arbitrador1 = instrumentos_existentes.copy()
 
-    ##aqui se conecta al ws
-    #get.pyRofexInicializada.init_websocket_connection(market_data_handler2,order_report_handler,error_handler,exception_error)
-    print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")
-      
-    #### aqui define el MarketDataEntry
-    entries = [get.pyRofexInicializada.MarketDataEntry.BIDS,
-               get.pyRofexInicializada.MarketDataEntry.OFFERS,
-               get.pyRofexInicializada.MarketDataEntry.LAST]
-      
-    #### aqui se subscribe   
-    mensaje = get.pyWsSuscriptionInicializada(tickers=instrumentos_existentes,entries=entries)
-    print("instrumento_suscriptio",mensaje)
-    datos = [get.market_data_recibida,longitudLista]
-    
-   
-    
-    return render_template('suscripcion.html', datos=[get.market_data_recibida,longitudLista])
+        ##aqui se conecta al ws
+        print("<<<-----------pasoooo conexiooooonnnn wsocket.py--------->>>>>")
+          
+        #### aqui define el MarketDataEntry
+        entries = [pyRofexInicializada.MarketDataEntry.BIDS,
+                   pyRofexInicializada.MarketDataEntry.OFFERS,
+                   pyRofexInicializada.MarketDataEntry.LAST]
+          
+        #### aqui se subscribe   
+        mensaje = pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes, entries=entries)
+        print("instrumento_suscriptio", mensaje)
+        datos = [get.market_data_recibida, longitudLista]
+
+        return render_template('suscripcion.html', datos=[get.market_data_recibida, longitudLista])
+    except Exception as e:
+        # Manejar la excepción, podrías imprimir un mensaje de error o realizar otra acción
+        print("Se produjo un error:", e)
+        # Redirigir a una página de error o mostrar un mensaje de error en la plantilla
+        return render_template('notificaciones/noPoseeDatos.html', error_message="Se produjo un error durante la suscripción a los instrumentos.")
+
 
 
     

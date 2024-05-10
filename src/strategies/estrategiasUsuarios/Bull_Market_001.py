@@ -33,7 +33,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+Bull_Market_001 = Blueprint('Bull_Market_001',__name__)
 
 
 class States(enum.Enum):
@@ -54,9 +54,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
-def estrategiaSheetWS_001():
-    print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
+@Bull_Market_001.route('/Bull-Market-001/', methods=['POST'])
+def BullMarket001():
+    print('00000000000000000000000 Bull-Market-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -120,7 +120,7 @@ def estrategiaSheetWS_001():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           print("no pudo conectar el websocket en Bull_Market_001.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -193,15 +193,15 @@ def market_data_handler_estrategia(message):
             #tiempoAhora = datetime.now()
             #print('"FUN market_data_handler_estrategia')
             #pass
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet,VariableParaSaldoCta)
             
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-        #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+        #  print("FUN_ Bull_Market_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
     
         
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@Bull_Market_001.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -220,7 +220,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@Bull_Market_001.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)
@@ -238,7 +238,7 @@ def botonPanicoRH(message):
        
         return get.VariableParaBotonPanico
     
-def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
+def estrategiaSheetNuevaWS(message, banderaLecturaSheet,VariableParaSaldoCta):# **11
     
     if banderaLecturaSheet == 0:
         print('entra en estrategiaSheetNuevaWS punto de control sheeeet')

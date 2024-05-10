@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
  # Definir la variable de IP
     env:
-     # EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com # IMAGEN TEST
-      EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com # IMAGEN PRODUCCION
+      EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com # IMAGEN TEST
+     # EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com # IMAGEN PRODUCCION
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
@@ -76,6 +76,41 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip uninstall -y websocket-client
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip install websocket-client==0.57.0
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
+    - name: Modify service.py in pyRofex library
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |                                                 
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo 'def _add_environment_config(enumCuenta, env):' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    enum = enumCuenta' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    setattr(Environment, enumCuenta, enum)' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    globals.environment_config[enumCuenta] = env' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '/^def _validate_environment(environment):$/,/^ *raise ApiException(\"Invalid Environment.\")/ s/^ *if not isinstance(environment, Environment):/#&/' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
+
+            
+        
+    - name: Add line to position 39 in __init__.py of pyRofex library
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sed -i '39i\from .service import _add_environment_config' /usr/local/lib/python3.9/site-packages/pyRofex/__init__.py
+        
+    - name: Add Environment class to enums.py of pyRofex library
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '9i\class Environment:' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '10i\    REMARKET = 1' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '11i\    LIVE = 2' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
+        
 
           # Detener el contenedor
           docker stop ${{ env.DEPLOYMENT_VERSION }} || true

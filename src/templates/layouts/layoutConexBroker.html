@@ -67,6 +67,8 @@
                           <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias</a></li>
+                          <li><hr class="dropdown-divider"></li>                      
+                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar/">Edicion Estrategias</a></li>
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
                           <li><hr class="dropdown-divider"></li>
@@ -93,6 +95,8 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
                         <ul class="dropdown-menu">              
                             <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="selector_form_GenerarFicha"  id="selector_form_GenerarFicha"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="accounCuenta_form_GenerarFicha"  id="accounCuenta_form_GenerarFicha"  class="form-control"></div>  
                                 <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
                                 <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
                           
@@ -107,14 +111,15 @@
 
 
                           <form  name="fichasToken_fichas_generar" action="/fichasToken-fichas-listar/" method="post" class="btn-guardar_inst">
-                            <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div>
+                            <div class="form-group"><input type="hidden" name="accounCuenta_form_ListarFicha"  id="accounCuenta_form_ListarFicha"  class="form-control"></div>    
                             <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
                              
                              <div class="col">  
                                 <li><button type="submit" class="dropdown-item">Listar</button></li>   
                                  
-                          </div>
-                        </form> 
+                             </div>
+                          </form> 
                                               
                         </ul>
                     </li>
@@ -136,13 +141,21 @@
                     
                   
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Get Instruments</a>
-                        <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/instrumentos_detalles">Instrumentos</a></li>                        
+                      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Instrumentos</a>
+                      <ul class="dropdown-menu">                        
+                          <li>
+                              <form id="instrumentos_form" action="/instrumentos_detalles" method="post">
+                                  <!-- Aquí puedes agregar los campos adicionales que desees -->
+                                  <input type="hidden" name="accounCuenta_form_instrumentos_detalles" id="accounCuenta_form_instrumentos_detalles">
+                                  <!-- El botón de enviar el formulario -->
+                                  <button type="submit" class="dropdown-item">Listado</button>
+                              </form>
+                          </li>                        
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/suscripcionDb">Listado</a></li>                          
-                        </ul>
-                    </li>
+                          <li><a class="dropdown-item" href="/suscripcionDb">Suscriptos</a></li>                          
+                      </ul>
+                  </li>
+                  
                      
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Estrategias</a>
@@ -158,31 +171,109 @@
                              </form>
                         </li>  
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item dropdown-toggle" href="/muestraTriggers/">Shedule</a></li>    
+                          <li>
+                            <form id="instrumentos_form" action="/muestraTriggers/" method="post">
+                              <!-- Aquí puedes agregar los campos adicionales que desees -->
+                              <input type="hidden" name="Shedule_accounCuenta" id="Shedule_accounCuenta">  
+                              <!-- El botón de enviar el formulario -->
+                              <button type="submit" class="btn text-black">Shedule</button>
+                            </form>
+                      
+                          </li>  
+                          
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/inicioEstrategias/">Test</a></li>                          
                         </ul>
-                    </li>
-                    
+                    </li>                  
                     <li class="nav-item">
-                        <a class="nav-link" href="/estadoOperacion">Portfolio</a>
+                      <form id="instrumentos_form" action="/estadoOperacion" method="post">
+                          <!-- Aquí puedes agregar los campos adicionales que desees -->
+                          <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
+                          <!-- El botón de enviar el formulario -->
+                          <button type="submit" class="btn text-white">Portfolio</button>
+                      </form>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Ordenes</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/estadoOperacion">Estado</a></li>                        
+                          <li>
+                            <form id="instrumentos_form" action="/estadoOperacion" method="post">
+                              <!-- Aquí puedes agregar los campos adicionales que desees -->
+                              <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
+                             
+                              <!-- El botón de enviar el formulario -->
+                              <button type="submit" class="dropdown-item">Estado</button>
+                            </form>
+                          </li>                        
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/operar">Operar</a></li>                          
+                          <li>
+                            <form id="operar_form" action="/operar-vacio" method="post">
+                              <input type="hidden" name="accounCuenta_form_operacion" id="accounCuenta_form_operacion">
+                              <input type="hidden" name="token_form_operacion" id="token_form_operacion">
+                              <button type="submit" class="dropdown-item">Operar</button>
+                            
+                          </form>
+                          
+                          </li>                          
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Cuenta</a>
+                      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Cuenta</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/posicionCuenta">Posicion</a></li>                        
+                          <li><form  name="cuenta_posicion_cuenta" action="/cuenta_posicion_cuenta" method="post" class="btn-guardar_inst">
+                            <div class="form-group"><input type="hidden" name="selector_form_posicionCuenta"  id="selector_form_posicionCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="accounCuenta_form_posicionCuenta"  id="accounCuenta_form_posicionCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="access_token_form_posicionCuenta"  id="access_token_form_posicionCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                      
+                            <div class="col">  
+                                <li><button type="submit" class="dropdown-item">Posicion</button></li>   
+                                 
+                          </div>
+                        </form>   
+                    </li>                        
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/detalleCuenta">Detalle</a></li>
+
+                         
+
+                          <li>
+                                     
+                                <form  name="cuenta_detalle_cuenta" action="/cuenta_detalle_cuenta" method="post" class="btn-guardar_inst">
+                                    <div class="form-group"><input type="hidden" name="selector_form_detalleCuenta"  id="selector_form_detalleCuenta"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="accounCuenta_form_detalleCuenta"  id="accounCuenta_form_detalleCuenta"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="access_token_form_detalleCuenta"  id="access_token_form_detalleCuenta"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                              
+                                    <div class="col">  
+                                        <li><button type="submit" class="dropdown-item">Detalle</button></li>   
+                                         
+                                  </div>
+                                </form>    
+                               
+                          
+                        
+                        
+                        
+                        </li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/reporteCuenta">Reporte</a></li>      
+                          <li>
+                            <form  name="reporteCuenta" action="/reporteCuenta/" method="post" class="btn-guardar_inst">
+                             <!--<form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">--> 
+                              <div class="form-group"><input type="hidden" name="selector_form_reporteCuenta"  id="selector_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="accounCuenta_form_reporteCuenta"  id="accounCuenta_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="access_token_form_reporteCuenta"  id="access_token_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="correo_electronico_form_reporteCuenta"  id="correo_electronico_form_reporteCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                        
+                              <div class="col">  
+                                  <li><button type="submit" class="dropdown-item">Reporte</button></li>
+                              </div>
+                          </form>  
+                          
+                          
+                          
+                          
+                          </li>      
                           <li><hr class="dropdown-divider"></li>
                           <form  name="get_cuentas_de_broker_usuario_Abm" action="/get_cuentas_de_broker_usuario_Abm" method="post" class="btn-guardar_inst">
                             <div class="form-group"><input type="hidden" name="access_token_form_Abm"  id="access_token_form_Abm"  class="form-control"></div>  
@@ -235,9 +326,10 @@
             localStorage.setItem('paisSeleccionado', pais);
         
             usuario_id = localStorage.getItem('usuario_id');
+            access_token = localStorage.getItem('access_token');
         
             var layoutOrigen = 'layoutConexBroker';
-            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
+            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
             window.location.href = url;
           }); 
         
@@ -249,25 +341,57 @@
             localStorage.setItem('paisSeleccionado', pais);
         
             var usuario_id = localStorage.getItem('usuario_id');
+            access_token = localStorage.getItem('access_token');
         
             var layoutOrigen = 'layoutConexBroker';
-            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id;
+            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
             window.location.href = url;
         }
          correo_electronico = localStorage.getItem("correo_electronico");  
          cuentaBroker = localStorage.getItem("cuenta");  
-         simulado = localStorage.getItem("selector");  
+         selector = localStorage.getItem("selector");  
          access_token = localStorage.getItem("access_token")
          rol = localStorage.getItem('roll');
       
-
+        //peraciones
+        document.getElementById("token_form_operacion").value = access_token;
+        document.getElementById("accounCuenta_form_operacion").value = cuentaBroker;
+        
         document.getElementById("access_token_form_Abm").value = access_token;
         document.getElementById("access_token_form_GenerarFicha").value = access_token;
+        //listar fichas
         document.getElementById("access_token_form_ListarFicha").value = access_token;
+        document.getElementById("accounCuenta_form_ListarFicha").value = cuentaBroker;
+        
         document.getElementById("access_token_est").value = access_token;
+        document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaBroker;
+        document.getElementById("selector_form_GenerarFicha").value = selector;
+       // detalleCuenta
+        document.getElementById("access_token_form_detalleCuenta").value = access_token;
+        document.getElementById("accounCuenta_form_detalleCuenta").value = cuentaBroker;
+        document.getElementById("selector_form_detalleCuenta").value = selector;
+        //posicion cuenta
+        document.getElementById("access_token_form_posicionCuenta").value = access_token;
+        document.getElementById("accounCuenta_form_posicionCuenta").value = cuentaBroker;
+        document.getElementById("selector_form_posicionCuenta").value = selector;
+        //detalle instrumentos_form
+        document.getElementById('accounCuenta_form_instrumentos_detalles').value = cuentaBroker;
+        //estado de cuentas
+        document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
+        //repoteCuentas
+       
+        document.getElementById("access_token_form_reporteCuenta").value = access_token;
+        document.getElementById("accounCuenta_form_reporteCuenta").value = cuentaBroker;
+        document.getElementById("selector_form_reporteCuenta").value = selector;
+        document.getElementById("correo_electronico_form_reporteCuenta").value = correo_electronico;
+
+        //shedule
+        document.getElementById('Shedule_accounCuenta').value = cuentaBroker;
+        
+    
         
         
-        if (simulado == 'simulado') {
+        if (selector == 'simulado') {
              cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
           
@@ -277,7 +401,7 @@
              mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
             document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
             
-            } else if (simulado == 'produccion') {
+            } else if (selector == 'produccion') {
 
              cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;

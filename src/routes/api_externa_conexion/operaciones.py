@@ -38,12 +38,30 @@ ultima_entrada = 0
 @operaciones.route("/operar",methods=["GET"])
 def operar():
   try:
-   orderQty = '0'
-   symbol = 'x'
-   price = '0'
-   repuesta_listado_instrumento = get.pyRofexInicializada.get_account_position()
-   lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
-   return render_template('operaciones.html', datos = lista)
+     if request.method == 'POST': 
+        symbol = request.form.get('symbol')
+        
+        orderQty = '0'
+        symbol = 'x'
+        price = '0'
+       
+        lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
+        return render_template('operaciones/operaciones.html', datos = lista)
+  except:        
+    return render_template("notificaciones/errorLogueo.html" )
+@operaciones.route("/operar-vacio",methods=["POST"])
+def operar_vacio():
+  try:
+     if request.method == 'POST': 
+        token_form_operacion = request.form.get('token_form_operacion')
+        accounCuenta_form_operacion = request.form.get('accounCuenta_form_operacion')
+        
+        orderQty = '0'
+        symbol = 'x'
+        price = '0'
+       
+        lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
+        return render_template('operaciones/operaciones.html', datos = lista)
   except:        
     return render_template("errorLogueo.html" )
   
@@ -68,20 +86,23 @@ def get_trade_history_by_symbol():
            
             operaciones = historic_trades.get('trades', []) 
             print("historic_trades operacionnnnnnnnnnnnnnnnnnnnneeesss ",symbol)
-        return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+        return render_template('paneles/tablaOrdenesRealizadas.html', datos = operaciones)
   except:  
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
-  return render_template("login.html" )
+  return render_template("notificaciones/noPoseeDatos.html" )
 
-@operaciones.route("/estadoOperacion")
+@operaciones.route("/estadoOperacion",  methods=["POST"])
 def estadoOperacion():
     try:
-        print(get.pyRofexInicializada)
-        repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+        account = request.form['accounCuenta_form_estadoOperacion']
+        pyRofexInicializada = get.ConexionesBroker.get(account)
+        if pyRofexInicializada:
+            repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=account,environment=account)
+      
        
-        operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
-        return render_template('tablaOrdenesRealizadas.html', datos=operaciones)
+            operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
+            return render_template('paneles/tablaOrdenesRealizadas.html', datos=operaciones)
     
     except KeyError as e:
         # Manejar el caso en que 'orders' no está en la respuesta
@@ -93,7 +114,7 @@ def estadoOperacion():
         print(f"Error inesperado: {e}")
         flash("Ocurrió un error inesperado al obtener los datos de operaciones")
 
-    return render_template("login.html")
+    return render_template("notificaciones/noPoseeDatos.html")
 
 @operaciones.route("/operaciones_desde_seniales_sin_cuenta/", methods=["POST"]) 
 def operaciones_desde_seniales_sin_cuenta():
@@ -181,139 +202,184 @@ def operaciones_desde_seniales():
             ut = request.form['ut']
             signal = request.form['senial']
             cuentaA = request.form['correo_electronico']
-           
-            #aqui controlo los checkbox y los input del modal de operacion enviado por POST
-            if 'CantidadMonto' in request.form:
-               cantidad_monto = request.form['CantidadMonto']
-            if 'ValorCantidad' in request.form:
-                valor_cantidad = request.form['ValorCantidad']
-            if 'ValorMonto' in request.form:   
-              valor_monto = request.form['ValorMonto']  
-            else: 
-              valor_monto='0'            
-            if 'Modalidad' in request.form:
-                # El checkbox de modalidad fue seleccionado
-                modalidad_seleccionada = request.form['Modalidad']
-            else:
-                modalidad_seleccionada = '2'
-           
-              
-           
-          
-          
-            #logs_table = Logs()  # Crea una instancia de Logs
-            #logs_table.crear_tabla()  # Llama a la función crear_tabla
-            if access_token:
-                app = current_app._get_current_object()  
-                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                cuentaBroker = obtenerCuentaBroker(user_id)
-                
-                if 'ValorPrecioLimite' in request.form: 
-                    precios = request.form['ValorPrecioLimite']                 
+            cuentaAcount = request.form['accountCuenta']
+            paisSeleccionado = request.form['paisSeleccionado']
+            pyRofexInicializada = get.ConexionesBroker.get(cuentaAcount)
+            if pyRofexInicializada:
+                #aqui controlo los checkbox y los input del modal de operacion enviado por POST
+                if 'CantidadMonto' in request.form:
+                  cantidad_monto = request.form['CantidadMonto']
+                if 'ValorCantidad' in request.form:
+                    valor_cantidad = request.form['ValorCantidad']
                 else:
-                  existencia = inst.instrumentos_existentes_by_symbol(symbol)                   
-                  if existencia == True:           
-                    precios = inst.instrument_por_symbol(symbol)    
-                          
-                if precios != '':
+                    valor_cantidad='0' 
+                if 'ValorMonto' in request.form:   
+                  valor_monto = request.form['ValorMonto']  
+                else: 
+                  valor_monto='0'            
+                if 'Modalidad' in request.form:
+                    # El checkbox de modalidad fue seleccionado
+                    modalidad_seleccionada = request.form['Modalidad']
+                else:
+                    modalidad_seleccionada = '2'
+              
                   
-                      resultado = calculaUt(precios,valor_cantidad,valor_monto,signal)
-                      if isinstance(resultado, int):
-                        price = float(precios)
-                        cantidad_a_comprar_abs = resultado
-                        if signal == 'closed.':               
-                            accion = 'vender'                                                    
-                        elif signal == 'OPEN.':
-                            accion = 'comprar'                
-                          
-                      else:
-                        cantidad_a_comprar_abs, precio_LA, BI_price, OF_price = resultado
-                        if signal == 'closed.':               
-                            accion = 'vender' 
-                            price = OF_price#envio precio de la oferta                               
-                        elif signal == 'OPEN.':
-                            accion = 'comprar'                 
-                            price = BI_price#envio precio de la demanda
-                          # Verificar el saldo y enviar la orden si hay suficiente
-                        
-                      #se verifica el tipo de orden   
-                      if modalidad_seleccionada=='1':
-                        tipoOrder = get.pyRofexInicializada.OrderType.LIMIT 
-                        tipo_orden = 'LIMIT'
-                        print("tipoOrder ",tipoOrder)  
-                      else:        
-                        tipoOrder = get.pyRofexInicializada.OrderType.MARKET
-                        tipo_orden = 'MARKET'
-                        print("tipoOrder ",tipoOrder)
-                        
-                      #se debe controlar cuando sea mayor a 1 minuto
-                      # Inicia el hilo para consultar el saldo después de un minuto
-                      if tipo_orden == 'LIMIT' or tipo_orden == 'MARKET':
-                          
-                          orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
-                          ticker = symbol
-                      
-                          if orden_.enviar_orden(cuenta=cuentaBroker):
-                                print("Orden enviada con éxito.")
-                                flash('Operacion enviada exitosamente')
-                                repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-                                operaciones = repuesta_operacion['orders']
-                                print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-                                    
-                                # Intentamos encontrar el registro con el symbol específico
-                                orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
-
-                                if orden_existente:
-                                    # Si el registro existe, lo actualizamos
-                                    orden_existente.user_id = user_id
-                                    orden_existente.userCuenta = cuentaA
-                                    orden_existente.ut = cantidad_a_comprar_abs
-                                    orden_existente.senial = signal
-                                    orden_existente.clOrdId_alta_timestamp=datetime.now()
-                                    orden_existente.status = 'operado'
-                                else:
-                                    # Si no existe, creamos un nuevo registro
-                                    nueva_orden = Orden(
-                                        user_id=user_id,
-                                        userCuenta=cuentaA,
-                                        accountCuenta=cuentaA,
-                                        clOrdId_alta=random.randint(1,100000),
-                                        clOrdId_baja='',
-                                        clientId=0,
-                                        wsClOrdId_timestamp=datetime.now(),
-                                        clOrdId_alta_timestamp=datetime.now(),
-                                        clOrdId_baja_timestamp=None,
-                                        proprietary=True,
-                                        marketId='',
-                                        symbol=ticker,
-                                        tipo=tipo_orden,
-                                        tradeEnCurso="si",
-                                        ut=cantidad_a_comprar_abs,
-                                        senial=signal,
-                                        status='operado'
-                                    )
-                                    db.session.add(nueva_orden)
-                                    
-                                if signal == 'closed.':
-                                  db.session.delete(orden_existente)   
-                                db.session.commit()  
-                                    #get.current_session = db.session
-                                db.session.close()
-                          else:
-                              print("No se pudo enviar la orden debido a saldo insuficiente.")
-                              return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
-                        
-                          
-                          
-                        
+              
+              
+              
+                #logs_table = Logs()  # Crea una instancia de Logs
+                #logs_table.crear_tabla()  # Llama a la función crear_tabla
+                if access_token:
+                    app = current_app._get_current_object()  
+                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                    cuentaBroker = obtenerCuentaBroker(user_id)
                     
-                                            
-                
-                    # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
-                    # operaciones = repuesta_operacion['orders']   
-                    # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
-                    # 
-                      return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
+                    if 'ValorPrecioLimite' in request.form: 
+                        precios = request.form['ValorPrecioLimite']                 
+                    else:
+                      existencia = inst.instrumentos_existentes_by_symbol(yRofexInicializada=pyRofexInicializada['pyRofex'],message=symbol,account=cuentaAcount)                   
+                      if existencia == True:           
+                        precios = inst.instrument_por_symbol(symbol)    
+                              
+                    if precios != '':
+                      
+                          resultado = calculaUt(precios,valor_cantidad,valor_monto,signal)
+                          
+                          if isinstance(resultado, int):
+                            price = float(precios)
+                            cantidad_a_comprar_abs = resultado
+                            if signal == 'closed.':               
+                                accion = 'vender'                                                    
+                            elif signal == 'OPEN.':
+                                accion = 'comprar'                
+                              
+                          else:
+                            cantidad_a_comprar_abs, precio_LA, BI_price, OF_price = resultado
+                            if signal == 'closed.':               
+                                accion = 'vender' 
+                                price = OF_price#envio precio de la oferta                               
+                            elif signal == 'OPEN.':
+                                accion = 'comprar'                 
+                                price = BI_price#envio precio de la demanda
+                              # Verificar el saldo y enviar la orden si hay suficiente
+                            
+                          #se verifica el tipo de orden   
+                          if modalidad_seleccionada=='1':
+                            tipoOrder = pyRofexInicializada['pyRofex'].OrderType.LIMIT 
+                            tipo_orden = 'LIMIT'
+                            print("tipoOrder ",tipoOrder)  
+                          else:        
+                            tipoOrder = pyRofexInicializada['pyRofex'].OrderType.MARKET
+                            tipo_orden = 'MARKET'
+                            print("tipoOrder ",tipoOrder)
+                            
+                          #se debe controlar cuando sea mayor a 1 minuto
+                          # Inicia el hilo para consultar el saldo después de un minuto
+                          if tipo_orden == 'LIMIT' or tipo_orden == 'MARKET':
+                              
+                              orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
+                              ticker = symbol
+                            
+                              if orden_.enviar_orden(cuenta=cuentaAcount,pyRofexInicializada=pyRofexInicializada['pyRofex']):
+                                        print("Orden enviada con éxito.")
+                                        flash('Operacion enviada exitosamente')
+                                      
+                                        repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=cuentaAcount,environment=cuentaAcount)
+                                        operaciones = repuesta_operacion['orders']
+                                        print(operaciones)#muestra el listado de todas las operaciones
+                                        clOrdId = None
+                                        orderStatus = None
+                                        timepoTransaccion = None
+                                        for orden in operaciones:
+                                          if orden['instrumentId']['symbol'] == ticker:
+                                            transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
+                                            if timepoTransaccion is None or transacTime > timepoTransaccion:
+                                                timepoTransaccion = transacTime
+
+                                                        
+                                        for orden in operaciones:
+                                            if orden['instrumentId']['symbol'] == ticker:
+                                                transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
+                                                if transacTime == timepoTransaccion:                                                                   
+                                                    clOrdId = orden['clOrdId'] 
+                                                    orderStatus = orden['status']
+                                                    break
+                                              
+                                        if orderStatus != 'REJECTED':     
+                                            # Intentamos encontrar el registro con el symbol específico
+                                            orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+
+                                            if orden_existente:
+                                                # Si el registro existe, lo actualizamos
+                                                orden_existente.user_id = user_id
+                                                orden_existente.userCuenta = cuentaAcount
+                                                orden_existente.ut = cantidad_a_comprar_abs
+                                                orden_existente.senial = signal
+                                                orden_existente.clOrdId_alta = clOrdId
+                                                orden_existente.clOrdId_alta_timestamp=datetime.now()
+                                                orden_existente.status =  orderStatus
+                                            else:
+                                                # Si no existe, creamos un nuevo registro
+                                                nueva_orden = Orden(
+                                                    user_id=user_id,
+                                                    userCuenta=cuentaA,
+                                                    accountCuenta=cuentaAcount,
+                                                    clOrdId_alta=clOrdId,
+                                                    clOrdId_baja='',
+                                                    clientId=0,
+                                                    wsClOrdId_timestamp=datetime.now(),
+                                                    clOrdId_alta_timestamp=datetime.now(),
+                                                    clOrdId_baja_timestamp=None,
+                                                    proprietary=True,
+                                                    marketId='',
+                                                    symbol=ticker,
+                                                    tipo=tipo_orden,
+                                                    tradeEnCurso="si",
+                                                    ut=cantidad_a_comprar_abs,
+                                                    senial=signal,
+                                                    status= orderStatus
+                                                )
+                                                db.session.add(nueva_orden)
+                                                
+                                            if signal == 'closed.':
+                                              db.session.delete(orden_existente)   
+                                            db.session.commit()  
+                                                #get.current_session = db.session
+                                            db.session.close()
+                                        else:  
+                                          print("No se pudo enviar la orden debido a REJECTED")
+                                          return jsonify({'success': True})
+
+                                        # return jsonify({'redirect': url_for('paneles.panelDeControlBroker')})
+                            
+                              else:
+                                      print("No se pudo enviar la orden debido a saldo insuficiente.")
+                                      return jsonify({'redirect': url_for('paneles.panelDeControlBroker')}) 
+                              
+                              
+                              
+                            
+                        
+                                                
+                    
+                        # repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
+                        # operaciones = repuesta_operacion['orders']   
+                        # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
+                        #  
+                          if paisSeleccionado == "argentina":
+                              ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+                          elif paisSeleccionado == "usa":
+                                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+                          else:
+                              return "País no válido"
+              
+              
+                          datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,user_id)
+                        
+                          return render_template("/paneles/panelSignalConCuentas.html", datos = datos_desempaquetados)
+                        # return jsonify({'redirect': url_for('paneles.panelDeControlBroker', datos=datos_desempaquetados)})
+            else:
+               return None     
     except Exception as e:
       # Si se genera una excepción, crear un registro en Logs
       error_msg = str(e)  # Obtener el mensaje de error
@@ -323,7 +389,7 @@ def operaciones_desde_seniales():
       db.session.add(new_log)
       db.session.commit()
 
-    return render_template('errorOperacion.html')
+    return render_template('notificaciones/errorOperacion.html')
 
 ######## FALTA IMPLEMENTAR LAS OPERACIONES AUTOMATICAS DESDE PANEL CON CUENTA #############
 @operaciones.route("/operaciones_automatico_desde_senial_con_cuenta/", methods=["POST "])
@@ -346,14 +412,14 @@ def operaciones_automatico_desde_senial_con_cuenta():
     #  db.session.add(new_log)
       db.session.commit()
 
-  return render_template('errorOperacion.html')
+  return render_template('notificaciones/errorOperacion.html')
 def calculaUt(precios,valor_cantidad,valor_monto,signal):
   
   
-  if not isinstance(precios, dict):
+  if not isinstance(precios, zip):
+    precio=precios
     pass
-  else:
-  
+  else:  
       for item in precios:
                       print(item[0])
                       print(item[1])
@@ -377,10 +443,10 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
       cantidad_a_comprar =int(valor_cantidad)  # Aseguramos que valor_cantidad sea un entero
   
   else:
-      cantidad_a_comprar = int(int(valor_monto) / precio)
+      cantidad_a_comprar = int(int(valor_monto) / int(precio))
       
   cantidad_a_comprar_abs = abs(cantidad_a_comprar)  
-  if not isinstance(precios, dict):
+  if not isinstance(precios, zip):
     return cantidad_a_comprar_abs
   else: 
     return cantidad_a_comprar_abs, LA['price'], BI[0]['price'], OF[0]['price']
@@ -447,7 +513,7 @@ def comprar():
               #return format(nuevaOrden)
               estadoOperacion()
               flash('No hay suficiente saldo para enviar la orden de compra')
-              return render_template("errorOperacion.html" )
+              return render_template("notificaciones/errorOperacion.html" )
         else:
           
           sendOrderWS()
@@ -455,10 +521,10 @@ def comprar():
           repuesta_operacion = get.pyRofexInicializada.get_all_orders_status()
           operaciones = repuesta_operacion['orders']
           print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",operaciones)
-          return render_template('tablaOrdenesRealizadas.html', datos = operaciones)
+          return render_template('paneles/tablaOrdenesRealizadas.html', datos = operaciones)
   except:        
     flash('Datos Incorrect')  
-    return render_template("operaciones.html" )
+    return render_template("operaciones/operaciones.html" )
 ################# AQUI SE MUESTRAN LOS VALORES QUE SE QUIEREN VENDER#########
 @operaciones.route("/mostrarLaVenta/" , methods = ['POST'])
 def mostrarLaVenta(): 
@@ -683,7 +749,7 @@ def sendOrderWS():
              
             estadoOperacion()
             flash('No hay suficiente saldo para enviar la orden de compra')
-            return render_template("errorOperacion.html" )
+            return render_template("notificaciones/errorOperacion.html" )
    #except:        
    # flash('Datos Incorrect')  
    # print('datos incorrectos')
