@@ -252,7 +252,10 @@
             document.getElementById('broker_nombre').value = brokerNombre;
         });
     })
-    .catch(error => console.error('Error al cargar opciones del combo:', error));
+    .catch(error => {
+      console.error('Error al cargar opciones del combo:', error);
+      alert('Hubo un problema al cargar las opciones del combo. Por favor, logee nuevamente en el sistema puede haber vencido el token de acceso o inténtalo de nuevo más tarde o contacta al soporte técnico.');
+  });
 }
 
 

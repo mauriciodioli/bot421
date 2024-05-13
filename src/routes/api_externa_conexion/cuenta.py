@@ -388,11 +388,11 @@ def get_cuentas_de_broker(user_id):
 
 @cuenta.route("/get_cuentas_de_broker_usuario",  methods=["POST"])   
 def get_cuentas_de_broker_usuario():
-     if request.method == 'POST':
+   if request.method == 'POST':
          
-         access_token = request.form['access_token']
-         todasLasCuentas = []
-         if access_token and Token.validar_expiracion_token(access_token=access_token): 
+      access_token = request.form['access_token']
+      todasLasCuentas = []
+      if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -447,8 +447,10 @@ def get_cuentas_de_broker_usuario():
                      print("No se pudo registrar la cuenta.")
                      db.session.rollback()  # Hacer rollback de la sesión
                      return render_template("errorLogueo.html")
-     db.session.close()
-     return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
+              
+            db.session.close()
+            return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
+      return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
   
 @cuenta.route("/get_cuentas_de_broker_usuario_Abm",  methods=["POST"])   
 def get_cuentas_de_broker_usuario_Abm():
@@ -491,8 +493,10 @@ def get_cuentas_de_broker_usuario_Abm():
                      print("No se pudo registrar la cuenta.")
                      db.session.rollback()  # Hacer rollback de la sesión
                      return render_template("errorLogueo.html")
-     db.session.close()
-     return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
+            db.session.close()
+            return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
+         else:
+            return render_template('notificaciones/tokenVencidos.html',layout = 'layoutConexBroker') 
   
 @cuenta.route("/delete_cuenta_usuario_broker",  methods=["POST"])   
 def delete_cuenta_usuario_broker():

@@ -161,7 +161,8 @@ def cuenta_endpoint_all():
             db.session.rollback()  # Hacer rollback de la sesión
             return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
-    return jsonify({'message': 'Solicitud no válida.'}), 400
+    return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
+   
 
 @endPointBrokers.route("/cuentas-Broker/",  methods=["GET"])
 def cuentas_Usuario_Broker():
