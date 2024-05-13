@@ -70,62 +70,64 @@ def programador_trigger():
     accesoManualAutomatico =request.json["accesoManualAutomatico"]
     ##passwordCuenta=passwordCuenta_encoded,
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
-        app = current_app._get_current_object()
-        try:
-            user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            usuario_objeto = Usuario.query.get(user_id)  # Obtener el objeto Usuario correspondiente al user_id
+            app = current_app._get_current_object()
+            try:
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                usuario_objeto = Usuario.query.get(user_id)  # Obtener el objeto Usuario correspondiente al user_id
+                
+                cuenta = Cuenta.query.filter_by(user_id=user_id).first()
+                if cuenta:
+                    print("Datos de la cuenta:")
+                    print("ID:", cuenta.id)
+                    print("User ID:", cuenta.user_id)
+                    print("User Cuenta:", cuenta.userCuenta)
+                    print("Password Cuenta:", cuenta.passwordCuenta)
+                    print("Account Cuenta:", cuenta.accountCuenta)
+                    horaInicioSalvar, minutosInicioSalvar = horaInicio.split(':')
+                    horaFinSalvar, minutosFinSalvar = horaFin.split(':')
+                
+                hora_inicio = datetime(year=2023, month=7, day=3, hour=int(horaInicioSalvar), minute=int(minutosInicioSalvar))
+                hora_fin = datetime(year=2023, month=7, day=3, hour=int(horaFinSalvar), minute=int(minutosFinSalvar))
+                triggerEstrategia = TriggerEstrategia( 
+                        id=None,   
+                        user_id=user_id,
+                        userCuenta=cuenta.userCuenta,
+                        passwordCuenta=cuenta.passwordCuenta,
+                        accountCuenta=cuenta.accountCuenta, 
+                        horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
+                        horaFin=hora_fin,  # Ejemplo de hora de fin (17:00)     
+                        ManualAutomatico = accesoManualAutomatico         
+                                
+                        )
+                
             
-            cuenta = Cuenta.query.filter_by(user_id=user_id).first()
-            if cuenta:
-                print("Datos de la cuenta:")
-                print("ID:", cuenta.id)
-                print("User ID:", cuenta.user_id)
-                print("User Cuenta:", cuenta.userCuenta)
-                print("Password Cuenta:", cuenta.passwordCuenta)
-                print("Account Cuenta:", cuenta.accountCuenta)
-                horaInicioSalvar, minutosInicioSalvar = horaInicio.split(':')
-                horaFinSalvar, minutosFinSalvar = horaFin.split(':')
-               
-            hora_inicio = datetime(year=2023, month=7, day=3, hour=int(horaInicioSalvar), minute=int(minutosInicioSalvar))
-            hora_fin = datetime(year=2023, month=7, day=3, hour=int(horaFinSalvar), minute=int(minutosFinSalvar))
-            triggerEstrategia = TriggerEstrategia( 
-                     id=None,   
-                     user_id=user_id,
-                     userCuenta=cuenta.userCuenta,
-                     passwordCuenta=cuenta.passwordCuenta,
-                     accountCuenta=cuenta.accountCuenta, 
-                     horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
-                     horaFin=hora_fin,  # Ejemplo de hora de fin (17:00)     
-                     ManualAutomatico = accesoManualAutomatico         
-                            
-                     )
+                db.session.add(triggerEstrategia)  # Agregar la instancia de Cuenta a la sesión
+                db.session.commit()  # Confirmar los cambios
+                db.session.refresh(triggerEstrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+                triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
             
-           
-            db.session.add(triggerEstrategia)  # Agregar la instancia de Cuenta a la sesión
-            db.session.commit()  # Confirmar los cambios
-            db.session.refresh(triggerEstrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
-            triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
-           
-            print("Auomatico registrada exitosamente!")
-            print("automatico registrada usuario id !",triggerEstrategia_id)
-         #   todasLasCuentas = get_cuentas_de_broker(user_id)
-            triggerEstrategia1 = TriggerEstrategia.query.filter_by(id=triggerEstrategia_id).first() 
-            db.session.close()
-            render_template("/")
-              
-          #  for cuenta in todasLasCuentas:
-           #       print(cuenta['accountCuenta'])
+                print("Auomatico registrada exitosamente!")
+                print("automatico registrada usuario id !",triggerEstrategia_id)
+            #   todasLasCuentas = get_cuentas_de_broker(user_id)
+                triggerEstrategia1 = TriggerEstrategia.query.filter_by(id=triggerEstrategia_id).first() 
+                db.session.close()
+                render_template("/")
+                
+            #  for cuenta in todasLasCuentas:
+            #       print(cuenta['accountCuenta'])
 
-        except Exception as e:
-            # Manejo específico de la excepción
-            print("Error:", str(e))
-            db.session.rollback()  # Hacer rollback de la sesión
-            db.session.close()
-            print("No se pudo registrar la hora a automatizar.")
-        # Llamar a la función del trigger y pasarle las horas ingresadas
-    programar_tareas(horaInicio, horaFin)
+            except Exception as e:
+                # Manejo específico de la excepción
+                print("Error:", str(e))
+                db.session.rollback()  # Hacer rollback de la sesión
+                db.session.close()
+                print("No se pudo registrar la hora a automatizar.")
+            # Llamar a la función del trigger y pasarle las horas ingresadas
+            programar_tareas(horaInicio, horaFin)
+    else:
+           return render_template('notificaciones/tokenVencidos.html',layout = 'layout')         
 
-    return "Triggers programados"
+   
 
 def programar_tareas(horaInicio, horaFin):
     # Convertir las horas ingresadas en formato de cadena a objetos de fecha y hora

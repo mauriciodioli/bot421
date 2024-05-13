@@ -101,7 +101,7 @@ def estrategias_usuario_nadmin():
             #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
             return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
           else:
-               return render_template('notificaciones/tokenVencidos.html',layout = 'layoutConexBroker')  
+               return render_template('usuarios/logOutSystem.html')  
     except:
        print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/notificaciones/errorEstrategiaABM.html")
@@ -166,19 +166,22 @@ def eliminar_trigger():
     usuario_id = request.form['user_id']
     access_token = request.form['eliminarEstrategiaToken']
     account = request.form['eliminarEstrategiaCuenta']
-    Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
-    utABM.eliminarUT(IdTrigger)
-    eliminarArhivoEstrategia(Trigger.nombreEstrategia)
-    db.session.delete(Trigger)
-    db.session.commit()
-    
-    
-    flash('Trigger eliminado correctamente.')
-    
-    estrategias = db.session.query(TriggerEstrategia).filter_by(user_id=usuario_id).all()
-    db.session.close()   
-    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
-
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
+        Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
+        utABM.eliminarUT(IdTrigger)
+        eliminarArhivoEstrategia(Trigger.nombreEstrategia)
+        db.session.delete(Trigger)
+        db.session.commit()
+        
+        
+        flash('Trigger eliminado correctamente.')
+        
+        estrategias = db.session.query(TriggerEstrategia).filter_by(user_id=usuario_id).all()
+        db.session.close()   
+        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+    else:
+         flash('El token a expirado')
+         return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
 @estrategias.route("/editar-trigger-nombre", methods=["POST"])
 def editar_trigger_nombre():
     IdTrigger = request.form['IdTrigger']

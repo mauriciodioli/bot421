@@ -219,7 +219,7 @@ def registrar_cuenta_broker():
             if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 return render_template("cuentas/registrarCuentaBroker.html")
             else:
-                return render_template('notificaciones/tokenVencidos.html', layout=layouts)
+                return render_template('usuarios/logOutSystem.html')
         
     except Exception as e:      
         return render_template('notificaciones/tokenVencidos.html', layout=layouts)     
@@ -507,7 +507,7 @@ def get_cuentas_de_broker_usuario_Abm():
             db.session.close()
             return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
          else:
-            return render_template('notificaciones/tokenVencidos.html',layout = 'layoutConexBroker') 
+            return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
   
 @cuenta.route("/delete_cuenta_usuario_broker",  methods=["POST"])   
 def delete_cuenta_usuario_broker():
