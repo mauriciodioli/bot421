@@ -208,10 +208,21 @@ def reporteCuenta():
         
           
    
-@cuenta.route("/registrar_cuenta_broker")
+@cuenta.route("/registrar_cuenta_broker", methods = ['POST'])
 def registrar_cuenta_broker():
-   
-   return render_template("cuentas/registrarCuentaBroker.html")
+    try:
+        if request.method == 'POST':
+            access_token = request.form['form_cuenta_access_token']
+            refreshToken  = request.form['form_cuenta_refresh_token']
+            account = request.form['form_cuenta_accounCuenta']
+            layouts = request.form['layoutOrigen']
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
+                return render_template("cuentas/registrarCuentaBroker.html")
+            else:
+                return render_template('notificaciones/tokenVencidos.html', layout=layouts)
+        
+    except Exception as e:      
+        return render_template('notificaciones/tokenVencidos.html', layout=layouts)     
 
 @cuenta.route("/cuentas_de_broker_usuario_")
 def cuentas_de_broker_usuario_():

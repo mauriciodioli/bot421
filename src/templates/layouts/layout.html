@@ -126,7 +126,15 @@
                         </ul>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" aria-current="page" href="/registrar_cuenta_broker">Herramientas</a>
+                        <form  name="reporteCuenta" action="/registrar_cuenta_broker" method="post" class="btn-guardar_inst">
+                            <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_accounCuenta"  id="form_cuenta_accounCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_access_token"  id="form_cuenta_access_token"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_refresh_token"  id="form_cuenta_refresh_token"  class="form-control"></div>  
+                            <div class="col">  
+                            <li><button type="submit" class="dropdown-item text-white">Herramientas</button></li>
+                          </div>
+                        </form>  
                     </li>
                     
                    <!-- 
@@ -223,11 +231,18 @@
         let correo_electronico = localStorage.getItem("correo_electronico");  
         
         let access_token = localStorage.getItem("access_token")
+        let refreshToken = localStorage.getItem("refresh_token")
+        let cuentaBroker = localStorage.getItem("cuenta")
         let rol = localStorage.getItem('roll');
         var cuentaB = localStorage.getItem("cuenta");  
         document.getElementById("access_token_form_GenerarFicha").value = access_token;
         document.getElementById("access_token_form_ListarFicha").value = access_token;
         document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaB;
+
+       //herramientas
+        document.getElementById('form_cuenta_accounCuenta').value = cuentaBroker;
+        document.getElementById('form_cuenta_access_token').value = access_token ;
+        document.getElementById('form_cuenta_refresh_token').value = refreshToken;
      //   console.log(access_token)
         var cuentaLink = document.querySelector('.nav-menu-generar');
         cuentaLink.style.display = 'none'; 
