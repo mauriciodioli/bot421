@@ -18,8 +18,8 @@ token = Blueprint('token',__name__)
 
 SECRET_KEY = 'supersecreto'
 # Duración de los tokens
-TOKEN_DURATION = 30  # minutos
-REFRESH_TOKEN_DURATION = 60  # minutos
+TOKEN_DURATION = 1  # minutos
+REFRESH_TOKEN_DURATION = 5  # minutos
 
 def generar_token(user_id, valor, cuenta):
     llave = secrets.token_hex(32)

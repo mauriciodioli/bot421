@@ -100,6 +100,8 @@ def estrategias_usuario_nadmin():
                    
             #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
             return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+          else:
+               return render_template('notificaciones/tokenVencidos.html',layout = 'layoutConexBroker')  
     except:
        print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/notificaciones/errorEstrategiaABM.html")

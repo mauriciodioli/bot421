@@ -175,6 +175,9 @@
                             <form id="instrumentos_form" action="/muestraTriggers/" method="post">
                               <!-- Aquí puedes agregar los campos adicionales que desees -->
                               <input type="hidden" name="Shedule_accounCuenta" id="Shedule_accounCuenta">  
+                              <input type="hidden" name="Shedule_accessToken" id="Shedule_accessToken">
+                              <input type="hidden" name="Shedule_refreshToken" id="Shedule_refreshToken">  
+                              <input type="hidden" name="Shedule_layoutOrigen" id="Shedule_layoutOrigen" value="layoutConexBroker">  
                               <!-- El botón de enviar el formulario -->
                               <button type="submit" class="btn text-black">Shedule</button>
                             </form>
@@ -347,10 +350,12 @@
             var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
             window.location.href = url;
         }
+         debugger;
          correo_electronico = localStorage.getItem("correo_electronico");  
          cuentaBroker = localStorage.getItem("cuenta");  
-         selector = localStorage.getItem("selector");  
-         access_token = localStorage.getItem("access_token")
+         selector = localStorage.getItem("selector");          
+         access_token = localStorage.getItem("access_token");
+         refreshToken = localStorage.getItem("refresh_token");
          rol = localStorage.getItem('roll');
       
         //peraciones
@@ -387,6 +392,9 @@
 
         //shedule
         document.getElementById('Shedule_accounCuenta').value = cuentaBroker;
+        document.getElementById('Shedule_refreshToken').value = refreshToken;
+        document.getElementById('Shedule_accessToken').value = access_token;
+        
         
     
         
