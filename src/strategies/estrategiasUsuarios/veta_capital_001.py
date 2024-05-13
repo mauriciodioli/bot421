@@ -24,8 +24,10 @@ from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
+from models.unidadTrader import UnidadTrader
 import socket
 import pprint
+import tokens.token as Token
 instrumentos_existentes_arbitrador1=[]
 import sys
 
@@ -53,9 +55,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@veta_capital_001.route('/estrategia-002/', methods=['POST'])
+@veta_capital_001.route('/veta-capital-001/', methods=['POST'])
 def vetacapital001():
-    print('00000000000000000000000estrategia-00200000000000000000000000000')
+    print('00000000000000000000000 veta-capital-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -81,38 +83,29 @@ def vetacapital001():
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
-            for elemento in get.ConexionesBroker:
-                print("Variable agregada:", elemento)
-                accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
-             
-                if accountCuenta ==  data['cuenta']:              
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
+                for elemento in get.ConexionesBroker:
+                    print("Variable agregada:", elemento)
+                    accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
                 
-                  global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta
-                  cuentaGlobal = data['cuenta']
-                  pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
-                  cuentaGlobal = accountCuenta
-                  
-            CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-            carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1])
-            pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
-            pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
-            pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
+                    if accountCuenta ==  data['cuenta']:              
+                    
+                        global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta
+                        cuentaGlobal = data['cuenta']
+                        pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
+                        cuentaGlobal = accountCuenta
+                    
+                CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
+                carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
+                pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
+                pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
          
-       #     pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
-       #                             market_data_handler=market_data_handler_estrategia,
-       #                             order_report_handler=order_report_handler,
-       #                             error_handler=error_handler,
-       #                             exception_handler=exception_handler
-       #                             )
-            #get.pyRofexInicializada.run_websocket()
-           # carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
-            # Crear una instancia de RofexMarketDataHandler
-            
-
-            
+        
             
         
-    
+            else:
+               return render_template('usuarios/logOutSystem.html')
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
                 return redirect(url_for('autenticacion.index'))
@@ -124,7 +117,7 @@ def vetacapital001():
      
        
 def market_data_handler_estrategia(message):
-    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet
+    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet,VariableParaSaldoCta
    
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -153,8 +146,8 @@ def market_data_handler_estrategia(message):
          #   print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
         else:
             VariableParaTiemposMDHandler = 0
-            print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
-            VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
+           # print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
+           # VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
             
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
         #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
@@ -165,10 +158,10 @@ def market_data_handler_estrategia(message):
             time = datetime.now()
             tiempoInicio2 = int(time.timestamp())*1000
             VariableParaTiempoLeerSheet =  tiempoInicio2 - marca_de_tiempo
-            print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
+        #    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
         else:
                 VariableParaTiempoLeerSheet = 0
-                print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
+              #  print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
                 # esto hay que hacerlo aca, solo cada x segundos
                 banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
     
@@ -191,8 +184,8 @@ def market_data_handler_estrategia(message):
             
             #tiempoAhora = datetime.now()
             #print('"FUN market_data_handler_estrategia')
-            pass
-            #estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            #pass
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
             
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
@@ -298,7 +291,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                         
 
                                   
-                                    
+                                    VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
                                                 #print('operacionews')
@@ -333,7 +326,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
 
 
-def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message):#carg
+def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
      símbolos_vistos = set()
@@ -371,7 +364,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
           
     
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
-     
+     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
      for elemento  in coincidencias:  
        #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
          #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
@@ -410,7 +403,7 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
             'symbol': elemento[0],
             'tipo_de_activo': elemento[1],
             'tradeEnCurso': elemento[2],
-            'ut': elemento[3],
+            'ut': unidadTrader.ut,
             'senial': elemento[4],
             'status': '0'
         }

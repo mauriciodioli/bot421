@@ -192,6 +192,7 @@
                       <form id="instrumentos_form" action="/estadoOperacion" method="post">
                           <!-- Aquí puedes agregar los campos adicionales que desees -->
                           <input type="hidden" name="accounCuenta_form_estadoOperacion" id="accounCuenta_form_estadoOperacion">
+                          <input type="hidden" name="form_estadoOperacion_accessToken" id="form_estadoOperacion_accessToken">
                           <!-- El botón de enviar el formulario -->
                           <button type="submit" class="btn text-white">Portfolio</button>
                       </form>
@@ -383,6 +384,8 @@
         document.getElementById('accounCuenta_form_instrumentos_detalles').value = cuentaBroker;
         //estado de cuentas
         document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
+        document.getElementById('form_estadoOperacion_accessToken').value = access_token;
+        
         //repoteCuentas
        
         document.getElementById("access_token_form_reporteCuenta").value = access_token;

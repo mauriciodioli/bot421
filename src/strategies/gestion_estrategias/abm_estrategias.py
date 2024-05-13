@@ -166,6 +166,9 @@ def abm_estrategias_all_Brokers_post():
                 print("No se pudo registrar los brokers.")
                 db.session.rollback()  # Hacer rollback de la sesión
                 return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
+        else:
+             flash('El token a expirado')
+             return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
     
     return jsonify({'message': 'Solicitud no válida.'}), 400
 

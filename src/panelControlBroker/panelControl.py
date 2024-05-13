@@ -61,7 +61,7 @@ def panel_control_sin_cuenta():
             return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
         return "Página no encontrada"  # Cambia el mensaje según sea necesario
     else:
-        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
+        return render_template('usuarios/logOutSystem.html')     
   
 
 @panelControl.route("/panel_control")
@@ -97,25 +97,29 @@ def panel_control():
             # Maneja el caso en que el token no es válido
             pass
      else:
-        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')  
+        return render_template('usuarios/logOutSystem.html')     
 
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/")
 def panel_control_atomatico(pais,usuario_id,access_token):
+    
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
      
-     if  determinar_pais(pais) is not None:
-       datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-     else:
-        enviar_leer_sheet(pais)
-        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
- 
-     if datos_desempaquetados:
-     # print(datos_desempaquetados)
-       return jsonify(datos=datos_desempaquetados)
-     else:
-        # Si datos_desempaquetados está vacío, devuelve una respuesta vacía
-        return jsonify(datos={})
-      # Si ninguna de las condiciones anteriores se cumple, devuelve una respuesta predeterminada
-     return jsonify(message="No se encontraron datos disponibles")
+        if  determinar_pais(pais) is not None:
+            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+        else:
+            enviar_leer_sheet(pais)
+            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+    
+        if datos_desempaquetados:
+        # print(datos_desempaquetados)
+            return jsonify(datos=datos_desempaquetados)
+        else:
+            # Si datos_desempaquetados está vacío, devuelve una respuesta vacía
+            return jsonify(datos={})
+        # Si ninguna de las condiciones anteriores se cumple, devuelve una respuesta predeterminada
+    else:
+        return render_template('usuarios/logOutSystem.html')     
+     #return jsonify(message="No se encontraron datos disponibles")
 
 
 def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
