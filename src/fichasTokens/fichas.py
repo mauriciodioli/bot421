@@ -136,7 +136,7 @@ def fichas_asignar():
             
                     
                 return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
-        return render_template('notificaciones/tokenVencidos.html',layout = layouts)       
+        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')       
     except:  
         print("retorno incorrecto")  
         flash('no posee fichas aún')   
@@ -227,7 +227,7 @@ def fichas_tomar():
         
                 
             return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
-        return render_template('notificaciones/tokenVencidos.html',layout = layouts)       
+        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')       
     except:  
         print("retorno incorrecto")  
         flash('no posee fichas aún')   
@@ -331,7 +331,7 @@ def crear_ficha():
             return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
 
             #return jsonify({'fichas_usuario': fichas_json})
-        return render_template('notificaciones/tokenVencidos.html',layout = layouts)       
+        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')       
           
         
           
@@ -404,7 +404,7 @@ def fichasToken_fichas_generar():
             return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         else:
              flash('token vencido') 
-             return render_template('notificaciones/tokenVencidos.html',layout = layouts)  
+             return render_template('usuarios/logOutSystem.html')  
   except:  
         print("no llama correctamente")  
         flash('no hay fichas creadas aún')   
@@ -474,7 +474,7 @@ def fichasToken_fichas_listar():
             return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
         
         flash('token vencido') 
-        return render_template('notificaciones/tokenVencidos.html',layout = layouts)  
+        return render_template('usuarios/logOutSystem.html')  
     except:  
         print("no llama correctamente")  
         flash('fichasListado Incorrect')   
@@ -561,7 +561,7 @@ def fichasToken_fichas_listar_sin_cuenta():
                     
                 return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
         flash('token vencido') 
-        return render_template('notificaciones/tokenVencidos.html',layout = layouts)  
+        return render_template('usuarios/logOutSystem.html')
     
     except:  
         print("retorno incorrecto")  
@@ -692,7 +692,7 @@ def eliminar_ficha():
         
         
     flash('token vencido') 
-    return render_template('notificaciones/tokenVencidos.html',layout = layouts)      
+    return render_template('usuarios/logOutSystem.html')      
 
 @fichas.route("/reportar-ficha/",  methods=["POST"])
 def reportar_ficha():
@@ -778,7 +778,7 @@ def reportar_ficha():
             
         return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
     flash('token vencido') 
-    return render_template('notificaciones/tokenVencidos.html',layout = layouts)  
+    return render_template('usuarios/logOutSystem.html') 
    
 @fichas.route("/recibir-ficha/",  methods=["POST"])
 def recibir_ficha():
@@ -841,4 +841,4 @@ def recibir_ficha():
             
         return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
     flash('token vencido') 
-    return render_template('notificaciones/tokenVencidos.html',layout = layouts)  
+    return render_template('usuarios/logOutSystem.html')  

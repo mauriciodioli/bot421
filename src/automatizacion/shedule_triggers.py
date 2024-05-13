@@ -105,7 +105,7 @@ def muestraTriggers():
             db.session.close()
             
             return render_template("automatizacion/trigger.html", num_triggers=total_triggers)
-         return render_template("notificaciones/tokenVencidos.html",layout = layouts)  
+         return render_template('usuarios/logOutSystem.html')  
     except:        
         return render_template("errorLogueo.html" )
    

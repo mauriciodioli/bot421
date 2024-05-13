@@ -22,7 +22,7 @@ from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 
 ######################zona de estrategias de usuarios####################
-from strategies.estrategiasUsuarios.Bull_Market_001 import Bull_Market_001
+from strategies.estrategiasUsuarios.veta_capital_001 import veta_capital_001
 
 ########################################################################
 
@@ -169,7 +169,7 @@ app.register_blueprint(unidad_trader)
 app.register_blueprint(strategy)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
-app.register_blueprint(Bull_Market_001)
+app.register_blueprint(veta_capital_001)
 
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)

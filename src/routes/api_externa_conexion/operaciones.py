@@ -64,7 +64,7 @@ def operar_vacio():
             lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
             return render_template('operaciones/operaciones.html', datos = lista)
         else:
-          return render_template('notificaciones/tokenVencidos.html',layout = 'layoutConexBroker') 
+          return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
             
   except:        
     return render_template("errorLogueo.html" )
@@ -100,14 +100,17 @@ def get_trade_history_by_symbol():
 def estadoOperacion():
     try:
         account = request.form['accounCuenta_form_estadoOperacion']
-        pyRofexInicializada = get.ConexionesBroker.get(account)
-        if pyRofexInicializada:
-            repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=account,environment=account)
-      
-       
-            operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
-            return render_template('paneles/tablaOrdenesRealizadas.html', datos=operaciones)
-    
+        access_token = request.form['form_estadoOperacion_accessToken']
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
+          pyRofexInicializada = get.ConexionesBroker.get(account)
+          if pyRofexInicializada:
+              repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=account,environment=account)
+        
+        
+              operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
+              return render_template('paneles/tablaOrdenesRealizadas.html', datos=operaciones)
+        else:
+          return render_template('usuarios/logOutSystem.html')
     except KeyError as e:
         # Manejar el caso en que 'orders' no está en la respuesta
         print(f"Error: La respuesta no contiene 'orders': {e}")

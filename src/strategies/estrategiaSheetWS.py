@@ -27,6 +27,7 @@ from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 from models.unidadTrader import UnidadTrader
 import socket
 import pprint
+import tokens.token as Token
 instrumentos_existentes_arbitrador1=[]
 import sys
 
@@ -82,38 +83,29 @@ def estrategiaSheetWS_001():
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
-            for elemento in get.ConexionesBroker:
-                print("Variable agregada:", elemento)
-                accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
-             
-                if accountCuenta ==  data['cuenta']:              
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
+                for elemento in get.ConexionesBroker:
+                    print("Variable agregada:", elemento)
+                    accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
                 
-                  global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta
-                  cuentaGlobal = data['cuenta']
-                  pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
-                  cuentaGlobal = accountCuenta
-                  
-            CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-            carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
-            pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
-            pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
-            pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
+                    if accountCuenta ==  data['cuenta']:              
+                    
+                        global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta
+                        cuentaGlobal = data['cuenta']
+                        pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
+                        cuentaGlobal = accountCuenta
+                    
+                CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
+                carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
+                pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
+                pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
          
-       #     pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
-       #                             market_data_handler=market_data_handler_estrategia,
-       #                             order_report_handler=order_report_handler,
-       #                             error_handler=error_handler,
-       #                             exception_handler=exception_handler
-       #                             )
-            #get.pyRofexInicializada.run_websocket()
-           # carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
-            # Crear una instancia de RofexMarketDataHandler
-            
-
-            
+        
             
         
-    
+            else:
+               return render_template('usuarios/logOutSystem.html')
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
                 return redirect(url_for('autenticacion.index'))
