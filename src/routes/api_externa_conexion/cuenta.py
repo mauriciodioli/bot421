@@ -197,8 +197,8 @@ def reporteCuenta():
            
             return render_template("cuentas/cuentaReporte.html", interes=interes,total_cuenta=total_cuenta,total_mas_interes=total_mas_interes,interes_ganado=interes_ganado, layout = layouts)
         else:
-             flash('no posee datos') 
-             return render_template("notificaciones/noPoseeDatos.html")   
+             flash('token expirado') 
+             return render_template("usuarios/logOutSystem.html")   
    except:  
         print("no llama correctamente")  
         flash('no hay fichas creadas aún')   
@@ -461,7 +461,9 @@ def get_cuentas_de_broker_usuario():
               
             db.session.close()
             return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
-      return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
+      else:
+         flash('token expirado') 
+         return render_template("usuarios/logOutSystem.html")      
   
 @cuenta.route("/get_cuentas_de_broker_usuario_Abm",  methods=["POST"])   
 def get_cuentas_de_broker_usuario_Abm():
@@ -507,7 +509,8 @@ def get_cuentas_de_broker_usuario_Abm():
             db.session.close()
             return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
          else:
-            return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
+            flash('token expirado') 
+            return render_template("usuarios/logOutSystem.html")     
   
 @cuenta.route("/delete_cuenta_usuario_broker",  methods=["POST"])   
 def delete_cuenta_usuario_broker():
