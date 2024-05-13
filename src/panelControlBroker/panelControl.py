@@ -61,7 +61,8 @@ def panel_control_sin_cuenta():
             return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
         return "Página no encontrada"  # Cambia el mensaje según sea necesario
     else:
-        return render_template('notificaciones/logeeNuevamente.html',layout = layout)
+        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
+  
 
 @panelControl.route("/panel_control")
 def panel_control():
@@ -96,7 +97,7 @@ def panel_control():
             # Maneja el caso en que el token no es válido
             pass
      else:
-        return render_template('notificaciones/logeeNuevamente.html',layout = layout)
+        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')  
 
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/")
 def panel_control_atomatico(pais,usuario_id,access_token):
