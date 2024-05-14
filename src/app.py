@@ -16,6 +16,7 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
 
+from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
 
 
 
@@ -149,6 +150,7 @@ app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
 
 
+app.register_blueprint(veta_capital_44593_001)
 #####################zona estrategias de usuarios##############
 
 
