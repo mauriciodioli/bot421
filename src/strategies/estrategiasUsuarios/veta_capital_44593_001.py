@@ -34,7 +34,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+veta_capital_44593_001 = Blueprint('veta_capital_44593_001',__name__)
 
 
 class States(enum.Enum):
@@ -55,9 +55,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
-def estrategiaSheetWS_001():
-    print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
+@veta_capital_44593_001.route('/veta-capital-44593-001/', methods=['POST'])
+def vetacapital44593001():
+    print('00000000000000000000000 veta-capital-44593-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -112,7 +112,7 @@ def estrategiaSheetWS_001():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           print("no pudo conectar el websocket en veta_capital_44593_001.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -190,10 +190,10 @@ def market_data_handler_estrategia(message):
             #tiempoDespues = datetime.now()
             #teimporAhoraInt = tiempoDespues - tiempoAhora
             #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-        #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+        #  print("FUN_ veta_capital_44593_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
     
         
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@veta_capital_44593_001.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -212,7 +212,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@veta_capital_44593_001.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)
