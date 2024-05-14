@@ -16,12 +16,17 @@ from models.strategy import Strategy
 from models.brokers import Broker
 import strategies.gestion_estrategias.unidad_trader as utABM 
 import tokens.token as Token
+from models.administracion.altaEstrategiaApp import AltaEstrategiaApp
+
+from strategies.estrategias import agregar_estrategia_nueva_app
+from strategies.estrategias import modificar_app_elimina_estrategia
+from datetime import datetime
 
 abm_estrategias = Blueprint('abm_estrategias',__name__)
 
 @abm_estrategias.route("/abm-estrategias-mostrar/")
 def abm_estrategias_mostrar():
-    #try:
+    try:
          # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
         
          todas_estrategias = db.session.query(Strategy).all()        
@@ -30,8 +35,23 @@ def abm_estrategias_mostrar():
          db.session.close()
          
          return render_template("estrategias/ABMestrategias.html", datos=todas_estrategias)
-    #except:        
-     #   return render_template("notificaciones/noPoseeDatos.html" )
+    except:        
+        return render_template("notificaciones/noPoseeDatos.html" )
+    
+@abm_estrategias.route("/abm-estrategias-mostrar-procesos/")
+def abm_estrategias_mostrar_procesos():
+    try:
+         # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
+        # Intento incorrecto de utilizar la clase altaEstrategiaApp en una consulta de SQLAlchemy
+       
+         todas_estrategias = db.session.query(AltaEstrategiaApp).all()        
+       
+         total = len(todas_estrategias)  # Obtener el total de instancias de TriggerEstrategia
+         db.session.close()
+         
+         return render_template("estrategias/altaEstrategiaApp.html", datos=todas_estrategias)
+    except:        
+        return render_template("notificaciones/noPoseeDatos.html" )     
 
 
 @abm_estrategias.route("/abm-estrategias-alta/",  methods=["POST"])
@@ -207,6 +227,77 @@ def abm_estrategias_all():
             return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
     return jsonify({'message': 'Solicitud no válida.'}), 400
+
+@abm_estrategias.route("/abm-estrategias-alta-app/",  methods=["POST"])
+def abm_estrategias_alta_app():
+   if request.method == 'POST':
+     
+         idEstrategia = request.form['altaEstrategiaId']
+         acces_token = request.form['altaEstrategiaToken']
+         accountCuenta = request.form['altaEstrategiaCuenta']
+         
+         estrategia = db.session.query(AltaEstrategiaApp).filter_by(id = idEstrategia ).first()  
+         
+         agregar_estrategia_nueva_app(estrategia.nombreEstrategia)
+        
+         try:     
+            
+            # Obtener la fecha actual como una cadena de texto
+            fecha_actual_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # Luego, al crear la instancia de AltaestrategiaApp, puedes pasar la fecha como cadena
+            # Actualizar los campos deseados
+            estrategia.estado = 'AGREGADO'
+            estrategia.fecha = fecha_actual_str
+            estrategia.descripcion = ''
+
+          
+         
+            db.session.commit()  # Confirmar los cambios
+            db.session.refresh(estrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+            estrategia_id = estrategia.id  # Obtener el ID generado
+           
+           
+            print("estrategia registrado exitosamente id !",estrategia_id)
+         #   todasLasCuentas = get_cuentas_de_broker(user_id)
+            
+            todos_ = db.session.query(AltaEstrategiaApp).all()
+            
+            db.session.close()
+            print("Cuenta registrada exitosamente!")            
+
+            return render_template("estrategias/altaEstraegiaApp.html",datos = todos_)
+             
+         except:               
+                db.session.rollback()  # Hacer rollback de la sesión
+                db.session.close()
+                print("No se pudo agregar la estrategia.")
+                return 'problemas con la base de datos'
+
+@abm_estrategias.route("/abm-estrategias-eliminar-app/",  methods=["POST"])   
+def abm_estrategias_eliminar_app():
+    try:
+         if request.method == 'POST':
+            id = request.form['eliminarEstrategiaId']  
+            dato = db.session.query(AltaEstrategiaApp).get(id)  
+          
+            modificar_app_elimina_estrategia(dato.nombreEstrategia)
+            print(dato)
+            db.session.delete(dato)
+            db.session.commit()
+            
+            flash('Operation Removed successfully')
+            todas = db.session.query(Strategy).all()
+            db.session.close()
+            return render_template("estrategias/ABMestrategias.html", datos =  todas)
+    except: 
+            flash('Operation No Removed')       
+            todos_brokers = db.session.query(Strategy).all()
+            db.session.close()
+            
+            return render_template('cuentas/cuentasDeUsuario.html', datos=todas) 
+
+
 
 @abm_estrategias.route("/abm-estrategias-estrategias/",  methods=["GET"])
 def abm_estrategias_estrategias():
