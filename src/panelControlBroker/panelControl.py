@@ -61,7 +61,7 @@ def panel_control_sin_cuenta():
             return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
         return "Página no encontrada"  # Cambia el mensaje según sea necesario
     else:
-        return render_template('usuarios/logOutSystem.html')     
+        return render_template('usuarios/logOutSystem.html',layout='layout')     
   
 
 @panelControl.route("/panel_control")

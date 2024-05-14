@@ -14,17 +14,21 @@ from log.logRegister import generate_logs
 from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
+######################zona de estrategias de usuarios####################
 
+
+
+
+
+
+########################################################################
 from models.creaTablas import crea_tablas_DB
 
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 
-######################zona de estrategias de usuarios####################
-from strategies.estrategiasUsuarios.veta_capital_001 import veta_capital_001
 
-########################################################################
 
 
 from strategies.datoSheet import datoSheet
@@ -143,7 +147,11 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
+
+
 #####################zona estrategias de usuarios##############
+
+
 
 ###############################################################
 app.register_blueprint(logs)
@@ -169,7 +177,7 @@ app.register_blueprint(unidad_trader)
 app.register_blueprint(strategy)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
-app.register_blueprint(veta_capital_001)
+#app.register_blueprint(veta_capital_001)
 
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
