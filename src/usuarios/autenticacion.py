@@ -36,6 +36,8 @@ from utils.db import db
 import jwt
 from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker
+import routes.api_externa_conexion.get_login as get
+import tokens.token as Token
 
 autenticacion = Blueprint("autenticacion", __name__)
 
@@ -55,10 +57,39 @@ login_manager.init_app(autenticacion)
 
     
 #sale del sistema completo
-@autenticacion.route("/logOutSystem")   
-def logOutSystem():
-   
-   return render_template('usuarios/logOutSystem.html')
+@autenticacion.route("/logOutSystem", methods=['POST'])   
+def logOutSystem():   
+   if request.method == 'POST':
+        try:
+            access_token = request.form['autenticacion_access_token']
+            refreshToken = request.form['autenticacion_refresh_token']
+            account = request.form['autenticacion_accounCuenta']
+            layouts = request.form['layoutOrigen']
+
+            # Intenta obtener pyRofexInicializada del diccionario
+            try:
+                pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
+            except KeyError:
+                # Si la clave no existe en el diccionario, pyRofexInicializada será None
+                pyRofexInicializada = None
+
+            if pyRofexInicializada is not None:
+                if access_token and Token.validar_expiracion_token(access_token=access_token):
+                    pyRofexInicializada.close_websocket_connection(environment=account)
+                    del get.ConexionesBroker[account]
+
+                    return render_template('usuarios/logOutSystem.html')
+            else:
+                # pyRofexInicializada es None, lo que significa que no se encontró en el diccionario
+                return render_template('usuarios/logOutSystem.html')
+        except Exception as e:
+            # Manejo de otros tipos de excepciones
+            return render_template('error.html', message='Ocurrió un error: {}'.format(str(e)))
+
+    # Manejar caso de que el método de la solicitud no sea POST
+   return render_template('error.html', message='Método de solicitud no permitido')
+
+       
 
 # muestra todos los usuarios
 @autenticacion.route("/usuarios-listado")
