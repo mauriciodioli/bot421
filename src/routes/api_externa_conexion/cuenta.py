@@ -20,6 +20,7 @@ from models.ficha import Ficha
 
 
 
+
 cuenta = Blueprint('cuenta',__name__)
 
 
@@ -216,10 +217,13 @@ def registrar_cuenta_broker():
             refreshToken  = request.form['form_cuenta_refresh_token']
             account = request.form['form_cuenta_accounCuenta']
             layouts = request.form['layoutOrigen']
-            if access_token and Token.validar_expiracion_token(access_token=access_token): 
-                return render_template("cuentas/registrarCuentaBroker.html")
+            if layouts != 'logOutAccounthtml':
+               if access_token and Token.validar_expiracion_token(access_token=access_token): 
+                  return render_template("cuentas/registrarCuentaBroker.html")
+               else:
+                  return render_template('usuarios/logOutSystem.html')
             else:
-                return render_template('usuarios/logOutSystem.html')
+                  return render_template("cuentas/registrarCuentaBroker.html")
         
     except Exception as e:      
         return render_template('notificaciones/tokenVencidos.html', layout=layouts)     
@@ -532,11 +536,34 @@ def delete_cuenta_usuario_broker():
             
             return render_template('cuentas/cuentasDeUsuario.html', datos=all_cuenta) 
          
-@cuenta.route("/logOutAccount")   
-def logOutAccount():   
-   get.diccionario_global_operaciones = {}
-   get.diccionario_operaciones_enviadas = {}
-   return render_template('cuentas/logOutAccount.html')
+@cuenta.route("/logOutAccount", methods=['POST'])   
+def logOutAccount():
+    if request.method == 'POST':
+        try:
+            access_token = request.form['form_cuenta_access_token']
+            refreshToken = request.form['form_cuenta_refresh_token']
+            account = request.form['form_cuenta_accounCuenta']
+            layouts = request.form['layoutOrigen']
+
+            pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
+            if access_token and Token.validar_expiracion_token(access_token=access_token):
+                pyRofexInicializada.close_websocket_connection(environment=account)
+                del get.ConexionesBroker[account]
+
+                return render_template('cuentas/logOutAccount.html')
+        except KeyError:
+            # La clave no existe en el diccionario
+            # Aquí puedes manejar el error de acuerdo a tu lógica
+            # Por ejemplo, puedes mostrar un mensaje de error o redirigir a otra página
+            return render_template('error.html', message='La cuenta no existe en la base de datos')
+        except Exception as e:
+            # Manejo de otros tipos de excepciones
+            # Aquí puedes registrar el error o mostrar un mensaje genérico de error
+            return render_template('error.html', message='Ocurrió un error: {}'.format(str(e)))
+
+    # Manejar caso de que el método de la solicitud no sea POST
+    return render_template('error.html', message='Método de solicitud no permitido')
+
 
 def get_pass_cuenta_de_broker(user_id,account):
         todasCuentas = []

@@ -65,12 +65,14 @@ def estrategias_usuario_general():
 def estrategias_usuario_nadmin():
     try:
       if request.method == 'POST': 
-          access_token = request.form.get('access_token_est') 
+          access_token = request.form.get('estrategias_accessToken') 
+          refreshToken = request.form.get("estrategias_refreshToken")
+          account = request.form.get("estrategias_accounCuenta")
           if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()  
             
             usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
-            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id, TriggerEstrategia.accountCuenta == account).all()
           
          
             db.session.close()
@@ -173,6 +175,7 @@ def eliminar_trigger():
         Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
         utABM.eliminarUT(IdTrigger)
         eliminarArhivoEstrategia(Trigger.nombreEstrategia)
+        
         db.session.delete(Trigger)
         db.session.commit()
         

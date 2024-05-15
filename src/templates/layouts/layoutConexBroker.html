@@ -162,9 +162,11 @@
                         <ul class="dropdown-menu ">                        
                           <li class="w-auto">
                              <form action="/estrategias-usuario-nadmin" method="POST">
-                                <div class="form-group">
-                                    <input type="hidden" name="access_token_est" id = "access_token_est" class="form-control">
-                                </div>                               
+                                <div class="form-group">                                   
+                                    <input type="hidden" name="estrategias_accounCuenta" id="estrategias_accounCuenta">  
+                                    <input type="hidden" name="estrategias_accessToken" id="estrategias_accessToken">
+                                    <input type="hidden" name="estrategias_refreshToken" id="estrategias_refreshToken"> 
+                                  </div>                               
                                 <div class="form-group">
                                     <button type="submit" class="btn  btn-success btn-sm btn-block form-control w-auto mx-2">Estrategias</button>
                                 </div>
@@ -292,9 +294,29 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>                        
+                          <li>
+                            <form  name="reporteCuenta" action="/logOutSystem" method="post" class="btn-guardar_inst">
+                              <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                              <div class="form-group"><input type="hidden" name="autenticacion_accounCuenta"  id="autenticacion_accounCuenta"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="autenticacion_access_token"  id="autenticacion_access_token"  class="form-control"></div>  
+                              <div class="form-group"><input type="hidden" name="autenticacion_refresh_token"  id="autenticacion_refresh_token"  class="form-control"></div>  
+                              <div class="col">  
+                               <li><button type="submit" class="dropdown-item text-black">exit system</button></li>
+                              </div>
+                            </form> 
+                          </li>                        
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/logOutAccount">get out of account</a></li>
+                          <li>                             
+                              <form  name="reporteCuenta" action="/logOutAccount" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                                <div class="form-group"><input type="hidden" name="form_cuenta_accounCuenta"  id="form_cuenta_accounCuenta"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="form_cuenta_access_token"  id="form_cuenta_access_token"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="form_cuenta_refresh_token"  id="form_cuenta_refresh_token"  class="form-control"></div>  
+                                <div class="col">  
+                                 <li><button type="submit" class="dropdown-item text-black">get out of account</button></li>
+                                </div>
+                              </form> 
+                          </li>
                                                 
                         </ul>
                     </li>
@@ -369,7 +391,12 @@
         document.getElementById("access_token_form_ListarFicha").value = access_token;
         document.getElementById("accounCuenta_form_ListarFicha").value = cuentaBroker;
         
-        document.getElementById("access_token_est").value = access_token;
+        document.getElementById("estrategias_accessToken").value = access_token;
+        document.getElementById("estrategias_refreshToken").value = refreshToken;
+        document.getElementById("estrategias_accounCuenta").value = cuentaBroker;
+        
+
+
         document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaBroker;
         document.getElementById("selector_form_GenerarFicha").value = selector;
        // detalleCuenta
@@ -397,6 +424,17 @@
         document.getElementById('Shedule_accounCuenta').value = cuentaBroker;
         document.getElementById('Shedule_refreshToken').value = refreshToken;
         document.getElementById('Shedule_accessToken').value = access_token;
+
+        //logOutAccount
+        document.getElementById('form_cuenta_accounCuenta').value = cuentaBroker;
+        document.getElementById('form_cuenta_access_token').value = access_token ;
+        document.getElementById('form_cuenta_refresh_token').value = refreshToken;
+
+        //logOutSystem
+        document.getElementById('autenticacion_accounCuenta').value = cuentaBroker;
+        document.getElementById('autenticacion_access_token').value = access_token ;
+        document.getElementById('autenticacion_refresh_token').value = refreshToken;
+        
         
         
     
