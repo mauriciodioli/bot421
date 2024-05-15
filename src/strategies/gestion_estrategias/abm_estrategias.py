@@ -280,11 +280,11 @@ def abm_estrategias_eliminar_app():
          if request.method == 'POST':
             id = request.form['eliminarEstrategiaId']  
             dato = db.session.query(AltaEstrategiaApp).get(id)  
-          
-            modificar_app_elimina_estrategia(dato.nombreEstrategia)
+            nombreEstrategia = dato.nombreEstrategia           
             print(dato)
             db.session.delete(dato)
             db.session.commit()
+            modificar_app_elimina_estrategia(nombreEstrategia)
             
             flash('Operation Removed successfully')
             todas = db.session.query(Strategy).all()
@@ -292,7 +292,7 @@ def abm_estrategias_eliminar_app():
             return render_template("estrategias/ABMestrategias.html", datos =  todas)
     except: 
             flash('Operation No Removed')       
-            todos_brokers = db.session.query(Strategy).all()
+            todas = db.session.query(Strategy).all()
             db.session.close()
             
             return render_template('cuentas/cuentasDeUsuario.html', datos=todas) 
