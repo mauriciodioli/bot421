@@ -34,7 +34,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+Remarkets_REM6603_001 = Blueprint('Remarkets_REM6603_001',__name__)
 
 
 class States(enum.Enum):
@@ -55,9 +55,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
-def estrategiaSheetWS_001():
-    print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
+@Remarkets_REM6603_001.route('/Remarkets-REM6603-001/', methods=['POST'])
+def RemarketsREM6603001():
+    print('00000000000000000000000 Remarkets-REM6603-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -96,7 +96,7 @@ def estrategiaSheetWS_001():
                         cuentaGlobal = accountCuenta
                     
                         CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-                        carga_operaciones(pyRofexInicializada,get.ContenidoSheet_list[1],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                        carga_operaciones(pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
@@ -112,7 +112,7 @@ def estrategiaSheetWS_001():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           print("no pudo conectar el websocket en Remarkets_REM6603_001.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -136,9 +136,8 @@ def market_data_handler_estrategia(message):
        # _cancela_orden(300000)
       #  print(" FUN: market_data_handler_estrategia: _")
         
-            #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
+        #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
         marca_de_tiempo = message["timestamp"]
-        marca_de_tiempo_para_leer_sheet = marca_de_tiempo
         Symbol = message["instrumentId"]["symbol"]
         # Supongamos que 'tiempo_saldo' es un objeto datetime
         if diccionario_global_operaciones:
@@ -150,10 +149,9 @@ def market_data_handler_estrategia(message):
                # Calculamos la diferencia en milisegundos entre el tiempo actual y el tiempo anterior
                 diferencia_milisegundos = marca_de_tiempo - milisegundos_tiempo_saldo
                 print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
-                if diferencia_milisegundos > 10000:                  
-                    segundos = marca_de_tiempo / 1000  # Convertir milisegundos a segundos
-                    marca_de_tiempo = datetime.fromtimestamp(segundos)
-                    diccionario_global_operaciones[Symbol]['tiempoSaldo'] =  datetime.now()
+                if diferencia_milisegundos > 5000:                  
+                  
+                    diccionario_global_operaciones[Symbol]['tiempoSaldo'] =  marca_de_tiempo
                     VariableParaTiemposMDHandler = diferencia_milisegundos
                     print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
                     cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']        
@@ -164,50 +162,54 @@ def market_data_handler_estrategia(message):
                      VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']   
                 # print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
                
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
-                banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-                if VariableParaTiempoLeerSheet < 300000: # 5 minutos
-                    time = datetime.now()
-                    tiempoInicio2 = int(time.timestamp())*1000
-                    VariableParaTiempoLeerSheet =  tiempoInicio2 - marca_de_tiempo_para_leer_sheet
-                #    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
-                else:
-                        VariableParaTiempoLeerSheet = 0
-                    #  print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
-                        # esto hay que hacerlo aca, solo cada x segundos
-                        banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
-          
-                # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
-                # para cumplir con el evento de mercado market data
-
-
-
-                if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
-                    pass
-                    #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
-                elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
-                    pass
-                    #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
-                elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
-                    pass
-                    #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
-                else:
-                    
-                    #tiempoAhora = datetime.now()
-                    #print('"FUN market_data_handler_estrategia')
-                    #pass
-                    estrategiaSheetNuevaWS(message, banderaLecturaSheet)
-                    
-                    #tiempoDespues = datetime.now()
-                    #teimporAhoraInt = tiempoDespues - tiempoAhora
-                    #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-                #  print("FUN_ veta_capital_44593_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+                  
+                
+                   
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
+        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
+        banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
+        if VariableParaTiempoLeerSheet < 300000: # 5 minutos
+            time = datetime.now()
+            tiempoInicio2 = int(time.timestamp())*1000
+            VariableParaTiempoLeerSheet =  tiempoInicio2 - marca_de_tiempo
+        #    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
+        else:
+                VariableParaTiempoLeerSheet = 0
+              #  print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
+                # esto hay que hacerlo aca, solo cada x segundos
+                banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
+    
             
+        # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
+        # para cumplir con el evento de mercado market data
+
+
+
+        if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+        elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
+            pass
+            #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+        else:
+            
+            #tiempoAhora = datetime.now()
+            #print('"FUN market_data_handler_estrategia')
+            #pass
+            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+            
+            #tiempoDespues = datetime.now()
+            #teimporAhoraInt = tiempoDespues - tiempoAhora
+            #tiempomili =  teimporAhoraInt.total_seconds() * 1000
+        #  print("FUN_ Remarkets_REM6603_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
+    
         
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@Remarkets_REM6603_001.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -226,7 +228,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@Remarkets_REM6603_001.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     respuesta = botonPanicoRH('true')
     _cancela_orden(9)
@@ -304,7 +306,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                         
 
-                                    cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']
                                     VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):

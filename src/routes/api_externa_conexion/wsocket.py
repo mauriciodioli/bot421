@@ -5,6 +5,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
+import panelControlBroker.panelControl as PanelControl 
 from datetime import datetime
 
 import pandas as pd
@@ -13,6 +14,7 @@ import time    #lo utilizo para test
 import asyncio
 import websockets
 import websocket
+
 import json
 import os
 import copy
@@ -286,6 +288,8 @@ def cargaSymbolParaValidar(message):
   
 def get_instrumento_para_suscripcion_ws():#   **77
       ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+     # get.ContenidoSheet_list =list(ContenidoSheet)
+      
     
       return ContenidoSheet
 
