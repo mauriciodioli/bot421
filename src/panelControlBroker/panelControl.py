@@ -50,6 +50,7 @@ def panel_control_sin_cuenta():
             else:
                             datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
         else:
+                
                 enviar_leer_sheet(pais)
                 datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
     
@@ -133,9 +134,10 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
     with db.session.begin():
         for i, tupla_exterior in enumerate(datos_desempaquetados):
             dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-
-            orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
-
+            if usuario_id != None:
+               orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
+            else:
+                orden_existente = None
             if orden_existente:
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
                 dato += dato_extra

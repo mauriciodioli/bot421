@@ -23,6 +23,7 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pprint
 import os #obtener el directorio de trabajo actual
+import json
 import sys
 import csv
 
@@ -103,22 +104,23 @@ def leerSheet(sheetId,sheet_name):
         dias_operado = sheet.col_values(30)    # Dias habiles operado
         #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
         
-        #union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
+       
         union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado)
-
-   
-       # for dato in union:
-       #  if ((dato[1] == 'USA' or dato[1] == 'ARG' or dato[1] == 'CEDEAR') and 
-       #         dato[2] == 'LONG_' or (dato[2] == 'SHORT' and dato[1] != 'ARG' and dato[1] != 'CEDEAR')):
-       #         if (dato[3] > '0'):
-       #             if (dato[4] == 'OPEN.' or dato[4] == 'closed.'):
-       #                 print(f"Datos {dato} - Pasa la condición")
-       #             else:
-       #                 print(f"Datos {dato} - No pasa la condición de la posición 4")
-       #         else:
-       #             print(f"Datos {dato} - No pasa la condición de la posición 3")
-       #  else:
-       #         print(f"Datos {dato} - No pasa la condición inicial")
+      #  datos = construir_lista_de_datos(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado)
+      #  guardar_datos_json(datos)
+        #union = leer_datos_json()
+      #  for dato in union:
+      #   if ((dato[1] == 'USA' or dato[1] == 'ARG' or dato[1] == 'CEDEAR') and 
+      #          dato[2] == 'LONG_' or (dato[2] == 'SHORT' and dato[1] != 'ARG' and dato[1] != 'CEDEAR')):
+      #          if (dato[3] > '0'):
+      #              if (dato[4] == 'OPEN.' or dato[4] == 'closed.'):
+      #                  print(f"Datos {dato} - Pasa la condición")
+      #              else:
+      #                  print(f"Datos {dato} - No pasa la condición de la posición 4")
+      #          else:
+      #              print(f"Datos {dato} - No pasa la condición de la posición 3")
+      #   else:
+      #          print(f"Datos {dato} - No pasa la condición inicial")
         
         return union
      else:
@@ -159,7 +161,66 @@ def datetime_encoder(obj):
 
     # Defines the handlers that will process the Order Reports.
 
+########################AQUI SE REALIZA EL JSON PARA LOS DATOS DEL SHEET#############
+def construir_lista_de_datos(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado):
+    datos = []
+    for i in range(1, len(symbol)):
+        datos.append({
+            'symbol': symbol[i],
+            'tipo_de_activo': tipo_de_activo[i],
+            'trade_en_curso': trade_en_curso[i],
+            'ut': ut[i],
+            'senial': senial[i],
+            'gan_tot': gan_tot[i],
+            'dias_operado': dias_operado[i]
+        })
+    return datos
      
+def guardar_datos_json(datos):
+    path_app_modelo = os.path.join(os.getcwd(), 'strategies', 'listadoInstrumentos')
+    file_path = os.path.join(path_app_modelo, 'datosSheetEstatico.json')
+
+    with open(file_path, 'w') as json_file:
+        json.dump(datos, json_file)
+        
+def leer_datos_json():
+    path_app_modelo = os.path.join(os.getcwd(), 'strategies', 'listadoInstrumentos')
+    file_path = os.path.join(path_app_modelo, 'datosSheetEstatico.json')
+    
+    try:
+        with open(file_path, 'r') as json_file:
+            data = json.load(json_file)
+    except FileNotFoundError:
+        print(f"No se pudo encontrar el archivo JSON en la ruta: {file_path}")
+        return []
+    except json.JSONDecodeError:
+        print(f"El archivo JSON en la ruta {file_path} no tiene un formato válido.")
+        return []
+
+    # Verificar si los campos necesarios están presentes en el diccionario
+    required_fields = ['symbol', 'tipo_de_activo', 'trade_en_curso', 'ut', 'senial', 'gan_tot', 'dias_operado']
+    for field in required_fields:
+        if field not in data:
+            print(f"El campo '{field}' no está presente en el archivo JSON.")
+            return []
+
+    # Construir la lista de datos en el formato necesario para el bloque HTML
+    datos = []
+    for i in range(len(data['symbol'])):
+        dato = {
+            'symbol': data['symbol'][i],
+            'tipo_de_activo': data['tipo_de_activo'][i],
+            'trade_en_curso': data['trade_en_curso'][i],
+            'ut': data['ut'][i],
+            'senial': data['senial'][i],
+            'gan_tot': data['gan_tot'][i],
+            'dias_operado': data['dias_operado'][i]
+        }
+        datos.append(dato)
+
+    return datos
+
+
 
 def calcularMepAl30():
     print("____________calcularMepAl30_____________")
