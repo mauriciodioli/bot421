@@ -14,6 +14,7 @@ import json
 from models.orden import Orden
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
+import pyRofex
 
 import random
 from pydrive.auth import GoogleAuth
@@ -118,18 +119,19 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                         #precio = float(message["marketData"]["OF"][0]["price"])#
                     print('_______________000000000000000000000___________________________')
                     print(Symbol)
-                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
-                                                                 size=ut,
-                                                                 side=pyRofexInicializada.Side.BUY,
-                                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
-                                                                 ws_client_order_id=_ws_client_order_id,
-                                                                 price=precio)
-
-                    ws_client_order_id = _ws_client_order_id
-                        
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
                     accountCuenta = diccionario_global_operaciones[Symbol]['accountCuenta']
+                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
+                                                                  size=ut,
+                                                                 side=pyRofexInicializada.Side.BUY,
+                                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
+                                                                 ws_client_order_id=_ws_client_order_id,
+                                                                 price=precio,environment=accountCuenta)
+
+                    ws_client_order_id = _ws_client_order_id
+                        
+                 
 
                     diccionario = {
                             "Symbol": Symbol,
@@ -170,17 +172,18 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     #precio = float(message["marketData"]["OF"][0]["price"])
                     print('_______________000000000000000000000___________________________ut ', ut,' ',_ws_client_order_id,' ',precio)
                     print(Symbol)
-                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
-                                                                 side=pyRofexInicializada.Side.SELL,
-                                                                 size=ut,
-                                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
-                                                                 ws_client_order_id=_ws_client_order_id,
-                                                                 price=precio)
-                    ws_client_order_id = _ws_client_order_id
-                    
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
                     accountCuenta = diccionario_global_operaciones[Symbol]['accountCuenta']
+                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,
+                                                                  side=pyRofexInicializada.Side.SELL,
+                                                                 size=ut,
+                                                                 order_type=pyRofexInicializada.OrderType.LIMIT,
+                                                                 ws_client_order_id=_ws_client_order_id,
+                                                                 price=precio,environment=accountCuenta)
+                    ws_client_order_id = _ws_client_order_id
+                    
+                    
 
                     diccionario = {
                         "Symbol": Symbol,
