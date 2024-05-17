@@ -97,7 +97,7 @@ def estrategiaSheetWS_001():
                         cuentaGlobal = accountCuenta
                     
                         CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-                        carga_operaciones(pyRofexInicializada,get.ContenidoSheet_list[1],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                        carga_operaciones(pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
