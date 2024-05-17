@@ -200,7 +200,7 @@ def procesar_datos(pais, usuario_id):
         else:
             datos_desempaquetados = get.diccionario_global_sheet_intercambio[pais]
     else:
-        if len(get.diccionario_global_sheet) == 0:
+        if len(get.diccionario_global_sheet) == 0 or pais not in get.diccionario_global_sheet:
             enviar_leer_sheet(pais)
         datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais], usuario_id)
         if len(datos_desempaquetados) != 0:
