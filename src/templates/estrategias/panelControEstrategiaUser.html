@@ -272,6 +272,9 @@
   var cuenta_estrategia = localStorage.getItem("cuenta");
   access_token = localStorage.getItem("access_token");
   selector = localStorage.getItem('selector')
+  
+  //boton de panico
+  document.getElementById("account").value = cuenta_estrategia;
 
   // Set values of input elements
   document.getElementById("cuenta").value = cuenta_estrategia;

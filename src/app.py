@@ -17,9 +17,6 @@ from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
 
 from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
-from strategies.estrategiasUsuarios.Remarkets_REM6603_001 import Remarkets_REM6603_001
-
-
 
 
 
@@ -31,9 +28,6 @@ from models.creaTablas import crea_tablas_DB
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
-
-
-
 
 from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
@@ -149,16 +143,14 @@ jwt = JWTManager(app)
 blueprint = make_google_blueprint(client_id='client_id',
                                    client_secret='client_secret',
                                    scope=['profile', 'email'])
-
 app.register_blueprint(blueprint, url_prefix='/login')
-
 ##### BLUEPRINT ES EL ENRUTADOR####
-
-
 #####################zona estrategias de usuarios##############
-app.register_blueprint(veta_capital_44593_001)
-app.register_blueprint(Remarkets_REM6603_001)
 
+
+
+
+app.register_blueprint(veta_capital_44593_001)
 ###############################################################
 app.register_blueprint(logs)
 app.register_blueprint(creaTabla)
