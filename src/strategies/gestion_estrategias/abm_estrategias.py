@@ -231,16 +231,16 @@ def abm_estrategias_all():
 @abm_estrategias.route("/abm-estrategias-alta-app/",  methods=["POST"])
 def abm_estrategias_alta_app():
    if request.method == 'POST':
-     
-         idEstrategia = request.form['altaEstrategiaId']
-         acces_token = request.form['altaEstrategiaToken']
-         accountCuenta = request.form['altaEstrategiaCuenta']
-         
-         estrategia = db.session.query(AltaEstrategiaApp).filter_by(id = idEstrategia ).first()  
-         
-         agregar_estrategia_nueva_app(estrategia.nombreEstrategia)
+         try:   
+            idEstrategia = request.form['altaEstrategiaId']
+            acces_token = request.form['altaEstrategiaToken']
+            accountCuenta = request.form['altaEstrategiaCuenta']
+            
+            estrategia = db.session.query(AltaEstrategiaApp).filter_by(id = idEstrategia ).first()  
+            
+            agregar_estrategia_nueva_app(estrategia.nombreEstrategia)
         
-         try:     
+          
             
             # Obtener la fecha actual como una cadena de texto
             fecha_actual_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -272,7 +272,7 @@ def abm_estrategias_alta_app():
                 db.session.rollback()  # Hacer rollback de la sesión
                 db.session.close()
                 print("No se pudo agregar la estrategia.")
-                return 'problemas con la base de datos'
+                return 'cargado exitosamente vuelva atras para continuar'
 
 @abm_estrategias.route("/abm-estrategias-eliminar-app/",  methods=["POST"])   
 def abm_estrategias_eliminar_app():
@@ -283,19 +283,18 @@ def abm_estrategias_eliminar_app():
             nombreEstrategia = dato.nombreEstrategia           
             print(dato)
             db.session.delete(dato)
-            db.session.commit()
-            modificar_app_elimina_estrategia(nombreEstrategia)
-            
+            db.session.commit()   
             flash('Operation Removed successfully')
-            todas = db.session.query(Strategy).all()
+            todos_ = db.session.query(AltaEstrategiaApp).all()
             db.session.close()
-            return render_template("estrategias/ABMestrategias.html", datos =  todas)
+            modificar_app_elimina_estrategia(nombreEstrategia)
+            return render_template("estrategias/altaEstraegiaApp.html",datos = todos_)
     except: 
             flash('Operation No Removed')       
-            todas = db.session.query(Strategy).all()
+            todos_ = db.session.query(AltaEstrategiaApp).all()
             db.session.close()
             
-            return render_template('cuentas/cuentasDeUsuario.html', datos=todas) 
+            return render_template("estrategias/altaEstraegiaApp.html",datos = todos_)
 
 
 

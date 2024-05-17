@@ -43,17 +43,17 @@ def panel_control_sin_cuenta():
         respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
         
         if determinar_pais(pais)  is not None:
-        
+           
             datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
             if len(datos_desempaquetados) != 0:
-                            get.diccionario_global_sheet_intercambio = datos_desempaquetados
-            else:
-                            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+               get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
+          
         else:
-                
-                enviar_leer_sheet(pais)
+                if  not get.diccionario_global_sheet:
+                    enviar_leer_sheet(pais)
                 datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-    
+                if len(datos_desempaquetados) != 0:
+                        get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
         if layout == 'layout_signal':
             return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
         if layout == 'layout': 
@@ -79,10 +79,15 @@ def panel_control():
                 
                 if  determinar_pais(pais) is not None:
                     datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+                    if len(datos_desempaquetados) != 0:
+                       get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
                 else:
-                    enviar_leer_sheet(pais)
+                     
+                    if len(get.diccionario_global_sheet) == 0 or pais is not get.diccionario_global_sheet:
+                         enviar_leer_sheet(pais)
                     datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-        
+                    if len(datos_desempaquetados) != 0:
+                        get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
                 
                 if layout == 'layout_signal':
                     return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
@@ -107,10 +112,14 @@ def panel_control_atomatico(pais,usuario_id,access_token):
      
         if  determinar_pais(pais) is not None:
             datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
+            if len(datos_desempaquetados) != 0:
+               get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
         else:
-            enviar_leer_sheet(pais)
+            if get.diccionario_global_sheet:
+               enviar_leer_sheet(pais)
             datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-    
+            if len(datos_desempaquetados) != 0:
+                    get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
         if datos_desempaquetados:
         # print(datos_desempaquetados)
             return jsonify(datos=datos_desempaquetados)
@@ -174,7 +183,7 @@ def ejecutar_en_hilo(pais):
     
         while True:
             time.sleep(420)
-            print("ENTRA A THREAD Y LEE EL SHEET")
+            print("ENTRA A THREAD Y LEE EL SHEET")            
             enviar_leer_sheet(pais)
         
 
