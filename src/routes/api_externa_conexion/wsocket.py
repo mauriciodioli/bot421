@@ -5,7 +5,8 @@ import routes.api_externa_conexion.validaInstrumentos as val
 
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
-import panelControlBroker.panelControl as PanelControl 
+from panelControlBroker.panelControl import enviar_leer_sheet
+
 from datetime import datetime
 
 import pandas as pd
@@ -187,8 +188,10 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
     
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
-    ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
-    ContenidoSheet_list = list(ContenidoSheet)
+    if len(get.diccionario_global_sheet) == 0 or 'argentina' not in get.diccionario_global_sheet:
+       ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
+       ContenidoSheet_list = list(ContenidoSheet)
+    ContenidoSheet_list = get.diccionario_global_sheet['argentina']
 
     
     ContenidoSheetDb = get_instrumento_para_suscripcion_db(app)
@@ -289,14 +292,8 @@ def cargaSymbolParaValidar(message):
     return listado_final
   
 def get_instrumento_para_suscripcion_ws():#   **77
-      if get.diccionario_global_sheet:
-       ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-      else:
-         ContenidoSheet = get.diccionario_global_sheet
-     
-      
-    
-      return ContenidoSheet
+     ContenidoSheet =  enviar_leer_sheet('argentina') 
+     return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db(app):
     ContenidoDb = datoSheet.leerDb(app)
