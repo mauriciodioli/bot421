@@ -96,7 +96,7 @@ def vetacapital44593001():
                         cuentaGlobal = accountCuenta
                     
                         CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-                        carga_operaciones(pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                        carga_operaciones(get.ContenidoSheet_list[1],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
@@ -136,7 +136,7 @@ def market_data_handler_estrategia(message):
        # _cancela_orden(300000)
       #  print(" FUN: market_data_handler_estrategia: _")
         
-          #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
+            #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
         marca_de_tiempo = message["timestamp"]
         marca_de_tiempo_para_leer_sheet = marca_de_tiempo
         Symbol = message["instrumentId"]["symbol"]
@@ -179,8 +179,7 @@ def market_data_handler_estrategia(message):
                     #  print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
                         # esto hay que hacerlo aca, solo cada x segundos
                         banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
-            
-                    
+          
                 # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
                 # para cumplir con el evento de mercado market data
 
@@ -229,11 +228,19 @@ def boton_panico_portfolio():
    
 @veta_capital_44593_001.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
-    respuesta = botonPanicoRH('true')
-    _cancela_orden(9)
-    respuesta = botonPanicoRH('false')
-    #get.pyRofexInicializada.close_websocket_connection()
-    return render_template("utils/bottonPanic.html" ) 
+    if request.method == 'POST':
+      try:           
+            account = request.form['account']
+            respuesta = botonPanicoRH('true')
+            _cancela_orden(9)
+            respuesta = botonPanicoRH('false')
+            pyRofexInicializada = get.ConexionesBroker[account]['prRofex']
+            
+            pyRofexInicializada.close_websocket_connection(environment=account)
+            return render_template("utils/bottonPanic.html" ) 
+      except:
+           print("no pudo leer los datos de local storage")         
+           return render_template("utils/bottonPanic.html" ) 
 
 def botonPanicoRH(message):
     # Llamada al método /botonPanico utilizando la referencia a wsConnection
@@ -310,10 +317,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
                                                 print('operacionews')
-                                               # op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, 0, message,VariableParaSaldoCta)
+                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, 0, message,VariableParaSaldoCta)
                                         else:                                          
                                                 print('operacionews')
-                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, senial, 0, message,VariableParaSaldoCta)
+                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, senial, 0, message,VariableParaSaldoCta)
                        else:
                             
                               if senial == 'closed.':  
@@ -330,10 +337,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                  if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
                                                 print('Symbol ',Symbol)
-                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo,  Liquidez_ahora_cedear, senial, 0, message,VariableParaSaldoCta)
+                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo,  Liquidez_ahora_cedear, senial, 0, message,VariableParaSaldoCta)
                                         else:                                          
                                                 print('Symbol ',Symbol)       
-                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, senial, 0, message,VariableParaSaldoCta)    
+                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, senial, 0, message,VariableParaSaldoCta)    
                                     
    # else:  
         #print(message['instrumentId']['symbol'])  
@@ -341,12 +348,12 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
 
 
 
-def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
+def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
      símbolos_vistos = set()
      tiempoLecturaSaldo = datetime.now()
-     saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
+   #  saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
 
      #filtrar las coincidencias entre las dos listas
      for elemento1 in ContenidoSheet_list:
@@ -424,7 +431,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
             'senial': elemento[4],
             'status': '0',
             'tiempoSaldo':tiempoLecturaSaldo,
-            'saldo':saldo
+            'saldo':VariableParaSaldoCta
         }
     # Cargar cada objeto Orden en el diccionario global con una clave única
          diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
@@ -678,10 +685,11 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                    
 def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
  
-   try:        
+   try:       
+        global VariableParaSaldoCta 
         accountCuenta = account
         tiempoLecturaSaldo = datetime.now()
-        saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
+        VariableParaSaldoCta = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
         repuesta_operacion = pyRofexInicializada.get_account_position(account=account,environment=account)
      
         reporte = repuesta_operacion['positions']
@@ -726,7 +734,7 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=Non
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta,
                                 "tiempoSaldo":tiempoLecturaSaldo,
-                                "saldo":saldo
+                                "saldo":VariableParaSaldoCta
                                 }
                 diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
                 #pprint.pprint( get.diccionario_operaciones_enviadas)

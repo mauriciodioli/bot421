@@ -124,6 +124,8 @@
     </div>
   </div>
 
+  
+
   <div class="modal fade" id="altaEstrategiaModal" tabindex="-1" aria-labelledby="altaEstrategiaModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -131,7 +133,7 @@
           <h5 class="modal-title" id="altaEstrategiaModalLabel">Agregar Estrategia</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form action="/abm-estrategias-alta-app/" method="POST">
+        <form action="/abm-estrategias-alta-app/" method="POST" id="estrategiaForm">
           <div class="modal-body">
             <input type="hidden" id="altaEstrategiaId" name="altaEstrategiaId" value = "">
             <input type="hidden" id="altaEstrategiaToken" name="altaEstrategiaToken" value = "">
@@ -243,7 +245,16 @@
   }
 
 
- 
+   // Obtén el formulario y el mensaje de carga
+   const form = document.getElementById('estrategiaForm');
+   const loadingMessage = document.getElementById('loadingMessage');
+
+   // Agrega un evento al enviar el formulario
+   form.addEventListener('submit', function() {
+       // Muestra el mensaje de carga
+       loadingMessage.style.display = 'flex';
+   });
+
     
     
 

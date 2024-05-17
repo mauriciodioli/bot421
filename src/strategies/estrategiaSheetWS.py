@@ -34,6 +34,7 @@ import sys
 
 
 
+
 estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
 
 
@@ -228,11 +229,19 @@ def boton_panico_portfolio():
    
 @estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
-    respuesta = botonPanicoRH('true')
-    _cancela_orden(9)
-    respuesta = botonPanicoRH('false')
-    #get.pyRofexInicializada.close_websocket_connection()
-    return render_template("utils/bottonPanic.html" ) 
+    if request.method == 'POST':
+      try:           
+            account = request.form['account']
+            respuesta = botonPanicoRH('true')
+            _cancela_orden(9)
+            respuesta = botonPanicoRH('false')
+            pyRofexInicializada = get.ConexionesBroker[account]['prRofex']
+            
+            pyRofexInicializada.close_websocket_connection(environment=account)
+            return render_template("utils/bottonPanic.html" ) 
+      except:
+           print("no pudo leer los datos de local storage")         
+           return render_template("utils/bottonPanic.html" ) 
 
 def botonPanicoRH(message):
     # Llamada al método /botonPanico utilizando la referencia a wsConnection
@@ -345,7 +354,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
      contador_1=0
      símbolos_vistos = set()
      tiempoLecturaSaldo = datetime.now()
-     saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
+    # saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
 
      #filtrar las coincidencias entre las dos listas
      for elemento1 in ContenidoSheet_list:
@@ -423,7 +432,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
             'senial': elemento[4],
             'status': '0',
             'tiempoSaldo':tiempoLecturaSaldo,
-            'saldo':saldo
+            'saldo':VariableParaSaldoCta
         }
     # Cargar cada objeto Orden en el diccionario global con una clave única
          diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
@@ -680,7 +689,7 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=Non
    try:        
         accountCuenta = account
         tiempoLecturaSaldo = datetime.now()
-        saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
+        VariableParaSaldoCta = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
         repuesta_operacion = pyRofexInicializada.get_account_position(account=account,environment=account)
      
         reporte = repuesta_operacion['positions']
@@ -725,7 +734,7 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=Non
                                 "userCuenta": userCuenta,
                                 "accountCuenta": accountCuenta,
                                 "tiempoSaldo":tiempoLecturaSaldo,
-                                "saldo":saldo
+                                "saldo":VariableParaSaldoCta
                                 }
                 diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
                 #pprint.pprint( get.diccionario_operaciones_enviadas)

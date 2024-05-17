@@ -240,32 +240,41 @@ def editar_Trigger():
 
 def altaEstrategiaApp(account, nombreEstrategia):
     try:
+        # Verificar si ya existe una estrategia con el mismo nombre
+        existing_estrategia = db.session.query(AltaEstrategiaApp).filter_by(nombreEstrategia=nombreEstrategia).first()
+        
+        # Si existe una estrategia con el mismo nombre, no agregar y retornar False
+        if existing_estrategia:
+            print(f"Estrategia con nombre '{nombreEstrategia}' ya existe.")
+            return False
+
         # Obtener la fecha actual como una cadena de texto
         fecha_actual_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        # agregar_estrategia_nueva_app(nombreEstrategia)
-
         # Crear una instancia de AltaEstrategiaApp
-        estrategia = AltaEstrategiaApp( 
-            id=None,  
-            accountCuenta=account, 
+        estrategia = AltaEstrategiaApp(
+            id=None,
+            accountCuenta=account,
             nombreEstrategia=nombreEstrategia,
             estado='INICIADO',
             descripcion='NO SE AGREGÓ AÚN',
-            fecha=fecha_actual_str                                
-        ) 
+            fecha=fecha_actual_str
+        )
 
         # Agregar la instancia de AltaEstrategiaApp a la sesión
         db.session.add(estrategia)
         # Confirmar los cambios
         db.session.commit()
 
-       
         return True
 
     except OperationalError as e:
         # Manejar la excepción de error operacional (tabla ya existe)
         print("Error al intentar agregar la estrategia:", e)
+        return False
+    except Exception as e:
+        # Manejar cualquier otra excepción
+        print("Error inesperado:", e)
         return False
 
 
