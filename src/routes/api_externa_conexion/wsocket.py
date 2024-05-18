@@ -5,6 +5,8 @@ import routes.api_externa_conexion.validaInstrumentos as val
 
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
+from panelControlBroker.panelControl import enviar_leer_sheet
+
 from datetime import datetime
 
 import pandas as pd
@@ -13,6 +15,7 @@ import time    #lo utilizo para test
 import asyncio
 import websockets
 import websocket
+
 import json
 import os
 import copy
@@ -34,8 +37,8 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=No
       #app.logger.info(endPoint)
       api_url = endPoint[0]
       ws_url = endPoint[1]
-      if (len(get.ConexionesBroker) > 0 ):
-          if account in get.ConexionesBroker:
+      if (len(get.ConexionesBroker) > 0 and  account in get.ConexionesBroker):
+          
               #if  ConexionesBroker[accountCuenta].get('identificador') == True:
                   pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
                   repuesta_operacion = pyRofexInicializada.get_account_report(account=account, environment=account)
@@ -72,7 +75,9 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta):
   # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
    
    pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler,environment=accountCuenta)
-   get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta)  # <<-- aca se suscribe al mkt data
+   
+   if not get.ContenidoSheet_list:
+      get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta)  # <<-- aca se suscribe al mkt data
  
    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
@@ -183,8 +188,10 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
     
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
-    ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
-    ContenidoSheet_list = list(ContenidoSheet)
+    if len(get.diccionario_global_sheet) == 0 or 'argentina' not in get.diccionario_global_sheet:
+       ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
+       ContenidoSheet_list = list(ContenidoSheet)
+    ContenidoSheet_list = get.diccionario_global_sheet['argentina']
 
     
     ContenidoSheetDb = get_instrumento_para_suscripcion_db(app)
@@ -285,9 +292,8 @@ def cargaSymbolParaValidar(message):
     return listado_final
   
 def get_instrumento_para_suscripcion_ws():#   **77
-      ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-    
-      return ContenidoSheet
+     ContenidoSheet =  enviar_leer_sheet('argentina') 
+     return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db(app):
     ContenidoDb = datoSheet.leerDb(app)

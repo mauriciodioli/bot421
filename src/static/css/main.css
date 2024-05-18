@@ -56,3 +56,6 @@ body {
   color:  rgb(128, 128, 128); /* Color de texto para elementos inactivos */
 }
 
+.nav-item button:hover {
+  background-color: blue;
+}

@@ -74,7 +74,9 @@ from flask import jsonify
 def registro_usuario():
     correo_electronico = request.form['correo_electronico']   
     password = request.form['password']   
-   
+    numero_de_cuenta = ''
+    tipo_usuario= 'usuario'
+    
     print('password:', password)
     
     # Verificar si el usuario ya está registrado
@@ -87,8 +89,8 @@ def registro_usuario():
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
     # Generar el token de acceso y el token de actualización
-    access_token = create_access_token(identity=correo_electronico, expires_delta=timedelta(minutes=TOKEN_DURATION))
-    refresh_token = create_refresh_token(identity=correo_electronico, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
+    access_token = create_access_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'acceso','tipo_usuario':tipo_usuario}, expires_delta=timedelta(minutes=TOKEN_DURATION))
+    refresh_token = create_refresh_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'actualizacion'}, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
 
     usuario = Usuario(id=None, token=access_token, refresh_token=refresh_token, activo=True, correo_electronico=correo_electronico, password=hashed_password)
 

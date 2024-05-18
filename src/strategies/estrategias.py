@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,current_app
 import routes.instrumentosGet as instrumentosGet
+from sqlalchemy.exc import OperationalError
 import requests
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
@@ -17,6 +18,8 @@ from models.cuentas import Cuenta
 from models.ficha import Ficha
 from models.unidadTrader import UnidadTrader
 from fichasTokens.fichas import crear_ficha
+import tokens.token as Token
+from models.administracion.altaEstrategiaApp import AltaEstrategiaApp
 
 import jwt
 import os
@@ -62,12 +65,14 @@ def estrategias_usuario_general():
 def estrategias_usuario_nadmin():
     try:
       if request.method == 'POST': 
-          access_token = request.form.get('access_token_est') 
-          if access_token:
+          access_token = request.form.get('estrategias_accessToken') 
+          refreshToken = request.form.get("estrategias_refreshToken")
+          account = request.form.get("estrategias_accounCuenta")
+          if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()  
             
             usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
-            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id, TriggerEstrategia.accountCuenta == account).all()
           
          
             db.session.close()
@@ -99,6 +104,8 @@ def estrategias_usuario_nadmin():
                    
             #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
             return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+          else:
+               return render_template('notificaciones/tokenVencidos.html', layout='layout')  
     except:
        print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/notificaciones/errorEstrategiaABM.html")
@@ -137,7 +144,8 @@ def eliminarArhivoEstrategia(nombreEstrategia):
         print(f"Error al intentar eliminar el archivo {nombreEstrategia}.py: {e}")
 
 def modificar_app_elimina_estrategia(nombreEstrategia):
-    path_app_modelo = os.path.join(os.getcwd(), 'src/app.py')
+    
+    path_app_modelo = os.path.join(os.getcwd(), 'app.py')
     
     try:
         # Leer el contenido del archivo original
@@ -163,19 +171,23 @@ def eliminar_trigger():
     usuario_id = request.form['user_id']
     access_token = request.form['eliminarEstrategiaToken']
     account = request.form['eliminarEstrategiaCuenta']
-    Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
-    utABM.eliminarUT(IdTrigger)
-    eliminarArhivoEstrategia(Trigger.nombreEstrategia)
-    db.session.delete(Trigger)
-    db.session.commit()
-    
-    
-    flash('Trigger eliminado correctamente.')
-    
-    estrategias = db.session.query(TriggerEstrategia).filter_by(user_id=usuario_id).all()
-    db.session.close()   
-    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
-
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
+        Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
+        utABM.eliminarUT(IdTrigger)
+        eliminarArhivoEstrategia(Trigger.nombreEstrategia)
+        
+        db.session.delete(Trigger)
+        db.session.commit()
+        
+        
+        flash('Trigger eliminado correctamente.')
+        
+        estrategias = db.session.query(TriggerEstrategia).filter_by(user_id=usuario_id).all()
+        db.session.close()   
+        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+    else:
+         flash('El token a expirado')
+         return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
 @estrategias.route("/editar-trigger-nombre", methods=["POST"])
 def editar_trigger_nombre():
     IdTrigger = request.form['IdTrigger']
@@ -224,6 +236,54 @@ def editar_Trigger():
                 print('no hay estrategias')
     return render_template("/notificaciones/errorEstrategiaVacia.html")
 
+
+
+def altaEstrategiaApp(account, nombreEstrategia):
+    try:
+        # Verificar si ya existe una estrategia con el mismo nombre
+        existing_estrategia = db.session.query(AltaEstrategiaApp).filter_by(nombreEstrategia=nombreEstrategia).first()
+        
+        # Si existe una estrategia con el mismo nombre, no agregar y retornar False
+        if existing_estrategia:
+            print(f"Estrategia con nombre '{nombreEstrategia}' ya existe.")
+            return False
+
+        # Obtener la fecha actual como una cadena de texto
+        fecha_actual_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Crear una instancia de AltaEstrategiaApp
+        estrategia = AltaEstrategiaApp(
+            id=None,
+            accountCuenta=account,
+            nombreEstrategia=nombreEstrategia,
+            estado='INICIADO',
+            descripcion='NO SE AGREGÓ AÚN',
+            fecha=fecha_actual_str
+        )
+
+        # Agregar la instancia de AltaEstrategiaApp a la sesión
+        db.session.add(estrategia)
+        # Confirmar los cambios
+        db.session.commit()
+
+        return True
+
+    except OperationalError as e:
+        # Manejar la excepción de error operacional (tabla ya existe)
+        print("Error al intentar agregar la estrategia:", e)
+        return False
+    except Exception as e:
+        # Manejar cualquier otra excepción
+        print("Error inesperado:", e)
+        return False
+
+
+
+
+
+
+
+
 def agregar_estrategia_nueva_app(nombreEstrategia):
     try:
         # Ruta del archivo a leer
@@ -234,12 +294,12 @@ def agregar_estrategia_nueva_app(nombreEstrategia):
             contenido = archivo_entrada.readlines()
 
         # Agregar la nueva línea a partir de la línea 18
-        nueva_linea = 'from strategies.' + nombreEstrategia + ' import ' + nombreEstrategia + '\n'
-        contenido.insert(17, nueva_linea)
+        nueva_linea = 'from strategies.estrategiasUsuarios.' + nombreEstrategia + ' import ' + nombreEstrategia + '\n'
+        contenido.insert(18, nueva_linea)
 
         # Agregar la segunda nueva línea después de la línea 150
         nueva_linea2 = 'app.register_blueprint(' + nombreEstrategia + ')\n'
-        contenido.insert(150, nueva_linea2)
+        contenido.insert(152, nueva_linea2)
 
         # Escribir el contenido modificado de vuelta al archivo
         with open(path_app_modelo, "w", encoding="utf-8") as archivo_salida:
@@ -326,7 +386,7 @@ def alta_estrategias_trig():
                 if nombre_broker:
                     
                     nombre_broker = nombre_broker[0].replace(" ", "_")
-                    nombreEstrategia = nombre_broker+'_001'
+                    nombreEstrategia = nombre_broker+'_'+account+'_001'
                    
             else:    
                 # Lista para almacenar los nombres
@@ -353,11 +413,16 @@ def alta_estrategias_trig():
             
                 nombre_broker = nombre_broker[0].replace(" ", "_")
 
-                nombreEstrategia = nombre_broker+'_'+numero_nuevo
+                nombreEstrategia = nombre_broker+'_'+account+'_'+numero_nuevo
               
            
             generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
            
+            #######################################################################
+            # Aquí cargo los datos a la tabla para actualizar app.py#
+            #######################################################################
+            
+            altaEstrategiaApp(account,nombreEstrategia)
          
             if cuentas:
                 print("Datos de la cuenta:")
@@ -388,12 +453,12 @@ def alta_estrategias_trig():
                 triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
                 estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == user_id,TriggerEstrategia.accountCuenta == cuentas.accountCuenta).all()
                 
-                db.session.close()
                 #######################################################################
                 # Aquí debes tener los datos que deseas pasar a la función crear_ficha#
                 #######################################################################
                 fichaStatic = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').all()
-                
+                # Cerrar la sesión
+                db.session.close()
                 if not fichaStatic:
                     reporte = obtenerSaldoCuenta(account=cuentas.accountCuenta)   
                     valor = reporte['availableToCollateral'] 
@@ -415,7 +480,7 @@ def alta_estrategias_trig():
                 
                     # Realizar la solicitud POST con los datos
                     response = requests.post(url, json=data)
-                # agregar_estrategia_nueva_app(nombreEstrategia)
+                
                 return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias])
            
     except:
@@ -423,6 +488,7 @@ def alta_estrategias_trig():
     flash('No se puede regitrar la estrategia.')
     return  render_template("/notificaciones/errorEstrategiaABM.html")
   
+
 
 @estrategias.route('/inicioEstrategias/')
 def inicioEstrategias():
