@@ -14,18 +14,20 @@ from log.logRegister import generate_logs
 from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
+######################zona de estrategias de usuarios####################
 
+from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
+
+
+
+
+
+########################################################################
 from models.creaTablas import crea_tablas_DB
 
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
-
-######################zona de estrategias de usuarios####################
-from strategies.estrategiasUsuarios.Bull_Market_001 import Bull_Market_001
-
-########################################################################
-
 
 from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
@@ -145,6 +147,10 @@ app.register_blueprint(blueprint, url_prefix='/login')
 ##### BLUEPRINT ES EL ENRUTADOR####
 #####################zona estrategias de usuarios##############
 
+
+
+
+app.register_blueprint(veta_capital_44593_001)
 ###############################################################
 app.register_blueprint(logs)
 app.register_blueprint(creaTabla)
@@ -169,7 +175,7 @@ app.register_blueprint(unidad_trader)
 app.register_blueprint(strategy)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
-app.register_blueprint(Bull_Market_001)
+
 
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)

@@ -33,6 +33,7 @@ import traceback  # Importa el módulo traceback para obtener información detal
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import logging
+import tokens.token as Token
 
 
 shedule_triggers = Blueprint('shedule_triggers', __name__)
@@ -93,13 +94,18 @@ def muestraTriggers():
     try: 
        
          account = request.form.get('Shedule_accounCuenta')
-         # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
-         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()        
-      
-         total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
-         db.session.close()
-         
-         return render_template("automatizacion/trigger.html", num_triggers=total_triggers)
+         access_token = request.form.get('Shedule_accessToken')
+         refreshToken = request.form.get('Shedule_refreshToken')
+         layouts = request.form.get('Shedule_layoutOrigen')
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
+            # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
+            triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()        
+        
+            total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
+            db.session.close()
+            
+            return render_template("automatizacion/trigger.html", num_triggers=total_triggers)
+         return render_template('usuarios/logOutSystem.html')  
     except:        
         return render_template("errorLogueo.html" )
    
@@ -390,7 +396,7 @@ def tarea_inicio(user_id,app,triggerEstrategia,usuario):
                 #url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
                 #response = requests.post(url_for(url), data=datos)
                 # Construir la URL de destino
-                url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia
+                url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia.replace("_", "-")
                 
             
                 # Enviar los datos a la estrategia

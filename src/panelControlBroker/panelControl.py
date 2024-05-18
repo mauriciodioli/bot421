@@ -17,6 +17,7 @@ import threading
 import strategies.datoSheet as datoSheet
 import time
 from flask import abort
+import tokens.token as Token
 
 panelControl = Blueprint('panelControl',__name__)
 
@@ -35,24 +36,14 @@ def panel_control_sin_cuenta():
     layout = request.args.get('layoutOrigen')
     usuario_id = request.args.get('usuario_id')
     access_token = request.args.get('access_token')
-    
+    refresh_token = request.args.get('refresh_token')
    
    
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token):       
         respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
-        user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-      
-        if determinar_pais(pais)  is not None:
         
-            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-            if len(datos_desempaquetados) != 0:
-                            get.diccionario_global_sheet_intercambio = datos_desempaquetados
-            else:
-                            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-        else:
-                enviar_leer_sheet(pais)
-                datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-    
+        datos_desempaquetados = procesar_datos(pais, usuario_id)
+        
         if layout == 'layout_signal':
             return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
         if layout == 'layout': 
@@ -61,7 +52,8 @@ def panel_control_sin_cuenta():
             return render_template("/paneles/panelDeControlBroker.html", datos = datos_desempaquetados)
         return "Página no encontrada"  # Cambia el mensaje según sea necesario
     else:
-        return render_template('notificaciones/logeeNuevamente.html',layout = layout)
+        return render_template('usuarios/logOutSystem.html',layout='layout')     
+  
 
 @panelControl.route("/panel_control")
 def panel_control():
@@ -69,19 +61,13 @@ def panel_control():
      layout = request.args.get('layoutOrigen')
      usuario_id = request.args.get('usuario_id')
      access_token = request.args.get('access_token')
-     if access_token:
+     if access_token and Token.validar_expiracion_token(access_token=access_token): 
         try:  
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-        
             
                 respuesta =  llenar_diccionario_cada_15_segundos_sheet(pais)
                 
-                if  determinar_pais(pais) is not None:
-                    datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-                else:
-                    enviar_leer_sheet(pais)
-                    datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-        
+                datos_desempaquetados = procesar_datos(pais, usuario_id)
                 
                 if layout == 'layout_signal':
                     return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
@@ -97,25 +83,25 @@ def panel_control():
             # Maneja el caso en que el token no es válido
             pass
      else:
-        return render_template('notificaciones/logeeNuevamente.html',layout = layout)
+        return render_template('usuarios/logOutSystem.html')     
 
 @panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/")
 def panel_control_atomatico(pais,usuario_id,access_token):
+    
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
      
-     if  determinar_pais(pais) is not None:
-       datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
-     else:
-        enviar_leer_sheet(pais)
-        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais],usuario_id)
- 
-     if datos_desempaquetados:
-     # print(datos_desempaquetados)
-       return jsonify(datos=datos_desempaquetados)
-     else:
-        # Si datos_desempaquetados está vacío, devuelve una respuesta vacía
-        return jsonify(datos={})
-      # Si ninguna de las condiciones anteriores se cumple, devuelve una respuesta predeterminada
-     return jsonify(message="No se encontraron datos disponibles")
+        datos_desempaquetados = procesar_datos(pais, usuario_id)
+        
+        if datos_desempaquetados:
+        # print(datos_desempaquetados)
+            return jsonify(datos=datos_desempaquetados)
+        else:
+            # Si datos_desempaquetados está vacío, devuelve una respuesta vacía
+            return jsonify(datos={})
+        # Si ninguna de las condiciones anteriores se cumple, devuelve una respuesta predeterminada
+    else:
+        return render_template('usuarios/logOutSystem.html')     
+     #return jsonify(message="No se encontraron datos disponibles")
 
 
 def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
@@ -129,9 +115,10 @@ def forma_datos_para_envio_paneles(ContenidoSheet, usuario_id):
     with db.session.begin():
         for i, tupla_exterior in enumerate(datos_desempaquetados):
             dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-
-            orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
-
+            if usuario_id != None:
+               orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], user_id=usuario_id).first()
+            else:
+                orden_existente = None
             if orden_existente:
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
                 dato += dato_extra
@@ -168,7 +155,7 @@ def ejecutar_en_hilo(pais):
     
         while True:
             time.sleep(420)
-            print("ENTRA A THREAD Y LEE EL SHEET")
+            print("ENTRA A THREAD Y LEE EL SHEET")            
             enviar_leer_sheet(pais)
         
 
@@ -177,16 +164,18 @@ def enviar_leer_sheet(pais):
      if pais not in ["argentina", "usa"]:
         # Si el país no es válido, retorna un código de estado HTTP 404 y un mensaje de error
         abort(404, description="País no válido")
-        
+   
      if pais == "argentina":
          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
          return "País no válido"
+     ContenidoSheetList = list(ContenidoSheet)
      get.diccionario_global_sheet[pais] ={}
-     get.diccionario_global_sheet[pais] =list(ContenidoSheet)
-
+     get.diccionario_global_sheet[pais] = ContenidoSheetList
+     
+     return ContenidoSheetList
 def determinar_pais(pais):
     if hasattr(get, 'diccionario_global_sheet') and isinstance(get.diccionario_global_sheet, dict):
         # Asegúrate de que 'get.diccionario_global_sheet' exista y sea un diccionario
@@ -202,5 +191,20 @@ def determinar_pais(pais):
         print(f"'get.diccionario_global_sheet' no está disponible o no es un diccionario con las listas asociadas a los países.")
         return None
 
+def procesar_datos(pais, usuario_id):
+    if determinar_pais(pais) is not None:
+        if pais not in get.diccionario_global_sheet_intercambio:
+            datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais], usuario_id)
+            if len(datos_desempaquetados) != 0:
+                get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
+        else:
+            datos_desempaquetados = get.diccionario_global_sheet_intercambio[pais]
+    else:
+        if len(get.diccionario_global_sheet) == 0 or pais not in get.diccionario_global_sheet:
+            enviar_leer_sheet(pais)
+        datos_desempaquetados = forma_datos_para_envio_paneles(get.diccionario_global_sheet[pais], usuario_id)
+        if len(datos_desempaquetados) != 0:
+            get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
+    return datos_desempaquetados
     
      
