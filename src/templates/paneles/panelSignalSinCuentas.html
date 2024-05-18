@@ -130,9 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
     debugger;
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
-    var access_token = localStorage.getItem('access_token');
+    var access_token = localStorage.getItem('access_token');   
+    account = 'sinCuenta'
     var xhr = new XMLHttpRequest();
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token;
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/';
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type
