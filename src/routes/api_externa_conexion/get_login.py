@@ -4,7 +4,7 @@ from http.client import UnimplementedFileMode
 import websockets
 import json
 import copy
-from datetime import datetime
+
 from re import template
 from socket import socket
 import pyRofex
@@ -22,6 +22,7 @@ import asyncio
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexionShedule
 from fichasTokens.fichas import refrescoValorActualCuentaFichas
+import tokens.token as Token
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
@@ -39,7 +40,7 @@ import automatizacion.shedule_triggers as shedule_triggers
 import threading
 
 from utils.db import db
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 from flask_jwt_extended import (
     JWTManager,    
@@ -204,7 +205,7 @@ def loginExtAutomatico():
            # print('correo_electronico ',correo_electronico)
            
             sobreEscituraPyRofex = True
-            if access_token:
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()                    
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
@@ -247,8 +248,9 @@ def loginExtAutomatico():
                               flash('Loggin Incorrect')
                               return render_template("errorLogueo.html")
                         else:
-                            exp_date = datetime.utcfromtimestamp(exp_timestamp)
-                            fecha_actual =   datetime.utcnow()
+                            exp_date = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
+                            fecha_actual =   datetime.now()
+                            fecha_actual_utc = fecha_actual.astimezone(timezone.utc)
                             endPoint = inicializar_variables(cuentas.accountCuenta)
                             global api_url, ws_url                          
                             api_url = endPoint[0]
@@ -257,24 +259,21 @@ def loginExtAutomatico():
                             session['ws_url']=endPoint[1]
                             
                             print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
-                            if fecha_actual < exp_date:#hay que corregir el direccionamiento de esto_________
+                            if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_________
                                 
                                 
-                                if (len(ConexionesBroker) > 0 ):
-                                    if accountCuenta in ConexionesBroker:
+                                if (len(ConexionesBroker) > 0 and accountCuenta in ConexionesBroker):                                    
                                         #if  ConexionesBroker[accountCuenta].get('identificador') == True:
                                             pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
                                             repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
                                             if repuesta_operacion:
                                                 pass
                                 else:
-                                      
-                                        pyRofexInicializada = pyRofex
-                                       
+                                                                              
                                         conexionShedule(app,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
-                                        pyRofexInicializada1 = ConexionesBroker[accountCuenta]['pyRofex']
+                                        pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
                                         accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
-                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada1,accountCuenta1)
+                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
                                         ConexionesBroker[accountCuenta]['identificador'] = True
                                         resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                         resp.headers['Content-Type'] = 'application/json'
@@ -283,22 +282,22 @@ def loginExtAutomatico():
                                         return resp
                                       
                                 if rutaDeLogeo != 'Home':  
-                                      pyRofexInicializada1 = ConexionesBroker[accountCuenta]['pyRofex']
-                                      accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
-                                      refrescoValorActualCuentaFichas(user_id,pyRofexInicializada1,accountCuenta1)
-                                      resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                      resp.headers['Content-Type'] = 'application/json'
-                                      set_access_cookies(resp, access_token)
-                                      set_refresh_cookies(resp, refresh_token)
-                                      return resp
-                                 
-                                else:
+                                        pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
+                                        accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
+                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                        resp.headers['Content-Type'] = 'application/json'
+                                        set_access_cookies(resp, access_token)
+                                        set_refresh_cookies(resp, refresh_token)
+                                        return resp
                                     
-                                    resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                    resp.headers['Content-Type'] = 'application/json'
-                                    set_access_cookies(resp, access_token)
-                                    set_refresh_cookies(resp, refresh_token)
-                                    return resp 
+                                else:
+                                        
+                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                        resp.headers['Content-Type'] = 'application/json'
+                                        set_access_cookies(resp, access_token)
+                                        set_refresh_cookies(resp, refresh_token)
+                                        return resp 
                             else:
                                  
                                   # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
@@ -351,7 +350,7 @@ def loginExtCuentaSeleccionadaBroker():
         logs_file_path = os.path.join(src_directory1, 'logs.log') 
         global ConexionesBroker,api_url, ws_url  
        
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
        
                 if origin_page == 'login':

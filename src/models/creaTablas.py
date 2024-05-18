@@ -14,6 +14,7 @@ from models.brokers import Broker
 from models.triggerEstrategia import TriggerEstrategia
 from models.strategy import Strategy
 from models.unidadTrader import UnidadTrader
+from models.administracion.altaEstrategiaApp import AltaEstrategiaApp
 
 from datetime import datetime
 from flask import Blueprint,flash
@@ -37,6 +38,7 @@ def crea_tablas_DB():
     Broker.crear_tabla_brokers()
     Strategy.crear_tabla_strategy()
     UnidadTrader.crear_tabla_ut()
+    AltaEstrategiaApp.crear_tabla_altaEstrategiaApp()
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     

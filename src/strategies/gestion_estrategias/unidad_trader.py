@@ -25,6 +25,7 @@ unidad_trader = Blueprint('unidad_trader',__name__)
 
 @unidad_trader.route("/unidad-trader-mostrar/", methods=['POST'])
 def unidad_trader_mostrar():
+  try:  
     # Obtener los datos de la solicitud POST
     UT_usuario_id = request.form.get('UT_usuario_id')
     UT_cuenta = request.form.get('UT_cuenta')
@@ -72,7 +73,11 @@ def unidad_trader_mostrar():
 
     # Enviar la respuesta JSON con los datos
     return jsonify(data)
-    
+  except KeyError:
+    # Manejar la excepción si el diccionario no tiene la clave 'argentina'
+    # Puedes imprimir un mensaje de error, registrar la excepción, o realizar otra acción según sea necesario.
+    print("El diccionario no tiene la clave 'argentina'")
+    return jsonify({'error': 'El diccionario no tiene la clave \'argentina\''}), 500  # 500 es el código de estado para un error interno del servidor
    
 
 

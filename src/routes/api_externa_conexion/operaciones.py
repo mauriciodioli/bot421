@@ -18,6 +18,7 @@ import time
 import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.instrumentos as inst
+import tokens.token as Token
 import strategies.datoSheet as datoSheet
 from panelControlBroker.panelControl import panel_control
 from panelControlBroker.panelControl import forma_datos_para_envio_paneles
@@ -53,15 +54,18 @@ def operar():
 def operar_vacio():
   try:
      if request.method == 'POST': 
-        token_form_operacion = request.form.get('token_form_operacion')
+        access_token = request.form.get('token_form_operacion')
         accounCuenta_form_operacion = request.form.get('accounCuenta_form_operacion')
-        
-        orderQty = '0'
-        symbol = 'x'
-        price = '0'
-       
-        lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
-        return render_template('operaciones/operaciones.html', datos = lista)
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
+            orderQty = '0'
+            symbol = 'x'
+            price = '0'
+          
+            lista =  lista = [{ 'symbol' : symbol, 'price' : price, 'orderQty' : orderQty}]
+            return render_template('operaciones/operaciones.html', datos = lista)
+        else:
+          return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
+            
   except:        
     return render_template("errorLogueo.html" )
   
@@ -96,14 +100,17 @@ def get_trade_history_by_symbol():
 def estadoOperacion():
     try:
         account = request.form['accounCuenta_form_estadoOperacion']
-        pyRofexInicializada = get.ConexionesBroker.get(account)
-        if pyRofexInicializada:
-            repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=account,environment=account)
-      
-       
-            operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
-            return render_template('paneles/tablaOrdenesRealizadas.html', datos=operaciones)
-    
+        access_token = request.form['form_estadoOperacion_accessToken']
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
+          pyRofexInicializada = get.ConexionesBroker.get(account)
+          if pyRofexInicializada:
+              repuesta_operacion = pyRofexInicializada['pyRofex'].get_all_orders_status(account=account,environment=account)
+        
+        
+              operaciones = repuesta_operacion.get('orders', [])  # Usar .get() para manejar si 'orders' no está en la respuesta
+              return render_template('paneles/tablaOrdenesRealizadas.html', datos=operaciones)
+        else:
+          return render_template('usuarios/logOutSystem.html')
     except KeyError as e:
         # Manejar el caso en que 'orders' no está en la respuesta
         print(f"Error: La respuesta no contiene 'orders': {e}")
@@ -128,64 +135,66 @@ def operaciones_desde_seniales_sin_cuenta():
             cuentaUser = request.form['correo_electronico']
             pais = request.form['paisSeleccionado']
             layouts = 'layout_signal'
-            if access_token:
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()  
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                  
+
+                # Intentamos encontrar el registro con el symbol específico
+                orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+          
+
+                if orden_existente:
+                    # Si el registro existe, lo actualizamos
+                    orden_existente.user_id = userId
+                    orden_existente.userCuenta = cuentaUser
+                    orden_existente.ut = ut1
+                    orden_existente.senial = signal
+                    orden_existente.clOrdId_alta_timestamp=datetime.now()
+                    orden_existente.status = 'terminado'              
+                else:
+                    # Si no existe, creamos un nuevo registro
+                    nueva_orden = Orden(
+                        user_id=userId,
+                        userCuenta=cuentaUser,
+                        accountCuenta="sin cuenta broker",
+                        clOrdId_alta=random.randint(1,100000),
+                        clOrdId_baja='',
+                        clientId=0,
+                        wsClOrdId_timestamp=datetime.now(),
+                        clOrdId_alta_timestamp=datetime.now(),
+                        clOrdId_baja_timestamp=None,
+                        proprietary=True,
+                        marketId='',
+                        symbol=ticker,
+                        tipo="sin tipo",
+                        tradeEnCurso="si",
+                        ut=ut1,
+                        senial=signal,
+                        status='operado'
+                    )
+                  
+                    db.session.add(nueva_orden)
+                if signal == 'closed.' :                  
+                      db.session.delete(orden_existente)
+                db.session.commit() 
+                    #get.current_session = db.session
+                db.session.close()
               
-
-            # Intentamos encontrar el registro con el symbol específico
-            orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
-       
-
-            if orden_existente:
-                # Si el registro existe, lo actualizamos
-                orden_existente.user_id = userId
-                orden_existente.userCuenta = cuentaUser
-                orden_existente.ut = ut1
-                orden_existente.senial = signal
-                orden_existente.clOrdId_alta_timestamp=datetime.now()
-                orden_existente.status = 'terminado'              
-            else:
-                # Si no existe, creamos un nuevo registro
-                nueva_orden = Orden(
-                    user_id=userId,
-                    userCuenta=cuentaUser,
-                    accountCuenta="sin cuenta broker",
-                    clOrdId_alta=random.randint(1,100000),
-                    clOrdId_baja='',
-                    clientId=0,
-                    wsClOrdId_timestamp=datetime.now(),
-                    clOrdId_alta_timestamp=datetime.now(),
-                    clOrdId_baja_timestamp=None,
-                    proprietary=True,
-                    marketId='',
-                    symbol=ticker,
-                    tipo="sin tipo",
-                    tradeEnCurso="si",
-                    ut=ut1,
-                    senial=signal,
-                    status='operado'
-                )
-               
-                db.session.add(nueva_orden)
-            if signal == 'closed.' :                  
-                   db.session.delete(orden_existente)
-            db.session.commit() 
-                #get.current_session = db.session
-            db.session.close()
-          
-            
-            if pais == "argentina":
-               ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-            elif pais == "usa":
-                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
-            else:
-              return "País no válido"
-          
-          
-            datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,userId)
-          
-            return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+                
+                if pais == "argentina":
+                  ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+                elif pais == "usa":
+                    ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+                else:
+                  return "País no válido"
+              
+              
+                datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,userId)
+              
+                return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+            else: 
+              return render_template('notificaciones/tokenVencidos.html',layout = layouts)       
         else:
             return jsonify({'error': 'Método no permitido'}), 405  # 405 significa Método no permitido
     except Exception as e:
@@ -229,7 +238,7 @@ def operaciones_desde_seniales():
               
                 #logs_table = Logs()  # Crea una instancia de Logs
                 #logs_table.crear_tabla()  # Llama a la función crear_tabla
-                if access_token:
+                if access_token and Token.validar_expiracion_token(access_token=access_token): 
                     app = current_app._get_current_object()  
                     user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                     cuentaBroker = obtenerCuentaBroker(user_id)

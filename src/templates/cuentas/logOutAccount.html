@@ -6,14 +6,29 @@
  
   <hr class="my-4">
   <p>Para ir a login puedes presionar el boton.</p>
-  <a class="btn btn-primary btn-lg" href="/registrar_cuenta_broker" role="button">Logear</a>
+  <div>
+    <form  name="reporteCuenta" action="/registrar_cuenta_broker" method="post" class="btn-guardar_inst">
+      <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='logOutAccounthtml'></div>  
+      <div class="form-group"><input type="hidden" name="form_cuenta_accounCuenta"  id="form_cuenta_accounCuenta"  class="form-control"></div>  
+      <div class="form-group"><input type="hidden" name="form_cuenta_access_token"  id="form_cuenta_access_token"  class="form-control"></div>  
+      <div class="form-group"><input type="hidden" name="form_cuenta_refresh_token"  id="form_cuenta_refresh_token"  class="form-control"></div>  
+      <div class="col">  
+      <button type="submit" class="btn btn-primary btn-lg">Logear</button>
+    </div>
+  </form>  
+  </div>
 </div>
 <script>
     
     localStorage.removeItem("cuenta");
     localStorage.removeItem("usuario");
     localStorage.removeItem("selector");
-     
+    access_token = localStorage.getItem("access_token")
+    refreshToken = localStorage.getItem("refresh_token")
+    cuentaBroker = localStorage.getItem("cuenta")
+    document.getElementById('form_cuenta_accounCuenta').value = cuentaBroker;
+    document.getElementById('form_cuenta_access_token').value = access_token ;
+    document.getElementById('form_cuenta_refresh_token').value = refreshToken;
     
    
 </script>

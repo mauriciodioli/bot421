@@ -9,11 +9,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.instrumento import Instrumento
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
+import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.brokers import Broker
 from models.ficha import Ficha
+
 
 
 
@@ -84,7 +86,7 @@ def cuenta_posicion_cuenta():
         cuenta = request.form['accounCuenta_form_posicionCuenta']
         selector = request.form['selector_form_posicionCuenta']      
             
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
       
             for elemento in get.ConexionesBroker:
@@ -112,7 +114,7 @@ def cuenta_detalle_cuenta():
         cuenta = request.form['accounCuenta_form_detalleCuenta']
         selector = request.form['selector_form_detalleCuenta']      
             
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             for elemento in get.ConexionesBroker:
                 print("Variable agregada:", elemento)
@@ -147,7 +149,7 @@ def reporteCuenta():
         selector = request.form['selector_form_reporteCuenta']  
         correoElec = request.form['correo_electronico_form_reporteCuenta'] 
             
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             #cuentas.indiceCuentas()            
             reporte = obtenerSaldoCuenta(account=cuenta)
@@ -196,8 +198,8 @@ def reporteCuenta():
            
             return render_template("cuentas/cuentaReporte.html", interes=interes,total_cuenta=total_cuenta,total_mas_interes=total_mas_interes,interes_ganado=interes_ganado, layout = layouts)
         else:
-             flash('no posee datos') 
-             return render_template("notificaciones/noPoseeDatos.html")   
+             flash('token expirado') 
+             return render_template("usuarios/logOutSystem.html")   
    except:  
         print("no llama correctamente")  
         flash('no hay fichas creadas aún')   
@@ -207,10 +209,24 @@ def reporteCuenta():
         
           
    
-@cuenta.route("/registrar_cuenta_broker")
+@cuenta.route("/registrar_cuenta_broker", methods = ['POST'])
 def registrar_cuenta_broker():
-   
-   return render_template("cuentas/registrarCuentaBroker.html")
+    try:
+        if request.method == 'POST':
+            access_token = request.form['form_cuenta_access_token']
+            refreshToken  = request.form['form_cuenta_refresh_token']
+            account = request.form['form_cuenta_accounCuenta']
+            layouts = request.form['layoutOrigen']
+            if layouts != 'logOutAccounthtml':
+               if access_token and Token.validar_expiracion_token(access_token=access_token): 
+                  return render_template("cuentas/registrarCuentaBroker.html")
+               else:
+                  return render_template('usuarios/logOutSystem.html')
+            else:
+                  return render_template("cuentas/registrarCuentaBroker.html")
+        
+    except Exception as e:      
+        return render_template('notificaciones/tokenVencidos.html', layout=layouts)     
 
 @cuenta.route("/cuentas_de_broker_usuario_")
 def cuentas_de_broker_usuario_():
@@ -239,7 +255,7 @@ def registrar_cuenta():
          passwordCuenta_encoded = passwordCuenta.encode('utf-8')
          accountCuenta_encoded = accountCuenta.encode('utf-8')
 
-         if access_token:
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -387,11 +403,11 @@ def get_cuentas_de_broker(user_id):
 
 @cuenta.route("/get_cuentas_de_broker_usuario",  methods=["POST"])   
 def get_cuentas_de_broker_usuario():
-     if request.method == 'POST':
+   if request.method == 'POST':
          
-         access_token = request.form['access_token']
-         todasLasCuentas = []
-         if access_token:
+      access_token = request.form['access_token']
+      todasLasCuentas = []
+      if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -446,8 +462,12 @@ def get_cuentas_de_broker_usuario():
                      print("No se pudo registrar la cuenta.")
                      db.session.rollback()  # Hacer rollback de la sesión
                      return render_template("errorLogueo.html")
-     db.session.close()
-     return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
+              
+            db.session.close()
+            return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
+      else:
+         flash('token expirado') 
+         return render_template("usuarios/logOutSystem.html")      
   
 @cuenta.route("/get_cuentas_de_broker_usuario_Abm",  methods=["POST"])   
 def get_cuentas_de_broker_usuario_Abm():
@@ -455,7 +475,7 @@ def get_cuentas_de_broker_usuario_Abm():
        
          access_token = request.form['access_token_form_Abm']
          todasLasCuentas = []
-         if access_token:
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -490,8 +510,11 @@ def get_cuentas_de_broker_usuario_Abm():
                      print("No se pudo registrar la cuenta.")
                      db.session.rollback()  # Hacer rollback de la sesión
                      return render_template("errorLogueo.html")
-     db.session.close()
-     return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
+            db.session.close()
+            return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
+         else:
+            flash('token expirado') 
+            return render_template("usuarios/logOutSystem.html")     
   
 @cuenta.route("/delete_cuenta_usuario_broker",  methods=["POST"])   
 def delete_cuenta_usuario_broker():
@@ -513,11 +536,34 @@ def delete_cuenta_usuario_broker():
             
             return render_template('cuentas/cuentasDeUsuario.html', datos=all_cuenta) 
          
-@cuenta.route("/logOutAccount")   
-def logOutAccount():   
-   get.diccionario_global_operaciones = {}
-   get.diccionario_operaciones_enviadas = {}
-   return render_template('cuentas/logOutAccount.html')
+@cuenta.route("/logOutAccount", methods=['POST'])   
+def logOutAccount():
+    if request.method == 'POST':
+        try:
+            access_token = request.form['form_cuenta_access_token']
+            refreshToken = request.form['form_cuenta_refresh_token']
+            account = request.form['form_cuenta_accounCuenta']
+            layouts = request.form['layoutOrigen']
+
+            pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
+            if access_token and Token.validar_expiracion_token(access_token=access_token):
+                pyRofexInicializada.close_websocket_connection(environment=account)
+                del get.ConexionesBroker[account]
+
+                return render_template('cuentas/logOutAccount.html')
+        except KeyError:
+            # La clave no existe en el diccionario
+            # Aquí puedes manejar el error de acuerdo a tu lógica
+            # Por ejemplo, puedes mostrar un mensaje de error o redirigir a otra página
+            return render_template('error.html', message='La cuenta no existe en la base de datos')
+        except Exception as e:
+            # Manejo de otros tipos de excepciones
+            # Aquí puedes registrar el error o mostrar un mensaje genérico de error
+            return render_template('error.html', message='Ocurrió un error: {}'.format(str(e)))
+
+    # Manejar caso de que el método de la solicitud no sea POST
+    return render_template('error.html', message='Método de solicitud no permitido')
+
 
 def get_pass_cuenta_de_broker(user_id,account):
         todasCuentas = []
