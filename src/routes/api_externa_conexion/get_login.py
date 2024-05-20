@@ -257,9 +257,11 @@ def loginExtAutomatico():
                             ws_url = endPoint[1]
                             session['api_url']=endPoint[0]
                             session['ws_url']=endPoint[1]
-                            
-                            print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
-                            if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_________
+                            print('###########################################################################')
+                            print('#####################LOGEO AUTOMATICO######################################')
+                            print('###########################################################################')
+                          #  print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
+                            if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_____
                                 
                                 
                                 if (len(ConexionesBroker) > 0 and accountCuenta in ConexionesBroker):                                    
@@ -301,7 +303,7 @@ def loginExtAutomatico():
                             else:
                                  
                                   # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-                                  # Supongamos que `accountCuenta`, `user`, y `selector` son los datos que quieres enviar
+                                  # Supongamos que accountCuenta, user, y selector son los datos que quieres enviar
                                   cuenta = {
                                         'accountCuenta': account,
                                         'user': user,
@@ -430,7 +432,7 @@ def loginExtCuentaSeleccionadaBroker():
                                     if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
                                     
                     
-                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
                         

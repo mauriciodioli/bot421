@@ -242,8 +242,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
     access_token = localStorage.getItem('access_token');
+    account = localStorage.getItem('cuenta');
     var xhr = new XMLHttpRequest();
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/';
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/';
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type
@@ -253,7 +254,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (xhr.status >= 200 && xhr.status < 400) {
         // La solicitud fue exitosa, actualiza la tabla     
         var response = JSON.parse(xhr.responseText);
-      
+        debugger;
+        console.log(response); // Imprime el response en la consola      
         var tableBody = document.getElementById('signalTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Limpiar el contenido actual de la tabla
 
