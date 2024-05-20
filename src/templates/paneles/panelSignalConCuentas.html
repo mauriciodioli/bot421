@@ -305,6 +305,8 @@ document.addEventListener('DOMContentLoaded', function() {
           (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
          ) {
                 if (dato[4] === 'OPEN.'  && dato[8] === null){
+                  if (Number(dato[3]) > 0) {
+
                                                               
                   //if (dato[4] !== dato[8]) {
                     //if (dato[7] !== null) {
@@ -349,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       tableBody.appendChild(row);
                   }
 
-               // }
+                }
 
 
                 
@@ -409,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
               (dato[2] === 'LONG_' || (dato[2] === 'SHORT'))
              ) {
                     if (dato[4] === 'OPEN.'  && dato[8] === null){
-                                                                  
+                      if (Number(dato[3]) > 0) {                                            
                       //if (dato[4] !== dato[8]) {
                       //  if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
@@ -453,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           tableBody.appendChild(row);
                       }
 
-                   // }
+                    }
 
 
                     
