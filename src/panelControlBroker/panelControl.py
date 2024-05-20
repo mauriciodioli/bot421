@@ -43,10 +43,11 @@ def panel_control_sin_cuenta():
     account = ''
    
    
-    if access_token and Token.validar_expiracion_token(access_token=access_token):       
-        respuesta =  llenar_diccionario_cada_15_segundos_sheet(current_app,pais,account)
+    if access_token and Token.validar_expiracion_token(access_token=access_token):
+        app = current_app._get_current_object()       
+        respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,account)
         
-        datos_desempaquetados = procesar_datos(current_app,pais, account,usuario_id)
+        datos_desempaquetados = procesar_datos(app,pais, account,usuario_id)
         
         if layout == 'layout_signal':
             return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
@@ -67,12 +68,13 @@ def panel_control():
      access_token = request.args.get('access_token')
      accountCuenta = request.args.get('account')
      if access_token and Token.validar_expiracion_token(access_token=access_token): 
+        app = current_app._get_current_object()
         try:  
-                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             
-                respuesta =  llenar_diccionario_cada_15_segundos_sheet(current_app,pais,accountCuenta)
+                respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,accountCuenta)
                 
-                datos_desempaquetados = procesar_datos(current_app,pais, accountCuenta,usuario_id)
+                datos_desempaquetados = procesar_datos(app,pais, accountCuenta,usuario_id)
                 
                 if layout == 'layout_signal':
                     return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
@@ -94,8 +96,8 @@ def panel_control():
 def panel_control_atomatico(pais,usuario_id,access_token,account):
     
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
-     
-        datos_desempaquetados = procesar_datos(current_app,pais, account,usuario_id)
+        app = current_app._get_current_object()
+        datos_desempaquetados = procesar_datos(app,pais, account,usuario_id)
         
         if datos_desempaquetados:
         # print(datos_desempaquetados)
@@ -143,39 +145,6 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
 
     return datos_procesados
 
-def forma_datos_para_envio_paneles_hilo(app, ContenidoSheet, user_id):
-    if not ContenidoSheet:
-        return False
-
-    datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
-    datos_procesados = []
-
-    with app.app_context():
-        # Consultar todas las órdenes de la cuenta
-        ordenes_cuenta = Orden.query.filter_by(user_id=user_id).all()
-
-        # Crear un diccionario para mapear los símbolos de las órdenes a las órdenes
-        ordenes_por_simbolo = {orden.symbol: orden for orden in ordenes_cuenta}
-
-        for i, tupla_exterior in enumerate(datos_desempaquetados):
-            dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-            symbol = dato[0]
-
-            # Comprobar si hay una orden para este símbolo en las órdenes de la cuenta
-            if symbol in ordenes_por_simbolo:
-                orden_existente = ordenes_por_simbolo[symbol]
-
-                # Si se encuentra una orden, agregar datos adicionales al dato
-                dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
-            else:
-                # Si no se encuentra una orden, agregar None como datos adicionales
-                dato_extra = (None, None)
-
-            dato += dato_extra
-            dato.append(i + 1)
-            datos_procesados.append(tuple(dato))
-
-    return datos_procesados
 
 
 
@@ -193,8 +162,8 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id):
 
 def ejecutar_en_hilo(app,pais,user_id):
           while True:
-            #time.sleep(420)# 420 son 7 minutos
-            time.sleep(60)
+            time.sleep(420)# 420 son 7 minutos
+            #time.sleep(60)
             print("ENTRA A THREAD Y LEE EL SHEET")
           
             enviar_leer_sheet(app, pais, user_id,'hilo')
@@ -217,10 +186,7 @@ def enviar_leer_sheet(app,pais,user_id,hilo):
      # Adquirir el bloqueo antes de modificar las variables compartidas
      with lock:
             get.diccionario_global_sheet[pais] = ContenidoSheetList
-            if hilo == 'hilo':
-                datos_desempaquetados = forma_datos_para_envio_paneles_hilo(app, get.diccionario_global_sheet[pais], user_id)
-            else:
-                datos_desempaquetados = forma_datos_para_envio_paneles(app, get.diccionario_global_sheet[pais], user_id) 
+            datos_desempaquetados = forma_datos_para_envio_paneles(app, get.diccionario_global_sheet[pais], user_id) 
             
             if len(datos_desempaquetados) != 0:
                 get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
