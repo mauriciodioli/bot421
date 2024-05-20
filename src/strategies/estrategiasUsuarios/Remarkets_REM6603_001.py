@@ -35,7 +35,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+Remarkets_REM6603_001 = Blueprint('Remarkets_REM6603_001',__name__)
 
 
 class States(enum.Enum):
@@ -56,9 +56,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
-def estrategiaSheetWS_001():
-    print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
+@Remarkets_REM6603_001.route('/Remarkets-REM6603-001/', methods=['POST'])
+def RemarketsREM6603001():
+    print('00000000000000000000000 Remarkets-REM6603-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -113,7 +113,7 @@ def estrategiaSheetWS_001():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           print("no pudo conectar el websocket en Remarkets_REM6603_001.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -141,7 +141,6 @@ def market_data_handler_estrategia(message):
         marca_de_tiempo = message["timestamp"]
         marca_de_tiempo_para_leer_sheet = marca_de_tiempo
         Symbol = message["instrumentId"]["symbol"]
-        # Supongamos que 'tiempo_saldo' es un objeto datetime
         # Supongamos que 'tiempo_saldo' es un objeto datetime
         if diccionario_global_operaciones or diccionario_operaciones_enviadas:
           if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
@@ -212,7 +211,7 @@ def market_data_handler_estrategia(message):
                 #  print("FUN_ veta_capital_44593_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
             
         
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@Remarkets_REM6603_001.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -231,7 +230,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@Remarkets_REM6603_001.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     if request.method == 'POST':
       try:           
