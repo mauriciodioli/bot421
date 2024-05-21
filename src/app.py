@@ -18,6 +18,7 @@ from sqlalchemy.pool import QueuePool
 
 from strategies.estrategiasUsuarios.Remarkets_REM6603_001 import Remarkets_REM6603_001
 from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
+from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 
 
 
@@ -28,7 +29,8 @@ from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_4
 ########################################################################
 from models.creaTablas import crea_tablas_DB
 
-
+from sistemaDePagos.payment_page import payment_page
+from productosComerciales.descipcionProductos import descrpcionProductos
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 
@@ -153,10 +155,12 @@ app.register_blueprint(blueprint, url_prefix='/login')
 
 
 app.register_blueprint(Remarkets_REM6603_001)
-
+app.register_blueprint(Bull_Market_10861_001)
 app.register_blueprint(veta_capital_44593_001)
 ###############################################################
 app.register_blueprint(logs)
+app.register_blueprint(payment_page)
+app.register_blueprint(descrpcionProductos)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
 app.register_blueprint(instrumentos)

@@ -78,14 +78,14 @@
   </div>  
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
-    document.getElementById('splash').style.display = 'block';
+  debugger;
+  document.getElementById('splash').style.display = 'block';
   //{% if cuenta is defined %}
   // Acceder a los tokens desde el diccionario de contexto de Flask
   var cuenta = "{{ cuenta[0] }}";
   var usuario = "{{ cuenta[1] }}";
   var selector = "{{ cuenta[2] }}";
-  debugger;
+ 
   console.log("probanodo",cuenta)
   console.log(usuario)
   console.log(selector)
@@ -131,8 +131,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
     var access_token = localStorage.getItem('access_token');
+    account = localStorage.getItem('cuenta');
     var xhr = new XMLHttpRequest();
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token;
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/';
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type
@@ -185,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
               (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
              ) {
                     if (dato[4] === 'OPEN.'  && dato[8] === null){
-                                                                  
+                      if (Number(dato[3]) > 0) {                                          
                       //if (dato[4] !== dato[8]) {
                         //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
@@ -229,13 +230,14 @@ document.addEventListener('DOMContentLoaded', function() {
                           tableBody.appendChild(row);
                       }
 
-                   // }
+                    }
 
 
                     
                  if (dato[4] === 'closed.' && dato[8] !== null) {    
                                                             
                       if (dato[4] !== dato[8]) {
+                        if (Number(dato[3]) > 0) {
                         //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
                           // campana.play();
@@ -277,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           `;
                           tableBody.appendChild(row);
                       }
-                     
+                     }
                     }
 
                 

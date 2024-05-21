@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .payment-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .payment-container h2 {
+            margin-top: 0;
+        }
+        .payment-container p {
+            margin: 5px 0;
+        }
+        .payment-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .payment-container button {
+            width: 100%;
+            padding: 10px;
+            background: #e94b35;
+            border: none;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .payment-container button:hover {
+            background: #d53a2e;
+        }
+        .credit-card-logo {
+            display: none;
+            width: 50px;
+            margin: 10px auto;
+        }
+        .hidden-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .show {
+            display: block;
+        }
+        .toggle-link {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <h2>Método de pago</h2>
+        <p>Boosts: 15,952.63 ARS</p>
+        <p>3190.53 ARS x 5 Boosts</p>
+        <p>Impuestos: 0,00 ARS</p>
+        <p><strong>Total: 15,952.63 ARS</strong></p>
+        <div>
+            <img src="{{ url_for('static', filename='visa.png') }}" alt="Visa" class="credit-card-logo" id="visa-logo">
+            <img src="{{ url_for('static', filename='mastercard.png') }}" alt="Mastercard" class="credit-card-logo" id="mastercard-logo">
+        </div>
+        <input type="text" id="card_number" placeholder="Card Number" oninput="updateCardLogo()"/>
+        <button onclick="processPayment()">Comprar ahora</button>
+        <br>
+        <a class="toggle-link" onclick="toggleForm()">Usa una tarjeta diferente</a>
+        <div class="hidden-form" id="card-form">
+            <input type="text" id="new_card_number" placeholder="Card Number" oninput="updateCardLogo('new')"/>
+            <input type="text" id="card_name" placeholder="Name on Card"/>
+            <input type="text" id="expiry_date" placeholder="MM/YY"/>
+            <input type="text" id="cvv" placeholder="CVV"/>
+            <button onclick="processNewCardPayment()">Pagar con nueva tarjeta</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm() {
+            const form = document.getElementById('card-form');
+            form.classList.toggle('show');
+        }
+
+        function updateCardLogo(type = 'existing') {
+            const cardNumber = type === 'existing' ? document.getElementById('card_number').value : document.getElementById('new_card_number').value;
+            const visaLogo = document.getElementById('visa-logo');
+            const mastercardLogo = document.getElementById('mastercard-logo');
+
+            if (cardNumber.startsWith('4')) {
+                visaLogo.style.display = 'block';
+                mastercardLogo.style.display = 'none';
+            } else if (cardNumber.startsWith('5')) {
+                mastercardLogo.style.display = 'block';
+                visaLogo.style.display = 'none';
+            } else {
+                visaLogo.style.display = 'none';
+                mastercardLogo.style.display = 'none';
+            }
+        }
+
+        function processPayment() {
+            const cardNumber = document.getElementById('card_number').value;
+            const amount = 15952.63;
+
+            fetch('/process_payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ card_number: cardNumber, amount: amount })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function processNewCardPayment() {
+            const cardNumber = document.getElementById('new_card_number').value;
+            const cardName = document.getElementById('card_name').value;
+            const expiryDate = document.getElementById('expiry_date').value;
+            const cvv = document.getElementById('cvv').value;
+            const amount = 15952.63;
+
+            // Dummy implementation: You would actually validate and send this data to your backend
+            fetch('/process_payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ card_number: cardNumber, card_name: cardName, expiry_date: expiryDate, cvv: cvv, amount: amount })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
