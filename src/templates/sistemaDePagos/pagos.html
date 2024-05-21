@@ -1,0 +1,18 @@
+{% extends "layouts/layout.html" %}
+{% block title %}Pago{% endblock %}
+{% block content %}
+<div class="pago">
+    <h2>Pagar con tarjeta de crédito</h2>
+    <form method="POST" action="{{ url_for('payment_page_process_payment') }}">
+        <div class="form-group">
+            <label for="card_number">Número de tarjeta:</label>
+            <input type="text" id="card_number" name="card_number" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="amount">Cantidad:</label>
+            <input type="number" id="amount" name="amount" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Pagar</button>
+    </form>
+</div>
+{% endblock %}

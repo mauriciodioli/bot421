@@ -276,7 +276,7 @@ def cargaSymbolParaValidarDb(message):
 
 def cargaSymbolParaValidar(message):
     listado_final = []
-    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado  in message: 
+    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado, precioUt in message: 
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                                 if Symbol != '':
                                 #if trade_en_curso == 'LONG_':

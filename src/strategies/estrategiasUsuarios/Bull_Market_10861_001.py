@@ -35,7 +35,7 @@ import sys
 
 
 
-estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
+Bull_Market_10861_001 = Blueprint('Bull_Market_10861_001',__name__)
 
 
 class States(enum.Enum):
@@ -56,9 +56,9 @@ diccionario_operaciones_enviadas = {}
 
 
 
-@estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
-def estrategiaSheetWS_001():
-    print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
+@Bull_Market_10861_001.route('/Bull-Market-10861-001/', methods=['POST'])
+def BullMarket10861001():
+    print('00000000000000000000000 Bull-Market-10861-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
             
@@ -113,7 +113,7 @@ def estrategiaSheetWS_001():
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-           print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           print("no pudo conectar el websocket en Bull_Market_10861_001.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -143,12 +143,11 @@ def market_data_handler_estrategia(message):
         Symbol = message["instrumentId"]["symbol"]
         # Supongamos que 'tiempo_saldo' es un objeto datetime
         # Supongamos que 'tiempo_saldo' es un objeto datetime
-        if diccionario_global_operaciones or diccionario_operaciones_enviadas:
-          if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
+        if diccionario_global_operaciones :
+          if Symbol in diccionario_global_operaciones :
                 if diccionario_global_operaciones:
                     tiempo_saldo = diccionario_global_operaciones[Symbol]['tiempoSaldo']
-                else:
-                    tiempo_saldo = diccionario_operaciones_enviadas[Symbol]['tiempoSaldo']    
+               
 
                 # Convertir 'tiempo_saldo' a milisegundos
                 milisegundos_tiempo_saldo = int(tiempo_saldo.timestamp() * 1000)
@@ -212,7 +211,7 @@ def market_data_handler_estrategia(message):
                 #  print("FUN_ veta_capital_44593_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
             
         
-@estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
+@Bull_Market_10861_001.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
      if request.method == 'POST':
         try:
@@ -231,7 +230,7 @@ def boton_panico_portfolio():
            print("no pudo leer los datos de local storage")
      return operaciones.estadoOperacion()
    
-@estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
+@Bull_Market_10861_001.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
     if request.method == 'POST':
       try:           
@@ -265,7 +264,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
         
-        for Symbol,tipo, TradeEnCurso,ut,senial,gan_tot, dias_operado,precioUt in ContenidoSheet_list[2:]:
+        for Symbol,tipo, TradeEnCurso,ut,senial,gan_tot, dias_operado, precioUt in ContenidoSheet_list[2:]:
             if Symbol in diccionario_global_operaciones:
                 if senial != '':
                     #aqui entra en caso que tenga que cambiar la señal de trading
@@ -321,10 +320,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                     VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
-                                                print('operacionews')
+                                                #print('operacionews')
                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                         else:                                          
-                                                print('operacionews')
+                                                #print('operacionews')
                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
                        else:
                             
@@ -341,10 +340,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                
                                  if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
-                                                print('Symbol ',Symbol)
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                               # print('Symbol ',Symbol)
+                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo,  Liquidez_ahora_cedear, senial, message)
                                         else:                                          
-                                                print('Symbol ',Symbol)       
+                                               # print('Symbol ',Symbol)       
                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
                                     
    # else:  
@@ -440,7 +439,8 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
             'symbol': elemento[0],
             'tipo_de_activo': elemento[1],
             'tradeEnCurso': elemento[2],
-            'ut':str(ut),            
+            'ut':str(ut),
+            'unidadTrader': unidadTrader.ut,
             'senial': elemento[4],
             'status': '0',
             'tiempoSaldo':tiempoLecturaSaldo,
@@ -698,8 +698,8 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                    
 def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
  
-   try: 
-        global VariableParaSaldoCta     
+   try:        
+        global VariableParaSaldoCta
         accountCuenta = account
         tiempoLecturaSaldo = datetime.now()
         VariableParaSaldoCta = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
@@ -729,8 +729,7 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=Non
             # Accedemos al símbolo de cada posición y lo almacenamos en el diccionario
                 symbol = posicion['symbol']
            # if símbolo not in símbolos_vistos:
-             #   print('**************************** ',symbol)
-            
+             #   print('**************************** ',symbol)              
                 diccionario = {
                                 "Symbol": symbol,
                                 "_t_": 'None',
