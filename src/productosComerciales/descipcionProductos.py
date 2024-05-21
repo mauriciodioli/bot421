@@ -18,7 +18,7 @@ descrpcionProductos = Blueprint('descrpcionProductos',__name__)
 
 
 
-@descrpcionProductos.route('/descripcionProductos')
+@descrpcionProductos.route('/descripcionProductos', methods = ['GET'])
 def descripcionProductos():
     print("__________________")
     return render_template('productosComerciales/descripcionProductos.html')
