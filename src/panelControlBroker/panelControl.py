@@ -97,8 +97,8 @@ def panel_control_atomatico(pais,usuario_id,access_token,account):
     
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
-        datos_desempaquetados = procesar_datos(app,pais, account,usuario_id)
-        
+        ContenidoSheet = procesar_datos(app,pais, account,usuario_id)
+        datos_desempaquetados = forma_datos_para_envio_paneles(app,ContenidoSheet,usuario_id)
         if datos_desempaquetados:
         # print(datos_desempaquetados)
             return jsonify(datos=datos_desempaquetados)
@@ -135,11 +135,16 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
 
                 # Si se encuentra una orden, agregar datos adicionales al dato
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
+                dato[8] = orden_existente.clOrdId_alta_timestamp
+                dato[9] = orden_existente.senial
+                
             else:
+                if len(dato)<11:
                 # Si no se encuentra una orden, agregar None como datos adicionales
-                dato_extra = (None, None)
+                    dato_extra = (None, None)
+                    dato += dato_extra
 
-            dato += dato_extra
+           
             dato.append(i + 1)
             datos_procesados.append(tuple(dato))
 
@@ -176,7 +181,7 @@ def enviar_leer_sheet(app,pais,user_id,hilo):
         abort(404, description="País no válido")
    
      if pais == "argentina":
-         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
