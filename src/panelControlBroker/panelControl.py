@@ -135,9 +135,11 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
 
                 # Si se encuentra una orden, agregar datos adicionales al dato
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
-                dato[8] = orden_existente.clOrdId_alta_timestamp
-                dato[9] = orden_existente.senial
-                
+                if len(dato) > 9:
+                    dato[8] = orden_existente.clOrdId_alta_timestamp
+                    dato[9] = orden_existente.senial
+                else:
+                    dato +=dato_extra                
             else:
                 if len(dato)<11:
                 # Si no se encuentra una orden, agregar None como datos adicionales
@@ -167,8 +169,8 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id):
 
 def ejecutar_en_hilo(app,pais,user_id):
           while True:
-            time.sleep(420)# 420 son 7 minutos
-            #time.sleep(60)
+            #time.sleep(420)# 420 son 7 minutos
+            time.sleep(180)
             print("ENTRA A THREAD Y LEE EL SHEET")
           
             enviar_leer_sheet(app, pais, user_id,'hilo')
