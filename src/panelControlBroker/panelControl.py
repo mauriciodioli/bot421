@@ -170,7 +170,7 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id):
 def ejecutar_en_hilo(app,pais,user_id):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(180)
+            time.sleep(300)
             print("ENTRA A THREAD Y LEE EL SHEET")
           
             enviar_leer_sheet(app, pais, user_id,'hilo')
@@ -183,7 +183,7 @@ def enviar_leer_sheet(app,pais,user_id,hilo):
         abort(404, description="País no válido")
    
      if pais == "argentina":
-         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
      elif pais == "usa":
           ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
      else:
@@ -200,6 +200,9 @@ def enviar_leer_sheet(app,pais,user_id,hilo):
 
      
      return  get.diccionario_global_sheet_intercambio[pais]
+ 
+ 
+ 
 def determinar_pais(pais):
     if hasattr(get, 'diccionario_global_sheet') and isinstance(get.diccionario_global_sheet, dict):
         # Asegúrate de que 'get.diccionario_global_sheet' exista y sea un diccionario
