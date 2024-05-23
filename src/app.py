@@ -16,7 +16,6 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
 
-from strategies.estrategiasUsuarios.Remarkets_REM6603_001 import Remarkets_REM6603_001
 from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
 from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 
@@ -154,7 +153,6 @@ app.register_blueprint(blueprint, url_prefix='/login')
 
 
 
-app.register_blueprint(Remarkets_REM6603_001)
 app.register_blueprint(Bull_Market_10861_001)
 app.register_blueprint(veta_capital_44593_001)
 ###############################################################
