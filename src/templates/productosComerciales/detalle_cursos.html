@@ -1,0 +1,30 @@
+{% extends "layouts/layout_detalle_productos.html" %}
+{% block title %}Cursos{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="container-fluid" id="cardIndex">
+        <div class="container py-4 row justify-content-center m-auto">
+            <div class="row py-3 justify-content-center">
+                <div class="col-md-6 p-4 card card-body cardIndexPlanes"> 
+                    <h2 class="card-title">Cursos</h2>
+                    <h4 class="planes-titulo" style="color: gold; font-size: 24px;">100 cupos</h4>
+                    <h4 class="planes-titulo" style="color: white; font-size: 24px;">Online y: <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                    <hr class="separator">
+                    <p style="margin-bottom: 5px;">Te brindamos el material</p>
+                    <p style="margin-bottom: 5px;">Clases semanales: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Sí</span></p>
+                    <p style="margin-bottom: 5px;">Costo: $ 15 <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Mensual </span></p>
+                    <p style="margin-bottom: 5px; color: #7fff7f;">El costo es en dolares y todos los cursos tiene el mismo costo.</p>
+                    <p>Este sistema de cursos ha sido cuidadosamente diseñado para lograr operar con instrumentos tanto del mercado argentino como del estadounidense. Se activa automáticamente todos los días a toda hora, realiza nuestros cursos sobre diversos temas relacionados con finanzas, garantiza una gestión eficiente y asesoramiento permanente.</p>
+                    <p style="color: #7fff7f;">Además, contamos con un sistema de prueba que permite a los usuarios operar directamente desde la plataforma sin necesidad de recurrir a un broker ni operaciones reales, brindando a los usuarios un mayor control sobre sus conocimientos.</p>
+                    <a href="#" class="btn btn-success">Suscribir ahora</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}
+

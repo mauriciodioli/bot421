@@ -153,13 +153,13 @@ def market_data_handler_estrategia(message):
                 milisegundos_tiempo_saldo = int(tiempo_saldo.timestamp() * 1000)
                # Calculamos la diferencia en milisegundos entre el tiempo actual y el tiempo anterior
                 diferencia_milisegundos = marca_de_tiempo - milisegundos_tiempo_saldo
-                print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
+                #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
                 if diferencia_milisegundos > 30000:                  
                     segundos = marca_de_tiempo / 1000  # Convertir milisegundos a segundos
                     marca_de_tiempo = datetime.fromtimestamp(segundos)
                     diccionario_global_operaciones[Symbol]['tiempoSaldo'] =  datetime.now()
                     VariableParaTiemposMDHandler = diferencia_milisegundos
-                    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
+                    #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
                     cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']        
                     VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
                     diccionario_global_operaciones[Symbol]['saldo'] = VariableParaSaldoCta
@@ -238,7 +238,7 @@ def botonPanico():
             respuesta = botonPanicoRH('true')
             _cancela_orden(9)
             respuesta = botonPanicoRH('false')
-            pyRofexInicializada = get.ConexionesBroker[account]['prRofex']
+            pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
             
             pyRofexInicializada.close_websocket_connection(environment=account)
             return render_template("utils/bottonPanic.html" ) 
@@ -402,58 +402,59 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
          numero = float(cadena_correcta)
          ut = unidadTrader.ut/numero
          ut = abs(int(ut))
-       #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
-         #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
-         nueva_orden = Orden(
-                                user_id=usuariodb.id,
-                                userCuenta=usuario,
-                                accountCuenta=account,
-                                clOrdId_alta=random.randint(1,100000),
-                                clOrdId_baja='',
-                                clientId='',
-                                wsClOrdId_timestamp=datetime.now(),
-                                clOrdId_alta_timestamp=None,
-                                clOrdId_baja_timestamp=None,  # Campo vacío
-                                proprietary=True,
-                                marketId='',  # Campo vacío
-                                symbol=elemento[0],
-                                tipo=elemento[1],
-                                tradeEnCurso=elemento[2],
-                                ut=ut,
-                                senial=elemento[4],
-                                status='0'
-                            )
-         # Cargar los valores del objeto en el diccionario global
-         nueva_orden_para_dic = {
-            'user_id': usuariodb.id,
-            'userCuenta': usuario,
-            'accountCuenta': account,           
-            'clOrdId_alta': '',
-            'clOrdId_baja': '',
-            'orderId': '',
-            'wsClOrdId_timestamp': datetime.now(),
-            'clOrdId_alta_timestamp': None,
-            'clOrdId_baja_timestamp': None,
-            'proprietary': True,
-            'marketId': '',           
-            'symbol': elemento[0],
-            'tipo_de_activo': elemento[1],
-            'tradeEnCurso': elemento[2],
-            'ut':str(ut),
-            'unidadTrader': unidadTrader.ut,
-            'senial': elemento[4],
-            'status': '0',
-            'tiempoSaldo':tiempoLecturaSaldo,
-            'saldo':VariableParaSaldoCta
-        }
-    # Cargar cada objeto Orden en el diccionario global con una clave única
-         diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
-       
-         if elemento[0] in diccionario_global_operaciones:
-            contenido = diccionario_global_operaciones[elemento[0]]
-            print('cargó la operacion de ',elemento[0],' ut ',elemento[3],' correctmente en diccionario global de operaciones')
-         else:
-            print("La clave", elemento[0], "no existe en el diccionario.")
+         if ut > 0:
+        #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
+            #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
+            nueva_orden = Orden(
+                                    user_id=usuariodb.id,
+                                    userCuenta=usuario,
+                                    accountCuenta=account,
+                                    clOrdId_alta=random.randint(1,100000),
+                                    clOrdId_baja='',
+                                    clientId='',
+                                    wsClOrdId_timestamp=datetime.now(),
+                                    clOrdId_alta_timestamp=None,
+                                    clOrdId_baja_timestamp=None,  # Campo vacío
+                                    proprietary=True,
+                                    marketId='',  # Campo vacío
+                                    symbol=elemento[0],
+                                    tipo=elemento[1],
+                                    tradeEnCurso=elemento[2],
+                                    ut=ut,
+                                    senial=elemento[4],
+                                    status='0'
+                                )
+            # Cargar los valores del objeto en el diccionario global
+            nueva_orden_para_dic = {
+                'user_id': usuariodb.id,
+                'userCuenta': usuario,
+                'accountCuenta': account,           
+                'clOrdId_alta': '',
+                'clOrdId_baja': '',
+                'orderId': '',
+                'wsClOrdId_timestamp': datetime.now(),
+                'clOrdId_alta_timestamp': None,
+                'clOrdId_baja_timestamp': None,
+                'proprietary': True,
+                'marketId': '',           
+                'symbol': elemento[0],
+                'tipo_de_activo': elemento[1],
+                'tradeEnCurso': elemento[2],
+                'ut':str(ut),
+                'unidadTrader': unidadTrader.ut,
+                'senial': elemento[4],
+                'status': '0',
+                'tiempoSaldo':tiempoLecturaSaldo,
+                'saldo':VariableParaSaldoCta
+            }
+        # Cargar cada objeto Orden en el diccionario global con una clave única
+            diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
+        
+            if elemento[0] in diccionario_global_operaciones:
+                contenido = diccionario_global_operaciones[elemento[0]]
+                print('cargó la operacion de ',elemento[0],' ut ',elemento[3],' correctmente en diccionario global de operaciones')
+            else:
+                print("La clave", elemento[0], "no existe en el diccionario.")
 
         
     # Acceder al diccionario global y a los objetos Orden
