@@ -1,0 +1,63 @@
+
+        .body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .payment-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .payment-container h2 {
+            margin-top: 0;
+        }
+        .payment-container p {
+            margin: 5px 0;
+        }
+        .payment-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .payment-container button {
+            width: 100%;
+            padding: 10px;
+            background: #e94b35;
+            border: none;
+            color: #fff;
+            border-radius: 20px; /* Botones redondeados */
+            cursor: pointer;
+        }
+        .payment-container button:hover {
+            background: #d53a2e;
+        }
+        .credit-card-logo {
+            display: none;
+            width: 50px;
+            margin: 10px auto;
+        }
+        .hidden-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .show {
+            display: block;
+        }
+        .toggle-link {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+   

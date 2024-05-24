@@ -19,8 +19,12 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 400px; /* Agrandar la tarjeta */
+            margin-right: 20px; /* Agregar margen a la derecha */
+            text-align: center; /* Centrar texto y elementos dentro del contenedor */
+            position: relative;
         }
+       
         .payment-container h2 {
             margin-top: 0;
         }
@@ -40,7 +44,7 @@
             background: #e94b35;
             border: none;
             color: #fff;
-            border-radius: 4px;
+            border-radius: 20px; /* Botones redondeados */
             cursor: pointer;
         }
         .payment-container button:hover {
@@ -55,6 +59,16 @@
             display: none;
             margin-top: 20px;
         }
+        .hidden-form p {
+            text-align: left; /* Alinear texto de los p dentro de hidden-form a la izquierda */
+        }
+        .hidden-form label {
+            color: gray; /* Cambiar el color del texto de la etiqueta a gris */
+        }
+        .hidden-form input[type="checkbox"] {
+            margin-right: 5px; /* Ajustar el espacio entre el checkbox y el texto */
+            vertical-align: middle; /* Alinear verticalmente el checkbox */
+        }
         .show {
             display: block;
         }
@@ -66,36 +80,90 @@
         .toggle-link:hover {
             text-decoration: underline;
         }
+        
+        
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #999;
+            text-decoration: none;
+            z-index: 999; /* Asegura que el botón de cierre esté por encima del contenido */
+        }
+        
+        .close-button:hover {
+            color: #333;
+        }
     </style>
 </head>
 <body>
+    
     <div class="payment-container">
+        <a href="/" class="close-button" onclick="closePayment()">&#10006;</a>
         <h2>Método de pago</h2>
-        <p>Boosts: 15,952.63 ARS</p>
-        <p>3190.53 ARS x 5 Boosts</p>
-        <p>Impuestos: 0,00 ARS</p>
-        <p><strong>Total: 15,952.63 ARS</strong></p>
+        
+        <div class="payment-details" style="background-color: lightgray; padding: 10px;"> 
+            <table style="border-collapse: collapse; width: 100%;">
+                <tr>
+                    <td style="text-align: left; border-bottom: 1px solid gray; padding: 8px; border-right: none;">Costo base:</td>
+                    <td style="text-align: right; border-bottom: 1px solid gray; padding: 8px; border-left: none;">{{ '{:,.2f}'.format(costo_base) }} ARS</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; border-bottom: 1px solid gray; padding: 8px; border-right: none;">Porcentaje de retorno:</td>
+                    <td style="text-align: right; border-bottom: 1px solid gray; padding: 8px; border-left: none;">{{ porcentaje_retorno }}%</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; padding: 8px; border-right: none;"><strong>Total:</strong></td>
+                    <td style="text-align: right; padding: 8px; border-left: none;"><strong>{{ '{:,.2f}'.format(total) }} ARS</strong></td>
+                </tr>
+            </table>
+        </div>
+        
         <div>
             <img src="{{ url_for('static', filename='visa.png') }}" alt="Visa" class="credit-card-logo" id="visa-logo">
             <img src="{{ url_for('static', filename='mastercard.png') }}" alt="Mastercard" class="credit-card-logo" id="mastercard-logo">
         </div>
-        <input type="text" id="card_number" placeholder="Card Number" oninput="updateCardLogo()"/>
-        <button onclick="processPayment()">Comprar ahora</button>
+        <input type="text" id="card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo()"/>
         <br>
-        <a class="toggle-link" onclick="toggleForm()">Usa una tarjeta diferente</a>
+        <button onclick="processPayment()" id="buy-now-button">Comprar ahora</button>
+        <br>
+        <a class="toggle-link mb-4" onclick="toggleForm()">Usa una tarjeta diferente</a>
         <div class="hidden-form" id="card-form">
-            <input type="text" id="new_card_number" placeholder="Card Number" oninput="updateCardLogo('new')"/>
-            <input type="text" id="card_name" placeholder="Name on Card"/>
+            <input type="text" id="new_card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo('new')"/>
+            <input type="text" id="card_name" placeholder="Nombre y apellido impreso en la tarjeta"/>
             <input type="text" id="expiry_date" placeholder="MM/YY"/>
             <input type="text" id="cvv" placeholder="CVV"/>
-            <button onclick="processNewCardPayment()">Pagar con nueva tarjeta</button>
+            <label for="email" style="color: blue; font-size: smaller; text-decoration: underline; text-align: left;">Direccion de correo electrónico:</label>
+
+            <input type="email" id="email" name="email" style="color: blue; font-size: smaller; " placeholder="correo electronico" required>
+            <input type="checkbox" id="save_card" name="save_card">
+            
+            <label for="save_card">Guardar tarjeta para futuras compras</label>
+            <p>Usaremos esta tarjeta pra ruturas compras</p>
+            <p>Renovaciones de tu suscripcion. Puedes borrar los datos de tu tarjeta en cualquier momento desde los ajustes</p>          
+              <button onclick="processNewCardPayment()">Pagar con nueva tarjeta</button>
         </div>
     </div>
-
     <script>
+        function closePayment() {
+            const paymentContainer = document.querySelector('.payment-container');
+            paymentContainer.style.display = 'none';
+        }
         function toggleForm() {
             const form = document.getElementById('card-form');
-            form.classList.toggle('show');
+            const buyNowButton = document.getElementById('buy-now-button');
+            const cardNumberInput = document.getElementById('card_number');
+
+            if (form.classList.contains('show')) {
+                form.classList.remove('show');
+                buyNowButton.style.display = 'block'; // Mostrar el botón "Comprar ahora"
+                cardNumberInput.style.display = 'block'; // Mostrar el campo de entrada "Card Number"
+            } else {
+                form.classList.add('show');
+                buyNowButton.style.display = 'none'; // Ocultar el botón "Comprar ahora"
+                cardNumberInput.style.display = 'none'; // Ocultar el campo de entrada "Card Number"
+            }
         }
 
         function updateCardLogo(type = 'existing') {
@@ -142,7 +210,6 @@
             const cvv = document.getElementById('cvv').value;
             const amount = 15952.63;
 
-            // Dummy implementation: You would actually validate and send this data to your backend
             fetch('/process_payment', {
                 method: 'POST',
                 headers: {

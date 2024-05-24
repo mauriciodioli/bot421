@@ -452,7 +452,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
         
             if elemento[0] in diccionario_global_operaciones:
                 contenido = diccionario_global_operaciones[elemento[0]]
-                print('cargó la operacion de ',elemento[0],' ut ',elemento[3],' correctmente en diccionario global de operaciones')
+                print('cargó la operacion de ',elemento[0],' ut ',ut,' correctmente en diccionario global de operaciones')
             else:
                 print("La clave", elemento[0], "no existe en el diccionario.")
 
