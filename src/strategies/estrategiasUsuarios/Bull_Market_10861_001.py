@@ -452,7 +452,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
         
             if elemento[0] in diccionario_global_operaciones:
                 contenido = diccionario_global_operaciones[elemento[0]]
-                print('cargó la operacion de ',elemento[0],' ut ',elemento[3],' correctmente en diccionario global de operaciones')
+                print('cargó la operacion de ',elemento[0],' ut ',ut,' correctmente en diccionario global de operaciones')
             else:
                 print("La clave", elemento[0], "no existe en el diccionario.")
 
@@ -508,13 +508,14 @@ def _operada(order_report):
     stock_para_closed = obtenerStock(order_data['text']) 
     stock_para_closed = int(float(stock_para_closed))
     #print('stock_para_closed ',stock_para_closed)
-    if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
+    if status in ['CANCELLED','ERROR','EXPIRED']:  
               if symbol in diccionario_global_operaciones:                  
                 for key, operacion in diccionario_operaciones_enviadas.items():#11111
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
                                 ut_a_devolver = operacion['_ut_']   
                                 if status == 'REJECTED' :
-                                    ut_a_devolver = operacion['_ut_'] + stock_para_closed 
+                                   # ut_a_devolver = operacion['_ut_'] + stock_para_closed 
+                                    ut_a_devolver = 0
                                     print('ut_a_devolver ',ut_a_devolver) 
                                     
                                     if ut_a_devolver <= 0:
@@ -539,7 +540,7 @@ def _operada(order_report):
                           
                 
 
-    if status == 'FILLED': 
+    if status == ['FILLED','REJECTED']: 
             endingGlobal = 'SI'  # Suponiendo inicialmente que todas las operaciones son 'si'
             endingEnviadas = 'SI'
             for operacion_enviada in diccionario_operaciones_enviadas.values():  

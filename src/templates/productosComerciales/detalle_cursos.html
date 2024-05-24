@@ -16,7 +16,11 @@
                     <p style="margin-bottom: 5px; color: #7fff7f;">El costo es en dolares y todos los cursos tiene el mismo costo.</p>
                     <p>Este sistema de cursos ha sido cuidadosamente diseñado para lograr operar con instrumentos tanto del mercado argentino como del estadounidense. Se activa automáticamente todos los días a toda hora, realiza nuestros cursos sobre diversos temas relacionados con finanzas, garantiza una gestión eficiente y asesoramiento permanente.</p>
                     <p style="color: #7fff7f;">Además, contamos con un sistema de prueba que permite a los usuarios operar directamente desde la plataforma sin necesidad de recurrir a un broker ni operaciones reales, brindando a los usuarios un mayor control sobre sus conocimientos.</p>
-                    <a href="#" class="btn btn-success">Suscribir ahora</a>
+                    <form action="/pago" method="GET">
+                        <input type="hidden" id="costo_base" name="costo_base" value="15">
+                        <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
+                        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir ahora</button>
+                    </form>
                 </div>
             </div>
         </div>

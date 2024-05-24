@@ -41,6 +41,8 @@ def detalle_producto(producto):
         return render_template('productosComerciales/detalle_cursos.html')
     elif producto == "index-fintech":
         return render_template('productosComerciales/detalle_fintech.html')
+    elif producto == "index-monedas-virtuales":
+        return render_template('productosComerciales/detalle_monedas_virtuales.html')
     # Añadir más productos según sea necesario
     else:
         return "Producto no encontrado", 404
