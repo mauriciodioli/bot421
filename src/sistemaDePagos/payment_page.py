@@ -14,6 +14,10 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
+#from mercadopago import MercadoPago
+
+# Inicializar la instancia de MercadoPago con tus credenciales
+#mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
 
 payment_page = Blueprint('payment_page',__name__)
 
@@ -47,7 +51,23 @@ def process_payment():
         data = request.json
         card_number = data.get('card_number')
         amount = data.get('amount')
-        
+       # Crear un pago
+        payment_data = {
+            "transaction_amount": 100,
+            "reason": "Compra de producto",
+            "payer": {
+                "email": "test_user_123456@testuser.com"
+            },
+            "payment_method_id": "visa",
+            "installments": 1
+        }
+        #payment_response = mp.post("/v1/payments", payment_data)
+        payment_response = 'vacio'
+        # Verificar si el pago fue aprobado
+        if payment_response["status"] == 201:
+            print("El pago fue exitoso.")
+        else:
+            print("El pago falló.")
         # Respuesta simulada para el ejemplo
         response = {
             'status': 'success',
