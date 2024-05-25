@@ -257,8 +257,10 @@ def loginExtAutomatico():
                             ws_url = endPoint[1]
                             session['api_url']=endPoint[0]
                             session['ws_url']=endPoint[1]
-                            
-                            print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
+                            print('###########################################################################')
+                            print('#####################LOGEO AUTOMATICO######################################')
+                            print('###########################################################################')
+                          #  print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
                             if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_________
                                 
                                 

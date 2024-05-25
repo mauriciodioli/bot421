@@ -17,9 +17,11 @@
             "args": [
                 "run"
             ],
-            "jinja":true,
-            "justMyCode":true,
+            "jinja":True,
+            "justMyCode":True,
+            "pythonPath": "/usr/local/bin/python",  // Asegúrate de que este sea el intérprete correcto
             "cwd": "/workspaces/bot421/src"
+         
             
             
             

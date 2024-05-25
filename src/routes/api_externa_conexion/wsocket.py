@@ -189,7 +189,7 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
     if len(get.diccionario_global_sheet) == 0 or 'argentina' not in get.diccionario_global_sheet:
-       ContenidoSheet = get_instrumento_para_suscripcion_ws(accountCuenta)# **44
+       ContenidoSheet = get_instrumento_para_suscripcion_ws(app,accountCuenta)# **44
        ContenidoSheet_list = list(ContenidoSheet)
     ContenidoSheet_list = get.diccionario_global_sheet['argentina']
 
@@ -291,8 +291,8 @@ def cargaSymbolParaValidar(message):
  
     return listado_final
   
-def get_instrumento_para_suscripcion_ws(accountCuenta):#   **77
-     ContenidoSheet =  enviar_leer_sheet('argentina',accountCuenta) 
+def get_instrumento_para_suscripcion_ws(app,accountCuenta):#   **77
+     ContenidoSheet =  enviar_leer_sheet(app,'argentina',accountCuenta) 
      return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db(app):
