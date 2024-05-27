@@ -18,10 +18,12 @@ descrpcionProductos = Blueprint('descrpcionProductos',__name__)
 
 
 
-@descrpcionProductos.route('/descripcionProductos', methods = ['GET'])
+@descrpcionProductos.route('/descripcionProductos', methods=['GET'])
 def descripcionProductos():
+    # Obtiene el parámetro 'productoId' de la cadena de consulta
+    OrigenLayout = request.args.get('layout')
    
-    return render_template('productosComerciales/descripcionProductos.html')
+    return render_template('productosComerciales/descripcionProductos.html',layout = OrigenLayout)
 
 @descrpcionProductos.route('/detalle/<producto>')
 def detalle_producto(producto):

@@ -269,6 +269,8 @@ def loginExtAutomatico():
                                         #if  ConexionesBroker[accountCuenta].get('identificador') == True:
                                             pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
                                             repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
+                                            SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id)
+                                     
                                             if repuesta_operacion:
                                                 pass
                                 else:
@@ -288,7 +290,7 @@ def loginExtAutomatico():
                                         pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
                                         accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
                                         ####### TEMPORALMENTE COMPROBAR SI SE DESSUCRIBE POR ERROR DE WS#####
-                                      #  SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
+                                       # SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
                                         refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
                                         resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                         resp.headers['Content-Type'] = 'application/json'
