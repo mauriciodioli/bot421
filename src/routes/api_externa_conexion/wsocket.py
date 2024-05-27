@@ -15,6 +15,7 @@ import time    #lo utilizo para test
 import asyncio
 import websockets
 import websocket
+from flask_paginate import Pagination, get_page_parameter
 
 import json
 import os
@@ -105,8 +106,8 @@ def suscriptos():
      
           Ticker = request.form["symbol"]                 
           Ticker = Ticker.replace("*", " ")
-          account = request.form["websocketSuscricionCuenta"] 
-          access_token = request.form["websocketSuscricionToken"] 
+          account = request.form["websocketCuenta"] 
+          access_token = request.form["websocketToken"] 
           #traigo los instrumentos para suscribirme
           mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws(accountCuenta)
           longitudLista = len(mis_instrumentos)
@@ -170,13 +171,20 @@ def SuscripcionWs():
         #actualizarTablaMD()
         #diccionario.update(get.market_data_recibida)
         pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']       
-        repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
-        #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
-        listado_instrumentos = repuesta_listado_instrumento['instruments']
-        #for listado_instrumentos in listado_instrumentos:
-       # print("listado_instrumentos en instrumentos_detalles en intrumentos.py",listado_instrumentos)#aqui muestro los instrumentos por pantalla
-        print("listado_instrumentos en instrumentos_detalles en intrumentos.py")
-        return render_template("instrumentos.html", datos = listado_instrumentos   )
+      
+        if pyRofexInicializada:        
+            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
+            listado_instrumentos = repuesta_listado_instrumento['instruments']
+
+            # Configurar paginación
+            
+            per_page = 10
+            offset = (1 - 1) * per_page
+            datos_paginated = listado_instrumentos[offset:offset + per_page]
+
+            pagination = Pagination(page=1, total=len(listado_instrumentos), per_page=per_page, css_framework='bootstrap4')
+
+            return render_template("instrumentos/instrumentos.html", datos=datos_paginated, pagination=pagination)
         #return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
 
 

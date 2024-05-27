@@ -146,7 +146,9 @@
                           <li>
                               <form id="instrumentos_form" action="/instrumentos_detalles" method="post">
                                   <!-- Aquí puedes agregar los campos adicionales que desees -->
-                                  <input type="hidden" name="accounCuenta_form_instrumentos_detalles" id="accounCuenta_form_instrumentos_detalles">
+                                  <input type="hidden" name="instrumentos_account" id="instrumentos_account">
+                                  <input type="hidden" id="page" name="page" value="{{ request.args.get('page', 1) }}">
+
                                   <!-- El botón de enviar el formulario -->
                                   <button type="submit" class="dropdown-item">Listado</button>
                               </form>
@@ -408,7 +410,7 @@
         document.getElementById("accounCuenta_form_posicionCuenta").value = cuentaBroker;
         document.getElementById("selector_form_posicionCuenta").value = selector;
         //detalle instrumentos_form
-        document.getElementById('accounCuenta_form_instrumentos_detalles').value = cuentaBroker;
+        document.getElementById('instrumentos_account').value = cuentaBroker;
         //estado de cuentas
         document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
         document.getElementById('form_estadoOperacion_accessToken').value = access_token;
