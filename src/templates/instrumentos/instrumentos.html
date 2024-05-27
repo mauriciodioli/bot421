@@ -174,7 +174,28 @@
             // Agregar la fila al cuerpo de la tabla
             tbody.appendChild(row);
         });
+          // Asociar eventos de clic a los botones de envío
+    assignSubmitEvents();
     }
+
+
+    
+function assignSubmitEvents() {
+    var account = localStorage.getItem('cuenta');
+    var access_token = localStorage.getItem('access_token');
+
+    // Asigna los valores de token y cuenta a los campos ocultos
+    var forms = document.querySelectorAll('form.subscriptionForm');
+    forms.forEach(function(form) {
+        form.querySelector('.websocketSuscricionCuenta').value = account;
+        form.querySelector('.websocketSuscricionToken').value = access_token;
+
+        form.querySelector('.submitBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+            submitForm(form);
+        });
+    });
+}
 
 </script>
 {% endblock %}
