@@ -8,6 +8,8 @@ from models.instrumento import Instrumento
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as valida
 import time
+from flask_paginate import Pagination, get_page_parameter
+import re
 
 
 from utils.db import db
@@ -20,7 +22,8 @@ instrumentos = Blueprint('instrumentos',__name__)
 ##########################AQUI ES LA ENTRADA A LA PAGINA INSTRUMENTOS####################
 
 def Getinstrumentos(account=None): 
-     repuesta_listado_instrumento = get.ConexionesBroker['pyRofex'].get_detailed_instruments(environment=account)    
+     repuesta_listado_instrumento = get.ConexionesBroker['pyRofex'].get_detailed_instruments(environment=account)  
+     
      listado_instrumento = repuesta_listado_instrumento["instruments"]
      
      #for listado_instrumento in listado_instrumento:     
@@ -241,27 +244,96 @@ def instrumentos_existentes_by_symbol(pyRofexInicializada=None,message=None,acco
             return True
 
     return False
-  
+@instrumentos.route("/instrumentos_existentes_by_listado/", methods = ['POST'])
+def instrumentos_existentes_by_listado():
+    listado_final = []
+    account = request.form['account']
+    symbol = request.form['symbol']
+    pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+    respuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
+    listado_instrumentos = respuesta_listado_instrumento.get('instruments', [])
+    
+    # Inicializar la lista final
+    listado_final = []
+
+    # Convertir el símbolo a una expresión regular, ignorando mayúsculas y minúsculas
+    pattern = re.compile(re.escape(symbol), re.IGNORECASE)
+
+    # Verificar si el símbolo proporcionado está en el listado de instrumentos usando la expresión regular
+    if any(pattern.search(inst['instrumentId']['symbol']) for inst in listado_instrumentos):
+        for inst in listado_instrumentos:
+            if pattern.search(inst['instrumentId']['symbol']):
+                listado_final.append(inst['instrumentId']['symbol'])
+    
+    per_page = 10
+    offset = (1 - 1) * per_page
+    datos_paginated = listado_final[offset:offset + per_page]
+
+    pagination = Pagination(page=1, total=len(listado_final), per_page=per_page, css_framework='bootstrap4')
+
+    return jsonify(datos_paginated)
 
 
-@instrumentos.route("/instrumentos_detalles/", methods=['POST'] )
-def instrumentos_detalles():
+@instrumentos.route("/instrumentos_detalles_paginacion/<instrumentos_account_paginacion>/<pagina>", methods=['GET'])
+def instrumentos_detalles_paginacion(instrumentos_account_paginacion,pagina):
     try:
-        account = request.form['accounCuenta_form_instrumentos_detalles']
-        #listadoSymbolos = Getinstrumentos()#aqui consulto los instrumentos pero no los estoy cargando
-        #11
-        #for listadoSymbolos in listadoSymbolos:
-     #   print(listadoSymbolos)
+        if request.method == 'GET':
+            # Aquí maneja la lógica para las solicitudes POST
+            
+            account = instrumentos_account_paginacion
+            return f'Valor de la página: {pagina}, Valor de la cuenta de instrumentos: {account}'
+        elif request.method == 'GET':
+            # Aquí maneja la lógica para las solicitudes GET
+            pagina = request.args.get('page', default=1, type=int)
+            # Puedes realizar cualquier acción necesaria para manejar la solicitud GET
+            return f'Página solicitada: {pagina}'
+        
         if account is not None:
             pyRofexInicializada = get.ConexionesBroker.get(account)
             if pyRofexInicializada:        
                 repuesta_listado_instrumento = pyRofexInicializada['pyRofex'].get_detailed_instruments(environment=account)
-                #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
                 listado_instrumentos = repuesta_listado_instrumento['instruments']
-                return render_template("instrumentos/instrumentos.html", datos = listado_instrumentos   )
 
-    except:        
-        return render_template("notificaciones/noPoseeDatos.html" )
+                # Configurar paginación
+               
+                per_page = 10
+                offset = (page - 1) * per_page
+                datos_paginated = listado_instrumentos[offset:offset + per_page]
+
+                pagination = Pagination(page=page, total=len(listado_instrumentos), per_page=per_page, css_framework='bootstrap4')
+
+                return render_template("instrumentos/instrumentos.html", datos=datos_paginated, pagination=pagination)
+    except Exception as e:
+        print(e)  # Imprimir la excepción para depurar el error
+        return str(e)
+ 
+
+    
+@instrumentos.route("/instrumentos_detalles/", methods=['POST'])
+def instrumentos_detalles():
+    try:
+      
+        account = request.form['instrumentos_account']
+        page = request.form.get('page', 1, type=int)
+        
+        if account is not None:
+            pyRofexInicializada = get.ConexionesBroker.get(account)
+            if pyRofexInicializada:        
+                repuesta_listado_instrumento = pyRofexInicializada['pyRofex'].get_detailed_instruments(environment=account)
+                listado_instrumentos = repuesta_listado_instrumento['instruments']
+
+                # Configurar paginación
+               
+                per_page = 10
+                offset = (page - 1) * per_page
+                datos_paginated = listado_instrumentos[offset:offset + per_page]
+
+                pagination = Pagination(page=page, total=len(listado_instrumentos), per_page=per_page, css_framework='bootstrap4')
+
+                return render_template("instrumentos/instrumentos.html", datos=datos_paginated, pagination=pagination)
+    except Exception as e:
+        print(e)  # Imprimir la excepción para depurar el error
+        return str(e)
    
 @instrumentos.route("/routes-instrumentos-lista-precios/", methods=['POST'])
 def routes_instrumentos_lista_precios():
