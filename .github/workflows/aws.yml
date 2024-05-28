@@ -30,6 +30,11 @@ jobs:
         DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
+    - name: Save Docker image ID to environment
+      run: |
+        IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
+        echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
+
     - name: Stop and remove existing container
       uses: appleboy/ssh-action@master
       with:
@@ -47,8 +52,6 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
-          echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
           if [ ! -z "$IMAGE_ID" ]; then
             docker rmi $IMAGE_ID
           fi
