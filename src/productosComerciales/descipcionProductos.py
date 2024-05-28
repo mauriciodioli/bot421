@@ -47,6 +47,9 @@ def detalle_producto(producto):
         return render_template('productosComerciales/detalle_monedas_virtuales.html')
     elif producto == "sobreNosotros":
         return render_template('estaticas/sobreNosotros.html')
+    elif producto == "cuenta-demo":
+        return render_template('estaticas/cuentaDemo.html')
+    
    
     # Añadir más productos según sea necesario
     else:
