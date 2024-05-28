@@ -10,27 +10,23 @@ env:
 jobs:
   deploy-to-cluster:
     runs-on: ubuntu-latest
- # Definir la variable de IP
     env:
       EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com # IMAGEN TEST
-     # EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com # IMAGEN PRODUCCION
+      # EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com # IMAGEN PRODUCCION
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
     
     - name: Set Dockerfile WORKDIR to /src
-      run: |
-          sed -i 's/WORKDIR \/app/WORKDIR \/src/' Dockerfile
+      run: sed -i 's/WORKDIR \/app/WORKDIR \/src/' Dockerfile
 
     - name: Build and Push to Docker Hub
-      uses: docker/build-push-action@v1
+      uses: docker/build-push-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ${{ github.repository_owner }}/202302i
-        tag_with_ref: true
         tags: ${{ github.sha }}
-
 
     - name: Stop and remove existing container
       uses: appleboy/ssh-action@master
@@ -39,8 +35,8 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-           docker stop ${{ env.DEPLOYMENT_VERSION }} || true
-           docker rm ${{ env.DEPLOYMENT_VERSION }} || true
+          docker stop ${{ env.DEPLOYMENT_VERSION }} || true
+          docker rm ${{ env.DEPLOYMENT_VERSION }} || true
 
     - name: Remove existing Docker image
       uses: appleboy/ssh-action@master
@@ -49,13 +45,12 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-               IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
-               echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
-               if [ ! -z "$IMAGE_ID" ]; then
-                 docker rmi $IMAGE_ID
-               fi
+          IMAGE_ID=$(docker images -q ${{ github.repository_owner }}/202302i)
+          echo "IMAGE_ID is $IMAGE_ID"  # Paso de depuración agregado
+          if [ ! -z "$IMAGE_ID" ]; then
+            docker rmi $IMAGE_ID
+          fi
          
-  
     - name: Copy Docker image to AWS instance
       uses: appleboy/ssh-action@master
       with:
@@ -63,8 +58,8 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-           docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
-           docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+          docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+          docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
     
     - name: Modify _app.py in websocket library
       uses: appleboy/ssh-action@master
@@ -76,6 +71,7 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip uninstall -y websocket-client
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip install websocket-client==0.57.0
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
+
     - name: Modify service.py in pyRofex library
       uses: appleboy/ssh-action@master
       with:
@@ -89,8 +85,6 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "echo '    globals.environment_config[enumCuenta] = env' >> /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '/^def _validate_environment(environment):$/,/^ *raise ApiException(\"Invalid Environment.\")/ s/^ *if not isinstance(environment, Environment):/#&/' /usr/local/lib/python3.9/site-packages/pyRofex/service.py"
 
-            
-        
     - name: Add line to position 39 in __init__.py of pyRofex library
       uses: appleboy/ssh-action@master
       with:
@@ -110,7 +104,6 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '9i\class Environment:' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '10i\    REMARKET = 1' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '11i\    LIVE = 2' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
-        
 
           # Detener el contenedor
           docker stop ${{ env.DEPLOYMENT_VERSION }} || true
