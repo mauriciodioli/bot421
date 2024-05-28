@@ -796,3 +796,145 @@ __inicio 14:11 ___fin 19:00
 2024-04-29 14:13:48,111 - INFO - http://127.0.0.1:5001/estrategia-002
 2024-04-29 14:13:48,112 - INFO - {'userCuenta': 'apipuntillo22583398', 'idTrigger': 27, 'access_token': 'access_token', 'idUser': 10, 'correo_electronico': 'dpuntillo@gmail.com', 'cuenta': '10861', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'estrategia-002'}
 2024-05-03 16:09:23,485 - INFO - ______está logueado en produccion en LIVE___________
+2024-05-28 15:47:10,585 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:47:10,592 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:47:10
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:48:10,599 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:48:10
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:49:10,614 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:49:10
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:50:10,649 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:50:10
+2024-05-28 15:50:51,374 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:50:51,379 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:50:51
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:51:10,678 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:51:10
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:51:51,389 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:51:51
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:52:10,692 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:52:10
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:52:51,400 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:52:51
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:53:10,706 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:53:10
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:53:51,420 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:53:51
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:54:10,726 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:54:10
+__inicio 14:00 ___fin 19:00
+2024-05-28 15:54:51,439 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 15:54:51
+2024-05-28 16:03:50,567 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:03:50,576 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:03:50
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:04:50,588 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:04:50
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:05:50,609 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:05:50
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:06:50,679 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:06:50
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:07:50,689 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:07:50
+2024-05-28 16:08:19,148 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:08:19,153 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:08:19
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:09:19,164 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:09:19
+2024-05-28 16:10:07,538 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 18:12 ___fin 19:00
+2024-05-28 16:10:07,543 - CUSTOM - __inicio 18:12 ___fin 19:00 __hora_actual 16:10:07
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:10:19,174 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:10:19
+__inicio 18:12 ___fin 19:00
+2024-05-28 16:11:07,574 - CUSTOM - __inicio 18:12 ___fin 19:00 __hora_actual 16:11:07
+__inicio 14:00 ___fin 19:00
+2024-05-28 16:11:19,185 - CUSTOM - __inicio 14:00 ___fin 19:00 __hora_actual 16:11:19
+2024-05-28 16:13:17,787 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:13:17,796 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:13:17
+2024-05-28 16:14:00,632 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 16:16 ___fin 19:00
+2024-05-28 16:14:00,635 - CUSTOM - __inicio 16:16 ___fin 19:00 __hora_actual 16:14:00
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:14:17,807 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:14:17
+__inicio 16:16 ___fin 19:00
+2024-05-28 16:15:00,644 - CUSTOM - __inicio 16:16 ___fin 19:00 __hora_actual 16:15:00
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:15:17,818 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:15:17
+__inicio 16:16 ___fin 19:00
+2024-05-28 16:16:00,678 - CUSTOM - __inicio 16:16 ___fin 19:00 __hora_actual 16:16:00
+2024-05-28 16:16:00,725 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-05-28 16:16:00,726 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-05-28 16:16:02,222 - INFO - ___________________Se conecto con exito al WS______________________
+2024-05-28 16:16:02,854 - INFO - <Usuario 10>
+2024-05-28 16:16:02,857 - INFO - usuario 10 nombre estrategia Bull_Market_10861_001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-05-28 16:16:05,917 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-05-28 16:16:08,867 - INFO - http://127.0.0.1:5001/Bull-Market-10861-001
+2024-05-28 16:16:08,868 - INFO - {'userCuenta': 'apipuntillo22583398', 'idTrigger': 166, 'access_token': 'access_token', 'idUser': 10, 'correo_electronico': 'dpuntillo@gmail.com', 'cuenta': '10861', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'Bull_Market_10861_001'}
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:16:17,828 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:16:17
+__inicio 16:16 ___fin 19:00
+2024-05-28 16:17:08,883 - CUSTOM - __inicio 16:16 ___fin 19:00 __hora_actual 16:17:08
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:17:17,842 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:17:17
+__inicio 16:16 ___fin 19:00
+2024-05-28 16:18:08,916 - CUSTOM - __inicio 16:16 ___fin 19:00 __hora_actual 16:18:08
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:18:17,853 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:18:17
+__inicio 16:16 ___fin 19:00
+2024-05-28 16:19:08,926 - CUSTOM - __inicio 16:16 ___fin 19:00 __hora_actual 16:19:08
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:19:17,866 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:19:17
+__inicio 16:16 ___fin 19:00
+2024-05-28 16:20:08,969 - CUSTOM - __inicio 16:16 ___fin 19:00 __hora_actual 16:20:08
+__inicio 14:16 ___fin 19:00
+2024-05-28 16:20:17,881 - CUSTOM - __inicio 14:16 ___fin 19:00 __hora_actual 16:20:17
+2024-05-28 16:22:26,541 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 18:25 ___fin 19:00
+2024-05-28 16:22:26,549 - CUSTOM - __inicio 18:25 ___fin 19:00 __hora_actual 16:22:26
+2024-05-28 16:22:54,681 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 16:25 ___fin 19:00
+2024-05-28 16:22:54,685 - CUSTOM - __inicio 16:25 ___fin 19:00 __hora_actual 16:22:54
+__inicio 18:25 ___fin 19:00
+2024-05-28 16:23:26,570 - CUSTOM - __inicio 18:25 ___fin 19:00 __hora_actual 16:23:26
+__inicio 16:25 ___fin 19:00
+2024-05-28 16:23:54,694 - CUSTOM - __inicio 16:25 ___fin 19:00 __hora_actual 16:23:54
+__inicio 18:25 ___fin 19:00
+2024-05-28 16:24:26,581 - CUSTOM - __inicio 18:25 ___fin 19:00 __hora_actual 16:24:26
+__inicio 16:25 ___fin 19:00
+2024-05-28 16:24:54,734 - CUSTOM - __inicio 16:25 ___fin 19:00 __hora_actual 16:24:54
+__inicio 18:25 ___fin 19:00
+2024-05-28 16:25:26,595 - CUSTOM - __inicio 18:25 ___fin 19:00 __hora_actual 16:25:26
+2024-05-28 16:25:26,672 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-05-28 16:25:26,675 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-05-28 16:25:27,398 - INFO - ___________________Se conecto con exito al WS______________________
+2024-05-28 16:25:27,740 - INFO - <Usuario 10>
+2024-05-28 16:25:27,742 - INFO - usuario 10 nombre estrategia Bull_Market_10861_001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-05-28 16:25:30,105 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-05-28 16:25:34,671 - INFO - http://127.0.0.1:5001/Bull-Market-10861-001
+2024-05-28 16:25:34,673 - INFO - {'userCuenta': 'apipuntillo22583398', 'idTrigger': 166, 'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNjkxODc2MSwianRpIjoiNDUzZDc5NDctYzliYS00MzZlLTg3YzUtNzllNjc5YTA1OWFjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxNjkxODc2MSwiY3NyZiI6IjVlY2E5NDgzLWFkZWUtNGVjMC04ODk5LTA5ZGRjZTkxMWRhZCIsImV4cCI6MTcxNzAwNTE2MX0.RSm4DAI0mJbRcZ1lMdadyNj_beMjtRF1L1SIBQSSOTY', 'idUser': 10, 'correo_electronico': 'dpuntillo@gmail.com', 'cuenta': '10861', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'Bull_Market_10861_001'}
+__inicio 16:25 ___fin 19:00
+2024-05-28 16:25:54,745 - CUSTOM - __inicio 16:25 ___fin 19:00 __hora_actual 16:25:54
+__inicio 18:25 ___fin 19:00
+2024-05-28 16:26:34,692 - CUSTOM - __inicio 18:25 ___fin 19:00 __hora_actual 16:26:34
+__inicio 16:25 ___fin 19:00
+2024-05-28 16:26:54,758 - CUSTOM - __inicio 16:25 ___fin 19:00 __hora_actual 16:26:54
+2024-05-28 16:30:04,681 - INFO - FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 16:32 ___fin 19:00
+2024-05-28 16:30:04,687 - CUSTOM - __inicio 16:32 ___fin 19:00 __hora_actual 16:30:04
+__inicio 16:32 ___fin 19:00
+2024-05-28 16:31:04,695 - CUSTOM - __inicio 16:32 ___fin 19:00 __hora_actual 16:31:04
+__inicio 16:32 ___fin 19:00
+2024-05-28 16:32:04,704 - CUSTOM - __inicio 16:32 ___fin 19:00 __hora_actual 16:32:04
+2024-05-28 16:32:04,719 - INFO - _______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________
+2024-05-28 16:32:04,721 - INFO - _______________Intentando__conexion__con WS__________________________
+2024-05-28 16:32:05,441 - INFO - ___________________Se conecto con exito al WS______________________
+2024-05-28 16:32:05,768 - INFO - <Usuario 10>
+2024-05-28 16:32:05,772 - INFO - usuario 10 nombre estrategia Bull_Market_10861_001 Hora de inicio: 15:00:00 Hora de fin: 17:00:00
+2024-05-28 16:32:08,459 - INFO - ___________________SE INICIA CON ESTRATEGIA______________________
+2024-05-28 16:32:16,887 - INFO - http://127.0.0.1:5001/Bull-Market-10861-001
+2024-05-28 16:32:16,888 - INFO - {'userCuenta': 'apipuntillo22583398', 'idTrigger': 166, 'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNjkxODc2MSwianRpIjoiNDUzZDc5NDctYzliYS00MzZlLTg3YzUtNzllNjc5YTA1OWFjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxNjkxODc2MSwiY3NyZiI6IjVlY2E5NDgzLWFkZWUtNGVjMC04ODk5LTA5ZGRjZTkxMWRhZCIsImV4cCI6MTcxNzAwNTE2MX0.RSm4DAI0mJbRcZ1lMdadyNj_beMjtRF1L1SIBQSSOTY', 'idUser': 10, 'correo_electronico': 'dpuntillo@gmail.com', 'cuenta': '10861', 'tiempoInicio': '1900-01-01T15:00:00', 'tiempoFin': '1900-01-01T17:00:00', 'automatico': 'AUTOMATICO', 'nombre': 'Bull_Market_10861_001'}
+__inicio 16:32 ___fin 19:00
+2024-05-28 16:33:16,924 - CUSTOM - __inicio 16:32 ___fin 19:00 __hora_actual 16:33:16
+__inicio 16:32 ___fin 19:00
+2024-05-28 16:34:24,471 - CUSTOM - __inicio 16:32 ___fin 19:00 __hora_actual 16:34:21
