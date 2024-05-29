@@ -74,7 +74,7 @@
                       <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
                         <input type="hidden" name="access_token" id="access_token">
                         <div class="col">                            
-                            <button id="enviarSolicitud" type="submit" class="btn btn-secondary w-100" style="transition: box-shadow 0.3s;"
+                            <button onclick="mostrarSplash()" id="enviarSolicitud" type="submit" class="btn btn-secondary w-100" style="transition: box-shadow 0.3s;"
                               onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
                               data-bs-toggle="modal" >Cuentas existentes</button>
                         </div>
@@ -146,7 +146,7 @@
       <!-- Pie del modal (puedes dejarlo vacío o agregar botones) -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary" id="guardarPais">Guardar</button>
+        <button onclick="mostrarSplash()" type="button" class="btn btn-primary" id="guardarPais">Guardar</button>
       </div>
     </div>
   </div>
@@ -157,7 +157,9 @@
 
     <script>   
 
-
+      function mostrarSplash() {
+        document.getElementById("splash").style.display = "block";
+      }
 
       document.getElementById('guardarPais').addEventListener('click', function() {
         document.getElementById('splash').style.display = 'block';
