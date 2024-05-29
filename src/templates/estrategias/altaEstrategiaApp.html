@@ -41,9 +41,7 @@
             <td>{{ dato.fecha }}</td> 
             <td class="d-flex">          
                <button type="button" class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#altaEstrategiaModal" data-estrategiaId-id="{{ dato.id }}" onclick="setUserDataAlta(this.getAttribute('data-estrategiaId-id'))">Agregar</button>
-               <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" 
-                  data-id="{{ dato.id }}" data-api-url="{{ dato.api_url }}" data-ws-url="{{ dato.ws_url }}" data-nombre="{{ dato.nombre }}" 
-                  data-descripcion="{{ dato.descripcion }}">Editar</button>
+              
                 <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-estrategiaId-id="{{ dato.id }}" onclick="setUserData(this.getAttribute('data-estrategiaId-id'))">Eliminar</button>
             </td>
              
