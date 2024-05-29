@@ -39,30 +39,38 @@ class States(enum.Enum):
 def estrategias_usuario_general():
     try:
       if request.method == 'GET': 
-            triggerEstrategia = db.session.query(TriggerEstrategia).all()
-            ut_por_trigger = {}
-            for i, tupla_exterior in enumerate(triggerEstrategia):
-                 dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-                 symbol = dato[0]
-                 
-                 
-            for i, trigger in triggerEstrategia:
-                unidades = db.session.query(UnidadTrader.ut).filter_by(trigger_id=trigger.id).all()
-                 # Si la clave ya existe, extiende la lista
-                if trigger.id in triggerEstrategia.item():
-                    triggerEstrategia[trigger.id].extend([unidad.ut for unidad in unidades])
-                else:
-                    triggerEstrategia[trigger.id] = [unidad.ut for unidad in unidades]
+      # Obtener todos los TriggerEstrategia
+        estrategias = db.session.query(TriggerEstrategia).all()
 
+        # Crear un diccionario para almacenar las unidades filtradas por trigger_id
+        ut_por_trigger = {}
 
-            db.session.close()
-
-            # Si no hay ningún dato de 'ut', envía solo 'triggerEstrategia'
-            if not ut_por_trigger:
-                return render_template("/estrategias/panelControEstrategiaUser.html",datos = [0,triggerEstrategia])
-
-            # Si hay datos de 'ut', envía 'ut_por_trigger'
-            return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,ut_por_trigger])
+       
+        db.session.close()
+        ut_por_trigger = {}
+        
+        for trigger in estrategias:
+            # Obtener 'ut' para el trigger actual
+            ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
+            
+            # Inicializar una lista para almacenar los valores de 'ut'
+            ut_values = []
+            
+            # Iterar sobre los objetos UnidadTrader y recopilar los valores de 'ut'
+            for ut_object in ut_objects:
+                ut_values.append(ut_object.ut)
+                print("Valor de 'ut':", ut_object.ut)
+            
+            # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
+            if not ut_values:
+                # Si la lista está vacía, asignar 0 al atributo 'ut'
+                trigger.ut = 0
+            else:
+                # Si la lista no está vacía, asignar los valores recopilados al atributo 'ut'
+                trigger.ut =  ut_object.ut
+        
+      
+        return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,estrategias])
 
           
     except:
