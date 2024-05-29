@@ -9,13 +9,38 @@
       <h1 class="display-4">Signals!</h1>     
       
       <p class="lead">To operate you can press the button with the corresponding color</p>
-      <form action="/pago" method="GET">
-        <input type="hidden" id="costo_base" name="costo_base" value="5">
-        <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
-        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $5 </button>
-      </form>
+        <form action="/pago" method="GET">
+          <input type="hidden" id="costo_base" name="costo_base" value="5">
+          <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
+          <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $5 </button>
+        </form>
       <hr class="my-4">  
-    </div> 
+    </div>
+     
+    <div class="jumbotron">
+      <h1 class="display-4">Select Broker!</h1>
+      <div class="form-group">
+          
+          <select class="form-control" id="brokerSelect" onchange="redirectBroker()">
+              <option value="" selected disabled>Select a broker</option>
+              <option value="https://micuenta.invertironline.com/ingresar?_gl=1*xhtvr6*_ga*MTc1MzIxMjkzNi4xNjc2MDUwNzY4*_ga_3ZJ55WFL39*MTcxNjk4NzM2My4xMjMuMS4xNzE2OTg3MzcwLjUzLjAuMA..">IOL</option>
+              <option value="https://www.bullmarketbrokers.com/Security/SignIn">Bull Market</option>
+              <option value="https://app.cocos.capital/login?_gl=1*288e0k*_ga*MTU1OTU4NjAzMi4xNzE2OTg3NTAz*_ga_GD4EVY0S82*MTcxNjk4NzUwMi4xLjAuMTcxNjk4NzUwMi42MC4wLjA.">Coco Capitales</option>
+          </select>
+      </div>
+      <hr class="my-4">
+    </div>
+
+    <script>
+      function redirectBroker() {
+          var select = document.getElementById('brokerSelect');
+          var selectedValue = select.value;
+          if (selectedValue) {
+            window.open(selectedValue, '_blank');
+          }
+      }
+    </script>
+ 
    <!-- <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>-->
    <div class="table-responsive"> 
     <table class="table table-dark table-striped"  id="signalTable">
