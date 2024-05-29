@@ -16,20 +16,52 @@
                     <p style="margin-bottom: 5px; color: #7fff7f;">El costo es en dolares y el porcentaje es en pesos.</p>
                     <p>Este sistema de trading automático ha sido cuidadosamente diseñado para operar con instrumentos tanto del mercado argentino como del estadounidense. Se activa automáticamente todos los días a la misma hora, realiza las operaciones necesarias y luego se apaga hasta el día siguiente, garantizando una gestión eficiente y sin intervención manual.</p>
                     <p style="color: #7fff7f;">Además, contamos con un sistema semiautomático que permite a los usuarios operar directamente desde la plataforma sin necesidad de recurrir a un broker. Este sistema ofrece la conveniencia de realizar operaciones a la hora deseada, brindando a los usuarios un mayor control sobre sus inversiones.</p>
-                    <form action="/pago" method="GET">
+                    <form id="subscriptionForm" action="/pago" method="GET">
                         <input type="hidden" id="costo_base" name="costo_base" value="15">
                         <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="6">
-                        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir ahora</button>
+                        <button id="subscribeButton" class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir ahora</button>
                     </form>
-                    
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
+<!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="color: black;">
+                <h5 class="modal-title" id="loginModalLabel" style="color: black;">Inicie sesión</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="color: black;">
+               <h3> Debe iniciar sesión para suscribirse.</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="loginRedirectButton">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% include 'layouts/layout_footer.html' %}
+
+<script>
+document.getElementById('subscribeButton').addEventListener('click', function(event) {
+    event.preventDefault();
+    if (!localStorage.getItem('acces_token')) {
+        $('#loginModal').modal('show');
+    } else {
+        document.getElementById('subscriptionForm').submit();
+    }
+});
+
+document.getElementById('loginRedirectButton').addEventListener('click', function() {
+    window.location.href = '/';
+});
+</script>
 {% endblock %}
 
