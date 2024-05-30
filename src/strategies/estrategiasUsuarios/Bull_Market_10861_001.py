@@ -848,7 +848,9 @@ def obtenerStock(cadena):
 
 
 def endingOperacionBot (endingGlobal,endingEnviadas,symbol):
-     print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas)
+     if symbol in diccionario_global_operaciones:
+           account = diccionario_global_operaciones[symbol]['accountCuenta']
+           print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas,'symbol: ',symbol,' account: ',account)
      if endingGlobal == 'SI' and endingEnviadas == 'SI' and diccionario_operaciones_enviadas:
          
         diccionario_operaciones_enviadas.clear()
