@@ -367,7 +367,7 @@
     
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     <script>
-    
+    debugger;
       
   // Custom JavaScript to handle submenu toggle
   $(document).ready(function() {
@@ -378,6 +378,11 @@
         $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
     });
 
+    // Close submenu when clicking outside
+    $(document).on("click", function() {
+        $('.dropdown-submenu .dropdown-menu').hide();
+    });
+});
 
 
 
