@@ -293,6 +293,7 @@ def loginUsuario():
        
         with session_scope() as session:
             usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
+            session.close()
         usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
 
        # print("Valor de password: ", password," usuario.password ",usuario.password)

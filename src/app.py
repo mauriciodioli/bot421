@@ -16,8 +16,7 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
 
-from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
-from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
+
 
 
 
@@ -156,8 +155,7 @@ app.register_blueprint(blueprint, url_prefix='/login')
 
 
 
-app.register_blueprint(Bull_Market_10861_001)
-app.register_blueprint(veta_capital_44593_001)
+
 ###############################################################
 app.register_blueprint(logs)
 app.register_blueprint(payment_page)
