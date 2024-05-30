@@ -35,6 +35,8 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
+   
     
 </head>
 
@@ -67,13 +69,25 @@
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>                      
-                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar/">Edicion Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Procesos</a></li>                          
+                          <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Estrategias</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias Lista</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Estrategias Sistema</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Estrategia Usuario</a></li>
+                            </ul>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
+                        <li><hr class="dropdown-divider"></li>  
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Sistema Pagos</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/crearSuscricpionesMP/">Crear planes</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Consulta</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+                            </ul>
+                        </li>      
                         </ul>
                         
                     </li>
@@ -353,7 +367,21 @@
     
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     <script>
-        
+    
+      
+  // Custom JavaScript to handle submenu toggle
+  $(document).ready(function() {
+    $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).next('.dropdown-menu').toggle();
+        $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
+    });
+
+
+
+
+
         selectedCountry  = localStorage.getItem('paisSeleccionado');
         document.getElementById('guardarPaisSeleccionado2').addEventListener('click', function() {
             var pais = selectedCountry;
