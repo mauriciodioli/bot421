@@ -25,30 +25,30 @@ def descripcionProductos():
    
     return render_template('productosComerciales/descripcionProductos.html',layout = OrigenLayout)
 
-@descrpcionProductos.route('/detalle/<producto>')
-def detalle_producto(producto):
+@descrpcionProductos.route('/detalle/<producto>/<OrigenLayout>')
+def detalle_producto(producto,OrigenLayout):
     if producto == "motor-de-operaciones":
-        return render_template('productosComerciales/detalle_motor_operaciones.html')
+        return render_template('productosComerciales/detalle_motor_operaciones.html',layout = OrigenLayout)
     elif producto == "bot-automatico":
-        return render_template('productosComerciales/detalle_bot_automatico.html')
+        return render_template('productosComerciales/detalle_bot_automatico.html',layout = OrigenLayout)
     elif producto == "sistema-operaciones":
-        return render_template('productosComerciales/detalle_sistema_operaciones.html')
+        return render_template('productosComerciales/detalle_sistema_operaciones.html',layout = OrigenLayout)
     elif producto == "copy-trader":
-        return render_template('productosComerciales/detalle_copy_trader.html')
+        return render_template('productosComerciales/detalle_copy_trader.html',layout = OrigenLayout)
     elif producto == "panel-manual":
-        return render_template('productosComerciales/detalle_panel_manual.html')
+        return render_template('productosComerciales/detalle_panel_manual.html',layout = OrigenLayout)
     elif producto == "fichas-tokens":
-        return render_template('productosComerciales/detalle_tokens.html')
+        return render_template('productosComerciales/detalle_tokens.html',layout = OrigenLayout)
     elif producto == "index-cursos":
-        return render_template('productosComerciales/detalle_cursos.html')
+        return render_template('productosComerciales/detalle_cursos.html',layout = OrigenLayout)
     elif producto == "index-fintech":
-        return render_template('productosComerciales/detalle_fintech.html')
+        return render_template('productosComerciales/detalle_fintech.html',layout = OrigenLayout)
     elif producto == "index-monedas-virtuales":
-        return render_template('productosComerciales/detalle_monedas_virtuales.html')
+        return render_template('productosComerciales/detalle_monedas_virtuales.html',layout = OrigenLayout)
     elif producto == "sobreNosotros":
-        return render_template('estaticas/sobreNosotros.html')
+        return render_template('estaticas/sobreNosotros.html',layout = OrigenLayout)
     elif producto == "cuenta-demo":
-        return render_template('estaticas/cuentaDemo.html')
+        return render_template('estaticas/cuentaDemo.html',layout = OrigenLayout)
     
    
     # Añadir más productos según sea necesario
