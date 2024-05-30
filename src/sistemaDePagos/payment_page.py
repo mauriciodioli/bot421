@@ -21,6 +21,46 @@ from models.brokers import Broker
 
 payment_page = Blueprint('payment_page',__name__)
 
+
+YOUR_ACCESS_TOKEN = 'TEST-7897622499833241-051414-fa868bef7e053a323b97ebbd953bf95b-630055'
+preapproval_plan_id = 'YOUR_PREAPPROVAL_PLAN_ID'
+
+
+@payment_page.route('/create_subscription', methods=['POST'])
+def create_subscription():
+    data = request.json
+    payer_email = data['email']
+    card_token_id = data['card_token_id']
+
+    url = 'https://api.mercadopago.com/preapproval'
+    headers = {
+        'Authorization': f'Bearer {YOUR_ACCESS_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    body = {
+        "preapproval_plan_id": preapproval_plan_id,
+        "reason": "Yoga classes",
+        "external_reference": "YG-1234",
+        "payer_email": payer_email,
+        "card_token_id": card_token_id,
+        "auto_recurring": {
+            "frequency": 1,
+            "frequency_type": "months",
+            "start_date": "2020-06-02T13:07:14.260Z",
+            "end_date": "2022-07-20T15:59:52.581Z",
+            "transaction_amount": 10,
+            "currency_id": "ARS"
+        },
+        "back_url": "https://www.mercadopago.com.ar",
+        "status": "authorized"
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(body))
+    if response.status_code == 201:
+        return jsonify({'message': 'Subscription Created'}), 201
+    else:
+        return jsonify({'error': response.json()}), 400
+
 @payment_page.route('/pago', methods=['GET'])
 def pago():
     # Obtener los valores de los inputs ocultos
