@@ -4,6 +4,7 @@ from http.client import UnimplementedFileMode
 import websockets
 import json
 import copy
+from pyRofex.components.exceptions import ApiException
 
 from re import template
 from socket import socket
@@ -382,8 +383,13 @@ def loginExtCuentaSeleccionadaBroker():
                     ambiente = copy.deepcopy(REMARKET)
                     pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
                     environments = accountCuenta                                        
-                    pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
-                    pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                    pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments) 
+                    try:   
+                        pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                    except ApiException as e:
+                        print(f"ApiException occurred: {e}")
+                        flash("Cuenta incorrecta: password o usuario incorrecto. Quite la cuenta")
+                        return render_template("cuentas/registrarCuentaBroker.html") 
                     ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
                                             
                 else:

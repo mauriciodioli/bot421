@@ -15,14 +15,9 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
+from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
 
-
-
-
-
-
-
-
+from strategies.estrategiasUsuarios.Remarkets_REM6603_001 import Remarkets_REM6603_001
 
 ########################################################################
 from models.creaTablas import crea_tablas_DB
@@ -150,13 +145,12 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    client_secret='client_secret',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
-##### BLUEPRINT ES EL ENRUTADOR####
-#####################zona estrategias de usuarios##############
+#####################zona blueprin de usuarios##############
+app.register_blueprint(veta_capital_44593_001)
 
+app.register_blueprint(Remarkets_REM6603_001)
 
-
-
-###############################################################
+############################################################
 app.register_blueprint(logs)
 app.register_blueprint(payment_page)
 app.register_blueprint(descrpcionProductos)

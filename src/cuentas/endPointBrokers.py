@@ -14,7 +14,7 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
-
+from models.cuentas import Cuenta
 endPointBrokers = Blueprint('endPointBrokers',__name__)
 
 @endPointBrokers.route("/cuentas_endPointBrokers/")
