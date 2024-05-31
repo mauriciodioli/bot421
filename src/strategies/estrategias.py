@@ -339,17 +339,17 @@ def agregar_estrategia_nueva_app(nombreEstrategia):
         #Verifica si se encontraron las referencias
         if linea_referencia1 is not None and linea_referencia2 is not None:
             # Inserta la primera línea en la posición encontrada
-            if linea_referencia1 + 1 < len(contenido) and contenido[linea_referencia1 + 1].strip():
-                contenido.insert(linea_referencia1 + 1, '\n')
+           # if linea_referencia1 + 1 < len(contenido) and contenido[linea_referencia1 + 1].strip():
+            #    contenido.insert(linea_referencia1 + 1, '\n')
             contenido.insert(linea_referencia1 + 1, nueva_linea)
             
             # Calcula la nueva posición de inserción para la segunda línea
             if linea_referencia2 > linea_referencia1:
-                linea_referencia2 += 2
+                linea_referencia2 += 1
             
             # Inserta la segunda línea en la posición encontrada
-            if linea_referencia2 + 1 < len(contenido) and contenido[linea_referencia2 + 1].strip():
-                contenido.insert(linea_referencia2 + 1, '\n')
+           # if linea_referencia2 + 1 < len(contenido) and contenido[linea_referencia2 + 1].strip():
+           #     contenido.insert(linea_referencia2 + 1, '\n')
             contenido.insert(linea_referencia2 + 1, nueva_linea2)
 
             # Escribir el contenido modificado de vuelta al archivo
