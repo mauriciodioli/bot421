@@ -309,17 +309,55 @@ def agregar_estrategia_nueva_app(nombreEstrategia):
         with open(path_app_modelo, "r", encoding="utf-8") as archivo_entrada:
             contenido = archivo_entrada.readlines()
 
-        # Agregar la nueva línea a partir de la línea 18
+        # Definir las nuevas líneas
         nueva_linea = 'from strategies.estrategiasUsuarios.' + nombreEstrategia + ' import ' + nombreEstrategia + '\n'
-        contenido.insert(18, nueva_linea)
-
-        # Agregar la segunda nueva línea después de la línea 150
         nueva_linea2 = 'app.register_blueprint(' + nombreEstrategia + ')\n'
-        contenido.insert(152, nueva_linea2)
 
-        # Escribir el contenido modificado de vuelta al archivo
-        with open(path_app_modelo, "w", encoding="utf-8") as archivo_salida:
-            archivo_salida.writelines(contenido)
+        # Encontrar la línea que contiene '*****************'
+        linea_referencia1 = None
+        linea_referencia2 = None
+
+        # Encuentra la primera referencia
+        for i, linea in enumerate(contenido):
+            if '######################zona de estrategias de usuarios####################' in linea:
+                linea_referencia1 = i
+                # Verificar si la siguiente línea está en blanco
+                if i + 1 < len(contenido) and contenido[i + 1].strip() == "":
+                    linea_referencia1 = i+1
+                    print("La próxima línea está en blanco.")
+                break
+        # Encuentra la segunda referencia
+        for i, linea in enumerate(contenido):
+            if '#####################zona blueprin de usuarios##############' in linea:
+                linea_referencia2 = i
+                 # Verificar si la siguiente línea está en blanco
+                if i + 1 < len(contenido) and contenido[i + 1].strip() == "":
+                    linea_referencia2 = i+1
+                    print("La próxima línea está en blanco.")
+                break
+
+        #Verifica si se encontraron las referencias
+        if linea_referencia1 is not None and linea_referencia2 is not None:
+            # Inserta la primera línea en la posición encontrada
+            if linea_referencia1 + 1 < len(contenido) and contenido[linea_referencia1 + 1].strip():
+                contenido.insert(linea_referencia1 + 1, '\n')
+            contenido.insert(linea_referencia1 + 1, nueva_linea)
+            
+            # Calcula la nueva posición de inserción para la segunda línea
+            if linea_referencia2 > linea_referencia1:
+                linea_referencia2 += 2
+            
+            # Inserta la segunda línea en la posición encontrada
+            if linea_referencia2 + 1 < len(contenido) and contenido[linea_referencia2 + 1].strip():
+                contenido.insert(linea_referencia2 + 1, '\n')
+            contenido.insert(linea_referencia2 + 1, nueva_linea2)
+
+            # Escribir el contenido modificado de vuelta al archivo
+            with open(path_app_modelo, "w", encoding="utf-8") as archivo_salida:
+                archivo_salida.writelines(contenido)
+        else:
+            # Manejar caso donde no se encontraron las referencias
+            print("No se encontraron las referencias necesarias en el archivo.")
 
     except Exception as e:
         print("Error al agregar la estrategia nueva al archivo:", e)

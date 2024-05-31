@@ -44,6 +44,32 @@ def delete_mer(id):
     flash('Operation Removed successfully')
     return redirect('/')
 
+def instrument_por_symbol_para_sugerir_ut(symbol,account):
+    try:
+        pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+        entries = [pyRofexInicializada.MarketDataEntry.BIDS,
+                        pyRofexInicializada.MarketDataEntry.OFFERS,
+                        pyRofexInicializada.MarketDataEntry.LAST]
+        merdado_id = pyRofexInicializada.Market.ROFEX
+       
+       # repuesta_instrumento = get.pyRofexInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+        repuesta_instrumento = pyRofexInicializada.get_market_data(ticker=symbol, entries=entries,environment=account)
+
+        objeto = repuesta_instrumento['marketData']
+
+        jdato = str(objeto['LA'])
+       
+
+        if jdato.find('price') == -1:
+            return ''
+        
+        dato = zip([symbol], [jdato])
+        return dato
+
+    except:
+        flash('Symbol Incorrect')
+        return render_template("instrumentos.html")
+
 def instrument_por_symbol(symbol,account):
     try:
         pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
