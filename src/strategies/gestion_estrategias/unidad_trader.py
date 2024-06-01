@@ -16,7 +16,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.triggerEstrategia import TriggerEstrategia
 from models.unidadTrader import UnidadTrader
-from routes.instrumentos import instrument_por_symbol
+from routes.instrumentos import instrument_por_symbol_para_sugerir_ut
 
 
 
@@ -42,24 +42,24 @@ def unidad_trader_mostrar():
         value = get.diccionario_global_sheet['argentina'][i]
         if value[1] == 'ARG':
             print(value[1])
-            resultado = instrument_por_symbol(value[0],UT_cuenta)
+            resultado = instrument_por_symbol_para_sugerir_ut(value[0],UT_cuenta)
             for item in resultado:
                 # Convierte el string JSON a un diccionario
-                json_string = item[3].replace("'", '"')
+                json_string = item[1].replace("'", '"')
                 data = json.loads(json_string)
                 # Accede al precio dentro del diccionario
-                precio = data[0]['price']
+                precio = data['price']
                 ut_ars.append(precio)
         else:
             if value[1] == 'CEDEAR':
                 print(value[1])
-                resultado = instrument_por_symbol(value[0],UT_cuenta)
+                resultado = instrument_por_symbol_para_sugerir_ut(value[0],UT_cuenta)
                 for item in resultado:
                     # Convierte el string JSON a un diccionario
-                    json_string = item[3].replace("'", '"')
+                    json_string = item[1].replace("'", '"')
                     data = json.loads(json_string)
                     # Accede al precio dentro del diccionario
-                    precio = data[0]['price']
+                    precio = data['price']
                     ut_cedears.append(precio)
 
 

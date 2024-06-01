@@ -24,15 +24,6 @@
             <table class="table table-dark table-striped">
                 <thead>           
                     <tr>
-                        <!--
-                        <th scope="col">Ticker</th>
-                        <th scope="col">Timestamp</th>
-                        <th scope="col">vol. Compra</th>
-                        <th scope="col">precio Compra</th>
-                        <th scope="col">precio Venta</th>
-                        <th scope="col"> Vol. Venta</th>                           
-                        <th scope="col">Ult. Precio Operado</th>
-                        -->   
                         <th scope="col">Ticker</th>
                         <th scope="col">maturityDate</th>
                         <th scope="col">maxTradeVol</th>                           
@@ -50,18 +41,18 @@
                         <td>{{ dato.minTradeVol }}</td>
                         <td>{{ dato.priceConvertionFactor }}</td>
                         <td>
-                            <form id="subscriptionForm" action="/SuscripcionWs/" method="POST">
+                            <form class="subscriptionForm" method="POST">
                                 <div class="form-group">
-                                    <input type="hidden" name="symbol" placeholder="escribe simbolo" value="{{ dato.instrumentId.symbol.replace(" ", "*") }}" class="form-control">
+                                    <input type="hidden" name="symbol" value="{{ dato.instrumentId.symbol|replace(" ", " ") }}" class="form-control">
                                 </div> 
                                 <div class="form-group">
-                                    <input type="hidden" name="websocketSuscricionCuenta" id="websocketSuscricionCuenta">
+                                    <input type="hidden" name="websocketSuscricionCuenta" class="websocketSuscricionCuenta">
                                 </div>
                                 <div class="form-group">
-                                    <input type="hidden" name="websocketSuscricionToken" id="websocketSuscricionToken">
+                                    <input type="hidden" name="websocketSuscricionToken" class="websocketSuscricionToken">
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-primary btn-sm btn-block form-control">Submit</button>
+                                    <button type="button" class="btn btn-primary btn-sm btn-block form-control submitBtn">Submit</button>
                                 </div>
                             </form>
                         </td>
@@ -69,36 +60,143 @@
                     {% endfor %}
                 </tbody>
             </table>
+
+            
         </div> 
     </div>
 </div>
-
+{% include 'layouts/layout_footer.html' %}   
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var account = localStorage.getItem('cuenta');
         var access_token = localStorage.getItem('access_token');
-        debugger;
+    
         // Asigna los valores de token y cuenta a los campos ocultos
-        document.getElementById('websocketSuscricionToken').value = access_token;
-        document.getElementById('websocketSuscricionCuenta').value = account;
-        document.getElementById('accountCuenta').value = account;
+        var forms = document.querySelectorAll('form.subscriptionForm');
+        forms.forEach(function(form) {
+            form.querySelector('.websocketSuscricionCuenta').value = account;
+            form.querySelector('.websocketSuscricionToken').value = access_token;
+    
+            form.querySelector('.submitBtn').addEventListener('click', function(event) {
+                event.preventDefault(); // Evitar el envío del formulario por defecto
+                submitForm(form);
+            });
+        });
     });
-
-    function filterTable() {
-        // Obtén el valor del input con name="symbol"
-        const symbolInput = document.querySelector('input[name="symbol"]');
-        const symbolToFilter = symbolInput.value.toLowerCase(); // Convierte a minúsculas para una búsqueda sin distinción entre mayúsculas y minúsculas
-
-        // Recorre las filas de la tabla y muestra/oculta según la búsqueda parcial
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const symbolInRow = row.getAttribute('data-symbol').toLowerCase(); // Convierte a minúsculas
-            if (symbolInRow.includes(symbolToFilter) || symbolToFilter === "") {
-                row.style.display = ""; // Muestra la fila
-            } else {
-                row.style.display = "none"; // Oculta la fila
-            }
+    
+    function submitForm(form) {
+        var formData = new FormData(form);
+        debugger;
+        fetch('/SuscripcionWs/', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            // Aquí puedes manejar la respuesta del servidor
+            updateTable(data); // Actualizar la tabla con los datos recibidos
+        })
+        .catch(error => {
+            console.error('Error:', error);
         });
     }
+    
+   
+    function filterTable() {
+        // Obtén el formulario
+        const form = document.querySelector('filterForm');
+        debugger;
+        // Obtén los valores de los inputs
+       
+        const symbolInput = document.querySelector('input[name="symbol"]').value.toLowerCase();
+        var account = localStorage.getItem('cuenta');
+        // Crea un FormData con los valores obtenidos
+        var formData = new FormData();
+        formData.append('symbol', symbolInput);
+        formData.append('account', account);
+    
+        // Enviar los datos al servidor con fetch
+        fetch('/instrumentos_existentes_by_listado/', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            // Aquí puedes manejar la respuesta del servidor
+            updateTable(data)
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+      
+
+    function updateTable(data) {
+        // Obtener el cuerpo de la tabla
+        debugger;
+        const tbody = document.querySelector('.table-responsive tbody');
+        
+        // Limpiar el contenido existente en la tabla
+        tbody.innerHTML = '';
+    
+        // Iterar sobre los datos y crear nuevas filas
+        data.forEach((item, index) => {
+            const row = document.createElement('tr');
+            row.setAttribute('data-symbol', item);
+    
+            // Crear y agregar las celdas a la fila
+            row.innerHTML = `
+                <th scope="row">${item}</th>
+                <td>Información adicional</td>
+                <td>Información adicional</td>
+                <td>Información adicional</td>
+                <td>Información adicional</td>
+                <td>
+                    <form class="subscriptionForm" method="POST">
+                        <div class="form-group">
+                            <input type="hidden" name="symbol" value="${item}" class="form-control">
+                        </div> 
+                        <div class="form-group">
+                            <input type="hidden" name="websocketSuscricionCuenta" class="websocketSuscricionCuenta">
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="websocketSuscricionToken" class="websocketSuscricionToken">
+                        </div>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary btn-sm btn-block form-control submitBtn">Submit</button>
+                        </div>
+                    </form>
+                </td>
+            `;
+    
+            // Agregar la fila al cuerpo de la tabla
+            tbody.appendChild(row);
+        });
+          // Asociar eventos de clic a los botones de envío
+    assignSubmitEvents();
+    }
+
+
+    
+function assignSubmitEvents() {
+    var account = localStorage.getItem('cuenta');
+    var access_token = localStorage.getItem('access_token');
+
+    // Asigna los valores de token y cuenta a los campos ocultos
+    var forms = document.querySelectorAll('form.subscriptionForm');
+    forms.forEach(function(form) {
+        form.querySelector('.websocketSuscricionCuenta').value = account;
+        form.querySelector('.websocketSuscricionToken').value = access_token;
+
+        form.querySelector('.submitBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el envío del formulario por defecto
+            submitForm(form);
+        });
+    });
+}
+
 </script>
 {% endblock %}
+

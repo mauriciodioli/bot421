@@ -37,10 +37,14 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasRegistrarCuentaBroker.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/productos/descripcionProductos.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/subirImagen.css')}}>
-    <link rel=   "stylesheet" href="{{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
-    <link rel=   "stylesheet" href="{{ url_for('static', filename='css/social/estiloTarjetaImagen.css') }}">
-   
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
+    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
+    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/estiloTarjetaImagen.css') }}">
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
+    
 </head>
 
 <body>
@@ -70,14 +74,32 @@
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar/">Edicion Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Procesos</a></li>                          
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Estrategias</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias Lista</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Estrategias Sistema</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Estrategia Usuario</a></li>
+                                </ul>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
+                            <li><hr class="dropdown-divider"></li>  
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Sistema Pagos</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/crearSuscricpionesMP?layout=layout">Crear planes</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Consulta</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+                                </ul>
+                            </li>                                                
                         </ul>                        
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/detalle/cuenta-demo/layout">Cuenta Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout">Suscribir</a>
                     </li>
 
                     <li class="nav-item">
@@ -207,9 +229,18 @@
                           </li>                        
                         </ul>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link " aria-current="page" href="/registrar_usuario">Registrarse</a>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Usuario</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/llamada/index-contacto">Contacto</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/registrar_usuario">Registrarse</a></li>
+                        </ul>
                     </li>
+                    
+
+                
                 </ul>
                 
             </div>
@@ -235,7 +266,20 @@
 
     <script>
 
+  // Custom JavaScript to handle submenu toggle
+  $(document).ready(function() {
+    $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).next('.dropdown-menu').toggle();
+        $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
+    });
 
+    // Close submenu when clicking outside
+    $(document).on("click", function() {
+        $('.dropdown-submenu .dropdown-menu').hide();
+    });
+});
 
 
         let correo_electronico = localStorage.getItem("correo_electronico");  

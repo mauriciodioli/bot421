@@ -13,34 +13,41 @@
                             <ul>
                                 <li>Teléfono: +543543690045</li>
                                 <li>Correo electrónico: info@serviciodpi.com</li>
-                                <li>Dirección: Calle Colombia #480, Córdoba, Ategentina</li>
+                                <li>Dirección: Calle Colombia #480, Córdoba, Argentina</li>
                             </ul>
                         </section>
                     
                         <section>
                             <h2 style="color: gold;">Formulario de Contacto</h2>
                             <form action="/enviar-email-de-contacto" method="POST">
-                                <label style="color: gold;" for="nombre">Nombre:</label><br>
-                                <input type="text" id="nombre" name="nombre" required><br>
+                                <div class="form-group">
+                                    <label style="color: gold;" for="nombre">Nombre:</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                </div>
                     
-                                <label style="color: gold;" for="email">Correo Electrónico:</label><br>
-                                <input type="email" id="email" name="email" required><br>
+                                <div class="form-group">
+                                    <label style="color: gold;" for="email">Correo Electrónico:</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
                     
-                                <label style="color: gold;" for="mensaje">Mensaje:</label><br>
-                                <textarea id="mensaje" name="mensaje" rows="4" required></textarea><br>
+                                <div class="form-group">
+                                    <label style="color: gold;" for="mensaje">Mensaje:</label>
+                                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                                </div>
                     
-                                <input type="submit" value="Enviar">
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-primary" value="Enviar">
+                                </div>
                             </form>
+                            <div class="form-group">
+                                <a href="/" class="btn btn-success mt-3">Volver</a>
+                            </div>
                         </section>
                     </main>
-                  
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
-{% include 'layouts/layout_footer.html' %}
+{% include 'layouts/layout_footer.html' %}   
 {% endblock %}

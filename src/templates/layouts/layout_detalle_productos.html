@@ -28,6 +28,8 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/faq.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/payment_page/payment_page.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/productos/descripcionProductos.css')}}>
+   
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     <script src="{{ url_for('static', filename='js/notificacionAlertOperacion.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
@@ -86,8 +88,13 @@
                     <li class="nav-item ">
                         <a class="nav-link active" aria-current="page" href="/">Login</a>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/registrar_usuario">Registrarse</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Usuario</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/llamada/index-contacto">Contacto</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/registrar_usuario">Registrarse</a></li>
+                        </ul>
                     </li>
                 </ul>
                 

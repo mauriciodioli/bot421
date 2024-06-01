@@ -159,7 +159,7 @@
 
 
 
-
+{% include 'layouts/layout_footer.html' %}   
 <script>
 
 // Función para activar la luz verde parpadeante
@@ -206,7 +206,7 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
 
   $(document).ready(function() {
     $('#btnDetenerThreads').click(function() {
-    
+      debugger;
       $.ajax({
           type: 'GET',
           url: '/detenerWS/',

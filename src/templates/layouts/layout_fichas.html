@@ -32,6 +32,7 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/navbar.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
 </head>
 
 <body>
@@ -96,8 +97,13 @@
                                                 
                         </ul>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/registrar_usuario">Registrarse</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Usuario</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/llamada/index-contacto">Contacto</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/registrar_usuario">Registrarse</a></li>
+                        </ul>
                     </li>
                 </ul>
                 
