@@ -17,6 +17,9 @@ from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
 
 from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_44593_001
+from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
+
+
 
 
 
@@ -25,7 +28,8 @@ from strategies.estrategiasUsuarios.veta_capital_44593_001 import veta_capital_4
 ########################################################################
 from models.creaTablas import crea_tablas_DB
 
-
+from sistemaDePagos.payment_page import payment_page
+from productosComerciales.descipcionProductos import descrpcionProductos
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 
@@ -62,6 +66,8 @@ from usuarios.usuario import usuario
 
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
+
+from comunicacion.contacto import contacto
 
 from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
@@ -149,10 +155,12 @@ app.register_blueprint(blueprint, url_prefix='/login')
 
 
 
-
+app.register_blueprint(Bull_Market_10861_001)
 app.register_blueprint(veta_capital_44593_001)
 ###############################################################
 app.register_blueprint(logs)
+app.register_blueprint(payment_page)
+app.register_blueprint(descrpcionProductos)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
 app.register_blueprint(instrumentos)
@@ -175,8 +183,6 @@ app.register_blueprint(unidad_trader)
 app.register_blueprint(strategy)
 app.register_blueprint(estrategias)
 app.register_blueprint(estrategiaSheetWS)
-
-
 app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
@@ -193,6 +199,7 @@ app.register_blueprint(fichas)
 app.register_blueprint(arbitraje_001)
 app.register_blueprint(programar_trigger)
 app.register_blueprint(shedule_triggers)
+app.register_blueprint(contacto)
 
 
 print(DATABASE_CONNECTION_URI)

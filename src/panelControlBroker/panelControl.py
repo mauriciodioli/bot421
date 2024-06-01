@@ -2,6 +2,7 @@
 from pipes import Template
 from unittest import result
 from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy import and_
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify, abort,current_app
@@ -16,8 +17,12 @@ import threading
 import strategies.datoSheet as datoSheet
 import time
 import tokens.token as Token
+from queue import Queue
 
 panelControl = Blueprint('panelControl',__name__)
+
+# Crear una cola global para la comunicación
+lock = threading.Lock()
 
 def obtener_pais():
     ip = request.remote_addr
@@ -38,10 +43,11 @@ def panel_control_sin_cuenta():
     account = ''
    
    
-    if access_token and Token.validar_expiracion_token(access_token=access_token):       
-        respuesta =  llenar_diccionario_cada_15_segundos_sheet(current_app,pais,account)
+    if access_token and Token.validar_expiracion_token(access_token=access_token):
+        app = current_app._get_current_object()       
+        respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,account)
         
-        datos_desempaquetados = procesar_datos(current_app,pais, account)
+        datos_desempaquetados = procesar_datos(app,pais, account,usuario_id)
         
         if layout == 'layout_signal':
             return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
@@ -62,12 +68,13 @@ def panel_control():
      access_token = request.args.get('access_token')
      accountCuenta = request.args.get('account')
      if access_token and Token.validar_expiracion_token(access_token=access_token): 
+        app = current_app._get_current_object()
         try:  
-                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             
-                respuesta =  llenar_diccionario_cada_15_segundos_sheet(current_app,pais,accountCuenta)
+                respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,accountCuenta)
                 
-                datos_desempaquetados = procesar_datos(current_app,pais, accountCuenta)
+                datos_desempaquetados = procesar_datos(app,pais, accountCuenta,usuario_id)
                 
                 if layout == 'layout_signal':
                     return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
@@ -85,13 +92,13 @@ def panel_control():
      else:
         return render_template('usuarios/logOutSystem.html')     
 
-@panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/<account>/")
+@panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/<account>/", methods=['GET'])
 def panel_control_atomatico(pais,usuario_id,access_token,account):
     
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
-     
-        datos_desempaquetados = procesar_datos(current_app,pais, account)
-        
+        app = current_app._get_current_object()
+        ContenidoSheet = procesar_datos(app,pais, account,usuario_id)
+        datos_desempaquetados = forma_datos_para_envio_paneles(app,ContenidoSheet,usuario_id)
         if datos_desempaquetados:
         # print(datos_desempaquetados)
             return jsonify(datos=datos_desempaquetados)
@@ -103,74 +110,75 @@ def panel_control_atomatico(pais,usuario_id,access_token,account):
         return render_template('usuarios/logOutSystem.html')     
      #return jsonify(message="No se encontraron datos disponibles")
 
-
-def forma_datos_para_envio_paneles(app,ContenidoSheet, accountCuenta):
+def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
     if not ContenidoSheet:
         return False
 
     datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
     datos_procesados = []
 
-    # Abrir la sesión de la base de datos fuera del bucle
     with app.app_context():
+        # Consultar todas las órdenes de la cuenta
+       
+        ordenes_cuenta = db.session.query(Orden).filter_by(user_id=user_id).all()
+
+        # Crear un diccionario para mapear los símbolos de las órdenes a las órdenes
+        ordenes_por_simbolo = {orden.symbol: orden for orden in ordenes_cuenta}
+
         for i, tupla_exterior in enumerate(datos_desempaquetados):
             dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-        
-            if accountCuenta != None:
-                try:
-                    # Intenta iniciar una transacción
-                    with db.session.begin_nested():
-                        orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], accountCuenta=accountCuenta).first()
-                        db.session.close()
-                except InvalidRequestError:
-                    # Si ya hay una transacción iniciada, solo realiza la consulta sin iniciar una nueva transacción
-                    orden_existente = db.session.query(Orden).filter_by(symbol=dato[0], accountCuenta=accountCuenta).first()
-                    db.session.close()
-            else:
-                orden_existente = None
-            if orden_existente:
+            symbol = dato[0]
+
+            # Comprobar si hay una orden para este símbolo en las órdenes de la cuenta
+            if symbol in ordenes_por_simbolo:
+                orden_existente = ordenes_por_simbolo[symbol]
+
+                # Si se encuentra una orden, agregar datos adicionales al dato
                 dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
-                dato += dato_extra
+                if len(dato) > 9:
+                    dato[8] = orden_existente.clOrdId_alta_timestamp
+                    dato[9] = orden_existente.senial
+                else:
+                    dato +=dato_extra                
             else:
-                dato += (None, None)
+                if len(dato)<11:
+                # Si no se encuentra una orden, agregar None como datos adicionales
+                    dato_extra = (None, None)
+                    dato += dato_extra
 
-            dato.append(i+1)
+           
+            dato.append(i + 1)
             datos_procesados.append(tuple(dato))
-            # No es necesario imprimir las tuplas aquí
-
-    # Cerrar la sesión de la base de datos después del bucle
-    
 
     return datos_procesados
 
 
-def llenar_diccionario_cada_15_segundos_sheet(app,pais,accountCuenta):
-    get.hilo_iniciado_panel_control
 
-    # Verifica si ya hay un hilo iniciado para este país
+
+
+def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id):
     if pais in get.hilo_iniciado_panel_control and get.hilo_iniciado_panel_control[pais].is_alive():
         return f"Hilo para {pais} ya está en funcionamiento"
 
-    # Si no hay un hilo iniciado para este país, lo inicia
-    hilo = threading.Thread(target=ejecutar_en_hilo, args=(app,pais,accountCuenta))
+    hilo = threading.Thread(target=ejecutar_en_hilo, args=(app, pais, user_id))
     get.hilo_iniciado_panel_control[pais] = hilo
     hilo.start()
 
+
     return f"Hilo iniciado para {pais}"
 
-def ejecutar_en_hilo(app,pais,accountCuenta):
-    #if get.ya_ejecutado_hilo_panelControl == False:
-    #    get.ya_ejecutado_hilo_panelControl = True 
-    
-        while True:
-            time.sleep(420)
-            print("ENTRA A THREAD Y LEE EL SHEET")            
-            enviar_leer_sheet(app,pais,accountCuenta)
+def ejecutar_en_hilo(app,pais,user_id):
+          while True:
+            #time.sleep(420)# 420 son 7 minutos
+            time.sleep(300)
+            print("ENTRA A THREAD Y LEE EL SHEET")
+          
+            enviar_leer_sheet(app, pais, user_id,'hilo')
         
 
-def enviar_leer_sheet(app,pais,accountCuenta):
+def enviar_leer_sheet(app,pais,user_id,hilo):
       
-     if pais not in ["argentina", "usa"]:
+     if pais not in ["argentina", "usa","hilo"]:
         # Si el país no es válido, retorna un código de estado HTTP 404 y un mensaje de error
         abort(404, description="País no válido")
    
@@ -182,12 +190,19 @@ def enviar_leer_sheet(app,pais,accountCuenta):
          return "País no válido"
      ContenidoSheetList = list(ContenidoSheet)
      get.diccionario_global_sheet[pais] ={}
-     get.diccionario_global_sheet[pais] = ContenidoSheetList
-     datos_desempaquetados = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], accountCuenta)
-     if len(datos_desempaquetados) != 0:
-          get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
+     # Adquirir el bloqueo antes de modificar las variables compartidas
+     with lock:
+            get.diccionario_global_sheet[pais] = ContenidoSheetList
+            datos_desempaquetados = forma_datos_para_envio_paneles(app, get.diccionario_global_sheet[pais], user_id) 
+            
+            if len(datos_desempaquetados) != 0:
+                get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
+
      
-     return ContenidoSheetList
+     return  get.diccionario_global_sheet_intercambio[pais]
+ 
+ 
+ 
 def determinar_pais(pais):
     if hasattr(get, 'diccionario_global_sheet') and isinstance(get.diccionario_global_sheet, dict):
         # Asegúrate de que 'get.diccionario_global_sheet' exista y sea un diccionario
@@ -203,18 +218,16 @@ def determinar_pais(pais):
         print(f"'get.diccionario_global_sheet' no está disponible o no es un diccionario con las listas asociadas a los países.")
         return None
 
-def procesar_datos(app,pais, accountCuenta):
+def procesar_datos(app,pais, accountCuenta,user_id):
     if determinar_pais(pais) is not None:
         if pais not in get.diccionario_global_sheet_intercambio:
-            datos_desempaquetados = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], accountCuenta)
+            datos_desempaquetados = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], user_id)
             if len(datos_desempaquetados) != 0:
                 get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
         else:
             return get.diccionario_global_sheet_intercambio[pais]
     else:
         if len(get.diccionario_global_sheet) == 0 or pais not in get.diccionario_global_sheet:
-            enviar_leer_sheet(app,pais,accountCuenta)      
+            enviar_leer_sheet(app,pais,accountCuenta,None)      
         if pais in get.diccionario_global_sheet_intercambio:
-           return   get.diccionario_global_sheet_intercambio[pais] 
-    
-     
+           return   get.diccionario_global_sheet_intercambio[pais]

@@ -97,6 +97,7 @@ def leerSheet(sheetId,sheet_name):
      if sheet: 
         symbol = sheet.col_values(5)       # ticker de mercado
         tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
+        precioUt = sheet.col_values(25) # en planilla usa no trae precio
         trade_en_curso = sheet.col_values(19)  # long, short o nada
         ut = sheet.col_values(20)              # cantidad a operar
         senial = sheet.col_values(21)          # Open o Close
@@ -105,7 +106,7 @@ def leerSheet(sheetId,sheet_name):
         #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
         
        
-        union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado)
+        union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado,precioUt)
       #  datos = construir_lista_de_datos(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado)
       #  guardar_datos_json(datos)
         #union = leer_datos_json()
