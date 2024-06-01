@@ -41,11 +41,19 @@ def estrategias_usuario_general():
       if request.method == 'GET': 
             triggerEstrategia = db.session.query(TriggerEstrategia).all()
             ut_por_trigger = {}
+            for i, tupla_exterior in enumerate(triggerEstrategia):
+                 dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
+                 symbol = dato[0]
+                 
+                 
+            for i, trigger in triggerEstrategia:
+                unidades = db.session.query(UnidadTrader.ut).filter_by(trigger_id=trigger.id).all()
+                 # Si la clave ya existe, extiende la lista
+                if trigger.id in triggerEstrategia.item():
+                    triggerEstrategia[trigger.id].extend([unidad.ut for unidad in unidades])
+                else:
+                    triggerEstrategia[trigger.id] = [unidad.ut for unidad in unidades]
 
-            for trigger in triggerEstrategia:
-                ut = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
-                if ut:
-                    ut_por_trigger[trigger.id] = ut
 
             db.session.close()
 
@@ -181,8 +189,8 @@ def eliminar_trigger():
         
         
         flash('Trigger eliminado correctamente.')
-        
-        estrategias = db.session.query(TriggerEstrategia).filter_by(user_id=usuario_id).all()
+        estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
+      
         db.session.close()   
         return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
     else:

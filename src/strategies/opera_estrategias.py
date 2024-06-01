@@ -34,18 +34,20 @@ opera_estrategias = Blueprint('opera_estrategias',__name__)
 
 
 ################ AQUI DEFINO LA COMPRA POR WS ################
-def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear,senial, mepCedear, message,saldocta):
-    trade_en_curso = diccionario_global_operaciones[Symbol]['tradeEnCurso']
-    cantidad_operar = diccionario_global_operaciones[Symbol]['ut']
-    #saldocta = 1000000
-    denominador = message["marketData"]["LA"]["price"]
-    if denominador is not None and int(denominador) > 0:
-       ut = cantidad_operar/denominador
-    ut = abs(int(ut))
-    saldoExiste = False
+def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear,senial, message):
+    try:
+        print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
+        trade_en_curso = diccionario_global_operaciones[Symbol]['tradeEnCurso']
+        ut = diccionario_global_operaciones[Symbol]['ut']
+        #saldocta = 1000000  
+        ut = abs(int(ut))
+        
+        
+        
+        saldoExiste = False
     
    
-    try:
+    
         # La clave "price" existe en message["marketData"]["OF"][0]  ???
         if "OF" in message["marketData"]:
             if isinstance(message["marketData"]["OF"], list) and len(message["marketData"]["OF"]) > 0:
@@ -88,6 +90,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
         # liquidez el instrumento. Si los tres valores existen, comprobamos
         # que el spread sea coherente (no difieran mas del 1%), si el spread es muy amplio, 
         # no hay liquidez y podemos llegar a pagar cualquier cosa.
+        saldocta = diccionario_global_operaciones[Symbol]['saldo']        
         if (saldocta > plataoperacion1 and  
             saldocta > plataoperacion2 and 
             saldocta > plataoperacion3):
@@ -112,12 +115,12 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                         precio = float(message["marketData"]["OF"][0]["price"])
                     else:
                         precio = message["marketData"]["LA"]["price"]    
-                        precio = float(message["marketData"]["LA"][0]["price"])
+                        precio = float(message["marketData"]["LA"]["price"])
                         #precio = float(message["marketData"]["BI"][0]["price"])
                         #precio1 = float(message["marketData"]["BI"][1]["price"])
                         #precio2 = float(message["marketData"]["BI"][2]["price"])
                         #precio = float(message["marketData"]["OF"][0]["price"])#
-                    print('_______________000000000000000000000___________________________')
+                   
                     print(Symbol)
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
@@ -152,7 +155,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
                     #restar del diccionario global                    
                     
-                    print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
+                   
                     #pprint.pprint(g et.diccionario_operaciones_enviadas)
                     #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
                     diccionario_global_operaciones[Symbol]['ut'] = str(int(diccionario_global_operaciones[Symbol]['ut']) - ut)
@@ -167,11 +170,10 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                         precio = float(message["marketData"]["BI"][0]["price"])
                     else:
                         precio = message["marketData"]["LA"]["price"]  
-                        precio = float(message["marketData"]["LA"][0]["price"])# agresivo
+                        precio = float(message["marketData"]["LA"]["price"])# agresivo
                     #precio = float(message["marketData"]["OF"][0]["price"])
                     #precio = float(message["marketData"]["OF"][0]["price"])
-                    print('_______________000000000000000000000___________________________ut ', ut,' ',_ws_client_order_id,' ',precio)
-                    print(Symbol)
+                 
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
                     accountCuenta = diccionario_global_operaciones[Symbol]['accountCuenta']
@@ -209,7 +211,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
           
     except Exception as e:
-            print("Error en datoSheet OperacionWs:", e)
+            print("Error en estrategies/opera_estrategi.py OperacionWs:", e)
 
       
  

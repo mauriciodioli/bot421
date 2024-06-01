@@ -6,8 +6,14 @@
   
   <div class = 'container p-4'id="contenido" style="display:none">  
     <div class="jumbotron">
-      <h1 class="display-4">Signals!</h1>
+      <h1 class="display-4">Signals!</h1>     
+      
       <p class="lead">To operate you can press the button with the corresponding color</p>
+      <form action="/pago" method="GET">
+        <input type="hidden" id="costo_base" name="costo_base" value="5">
+        <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
+        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $5 </button>
+      </form>
       <hr class="my-4">  
     </div> 
    <!-- <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>-->
@@ -78,14 +84,14 @@
   </div>  
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
-    document.getElementById('splash').style.display = 'block';
+  
+  document.getElementById('splash').style.display = 'block';
   //{% if cuenta is defined %}
   // Acceder a los tokens desde el diccionario de contexto de Flask
   var cuenta = "{{ cuenta[0] }}";
   var usuario = "{{ cuenta[1] }}";
   var selector = "{{ cuenta[2] }}";
-  debugger;
+ 
   console.log("probanodo",cuenta)
   console.log(usuario)
   console.log(selector)
@@ -127,12 +133,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // var cambiosAntes = compararCambios();
     // Realizar una solicitud AJAX para obtener los nuevos datos
-    debugger;
+    
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
+<<<<<<< HEAD
     var access_token = localStorage.getItem('access_token');   
     account = 'sinCuenta'
     var xhr = new XMLHttpRequest();
+=======
+    var access_token = localStorage.getItem('access_token');
+    var account = 'vacio'
+    var xhr = new XMLHttpRequest();
+    debugger;
+>>>>>>> cde66d62024e6c958a6e3ae913e901a86870c8e0
     var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/';
     
     xhr.open('GET', url, true);
@@ -142,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function() {
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 400) {
         // La solicitud fue exitosa, actualiza la tabla  
-        
+       
         var response = JSON.parse(xhr.responseText);
       
         var tableBody = document.getElementById('signalTable').getElementsByTagName('tbody')[0];
@@ -179,14 +192,14 @@ document.addEventListener('DOMContentLoaded', function() {
           var dato = response.datos[i];
         
           debugger;
-          //console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9])
+          console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
          
           if (
               (dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
               (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
              ) {
                     if (dato[4] === 'OPEN.'  && dato[8] === null){
-                                                                  
+                      if (Number(dato[3]) > 0) {                                          
                       //if (dato[4] !== dato[8]) {
                         //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
@@ -204,8 +217,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[4]}</td>
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
+                            <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
-                            <td>${dato[7]}</td>
                             <td>
                               <div class="form-group">
                                 <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -230,13 +243,14 @@ document.addEventListener('DOMContentLoaded', function() {
                           tableBody.appendChild(row);
                       }
 
-                   // }
+                    }
 
 
                     
-                 if (dato[4] === 'closed.' && dato[8] !== null) {    
+                 if (dato[4] === 'closed.' && dato[9] !== null) {    
                                                             
-                      if (dato[4] !== dato[8]) {
+                      if (dato[4] !== dato[9]) {
+                        if (Number(dato[3]) > 0) {
                         //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
                           // campana.play();
@@ -253,8 +267,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[4]}</td>
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
+                            <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
-                            <td>${dato[7]}</td>
                             <td>
                               <div class="form-group">
                                 <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -278,7 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           `;
                           tableBody.appendChild(row);
                       }
-                     
+                     }
                     }
 
                 
@@ -289,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   (dato[1] === 'USA') &&
                   (dato[2] === 'LONG_' || (dato[2] === 'SHORT'))
                  ) {
-                        if (dato[4] === 'OPEN.'  && dato[8] === null){
+                        if (dato[4] === 'OPEN.'  && dato[9] === null){
                                                                       
                           //if (dato[4] !== dato[8]) {
                           //  if (dato[7] !== null) {
@@ -308,8 +322,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td>${dato[4]}</td>
                                 <td>${dato[2]}</td>
                                 <td>${dato[3]}</td>
+                                <td>${dato[9]}</td>
                                 <td>${dato[8]}</td>
-                                <td>${dato[7]}</td>
                                 <td>
                                   <div class="form-group">
                                     <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -338,9 +352,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
                         
-                     if (dato[4] === 'closed.' && dato[8] !== null) {    
+                     if (dato[4] === 'closed.' && dato[9] !== null) {    
                                                                 
-                          if (dato[4] !== dato[8]) {
+                          if (dato[4] !== dato[9]) {
                            // if (dato[7] !== null) {
                               // var campana = document.getElementById('Campana');
                               // campana.play();
@@ -357,8 +371,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td>${dato[4]}</td>
                                 <td>${dato[2]}</td>
                                 <td>${dato[3]}</td>
+                                <td>${dato[9]}</td>
                                 <td>${dato[8]}</td>
-                                <td>${dato[7]}</td>
                                 <td>
                                   <div class="form-group">
                                     <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -554,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elementosAntes.forEach(function(filaAntes) {
       var datoAntes = obtenerDatoDesdeFila(filaAntes);    
       var idAntes = datoAntes[0]; // Supongo que el primer elemento es un identificador único
-      //debugger;
+      
       //console.log("idAntes:", idAntes);
         // Busca el mismo dato en la respuesta
         var datoDespues = response.datos.find(function(dato) {

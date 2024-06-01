@@ -555,14 +555,14 @@ def logOutAccount():
             # La clave no existe en el diccionario
             # Aquí puedes manejar el error de acuerdo a tu lógica
             # Por ejemplo, puedes mostrar un mensaje de error o redirigir a otra página
-            return render_template('error.html', message='La cuenta no existe en la base de datos')
+            return render_template('notificaciones/errorLogueo.html', message='La cuenta no existe en la base de datos')
         except Exception as e:
             # Manejo de otros tipos de excepciones
             # Aquí puedes registrar el error o mostrar un mensaje genérico de error
-            return render_template('error.html', message='Ocurrió un error: {}'.format(str(e)))
+            return render_template('notificaciones/errorLogueo.html', message='Ocurrió un error: {}'.format(str(e)))
 
     # Manejar caso de que el método de la solicitud no sea POST
-    return render_template('error.html', message='Método de solicitud no permitido')
+    return render_template('notificaciones/errorLogueo.html', message='Método de solicitud no permitido')
 
 
 def get_pass_cuenta_de_broker(user_id,account):

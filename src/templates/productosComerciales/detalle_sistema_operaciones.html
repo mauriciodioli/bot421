@@ -1,0 +1,33 @@
+{% extends "layouts/layout_detalle_productos.html" %}
+{% block title %}Sistema de Operaciones{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="container-fluid" id="cardIndex">
+        <div class="container py-4 row justify-content-center m-auto">
+            <div class="row py-3 justify-content-center">
+                <div class="col-md-6 p-4 card card-body cardIndexPlanes"> 
+                    <h2 class="card-title">Sistema de Operaciones</h2>
+                    <h4 class="planes-titulo" style="color: gold; font-size: 24px;">Seguimiento automatizado</h4>
+                    <h4 class="planes-titulo" style="color: white; font-size: 24px;">Semi automatizado <span class="planes-sub-titulo" style="color: white; font-size: 18px;">panel de control</span></h4>
+                    <hr class="separator">
+                    <p style="margin-bottom: 5px;">Beneficios diarios y por mes</p>
+                    <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Sí</span></p>
+                    <p style="margin-bottom: 5px;">Costo: $ 15 + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">1.5 % Retorno de Capital </span></p>
+                    <p style="margin-bottom: 5px; color: #7fff7f;">El costo es en dolares y el porcentaje es en pesos.</p>
+                    <p>Este sistema de trading semi automatizado que ha sido cuidadosamente diseñado para operar con instrumentos tanto del mercado argentino como del estadounidense. Las señales se activan diariamente, puediendo realizar las operaciones necesarias y luego se hace un seguimiento automático hasta que se termina el trading, garantizando una gestión eficiente y sin intervención humana en el seguimiento.</p>
+                    <p style="color: #7fff7f;">Además, contamos con un sistema en el cual puede ir siguiento su rentabilidad esto permite a los usuarios operar directamente desde la plataforma sin necesidad de recurrir a un broker. Este sistema ofrece la conveniencia de realizar un seguimiento diario de las oportunidades de operaciones, brindando a los usuarios un mayor control sobre su cartera de inversiones.</p>
+                    <form action="/pago" method="GET">
+                        <input type="hidden" id="costo_base" name="costo_base" value="15">
+                        <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="1.5">
+                        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir ahora</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}

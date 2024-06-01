@@ -141,9 +141,13 @@ def market_data_handler_estrategia(message):
         marca_de_tiempo_para_leer_sheet = marca_de_tiempo
         Symbol = message["instrumentId"]["symbol"]
         # Supongamos que 'tiempo_saldo' es un objeto datetime
-        if diccionario_global_operaciones:
-          if Symbol in diccionario_global_operaciones:
-                tiempo_saldo = diccionario_global_operaciones[Symbol]['tiempoSaldo']
+         # Supongamos que 'tiempo_saldo' es un objeto datetime
+        if diccionario_global_operaciones or diccionario_operaciones_enviadas:
+          if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
+                if diccionario_global_operaciones:
+                    tiempo_saldo = diccionario_global_operaciones[Symbol]['tiempoSaldo']
+                else:
+                    tiempo_saldo = diccionario_operaciones_enviadas[Symbol]['tiempoSaldo']    
 
                 # Convertir 'tiempo_saldo' a milisegundos
                 milisegundos_tiempo_saldo = int(tiempo_saldo.timestamp() * 1000)
