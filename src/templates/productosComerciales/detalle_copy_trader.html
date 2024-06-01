@@ -1,4 +1,21 @@
+{% if layout == 'layout_detalle_productos' %}
 {% extends "layouts/layout_detalle_productos.html" %}
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
 {% block title %}Copy Trading Automático{% endblock %}
 {% block content %}
 <div class="container my-5">
@@ -13,7 +30,7 @@
                     <p style="margin-bottom: 5px;">Beneficios diarios y por mes</p>
                     <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Sí</span></p>
                     <p style="margin-bottom: 5px;">Costo: $ 0 + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;"> % Retorno de Capital </span></p>
-                    <p style="margin-bottom: 5px; color: #7fff7f;">El sistema te paga por compartir te estrategia exitosa.</p>
+                    <p style="margin-bottom: 5px; color: #7fff7f;">El sistema te paga por compartir tu estrategia exitosa.</p>
                     <p>Este sistema ha sido cuidadosamente diseñado para operar compartir tu estrategia automaticamente aplicando mejora continua para operar instrumentos tanto del mercado argentino como del estadounidense. Se activa automáticamente todos los días a la misma hora, realiza las operaciones necesarias y luego se apaga hasta el día siguiente, garantizando una gestión eficiente y sin intervención manual.</p>
                     <p style="color: #7fff7f;">Además, contamos con un sistema semiautomático que permite a los usuarios testear las estrategias y con un test de historial y directamente desde la plataforma sin necesidad de recurrir a ninguna suscripcion ya estas compartiendo tu estrategia. Este sistema ofrece la conveniencia de realizar un seguimiento diario de las oportunidades de operaciones, brindando a los usuarios un mayor control sobre sus inversiones.</p>
                     <p  style="color: #7fff7f;">Esto permite a los Usuarios cargar sus propias estrategias ganadoras</p>

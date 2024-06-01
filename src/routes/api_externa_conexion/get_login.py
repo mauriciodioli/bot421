@@ -4,6 +4,7 @@ from http.client import UnimplementedFileMode
 import websockets
 import json
 import copy
+from pyRofex.components.exceptions import ApiException
 
 from re import template
 from socket import socket
@@ -269,6 +270,8 @@ def loginExtAutomatico():
                                         #if  ConexionesBroker[accountCuenta].get('identificador') == True:
                                             pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
                                             repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
+                                            SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id)
+                                     
                                             if repuesta_operacion:
                                                 pass
                                 else:
@@ -288,7 +291,7 @@ def loginExtAutomatico():
                                         pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
                                         accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
                                         ####### TEMPORALMENTE COMPROBAR SI SE DESSUCRIBE POR ERROR DE WS#####
-                                      #  SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
+                                       # SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
                                         refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
                                         resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                         resp.headers['Content-Type'] = 'application/json'
@@ -380,8 +383,13 @@ def loginExtCuentaSeleccionadaBroker():
                     ambiente = copy.deepcopy(REMARKET)
                     pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
                     environments = accountCuenta                                        
-                    pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
-                    pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                    pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments) 
+                    try:   
+                        pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                    except ApiException as e:
+                        print(f"ApiException occurred: {e}")
+                        flash("Cuenta incorrecta: password o usuario incorrecto. Quite la cuenta")
+                        return render_template("cuentas/registrarCuentaBroker.html") 
                     ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
                                             
                 else:
