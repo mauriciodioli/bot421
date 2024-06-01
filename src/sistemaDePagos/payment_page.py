@@ -21,6 +21,13 @@ from models.brokers import Broker
 
 payment_page = Blueprint('payment_page',__name__)
 
+
+YOUR_ACCESS_TOKEN = 'TEST-7897622499833241-051414-fa868bef7e053a323b97ebbd953bf95b-630055'
+preapproval_plan_id = 'YOUR_PREAPPROVAL_PLAN_ID'
+
+
+
+
 @payment_page.route('/pago', methods=['GET'])
 def pago():
     # Obtener los valores de los inputs ocultos

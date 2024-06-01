@@ -557,7 +557,7 @@ def _operada(order_report):
                     endingGlobal = 'NO'
                
             
-            endingOperacionBot (endingGlobal,endingEnviadas)                             
+            endingOperacionBot(endingGlobal,endingEnviadas,symbol)                               
                                
 def convert_datetime(original_datetime_str, desired_timezone_str):
     # Convertir la cadena a un objeto datetime
@@ -846,8 +846,11 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot (endingGlobal,endingEnviadas):
-     print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas)
+def endingOperacionBot (endingGlobal,endingEnviadas,symbol):
+     if symbol in diccionario_global_operaciones:
+           account = diccionario_global_operaciones[symbol]['accountCuenta']
+           print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas,'symbol: ',symbol,' account: ',account)
+   
      if endingGlobal == 'SI' and endingEnviadas == 'SI' and diccionario_operaciones_enviadas:
          
         diccionario_operaciones_enviadas.clear()
@@ -858,8 +861,12 @@ def endingOperacionBot (endingGlobal,endingEnviadas):
         print("###############################################") 
         print("###############################################") 
         print("###############################################") 
-        pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia)
+        if symbol in diccionario_global_operaciones:
+           account = diccionario_global_operaciones[symbol]['accountCuenta']
+           pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
+           pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
           #      return render_template('home.html')    
+
 
 
 

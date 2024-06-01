@@ -34,6 +34,9 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
+   
     
 </head>
 
@@ -66,13 +69,25 @@
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>                      
-                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar/">Edicion Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Procesos</a></li>                          
+                          <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Estrategias</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias Lista</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Estrategias Sistema</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Estrategia Usuario</a></li>
+                            </ul>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
+                        <li><hr class="dropdown-divider"></li>  
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-item dropdown-toggle" href="#">Sistema Pagos</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/crearSuscricpionesMP/">Crear planes</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Consulta</a></li>
+                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+                            </ul>
+                        </li>      
                         </ul>
                         
                     </li>
@@ -146,7 +161,9 @@
                           <li>
                               <form id="instrumentos_form" action="/instrumentos_detalles" method="post">
                                   <!-- Aquí puedes agregar los campos adicionales que desees -->
-                                  <input type="hidden" name="accounCuenta_form_instrumentos_detalles" id="accounCuenta_form_instrumentos_detalles">
+                                  <input type="hidden" name="instrumentos_account" id="instrumentos_account">
+                                  <input type="hidden" id="page" name="page" value="{{ request.args.get('page', 1) }}">
+
                                   <!-- El botón de enviar el formulario -->
                                   <button type="submit" class="dropdown-item">Listado</button>
                               </form>
@@ -320,9 +337,14 @@
                                                 
                         </ul>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/registrar_usuario">Registrarse</a>
-                    </li>
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Usuario</a>
+                      <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="/llamada/index-contacto">Contacto</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/registrar_usuario">Registrarse</a></li>
+                      </ul>
+                  </li>
                 </ul>
                 
             </div>
@@ -345,7 +367,26 @@
     
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     <script>
-        
+    debugger;
+      
+  // Custom JavaScript to handle submenu toggle
+  $(document).ready(function() {
+    $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).next('.dropdown-menu').toggle();
+        $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
+    });
+
+    // Close submenu when clicking outside
+    $(document).on("click", function() {
+        $('.dropdown-submenu .dropdown-menu').hide();
+    });
+});
+
+
+
+
         selectedCountry  = localStorage.getItem('paisSeleccionado');
         document.getElementById('guardarPaisSeleccionado2').addEventListener('click', function() {
             var pais = selectedCountry;
@@ -409,7 +450,7 @@
         document.getElementById("accounCuenta_form_posicionCuenta").value = cuentaBroker;
         document.getElementById("selector_form_posicionCuenta").value = selector;
         //detalle instrumentos_form
-        document.getElementById('accounCuenta_form_instrumentos_detalles').value = cuentaBroker;
+        document.getElementById('instrumentos_account').value = cuentaBroker;
         //estado de cuentas
         document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
         document.getElementById('form_estadoOperacion_accessToken').value = access_token;
@@ -470,7 +511,7 @@
         if (rol != 'ADMINISTRADOR') {
             // Ocultar el enlace del menú de administración
             adminLink = document.querySelector('.nav-link.dropdown-toggle');
-            adminLink1 = document.querySelector('.dropdown-item dropdown-toggle');
+            adminLink1 = document.querySelector('.dropdown-item');
             adminLink.style.display = 'none';
             adminLink1.style.display = 'none';
         }
