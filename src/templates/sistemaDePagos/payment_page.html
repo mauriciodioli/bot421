@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .payment-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px; /* Agrandar la tarjeta */
+            margin-right: 20px; /* Agregar margen a la derecha */
+            text-align: center; /* Centrar texto y elementos dentro del contenedor */
+            position: relative;
+        }
+       
+        .payment-container h2 {
+            margin-top: 0;
+        }
+        .payment-container p {
+            margin: 5px 0;
+        }
+        .payment-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .payment-container button {
+            width: 100%;
+            padding: 10px;
+            background: #e94b35;
+            border: none;
+            color: #fff;
+            border-radius: 20px; /* Botones redondeados */
+            cursor: pointer;
+        }
+        .payment-container button:hover {
+            background: #d53a2e;
+        }
+        .credit-card-logo {
+            display: none;
+            width: 50px;
+            margin: 10px auto;
+        }
+        .hidden-form {
+            display: none;
+            margin-top: 20px;
+        }
+        .hidden-form p {
+            text-align: left; /* Alinear texto de los p dentro de hidden-form a la izquierda */
+        }
+        .hidden-form label {
+            color: gray; /* Cambiar el color del texto de la etiqueta a gris */
+        }
+        .hidden-form input[type="checkbox"] {
+            margin-right: 5px; /* Ajustar el espacio entre el checkbox y el texto */
+            vertical-align: middle; /* Alinear verticalmente el checkbox */
+        }
+        .show {
+            display: block;
+        }
+        .toggle-link {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+        
+        
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #999;
+            text-decoration: none;
+            z-index: 999; /* Asegura que el botón de cierre esté por encima del contenido */
+        }
+        
+        .close-button:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="payment-container">
+        <a href="/" class="close-button" onclick="closePayment()">&#10006;</a>
+        <h2>Método de pago</h2>
+        
+        <div class="payment-details" style="background-color: lightgray; padding: 10px;"> 
+            <table style="border-collapse: collapse; width: 100%;">
+                <tr>
+                    <td style="text-align: left; border-bottom: 1px solid gray; padding: 8px; border-right: none;">Costo base:</td>
+                    <td style="text-align: right; border-bottom: 1px solid gray; padding: 8px; border-left: none;">{{ '{:,.2f}'.format(costo_base) }} USD</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; border-bottom: 1px solid gray; padding: 8px; border-right: none;">Porcentaje de retorno:</td>
+                    <td style="text-align: right; border-bottom: 1px solid gray; padding: 8px; border-left: none;">{{ porcentaje_retorno }}%</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; padding: 8px; border-right: none;"><strong>Total:</strong></td>
+                    <td style="text-align: right; padding: 8px; border-left: none;"><strong>{{ '{:,.2f}'.format(total) }} USD</strong></td>
+                </tr>
+            </table>
+        </div>
+        
+        <div>
+            <img src="{{ url_for('static', filename='visa.png') }}" alt="Visa" class="credit-card-logo" id="visa-logo">
+            <img src="{{ url_for('static', filename='mastercard.png') }}" alt="Mastercard" class="credit-card-logo" id="mastercard-logo">
+        </div>
+        <input type="text" id="card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo()"/>
+        <br>
+        <button onclick="processPayment()" id="buy-now-button">Comprar ahora</button>
+        <br>
+        <a class="toggle-link mb-4" onclick="toggleForm()">Usa una tarjeta diferente</a>
+        <div class="hidden-form" id="card-form">
+            <input type="text" id="new_card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo('new')"/>
+            <input type="text" id="card_name" placeholder="Nombre y apellido impreso en la tarjeta"/>
+            <input type="text" id="expiry_date" placeholder="MM/YY"/>
+            <input type="text" id="cvv" placeholder="CVV"/>
+            <label for="email" style="color: blue; font-size: smaller; text-decoration: underline; text-align: left;">Direccion de correo electrónico:</label>
+
+            <input type="email" id="email" name="email" style="color: blue; font-size: smaller; " placeholder="correo electronico" required>
+            <input type="checkbox" id="save_card" name="save_card">
+            
+            <label for="save_card">Guardar tarjeta para futuras compras</label>
+            <p>Usaremos esta tarjeta pra ruturas compras</p>
+            <p>Renovaciones de tu suscripcion. Puedes borrar los datos de tu tarjeta en cualquier momento desde los ajustes</p>          
+              <button onclick="processNewCardPayment()">Pagar con nueva tarjeta</button>
+        </div>
+    </div>
+    <script>
+        function closePayment() {
+            const paymentContainer = document.querySelector('.payment-container');
+            paymentContainer.style.display = 'none';
+        }
+        function toggleForm() {
+            const form = document.getElementById('card-form');
+            const buyNowButton = document.getElementById('buy-now-button');
+            const cardNumberInput = document.getElementById('card_number');
+
+            if (form.classList.contains('show')) {
+                form.classList.remove('show');
+                buyNowButton.style.display = 'block'; // Mostrar el botón "Comprar ahora"
+                cardNumberInput.style.display = 'block'; // Mostrar el campo de entrada "Card Number"
+            } else {
+                form.classList.add('show');
+                buyNowButton.style.display = 'none'; // Ocultar el botón "Comprar ahora"
+                cardNumberInput.style.display = 'none'; // Ocultar el campo de entrada "Card Number"
+            }
+        }
+
+        function updateCardLogo(type = 'existing') {
+            const cardNumber = type === 'existing' ? document.getElementById('card_number').value : document.getElementById('new_card_number').value;
+            const visaLogo = document.getElementById('visa-logo');
+            const mastercardLogo = document.getElementById('mastercard-logo');
+
+            if (cardNumber.startsWith('4')) {
+                visaLogo.style.display = 'block';
+                mastercardLogo.style.display = 'none';
+            } else if (cardNumber.startsWith('5')) {
+                mastercardLogo.style.display = 'block';
+                visaLogo.style.display = 'none';
+            } else {
+                visaLogo.style.display = 'none';
+                mastercardLogo.style.display = 'none';
+            }
+        }
+
+        function processPayment() {
+
+            if (validatePayment()) {
+                    const cardNumber = document.getElementById('card_number').value;
+                    const amount = 15952.63;
+
+                    fetch('/process_payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ card_number: cardNumber, amount: amount })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }       
+        }
+
+        function processNewCardPayment() {
+
+            if (validatePayment()) {
+                    const cardNumber = document.getElementById('new_card_number').value;
+                    const cardName = document.getElementById('card_name').value;
+                    const expiryDate = document.getElementById('expiry_date').value;
+                    const cvv = document.getElementById('cvv').value;
+                    const amount = 15952.63;
+
+                    fetch('/process_payment', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ card_number: cardNumber, card_name: cardName, expiry_date: expiryDate, cvv: cvv, amount: amount })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+                }       
+        }
+
+        function validatePayment() {
+            // Obtener los valores de los campos de entrada
+            var cardNumber = document.getElementById('card_number').value;
+            var newCardNumber = document.getElementById('new_card_number').value;
+            var cardName = document.getElementById('card_name').value;
+            var expiryDate = document.getElementById('expiry_date').value;
+            var cvv = document.getElementById('cvv').value;
+            var email = document.getElementById('email').value;
+    
+            // Validar que los campos no estén vacíos
+            if (cardNumber === '' || newCardNumber === '' || cardName === '' || expiryDate === '' || cvv === '' || email === '') {
+                alert('Por favor, complete todos los campos.');
+                return false;
+            }
+    
+            // Validar otros criterios según sea necesario, como el formato del correo electrónico, la longitud del número de tarjeta, etc.
+    
+            // Si todas las validaciones son exitosas, devuelve true para enviar el formulario
+            return true;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+{% extends "layouts/layout_detalle_productos.html" %}
+{% block title %}Producto 1{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="container-fluid" id="cardIndex">
+        <div class="container py-4 row justify-content-center m-auto">
+            <div class="row py-3 justify-content-center">
+                <div class="col-md-6 p-4 card card-body cardIndexPlanes"> 
+                    <main>
+                        <section>
+                            <h2 style="color: gold;">Información de Contacto</h2>
+                            <p>Para ponerte en contacto con nosotros, puedes utilizar la siguiente información:</p>
+                            <ul>
+                                <li>Teléfono: +543543690045</li>
+                                <li>Correo electrónico: info@serviciodpi.com</li>
+                                <li>Dirección: Calle Colombia #480, Córdoba, Ategentina</li>
+                            </ul>
+                        </section>
+                    
+                        <section>
+                            <h2 style="color: gold;">Formulario de Contacto</h2>
+                            <form action="/enviar-email-de-contacto" method="POST">
+                                <label style="color: gold;" for="nombre">Nombre:</label><br>
+                                <input type="text" id="nombre" name="nombre" required><br>
+                    
+                                <label style="color: gold;" for="email">Correo Electrónico:</label><br>
+                                <input type="email" id="email" name="email" required><br>
+                    
+                                <label style="color: gold;" for="mensaje">Mensaje:</label><br>
+                                <textarea id="mensaje" name="mensaje" rows="4" required></textarea><br>
+                    
+                                <input type="submit" value="Enviar">
+                            </form>
+                        </section>
+                    </main>
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}

@@ -21,6 +21,7 @@ import asyncio
 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexionShedule
+from routes.api_externa_conexion.wsocket import SuscripcionDeSheet
 from fichasTokens.fichas import refrescoValorActualCuentaFichas
 import tokens.token as Token
 import routes.instrumentos as inst
@@ -261,7 +262,7 @@ def loginExtAutomatico():
                             print('#####################LOGEO AUTOMATICO######################################')
                             print('###########################################################################')
                           #  print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
-                            if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_________
+                            if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_____
                                 
                                 
                                 if (len(ConexionesBroker) > 0 and accountCuenta in ConexionesBroker):                                    
@@ -286,6 +287,8 @@ def loginExtAutomatico():
                                 if rutaDeLogeo != 'Home':  
                                         pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
                                         accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                        ####### TEMPORALMENTE COMPROBAR SI SE DESSUCRIBE POR ERROR DE WS#####
+                                      #  SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
                                         refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
                                         resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                         resp.headers['Content-Type'] = 'application/json'
@@ -303,7 +306,7 @@ def loginExtAutomatico():
                             else:
                                  
                                   # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-                                  # Supongamos que `accountCuenta`, `user`, y `selector` son los datos que quieres enviar
+                                  # Supongamos que accountCuenta, user, y selector son los datos que quieres enviar
                                   cuenta = {
                                         'accountCuenta': account,
                                         'user': user,
@@ -432,7 +435,7 @@ def loginExtCuentaSeleccionadaBroker():
                                     if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
                                     
                     
-                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
                         

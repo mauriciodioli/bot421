@@ -21,6 +21,7 @@ import routes.instrumentos as inst
 import tokens.token as Token
 import strategies.datoSheet as datoSheet
 from panelControlBroker.panelControl import panel_control
+from panelControlBroker.panelControl import procesar_datos
 from panelControlBroker.panelControl import forma_datos_para_envio_paneles
 import threading
 import jwt
@@ -182,15 +183,10 @@ def operaciones_desde_seniales_sin_cuenta():
                 db.session.close()
               
                 
-                if pais == "argentina":
-                  ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-                elif pais == "usa":
-                    ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
-                else:
-                  return "País no válido"
+               
+                datos_desempaquetados = procesar_datos(app,pais, None,userId)
               
-              
-                datos_desempaquetados = forma_datos_para_envio_paneles(ContenidoSheet,userId)
+                
               
                 return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
             else: 

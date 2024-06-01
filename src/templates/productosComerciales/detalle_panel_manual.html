@@ -1,0 +1,27 @@
+{% extends "layouts/layout_detalle_productos.html" %}
+{% block title %}Panel de Señales{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <div class="container-fluid" id="cardIndex">
+        <div class="container py-4 row justify-content-center m-auto">
+          <div class="row py-3 justify-content-center">
+            <div class="col-md-6 p-4 card card-body cardIndexPlanes">
+            <h2 class="card-title">Panel de Señales Automático</h2>
+            <h4 class="planes-titulo" style="color: gold; font-size: 24px;">Inverti en tu Broker</h4>
+            <h4 class="planes-titulo" style="color: white; font-size: 24px;">% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+            <hr class="separator">
+            <p style="margin-bottom: 5px;">Libre uso diario y por mes</p>
+            <p style="margin-bottom: 5px;">Una estrategia: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+            <p style="margin-bottom: 5px;">Costo: $0 + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Capital</span></p>
+            <p>Haces seguimiento de las señales diarias y opera en tu broker preferido sin ningun tipo de costo</p>
+            <a href="/" class="btn btn-success">Volver</a>
+            <!--<a href="{{ url_for('payment_page.pago') }}" class="card-button" style="margin-top: 20px;">Comprar</a>-->
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}
