@@ -13,6 +13,17 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
+        <div class="form-group">
+          
+            <select class="form-control" id="brokerSelect" onchange="redirectBroker()">
+                <option value="" selected disabled>links</option>
+                <option value="https://www.mercadopago.com.ar/developers/es/reference/subscriptions/_preapproval/post">suscripciones</option>
+                <option value="https://www.youtube.com/watch?v=LHWRwd-FWr8&list=PLeJgM44JQrILyXsy-tu3MFEAWw27IgoPS&index=4">video</option>
+               
+            </select>
+        </div>
+
+
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body createSubscription">
@@ -41,6 +52,18 @@
 {% include 'layouts/layout_footer.html' %}
 
 <script>
+    //redirige a los links
+    function redirectBroker() {
+        var select = document.getElementById('brokerSelect');
+        var selectedValue = select.value;
+        if (selectedValue) {
+          window.open(selectedValue, '_blank');
+        }
+    }
+
+
+
+
     function createSubscription() {
         // Obtener los valores de frecuencia, monto y motivo
         const frequency = document.getElementById('frequency').value;

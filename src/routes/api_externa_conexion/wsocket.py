@@ -66,11 +66,11 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=No
               
               get.ConexionesBroker[account] = {'pyRofex': pyRofexInicializada, 'cuenta': account,'identificador': True}
                 
-              wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta,idUser)
+              wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta,idUser,selector)
               return True
       return True
 
-def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id):
+def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
    
    # get.pyRofexInicializada.order_report_subscription()
   # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
@@ -78,7 +78,7 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id):
    pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler,environment=accountCuenta)
    
    if not get.ContenidoSheet_list:
-      get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id)  # <<-- aca se suscribe al mkt data
+      get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
@@ -109,7 +109,7 @@ def suscriptos():
           account = request.form["websocketCuenta"] 
           access_token = request.form["websocketToken"] 
           #traigo los instrumentos para suscribirme
-          mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws(accountCuenta)
+          mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws(account)
           longitudLista = len(mis_instrumentos)
           pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']  
           repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
@@ -189,7 +189,7 @@ def SuscripcionWs():
 
 
 
-def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id):
+def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector):
     # Trae los instrumentos para suscribirte
    
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
@@ -197,7 +197,7 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id):
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
     if len(get.diccionario_global_sheet) == 0 or 'argentina' not in get.diccionario_global_sheet:
-       ContenidoSheet = get_instrumento_para_suscripcion_ws(app,user_id)# **44
+       ContenidoSheet = get_instrumento_para_suscripcion_ws(app,user_id,selector)# **44
        ContenidoSheet_list = list(ContenidoSheet)
     ContenidoSheet_list = get.diccionario_global_sheet['argentina']
 
@@ -299,8 +299,8 @@ def cargaSymbolParaValidar(message):
  
     return listado_final
   
-def get_instrumento_para_suscripcion_ws(app,user_id):#   **77
-     ContenidoSheet =  enviar_leer_sheet(app,'argentina',user_id,None) 
+def get_instrumento_para_suscripcion_ws(app,user_id,selector):#   **77
+     ContenidoSheet =  enviar_leer_sheet(app,'argentina',user_id,None,selector) 
      return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db(app):
