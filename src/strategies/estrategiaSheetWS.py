@@ -154,13 +154,13 @@ def market_data_handler_estrategia(message):
                 milisegundos_tiempo_saldo = int(tiempo_saldo.timestamp() * 1000)
                # Calculamos la diferencia en milisegundos entre el tiempo actual y el tiempo anterior
                 diferencia_milisegundos = marca_de_tiempo - milisegundos_tiempo_saldo
-                print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
+                #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
                 if diferencia_milisegundos > 30000:                  
                     segundos = marca_de_tiempo / 1000  # Convertir milisegundos a segundos
                     marca_de_tiempo = datetime.fromtimestamp(segundos)
                     diccionario_global_operaciones[Symbol]['tiempoSaldo'] =  datetime.now()
                     VariableParaTiemposMDHandler = diferencia_milisegundos
-                    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
+                   # print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
                     cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']        
                     VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
                     diccionario_global_operaciones[Symbol]['saldo'] = VariableParaSaldoCta
@@ -362,15 +362,22 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
 
      #filtrar las coincidencias entre las dos listas
      for elemento1 in ContenidoSheet_list:
+        if not isinstance(elemento1, list):
+            elemento1 = list(elemento1)
         if contador_1 >= 2:
           if elemento1[4] == 'closed.':   
             for key, elemento2 in diccionario_operaciones_enviadas.items():
                #print('elemento1 ', elemento1[0] ,' elemento2 ',elemento2['Symbol'])      
                if elemento1[0] == elemento2['Symbol']:
                     if elemento2['Symbol'] not in símbolos_vistos: 
-                        print(' elemento1[0] **********************', elemento1 )
+                        print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:',elemento2['_ut_'],'**** ',elemento1[4],' tipo:',elemento1[1])
+                        elemento1[3] = elemento2['_ut_']
                         coincidencias.append(elemento1)
                         símbolos_vistos.add(elemento2['Symbol'])    
+                    else:
+                        elemento1[3] = '0'   
+                        coincidencias.append(elemento1)
+                        símbolos_vistos.add(elemento2['Symbol'])        
         contador_1 += 1                           
      #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
     
@@ -401,8 +408,11 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
          cadena_correcta = cadena_sin_puntos.replace(',', '.')
         # Paso 3: Convertir la cadena a float
          numero = float(cadena_correcta)
-         ut = unidadTrader.ut/numero
-         ut = abs(int(ut))
+         if elemento[3] == '0':
+            ut = unidadTrader.ut/numero
+            ut = abs(int(ut))
+         else:
+            ut = abs(int(elemento[3]))         
          if ut > 0:
         #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
             #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
@@ -514,7 +524,7 @@ def _operada(order_report):
                             if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
                                 ut_a_devolver = operacion['_ut_']   
                                 if status == 'REJECTED' :
-                                    ut_a_devolver = operacion['_ut_'] + stock_para_closed 
+                                    ut_a_devolver = 0
                                     print('ut_a_devolver ',ut_a_devolver) 
                                     
                                     if ut_a_devolver <= 0:
@@ -539,7 +549,7 @@ def _operada(order_report):
                           
                 
 
-    if status == 'FILLED': 
+    if status in['FILLED','REJECTED']:  
             endingGlobal = 'SI'  # Suponiendo inicialmente que todas las operaciones son 'si'
             endingEnviadas = 'SI'
             for operacion_enviada in diccionario_operaciones_enviadas.values():  
@@ -705,7 +715,7 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=Non
         tiempoLecturaSaldo = datetime.now()
         VariableParaSaldoCta = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
         repuesta_operacion = pyRofexInicializada.get_account_position(account=account,environment=account)
-     
+    
         reporte = repuesta_operacion['positions']
         
 # Crear un conjunto para almacenar los símbolos ya vistos
@@ -717,44 +727,50 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=Non
            # if símbolo not in símbolos_vistos:
                 # Si es la primera vez que se ve el símbolo, mostrar los detalles
                 print("Símbolo:", símbolo)
-                print("Cantidad de stock buySize:", item['buySize'])
-                print("Cantidad de stock sellSize:", item['sellSize'])
+                print("Estan en matriz, Cantidad de stock buySize:", item['buySize'])
+                print("Estan en matriz, Cantidad de stock sellSize:", item['sellSize'])
                 print()
                 # Agregar el símbolo al conjunto de símbolos vistos
                 símbolos_vistos.add(símbolo)
        
-        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",reporte)
-        diccionario = {}
-        diccionario_operaciones_enviadas.clear()
-        for posicion in reporte:
-            # Accedemos al símbolo de cada posición y lo almacenamos en el diccionario
-                symbol = posicion['symbol']
-           # if símbolo not in símbolos_vistos:
-             #   print('**************************** ',symbol)
-            
-                diccionario = {
-                                "Symbol": symbol,
-                                "_t_": 'None',
-                                "_tr_": 'None',
-                                "_s_": 'None',
-                                "_ut_": 'orderQty',
-                                "precio Offer": 'None',
-                                "_ws_client_order_id": 'None',
-                                "_cliOrderId": 0,
-                                "timestamp": datetime.now(),
-                                "status": 'ANTERIOR',
-                                "statusActualBotonPanico":'ANTERIOR',
-                                "user_id": user_id,
-                                "userCuenta": userCuenta,
-                                "accountCuenta": accountCuenta,
-                                "tiempoSaldo":tiempoLecturaSaldo,
-                                "saldo":VariableParaSaldoCta
-                                }
-                diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
-                #pprint.pprint( get.diccionario_operaciones_enviadas)
-                #for key, valor in g et.diccionario_operaciones_enviadas.items():
-                #    print(key," : ",valor['_cliOrderId'])
-                símbolos_vistos.add(símbolo)
+                #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",reporte)
+                diccionario = {}
+                diccionario_operaciones_enviadas.clear()
+                for posicion in reporte:
+                    # Accedemos al símbolo de cada posición y lo almacenamos en el diccionario
+                    symbol = posicion['symbol']
+                    if symbol in símbolos_vistos:
+                    #   print('**************************** ',symbol)
+                        
+                        buySize = posicion['buySize']
+                        sellSize = posicion['sellSize']
+                        if abs(int(buySize))>abs(int(sellSize)):
+                        
+                            ut = abs(int(buySize))-abs(int(sellSize))
+                            
+                            diccionario = {
+                                            "Symbol": symbol,
+                                            "_t_": 'None',
+                                            "_tr_": 'None',
+                                            "_s_": 'None',
+                                            "_ut_": ut,
+                                            "precio Offer": 'None',
+                                            "_ws_client_order_id": 'None',
+                                            "_cliOrderId": 0,
+                                            "timestamp": datetime.now(),
+                                            "status": 'ANTERIOR',
+                                            "statusActualBotonPanico":'ANTERIOR',
+                                            "user_id": user_id,
+                                            "userCuenta": userCuenta,
+                                            "accountCuenta": accountCuenta,
+                                            "tiempoSaldo":tiempoLecturaSaldo,
+                                            "saldo":VariableParaSaldoCta
+                                            }
+                            diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
+                            #pprint.pprint( get.diccionario_operaciones_enviadas)
+                            #for key, valor in g et.diccionario_operaciones_enviadas.items():
+                            #    print(key," : ",valor['_cliOrderId'])
+                            símbolos_vistos.add(symbol)
         return 'ok'
    except Exception as e:       
         print("error de carga de diccionario de enviados", e)  

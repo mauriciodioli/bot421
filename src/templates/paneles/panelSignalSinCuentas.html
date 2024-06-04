@@ -7,7 +7,7 @@
   <div class = 'container p-4'id="contenido" style="display:none">  
     <div class="jumbotron">
       <p class="lead">To operate you can press the button with the corresponding color</p>
-        <form action="/pago" method="GET">
+        <form action="/create_order" method="GET">
           <input type="hidden" id="costo_base" name="costo_base" value="5">
           <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
           <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $5 </button>
@@ -162,10 +162,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
     var access_token = localStorage.getItem('access_token');
+    var selector = localStorage.getItem('selector');
     var account = 'vacio'
     var xhr = new XMLHttpRequest();
     debugger;
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/';
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/'+selector+'/';
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type

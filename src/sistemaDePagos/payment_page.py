@@ -88,8 +88,8 @@ payment_page.route('/producto/<int:producto_id>')
 def producto(producto_id):
     return render_template(f'producto{producto_id}.html')
 
-@payment_page.route('/payment_page_process_payment/', methods=['POST'])
-def payment_page_process_payment():
+@payment_page.route('/create_order/', methods=['POST'])
+def create_order():
     try:
         data = request.json
         card_number = data.get('card_number')
@@ -98,6 +98,28 @@ def payment_page_process_payment():
             'status': 'success',
             'message': f'Payment of {amount} ARS with card ending {card_number[-4:]} processed successfully.'
         }
+        return jsonify(response)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    
+@payment_page.route('/success_payment/', methods=['POST'])
+def success_payment():
+    try:
+        data = request.json
+        card_number = data.get('card_number')
+        amount = data.get('amount')
+        response = ''
+        return jsonify(response)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@payment_page.route('/webhock_success_payment/', methods=['POST'])
+def webhock_success_payment():
+    try:
+        data = request.json
+        card_number = data.get('card_number')
+        amount = data.get('amount')
+        response = ''
         return jsonify(response)
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
