@@ -230,7 +230,7 @@ def loginExtAutomatico():
                                           #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                          
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion(app,pyRofexInicializada) 
+                                            conexion(app,pyRofexInicializada,selector) 
                                             refrescoValorActualCuentaFichas(user_id)                                    
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
@@ -270,7 +270,7 @@ def loginExtAutomatico():
                                         #if  ConexionesBroker[accountCuenta].get('identificador') == True:
                                             pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
                                             repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
-                                            SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id)
+                                            SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)
                                      
                                             if repuesta_operacion:
                                                 pass
@@ -443,7 +443,7 @@ def loginExtCuentaSeleccionadaBroker():
                                     if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
                                     
                     
-                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id)
+                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id,selector)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
                         

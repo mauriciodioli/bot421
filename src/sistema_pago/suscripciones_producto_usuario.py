@@ -1,65 +1,64 @@
-# Creating  Routes
-from pipes import Template
-from unittest import result
-from flask import current_app
-
+from flask import Blueprint, render_template, request, jsonify, current_app
 import requests
+import os
 import json
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-from models.instrumento import Instrumento
-from utils.db import db
-import routes.api_externa_conexion.get_login as get
-import tokens.token as Token
-import jwt
-from models.usuario import Usuario
-from models.brokers import Broker
+import logging
 
-suscripciones_producto_usuario = Blueprint('suscripciones_producto_usuario',__name__)
+# Crear el Blueprint
+suscripciones_producto_usuario = Blueprint('suscripciones_producto_usuario', __name__)
 
-YOUR_ACCESS_TOKEN = 'TEST-7897622499833241-051414-fa868bef7e053a323b97ebbd953bf95b-630055'
-preapproval_plan_id = 'YOUR_PREAPPROVAL_PLAN_ID'
+# Variables globales (para propósitos de demostración, en producción utiliza un almacenamiento seguro)
+YOUR_ACCESS_TOKEN = 'Bearer TEST-7897622499833241-051414-fa868bef7e053a323b97ebbd953bf95b-630055'
+PREAPPROVAL_PLAN_ID = '2c938084726fca480172750000000000'  # Reemplaza con tu preapproval_plan_id
+
+# Configuración de logging
+src_directory1 = os.getcwd()  # Obtiene el directorio actual
+logs_file_path = os.path.join(src_directory1, 'logs.log')
+
+logging.basicConfig(level=logging.INFO, filename=logs_file_path,
+                    format='%(asctime)s %(levelname)s %(message)s')
 
 @suscripciones_producto_usuario.route('/crearSuscricpionesMP/', methods=['GET'])
 def crearSuscricpionesMP():
-    # Obtiene el parámetro 'productoId' de la cadena de consulta
+    # Obtiene el parámetro 'layout' de la cadena de consulta
     OrigenLayout = request.args.get('layout')
-   
-    return render_template('sistemaDePagos/crearSuscripciones.html',layout = OrigenLayout)
+    return render_template('sistemaDePagos/crearSuscripciones.html', layout=OrigenLayout)
 
 @suscripciones_producto_usuario.route('/create_subscription', methods=['POST'])
 def create_subscription():
+    # Obtener los datos JSON de la solicitud
     data = request.json
-    frequency = data.get('frequency')
-    amount = data.get('amount')
-    reason = data.get('reason')
-
- # Aquí debes incluir tu lógica para autenticarte con la API de Mercado Libre
-    # y obtener un token de acceso válido
-
-    # URL de la API de suscripciones de Mercado Libre
-    subscription_api_url = 'https://api.mercadolibre.com/subscriptions'
-
-    # Datos de la suscripción a enviar
-    subscription_data = {
-        'frequency': frequency,
-        'amount': amount,
-        'reason': reason
+    
+    # Construir el cuerpo de la solicitud para Mercado Pago
+    payload = {
+        "auto_recurring": {
+            "frequency": data.get('frequency'),
+            "frequency_type": "months",
+            "start_date": "2020-06-02T13:07:14.260Z",  # Estas fechas deberían ser dinámicas o configurables
+            "end_date": "2022-07-20T15:59:52.581Z",
+            "transaction_amount": data.get('amount'),
+            "currency_id": "ARS"
+        },
+        "back_url": "https://www.mercadopago.com.ar",
+        "card_token_id": data.get('card_token_id'),
+        "external_reference": "YG-1234",
+        "payer_email": data.get('payer_email'),
+        "preapproval_plan_id": PREAPPROVAL_PLAN_ID,
+        "reason": data.get('reason'),
+        "status": "authorized"
     }
 
+    # Realizar la solicitud POST a la API de Mercado Pago
     headers = {
-        'Authorization':YOUR_ACCESS_TOKEN,  # Reemplaza 'tu_token_de_acceso' con tu token real
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': YOUR_ACCESS_TOKEN
     }
+    response = requests.post('https://api.mercadopago.com/preapproval', json=payload, headers=headers)
 
-    try:
-        # Envía la solicitud para crear la suscripción
-        response = requests.post(subscription_api_url, json=subscription_data, headers=headers)
-        
-        # Verifica si la solicitud fue exitosa
-        if response.status_code == 201:  # Código 201 significa creado
-            return jsonify({'message': 'Suscripción creada exitosamente'}), 201
-        else:
-            return jsonify({'error': 'Error al crear la suscripción'}), response.status_code
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    # Registrar la respuesta en los logs
+    if response.status_code == 200:
+        current_app.logger.info(f"Subscription created successfully: {response.json()}")
+        return jsonify({"message": "Subscription created successfully", "response": response.json()})
+    else:
+        current_app.logger.error(f"Failed to create subscription: {response.json()}")
+        return jsonify({"error": "Failed to create subscription", "details": response.json()}), response.status_code

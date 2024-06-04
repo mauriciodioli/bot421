@@ -244,8 +244,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var usuario_id = localStorage.getItem('usuario_id');
     access_token = localStorage.getItem('access_token');
     account = localStorage.getItem('cuenta');
+    var selector = localStorage.getItem('selector');
     var xhr = new XMLHttpRequest();
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/';
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/'+selector+'/';
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type
