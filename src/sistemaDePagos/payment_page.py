@@ -23,7 +23,7 @@ import httpx
 #mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
 
 payment_page = Blueprint('payment_page',__name__)
-
+sdk_prueba = "APP_USR-5717567227383881-060409-1e8fafe5e95b1bc7f5b5c9a86dc40999-1835443126" #de prueba en el usuario vendedor
 sdk = "APP_USR-5717567227383881-060409-1e8fafe5e95b1bc7f5b5c9a86dc40999-1835443126" #de produccion en el usuario vendedor de prueba
 YOUR_ACCESS_TOKEN = 'TEST-7897622499833241-051414-fa868bef7e053a323b97ebbd953bf95b-630055' #de produccion
 preapproval_plan_id = 'YOUR_PREAPPROVAL_PLAN_ID'
@@ -125,9 +125,9 @@ def producto(producto_id):
     return render_template(f'producto{producto_id}.html')
 
 
-async def create_preference(sdk, preference_data, headers):
+async def create_preference(sdk, preference_data, headers,url):
     async with httpx.AsyncClient() as client:
-        url = "https://api.mercadopago.com/checkout/preferences"
+       
         response = await client.post(
             url,
             json=preference_data,
@@ -135,7 +135,6 @@ async def create_preference(sdk, preference_data, headers):
         )
         response.raise_for_status()
         return response.json()
-     
 
 @payment_page.route('/create_order/', methods=['POST'])
 async def create_order():
@@ -162,17 +161,20 @@ async def create_order():
                 "failure": "https://89ae-190-225-182-66.ngrok-free.app/failure",
                 "pending": "https://89ae-190-225-182-66.ngrok-free.app/pending"
             },
+             "notification_url": "https://89ae-190-225-182-66.ngrok-free.app/webhook",
              "auto_return": "approved"
         }
 
        # Encabezados para la solicitud
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + sdk  # Token de acceso
+            'Authorization': 'Bearer ' + sdk,  # Token de acceso
+            'X-Idempotency-Key':'123546'
         }
 
         # Llama a la función create_preference
-        preference_response = await create_preference(sdk, preference_data, headers)
+        url = "https://api.mercadopago.com/checkout/preferences"
+        preference_response = await create_preference(sdk, preference_data, headers,url)
         init_point = preference_response.get("init_point")
        
         # Devuelve la URL de inicialización de la preferencia
@@ -225,7 +227,7 @@ def failure():
         return jsonify({'status': 'error', 'message': str(e)})
     
 @payment_page.route('/pending/', methods=['GET'])
-def pending():
+def pending():    
     try:
         card_number = request.args.get('card_number')
         amount = request.args.get('amount')
@@ -233,3 +235,102 @@ def pending():
         return jsonify(response)
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
+
+
+@payment_page.route('/create_order_plan/', methods=['POST'])
+def create_order_plan():
+    try:
+        # Obtén los datos de la solicitud
+        data = request.get_json()
+
+        # Extrae los valores necesarios
+        costo_base = data.get("items")[0].get("unit_price")
+        porcentaje_retorno = data.get("porcentaje_retorno", 0)
+        costo_base = float(costo_base)
+
+        # Asegúrate de que el costo base sea al menos 15 ARS
+        if costo_base < 15.00:
+            return jsonify({"error": "El monto mínimo permitido es de 15 ARS"}), 400
+
+        # Crea los datos de la preferencia
+        url = 'https://api.mercadopago.com/preapproval_plan'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sdk_prueba
+        }
+        payload = {
+            "auto_recurring": {
+                "frequency": 1,
+                "frequency_type": "months",
+                "repetitions": 12,
+                "billing_day": 10,
+                "billing_day_proportional": False,
+                "free_trial": {
+                    "frequency": 1,
+                    "frequency_type": "months"
+                },
+                "transaction_amount": costo_base,  # Usa el costo_base obtenido
+                "currency_id": "ARS"
+            },
+            "back_url": "https://89ae-190-225-182-66.ngrok-free.app/success",
+            "payment_methods_allowed": {
+                "payment_types": [
+                    {"id": "credit_card"}
+                ],
+                "payment_methods": [
+                    {"id": "bolbradesco"}
+                ]
+            },
+            "reason": "Bot de estrategias"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.HTTPError as e:
+        # Imprime el contenido de la respuesta de error
+        error_response = e.response.json()
+        print(f"Error: {error_response}")
+        return jsonify({"error": error_response}), e.response.status_code
+
+
+@payment_page.route('/create_order_suscripcion', methods=['POST'])
+def create_order_suscripcion():
+    try:
+        # Datos de la solicitud
+        data = request.get_json()
+        preapproval_plan_id = data.get("preapproval_plan_id")
+        payer_email = data.get("payer_email")
+        card_token_id = data.get("card_token_id")
+        transaction_amount = data.get("transaction_amount")
+
+        # Datos para crear la preaprobación
+        url = 'https://api.mercadopago.com/preapproval'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+sdk_prueba
+        }
+        payload = {
+            "preapproval_plan_id": preapproval_plan_id,
+            "reason": "Yoga classes",
+            "external_reference": "YG-1234",
+            "payer_email": payer_email,
+            "card_token_id": card_token_id,
+            "auto_recurring": {
+                "frequency": 1,
+                "frequency_type": "months",
+                "start_date": "2020-06-02T13:07:14.260Z",
+                "end_date": "2022-07-20T15:59:52.581Z",
+                "transaction_amount": transaction_amount,
+                "currency_id": "ARS"
+            },
+            "back_url": "https://www.mercadopago.com.ar",
+            "status": "authorized"
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.HTTPError as e:
+        error_response = e.response.json()
+        return jsonify({"error": error_response}), e.response.status_code
