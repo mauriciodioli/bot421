@@ -19,6 +19,7 @@ import time
 import tokens.token as Token
 from queue import Queue
 
+
 panelControl = Blueprint('panelControl',__name__)
 
 # Crear una cola global para la comunicación
@@ -42,7 +43,8 @@ def panel_control_sin_cuenta():
     refresh_token = request.args.get('refresh_token')
     selector = request.args.get('selector')
     account = ''
-    return render_template('notificaciones/noPoseeDatos.html',layout=layout)
+    ####COLOCADA ESTA RESPUESTA CUANDO NO HAY DATOS PARA CARGAR DESDE SHEET####
+   # return render_template('notificaciones/noPoseeDatos.html',layout=layout)
    
    
     if access_token and Token.validar_expiracion_token(access_token=access_token):

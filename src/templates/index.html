@@ -14,6 +14,12 @@
             {% endfor %}
           {% endif %}
         {% endwith %}
+          <form id="donationForm">
+            <input type="hidden" id="costo_base" name="costo_base" value="5">
+            <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
+            <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $5</button>
+        </form>
+ 
             <div class="horizontal-padding vertical-padding">
               <section class="planes mt-4" id="planes">
                 <div class="planes-info d-flex align-items-center justify-content-center flex-column text-center">
@@ -211,7 +217,7 @@
                         <img src="/static/bitCoinSobreNosotros.jpg" alt="Descripción de la imagen" style="width: 200%; height: auto;">
                       </div>
                       <div class="text-container-sobre-nosotros" style="text-align: left;">
-                        <form action="detalle/sobreNosotros" method="GET">
+                        <form action="detalle/sobreNosotros/layout_detalle_productos" method="GET">
                           <button class="card-button long-button" style="margin-top: 20px;" type="submit">Leer más</button>
                         </form>
                     </div>
@@ -523,5 +529,64 @@
         });
       }
    
+
+
+
+
+
+
+
+
+
+
+
+             
+
+$(document).ready(function(){
+  $('#donationForm').submit(function(event){
+      event.preventDefault(); // Evita que el formulario se envíe de manera convencional
+
+      // Obtén los datos del formulario
+      var formData = {
+          costo_base: $('#costo_base').val(),
+          porcentaje_retorno: $('#porcentaje_retorno').val()
+      };
+
+      // Crea los datos de la preferencia
+      var preference_data = {
+          items: [
+              {
+                  title: "Donacion de prueba",
+                  quantity: 1,
+                  unit_price: formData.costo_base
+              }
+          ],
+          back_urls: {
+              success: "https://89ae-190-225-182-66.ngrok-free.app/success",
+              failure: "https://89ae-190-225-182-66.ngrok-free.app/failure",
+              pending: "https://89ae-190-225-182-66.ngrok-free.app/pending"
+          },
+          notification_url: "https://89ae-190-225-182-66.ngrok-free.app/webhook",
+          auto_return: "approved"
+      };
+
+      // Envía la solicitud AJAX
+      $.ajax({
+          url: '/create_order/',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(preference_data),
+          success: function(response) {
+              // Redirige a la URL de inicialización de la preferencia
+              window.location.href = response.init_point;
+          },
+          error: function(xhr, status, error) {
+              console.error('Error: ' + error);
+              alert('Hubo un error al procesar la donación.');
+          }
+      });
+  });
+});
+
   </script>
 {% endblock %}

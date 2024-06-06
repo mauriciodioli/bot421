@@ -174,12 +174,10 @@
             <button onclick="processNewCardPayment()">Pagar con nueva tarjeta</button>
         </div>
     </div>
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>    
     <script>
-        // Configura el SDK de MercadoPago
-       
-        const mp = new MercadoPago('TEST-8859f077-f0e0-43f0-a8e6-b6786a24fc80');
-        
+    
+        const mp = new MercadoPago('TEST-5717567227383881-060409-86ebecdf49c0e821fe365714a8c63020-1835443126');
         function closePayment() {
             const paymentContainer = document.querySelector('.payment-container');
             paymentContainer.style.display = 'none';
@@ -218,27 +216,76 @@
             }
         }
 
-        async function processPayment() {
-            const cardNumber = document.getElementById('card_number').value;
-            const email = localStorage.getItem('correo_electronico');
-        
-            // Validar si cardNumber tiene datos
-            if (cardNumber.trim() === '') {
-                alert('Por favor, ingresa el número de la tarjeta.');
-                return; // Detener la ejecución si no hay datos en cardNumber
-            }
-            debugger;
-            console.log('cardNumber: ',cardNumber)
+      // Inicializar MercadoPago con tu clave pública
+
+
+    async function processPayment() {
+        const cardNumber = document.getElementById('card_number').value;
+        const email = localStorage.getItem('correo_electronico');
+    
+        // Validar si cardNumber tiene datos
+        if (cardNumber.trim() === '') {
+            alert('Por favor, ingresa el número de la tarjeta.');
+            return; // Detener la ejecución si no hay datos en cardNumber
+        }
+    
+        try {
+            // Crear el token de la tarjeta de crédito
+            const token = await mp.createToken({
+                card_number: cardNumber,
+                security_code: '123', // Debes agregar la lógica para obtener este valor
+                expiration_month: '11', // Debes agregar la lógica para obtener este valor
+                expiration_year: '2025', // Debes agregar la lógica para obtener este valor
+                cardholder: {
+                    name: 'APRO' // Debes agregar la lógica para obtener este valor
+                }
+            });
+    
+            // Enviar el token y el correo electrónico al backend para procesar el pago
+            fetch('/create_subscription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    card_token_id: token.id
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } catch (error) {
+            console.error('Token creation error:', error);
+        }
+    }
+    
+    async function processNewCardPayment() {
+        if (validatePayment()) {
+            const cardNumber = document.getElementById('new_card_number').value;
+            const cardName = document.getElementById('card_name').value;
+            const expiryDate = document.getElementById('expiry_date').value;
+            const cvv = document.getElementById('cvv').value;
+            const email = document.getElementById('email').value;
+    
             try {
-                const token = await mp.createCardToken({
-                    cardNumber: cardNumber,
-                    cardholderName: '', // Necesario agregar los datos del titular si son requeridos
-                    cardExpirationMonth: '12', // Agregar la lógica para extraer estos valores
-                    cardExpirationYear: '2025', // Agregar la lógica para extraer estos valores
-                    securityCode: '123' // Agregar la lógica para extraer este valor
+                // Crear el token de la tarjeta de crédito
+                const token = await mp.createToken({
+                    card_number: cardNumber,
+                    security_code: cvv,
+                    expiration_month: expiryDate.split('/')[0],
+                    expiration_year: expiryDate.split('/')[1],
+                    cardholder: {
+                        name: cardName
+                    }
                 });
-        
-                fetch('/create_subscription', {
+    
+                // Enviar el token y el correo electrónico al backend para procesar el pago
+                fetch('/pago', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -259,62 +306,24 @@
                 console.error('Token creation error:', error);
             }
         }
-        
-
-        async function processNewCardPayment() {
-          
-                if (validatePayment()) {
-
-                        const cardNumber = document.getElementById('new_card_number').value;
-                        const cardName = document.getElementById('card_name').value;
-                        const expiryDate = document.getElementById('expiry_date').value;
-                        const cvv = document.getElementById('cvv').value;
-                        const email = document.getElementById('email').value;
-
-                        const token = await mp.createCardToken({
-                            cardNumber: cardNumber,
-                            cardholderName: cardName,
-                            cardExpirationMonth: expiryDate.split('/')[0],
-                            cardExpirationYear: expiryDate.split('/')[1],
-                            securityCode: cvv
-                    });
-
-                    fetch('/create_subscription', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            email: email,
-                            card_token_id: token.id
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                }
+    }
+    
+    function validatePayment() {
+        const cardNumber = document.getElementById('card_number').value;
+        const newCardNumber = document.getElementById('new_card_number').value;
+        const cardName = document.getElementById('card_name').value;
+        const expiryDate = document.getElementById('expiry_date').value;
+        const cvv = document.getElementById('cvv').value;
+        const email = document.getElementById('email').value;
+    
+        if ((cardNumber === '' && newCardNumber === '') || cardName === '' || expiryDate === '' || cvv === '' || email === '') {
+            alert('Por favor, complete todos los campos.');
+            return false;
         }
-
-        function validatePayment() {
-
-            const cardNumber = document.getElementById('card_number').value;
-            const newCardNumber = document.getElementById('new_card_number').value;
-            const cardName = document.getElementById('card_name').value;
-            const expiryDate = document.getElementById('expiry_date').value;
-            const cvv = document.getElementById('cvv').value;
-            const email = document.getElementById('email').value;
-
-            if ((cardNumber === '' && newCardNumber === '') || cardName === '' || expiryDate === '' || cvv === '' || email === '') {
-                alert('Por favor, complete todos los campos.');
-                return false;
-            }
-
-            return true;
-        }
+    
+        return true;
+    }
+    
     </script>
 </body>
 </html>
