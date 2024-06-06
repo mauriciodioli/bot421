@@ -11561,3 +11561,546 @@ __inicio 16:32 ___fin 19:00
 2024-06-06 11:21:47,978 INFO 127.0.0.1 - - [06/Jun/2024 11:21:47] "POST /pagoMercadoPago/ HTTP/1.1" 200 -
 2024-06-06 11:21:48,021 INFO 127.0.0.1 - - [06/Jun/2024 11:21:48] "[33mGET /undefined HTTP/1.1[0m" 404 -
 2024-06-06 11:22:28,516 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 11:22:29,640 INFO  * Restarting with stat
+2024-06-06 11:22:38,963 WARNING  * Debugger is active!
+2024-06-06 11:22:38,989 INFO  * Debugger PIN: 115-013-033
+2024-06-06 11:22:41,877 INFO 127.0.0.1 - - [06/Jun/2024 11:22:41] "POST /pagoMercadoPago/ HTTP/1.1" 200 -
+2024-06-06 11:22:41,928 INFO 127.0.0.1 - - [06/Jun/2024 11:22:41] "[33mGET /undefined HTTP/1.1[0m" 404 -
+2024-06-06 11:22:48,792 INFO 127.0.0.1 - - [06/Jun/2024 11:22:48] "POST /pagoMercadoPago/ HTTP/1.1" 200 -
+2024-06-06 11:22:48,831 INFO 127.0.0.1 - - [06/Jun/2024 11:22:48] "[33mGET /undefined HTTP/1.1[0m" 404 -
+2024-06-06 11:23:28,372 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-06 11:23:28,372 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-06 11:25:43,138 INFO 127.0.0.1 - - [06/Jun/2024 11:25:43] "POST /pagoMercadoPago/ HTTP/1.1" 200 -
+2024-06-06 11:25:43,169 INFO 127.0.0.1 - - [06/Jun/2024 11:25:43] "[33mGET /undefined HTTP/1.1[0m" 404 -
+2024-06-06 11:25:44,626 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-06 11:25:44,626 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-06 11:25:48,659 INFO 127.0.0.1 - - [06/Jun/2024 11:25:48] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 11:25:49,271 INFO 127.0.0.1 - - [06/Jun/2024 11:25:49] "GET /index HTTP/1.1" 200 -
+2024-06-06 11:25:51,434 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,439 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,447 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,452 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,458 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,468 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,472 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,486 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,493 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,505 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,519 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,524 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,533 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,555 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,572 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:25:51,591 INFO 127.0.0.1 - - [06/Jun/2024 11:25:51] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 11:25:52,470 INFO 127.0.0.1 - - [06/Jun/2024 11:25:52] "GET /panel_control?country=argentina&layoutOrigen=layout_signal&usuario_id=1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNzY4MzU2MCwianRpIjoiNjBiN2E2ZmItNmQ1NS00MGE2LTkzZTktNTY3OWRlMDkwZjUwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE3NjgzNTYwLCJjc3JmIjoiODMyZjVkZGYtNzA4ZC00MDZjLWE4ZDEtZWJkZGY2NDAzMTFhIiwiZXhwIjoxNzE3NzY5OTYwfQ.vocIbYrM1Ny5soomwzyTwykRrjd-nss2p4gJRp5-EII&selector=vacio HTTP/1.1" 200 -
+2024-06-06 11:25:52,732 INFO 127.0.0.1 - - [06/Jun/2024 11:25:52] "POST /loginIndex HTTP/1.1" 200 -
+2024-06-06 11:25:53,328 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "GET /home HTTP/1.1" 200 -
+2024-06-06 11:25:53,366 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,382 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,391 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,443 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,451 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,466 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,476 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,498 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,505 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,513 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,522 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,533 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,543 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,549 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,565 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,580 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:25:53,590 INFO 127.0.0.1 - - [06/Jun/2024 11:25:53] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:55,572 INFO 127.0.0.1 - - [06/Jun/2024 11:25:55] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-06 11:25:56,564 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-06 11:25:56,614 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,627 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,638 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,648 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,659 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,675 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,683 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,699 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,704 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,713 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,727 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,732 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,748 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,755 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,765 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:25:56,778 INFO 127.0.0.1 - - [06/Jun/2024 11:25:56] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:25:57,025 INFO 127.0.0.1 - - [06/Jun/2024 11:25:57] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-06 11:26:02,135 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layout&usuario_id=1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNzY4MzU2MCwianRpIjoiNjBiN2E2ZmItNmQ1NS00MGE2LTkzZTktNTY3OWRlMDkwZjUwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE3NjgzNTYwLCJjc3JmIjoiODMyZjVkZGYtNzA4ZC00MDZjLWE4ZDEtZWJkZGY2NDAzMTFhIiwiZXhwIjoxNzE3NzY5OTYwfQ.vocIbYrM1Ny5soomwzyTwykRrjd-nss2p4gJRp5-EII&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNzY4MzU2MCwianRpIjoiY2ExN2ExOTItMzU1Yy00NGY1LTg0ZjktZDE0NWVhZDc2ZjJiIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEsIm5iZiI6MTcxNzY4MzU2MCwiY3NyZiI6IjdhNTJhZTIzLWJlNDUtNGY3YS04Y2U0LWJmM2JkYjk2ZTg4YyIsImV4cCI6MTcyMDI3NTU2MH0.3mFiEm0K77IEd8NKzWcgjfLzaDjgTQ7wvDWEt3bOo8c&selector=vacio HTTP/1.1" 200 -
+2024-06-06 11:26:02,197 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,217 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,220 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,235 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,247 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,260 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,272 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,283 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,292 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,304 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,314 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:26:02,329 INFO 127.0.0.1 - - [06/Jun/2024 11:26:02] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:26:04,895 INFO 127.0.0.1 - - [06/Jun/2024 11:26:04] "GET /panel_control?country=argentina&layoutOrigen=layout_signal&usuario_id=1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNzY4MzU2MCwianRpIjoiNjBiN2E2ZmItNmQ1NS00MGE2LTkzZTktNTY3OWRlMDkwZjUwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE3NjgzNTYwLCJjc3JmIjoiODMyZjVkZGYtNzA4ZC00MDZjLWE4ZDEtZWJkZGY2NDAzMTFhIiwiZXhwIjoxNzE3NzY5OTYwfQ.vocIbYrM1Ny5soomwzyTwykRrjd-nss2p4gJRp5-EII&selector=vacio HTTP/1.1" 200 -
+2024-06-06 11:26:04,958 INFO 127.0.0.1 - - [06/Jun/2024 11:26:04] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:04,973 INFO 127.0.0.1 - - [06/Jun/2024 11:26:04] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:26:04,980 INFO 127.0.0.1 - - [06/Jun/2024 11:26:04] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:04,990 INFO 127.0.0.1 - - [06/Jun/2024 11:26:04] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:04,999 INFO 127.0.0.1 - - [06/Jun/2024 11:26:04] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:05,009 INFO 127.0.0.1 - - [06/Jun/2024 11:26:05] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:05,022 INFO 127.0.0.1 - - [06/Jun/2024 11:26:05] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:05,026 INFO 127.0.0.1 - - [06/Jun/2024 11:26:05] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:05,046 INFO 127.0.0.1 - - [06/Jun/2024 11:26:05] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:26:05,062 INFO 127.0.0.1 - - [06/Jun/2024 11:26:05] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 11:26:05,066 INFO 127.0.0.1 - - [06/Jun/2024 11:26:05] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:26:06,222 INFO 127.0.0.1 - - [06/Jun/2024 11:26:06] "GET /panel_control_atomatico/argentina/1/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNzY4MzU2MCwianRpIjoiNjBiN2E2ZmItNmQ1NS00MGE2LTkzZTktNTY3OWRlMDkwZjUwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE3NjgzNTYwLCJjc3JmIjoiODMyZjVkZGYtNzA4ZC00MDZjLWE4ZDEtZWJkZGY2NDAzMTFhIiwiZXhwIjoxNzE3NzY5OTYwfQ.vocIbYrM1Ny5soomwzyTwykRrjd-nss2p4gJRp5-EII/vacio/vacio/ HTTP/1.1" 200 -
+2024-06-06 11:26:10,758 INFO HTTP Request: POST https://api.mercadopago.com/checkout/preferences "HTTP/1.1 201 Created"
+2024-06-06 11:26:10,772 INFO 127.0.0.1 - - [06/Jun/2024 11:26:10] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-06 11:26:53,239 INFO 127.0.0.1 - - [06/Jun/2024 11:26:53] "GET /panel_control?country=argentina&layoutOrigen=layout_signal&usuario_id=1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNzY4MzU2MCwianRpIjoiNjBiN2E2ZmItNmQ1NS00MGE2LTkzZTktNTY3OWRlMDkwZjUwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE3NjgzNTYwLCJjc3JmIjoiODMyZjVkZGYtNzA4ZC00MDZjLWE4ZDEtZWJkZGY2NDAzMTFhIiwiZXhwIjoxNzE3NzY5OTYwfQ.vocIbYrM1Ny5soomwzyTwykRrjd-nss2p4gJRp5-EII&selector=vacio HTTP/1.1" 200 -
+2024-06-06 11:26:58,700 INFO 127.0.0.1 - - [06/Jun/2024 11:26:58] "[32mGET /success?collection_id=79669311857&collection_status=approved&payment_id=79669311857&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19430398525&preference_id=1835443126-d3ecaab9-7b55-4e89-9951-ab3ed52f6a77&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1[0m" 308 -
+2024-06-06 11:27:06,403 INFO 127.0.0.1 - - [06/Jun/2024 11:27:06] "GET /success/?collection_id=79669311857&collection_status=approved&payment_id=79669311857&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19430398525&preference_id=1835443126-d3ecaab9-7b55-4e89-9951-ab3ed52f6a77&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1" 200 -
+2024-06-06 11:28:28,374 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-06-06 11:28:28,374 INFO ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-06-06 11:35:13,651 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 11:35:13,851 INFO 127.0.0.1 - - [06/Jun/2024 11:35:13] "GET /success/?collection_id=79669311857&collection_status=approved&payment_id=79669311857&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19430398525&preference_id=1835443126-d3ecaab9-7b55-4e89-9951-ab3ed52f6a77&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1" 200 -
+2024-06-06 11:35:15,016 INFO  * Restarting with stat
+2024-06-06 11:35:23,984 WARNING  * Debugger is active!
+2024-06-06 11:35:24,005 INFO  * Debugger PIN: 115-013-033
+2024-06-06 11:35:55,298 INFO 127.0.0.1 - - [06/Jun/2024 11:35:55] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 11:35:57,876 INFO 127.0.0.1 - - [06/Jun/2024 11:35:57] "GET /index HTTP/1.1" 200 -
+2024-06-06 11:36:00,066 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,078 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,084 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,096 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,097 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,106 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,117 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,122 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,143 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,148 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,158 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,171 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,192 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,202 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,223 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:36:00,253 INFO 127.0.0.1 - - [06/Jun/2024 11:36:00] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,159 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "POST /loginIndex HTTP/1.1" 200 -
+2024-06-06 11:36:05,803 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "GET /home HTTP/1.1" 200 -
+2024-06-06 11:36:05,843 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,858 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,863 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,905 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,915 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,929 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,945 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,949 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,961 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,969 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,984 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:05,997 INFO 127.0.0.1 - - [06/Jun/2024 11:36:05] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:06,006 INFO 127.0.0.1 - - [06/Jun/2024 11:36:06] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:06,011 INFO 127.0.0.1 - - [06/Jun/2024 11:36:06] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:06,030 INFO HTTP Request: POST https://api.mercadopago.com/checkout/preferences "HTTP/1.1 201 Created"
+2024-06-06 11:36:06,032 INFO 127.0.0.1 - - [06/Jun/2024 11:36:06] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:06,053 INFO 127.0.0.1 - - [06/Jun/2024 11:36:06] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:36:06,068 INFO 127.0.0.1 - - [06/Jun/2024 11:36:06] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:06,072 INFO 127.0.0.1 - - [06/Jun/2024 11:36:06] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-06 11:36:08,112 INFO 127.0.0.1 - - [06/Jun/2024 11:36:08] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-06 11:36:13,225 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "POST /logOutSystem HTTP/1.1" 200 -
+2024-06-06 11:36:13,288 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,295 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,311 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,315 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,324 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,341 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,348 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,361 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,371 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,387 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,394 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,405 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:36:13,416 INFO 127.0.0.1 - - [06/Jun/2024 11:36:13] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,666 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "GET /index HTTP/1.1" 200 -
+2024-06-06 11:36:15,712 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,728 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,734 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,747 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,752 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,762 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,774 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,783 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,793 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,805 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,818 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,826 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,831 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,841 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 11:36:15,852 INFO 127.0.0.1 - - [06/Jun/2024 11:36:15] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:36:20,780 INFO HTTP Request: POST https://api.mercadopago.com/checkout/preferences "HTTP/1.1 201 Created"
+2024-06-06 11:36:20,796 INFO 127.0.0.1 - - [06/Jun/2024 11:36:20] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-06 11:37:06,186 INFO 127.0.0.1 - - [06/Jun/2024 11:37:06] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:37:06,605 INFO 127.0.0.1 - - [06/Jun/2024 11:37:06] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:37:07,126 INFO 127.0.0.1 - - [06/Jun/2024 11:37:07] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:37:07,331 INFO 127.0.0.1 - - [06/Jun/2024 11:37:07] "[32mPOST /webhook?id=79928326706&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:37:07,343 INFO 127.0.0.1 - - [06/Jun/2024 11:37:07] "[32mPOST /webhook?data.id=79928326706&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:37:07,584 INFO 127.0.0.1 - - [06/Jun/2024 11:37:07] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:37:08,154 INFO 127.0.0.1 - - [06/Jun/2024 11:37:08] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:37:08,646 INFO 127.0.0.1 - - [06/Jun/2024 11:37:08] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:37:13,303 INFO 127.0.0.1 - - [06/Jun/2024 11:37:13] "[32mGET /success?collection_id=79928326706&collection_status=approved&payment_id=79928326706&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19439292350&preference_id=1835443126-9274bd54-8df5-4383-8af3-64b1389304ae&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1[0m" 308 -
+2024-06-06 11:37:16,963 INFO 127.0.0.1 - - [06/Jun/2024 11:37:16] "GET /success/?collection_id=79928326706&collection_status=approved&payment_id=79928326706&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19439292350&preference_id=1835443126-9274bd54-8df5-4383-8af3-64b1389304ae&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1" 200 -
+2024-06-06 11:37:47,323 INFO 127.0.0.1 - - [06/Jun/2024 11:37:47] "GET /success/?collection_id=79928326706&collection_status=approved&payment_id=79928326706&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19439292350&preference_id=1835443126-9274bd54-8df5-4383-8af3-64b1389304ae&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1" 200 -
+2024-06-06 11:38:08,487 INFO 127.0.0.1 - - [06/Jun/2024 11:38:08] "[32mPOST /webhook?data.id=79928326706&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:38:08,920 INFO 127.0.0.1 - - [06/Jun/2024 11:38:08] "[32mPOST /webhook?data.id=79928326706&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:38:08,956 INFO 127.0.0.1 - - [06/Jun/2024 11:38:08] "[32mPOST /webhook?id=79928326706&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:38:09,244 INFO 127.0.0.1 - - [06/Jun/2024 11:38:09] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:38:09,482 INFO 127.0.0.1 - - [06/Jun/2024 11:38:09] "[32mPOST /webhook?id=79928326706&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:38:09,772 INFO 127.0.0.1 - - [06/Jun/2024 11:38:09] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:42:30,362 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 11:42:32,892 INFO  * Restarting with stat
+2024-06-06 11:42:44,256 WARNING  * Debugger is active!
+2024-06-06 11:42:44,380 INFO  * Debugger PIN: 115-013-033
+2024-06-06 11:42:44,850 INFO 127.0.0.1 - - [06/Jun/2024 11:42:44] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 11:42:44,852 INFO 127.0.0.1 - - [06/Jun/2024 11:42:44] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 11:42:47,369 INFO 127.0.0.1 - - [06/Jun/2024 11:42:47] "GET /index HTTP/1.1" 200 -
+2024-06-06 11:42:48,685 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,688 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,713 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,733 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,744 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,759 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,764 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,776 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,785 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,796 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,811 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,942 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,952 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,984 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 11:42:48,987 INFO 127.0.0.1 - - [06/Jun/2024 11:42:48] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 11:42:49,128 INFO 127.0.0.1 - - [06/Jun/2024 11:42:49] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 11:43:18,305 INFO HTTP Request: POST https://api.mercadopago.com/checkout/preferences "HTTP/1.1 201 Created"
+2024-06-06 11:43:18,338 INFO 127.0.0.1 - - [06/Jun/2024 11:43:18] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-06 11:43:55,891 INFO 127.0.0.1 - - [06/Jun/2024 11:43:55] "[32mGET /failure?collection_id=null&collection_status=null&payment_id=null&status=null&external_reference=null&payment_type=null&merchant_order_id=null&preference_id=1835443126-7132ac6f-3a57-4adb-8360-87a5a9e74e91&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1[0m" 308 -
+2024-06-06 11:43:56,351 INFO 127.0.0.1 - - [06/Jun/2024 11:43:56] "GET /failure/?collection_id=null&collection_status=null&payment_id=null&status=null&external_reference=null&payment_type=null&merchant_order_id=null&preference_id=1835443126-7132ac6f-3a57-4adb-8360-87a5a9e74e91&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1" 200 -
+2024-06-06 11:45:08,572 INFO 127.0.0.1 - - [06/Jun/2024 11:45:08] "[32mPOST /webhook?id=19431190987&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:45:09,146 INFO 127.0.0.1 - - [06/Jun/2024 11:45:09] "[32mPOST /webhook?id=19431190987&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:45:09,627 INFO 127.0.0.1 - - [06/Jun/2024 11:45:09] "[32mPOST /webhook?id=19431190987&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:45:09,789 INFO 127.0.0.1 - - [06/Jun/2024 11:45:09] "[32mPOST /webhook?data.id=79671095065&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:45:09,826 INFO 127.0.0.1 - - [06/Jun/2024 11:45:09] "[32mPOST /webhook?id=79671095065&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:45:10,222 INFO 127.0.0.1 - - [06/Jun/2024 11:45:10] "[32mPOST /webhook?id=19431190987&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:45:10,713 INFO 127.0.0.1 - - [06/Jun/2024 11:45:10] "[32mPOST /webhook?id=19431190987&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 11:45:17,356 INFO 127.0.0.1 - - [06/Jun/2024 11:45:17] "[32mGET /success?collection_id=79671095065&collection_status=approved&payment_id=79671095065&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19431190987&preference_id=1835443126-7132ac6f-3a57-4adb-8360-87a5a9e74e91&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1[0m" 308 -
+2024-06-06 11:45:21,191 INFO 127.0.0.1 - - [06/Jun/2024 11:45:21] "GET /success/?collection_id=79671095065&collection_status=approved&payment_id=79671095065&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19431190987&preference_id=1835443126-7132ac6f-3a57-4adb-8360-87a5a9e74e91&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1" 200 -
+2024-06-06 11:46:10,917 INFO 127.0.0.1 - - [06/Jun/2024 11:46:10] "[32mPOST /webhook?data.id=79671095065&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:46:10,997 INFO 127.0.0.1 - - [06/Jun/2024 11:46:10] "[32mPOST /webhook?id=79671095065&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:46:11,359 INFO 127.0.0.1 - - [06/Jun/2024 11:46:11] "[32mPOST /webhook?data.id=79671095065&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:46:11,609 INFO 127.0.0.1 - - [06/Jun/2024 11:46:11] "[32mPOST /webhook?id=79671095065&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:47:22,272 INFO 127.0.0.1 - - [06/Jun/2024 11:47:22] "GET /success/?collection_id=79671095065&collection_status=approved&payment_id=79671095065&status=approved&external_reference=null&payment_type=credit_card&merchant_order_id=19431190987&preference_id=1835443126-7132ac6f-3a57-4adb-8360-87a5a9e74e91&site_id=MLA&processing_mode=aggregator&merchant_account_id=null HTTP/1.1" 200 -
+2024-06-06 11:56:27,018 INFO 127.0.0.1 - - [06/Jun/2024 11:56:27] "[32mPOST /webhook?data.id=79928326706&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:56:34,556 INFO 127.0.0.1 - - [06/Jun/2024 11:56:34] "[32mPOST /webhook?id=79928326706&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 11:56:52,916 INFO 127.0.0.1 - - [06/Jun/2024 11:56:52] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 12:06:06,288 INFO 127.0.0.1 - - [06/Jun/2024 12:06:06] "[32mPOST /webhook?id=79671095065&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 12:06:16,924 INFO 127.0.0.1 - - [06/Jun/2024 12:06:16] "[32mPOST /webhook?data.id=79671095065&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 12:06:27,388 INFO 127.0.0.1 - - [06/Jun/2024 12:06:27] "[32mPOST /webhook?id=19431190987&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 12:31:10,484 INFO 127.0.0.1 - - [06/Jun/2024 12:31:10] "[32mPOST /webhook?id=19439292350&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 12:31:14,619 INFO 127.0.0.1 - - [06/Jun/2024 12:31:14] "[32mPOST /webhook?data.id=79928326706&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 12:31:50,459 INFO 127.0.0.1 - - [06/Jun/2024 12:31:50] "[32mPOST /webhook?id=79928326706&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 12:41:11,716 INFO 127.0.0.1 - - [06/Jun/2024 12:41:11] "[32mPOST /webhook?id=79671095065&topic=payment HTTP/1.1[0m" 308 -
+2024-06-06 12:41:41,891 INFO 127.0.0.1 - - [06/Jun/2024 12:41:41] "[32mPOST /webhook?id=19431190987&topic=merchant_order HTTP/1.1[0m" 308 -
+2024-06-06 12:41:47,303 INFO 127.0.0.1 - - [06/Jun/2024 12:41:47] "[32mPOST /webhook?data.id=79671095065&type=payment HTTP/1.1[0m" 308 -
+2024-06-06 14:28:07,497 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 14:28:07,566 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "GET /index HTTP/1.1" 200 -
+2024-06-06 14:28:07,666 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,721 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,729 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,736 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,744 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,757 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,762 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,770 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,778 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,785 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,800 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,817 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,820 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,848 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 14:28:07,851 INFO 127.0.0.1 - - [06/Jun/2024 14:28:07] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 14:28:08,041 INFO 127.0.0.1 - - [06/Jun/2024 14:28:08] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 14:57:47,805 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 14:57:50,582 INFO  * Restarting with stat
+2024-06-06 14:58:01,359 WARNING  * Debugger is active!
+2024-06-06 14:58:01,400 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:05:42,979 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:05:45,193 INFO  * Restarting with stat
+2024-06-06 15:05:56,159 WARNING  * Debugger is active!
+2024-06-06 15:05:56,182 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:08:05,441 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:08:06,759 INFO  * Restarting with stat
+2024-06-06 15:08:16,079 WARNING  * Debugger is active!
+2024-06-06 15:08:16,100 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:08:22,821 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,822 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,822 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,829 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,830 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,840 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,848 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,858 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,871 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,880 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,887 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,897 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,911 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,923 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,941 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:08:22,966 INFO 127.0.0.1 - - [06/Jun/2024 15:08:22] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:08:44,391 INFO HTTP Request: POST https://api.mercadopago.com/checkout/preferences "HTTP/1.1 201 Created"
+2024-06-06 15:08:44,464 INFO 127.0.0.1 - - [06/Jun/2024 15:08:44] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-06 15:09:12,771 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2024-06-06 15:09:12,772 INFO [33mPress CTRL+C to quit[0m
+2024-06-06 15:09:12,778 INFO  * Restarting with stat
+2024-06-06 15:09:20,521 WARNING  * Debugger is active!
+2024-06-06 15:09:20,545 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:09:21,037 INFO 127.0.0.1 - - [06/Jun/2024 15:09:21] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 15:09:21,146 INFO 127.0.0.1 - - [06/Jun/2024 15:09:21] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:09:23,263 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,272 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,275 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,280 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,291 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,292 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,303 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,307 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,315 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,331 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,340 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,349 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,360 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,370 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,397 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:09:23,415 INFO 127.0.0.1 - - [06/Jun/2024 15:09:23] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:09:39,318 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:09:39,693 INFO 127.0.0.1 - - [06/Jun/2024 15:09:39] "[35m[1mPOST /create_order_suscripcion/ HTTP/1.1[0m" 500 -
+2024-06-06 15:09:40,445 INFO  * Restarting with stat
+2024-06-06 15:09:48,649 WARNING  * Debugger is active!
+2024-06-06 15:09:48,667 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:09:49,159 INFO 127.0.0.1 - - [06/Jun/2024 15:09:49] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:09:51,377 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,386 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,398 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,407 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,410 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,416 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,425 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,439 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,440 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,451 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,459 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,471 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,485 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,491 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,506 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:09:51,757 INFO 127.0.0.1 - - [06/Jun/2024 15:09:51] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:10:01,673 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:10:01,983 INFO 127.0.0.1 - - [06/Jun/2024 15:10:01] "[35m[1mPOST /create_order_suscripcion/ HTTP/1.1[0m" 500 -
+2024-06-06 15:10:02,722 INFO  * Restarting with stat
+2024-06-06 15:10:12,392 WARNING  * Debugger is active!
+2024-06-06 15:10:12,411 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:11:35,368 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:11:36,636 INFO  * Restarting with stat
+2024-06-06 15:11:45,684 WARNING  * Debugger is active!
+2024-06-06 15:11:45,704 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:11:46,206 INFO 127.0.0.1 - - [06/Jun/2024 15:11:46] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:11:48,296 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,301 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,305 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,310 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,318 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,326 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,337 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,342 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,348 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,358 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,369 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,380 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,389 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,403 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,420 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,445 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:11:48,590 INFO 127.0.0.1 - - [06/Jun/2024 15:11:48] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:12:44,635 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:12:44,748 INFO 127.0.0.1 - - [06/Jun/2024 15:12:44] "POST /create_order_suscripcion/ HTTP/1.1" 200 -
+2024-06-06 15:12:45,589 INFO  * Restarting with stat
+2024-06-06 15:12:54,970 WARNING  * Debugger is active!
+2024-06-06 15:12:54,991 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:12:55,406 INFO 127.0.0.1 - - [06/Jun/2024 15:12:55] "[33mGET /[object%20Object] HTTP/1.1[0m" 404 -
+2024-06-06 15:12:55,501 INFO 127.0.0.1 - - [06/Jun/2024 15:12:55] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:12:56,624 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,625 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,628 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,640 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,648 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,658 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,667 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,675 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,684 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,693 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,701 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,712 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,719 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,739 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,745 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,833 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:12:56,877 INFO 127.0.0.1 - - [06/Jun/2024 15:12:56] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:27:30,931 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:27:32,671 INFO  * Restarting with stat
+2024-06-06 15:27:42,857 WARNING  * Debugger is active!
+2024-06-06 15:27:42,881 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:27:46,058 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,087 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,098 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,123 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,137 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,175 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,187 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,191 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,194 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,230 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,288 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,299 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,342 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,361 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:27:46,372 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,385 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,432 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "GET /static/css/navbar.css HTTP/1.1" 200 -
+2024-06-06 15:27:46,436 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,445 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,488 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,492 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,502 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,510 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,519 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,533 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,544 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,554 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,567 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,579 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,622 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,629 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,771 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:27:46,981 INFO 127.0.0.1 - - [06/Jun/2024 15:27:46] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,075 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:27:58,113 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,129 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,134 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,143 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,153 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,166 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,179 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,188 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,199 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,209 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,218 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,231 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,250 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,265 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,292 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:27:58,356 INFO 127.0.0.1 - - [06/Jun/2024 15:27:58] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:28:12,396 INFO 127.0.0.1 - - [06/Jun/2024 15:28:12] "[31m[1mPOST /create_order_plan/ HTTP/1.1[0m" 400 -
+2024-06-06 15:29:29,962 INFO 127.0.0.1 - - [06/Jun/2024 15:29:29] "[31m[1mPOST /create_order_plan/ HTTP/1.1[0m" 400 -
+2024-06-06 15:29:47,584 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:29:48,504 INFO  * Restarting with stat
+2024-06-06 15:29:57,723 WARNING  * Debugger is active!
+2024-06-06 15:29:57,745 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:29:58,252 INFO 127.0.0.1 - - [06/Jun/2024 15:29:58] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:30:00,844 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,864 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,878 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,890 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,899 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,914 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,921 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,940 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,940 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,962 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,971 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:30:00,987 INFO 127.0.0.1 - - [06/Jun/2024 15:30:00] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:30:01,006 INFO 127.0.0.1 - - [06/Jun/2024 15:30:01] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:30:01,020 INFO 127.0.0.1 - - [06/Jun/2024 15:30:01] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:30:01,020 INFO 127.0.0.1 - - [06/Jun/2024 15:30:01] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:30:01,088 INFO 127.0.0.1 - - [06/Jun/2024 15:30:01] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:30:01,150 INFO 127.0.0.1 - - [06/Jun/2024 15:30:01] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:30:23,583 INFO 127.0.0.1 - - [06/Jun/2024 15:30:23] "[35m[1mPOST /create_order_plan/ HTTP/1.1[0m" 500 -
+2024-06-06 15:35:59,236 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:35:59,479 INFO 127.0.0.1 - - [06/Jun/2024 15:35:59] "[35m[1mPOST /create_order_plan/ HTTP/1.1[0m" 500 -
+2024-06-06 15:36:00,582 INFO  * Restarting with stat
+2024-06-06 15:36:09,492 WARNING  * Debugger is active!
+2024-06-06 15:36:09,515 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:36:35,253 INFO 127.0.0.1 - - [06/Jun/2024 15:36:35] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:36:37,379 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,385 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,399 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,407 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,421 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,427 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,446 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,446 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,461 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,470 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,482 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,490 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,516 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,537 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,550 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,599 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:36:37,670 INFO 127.0.0.1 - - [06/Jun/2024 15:36:37] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:36:55,573 INFO 127.0.0.1 - - [06/Jun/2024 15:36:55] "POST /create_order_plan/ HTTP/1.1" 200 -
+2024-06-06 15:38:40,598 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading
+2024-06-06 15:38:41,782 INFO  * Restarting with stat
+2024-06-06 15:38:51,146 WARNING  * Debugger is active!
+2024-06-06 15:38:51,167 INFO  * Debugger PIN: 115-013-033
+2024-06-06 15:38:51,590 INFO 127.0.0.1 - - [06/Jun/2024 15:38:51] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 15:38:51,696 INFO 127.0.0.1 - - [06/Jun/2024 15:38:51] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:38:54,015 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,030 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,039 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,049 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,051 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,062 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,070 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,083 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,088 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,091 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,108 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,116 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,128 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,142 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,148 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:38:54,222 INFO 127.0.0.1 - - [06/Jun/2024 15:38:54] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:38:59,683 INFO 127.0.0.1 - - [06/Jun/2024 15:38:59] "POST /create_order_plan/ HTTP/1.1" 200 -
+2024-06-06 15:40:26,122 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-06 15:40:26,161 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "GET /index HTTP/1.1" 200 -
+2024-06-06 15:40:26,244 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,308 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,318 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,323 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,332 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,340 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,349 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,357 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,365 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,373 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,385 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,408 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,416 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,440 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,443 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-06 15:40:26,690 INFO 127.0.0.1 - - [06/Jun/2024 15:40:26] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-06 15:40:42,080 INFO 127.0.0.1 - - [06/Jun/2024 15:40:42] "POST /create_order_plan/ HTTP/1.1" 200 -
+2024-06-06 15:43:45,362 INFO 127.0.0.1 - - [06/Jun/2024 15:43:45] "[32mGET /success?preapproval_id=b375f08212604d2cbb21f263b2fd504c HTTP/1.1[0m" 308 -
+2024-06-06 15:43:49,676 INFO 127.0.0.1 - - [06/Jun/2024 15:43:49] "GET /success/?preapproval_id=b375f08212604d2cbb21f263b2fd504c HTTP/1.1" 200 -
+2024-06-06 15:48:03,407 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\payment_page.py', reloading

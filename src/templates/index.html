@@ -15,7 +15,7 @@
           {% endif %}
         {% endwith %}
           <form id="donationForm">
-            <input type="hidden" id="costo_base" name="costo_base" value="5">
+            <input type="hidden" id="costo_base" name="costo_base" value="17">
             <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
             <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $5</button>
         </form>
@@ -572,7 +572,7 @@ $(document).ready(function(){
 
       // Envía la solicitud AJAX
       $.ajax({
-          url: '/create_order/',
+          url: '/create_order_plan/',
           type: 'POST',
           contentType: 'application/json',
           data: JSON.stringify(preference_data),
