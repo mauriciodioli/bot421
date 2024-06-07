@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Page</title>
     <style>
+        /* Tu estilo CSS aquí */
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -14,97 +15,7 @@
             margin: 0;
             background-color: #f9f9f9;
         }
-        .payment-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px; /* Agrandar la tarjeta */
-            margin-right: 20px; /* Agregar margen a la derecha */
-            text-align: center; /* Centrar texto y elementos dentro del contenedor */
-            position: relative;
-        }
-       
-        .payment-container h2 {
-            margin-top: 0;
-        }
-        .payment-container p {
-            margin: 5px 0;
-        }
-        .payment-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .payment-container button {
-            width: 100%;
-            padding: 10px;
-            background: #e94b35;
-            border: none;
-            color: #fff;
-            border-radius: 20px; /* Botones redondeados */
-            cursor: pointer;
-        }
-        .payment-container button:hover {
-            background: #d53a2e;
-        }
-        .credit-card-logo {
-            display: none;
-            width: 50px;
-            margin: 10px auto;
-        }
-        .hidden-form {
-            display: none;
-            margin-top: 20px;
-        }
-        .hidden-form p {
-            text-align: left; /* Alinear texto de los p dentro de hidden-form a la izquierda */
-        }
-        .hidden-form label {
-            color: gray; /* Cambiar el color del texto de la etiqueta a gris */
-        }
-        .hidden-form input[type="checkbox"] {
-            margin-right: 5px; /* Ajustar el espacio entre el checkbox y el texto */
-            vertical-align: middle; /* Alinear verticalmente el checkbox */
-        }
-        .show {
-            display: block;
-        }
-        .toggle-link {
-            color: #007bff;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .toggle-link:hover {
-            text-decoration: underline;
-        }
-        
-        
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            color: #999;
-            text-decoration: none;
-            z-index: 999; /* Asegura que el botón de cierre esté por encima del contenido */
-        }
-        
-        .close-button:hover {
-            color: #333;
-        }
-    </style>
-</head>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Page</title>
-    <style>
-        /* Tu estilo CSS aquí */
+
         .payment-container {
             max-width: 500px;
             margin: 0 auto;
@@ -112,22 +23,93 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
         }
+
+        .payment-container h2 {
+            margin-top: 0;
+        }
+
+        .payment-container p {
+            margin: 5px 0;
+        }
+
+        .payment-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .payment-container button {
+            width: 100%;
+            padding: 10px;
+            background: #e94b35;
+            border: none;
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .payment-container button:hover {
+            background: #d53a2e;
+        }
+
         .credit-card-logo {
             width: 50px;
             margin-right: 10px;
-        }
-        .hidden-form {
             display: none;
         }
+
+        .hidden-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .hidden-form p {
+            text-align: left;
+        }
+
+        .hidden-form label {
+            color: gray;
+        }
+
+        .hidden-form input[type="checkbox"] {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
         .show {
             display: block;
         }
+
         .toggle-link {
+            color: #007bff;
+            text-decoration: none;
             cursor: pointer;
-            color: blue;
+        }
+
+        .toggle-link:hover {
             text-decoration: underline;
         }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #999;
+            text-decoration: none;
+            z-index: 999;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+    
     </style>
 </head>
 <body>
@@ -157,6 +139,7 @@
             <img src="{{ url_for('static', filename='mastercard.png') }}" alt="Mastercard" class="credit-card-logo" id="mastercard-logo">
         </div>
         <input type="text" id="card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo()" value="5031755734530604"/>
+        <input type="hidden" id="reason" value="{{ reason }}">
         <br>
         <button onclick="processPayment()" id="buy-now-button">Comprar ahora</button>
         <br>
@@ -174,20 +157,13 @@
             <button onclick="processNewCardPayment()">Pagar con nueva tarjeta</button>
         </div>
     </div>
-    <script src="https://sdk.mercadopago.com/js/v2"></script>    
+   
     <script>
-    
-        const mp = new MercadoPago('TEST-5717567227383881-060409-86ebecdf49c0e821fe365714a8c63020-1835443126');
-        function closePayment() {
-            const paymentContainer = document.querySelector('.payment-container');
-            paymentContainer.style.display = 'none';
-        }
-
         function toggleForm() {
             const form = document.getElementById('card-form');
             const buyNowButton = document.getElementById('buy-now-button');
             const cardNumberInput = document.getElementById('card_number');
-
+    
             if (form.classList.contains('show')) {
                 form.classList.remove('show');
                 buyNowButton.style.display = 'block'; // Mostrar el botón "Comprar ahora"
@@ -198,12 +174,12 @@
                 cardNumberInput.style.display = 'none'; // Ocultar el campo de entrada "Card Number"
             }
         }
-
+    
         function updateCardLogo(type = 'existing') {
             const cardNumber = type === 'existing' ? document.getElementById('card_number').value : document.getElementById('new_card_number').value;
             const visaLogo = document.getElementById('visa-logo');
             const mastercardLogo = document.getElementById('mastercard-logo');
-
+    
             if (cardNumber.startsWith('4')) {
                 visaLogo.style.display = 'block';
                 mastercardLogo.style.display = 'none';
@@ -215,115 +191,76 @@
                 mastercardLogo.style.display = 'none';
             }
         }
-
-      // Inicializar MercadoPago con tu clave pública
-
-
-    async function processPayment() {
-        const cardNumber = document.getElementById('card_number').value;
-        const email = localStorage.getItem('correo_electronico');
     
-        // Validar si cardNumber tiene datos
-        if (cardNumber.trim() === '') {
-            alert('Por favor, ingresa el número de la tarjeta.');
-            return; // Detener la ejecución si no hay datos en cardNumber
+        async function processPayment() {
+            const cardNumber = document.getElementById('card_number').value;
+            const email = localStorage.getItem('correo_electronico');
+        
+            // Validar si cardNumber tiene datos
+            if (cardNumber.trim() === '') {
+                alert('Por favor, ingresa el número de la tarjeta.');
+                return; // Detener la ejecución si no hay datos en cardNumber
+            }
+        
         }
-    
-        try {
-            // Crear el token de la tarjeta de crédito
-            const token = await mp.createToken({
-                card_number: cardNumber,
-                security_code: '123', // Debes agregar la lógica para obtener este valor
-                expiration_month: '11', // Debes agregar la lógica para obtener este valor
-                expiration_year: '2025', // Debes agregar la lógica para obtener este valor
-                cardholder: {
-                    name: 'APRO' // Debes agregar la lógica para obtener este valor
+        
+        async function processNewCardPayment() {
+            if (validatePayment()) {
+                const cardNumber = document.getElementById('new_card_number').value;
+                const cardName = document.getElementById('card_name').value;
+                const expiryDate = document.getElementById('expiry_date').value;
+                const cvv = document.getElementById('cvv').value;
+                const email = document.getElementById('email').value;
+                debugger;
+                const reason = document.getElementById('reason').value;
+                const token = localStorage.getItem('access_token')
+        
+                try {
+                    // Enviar el token y el correo electrónico al backend para procesar el pago
+                    fetch('/create_order_suscripcion', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            cardNumber: cardNumber,
+                            cardName: cardName,
+                            email: email,
+                            expiryDate: expiryDate,
+                            cvv: cvv,
+                            reason: reason,
+                            token: token
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                } catch (error) {
+                    console.error('Token creation error:', error);
                 }
-            });
-    
-            // Enviar el token y el correo electrónico al backend para procesar el pago
-            fetch('/create_subscription', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: email,
-                    card_token_id: token.id
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        } catch (error) {
-            console.error('Token creation error:', error);
+            }
         }
-    }
-    
-    async function processNewCardPayment() {
-        if (validatePayment()) {
-            const cardNumber = document.getElementById('new_card_number').value;
+        
+        function validatePayment() {
+            const cardNumber = document.getElementById('card_number').value;
+            const newCardNumber = document.getElementById('new_card_number').value;
             const cardName = document.getElementById('card_name').value;
             const expiryDate = document.getElementById('expiry_date').value;
             const cvv = document.getElementById('cvv').value;
             const email = document.getElementById('email').value;
-    
-            try {
-                // Crear el token de la tarjeta de crédito
-                const token = await mp.createToken({
-                    card_number: cardNumber,
-                    security_code: cvv,
-                    expiration_month: expiryDate.split('/')[0],
-                    expiration_year: expiryDate.split('/')[1],
-                    cardholder: {
-                        name: cardName
-                    }
-                });
-    
-                // Enviar el token y el correo electrónico al backend para procesar el pago
-                fetch('/pago', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        card_token_id: token.id
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            } catch (error) {
-                console.error('Token creation error:', error);
+        
+            if ((cardNumber === '' && newCardNumber === '') || cardName === '' || expiryDate === '' || cvv === '' || email === '') {
+                alert('Por favor, complete todos los campos.');
+                return false;
             }
+        
+            return true;
         }
-    }
-    
-    function validatePayment() {
-        const cardNumber = document.getElementById('card_number').value;
-        const newCardNumber = document.getElementById('new_card_number').value;
-        const cardName = document.getElementById('card_name').value;
-        const expiryDate = document.getElementById('expiry_date').value;
-        const cvv = document.getElementById('cvv').value;
-        const email = document.getElementById('email').value;
-    
-        if ((cardNumber === '' && newCardNumber === '') || cardName === '' || expiryDate === '' || cvv === '' || email === '') {
-            alert('Por favor, complete todos los campos.');
-            return false;
-        }
-    
-        return true;
-    }
-    
     </script>
+    
 </body>
 </html>
