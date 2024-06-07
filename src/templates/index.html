@@ -19,6 +19,25 @@
             <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
             <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $5</button>
         </form>
+        <form id="planSuscripcionForm">
+          <input type="hidden" id="costo_base_plan" name="costo_base_plan" value="17">
+          <input type="hidden" id="porcentaje_retorno_plan" name="porcentaje_retorno_plan" value="0">
+          <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Plan</button>
+      </form>
+      <!-- Formulario para crear el plan de preaprobación -->
+        <form id="preapprovalPlanForm">
+          
+          <button class="btn btn-success" type="submit">Crear Plan de Preaprobación</button>
+      </form>
+      <input type="hidden" id="preapproval_plan_id">
+
+      
+      <form id="suscripcionForm">
+        <input type="hidden" id="transaction_amount" value="17">
+        <input type="hidden" id="costo_base_sus" name="costo_base_sus" value="17">
+        <input type="hidden" id="porcentaje_retorno_sus" name="porcentaje_retorno_sus" value="0">
+        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir</button>
+    </form>
  
             <div class="horizontal-padding vertical-padding">
               <section class="planes mt-4" id="planes">
@@ -572,6 +591,58 @@ $(document).ready(function(){
 
       // Envía la solicitud AJAX
       $.ajax({
+          url: '/create_order/',
+          type: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(preference_data),
+          success: function(response) {
+              // Redirige a la URL de inicialización de la preferencia
+              window.location.href = response.init_point;
+          },
+          error: function(xhr, status, error) {
+              console.error('Error: ' + error);
+              alert('Hubo un error al procesar la donación.');
+          }
+      });
+  });
+});
+
+
+
+
+
+
+
+$(document).ready(function(){
+  $('#planSuscripcionForm').submit(function(event){
+      event.preventDefault(); // Evita que el formulario se envíe de manera convencional
+
+      // Obtén los datos del formulario
+      var formData = {
+          costo_base: $('#costo_base').val(),
+          porcentaje_retorno: $('#porcentaje_retorno').val()
+      };
+
+      // Crea los datos de la preferencia
+      var preference_data = {
+          items: [
+              {
+                  title: "Donacion de prueba",
+                  quantity: 1,
+                  unit_price: formData.costo_base
+              }
+          ],
+          back_urls: {
+              success: "https://89ae-190-225-182-66.ngrok-free.app/success",
+              failure: "https://89ae-190-225-182-66.ngrok-free.app/failure",
+              pending: "https://89ae-190-225-182-66.ngrok-free.app/pending"
+          },
+          notification_url: "https://89ae-190-225-182-66.ngrok-free.app/webhook",
+          auto_return: "approved"
+      };
+
+      // Envía la solicitud AJAX
+      $.ajax({
           url: '/create_order_plan/',
           type: 'POST',
           contentType: 'application/json',
@@ -586,6 +657,60 @@ $(document).ready(function(){
           }
       });
   });
+});
+
+
+
+
+
+
+$(document).ready(function(){
+  // Crear Plan de Preaprobación
+  $('#preapprovalPlanForm').submit(function(event){
+      event.preventDefault();
+      $.ajax({
+          url: '/create_preapproval_plan',
+          type: 'POST',
+          contentType: 'application/json',
+          success: function(response) {
+              alert('Plan de preaprobación creado con éxito. ID: ' + response.id);
+              // Almacena el ID del plan de preaprobación
+              $('#preapproval_plan_id').val(response.id);
+          },
+          error: function(xhr, status, error) {
+              console.error('Error: ' + error);
+              alert('Hubo un error al crear el plan de preaprobación.');
+          }
+      });
+  });
+
+
+
+  // Crear Suscripción
+  $('#suscripcionForm').submit(function(event){
+    event.preventDefault();
+    var preapproval_plan_id = $('#preapproval_plan_id').val();
+    var formData = {
+        preapproval_plan_id: preapproval_plan_id,
+        payer_email: 'test_user@testuser.com',
+        card_token_id: 'e3ed6f098462036dd2cbabe314b9de2a',
+        transaction_amount: $('#transaction_amount').val()
+    };
+
+    $.ajax({
+        url: '/create_order_suscripcion',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formData),
+        success: function(response) {
+            alert('Suscripción creada con éxito.');
+        },
+        error: function(xhr, status, error) {
+            console.error('Error: ' + error);
+            alert('Hubo un error al procesar la suscripción.');
+        }
+    });
+});
 });
 
   </script>
