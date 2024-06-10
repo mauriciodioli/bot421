@@ -161,16 +161,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
-<<<<<<< HEAD
-    var access_token = localStorage.getItem('access_token');   
-    account = 'sinCuenta'
-    var xhr = new XMLHttpRequest();
-=======
     var access_token = localStorage.getItem('access_token');
     var account = 'vacio'
     var xhr = new XMLHttpRequest();
     debugger;
->>>>>>> cde66d62024e6c958a6e3ae913e901a86870c8e0
     var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/';
     
     xhr.open('GET', url, true);
