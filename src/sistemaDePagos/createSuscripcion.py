@@ -15,6 +15,8 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
+from models.cuentas import Cuenta
+from sistemaDePagos.tarjetaUsuario import altaTarjeta
 from models.payment_page.plan import Plan
 import mercadopago
 import asyncio
@@ -61,104 +63,97 @@ def create_order_suscripcion():
         reason = data.get("reason")
         access_token = data.get("access_token")
        # Limpiar espacios en blanco del número de tarjeta si los hay
-        if cardNumber:
-            cardNumber = re.sub(r"\s+", "", cardNumber)
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            correo_electronico = decoded_token.get("correo_electronico")
+            numero_de_cuenta = decoded_token.get("numero_de_cuenta")
+            user_id = decoded_token.get("sub")
+      
+            if cardNumber:
+                cardNumber = re.sub(r"\s+", "", cardNumber)
+            
+            required_fields = ["cardNumber", "cardName", "expiryDate", "cvv", "email", "transaction_amount", "reason", "access_token"]
+            
+            for field in required_fields:
+                if field not in data:
+                    return jsonify({"message": f"El campo {field} es obligatorio."}), 400
 
-        # Extraer el mes y el año de la fecha de vencimiento si está presente
-        expiration_month = None
-        expiration_year = None
-        if expiryDate:
-            expiration_month, expiration_year = expiryDate.split('/')
+            cargarTarjeta(user_id,numero_de_cuenta,data)
 
-        # Obtener el año actual en formato de dos dígitos
-        current_year = datetime.now().strftime("%y")
+            # Extraer el mes y el año de la fecha de vencimiento si está presente
+            expiration_month = None
+            expiration_year = None
+            if expiryDate:
+                expiration_month, expiration_year = expiryDate.split('/')
 
-        # Si el año proporcionado es solo de dos dígitos, agregar el siglo
-        if expiration_year and len(expiration_year) == 2:
-            expiration_year = f"20{expiration_year}" if int(expiration_year) > int(current_year) else f"19{expiration_year}"
+            # Obtener el año actual en formato de dos dígitos
+            current_year = datetime.now().strftime("%y")
 
-        # Construir el diccionario card_data
-        card_data = {
-            'card_number': cardNumber,
-            'expiration_month': int(expiration_month) if expiration_month else None,
-            'expiration_year': int(expiration_year) if expiration_year else None,
-            'security_code': security_code,
-            'cardholder': {
-                'name': cardName
+            # Si el año proporcionado es solo de dos dígitos, agregar el siglo
+            if expiration_year and len(expiration_year) == 2:
+                expiration_year = f"20{expiration_year}" if int(expiration_year) > int(current_year) else f"19{expiration_year}"
+
+            # Construir el diccionario card_data
+            card_data = {
+                'card_number': cardNumber,
+                'expiration_month': int(expiration_month) if expiration_month else None,
+                'expiration_year': int(expiration_year) if expiration_year else None,
+                'security_code': security_code,
+                'cardholder': {
+                    'name': cardName
+                }
             }
-        }
-     
         
-        #obtengo el token
-        card_token_id = generate_card_token(card_data)
+            
+            #obtengo el token
+            card_token_id = generate_card_token(card_data)
+            
+      
+            # Consultar el plan existente en la base de datos
+            plan_existente = db.session.query(Plan).filter_by(reason=reason).first()
+
+            if plan_existente is None:
+                # Lanzar una excepción si el plan no existe
+                raise Exception("Plan no encontrado en la base de datos")
+
+
+            # Cargar el payload para la suscripción
+            payload = cargarDatosPlan(reason, payer_email, card_token_id)
+            print(payload)
+            # Datos para crear la preaprobación
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+sdk_produccion
+            }
         
-        #obtengo el payload de la suscripcion
-       # payload = cargarDatosPlan(reason, payer_email, card_token_id)
-          # Consultar el plan existente en la base de datos
-        plan_existente = db.session.query(Plan).filter_by(reason=reason).first()
-
-        if plan_existente is None:
-            # Lanzar una excepción si el plan no existe
-            raise Exception("Plan no encontrado en la base de datos")
-
-        # Obtener la fecha actual
-        fecha_actual = datetime.now()
-
-        # Calcular la fecha un mes después
-        fecha_un_mes_despues = fecha_actual + timedelta(days=30)
-
-        # Formatear las fechas en el formato deseado
-        start_date = fecha_actual.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-        end_date = fecha_un_mes_despues.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-
-        # Convertir los datos que deben ser enteros a enteros
-        frequency = int(plan_existente.frequency)
-        amount = int(plan_existente.amount)
-
-        # Crear el payload con los datos del plan y otras informaciones
-        payload = {
-            "preapproval_plan_id": plan_existente.idPlan,
-            "reason": plan_existente.reason,
-            "external_reference": "YG-1234",
-            "payer_email": payer_email,
-            "card_token_id": card_token_id,
-            "auto_recurring": {
-                "frequency": frequency,
-                "frequency_type": plan_existente.frequency_type,
-                "start_date": start_date,
-                "end_date": end_date,
-                "transaction_amount": amount,
-                "currency_id": plan_existente.currency_id
-            },
-            "back_url": "https://www.mercadopago.com.ar",
-            "status": "authorized"
-        }
-
-        # Datos para crear la preaprobación
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+sdk_produccion
-        }
-       
+            try:
         
-     
 
-        response = requests.post(PREAPPROVAL_URL, json=payload, headers=headers)
-        response.raise_for_status()
+                response = requests.post(PREAPPROVAL_URL, json=payload, headers=headers)                
+                json_content = response.json()
+                
+                #carga suscripcion en tabla suscripcion plan usuario
+                init_point = json_content['init_point']
+                return jsonify({
+                    'success': True,
+                    'init_point': init_point
+                })
+            except requests.exceptions.RequestException as e:
+                print(f"Request error: {e}")
+                return jsonify({
+                    'success': False,
+                    'message': 'Error processing the payment.'
+                })
+            except json.JSONDecodeError:
+                print("Invalid JSON response")
+                return jsonify({
+                    'success': False,
+                    'message': 'Invalid JSON response from MercadoPago.'
+                })
+            
+            
         
-       
-        try:
-            json_content = response.json()
-            print("Contenido JSON:")
-            print(json.dumps(json_content, indent=4))
-            init_point = response.json()['init_point']
-            print(init_point)
-            return redirect(init_point)
-        except json.JSONDecodeError:
-            print("El contenido no es JSON válido.")
-           
-        
-       
     except requests.HTTPError as e:
         error_response = e.response.json()
         return jsonify({"error": error_response}), e.response.status_code
@@ -177,4 +172,23 @@ def generate_card_token(card_data):
     
     return response.json()['id']
 
+def cargarTarjeta(user_id,numero_de_cuenta,data):
+    # Convertir los datos a la estructura esperada por altaTarjeta
+    # Obtener el objeto Usuario correspondiente al user_id
+    if data["cardNumber"]:
+       cardNumber = re.sub(r"\s+", "", data["cardNumber"])  # Aquí se corrige el uso de data["cardNumber"]
+
+    datos_tarjeta = {
+        "user_id": int(user_id),  # Asegúrate de obtener esto correctamente según tu lógica
+        "numeroTarjeta":cardNumber,
+        "fecha_vencimiento": data["expiryDate"],
+        "cvv": data["cvv"],
+        "nombreApellidoTarjeta": data["cardName"],
+        "correo_electronico": data["email"],
+        "accountCuenta":numero_de_cuenta  # Asegúrate de que este campo esté presente si es necesario
+    }
+
+    # Llamar a la función altaTarjeta con los datos JSON
+    response = altaTarjeta(datos_tarjeta)
+    return response
 
