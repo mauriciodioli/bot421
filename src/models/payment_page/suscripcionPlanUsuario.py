@@ -10,14 +10,14 @@ from models.brokers import Broker
 
 ma = Marshmallow()
 
-tarjetaUsuario = Blueprint('tarjetaUsuario', __name__)
+suscripcionPlanUsuario = Blueprint('suscripcionPlanUsuario', __name__)
 
 
-class TarjetaUsuario(db.Model):
-    __tablename__ = 'tarjetaUsuario'
+class SuscripcionPlanUsuario(db.Model):
+    __tablename__ = 'suscripcionPlanUsuario'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  
     user_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=True)  # Cambiado a 'Usuario' en lugar de 'usuarios'
-    numeroTarjeta = db.Column(db.String(120), unique=True, nullable=True)  # Corregido el nombre de la columna
+    mumeroTarjeta = db.Column(db.Integer, unique=True, nullable=True)  # Corregido el nombre de la columna
     fecha_vencimiento = db.Column(db.String(120), nullable=False)
     cvv = db.Column(db.String(120), nullable=False)  # Eliminado unique=True porque es poco probable que sea único
     nombreApellidoTarjeta = db.Column(db.String(120), nullable=False)  # Eliminado unique=True porque es poco probable que sea único
@@ -27,10 +27,10 @@ class TarjetaUsuario(db.Model):
 
 
     # constructor
-    def __init__(self, user_id, numeroTarjeta, fecha_vencimiento, cvv, nombreApellidoTarjeta, correo_electronico,
+    def __init__(self, user_id, mumeroTarjeta, fecha_vencimiento, cvv, nombreApellidoTarjeta, correo_electronico,
                  accountCuenta):
         self.user_id = user_id
-        self.numeroTarjeta = numeroTarjeta
+        self.mumeroTarjeta = mumeroTarjeta
         self.fecha_vencimiento = fecha_vencimiento
         self.cvv = cvv
         self.nombreApellidoTarjeta = nombreApellidoTarjeta
@@ -38,7 +38,7 @@ class TarjetaUsuario(db.Model):
         self.accountCuenta = accountCuenta
 
     def __repr__(self):
-        return f"TarjetaUsuario(id={self.id}, user_id={self.user_id}, mumeroTarjeta={self.numeroTarjeta}, " \
+        return f"TarjetaUsuario(id={self.id}, user_id={self.user_id}, mumeroTarjeta={self.mumeroTarjeta}, " \
                f"fecha_vencimiento={self.fecha_vencimiento}, cvv={self.cvv}, " \
                f"nombreApellidoTarjeta={self.nombreApellidoTarjeta}, " \
                f"correo_electronico={self.correo_electronico}, accountCuenta={self.accountCuenta})"
@@ -52,7 +52,7 @@ class TarjetaUsuario(db.Model):
 
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id", "numeroTarjeta", "fecha_vencimiento", "cvv", "nombreApellidoTarjeta",
+        fields = ("id", "user_id", "mumeroTarjeta", "fecha_vencimiento", "cvv", "nombreApellidoTarjeta",
                   "correo_electronico", "accountCuenta")
 
 

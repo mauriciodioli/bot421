@@ -134,6 +134,7 @@ def create_preapproval_plan():
 def cargarDatosPlan(reason, payer_email, card_token_id):
     try:
         # Consultar el plan existente en la base de datos
+        
         plan_existente = db.session.query(Plan).filter_by(reason=reason).first()
 
         if plan_existente is None:
@@ -169,15 +170,13 @@ def cargarDatosPlan(reason, payer_email, card_token_id):
                 "transaction_amount": amount,
                 "currency_id": plan_existente.currency_id
             },
-            "back_url": "https://www.mercadopago.com.ar",
+            "back_url": SUCCESS_URL,
             "status": "authorized"
         }
 
-        # Convertir el diccionario a formato JSON
-        payload_json = json.dumps(payload)
-
+       
         # Retorna el JSON como string
-        return payload_json
+        return payload
 
     except Exception as e:
         # Manejar la excepción aquí
