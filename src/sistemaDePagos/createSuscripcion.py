@@ -18,6 +18,7 @@ from models.brokers import Broker
 from models.cuentas import Cuenta
 from sistemaDePagos.tarjetaUsuario import altaTarjeta
 from models.payment_page.plan import Plan
+from models.payment_page.suscripcionPlanUsuario import SuscripcionPlanUsuario
 import mercadopago
 import asyncio
 import httpx
@@ -120,7 +121,7 @@ def create_order_suscripcion():
 
             # Cargar el payload para la suscripción
             payload = cargarDatosPlan(reason, payer_email, card_token_id)
-            print(payload)
+           
             # Datos para crear la preaprobación
             headers = {
                 'Content-Type': 'application/json',
@@ -132,8 +133,10 @@ def create_order_suscripcion():
 
                 response = requests.post(PREAPPROVAL_URL, json=payload, headers=headers)                
                 json_content = response.json()
-                
+                # Imprimir el JSON ordenado
+                print(json.dumps(json_content, indent=4))
                 #carga suscripcion en tabla suscripcion plan usuario
+                cargarSuscripcion(user_id,numero_de_cuenta,json_content)
                 init_point = json_content['init_point']
                 return jsonify({
                     'success': True,
@@ -171,6 +174,69 @@ def generate_card_token(card_data):
     response.raise_for_status()
     
     return response.json()['id']
+
+
+def cargarSuscripcion(user_id, numero_de_cuenta, json_content):
+    try:
+        # Extraer los datos necesarios de json_content
+        payer_id = int(json_content.get("payer_id"))
+        preapproval_plan_id = json_content.get("preapproval_plan_id")
+        status = json_content.get("status")
+        reason = json_content.get("reason")
+        date_created = json_content.get("date_created")
+        frequency = int(json_content.get("auto_recurring", {}).get("frequency"))
+        frequency_type = json_content.get("auto_recurring", {}).get("frequency_type")
+        currency_id = json_content.get("auto_recurring", {}).get("currency_id")
+        start_date = json_content.get("auto_recurring", {}).get("start_date")
+        end_date = json_content.get("auto_recurring", {}).get("end_date")
+        billing_day = int(json_content.get("auto_recurring", {}).get("billing_day"))
+        quotas = int(json_content.get("auto_recurring", {}).get("transaction_amount"))
+        pending_charge_amount = float(json_content.get("summarized",{}).get("pending_charge_amount"))
+        next_payment_date = json_content.get("next_payment_date")
+        payment_method_id = json_content.get("payment_method_id")
+        card_id = json_content.get("card_id")
+
+        # Verificar si ya existe una suscripción para este usuario y este id de plan
+        suscripcion_existente = db.session.query(SuscripcionPlanUsuario).filter_by(
+            user_id=user_id,
+            preapproval_plan_id=preapproval_plan_id
+        ).first()
+
+        if suscripcion_existente:
+            return jsonify({"message": "Ya existe una suscripción para este usuario y este id de plan"}), 400
+
+        # Crear la nueva suscripción
+        nueva_suscripcion = SuscripcionPlanUsuario(
+            payer_id=payer_id,
+            user_id=user_id,
+            accountCuenta=numero_de_cuenta,
+            status=status,
+            reason=reason,
+            date_created=date_created,
+            preapproval_plan_id=preapproval_plan_id,
+            frequency=frequency,
+            frequency_type=frequency_type,
+            currency_id=currency_id,
+            start_date=start_date,
+            end_date=end_date,
+            billing_day=billing_day,
+            quotas=quotas,
+            pending_charge_amount=pending_charge_amount,
+            next_payment_date=next_payment_date,
+            payment_method_id=payment_method_id,
+            card_id=card_id
+        )
+
+        # Agregar y confirmar la nueva suscripción en la base de datos
+        db.session.add(nueva_suscripcion)
+        db.session.commit()
+
+        return jsonify({"message": "Suscripción creada con éxito", "suscripcion": nueva_suscripcion.id}), 201
+
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+
+
 
 def cargarTarjeta(user_id,numero_de_cuenta,data):
     # Convertir los datos a la estructura esperada por altaTarjeta

@@ -16,6 +16,7 @@ from models.strategy import Strategy
 from models.unidadTrader import UnidadTrader
 from models.administracion.altaEstrategiaApp import AltaEstrategiaApp
 from models.payment_page.tarjetaUsuario import TarjetaUsuario
+from models.payment_page.suscripcionPlanUsuario import SuscripcionPlanUsuario
 
 from datetime import datetime
 from flask import Blueprint,flash
@@ -41,6 +42,7 @@ def crea_tablas_DB():
     UnidadTrader.crear_tabla_ut()
     AltaEstrategiaApp.crear_tabla_altaEstrategiaApp()
     TarjetaUsuario.crear_tabla_tarjetaUsuario()
+    SuscripcionPlanUsuario.crear_tabla_suscripcionPlanUsuario()
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     
