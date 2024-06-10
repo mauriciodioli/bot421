@@ -41,7 +41,7 @@ class Cuenta(db.Model):
         self.broker_id = broker_id
 
     def __repr__(self):
-        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector} broker_id={self.broker_id})"
+        return f"Cuenta(id={self.id}, user_id={self.user_id}, userCuenta={self.userCuenta}, passwordCuenta={self.passwordCuenta}, accountCuenta={self.accountCuenta}, selector={self.selector}, broker_id={self.broker_id})"
 
     @classmethod
     def crear_tabla_cuentas(cls):

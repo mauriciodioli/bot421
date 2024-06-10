@@ -145,10 +145,12 @@
         <br>
         <a class="toggle-link mb-4" onclick="toggleForm()">Usa una tarjeta diferente</a>
         <div class="hidden-form" id="card-form">
+           
+            <input type="hidden" id="transaction_amount" value="{{ '{:,.2f}'.format(total) }}"/>
             <input type="text" id="new_card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo('new')"/>
             <input type="text" id="card_name" placeholder="Nombre y apellido impreso en la tarjeta"/>
             <input type="text" id="expiry_date" placeholder="MM/YY"/>
-            <input type="text" id="cvv" placeholder="CVV"/>
+            <input type="text" id="cvv" placeholder="CVV"/>            
             <label for="email" style="color: blue; font-size: smaller; text-decoration: underline; text-align: left;">Direccion de correo electrónico:</label>
             <input type="email" id="email" name="email" style="color: blue; font-size: smaller;" placeholder="correo electronico" required>
             <input type="checkbox" id="save_card" name="save_card">
@@ -210,10 +212,10 @@
                 const cardName = document.getElementById('card_name').value;
                 const expiryDate = document.getElementById('expiry_date').value;
                 const cvv = document.getElementById('cvv').value;
-                const email = document.getElementById('email').value;
-                debugger;
+                const email = document.getElementById('email').value;               
                 const reason = document.getElementById('reason').value;
-                const token = localStorage.getItem('access_token')
+                const access_token = localStorage.getItem('access_token')
+                const transaction_amount = document.getElementById('transaction_amount').value;
         
                 try {
                     // Enviar el token y el correo electrónico al backend para procesar el pago
@@ -229,12 +231,13 @@
                             expiryDate: expiryDate,
                             cvv: cvv,
                             reason: reason,
-                            token: token
+                            transaction_amount: transaction_amount,
+                            access_token: access_token
                         })
                     })
                     .then(response => response.json())
                     .then(data => {
-                        alert(data.message);
+                        window.location.href = data.init_point;
                     })
                     .catch(error => {
                         console.error('Error:', error);
