@@ -26,7 +26,7 @@ wsocket = Blueprint('wsocket',__name__)
 
 
 reporte_de_instrumentos = []
-
+tiempo_inicial = time.time()  # Captura el tiempo actual
 
 def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=None,idUser=None,correo_electronico=None,selector=None):
   
@@ -80,15 +80,26 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
    if not get.ContenidoSheet_list:
       get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
-   if accountCuenta != '10861':
-     pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
-    
-   pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
+   #if accountCuenta != '44593':
+   pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
  
+   pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
+   
 
 def market_data_handler_0(message):
-    print(message)
-    update_precios(message)
+    # Limitar el número de elementos en precios_data
+    MAX_PRECIOS_DATA = 73
+  
+    if len(get.precios_data) <= MAX_PRECIOS_DATA:
+        try:
+            
+            update_precios(message)
+        except Exception as e:
+            print(f"Error al actualizar los precios: {e}")
+    
+    # Espera un tiempo antes de volver a verificar
+    time.sleep(1)  # Espera 60 segundos antes de volver a verificar
+
 
 def order_report_handler_0(message):
   print(message)

@@ -1,17 +1,20 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request,current_app, redirect, url_for, flash,jsonify
 import routes.instrumentos as instrumentos
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
 
+
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
+import copy
 import socket
 import requests
 import time
 import json
 from models.orden import Orden
+from models.cuentas import Cuenta
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
 
@@ -135,22 +138,33 @@ def leerDb(app):
         print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         return all_ins
 
-def cargarSheet(sheetId,sheet_name):
-     sheet= autenticar_y_abrir_sheet(sheetId,sheet_name) 
 
 
-
-def update_precios(message):
+def update_precios1(message):
     
     # Definición de variables iniciales
-    p_value = None
+    p_last24 = None
     suffix = None
     Symbol = message["instrumentId"]["symbol"]
     # Comprobación del sufijo del símbolo y asignación de valores
     if '24hs' in Symbol:    
-        p_last24 = float(message["marketData"]["LA"])  # Precio "last" para 24hs
+        p_last24 = float(message["marketData"]["LA"]['price'])  # Precio "last" para 24hs
         suffix = "24hs"
         update_precios_data(Symbol, p_last24, suffix)
+        
+def update_precios(message):
+    # Definición de variables iniciales
+    p_value = None
+    suffix = None
+    # Comprobación del sufijo del símbolo y asignación de valores
+    Symbol = message["instrumentId"]["symbol"]
+    if Symbol.endswith("24hs"):
+        p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
+        suffix = "24hs"
+    if suffix:    # Llamada a la función update_symbol_data si hay un sufijo válido
+        if Symbol and p_value is not None:
+            #print(message)
+            update_precios_data(Symbol, p_value, suffix)
 
 
 
@@ -168,26 +182,57 @@ def update_precios_data(symbol, p_value, suffix):
                                             get.precios_data[symbol]['max24hs'] = p_value
         if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
             get.precios_data[symbol]['min24hs'] = p_value
+        # Mostrar el contenido actualizado para el símbolo específico
+    print(f"{symbol}: {get.precios_data[symbol]}")
 
     
 
-def modificar_columna_ut(Symbol,new_ut_values):
-    # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
-    sheet = autenticar_y_abrir_sheet()
-    cell =  sheet.find(Symbol) 
-    row = cell.row
-    valores_de_la_fila = sheet.row_values(row)
-    current_ut_values = valores_de_la_fila[19]
-   
-        # Leer la columna "ut" actual
-    if current_ut_values != new_ut_values:  
-         sheet.update_cell(row,20,str(new_ut_values)) 
-   
-   
+def modificar_sheet(sheetId,sheet_name):
+     get.precios_data = {
+                'MERV - XMEV - GOOGL - 24hs': {'p24hs': None, 'max24hs': 3961.0, 'min24hs': 3961.0, 'last24hs': 3961.0},
+                'MERV - XMEV - VALE - 24hs': {'p24hs': None, 'max24hs': 7370.5, 'min24hs': 7370.5, 'last24hs': 7370.5},
+                'MERV - XMEV - RIO - 24hs': {'p24hs': None, 'max24hs': 10913.5, 'min24hs': 10913.5, 'last24hs': 10913.5},
+                'MERV - XMEV - AGRO - 24hs': {'p24hs': None, 'max24hs': 58.8, 'min24hs': 58.8, 'last24hs': 58.8},
+                'MERV - XMEV - TXAR - 24hs': {'p24hs': None, 'max24hs': 944.0, 'min24hs': 944.0, 'last24hs': 944.0},
+                'MERV - XMEV - VALO - 24hs': {'p24hs': None, 'max24hs': 303.5, 'min24hs': 303.5, 'last24hs': 303.5},
+                'MERV - XMEV - LOMA - 24hs': {'p24hs': None, 'max24hs': 1839.9, 'min24hs': 1839.9, 'last24hs': 1839.9},
+                'MERV - XMEV - GGB - 24hs': {'p24hs': None, 'max24hs': 16652.0, 'min24hs': 16652.0, 'last24hs': 16652.0},
+                'MERV - XMEV - BYMA - 24hs': {'p24hs': None, 'max24hs': 321.5, 'min24hs': 321.5, 'last24hs': 321.5},
+                'MERV - XMEV - BMA - 24hs': {'p24hs': None, 'max24hs': 7481.0, 'min24hs': 7481.0, 'last24hs': 7481.0},
+                'MERV - XMEV - CEPU - 24hs': {'p24hs': None, 'max24hs': 1182.35, 'min24hs': 1182.35, 'last24hs': 1182.35},
+                'MERV - XMEV - GGAL - 24hs': {'p24hs': None, 'max24hs': 4187.0, 'min24hs': 4187.0, 'last24hs': 4187.0},
+                'MERV - XMEV - SUPV - 24hs': {'p24hs': None, 'max24hs': 1649.95, 'min24hs': 1649.95, 'last24hs': 1649.95},
+                'MERV - XMEV - TECO2 - 24hs': {'p24hs': None, 'max24hs': 1875.0, 'min24hs': 1875.0, 'last24hs': 1875.0},
+                'MERV - XMEV - TGT - 24hs': {'p24hs': None, 'max24hs': 7940.0, 'min24hs': 7940.0, 'last24hs': 7940.0},
+                'MERV - XMEV - DGCU2 - 24hs': {'p24hs': None, 'max24hs': 1170.0, 'min24hs': 1170.0, 'last24hs': 1170.0}
+            }
 
-    # Opcionalmente, puedes retornar las listas leídas si necesitas usarlas en otra parte del código
-    return "current_ut_values"
- 
+     if get.precios_data:
+       
+        # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
+        sheet= autenticar_y_abrir_sheet(sheetId,sheet_name)
+        if sheet:          
+            symbol =  sheet.col_values(2) 
+            ticker =  sheet.col_values(1) 
+            if symbol in get.precios_data:
+                data = get.precios_data[symbol]
+                print(f"Symbol: {symbol}")
+                for key, value in data.items():
+                    print(f"  {key}: {value}")
+                    try:
+                        cell = sheet.find(ticker)
+                        row = cell.row
+                        # Asumiendo que las columnas Open, High, Low son las columnas 4, 5, 6 respectivamente
+                        if key == 'max24hs':
+                            sheet.update_cell(row, 4, str(value))
+                        elif key == 'min24hs':
+                            sheet.update_cell(row, 5, str(value))
+                        elif key == 'last24hs':
+                            sheet.update_cell(row, 6, str(value))
+                    except Exception as e:
+                        print(f"Error al modificar la hoja para el símbolo {symbol}: {e}")
+                
+
 
 # Función de codificación personalizada para datetime
 def datetime_encoder(obj):
