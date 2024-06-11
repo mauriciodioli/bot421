@@ -208,31 +208,29 @@ def modificar_sheet(sheetId,sheet_name):
             }
 
      if get.precios_data:
-       
         # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
-        sheet= autenticar_y_abrir_sheet(sheetId,sheet_name)
-        if sheet:          
-            symbol =  sheet.col_values(2) 
-            ticker =  sheet.col_values(1) 
-            if symbol in get.precios_data:
-                data = get.precios_data[symbol]
-                print(f"Symbol: {symbol}")
-                for key, value in data.items():
-                    print(f"  {key}: {value}")
-                    try:
-                        cell = sheet.find(ticker)
-                        row = cell.row
-                        # Asumiendo que las columnas Open, High, Low son las columnas 4, 5, 6 respectivamente
-                        if key == 'max24hs':
-                            sheet.update_cell(row, 4, str(value))
-                        elif key == 'min24hs':
-                            sheet.update_cell(row, 5, str(value))
-                        elif key == 'last24hs':
-                            sheet.update_cell(row, 6, str(value))
-                    except Exception as e:
-                        print(f"Error al modificar la hoja para el símbolo {symbol}: {e}")
-                
-
+        sheet = autenticar_y_abrir_sheet(sheetId, sheet_name)
+        if sheet:
+            symbols = sheet.col_values(2) 
+            tickers = sheet.col_values(1) 
+            for symbol, ticker in zip(symbols, tickers):
+                if symbol in get.precios_data:
+                    data = get.precios_data[symbol]
+                    print(f"Symbol: {symbol}")
+                    for key, value in data.items():
+                        print(f"  {key}: {value}")
+                        try:
+                            cell = sheet.find(ticker)
+                            row = cell.row
+                            # Asumiendo que las columnas Open, High, Low son las columnas 4, 5, 6 respectivamente
+                            if key == 'max24hs':
+                                sheet.update_cell(row, 4, str(value))
+                            elif key == 'min24hs':
+                                sheet.update_cell(row, 5, str(value))
+                            elif key == 'last24hs':
+                                sheet.update_cell(row, 6, str(value))
+                        except Exception as e:
+                            print(f"Error al modificar la hoja para el símbolo {symbol}: {e}")
 
 # Función de codificación personalizada para datetime
 def datetime_encoder(obj):

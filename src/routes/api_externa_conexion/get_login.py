@@ -483,7 +483,7 @@ def loginExtCuentaSeleccionadaBroker():
 
 def conexion_existente(app):
     if len(precios_data)> 0:       
-        return True
+        return False
     else:
         accountCuenta = '44593'        
         user_id = 1
@@ -491,7 +491,7 @@ def conexion_existente(app):
         selector = 'produccion'
         with app.app_context():
             conexionShedule(current_app, Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
-        return False 
+        return True 
         
 def buscar_conexion(client_id, cuenta):
     for key, websocket in ConexionesBroker.items():
