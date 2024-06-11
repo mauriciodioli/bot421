@@ -15,8 +15,7 @@ import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
 import mercadopago
-import asyncio
-import httpx
+
 
 from config import DOMAIN # mercado pago
 from config import MERCADOPAGO_URL
@@ -45,15 +44,16 @@ PREAPPROVAL_URL = f"{MERCADOPAGO_URL}/preapproval"
 mp = mercadopago.SDK(sdk_produccion)
 
 @createOrden.route('/create_order/', methods=['POST'])
-async def create_order():
+def create_order():
     try:
         # Obtén los datos de la solicitud
         data = request.get_json()
 
         # Extrae los valores necesarios
         costo_base = data.get("items")[0].get("unit_price")
-        porcentaje_retorno = request.form.get("porcentaje_retorno", 0)
+        porcentaje_retorno = data.get("porcentaje_retorno", 0)
         costo_base = float(costo_base)
+
         # Crea los datos de la preferencia
         preference_data = {
             "items": [
@@ -70,36 +70,32 @@ async def create_order():
                 "pending": PENDING_URL
             },
             "notification_url": NOTIFICATION_URL,
-             "auto_return": "approved"
+            "auto_return": "approved"
         }
 
-       # Encabezados para la solicitud
+        # Encabezados para la solicitud
         headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + sdk_produccion,  # Token de acceso
-            'X-Idempotency-Key':'123546'
+            'X-Idempotency-Key': '123546'
         }
 
         # Llama a la función create_preference
         url = f"{MERCADOPAGO_URL}/checkout/preferences"
-       
-        preference_response = await create_preference(sdk_produccion, preference_data, headers,url)
+        preference_response = create_preference(preference_data, headers, url)
         init_point = preference_response.get("init_point")
-       
+
         # Devuelve la URL de inicialización de la preferencia
         return jsonify({"init_point": init_point})
 
-    except httpx.HTTPStatusError as e:
+    except requests.HTTPError as e:
         return jsonify({"error": str(e)}), e.response.status_code
-    
-async def create_preference(sdk, preference_data, headers,url):
-    async with httpx.AsyncClient() as client:
-       
-        response = await client.post(
-            url,
-            json=preference_data,
-            headers=headers
-        )
-        response.raise_for_status()
-        return response.json()
-    
+
+def create_preference(preference_data, headers, url):
+    response = requests.post(
+        url,
+        json=preference_data,
+        headers=headers
+    )
+    response.raise_for_status()
+    return response.json()

@@ -21,7 +21,6 @@ from models.payment_page.plan import Plan
 from models.payment_page.suscripcionPlanUsuario import SuscripcionPlanUsuario
 import mercadopago
 import asyncio
-import httpx
 import re
 
 from config import DOMAIN # mercado pago

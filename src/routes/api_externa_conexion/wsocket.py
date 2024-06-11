@@ -6,7 +6,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import enviar_leer_sheet
-
+from strategies.datoSheet import update_precios
 from datetime import datetime
 
 import pandas as pd
@@ -80,12 +80,15 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
    if not get.ContenidoSheet_list:
       get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
-   pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
+   if accountCuenta != '10861':
+     pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
+    
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
  
 
 def market_data_handler_0(message):
     print(message)
+    update_precios(message)
 
 def order_report_handler_0(message):
   print(message)

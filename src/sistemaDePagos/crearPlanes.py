@@ -17,8 +17,7 @@ from models.usuario import Usuario
 from models.brokers import Broker
 from models.payment_page.plan import Plan
 import mercadopago
-import asyncio
-import httpx
+
 
 from config import DOMAIN # mercado pago
 from config import MERCADOPAGO_URL

@@ -18521,3 +18521,1096 @@ __inicio 16:32 ___fin 19:00
 2024-06-10 14:43:50,874 INFO 127.0.0.1 - - [10/Jun/2024 14:43:50] "POST /create_order_suscripcion HTTP/1.1" 200 -
 2024-06-10 14:47:32,169 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\createSuscripcion.py', reloading
 2024-06-10 14:47:32,312 INFO 127.0.0.1 - - [10/Jun/2024 14:47:32] "POST /create_order_suscripcion HTTP/1.1" 200 -
+2024-06-10 14:47:33,200 INFO  * Restarting with stat
+2024-06-10 14:47:43,391 WARNING  * Debugger is active!
+2024-06-10 14:47:43,413 INFO  * Debugger PIN: 115-013-033
+2024-06-10 14:48:06,442 INFO 127.0.0.1 - - [10/Jun/2024 14:48:06] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-10 14:48:07,414 INFO 127.0.0.1 - - [10/Jun/2024 14:48:07] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-10 14:48:09,055 INFO 127.0.0.1 - - [10/Jun/2024 14:48:09] "GET /index HTTP/1.1" 200 -
+2024-06-10 14:48:10,171 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,193 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,208 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,224 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,239 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,261 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,280 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,298 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,311 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,319 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,330 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,349 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,356 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,388 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,399 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 14:48:10,856 INFO 127.0.0.1 - - [10/Jun/2024 14:48:10] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,141 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "POST /loginIndex HTTP/1.1" 200 -
+2024-06-10 14:48:11,724 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "GET /home HTTP/1.1" 200 -
+2024-06-10 14:48:11,771 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,782 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,791 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,832 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,835 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,848 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,863 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,869 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,883 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,889 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:11,939 INFO 127.0.0.1 - - [10/Jun/2024 14:48:11] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:12,091 INFO 127.0.0.1 - - [10/Jun/2024 14:48:12] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:12,104 INFO 127.0.0.1 - - [10/Jun/2024 14:48:12] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:12,149 INFO 127.0.0.1 - - [10/Jun/2024 14:48:12] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:12,160 INFO 127.0.0.1 - - [10/Jun/2024 14:48:12] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:12,176 INFO 127.0.0.1 - - [10/Jun/2024 14:48:12] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 14:48:12,179 INFO 127.0.0.1 - - [10/Jun/2024 14:48:12] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:13,389 INFO 127.0.0.1 - - [10/Jun/2024 14:48:13] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-10 14:48:46,490 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "GET /descripcionProductos?layout=layout HTTP/1.1" 200 -
+2024-06-10 14:48:46,538 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,560 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,566 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,570 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,591 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,602 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,623 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,636 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,648 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,661 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,678 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,699 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,721 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,786 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,793 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:46,804 INFO 127.0.0.1 - - [10/Jun/2024 14:48:46] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,633 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "GET /detalle/bot-automatico/layout HTTP/1.1" 200 -
+2024-06-10 14:48:53,676 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,690 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,698 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,706 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,717 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,725 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,748 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,752 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,761 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,770 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,780 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,789 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,799 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,808 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,818 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 14:48:53,824 INFO 127.0.0.1 - - [10/Jun/2024 14:48:53] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 14:49:05,359 INFO 127.0.0.1 - - [10/Jun/2024 14:49:05] "POST /pago/ HTTP/1.1" 200 -
+2024-06-10 14:49:05,434 INFO 127.0.0.1 - - [10/Jun/2024 14:49:05] "[36mGET /static/visa.png HTTP/1.1[0m" 304 -
+2024-06-10 14:49:05,434 INFO 127.0.0.1 - - [10/Jun/2024 14:49:05] "[36mGET /static/mastercard.png HTTP/1.1[0m" 304 -
+2024-06-10 14:50:13,041 INFO 127.0.0.1 - - [10/Jun/2024 14:50:13] "POST /create_order_suscripcion HTTP/1.1" 200 -
+2024-06-10 15:00:46,100 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-10 15:00:46,727 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "GET /index HTTP/1.1" 200 -
+2024-06-10 15:00:46,831 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,905 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,916 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,925 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,938 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,960 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,966 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,977 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:46,995 INFO 127.0.0.1 - - [10/Jun/2024 15:00:46] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,000 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,009 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,028 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,039 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,077 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,082 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,225 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-10 15:00:47,524 INFO 127.0.0.1 - - [10/Jun/2024 15:00:47] "POST /loginIndex HTTP/1.1" 200 -
+2024-06-10 15:00:48,051 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "GET /home HTTP/1.1" 200 -
+2024-06-10 15:00:48,090 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,101 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,108 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,150 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,162 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,279 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,283 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,295 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,304 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,314 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,328 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,334 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,346 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,357 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,372 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,386 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:00:48,398 INFO 127.0.0.1 - - [10/Jun/2024 15:00:48] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-10 15:00:50,447 INFO 127.0.0.1 - - [10/Jun/2024 15:00:50] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-10 15:04:01,850 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "GET /descripcionProductos?layout=layout HTTP/1.1" 200 -
+2024-06-10 15:04:01,900 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:01,925 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:01,937 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:01,948 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:01,962 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:01,974 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:01,985 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:01,999 INFO 127.0.0.1 - - [10/Jun/2024 15:04:01] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,019 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,026 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,045 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,045 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,059 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,068 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,088 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,107 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:04:02,131 INFO 127.0.0.1 - - [10/Jun/2024 15:04:02] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,001 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "GET /detalle/bot-automatico/layout HTTP/1.1" 200 -
+2024-06-10 15:04:08,051 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,077 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,086 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,120 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,137 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,158 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,177 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,187 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,199 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,214 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,229 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,240 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,257 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,269 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,289 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:04:08,304 INFO 127.0.0.1 - - [10/Jun/2024 15:04:08] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:04:11,572 INFO 127.0.0.1 - - [10/Jun/2024 15:04:11] "POST /pago/ HTTP/1.1" 200 -
+2024-06-10 15:04:11,620 INFO 127.0.0.1 - - [10/Jun/2024 15:04:11] "[36mGET /static/visa.png HTTP/1.1[0m" 304 -
+2024-06-10 15:04:11,637 INFO 127.0.0.1 - - [10/Jun/2024 15:04:11] "[36mGET /static/mastercard.png HTTP/1.1[0m" 304 -
+2024-06-10 15:06:11,853 INFO 127.0.0.1 - - [10/Jun/2024 15:06:11] "POST /create_order_suscripcion HTTP/1.1" 200 -
+2024-06-10 15:08:16,806 INFO 127.0.0.1 - - [10/Jun/2024 15:08:16] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-10 15:08:31,131 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-10 15:08:31,674 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "GET /index HTTP/1.1" 200 -
+2024-06-10 15:08:31,761 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,852 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,856 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,865 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,887 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,899 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,903 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,917 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,925 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,937 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:31,953 INFO 127.0.0.1 - - [10/Jun/2024 15:08:31] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:32,023 INFO 127.0.0.1 - - [10/Jun/2024 15:08:32] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:32,089 INFO 127.0.0.1 - - [10/Jun/2024 15:08:32] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:32,115 INFO 127.0.0.1 - - [10/Jun/2024 15:08:32] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-10 15:08:32,125 INFO 127.0.0.1 - - [10/Jun/2024 15:08:32] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:08:32,266 INFO 127.0.0.1 - - [10/Jun/2024 15:08:32] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-10 15:08:32,577 INFO 127.0.0.1 - - [10/Jun/2024 15:08:32] "POST /loginIndex HTTP/1.1" 200 -
+2024-06-10 15:08:33,116 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "GET /home HTTP/1.1" 200 -
+2024-06-10 15:08:33,150 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,185 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,294 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,347 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,379 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,433 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,470 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,485 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,514 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,533 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,559 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,578 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,582 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,595 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,610 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,618 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:08:33,642 INFO 127.0.0.1 - - [10/Jun/2024 15:08:33] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:34,824 INFO 127.0.0.1 - - [10/Jun/2024 15:08:34] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-10 15:08:36,965 INFO 127.0.0.1 - - [10/Jun/2024 15:08:36] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-10 15:08:37,020 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,031 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,041 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,057 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,061 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,076 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,090 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,103 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,117 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,128 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,140 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,157 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,161 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,171 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,191 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,212 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:08:37,556 INFO 127.0.0.1 - - [10/Jun/2024 15:08:37] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-10 15:08:40,904 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-10 15:08:40,904 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-10 15:09:53,376 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-10 15:09:53,429 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,446 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,450 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,474 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,491 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,499 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,514 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,538 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,554 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,560 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,578 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,590 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,598 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,613 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,626 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:09:53,647 INFO 127.0.0.1 - - [10/Jun/2024 15:09:53] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:09:54,678 INFO 127.0.0.1 - - [10/Jun/2024 15:09:54] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-10 15:09:56,525 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-10 15:09:56,525 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-10 15:10:13,222 INFO 127.0.0.1 - - [10/Jun/2024 15:10:13] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layout&usuario_id=1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODAzMzE2MCwianRpIjoiODU1Y2QyYTItY2QwYi00ZThkLTlmMzQtMTkyZWZlNWQwNGMxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE4MDMzMTYwLCJjc3JmIjoiNWM2YmYzNmQtNzU1My00MWNkLThkNDQtMWIzMDFlYmE4ZjEzIiwiZXhwIjoxNzE4MTE5NTYwfQ.GC1bN7IESq5_iOE2UALFhVdyq9lAoT9uD5WcPdhRzco&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODAzMzE2MCwianRpIjoiNTYzNzk3MjUtMTg1MS00ZDRiLWE0MzUtNDRkYzAyNDBkY2E3IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEsIm5iZiI6MTcxODAzMzE2MCwiY3NyZiI6IjMyMGQ5YTI5LTdjYWMtNDU4OS1hNGRlLTBmNDE1NDZmODczMiIsImV4cCI6MTcyMDYyNTE2MH0.U5liMzNfo1udwYPUhUftIik5t5q0xWoChchJ5nYHEuw&selector=vacio HTTP/1.1" 200 -
+2024-06-10 15:10:55,669 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layout&usuario_id=1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODAzMzE2MCwianRpIjoiODU1Y2QyYTItY2QwYi00ZThkLTlmMzQtMTkyZWZlNWQwNGMxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE4MDMzMTYwLCJjc3JmIjoiNWM2YmYzNmQtNzU1My00MWNkLThkNDQtMWIzMDFlYmE4ZjEzIiwiZXhwIjoxNzE4MTE5NTYwfQ.GC1bN7IESq5_iOE2UALFhVdyq9lAoT9uD5WcPdhRzco&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODAzMzE2MCwianRpIjoiNTYzNzk3MjUtMTg1MS00ZDRiLWE0MzUtNDRkYzAyNDBkY2E3IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEsIm5iZiI6MTcxODAzMzE2MCwiY3NyZiI6IjMyMGQ5YTI5LTdjYWMtNDU4OS1hNGRlLTBmNDE1NDZmODczMiIsImV4cCI6MTcyMDYyNTE2MH0.U5liMzNfo1udwYPUhUftIik5t5q0xWoChchJ5nYHEuw&selector=vacio HTTP/1.1" 200 -
+2024-06-10 15:10:55,729 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,736 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,757 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,777 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,790 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,808 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,826 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,833 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,848 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,857 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,868 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-10 15:10:55,875 INFO 127.0.0.1 - - [10/Jun/2024 15:10:55] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:10:57,648 INFO 127.0.0.1 - - [10/Jun/2024 15:10:57] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,225 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "GET /panel_control?country=argentina&layoutOrigen=layout_signal&usuario_id=1&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODAzMzE2MCwianRpIjoiODU1Y2QyYTItY2QwYi00ZThkLTlmMzQtMTkyZWZlNWQwNGMxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE4MDMzMTYwLCJjc3JmIjoiNWM2YmYzNmQtNzU1My00MWNkLThkNDQtMWIzMDFlYmE4ZjEzIiwiZXhwIjoxNzE4MTE5NTYwfQ.GC1bN7IESq5_iOE2UALFhVdyq9lAoT9uD5WcPdhRzco&selector=vacio HTTP/1.1" 200 -
+2024-06-10 15:11:16,279 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,293 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,303 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,316 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,328 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,352 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,356 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,370 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,381 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,396 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-10 15:11:16,399 INFO 127.0.0.1 - - [10/Jun/2024 15:11:16] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-10 15:11:17,481 INFO 127.0.0.1 - - [10/Jun/2024 15:11:17] "GET /panel_control_atomatico/argentina/1/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODAzMzE2MCwianRpIjoiODU1Y2QyYTItY2QwYi00ZThkLTlmMzQtMTkyZWZlNWQwNGMxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzE4MDMzMTYwLCJjc3JmIjoiNWM2YmYzNmQtNzU1My00MWNkLThkNDQtMWIzMDFlYmE4ZjEzIiwiZXhwIjoxNzE4MTE5NTYwfQ.GC1bN7IESq5_iOE2UALFhVdyq9lAoT9uD5WcPdhRzco/vacio/vacio/ HTTP/1.1" 200 -
+2024-06-10 15:11:23,268 INFO HTTP Request: POST https://api.mercadopago.com/checkout/preferences "HTTP/1.1 201 Created"
+2024-06-10 15:11:23,280 INFO 127.0.0.1 - - [10/Jun/2024 15:11:23] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-10 15:13:40,906 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-06-10 15:13:40,906 INFO ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-06-10 15:17:16,073 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\strategies\\datoSheet.py', reloading
+2024-06-10 15:17:18,589 INFO  * Restarting with stat
+2024-06-10 15:17:28,904 WARNING  * Debugger is active!
+2024-06-10 15:17:28,943 INFO  * Debugger PIN: 115-013-033
+2024-06-11 09:52:25,293 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2024-06-11 09:52:25,295 INFO [33mPress CTRL+C to quit[0m
+2024-06-11 09:52:25,303 INFO  * Restarting with stat
+2024-06-11 09:52:33,477 WARNING  * Debugger is active!
+2024-06-11 09:52:33,500 INFO  * Debugger PIN: 115-013-033
+2024-06-11 09:52:56,440 INFO 127.0.0.1 - - [11/Jun/2024 09:52:56] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-11 09:52:56,719 INFO 127.0.0.1 - - [11/Jun/2024 09:52:56] "GET /index HTTP/1.1" 200 -
+2024-06-11 09:52:57,899 INFO 127.0.0.1 - - [11/Jun/2024 09:52:57] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:57,928 INFO 127.0.0.1 - - [11/Jun/2024 09:52:57] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:57,951 INFO 127.0.0.1 - - [11/Jun/2024 09:52:57] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:57,959 INFO 127.0.0.1 - - [11/Jun/2024 09:52:57] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:57,992 INFO 127.0.0.1 - - [11/Jun/2024 09:52:57] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:57,993 INFO 127.0.0.1 - - [11/Jun/2024 09:52:57] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:57,997 INFO 127.0.0.1 - - [11/Jun/2024 09:52:57] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,030 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,034 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,047 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,073 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,091 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,106 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,138 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,146 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,351 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 09:52:58,514 INFO 127.0.0.1 - - [11/Jun/2024 09:52:58] "[36mGET /static/favicon.png HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,063 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "POST /loginIndex HTTP/1.1" 200 -
+2024-06-11 09:52:59,241 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "GET /home HTTP/1.1" 200 -
+2024-06-11 09:52:59,281 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,351 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,380 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,408 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,449 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,454 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,459 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,483 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,487 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,492 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,516 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,519 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,523 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,543 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,545 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,562 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:52:59,584 INFO 127.0.0.1 - - [11/Jun/2024 09:52:59] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-11 09:53:01,072 INFO 127.0.0.1 - - [11/Jun/2024 09:53:01] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-11 09:53:33,043 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\routes\\api_externa_conexion\\get_login.py', reloading
+2024-06-11 09:53:34,135 INFO  * Restarting with stat
+2024-06-11 09:53:43,468 WARNING  * Debugger is active!
+2024-06-11 09:53:43,489 INFO  * Debugger PIN: 115-013-033
+2024-06-11 09:53:50,928 INFO 127.0.0.1 - - [11/Jun/2024 09:53:50] "POST /logOutSystem HTTP/1.1" 200 -
+2024-06-11 09:53:53,083 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,102 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,114 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,131 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,134 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,153 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,154 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,173 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,181 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,234 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,246 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,252 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,262 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:53,300 INFO 127.0.0.1 - - [11/Jun/2024 09:53:53] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,391 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "GET /index HTTP/1.1" 200 -
+2024-06-11 09:53:54,430 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,448 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,456 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,465 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,478 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,484 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,499 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,502 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,513 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,527 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,542 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,546 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,566 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,574 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-11 09:53:54,583 INFO 127.0.0.1 - - [11/Jun/2024 09:53:54] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,603 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "POST /loginUsuario HTTP/1.1" 200 -
+2024-06-11 09:54:04,705 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,709 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,718 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,747 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,754 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,773 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,782 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,790 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,800 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,808 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,817 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,832 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,834 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,844 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,853 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,866 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:54:04,874 INFO 127.0.0.1 - - [11/Jun/2024 09:54:04] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-11 09:54:07,875 INFO 127.0.0.1 - - [11/Jun/2024 09:54:07] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-11 09:54:12,024 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\routes\\api_externa_conexion\\wsocket.py', reloading
+2024-06-11 09:54:12,952 INFO  * Restarting with stat
+2024-06-11 09:54:34,481 INFO  * Restarting with stat
+2024-06-11 09:54:42,109 WARNING  * Debugger is active!
+2024-06-11 09:54:42,130 INFO  * Debugger PIN: 115-013-033
+2024-06-11 09:54:42,524 INFO 127.0.0.1 - - [11/Jun/2024 09:54:42] "[31m[1mGET /registrar_cuenta_broker HTTP/1.1[0m" 405 -
+2024-06-11 09:54:42,596 INFO 127.0.0.1 - - [11/Jun/2024 09:54:42] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-06-11 09:55:08,356 INFO 127.0.0.1 - - [11/Jun/2024 09:55:08] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-11 09:55:08,664 INFO 127.0.0.1 - - [11/Jun/2024 09:55:08] "[32mGET / HTTP/1.1[0m" 302 -
+2024-06-11 09:55:10,933 INFO 127.0.0.1 - - [11/Jun/2024 09:55:10] "GET /index HTTP/1.1" 200 -
+2024-06-11 09:55:12,017 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,023 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,028 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/contact.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,047 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/profile.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,071 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/loginSistema.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,083 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,091 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/sobreNosotros.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,102 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,120 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/faq.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,138 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,145 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,181 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,219 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,235 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/bitCoinSobreNosotros.jpg HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,243 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,509 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 09:55:12,845 INFO 127.0.0.1 - - [11/Jun/2024 09:55:12] "POST /loginIndex HTTP/1.1" 200 -
+2024-06-11 09:55:13,470 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "GET /home HTTP/1.1" 200 -
+2024-06-11 09:55:13,524 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,546 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,553 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,566 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,591 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,595 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,613 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,618 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,627 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,641 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,646 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,658 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,666 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,677 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,685 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,710 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,731 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:13,741 INFO 127.0.0.1 - - [11/Jun/2024 09:55:13] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 09:55:14,939 INFO 127.0.0.1 - - [11/Jun/2024 09:55:14] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-11 09:55:15,494 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-11 09:55:15,546 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,554 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,565 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,573 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,589 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,602 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,611 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,621 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,630 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,640 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,648 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,666 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,669 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,678 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,688 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,695 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:55:15,968 INFO 127.0.0.1 - - [11/Jun/2024 09:55:15] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 09:55:19,589 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "POST /get_cuentas_de_broker_usuario HTTP/1.1" 200 -
+2024-06-11 09:55:19,655 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,662 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,678 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,695 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,702 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,712 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,732 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,751 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,824 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,853 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,887 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,889 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,905 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,913 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,922 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:55:19,934 INFO 127.0.0.1 - - [11/Jun/2024 09:55:19] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:55:21,017 INFO 127.0.0.1 - - [11/Jun/2024 09:55:21] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 09:56:23,191 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\routes\\api_externa_conexion\\wsocket.py', reloading
+2024-06-11 09:56:24,187 INFO  * Restarting with stat
+2024-06-11 09:56:33,457 WARNING  * Debugger is active!
+2024-06-11 09:56:33,477 INFO  * Debugger PIN: 115-013-033
+2024-06-11 09:57:13,288 INFO 127.0.0.1 - - [11/Jun/2024 09:57:13] "POST /registrar_cuenta HTTP/1.1" 200 -
+2024-06-11 09:57:15,372 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,374 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,381 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,387 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,387 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,392 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,408 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,423 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,426 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,438 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,448 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,457 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,469 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,474 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,494 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,503 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,542 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 09:57:15,756 INFO 127.0.0.1 - - [11/Jun/2024 09:57:15] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 09:57:20,365 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "POST /get_cuentas_de_broker_usuario HTTP/1.1" 200 -
+2024-06-11 09:57:20,414 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,431 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,440 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,450 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,460 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,470 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,480 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,491 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,503 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,512 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,522 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,533 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,542 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,552 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:57:20,560 INFO 127.0.0.1 - - [11/Jun/2024 09:57:20] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:57:21,145 INFO 127.0.0.1 - - [11/Jun/2024 09:57:21] "POST /loginExtAutomatico HTTP/1.1" 200 -
+2024-06-11 09:57:27,013 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 09:57:27,013 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 09:58:19,444 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "POST /loginExtCuentaSeleccionadaBroker HTTP/1.1" 200 -
+2024-06-11 09:58:19,512 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,525 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,550 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,551 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "GET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1" 200 -
+2024-06-11 09:58:19,564 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,575 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,585 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,597 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,608 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,623 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,642 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:19,657 INFO 127.0.0.1 - - [11/Jun/2024 09:58:19] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,380 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layoutConexBroker&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiNjllZjVjZGYtYzZjYS00NjBhLThjNjgtZjUxN2FmZTZkMGNjIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEwLCJuYmYiOjE3MTgxMTA0NDMsImNzcmYiOiIwMzMyNWQ1ZS0xY2I4LTRmZTktOWFlOC00NTYwMzI3MGZiZGIiLCJleHAiOjE3MjA3MDI0NDN9.JIKeJVevnE1HXmRHfAcvyj_gNl4IH4XukTQglOHHZ0k&selector=produccion HTTP/1.1" 200 -
+2024-06-11 09:58:20,420 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,433 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,444 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,456 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,466 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,478 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,491 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,497 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,513 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,522 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:58:20,541 INFO 127.0.0.1 - - [11/Jun/2024 09:58:20] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:42,377 ERROR error from callback <bound method WebSocketClient.on_error of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000206E82A1D60>>: 'AttributeError' object has no attribute 'msg'
+2024-06-11 09:58:42,913 INFO 127.0.0.1 - - [11/Jun/2024 09:58:42] "POST /logOutAccount HTTP/1.1" 200 -
+2024-06-11 09:58:42,964 INFO 127.0.0.1 - - [11/Jun/2024 09:58:42] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:42,980 INFO 127.0.0.1 - - [11/Jun/2024 09:58:42] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:42,990 INFO 127.0.0.1 - - [11/Jun/2024 09:58:42] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,000 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,011 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,025 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,033 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,047 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,058 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,070 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,075 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,086 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,099 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,102 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,117 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:43,123 INFO 127.0.0.1 - - [11/Jun/2024 09:58:43] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,765 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-11 09:58:45,810 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,832 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,837 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,848 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,859 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,870 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,879 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,887 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,897 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,911 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,915 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,928 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,932 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,947 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,954 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:45,961 INFO 127.0.0.1 - - [11/Jun/2024 09:58:45] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 09:58:46,970 INFO 127.0.0.1 - - [11/Jun/2024 09:58:46] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 09:58:49,149 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "POST /get_cuentas_de_broker_usuario HTTP/1.1" 200 -
+2024-06-11 09:58:49,193 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,206 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,212 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,238 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,242 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,251 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,261 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,269 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,279 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,287 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,297 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,309 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,315 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,324 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,331 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 09:58:49,870 INFO 127.0.0.1 - - [11/Jun/2024 09:58:49] "POST /loginExtAutomatico HTTP/1.1" 200 -
+2024-06-11 09:59:20,552 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\routes\\api_externa_conexion\\wsocket.py', reloading
+2024-06-11 09:59:21,589 INFO  * Restarting with stat
+2024-06-11 09:59:29,650 WARNING  * Debugger is active!
+2024-06-11 09:59:29,668 INFO  * Debugger PIN: 115-013-033
+2024-06-11 09:59:38,483 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 09:59:38,483 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:01:27,500 INFO 127.0.0.1 - - [11/Jun/2024 10:01:27] "POST /loginExtCuentaSeleccionadaBroker HTTP/1.1" 200 -
+2024-06-11 10:01:28,637 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,638 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,639 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,658 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,668 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,679 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,686 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,705 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,714 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,725 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,745 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:01:28,812 INFO 127.0.0.1 - - [11/Jun/2024 10:01:28] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,263 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,293 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,311 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,320 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,323 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,366 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,389 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,449 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,488 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,496 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,561 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,577 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layoutConexBroker&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiNjllZjVjZGYtYzZjYS00NjBhLThjNjgtZjUxN2FmZTZkMGNjIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEwLCJuYmYiOjE3MTgxMTA0NDMsImNzcmYiOiIwMzMyNWQ1ZS0xY2I4LTRmZTktOWFlOC00NTYwMzI3MGZiZGIiLCJleHAiOjE3MjA3MDI0NDN9.JIKeJVevnE1HXmRHfAcvyj_gNl4IH4XukTQglOHHZ0k&selector=produccion HTTP/1.1" 200 -
+2024-06-11 10:01:51,609 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,653 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,654 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,669 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,682 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,704 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,719 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,724 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,800 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,801 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,837 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,839 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:51,848 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,864 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,886 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,892 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,906 INFO 127.0.0.1 - - [11/Jun/2024 10:01:51] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:01:51,951 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:52,069 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:01:52,142 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000022A6064EFA0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:02:49,107 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5001
+2024-06-11 10:02:49,108 INFO [33mPress CTRL+C to quit[0m
+2024-06-11 10:02:49,115 INFO  * Restarting with stat
+2024-06-11 10:02:56,398 WARNING  * Debugger is active!
+2024-06-11 10:02:56,417 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:03:10,358 INFO 127.0.0.1 - - [11/Jun/2024 10:03:10] "GET /home HTTP/1.1" 200 -
+2024-06-11 10:03:12,490 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,494 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,505 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,514 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,524 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,533 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,546 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,551 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,562 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,571 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,580 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,591 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,602 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,621 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,627 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,644 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,645 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:12,674 INFO 127.0.0.1 - - [11/Jun/2024 10:03:12] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,437 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-11 10:03:14,490 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,498 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,508 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,518 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,532 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,543 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,557 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,560 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,569 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,580 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,585 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,608 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,609 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,622 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,626 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:14,632 INFO 127.0.0.1 - - [11/Jun/2024 10:03:14] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:03:15,587 INFO 127.0.0.1 - - [11/Jun/2024 10:03:15] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-11 10:03:15,662 INFO 127.0.0.1 - - [11/Jun/2024 10:03:15] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 10:03:17,039 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "POST /get_cuentas_de_broker_usuario HTTP/1.1" 200 -
+2024-06-11 10:03:17,079 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,089 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,097 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,183 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,187 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,198 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,207 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,218 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,227 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,236 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,247 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,256 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,264 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,274 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:17,285 INFO 127.0.0.1 - - [11/Jun/2024 10:03:17] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:20,445 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:03:20,445 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:03:41,378 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\strategies\\datoSheet.py', reloading
+2024-06-11 10:03:42,221 INFO  * Restarting with stat
+2024-06-11 10:03:50,175 WARNING  * Debugger is active!
+2024-06-11 10:03:50,194 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:03:53,180 INFO 127.0.0.1 - - [11/Jun/2024 10:03:53] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-11 10:03:54,300 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,300 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,302 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,315 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,325 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,340 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,343 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,353 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,364 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,375 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,381 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,391 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,401 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,408 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,425 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:03:54,433 INFO 127.0.0.1 - - [11/Jun/2024 10:03:54] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:03:56,578 INFO 127.0.0.1 - - [11/Jun/2024 10:03:56] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 10:04:16,134 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "POST /get_cuentas_de_broker_usuario HTTP/1.1" 200 -
+2024-06-11 10:04:16,190 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,206 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,213 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,223 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,238 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,253 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,262 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,272 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,286 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,297 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,310 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,321 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,332 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,343 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:04:16,351 INFO 127.0.0.1 - - [11/Jun/2024 10:04:16] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:04:19,728 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:04:19,728 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:05:19,764 INFO 127.0.0.1 - - [11/Jun/2024 10:05:19] "POST /loginExtAutomatico HTTP/1.1" 200 -
+2024-06-11 10:05:20,457 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "GET /panel_control_broker HTTP/1.1" 200 -
+2024-06-11 10:05:20,527 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,563 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,573 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,585 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,593 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,603 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,615 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,643 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,663 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,680 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,707 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:05:20,950 INFO 127.0.0.1 - - [11/Jun/2024 10:05:20] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,544 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layoutConexBroker&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiNjllZjVjZGYtYzZjYS00NjBhLThjNjgtZjUxN2FmZTZkMGNjIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEwLCJuYmYiOjE3MTgxMTA0NDMsImNzcmYiOiIwMzMyNWQ1ZS0xY2I4LTRmZTktOWFlOC00NTYwMzI3MGZiZGIiLCJleHAiOjE3MjA3MDI0NDN9.JIKeJVevnE1HXmRHfAcvyj_gNl4IH4XukTQglOHHZ0k&selector=produccion HTTP/1.1" 200 -
+2024-06-11 10:05:21,585 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,595 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,628 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,637 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,646 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,667 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,675 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,679 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,693 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,702 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:05:21,710 INFO 127.0.0.1 - - [11/Jun/2024 10:05:21] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:05:52,191 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,289 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\strategies\\datoSheet.py', reloading
+2024-06-11 10:07:48,589 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,601 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,604 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,608 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,650 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,664 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,711 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,730 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,755 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,785 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,802 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,810 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,849 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,859 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,861 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:48,951 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:49,028 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x000001FDBF2EE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:07:49,402 INFO  * Restarting with stat
+2024-06-11 10:07:57,311 WARNING  * Debugger is active!
+2024-06-11 10:07:57,331 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:08:01,519 INFO 127.0.0.1 - - [11/Jun/2024 10:08:01] "GET /home HTTP/1.1" 200 -
+2024-06-11 10:08:02,657 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,662 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,669 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,681 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,691 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,701 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,715 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,722 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,731 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,744 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,759 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,765 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,776 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,792 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,816 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,825 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,834 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-11 10:08:02,915 INFO 127.0.0.1 - - [11/Jun/2024 10:08:02] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:08:05,783 INFO 127.0.0.1 - - [11/Jun/2024 10:08:05] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-11 10:08:06,773 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-11 10:08:06,813 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,834 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,838 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,849 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,857 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,873 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,885 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,899 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,905 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,916 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,926 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,940 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,944 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,957 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,962 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:08:06,978 INFO 127.0.0.1 - - [11/Jun/2024 10:08:06] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:08:07,212 INFO 127.0.0.1 - - [11/Jun/2024 10:08:07] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 10:08:12,040 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "POST /get_cuentas_de_broker_usuario HTTP/1.1" 200 -
+2024-06-11 10:08:12,083 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,093 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,104 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,127 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,137 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,154 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,198 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,262 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,465 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,546 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,551 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,560 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,571 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,578 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:08:12,593 INFO 127.0.0.1 - - [11/Jun/2024 10:08:12] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:08:15,844 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:08:15,844 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:09:20,119 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "POST /loginExtAutomatico HTTP/1.1" 200 -
+2024-06-11 10:09:20,863 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "GET /panel_control_broker HTTP/1.1" 200 -
+2024-06-11 10:09:20,896 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:20,907 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:09:20,931 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:20,972 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:20,984 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:20,993 INFO 127.0.0.1 - - [11/Jun/2024 10:09:20] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,005 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,020 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,032 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,043 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,053 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,879 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layoutConexBroker&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiNjllZjVjZGYtYzZjYS00NjBhLThjNjgtZjUxN2FmZTZkMGNjIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEwLCJuYmYiOjE3MTgxMTA0NDMsImNzcmYiOiIwMzMyNWQ1ZS0xY2I4LTRmZTktOWFlOC00NTYwMzI3MGZiZGIiLCJleHAiOjE3MjA3MDI0NDN9.JIKeJVevnE1HXmRHfAcvyj_gNl4IH4XukTQglOHHZ0k&selector=produccion HTTP/1.1" 200 -
+2024-06-11 10:09:21,922 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,929 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,957 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,965 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,977 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,986 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:21,996 INFO 127.0.0.1 - - [11/Jun/2024 10:09:21] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:22,007 INFO 127.0.0.1 - - [11/Jun/2024 10:09:22] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:09:22,020 INFO 127.0.0.1 - - [11/Jun/2024 10:09:22] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:09:22,030 INFO 127.0.0.1 - - [11/Jun/2024 10:09:22] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:09:22,037 INFO 127.0.0.1 - - [11/Jun/2024 10:09:22] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:09:42,926 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,081 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\strategies\\datoSheet.py', reloading
+2024-06-11 10:11:58,393 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,430 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,433 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,436 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,489 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,500 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,547 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,583 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,588 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,634 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,653 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,663 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,699 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,723 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,729 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,804 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:58,840 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x00000251C9CF6EE0>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:11:59,179 INFO  * Restarting with stat
+2024-06-11 10:12:08,191 WARNING  * Debugger is active!
+2024-06-11 10:12:08,212 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:12:11,213 INFO 127.0.0.1 - - [11/Jun/2024 10:12:11] "GET /home HTTP/1.1" 200 -
+2024-06-11 10:12:12,409 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,412 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,413 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,426 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,449 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,456 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,476 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,489 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,506 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,511 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,521 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,558 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,579 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,594 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,616 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,675 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,689 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-11 10:12:12,697 INFO 127.0.0.1 - - [11/Jun/2024 10:12:12] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:12:15,746 INFO 127.0.0.1 - - [11/Jun/2024 10:12:15] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-11 10:12:37,675 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-11 10:12:37,729 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,743 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,755 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,762 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,772 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,785 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,795 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,813 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,816 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,826 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,839 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,847 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,855 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,866 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,879 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:12:37,889 INFO 127.0.0.1 - - [11/Jun/2024 10:12:37] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:12:38,152 INFO 127.0.0.1 - - [11/Jun/2024 10:12:38] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 10:12:41,692 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "POST /get_cuentas_de_broker_usuario HTTP/1.1" 200 -
+2024-06-11 10:12:41,732 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,750 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,766 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,769 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,781 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,789 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,808 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,814 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,824 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,834 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,883 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,918 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,938 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,949 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:12:41,958 INFO 127.0.0.1 - - [11/Jun/2024 10:12:41] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:12:45,644 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:12:45,644 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:14:13,053 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "POST /loginExtAutomatico HTTP/1.1" 200 -
+2024-06-11 10:14:13,694 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "GET /panel_control_broker HTTP/1.1" 200 -
+2024-06-11 10:14:13,758 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,796 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,804 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,821 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,831 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,839 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,850 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,861 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,888 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,897 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,922 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:14:13,980 INFO 127.0.0.1 - - [11/Jun/2024 10:14:13] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,567 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layoutConexBroker&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiNjllZjVjZGYtYzZjYS00NjBhLThjNjgtZjUxN2FmZTZkMGNjIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEwLCJuYmYiOjE3MTgxMTA0NDMsImNzcmYiOiIwMzMyNWQ1ZS0xY2I4LTRmZTktOWFlOC00NTYwMzI3MGZiZGIiLCJleHAiOjE3MjA3MDI0NDN9.JIKeJVevnE1HXmRHfAcvyj_gNl4IH4XukTQglOHHZ0k&selector=produccion HTTP/1.1" 200 -
+2024-06-11 10:14:14,613 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,622 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,655 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,660 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/css/PanelControlUsuarioBroker/panelSignalConCuentas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,683 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,693 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,704 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,712 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,724 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,733 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:14:14,742 INFO 127.0.0.1 - - [11/Jun/2024 10:14:14] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:14:19,124 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:14:44,690 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:00,750 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\routes\\api_externa_conexion\\get_login.py', reloading
+2024-06-11 10:15:00,956 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:00,963 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:00,966 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:00,984 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,017 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,080 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,103 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,149 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,167 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,194 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,211 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,240 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,242 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,388 ERROR error from callback <bound method WebSocketClient.on_message of <pyRofex.clients.websocket_rfx.WebSocketClient object at 0x0000027CE49BE070>>: 'TypeError' object has no attribute 'msg'
+2024-06-11 10:15:01,728 INFO  * Restarting with stat
+2024-06-11 10:15:09,665 WARNING  * Debugger is active!
+2024-06-11 10:15:09,687 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:19:40,613 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\strategies\\datoSheet.py', reloading
+2024-06-11 10:19:41,470 INFO  * Restarting with stat
+2024-06-11 10:19:50,573 WARNING  * Debugger is active!
+2024-06-11 10:19:50,594 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:26:06,381 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\createOrden.py', reloading
+2024-06-11 10:26:07,364 INFO  * Restarting with stat
+2024-06-11 10:26:16,443 WARNING  * Debugger is active!
+2024-06-11 10:26:16,463 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:26:30,944 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\createOrden.py', reloading
+2024-06-11 10:26:31,958 INFO  * Restarting with stat
+2024-06-11 10:26:41,381 WARNING  * Debugger is active!
+2024-06-11 10:26:41,402 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:27:03,681 INFO 127.0.0.1 - - [11/Jun/2024 10:27:03] "GET /home HTTP/1.1" 200 -
+2024-06-11 10:27:05,829 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,832 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,835 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,842 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,852 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,856 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,868 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,878 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,893 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,901 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,905 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,920 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,924 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,933 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,946 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,960 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:27:05,986 INFO 127.0.0.1 - - [11/Jun/2024 10:27:05] "[36mGET /static/js/home.js HTTP/1.1[0m" 304 -
+2024-06-11 10:27:06,002 INFO 127.0.0.1 - - [11/Jun/2024 10:27:06] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,063 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "POST /registrar_cuenta_broker HTTP/1.1" 200 -
+2024-06-11 10:27:08,120 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,132 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,144 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,156 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,169 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,181 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/tarjetasTriggers.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,191 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/tarjetasRegistrarCuentaBroker.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,202 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,212 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/social/subirImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,222 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,231 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/social/mostrarImagenes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,243 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/social/estiloTarjetaImagen.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,251 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,260 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/css/sub_menus/sub_estrategias.css HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,274 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,281 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:27:08,949 INFO 127.0.0.1 - - [11/Jun/2024 10:27:08] "POST /MostrarImages/ HTTP/1.1" 200 -
+2024-06-11 10:27:09,320 INFO 127.0.0.1 - - [11/Jun/2024 10:27:09] "POST /cuenta-endpoint-all/ HTTP/1.1" 200 -
+2024-06-11 10:27:12,364 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:27:12,364 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:28:17,727 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "GET /panel_control_sin_cuenta?country=argentina&layoutOrigen=layout&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiNjllZjVjZGYtYzZjYS00NjBhLThjNjgtZjUxN2FmZTZkMGNjIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEwLCJuYmYiOjE3MTgxMTA0NDMsImNzcmYiOiIwMzMyNWQ1ZS0xY2I4LTRmZTktOWFlOC00NTYwMzI3MGZiZGIiLCJleHAiOjE3MjA3MDI0NDN9.JIKeJVevnE1HXmRHfAcvyj_gNl4IH4XukTQglOHHZ0k&selector=produccion HTTP/1.1" 200 -
+2024-06-11 10:28:17,775 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,785 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,803 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,840 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,850 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,865 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,871 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,881 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,892 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,903 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,914 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/img/leon_transp.png HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,930 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:28:17,992 INFO 127.0.0.1 - - [11/Jun/2024 10:28:17] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,432 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "GET /panel_control?country=argentina&layoutOrigen=layout_signal&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&selector=produccion HTTP/1.1" 200 -
+2024-06-11 10:28:23,492 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,503 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,515 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,524 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,540 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,547 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,560 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,570 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,578 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,589 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:28:23,603 INFO 127.0.0.1 - - [11/Jun/2024 10:28:23] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:28:24,619 INFO 127.0.0.1 - - [11/Jun/2024 10:28:24] "GET /panel_control_atomatico/argentina/10/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM/vacio/produccion/ HTTP/1.1" 200 -
+2024-06-11 10:28:25,979 INFO 127.0.0.1 - - [11/Jun/2024 10:28:25] "[35m[1mPOST /create_order/ HTTP/1.1[0m" 500 -
+2024-06-11 10:30:09,380 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\createOrden.py', reloading
+2024-06-11 10:30:09,461 INFO 127.0.0.1 - - [11/Jun/2024 10:30:09] "[35m[1mPOST /create_order/ HTTP/1.1[0m" 500 -
+2024-06-11 10:30:10,242 INFO  * Restarting with stat
+2024-06-11 10:30:19,172 WARNING  * Debugger is active!
+2024-06-11 10:30:19,194 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:30:53,023 INFO HTTP Request: POST https://api.mercadopago.com/checkout/preferences "HTTP/1.1 201 Created"
+2024-06-11 10:31:30,584 INFO 127.0.0.1 - - [11/Jun/2024 10:31:30] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-11 10:34:22,596 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\createOrden.py', reloading
+2024-06-11 10:34:23,543 INFO  * Restarting with stat
+2024-06-11 10:34:32,599 WARNING  * Debugger is active!
+2024-06-11 10:34:32,621 INFO  * Debugger PIN: 115-013-033
+2024-06-11 10:35:19,151 INFO 127.0.0.1 - - [11/Jun/2024 10:35:19] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-11 10:35:27,900 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:35:27,900 INFO LEE EL SHEET POR LLAMADA DE FUNCION
+2024-06-11 10:36:16,150 INFO 127.0.0.1 - - [11/Jun/2024 10:36:16] "GET /panel_control?country=argentina&layoutOrigen=layout_signal&usuario_id=10&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM&selector=produccion HTTP/1.1" 200 -
+2024-06-11 10:36:17,615 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/css/PanelControlUsuarioBroker/estrategiaUsuarios.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:17,619 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/css/main.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:17,622 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/css/tarjetasFichas.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:17,645 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/css/tarjetasPlanes.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:17,651 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/css/pieDePagina.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:17,661 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/js/actualizaTabla.js HTTP/1.1[0m" 304 -
+2024-06-11 10:36:17,675 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/js/notificacionAlertOperacion.js HTTP/1.1[0m" 304 -
+2024-06-11 10:36:17,690 INFO 127.0.0.1 - - [11/Jun/2024 10:36:17] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2024-06-11 10:36:18,451 INFO 127.0.0.1 - - [11/Jun/2024 10:36:18] "[36mGET /static/css/navbar.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:18,457 INFO 127.0.0.1 - - [11/Jun/2024 10:36:18] "[36mGET /static/css/productos/descripcionProductos.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:18,463 INFO 127.0.0.1 - - [11/Jun/2024 10:36:18] "[36mGET /static/css/splashPages/splash.css HTTP/1.1[0m" 304 -
+2024-06-11 10:36:18,515 INFO 127.0.0.1 - - [11/Jun/2024 10:36:18] "[36mGET /static/leon.png HTTP/1.1[0m" 304 -
+2024-06-11 10:36:19,551 INFO 127.0.0.1 - - [11/Jun/2024 10:36:19] "GET /panel_control_atomatico/argentina/10/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxODExMDQ0MywianRpIjoiODJjZmI2YWEtZGY0OS00ZDg4LTg1NGMtMmY0OGNkYTQwNTFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTAsIm5iZiI6MTcxODExMDQ0MywiY3NyZiI6IjlkNGNmMzIxLTc4YmItNDkwNi1hOGQ1LWVkZGIzNDVjMjJlMyIsImV4cCI6MTcxODE5Njg0M30.v1LeyN4Por0i-SVlBq6o0I_IBU0yhuH2u05wYLO7iBM/vacio/produccion/ HTTP/1.1" 200 -
+2024-06-11 10:36:31,958 INFO 127.0.0.1 - - [11/Jun/2024 10:36:31] "POST /create_order/ HTTP/1.1" 200 -
+2024-06-11 10:36:44,895 INFO  * Detected change in 'C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src\\sistemaDePagos\\createOrden.py', reloading
+2024-06-11 10:36:45,995 INFO  * Restarting with stat
+2024-06-11 10:36:55,571 WARNING  * Debugger is active!
+2024-06-11 10:36:55,590 INFO  * Debugger PIN: 115-013-033
