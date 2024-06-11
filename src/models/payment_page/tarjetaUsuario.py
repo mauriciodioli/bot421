@@ -1,7 +1,7 @@
 from flask_marshmallow import Marshmallow
 from flask import Blueprint
 from utils.db import db
-from sqlalchemy import inspect,Column, Integer, String, ForeignKey
+from sqlalchemy import inspect,Column, Integer, String, ForeignKey,UniqueConstraint
 from sqlalchemy.orm import relationship
 import pyRofex
 from models.usuario import Usuario
@@ -24,7 +24,9 @@ class TarjetaUsuario(db.Model):
     correo_electronico = db.Column(db.String(120), nullable=False)  # Eliminado unique=True porque es poco probable que sea único
     accountCuenta = db.Column(db.String(500), nullable=True)
   
-
+    __table_args__ = (
+         UniqueConstraint('user_id', 'numeroTarjeta', name='_user_tarjeta_uc'),
+     )
 
     # constructor
     def __init__(self, user_id, numeroTarjeta, fecha_vencimiento, cvv, nombreApellidoTarjeta, correo_electronico,
