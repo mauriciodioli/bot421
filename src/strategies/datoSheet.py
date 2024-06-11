@@ -211,8 +211,8 @@ def modificar_sheet(sheetId,sheet_name):
         # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
         sheet = autenticar_y_abrir_sheet(sheetId, sheet_name)
         if sheet:
-            symbols = sheet.col_values(2) 
-            tickers = sheet.col_values(1) 
+            symbols = sheet.col_values(3) 
+            tickers = sheet.col_values(2) 
             for symbol, ticker in zip(symbols, tickers):
                 if symbol in get.precios_data:
                     data = get.precios_data[symbol]
