@@ -15,8 +15,6 @@ import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
 import mercadopago
-import asyncio
-import httpx
 
 from config import DOMAIN # mercado pago
 from config import MERCADOPAGO_URL

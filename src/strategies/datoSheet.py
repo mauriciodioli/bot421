@@ -54,7 +54,8 @@ class Ordenes(enum.Enum):
     #NEW  
     #PENDING_NEW
     #TIMESTAMP_ENVIO
-    
+
+precios_data = {}
 
     
     
@@ -133,6 +134,42 @@ def leerDb(app):
         db.session.close()
         print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         return all_ins
+
+def cargarSheet(sheetId,sheet_name):
+     sheet= autenticar_y_abrir_sheet(sheetId,sheet_name) 
+
+
+
+def update_precios(message):
+    
+    # Definición de variables iniciales
+    p_value = None
+    suffix = None
+    Symbol = message["instrumentId"]["symbol"]
+    # Comprobación del sufijo del símbolo y asignación de valores
+    if '24hs' in Symbol:    
+        p_last24 = float(message["marketData"]["LA"])  # Precio "last" para 24hs
+        suffix = "24hs"
+        update_precios_data(Symbol, p_last24, suffix)
+
+
+
+
+def update_precios_data(symbol, p_value, suffix):
+    if symbol not in get.precios_data:
+        get.precios_data[symbol] = {
+            'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
+        }
+
+    if suffix == "24hs":
+        #precios_data[symbol]['p24hs'] = p_value
+        get.precios_data[symbol]['last24hs'] = p_value
+        if get.precios_data[symbol]['max24hs'] is None or p_value > get.precios_data[symbol]['max24hs']:
+                                            get.precios_data[symbol]['max24hs'] = p_value
+        if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
+            get.precios_data[symbol]['min24hs'] = p_value
+
+    
 
 def modificar_columna_ut(Symbol,new_ut_values):
     # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
