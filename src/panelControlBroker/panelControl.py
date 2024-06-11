@@ -7,6 +7,7 @@ import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify, abort,current_app
 from models.instrumento import Instrumento
+
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
@@ -175,9 +176,9 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(300)
+            time.sleep(60)# 5minulos
             
-          
+           
             enviar_leer_sheet(app, pais, user_id,'hilo',selector)
         
 
@@ -185,7 +186,7 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
      if hilo == 'hilo':
         print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
-        app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')
+        app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
         print("LEE EL SHEET POR LLAMADA DE FUNCION")
         app.logger.info('LEE EL SHEET POR LLAMADA DE FUNCION')
@@ -197,6 +198,9 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
      
      if selector != "simulado" or selector =='vacio':
         if pais == "argentina":
+            if len(get.diccionario_global_sheet) > 0:
+               if not get.conexion_existente(app):
+                   modifico = datoSheet.modificar_sheet(get.SPREADSHEET_ID_PRODUCCION,'data')
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
@@ -253,3 +257,4 @@ def procesar_datos(app,pais, accountCuenta,user_id,selector):
             enviar_leer_sheet(app,pais,accountCuenta,None,selector)      
         if pais in get.diccionario_global_sheet_intercambio:
            return   get.diccionario_global_sheet_intercambio[pais]
+       

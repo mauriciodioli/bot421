@@ -481,7 +481,18 @@ def loginExtCuentaSeleccionadaBroker():
 
 
 
-
+def conexion_existente(app):
+    if len(precios_data)> 0:       
+        return True
+    else:
+        accountCuenta = '44593'        
+        user_id = 1
+        correo_electronico = 'madioli26@hotmail.com'
+        selector = 'produccion'
+        with app.app_context():
+            conexionShedule(current_app, Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+        return False 
+        
 def buscar_conexion(client_id, cuenta):
     for key, websocket in ConexionesBroker.items():
         print(f"Comparando clave: (client_id={key[0]}, cuenta={key[1]})")  # Print para mostrar la clave que está siendo comparada
