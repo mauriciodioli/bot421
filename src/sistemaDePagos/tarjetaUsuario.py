@@ -20,12 +20,11 @@ from models.payment_page.tarjetaUsuario import TarjetaUsuario
 tarjetaUsuario = Blueprint('tarjetaUsuario',__name__)
 
 def altaTarjeta(data):
-    #try:
+    try:
         # Verificar si ya existe una tarjeta con el mismo número de tarjeta y usuario
         tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(
             user_id=int(data['user_id']),
-            numeroTarjeta=data['numeroTarjeta'],
-            cvv=data['cvv']
+            numeroTarjeta=data['numeroTarjeta']           
         ).first()
 
         if tarjeta_existente:
@@ -45,8 +44,8 @@ def altaTarjeta(data):
         db.session.commit()
         return jsonify({"message": "Tarjeta creada con éxito", "tarjeta": nueva_tarjeta.id}), 201
 
-  #  except Exception as e:
-     #   return jsonify({"message": str(e)}), 500
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
 
 def bajaTarjeta(id):
     
