@@ -185,6 +185,25 @@ def ejecutar_en_hilo(app,pais,user_id,selector):
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
      if hilo == 'hilo':
+        get.precios_data = {
+                'MERV - XMEV - GOOGL - 24hs': {'p24hs': None, 'max24hs': 3961.0, 'min24hs': 3961.0, 'last24hs': 3961.0},
+                'MERV - XMEV - VALE - 24hs': {'p24hs': None, 'max24hs': 7370.5, 'min24hs': 7370.5, 'last24hs': 7370.5},
+                'MERV - XMEV - RIO - 24hs': {'p24hs': None, 'max24hs': 10913.5, 'min24hs': 10913.5, 'last24hs': 10913.5},
+                'MERV - XMEV - AGRO - 24hs': {'p24hs': None, 'max24hs': 58.8, 'min24hs': 58.8, 'last24hs': 58.8},
+                'MERV - XMEV - TXAR - 24hs': {'p24hs': None, 'max24hs': 944.0, 'min24hs': 944.0, 'last24hs': 944.0},
+                'MERV - XMEV - VALO - 24hs': {'p24hs': None, 'max24hs': 303.5, 'min24hs': 303.5, 'last24hs': 303.5},
+                'MERV - XMEV - LOMA - 24hs': {'p24hs': None, 'max24hs': 1839.9, 'min24hs': 1839.9, 'last24hs': 1839.9},
+                'MERV - XMEV - GGB - 24hs': {'p24hs': None, 'max24hs': 16652.0, 'min24hs': 16652.0, 'last24hs': 16652.0},
+                'MERV - XMEV - BYMA - 24hs': {'p24hs': None, 'max24hs': 321.5, 'min24hs': 321.5, 'last24hs': 321.5},
+                'MERV - XMEV - BMA - 24hs': {'p24hs': None, 'max24hs': 7481.0, 'min24hs': 7481.0, 'last24hs': 7481.0},
+                'MERV - XMEV - CEPU - 24hs': {'p24hs': None, 'max24hs': 1182.35, 'min24hs': 1182.35, 'last24hs': 1182.35},
+                'MERV - XMEV - GGAL - 24hs': {'p24hs': None, 'max24hs': 4187.0, 'min24hs': 4187.0, 'last24hs': 4187.0},
+                'MERV - XMEV - SUPV - 24hs': {'p24hs': None, 'max24hs': 1649.95, 'min24hs': 1649.95, 'last24hs': 1649.95},
+                'MERV - XMEV - TECO2 - 24hs': {'p24hs': None, 'max24hs': 1875.0, 'min24hs': 1875.0, 'last24hs': 1875.0},
+                'MERV - XMEV - TGT - 24hs': {'p24hs': None, 'max24hs': 7940.0, 'min24hs': 7940.0, 'last24hs': 7940.0},
+                'MERV - XMEV - DGCU2 - 24hs': {'p24hs': None, 'max24hs': 1170.0, 'min24hs': 1170.0, 'last24hs': 1170.0}
+            }
+
         print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
         app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
