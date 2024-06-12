@@ -134,7 +134,16 @@ logs_file_path = os.path.join(src_directory, 'logs.log')
 file_handler = logging.FileHandler(logs_file_path, encoding='utf-8')
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
+
+
+# Crear un manejador de logs que escriba a `stdout`
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(formatter)
+
+
 app.logger.addHandler(file_handler)
+app.logger.addHandler(console_handler)
 # Configura el manejo de autenticación JWT
 app.config['JWT_SECRET_KEY'] = '621289'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
@@ -222,6 +231,7 @@ def log_connection_info(dbapi_connection, connection_record):
     global connection_count
     connection_count += 1
     print(f"Conexión establecida ({connection_count} veces)")
+    app.logger.info(f"Conexión establecida ({connection_count} veces)")
 
 event.listen(engine, 'connect', log_connection_info)
 db = SQLAlchemy(app)
