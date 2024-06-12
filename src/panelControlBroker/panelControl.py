@@ -176,34 +176,17 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(60)# 5minulos
-            
-           
-            enviar_leer_sheet(app, pais, user_id,'hilo',selector)
+            time.sleep(90)# 5minulos
+          #  bandera = False
+          #  if bandera == False:
+            if len(get.diccionario_global_sheet) > 0:
+                 enviar_leer_sheet(app, pais, user_id,'hilo',selector)
+           #      bandera= True
         
 
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
      if hilo == 'hilo':
-        get.precios_data = {
-                'MERV - XMEV - GOOGL - 24hs': {'p24hs': None, 'max24hs': 3961.0, 'min24hs': 3961.0, 'last24hs': 3961.0},
-                'MERV - XMEV - VALE - 24hs': {'p24hs': None, 'max24hs': 7370.5, 'min24hs': 7370.5, 'last24hs': 7370.5},
-                'MERV - XMEV - RIO - 24hs': {'p24hs': None, 'max24hs': 10913.5, 'min24hs': 10913.5, 'last24hs': 10913.5},
-                'MERV - XMEV - AGRO - 24hs': {'p24hs': None, 'max24hs': 58.8, 'min24hs': 58.8, 'last24hs': 58.8},
-                'MERV - XMEV - TXAR - 24hs': {'p24hs': None, 'max24hs': 944.0, 'min24hs': 944.0, 'last24hs': 944.0},
-                'MERV - XMEV - VALO - 24hs': {'p24hs': None, 'max24hs': 303.5, 'min24hs': 303.5, 'last24hs': 303.5},
-                'MERV - XMEV - LOMA - 24hs': {'p24hs': None, 'max24hs': 1839.9, 'min24hs': 1839.9, 'last24hs': 1839.9},
-                'MERV - XMEV - GGB - 24hs': {'p24hs': None, 'max24hs': 16652.0, 'min24hs': 16652.0, 'last24hs': 16652.0},
-                'MERV - XMEV - BYMA - 24hs': {'p24hs': None, 'max24hs': 321.5, 'min24hs': 321.5, 'last24hs': 321.5},
-                'MERV - XMEV - BMA - 24hs': {'p24hs': None, 'max24hs': 7481.0, 'min24hs': 7481.0, 'last24hs': 7481.0},
-                'MERV - XMEV - CEPU - 24hs': {'p24hs': None, 'max24hs': 1182.35, 'min24hs': 1182.35, 'last24hs': 1182.35},
-                'MERV - XMEV - GGAL - 24hs': {'p24hs': None, 'max24hs': 4187.0, 'min24hs': 4187.0, 'last24hs': 4187.0},
-                'MERV - XMEV - SUPV - 24hs': {'p24hs': None, 'max24hs': 1649.95, 'min24hs': 1649.95, 'last24hs': 1649.95},
-                'MERV - XMEV - TECO2 - 24hs': {'p24hs': None, 'max24hs': 1875.0, 'min24hs': 1875.0, 'last24hs': 1875.0},
-                'MERV - XMEV - TGT - 24hs': {'p24hs': None, 'max24hs': 7940.0, 'min24hs': 7940.0, 'last24hs': 7940.0},
-                'MERV - XMEV - DGCU2 - 24hs': {'p24hs': None, 'max24hs': 1170.0, 'min24hs': 1170.0, 'last24hs': 1170.0}
-            }
-
         print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
         app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
@@ -219,7 +202,8 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
         if pais == "argentina":
             if len(get.diccionario_global_sheet) > 0:
                if not get.conexion_existente(app):
-                   modifico = datoSheet.modificar_sheet(get.SPREADSHEET_ID_PRODUCCION,'data')
+                   modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores')
+                   print('modifico el sheet : ',modifico) 
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
@@ -277,3 +261,26 @@ def procesar_datos(app,pais, accountCuenta,user_id,selector):
         if pais in get.diccionario_global_sheet_intercambio:
            return   get.diccionario_global_sheet_intercambio[pais]
        
+
+
+
+'''
+get.precios_data = {
+    'MERV - XMEV - GOOGL - 24hs': {'p24hs': None, 'max24hs': 3961.1, 'min24hs': 3962.2, 'last24hs': 3963.3},
+    'MERV - XMEV - VALE - 24hs': {'p24hs': None, 'max24hs': 7370.1, 'min24hs': 7370.2, 'last24hs': 7370.3},
+    'MERV - XMEV - RIO - 24hs': {'p24hs': None, 'max24hs': 10913.1, 'min24hs': 10913.2, 'last24hs': 10913.3},
+    'MERV - XMEV - AGRO - 24hs': {'p24hs': None, 'max24hs': 58.1, 'min24hs': 58.2, 'last24hs': 58.3},
+    'MERV - XMEV - TXAR - 24hs': {'p24hs': None, 'max24hs': 944.1, 'min24hs': 944.2, 'last24hs': 944.3},
+    'MERV - XMEV - VALO - 24hs': {'p24hs': None, 'max24hs': 303.1, 'min24hs': 303.2, 'last24hs': 303.3},
+    'MERV - XMEV - LOMA - 24hs': {'p24hs': None, 'max24hs': 1839.1, 'min24hs': 1839.2, 'last24hs': 1839.3},
+    'MERV - XMEV - GGB - 24hs': {'p24hs': None, 'max24hs': 16652.1, 'min24hs': 16652.2, 'last24hs': 16652.3},
+    'MERV - XMEV - BYMA - 24hs': {'p24hs': None, 'max24hs': 321.1, 'min24hs': 321.2, 'last24hs': 321.3},
+    'MERV - XMEV - BMA - 24hs': {'p24hs': None, 'max24hs': 7481.1, 'min24hs': 7481.2, 'last24hs': 7481.3},
+    'MERV - XMEV - CEPU - 24hs': {'p24hs': None, 'max24hs': 1182.1, 'min24hs': 1182.2, 'last24hs': 1182.3},
+    'MERV - XMEV - GGAL - 24hs': {'p24hs': None, 'max24hs': 4187.1, 'min24hs': 4187.2, 'last24hs': 4187.3},
+    'MERV - XMEV - SUPV - 24hs': {'p24hs': None, 'max24hs': 1649.1, 'min24hs': 1649.2, 'last24hs': 1649.3},
+    'MERV - XMEV - TECO2 - 24hs': {'p24hs': None, 'max24hs': 1875.1, 'min24hs': 1875.2, 'last24hs': 1875.3},
+    'MERV - XMEV - TGT - 24hs': {'p24hs': None, 'max24hs': 7940.1, 'min24hs': 7940.2, 'last24hs': 7940.3},
+    'MERV - XMEV - DGCU2 - 24hs': {'p24hs': None, 'max24hs': 1170.1, 'min24hs': 1170.2, 'last24hs': 1170.3}
+}
+'''
