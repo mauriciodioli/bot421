@@ -130,7 +130,7 @@ def leerSheet(sheetId,sheet_name):
         return union
      else:
        
-        return render_template('notificaciones/noPoseeDatos.html')
+        return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_fichas')
 def leerDb(app):
      with app.app_context():   
         all_ins = db.session.query(InstrumentoSuscriptos).all()
@@ -183,55 +183,50 @@ def update_precios_data(symbol, p_value, suffix):
         if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
             get.precios_data[symbol]['min24hs'] = p_value
         # Mostrar el contenido actualizado para el símbolo específico
-    print(f"{symbol}: {get.precios_data[symbol]}")
+    #print(f"{symbol}: {get.precios_data[symbol]}")
 
     
 
-def modificar_sheet(sheetId,sheet_name):
-     get.precios_data = {
-                'MERV - XMEV - GOOGL - 24hs': {'p24hs': None, 'max24hs': 3961.0, 'min24hs': 3961.0, 'last24hs': 3961.0},
-                'MERV - XMEV - VALE - 24hs': {'p24hs': None, 'max24hs': 7370.5, 'min24hs': 7370.5, 'last24hs': 7370.5},
-                'MERV - XMEV - RIO - 24hs': {'p24hs': None, 'max24hs': 10913.5, 'min24hs': 10913.5, 'last24hs': 10913.5},
-                'MERV - XMEV - AGRO - 24hs': {'p24hs': None, 'max24hs': 58.8, 'min24hs': 58.8, 'last24hs': 58.8},
-                'MERV - XMEV - TXAR - 24hs': {'p24hs': None, 'max24hs': 944.0, 'min24hs': 944.0, 'last24hs': 944.0},
-                'MERV - XMEV - VALO - 24hs': {'p24hs': None, 'max24hs': 303.5, 'min24hs': 303.5, 'last24hs': 303.5},
-                'MERV - XMEV - LOMA - 24hs': {'p24hs': None, 'max24hs': 1839.9, 'min24hs': 1839.9, 'last24hs': 1839.9},
-                'MERV - XMEV - GGB - 24hs': {'p24hs': None, 'max24hs': 16652.0, 'min24hs': 16652.0, 'last24hs': 16652.0},
-                'MERV - XMEV - BYMA - 24hs': {'p24hs': None, 'max24hs': 321.5, 'min24hs': 321.5, 'last24hs': 321.5},
-                'MERV - XMEV - BMA - 24hs': {'p24hs': None, 'max24hs': 7481.0, 'min24hs': 7481.0, 'last24hs': 7481.0},
-                'MERV - XMEV - CEPU - 24hs': {'p24hs': None, 'max24hs': 1182.35, 'min24hs': 1182.35, 'last24hs': 1182.35},
-                'MERV - XMEV - GGAL - 24hs': {'p24hs': None, 'max24hs': 4187.0, 'min24hs': 4187.0, 'last24hs': 4187.0},
-                'MERV - XMEV - SUPV - 24hs': {'p24hs': None, 'max24hs': 1649.95, 'min24hs': 1649.95, 'last24hs': 1649.95},
-                'MERV - XMEV - TECO2 - 24hs': {'p24hs': None, 'max24hs': 1875.0, 'min24hs': 1875.0, 'last24hs': 1875.0},
-                'MERV - XMEV - TGT - 24hs': {'p24hs': None, 'max24hs': 7940.0, 'min24hs': 7940.0, 'last24hs': 7940.0},
-                'MERV - XMEV - DGCU2 - 24hs': {'p24hs': None, 'max24hs': 1170.0, 'min24hs': 1170.0, 'last24hs': 1170.0}
-            }
+def actualizar_precios(sheetId, sheet_name):
+    try:
+        if get.precios_data:
+            # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
+            sheet = autenticar_y_abrir_sheet(sheetId, sheet_name)
+            if sheet:
+                symbols = sheet.col_values(3)
+                batch_updates = []
+                for symbol in symbols:
+                    if symbol in get.precios_data:
+                        data = get.precios_data[symbol]
+                        #print(f"Symbol: {symbol}")
 
-     if get.precios_data:
-        # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
-        sheet = autenticar_y_abrir_sheet(sheetId, sheet_name)
-        if sheet:
-            symbols = sheet.col_values(3) 
-            tickers = sheet.col_values(2) 
-            for symbol, ticker in zip(symbols, tickers):
-                if symbol in get.precios_data:
-                    data = get.precios_data[symbol]
-                    print(f"Symbol: {symbol}")
-                    for key, value in data.items():
-                        print(f"  {key}: {value}")
                         try:
-                            cell = sheet.find(ticker)
-                            row = cell.row
-                            # Asumiendo que las columnas Open, High, Low son las columnas 4, 5, 6 respectivamente
-                            if key == 'max24hs':
-                                sheet.update_cell(row, 4, str(value))
-                            elif key == 'min24hs':
-                                sheet.update_cell(row, 5, str(value))
-                            elif key == 'last24hs':
-                                sheet.update_cell(row, 6, str(value))
-                        except Exception as e:
-                            print(f"Error al modificar la hoja para el símbolo {symbol}: {e}")
+                            # Buscar el índice del símbolo en la lista de símbolos
+                            index = symbols.index(symbol) + 1  # Sumar 1 porque las filas en Google Sheets comienzan en 1
+                            for key, value in data.items():
+                               # print(f"  {key}: {value}")
+                                if key == 'max24hs':                                  
+                                    batch_updates.append({'range': f"E{index}", 'values': [[str(value)]]})
+                                elif key == 'min24hs':
+                                    batch_updates.append({'range': f"F{index}", 'values': [[str(value)]]})
+                                elif key == 'last24hs':
+                                    batch_updates.append({'range': f"G{index}", 'values': [[str(value)]]})
+                        except ValueError:
+                            print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
 
+                # Actualizar en lotes
+                if batch_updates:
+                    try:
+                        sheet.batch_update(batch_updates)
+                        print("El sheet se ha actualizado correctamente.")
+                    except Exception as e:
+                        print(f"Error en el proceso de actualización: {e}")
+                        # Retorna False solo si la actualización falla
+                        return False
+    except Exception as e:
+        print(f"Error en el proceso de actualización: {e}")
+        return False
+    return True
 # Función de codificación personalizada para datetime
 def datetime_encoder(obj):
     if isinstance(obj, datetime):
