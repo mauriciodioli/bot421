@@ -80,8 +80,8 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
    if not get.ContenidoSheet_list:
       get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
-   #if accountCuenta != '44593':
-   pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
+   if accountCuenta != '44593':
+    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
  
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
    
@@ -290,7 +290,7 @@ def cargaSymbolParaValidarDb(message):
     listado_final = []
     for instrumento  in message: 
         listado_final.append(instrumento.symbol)
-        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
+    print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         
     return listado_final
 
