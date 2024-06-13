@@ -57,6 +57,7 @@ def create_order_suscripcion():
         data = request.get_json()
         pagoTarjetaPrevia = data.get('pagoTarjetaPrevia')
         access_token = data.get("access_token")
+        isChecked = data.get('isChecked')
        
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -68,15 +69,16 @@ def create_order_suscripcion():
                 cardName = data.get("cardName")
                 expiryDate =data.get("expiryDate")
                 security_code = data.get("cvv")
+                payer_email =data.get("email")
             else:
                 tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(user_id=user_id).first()
                 cardName = tarjeta_existente.nombreApellidoTarjeta
                 expiryDate =tarjeta_existente.fecha_vencimiento
                 security_code = tarjeta_existente.cvv
+                payer_email = tarjeta_existente.correo_electronico
                     
             
-            cardNumber = data.get("cardNumber")
-            payer_email =data.get("email")
+            cardNumber = data.get("cardNumber")           
             transaction_amount = data.get("transaction_amount")        
             reason = data.get("reason")
         
@@ -98,7 +100,9 @@ def create_order_suscripcion():
                 "transaction_amount": transaction_amount,
                 "reason": reason
             }
-            cargarTarjeta(user_id,numero_de_cuenta,datos)
+            
+            if isChecked == True:
+                cargarTarjeta(user_id,numero_de_cuenta,datos)
 
             # Extraer el mes y el año de la fecha de vencimiento si está presente
             expiration_month = None

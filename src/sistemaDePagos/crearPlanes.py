@@ -122,9 +122,24 @@ def create_preapproval_plan():
             db.session.add(nuevo_plan)
         
             db.session.commit() 
-        
+        planes = db.session.query(Plan).all()
         db.session.close()
-        return jsonify(response.json())
+
+        # Serializar los planes
+        planes_serializados = [
+            {
+                'id': plan.idPlan,
+                'frequency': plan.frequency,
+                'amount': plan.amount,
+                'reason': plan.reason,
+                'frequency_type': plan.frequency_type,
+                'currency_id': plan.currency_id,
+                'repetitions': plan.repetitions,
+                'billing_day': plan.billing_day
+            } for plan in planes
+        ]
+
+        return jsonify({'planes': planes_serializados})
     except requests.HTTPError as e:
         error_response = e.response.json()
         return jsonify({"error": error_response}), e.response.status_code

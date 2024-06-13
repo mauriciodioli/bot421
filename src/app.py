@@ -28,6 +28,7 @@ from sistemaDePagos.createOrden import createOrden
 from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from productosComerciales.descipcionProductos import descrpcionProductos
+from productosComerciales.planes import planes
 from sistema_pago.suscripciones_producto_usuario import suscripciones_producto_usuario
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
@@ -171,6 +172,7 @@ app.register_blueprint(crearPlanes)
 app.register_blueprint(createOrden)
 app.register_blueprint(createSuscripcion)
 app.register_blueprint(descrpcionProductos)
+app.register_blueprint(planes)
 app.register_blueprint(suscripciones_producto_usuario)
 app.register_blueprint(tarjetaUsuario)
 app.register_blueprint(creaTabla)

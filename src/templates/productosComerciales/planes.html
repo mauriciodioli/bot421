@@ -1,0 +1,121 @@
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% endif %}
+
+{% block title %}Muestra planes existentes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card mt-3 mx-auto">
+                <div class="card-body">
+                    <h2 class="card-title text-center text-black">Planes Existentes</h2>
+                    <div class="table-responsive">
+                        <table class="table" id="plansTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Frecuencia</th>
+                                    <th>Monto</th>
+                                    <th>Motivo</th>
+                                    <th>Frecuencia Tipo</th>
+                                    <th>Moneda</th>
+                                    <th>Repeticiones</th>
+                                    <th>Día de facturación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/productosComerciales_planes_muestra_planes/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.planes) {
+                console.log(data);
+                updatePlansTable(data.planes);
+            } else {
+                console.error('Error en la respuesta del servidor:', data);
+                alert('Error al cargar los planes');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cargar los planes');
+        });
+    });
+
+    function updatePlansTable(planes) {
+        const tableBody = document.getElementById('plansTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        planes.forEach(plan => {
+            const row = tableBody.insertRow();
+
+            row.insertCell(0).textContent = plan.id;
+            row.insertCell(1).textContent = plan.frequency;
+            row.insertCell(2).textContent = plan.amount;
+            row.insertCell(3).textContent = plan.reason;
+            row.insertCell(4).textContent = plan.frequency_type;
+            row.insertCell(5).textContent = plan.currency_id;
+            row.insertCell(6).textContent = plan.repetitions;
+            row.insertCell(7).textContent = plan.billing_day;
+
+            // Crear botón de eliminar
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.onclick = () => deletePlan(plan.id);
+            row.insertCell(8).appendChild(deleteButton);
+        });
+    }
+
+    function deletePlan(planId) {
+        if (confirm('¿Está seguro de que desea eliminar este plan?')) {
+            fetch(`/delete_plan/${planId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Plan eliminado con éxito');
+                    location.reload(); // Recargar la página para actualizar la tabla
+                } else {
+                    alert('Error al eliminar el plan');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar el plan');
+            });
+        }
+    }
+</script>
+{% endblock %}
