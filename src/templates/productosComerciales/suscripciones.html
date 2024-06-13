@@ -1,0 +1,125 @@
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% endif %}
+
+{% block title %}Muestra Suscripciones existentes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card mt-3 mx-auto">
+                <div class="card-body">
+                    <h2 class="card-title text-center text-black">Suscripciones Existentes</h2>
+                    <div class="table-responsive">
+                        <table class="table" id="suscripcionTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cuenta</th>
+                                    <th>Estado</th>
+                                    <th>Motivo</th>
+                                    <th>Fecha de Creación</th>
+                                    <th>Frecuencia</th>
+                                    <th>Cuotas</th>
+                                    <th>Monto Pendiente</th>
+                                    <th>Método de Pago</th>
+                                    <th>Día de Facturación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        fetch('/productosComerciales_suscripciones_muestra_suscripciones/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.suscripciones) {
+                console.log(data);
+                updateSuscripcionesTable(data.suscripciones);
+            } else {
+                console.error('Error en la respuesta del servidor:', data);
+                alert('Error al cargar las suscripciones');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cargar las suscripciones');
+        });
+    });
+
+    function updateSuscripcionesTable(suscripciones) {
+        const tableBody = document.getElementById('suscripcionTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        suscripciones.forEach(suscripciones => {
+            const row = tableBody.insertRow();
+            row.insertCell(0).textContent = suscripciones.payer_id,
+            row.insertCell(1).textContent = suscripciones.accountCuenta,
+            row.insertCell(2).textContent = suscripciones.status,
+            row.insertCell(3).textContent = suscripciones.reason,
+            row.insertCell(4).textContent = suscripciones.date_created,
+            row.insertCell(5).textContent = suscripciones.frequency,
+            row.insertCell(6).textContent = suscripciones.quotas,
+            row.insertCell(7).textContent = suscripciones.pending_charge_amount,
+            row.insertCell(8).textContent = suscripciones.payment_method_id,
+            row.insertCell(9).textContent = suscripciones.billing_day
+          
+
+            // Crear botón de eliminar
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Eliminar';
+            deleteButton.className = 'btn btn-danger btn-sm';
+            deleteButton.onclick = () => deletePlan(suscripciones.id);
+            row.insertCell(10).appendChild(deleteButton);
+        });
+    }
+
+    function deletePlan(SuscripocionId) {
+        if (confirm('¿Está seguro de que desea eliminar este plan?')) {
+            fetch(`/delete_suscripcion/${SuscripocionId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Suscripcion eliminado con éxito');
+                    location.reload(); // Recargar la página para actualizar la tabla
+                } else {
+                    alert('Error al eliminar el Suscripocion');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar la Suscripocion');
+            });
+        }
+    }
+</script>
+{% endblock %}
