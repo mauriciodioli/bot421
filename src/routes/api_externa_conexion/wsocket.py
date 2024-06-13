@@ -87,18 +87,43 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
    
 
 def market_data_handler_0(message):
-    # Limitar el número de elementos en precios_data
+   # Limitar el número de elementos en precios_data
     MAX_PRECIOS_DATA = 73
-  
-    if len(get.precios_data) <= MAX_PRECIOS_DATA:
-        try:
-            
-            update_precios(message)
-        except Exception as e:
-            print(f"Error al actualizar los precios: {e}")
     
-    # Espera un tiempo antes de volver a verificar
-    time.sleep(1)  # Espera 60 segundos antes de volver a verificar
+    # Almacenar el timestamp de la última ejecución exitosa del if
+    if not hasattr(market_data_handler_0, "last_execution"):
+        market_data_handler_0.last_execution = 0
+
+    current_time = time.time()
+    
+    if current_time - market_data_handler_0.last_execution >= 180:  # 180 segundos = 3 minutos
+        if len(get.precios_data) <= MAX_PRECIOS_DATA:
+            try:
+                update_precios(message)
+                
+                pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
+                
+                # Aquí deberías definir los valores específicos para ticker, side, order_type y price
+                ticker = message.get('ticker', 'DEFAULT_TICKER')  # Asume 'DEFAULT_TICKER' si no se encuentra en el mensaje
+                side = message.get('side', 'BUY')  # Asume 'BUY' si no se especifica
+                size = 1  # Definido en el código original
+                order_type = 'LIMIT'  # Cambia esto según el tipo de orden deseado
+                price = message.get('price', 10)  # Asume 100.0 si no se especifica
+
+                # Enviar la orden a través del WebSocket
+                pyRofexInicializada.send_order_via_websocket(
+                    ticker=ticker, 
+                    side=side, 
+                    size=size, 
+                    order_type=order_type, 
+                    price=price
+                )
+                
+                # Actualizar el timestamp de la última ejecución
+                market_data_handler_0.last_execution = current_time
+            except Exception as e:
+                print(f"Error al actualizar los precios: {e}")
+    
 
 
 def order_report_handler_0(message):
