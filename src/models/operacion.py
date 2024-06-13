@@ -48,8 +48,8 @@ class Operacion:
 
     def enviar_orden(self, cuenta=None,pyRofexInicializada=None):
         if self.validar_saldo(cuenta=cuenta,pyRofexInicializada=pyRofexInicializada):
-            pass
-            #pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
+            #pass
+            pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
            
             return True
         else:

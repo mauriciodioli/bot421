@@ -176,7 +176,7 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(90)# 5minulos
+            time.sleep(180)# 5minulos
           #  bandera = False
           #  if bandera == False:
             if len(get.diccionario_global_sheet) > 0:
