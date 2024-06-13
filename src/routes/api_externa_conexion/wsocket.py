@@ -302,14 +302,14 @@ def cargaSymbolParaValidar(message):
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                                 if Symbol != '':
                                 #if trade_en_curso == 'LONG_':
-                                    if senial != '':
+                                   #   if senial != '':
                                             
-                                                if tipo_de_activo =='CEDEAR':
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
-                                                 listado_final.append(Symbol)
-                                                if tipo_de_activo =='ARG':
-                                                 listado_final.append(Symbol)
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
+                                        if tipo_de_activo =='CEDEAR':
+                                        # print(f'El instrumento {Symbol} existe en el mercado')
+                                          listado_final.append(Symbol)
+                                        if tipo_de_activo =='ARG':
+                                          listado_final.append(Symbol)
+                                        # print(f'El instrumento {Symbol} existe en el mercado')
  
     return listado_final
   
