@@ -192,9 +192,12 @@ function updatePaymentMethod() {
     if (selectedBroker === "Mercado Libre") {
         paymentMethod.style.color = "white";
         paymentMethod.style.backgroundColor = "skyblue";
+        paymentMethod.innerText = 'Mercado Libre';
+
     } else if (selectedBroker === "PayPal") {
         paymentMethod.style.color = "black";
-        paymentMethod.style.backgroundColor = "yellow";
+        paymentMethod.style.backgroundColor = "yellow";       
+        paymentMethod.innerText = 'PayPal';
     } else {
         // Restablecer estilos predeterminados si no se selecciona ninguna opción válida
         paymentMethod.style.color = "black";
@@ -272,6 +275,9 @@ function updatePaymentMethod() {
             const access_token = localStorage.getItem('access_token')
             const transaction_amount = document.getElementById('transaction_amount').value;
             const pagoTarjetaPrevia = true;
+            const isChecked = false
+
+
         
             // Validar si cardNumber tiene datos
             if (cardNumber.trim() === '') {
@@ -294,6 +300,7 @@ function updatePaymentMethod() {
                             transaction_amount: transaction_amount,
                             pagoTarjetaPrevia: pagoTarjetaPrevia,
                             email: email,
+                            isChecked: isChecked,
                             access_token: access_token
                         })
                     })
@@ -310,7 +317,7 @@ function updatePaymentMethod() {
            }
         
     
-        
+//***************************** aqui paga con otra tarjeta *******************************        
         async function processNewCardPayment() {
             if (validatePayment()) {
                 const cardNumber = document.getElementById('new_card_number').value;
@@ -322,6 +329,8 @@ function updatePaymentMethod() {
                 const access_token = localStorage.getItem('access_token')
                 const transaction_amount = document.getElementById('transaction_amount').value;
                 const pagoTarjetaPrevia = false;
+                const saveCardCheckbox = document.getElementById('save_card');
+                const isChecked = saveCardCheckbox.checked;
         
                 try {
                     // Enviar el token y el correo electrónico al backend para procesar el pago
@@ -339,6 +348,7 @@ function updatePaymentMethod() {
                             reason: reason,
                             transaction_amount: transaction_amount,
                             pagoTarjetaPrevia: pagoTarjetaPrevia,
+                            isChecked: isChecked,
                             access_token: access_token
                         })
                     })
