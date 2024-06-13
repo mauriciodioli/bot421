@@ -62,8 +62,8 @@ def pyment_page_carga_numero_tarjeta():
          return jsonify({"message": "Tarjeta creada con éxito", "tarjeta": tarjeta_existente.numeroTarjeta}), 201
 
     
-@payment_page.route('/pago/', methods=['POST'])
-def pago():
+@payment_page.route('/payment_page_pago/', methods=['POST'])
+def payment_page_pago():
     if request.method == 'POST':
         costo_base = float(request.form['costo_base'])
         reason = request.form['reason']
