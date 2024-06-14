@@ -122,7 +122,8 @@ def market_data_handler_0(message):
                 # Actualizar el timestamp de la última ejecución
                 market_data_handler_0.last_execution = current_time
             except Exception as e:
-              print(datetime.now())
+              pass
+              #print(datetime.now())
     
 
 

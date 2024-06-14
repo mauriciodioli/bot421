@@ -206,11 +206,11 @@ def actualizar_precios(sheetId, sheet_name):
                             for key, value in data.items():
                                # print(f"  {key}: {value}")
                                 if key == 'max24hs':                                  
-                                    batch_updates.append({'range': f"E{index}", 'values': [[str(value)]]})
+                                    batch_updates.append({'range': f"E{index}", 'values': [[str(value).replace('.', ',')]]})
                                 elif key == 'min24hs':
-                                    batch_updates.append({'range': f"F{index}", 'values': [[str(value)]]})
+                                    batch_updates.append({'range': f"F{index}", 'values': [[str(value).replace('.', ',')]]})
                                 elif key == 'last24hs':
-                                    batch_updates.append({'range': f"G{index}", 'values': [[str(value)]]})
+                                    batch_updates.append({'range': f"G{index}", 'values': [[str(value).replace('.', ',')]]})
                         except ValueError:
                             print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
 
