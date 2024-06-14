@@ -27,6 +27,7 @@ from sistemaDePagos.crearPlanes import crearPlanes
 from sistemaDePagos.createOrden import createOrden
 from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
+from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
 from productosComerciales.descipcionProductos import descrpcionProductos
 from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
@@ -175,6 +176,7 @@ app.register_blueprint(createSuscripcion)
 app.register_blueprint(descrpcionProductos)
 app.register_blueprint(planes)
 app.register_blueprint(suscripcionPlanUsuario)
+app.register_blueprint(deleteSuscripcion)
 app.register_blueprint(tarjetaUsuario)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
