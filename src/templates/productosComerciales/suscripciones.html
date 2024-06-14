@@ -12,6 +12,7 @@
 
 {% block content %}
 <div class="container mt-5">
+    <input type="hidden" id="layoutInput" value="{{ layout }}">
     <div class="row justify-content-center">
         <div class="col-md-10">
             <div class="card mt-3 mx-auto">
@@ -49,7 +50,10 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        fetch('/productosComerciales_suscripciones_muestra_suscripciones/', {
+        const access_token = localStorage.getItem('access_token')
+        const layout = document.getElementById('layoutInput').value;  // Define el layout que necesitas, puede ser dinámico
+        fetch(`/productosComerciales_suscripciones_muestra_suscripciones/?layout=${layout}&access_token=${access_token}`, {
+    
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

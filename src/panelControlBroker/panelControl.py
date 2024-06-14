@@ -17,6 +17,7 @@ from models.orden import Orden
 import threading
 import strategies.datoSheet as datoSheet
 import time
+from datetime import datetime
 import tokens.token as Token
 from queue import Queue
 
@@ -159,7 +160,15 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
     return datos_procesados
 
 
-
+def terminaConexionParaActualizarSheet(account):
+    get.precios_data.clear()
+    try:
+        pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
+    except KeyError:
+            # Si la clave no existe en el diccionario, pyRofexInicializada será None
+            pyRofexInicializada = None
+    pyRofexInicializada.close_websocket_connection(environment=account)
+    del get.ConexionesBroker[account]
 
 
 def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
@@ -177,12 +186,15 @@ def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
             time.sleep(180)# 5minulos
-          #  bandera = False
-          #  if bandera == False:
             if len(get.diccionario_global_sheet) > 0:
-                 enviar_leer_sheet(app, pais, user_id,'hilo',selector)
-           #      bandera= True
-        
+                ################################# preguntar si son las 11 ##################
+                ################################# pasar la lectura #########################                
+                if datetime.now().hour == 14:
+                   enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
+                ################################# pregutar si son las 17 hs #################
+                ################## apagar el ws y limpia precios_data #######################
+                if datetime.now().hour == 20:
+                    terminaConexionParaActualizarSheet('44593')
 
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
@@ -201,7 +213,7 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
      if selector != "simulado" or selector =='vacio':
         if pais == "argentina":
             if len(get.diccionario_global_sheet) > 0:
-               if not get.conexion_existente(app):
+               if not get.conexion_existente(app,'44593'):
                    modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores')
                    print('modifico el sheet : ',modifico) 
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')

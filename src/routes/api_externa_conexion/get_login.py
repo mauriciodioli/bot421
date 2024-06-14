@@ -481,11 +481,10 @@ def loginExtCuentaSeleccionadaBroker():
 
 
 
-def conexion_existente(app):
+def conexion_existente(app,accountCuenta):
     if len(precios_data)> 0:       
         return False
     else:
-        accountCuenta = '44593'        
         user_id = 1
         correo_electronico = 'madioli26@hotmail.com'
         selector = 'produccion'
