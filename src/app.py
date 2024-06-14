@@ -281,7 +281,7 @@ def logs():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    #crea_tablas_DB()
+    crea_tablas_DB()
     
     return redirect("index")
 
@@ -293,7 +293,7 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas
