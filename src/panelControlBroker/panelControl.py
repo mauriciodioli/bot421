@@ -189,11 +189,12 @@ def ejecutar_en_hilo(app,pais,user_id,selector):
             if len(get.diccionario_global_sheet) > 0:
                 ################################# preguntar si son las 11 ##################
                 ################################# pasar la lectura #########################                
-                if datetime.now().hour == 14:
+                if datetime.now().hour >= 12 or datetime.now().hour < 20:
                    enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
                 ################################# pregutar si son las 17 hs #################
                 ################## apagar el ws y limpia precios_data #######################
-                if datetime.now().hour == 20:
+                now = datetime.now()
+                if 20 <= now.hour < 20 or (now.hour == 20 and now.minute < 7):
                     terminaConexionParaActualizarSheet('44593')
 
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
