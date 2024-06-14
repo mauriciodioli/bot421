@@ -185,11 +185,11 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(180)# 5minulos
+            time.sleep(240)# 4minulos
             if len(get.diccionario_global_sheet) > 0:
                 ################################# preguntar si son las 11 ##################
                 ################################# pasar la lectura #########################                
-                if datetime.now().hour >= 12 or datetime.now().hour < 20:
+                if datetime.now().hour >= 14 or datetime.now().hour < 20:
                    enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
                 ################################# pregutar si son las 17 hs #################
                 ################## apagar el ws y limpia precios_data #######################

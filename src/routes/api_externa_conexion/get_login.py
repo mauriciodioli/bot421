@@ -102,6 +102,11 @@ hilos_iniciados_shedule = []
 ultima_entrada = time.time()
 CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
+
+
+marca_de_tiempo_para_leer_sheet = int(datetime.now().timestamp()) * 1000  # Tiempo inicial
+VariableParaTiempoLeerSheet = 0  # Variable para guardar el tiempo transcurrido
+
 ContenidoSheet_list = None
 api_url = None
 ws_url = None
