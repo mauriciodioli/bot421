@@ -90,20 +90,16 @@ def market_data_handler_0(message):
    # Limitar el número de elementos en precios_data
     MAX_PRECIOS_DATA = 73
     
-    # Almacenar el timestamp de la última ejecución exitosa del if
-    if not hasattr(market_data_handler_0, "last_execution"):
-        market_data_handler_0.last_execution = 0
-
-    current_time = time.time()
+   
     
-    if current_time - market_data_handler_0.last_execution >= 180:  # 180 segundos = 3 minutos
+    if control_tiempo_lectura(180000, get.marca_de_tiempo_para_leer_sheet):   
         if len(get.precios_data) <= MAX_PRECIOS_DATA:
             try:
                 update_precios(message)
                 
                 pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
                 
-                # Aquí deberías definir los valores específicos para ticker, side, order_type y price
+                # Aquí se envia una operacion fallida para generar trafico
                 ticker = message.get('ticker', 'DEFAULT_TICKER')  # Asume 'DEFAULT_TICKER' si no se encuentra en el mensaje
                 side = message.get('side', 'BUY')  # Asume 'BUY' si no se especifica
                 size = 1  # Definido en el código original
@@ -120,7 +116,7 @@ def market_data_handler_0(message):
                 )
                 
                 # Actualizar el timestamp de la última ejecución
-                market_data_handler_0.last_execution = current_time
+            
             except Exception as e:
               pass
               #print(datetime.now())
@@ -363,6 +359,44 @@ def get_instrumento_para_suscripcion_json():
         print("El archivo no se encuentra.")
    except json.JSONDecodeError:
         print("Error al decodificar el JSON.")
+
+
+def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
+    # Obtener el tiempo actual en milisegundos
+    tiempo_actual_ms = int(datetime.now().timestamp()) * 1000
+    
+    # Calcular la diferencia de tiempo desde la última vez que fue llamada la función
+    diferencia_tiempo_ms = tiempo_actual_ms - tiempo_inicial_ms
+    
+    # Lógica para determinar si se puede realizar la lectura del sheet
+    if diferencia_tiempo_ms < tiempo_espera_ms:
+        # Aún no ha pasado suficiente tiempo, no se realiza la lectura del sheet
+        #print(f"No se realiza la lectura del sheet. Tiempo transcurrido: {diferencia_tiempo_ms} ms.")
+        # Retornar False u otra indicación según sea necesario
+        return False
+    else:
+        # Ha pasado suficiente tiempo, se realiza la lectura del sheet
+        minutos = diferencia_tiempo_ms // 60000
+        segundos = (diferencia_tiempo_ms % 60000) // 1000
+        print(f"Se realiza la lectura del sheet. Tiempo transcurrido: {minutos}m {segundos}s.")
+       
+        
+        # Reiniciar el tiempo inicial para la próxima llamada
+        get.marca_de_tiempo_para_leer_sheet = tiempo_actual_ms
+        
+        # Retornar True u otra indicación según sea necesario
+        return True
+
+
+
+
+
+
+
+
+
+
+
 ##########################esto es para ws#############################
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 
