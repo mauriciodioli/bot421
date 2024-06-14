@@ -99,12 +99,12 @@ def cuenta_posicion_cuenta():
                   if reporte!=None:                       
                         return render_template("cuentas/cuentaPosicion.html",datos = reporte)
         else:
-          return render_template("notificaciones/noPoseeDatos.html")
+          return render_template("notificaciones/noPoseeDatos.html", layout = layouts)
      except:  
         print("contraseña o usuario incorrecto")  
         flash('No registra posicion')    
           
-     return render_template("notificaciones/noPoseeDatos.html" )
+     return render_template("notificaciones/noPoseeDatos.html", layout = layouts )
 
 @cuenta.route("/cuenta_detalle_cuenta", methods=['POST'])
 def cuenta_detalle_cuenta():
@@ -135,7 +135,7 @@ def cuenta_detalle_cuenta():
         print("contraseña o usuario incorrecto")  
         flash('Loggin Incorrect')    
           
-   return render_template("notificaciones/noPoseeDatos.html" )
+   return render_template("notificaciones/noPoseeDatos.html", layout = layouts )
 
 
 @cuenta.route("/reporteCuenta/", methods=['POST'])
@@ -157,6 +157,9 @@ def reporteCuenta():
             if reporte!=None:
                 available_to_collateral = reporte['availableToCollateral']
                 portfolio = reporte['portfolio']
+            else:
+                available_to_collateral = 1
+                portfolio = 0
        
             # Consulta todas las fichas del usuario dado
             #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
@@ -166,8 +169,11 @@ def reporteCuenta():
             
             try:
                 
-                    #print(ficha.monto_efectivo)                    
-                    diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                    #print(ficha.monto_efectivo)     
+                    if ficha == None:
+                          diferencia = 1
+                    else:                    
+                          diferencia = available_to_collateral - ficha.valor_cuenta_creacion
                     porcien= diferencia*100
                     interes = round(porcien/available_to_collateral,0)
                     interes = int(interes)

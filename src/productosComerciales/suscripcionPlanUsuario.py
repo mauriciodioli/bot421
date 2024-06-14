@@ -25,31 +25,43 @@ suscripcionPlanUsuario = Blueprint('suscripcionPlanUsuario',__name__)
 
 @suscripcionPlanUsuario.route('/productosComerciales_suscripciones_muestra/', methods=['GET'])
 def productosComerciales_suscripciones_muestra():
-    return render_template('productosComerciales/suscripciones.html', layout = 'layout')
+    layout = request.args.get('layout', 'layout')
+    return render_template('productosComerciales/suscripciones.html', layout = layout)
     
 @suscripcionPlanUsuario.route('/productosComerciales_suscripciones_muestra_suscripciones/', methods=['GET'])
 def productosComerciales_suscripciones_muestra_suscripciones():
     try:
-        suscripciones = db.session.query(SuscripcionPlanUsuario).all()
-        db.session.close()
+        layout = request.args.get('layout', 'layout')
+        access_token = request.args.get('access_token')
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
+            app = current_app._get_current_object()            
+            user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            usuario = db.session.query(Usuario).filter_by(id=user_id).first()
+            if usuario.roll=='ADMINISTRADOR':
+               suscripciones = db.session.query(SuscripcionPlanUsuario).all()
+            else:
+               suscripciones = db.session.query(SuscripcionPlanUsuario).filter_by(user_id=user_id).all()
+                
+            
+            db.session.close()
 
-        # Serializar los planes
-        suscripciones_serializados = [
-            {
-                'payer_id': suscripcion.payer_id,
-                'accountCuenta': suscripcion.accountCuenta,
-                'status': suscripcion.status,
-                'reason': suscripcion.reason,
-                'date_created': suscripcion.date_created,
-                'frequency': suscripcion.frequency,
-                'quotas': suscripcion.quotas,
-                'pending_charge_amount': suscripcion.pending_charge_amount,
-                'payment_method_id': suscripcion.payment_method_id,
-                'billing_day': suscripcion.billing_day
-            } for suscripcion in suscripciones
-        ]
+            # Serializar los planes
+            suscripciones_serializados = [
+                {
+                    'payer_id': suscripcion.payer_id,
+                    'accountCuenta': suscripcion.accountCuenta,
+                    'status': suscripcion.status,
+                    'reason': suscripcion.reason,
+                    'date_created': suscripcion.date_created,
+                    'frequency': suscripcion.frequency,
+                    'quotas': suscripcion.quotas,
+                    'pending_charge_amount': suscripcion.pending_charge_amount,
+                    'payment_method_id': suscripcion.payment_method_id,
+                    'billing_day': suscripcion.billing_day
+                } for suscripcion in suscripciones
+            ]
 
-        return jsonify({'suscripciones': suscripciones_serializados})
+            return jsonify({'suscripciones': suscripciones_serializados, 'layout': layout})
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
