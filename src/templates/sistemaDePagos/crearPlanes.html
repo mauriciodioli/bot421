@@ -83,6 +83,36 @@
     </div>
 </div>
 
+
+<!-- Modal for updating plan -->
+<div id="updatePlanModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <form id="updatePlanForm" onsubmit="submitUpdate(event)">
+            <input type="hidden" id="planId">
+            <label for="frequency">Frequency:</label>
+            <input type="text" id="frequency" name="frequency"><br>
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount"><br>
+            <label for="reason">Reason:</label>
+            <input type="text" id="reason" name="reason"><br>
+            <label for="frequency_type">Frequency Type:</label>
+            <input type="text" id="frequency_type" name="frequency_type"><br>
+            <label for="currency_id">Currency ID:</label>
+            <input type="text" id="currency_id" name="currency_id"><br>
+            <label for="repetitions">Repetitions:</label>
+            <input type="number" id="repetitions" name="repetitions"><br>
+            <label for="billing_day">Billing Day:</label>
+            <input type="number" id="billing_day" name="billing_day"><br>
+            <button type="submit">Update Plan</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+
 {% include 'layouts/layout_footer.html' %}
 
 <script>
@@ -146,10 +176,10 @@
     function updatePlansTable(planes) {
         const tableBody = document.getElementById('plansTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = '';
-
+    
         planes.forEach(plan => {
             const row = tableBody.insertRow();
-
+    
             row.insertCell(0).textContent = plan.id;
             row.insertCell(1).textContent = plan.frequency;
             row.insertCell(2).textContent = plan.amount;
@@ -158,13 +188,13 @@
             row.insertCell(5).textContent = plan.currency_id;
             row.insertCell(6).textContent = plan.repetitions;
             row.insertCell(7).textContent = plan.billing_day;
-
-            // Crear botón de eliminar
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Eliminar';
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.onclick = () => deletePlan(plan.id);
-            row.insertCell(8).appendChild(deleteButton);
+    
+            // Crear botón de actualizar
+            const updateButton = document.createElement('button');
+            updateButton.textContent = 'Actualizar';
+            updateButton.className = 'btn btn-primary btn-sm';
+            updateButton.onclick = () => updatePlan(plan.id); // Llamar a la función para actualizar el plan
+            row.insertCell(8).appendChild(updateButton);
         });
     }
 
