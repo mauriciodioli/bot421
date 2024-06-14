@@ -46,14 +46,43 @@
     </div>
 </div>
 
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="eliminarSuscripcionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-black" id="eliminarSuscripcionModalLabel">Eliminar Suscripción</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold text-black">¿Está seguro de que desea eliminar esta suscripción?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteButton">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% include 'layouts/layout_footer.html' %}
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const access_token = localStorage.getItem('access_token')
-        const layout = document.getElementById('layoutInput').value;  // Define el layout que necesitas, puede ser dinámico
+    $(document).ready(function() {
+        let selectedSuscripcionId = null;
+
+        // Manejar clic en el botón "Eliminar"
+        $('#confirmDeleteButton').on('click', function() {
+            if (selectedSuscripcionId) {
+                deletePlan(selectedSuscripcionId); // Llamar a la función deletePlan con el ID seleccionado
+                $('#confirmDeleteModal').modal('hide'); // Cerrar el modal después de eliminar
+            }
+        });
+
+        // Llamada inicial para cargar las suscripciones
+        const access_token = localStorage.getItem('access_token');
+        const layout = document.getElementById('layoutInput').value;
         fetch(`/productosComerciales_suscripciones_muestra_suscripciones/?layout=${layout}&access_token=${access_token}`, {
-    
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -73,57 +102,67 @@
             console.error('Error:', error);
             alert('Error al cargar las suscripciones');
         });
-    });
 
-    function updateSuscripcionesTable(suscripciones) {
-        const tableBody = document.getElementById('suscripcionTable').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = '';
+        // Función para actualizar la tabla de suscripciones
+        function updateSuscripcionesTable(suscripciones) {
+            const tableBody = document.getElementById('suscripcionTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = '';
 
-        suscripciones.forEach(suscripciones => {
-            const row = tableBody.insertRow();
-            row.insertCell(0).textContent = suscripciones.payer_id,
-            row.insertCell(1).textContent = suscripciones.accountCuenta,
-            row.insertCell(2).textContent = suscripciones.status,
-            row.insertCell(3).textContent = suscripciones.reason,
-            row.insertCell(4).textContent = suscripciones.date_created,
-            row.insertCell(5).textContent = suscripciones.frequency,
-            row.insertCell(6).textContent = suscripciones.quotas,
-            row.insertCell(7).textContent = suscripciones.pending_charge_amount,
-            row.insertCell(8).textContent = suscripciones.payment_method_id,
-            row.insertCell(9).textContent = suscripciones.billing_day
-          
+            suscripciones.forEach(suscripcion => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = suscripcion.payer_id;
+                row.insertCell(1).textContent = suscripcion.accountCuenta;
+                row.insertCell(2).textContent = suscripcion.status;
+                row.insertCell(3).textContent = suscripcion.reason;
+                row.insertCell(4).textContent = suscripcion.date_created;
+                row.insertCell(5).textContent = suscripcion.frequency;
+                row.insertCell(6).textContent = suscripcion.quotas;
+                row.insertCell(7).textContent = suscripcion.pending_charge_amount;
+                row.insertCell(8).textContent = suscripcion.payment_method_id;
+                row.insertCell(9).textContent = suscripcion.billing_day;
 
-            // Crear botón de eliminar
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Eliminar';
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.onclick = () => deletePlan(suscripciones.id);
-            row.insertCell(10).appendChild(deleteButton);
-        });
-    }
-
-    function deletePlan(SuscripocionId) {
-        if (confirm('¿Está seguro de que desea eliminar este plan?')) {
-            fetch(`/delete_suscripcion/${SuscripocionId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Suscripcion eliminado con éxito');
-                    location.reload(); // Recargar la página para actualizar la tabla
-                } else {
-                    alert('Error al eliminar el Suscripocion');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al eliminar la Suscripocion');
+                // Crear botón de eliminar
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Eliminar';
+                deleteButton.className = 'btn btn-danger btn-sm';
+                deleteButton.onclick = function() {
+                    selectedSuscripcionId = suscripcion.preapproval_plan_id;
+                    $('#confirmDeleteModal').modal('show');
+                };
+                row.insertCell(10).appendChild(deleteButton);
             });
         }
-    }
+
+        // Función para eliminar la suscripción
+        function deletePlan(suscripcionId) {
+            const access_token = localStorage.getItem('access_token');
+            const layout = document.getElementById('layoutInput').value;
+            if (suscripcionId && access_token) {
+                fetch(`/deleteSuscripcion_order_suscripcion/${suscripcionId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        access_token: access_token,
+                        layout: layout
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Suscripción eliminada con éxito');
+                        location.reload(); // Recargar la página para actualizar la tabla
+                    } else {
+                        alert('Error al eliminar la suscripción');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al eliminar la suscripción');
+                });
+            }
+        }
+    });
 </script>
 {% endblock %}
