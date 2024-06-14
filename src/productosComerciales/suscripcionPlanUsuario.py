@@ -57,7 +57,8 @@ def productosComerciales_suscripciones_muestra_suscripciones():
                     'quotas': suscripcion.quotas,
                     'pending_charge_amount': suscripcion.pending_charge_amount,
                     'payment_method_id': suscripcion.payment_method_id,
-                    'billing_day': suscripcion.billing_day
+                    'billing_day': suscripcion.billing_day,
+                    'preapproval_plan_id': suscripcion.preapproval_plan_id
                 } for suscripcion in suscripciones
             ]
 
