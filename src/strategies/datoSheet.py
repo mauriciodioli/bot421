@@ -1,17 +1,20 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template, request,current_app, redirect, url_for, flash,jsonify
 import routes.instrumentos as instrumentos
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
 
+
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
+import copy
 import socket
 import requests
 import time
 import json
 from models.orden import Orden
+from models.cuentas import Cuenta
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
 
@@ -54,7 +57,8 @@ class Ordenes(enum.Enum):
     #NEW  
     #PENDING_NEW
     #TIMESTAMP_ENVIO
-    
+
+precios_data = {}
 
     
     
@@ -126,7 +130,7 @@ def leerSheet(sheetId,sheet_name):
         return union
      else:
        
-        return render_template('notificaciones/noPoseeDatos.html')
+        return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_fichas')
 def leerDb(app):
      with app.app_context():   
         all_ins = db.session.query(InstrumentoSuscriptos).all()
@@ -134,24 +138,95 @@ def leerDb(app):
         print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         return all_ins
 
-def modificar_columna_ut(Symbol,new_ut_values):
-    # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
-    sheet = autenticar_y_abrir_sheet()
-    cell =  sheet.find(Symbol) 
-    row = cell.row
-    valores_de_la_fila = sheet.row_values(row)
-    current_ut_values = valores_de_la_fila[19]
-   
-        # Leer la columna "ut" actual
-    if current_ut_values != new_ut_values:  
-         sheet.update_cell(row,20,str(new_ut_values)) 
-   
-   
 
-    # Opcionalmente, puedes retornar las listas leídas si necesitas usarlas en otra parte del código
-    return "current_ut_values"
- 
 
+def update_precios1(message):
+    
+    # Definición de variables iniciales
+    p_last24 = None
+    suffix = None
+    Symbol = message["instrumentId"]["symbol"]
+    # Comprobación del sufijo del símbolo y asignación de valores
+    if '24hs' in Symbol:    
+        p_last24 = float(message["marketData"]["LA"]['price'])  # Precio "last" para 24hs
+        suffix = "24hs"
+        update_precios_data(Symbol, p_last24, suffix)
+        
+def update_precios(message):
+    # Definición de variables iniciales
+    p_value = None
+    suffix = None
+    # Comprobación del sufijo del símbolo y asignación de valores
+    Symbol = message["instrumentId"]["symbol"]
+    if Symbol.endswith("24hs"):
+        p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
+        suffix = "24hs"
+    if suffix:    # Llamada a la función update_symbol_data si hay un sufijo válido
+        if Symbol and p_value is not None:
+            #print(message)
+            update_precios_data(Symbol, p_value, suffix)
+
+
+
+
+def update_precios_data(symbol, p_value, suffix):
+    if symbol not in get.precios_data:
+        get.precios_data[symbol] = {
+            'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
+        }
+
+    if suffix == "24hs":
+        #precios_data[symbol]['p24hs'] = p_value
+        get.precios_data[symbol]['last24hs'] = p_value
+        if get.precios_data[symbol]['max24hs'] is None or p_value > get.precios_data[symbol]['max24hs']:
+                                            get.precios_data[symbol]['max24hs'] = p_value
+        if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
+            get.precios_data[symbol]['min24hs'] = p_value
+        # Mostrar el contenido actualizado para el símbolo específico
+    #print(f"{symbol}: {get.precios_data[symbol]}")
+
+    
+
+def actualizar_precios(sheetId, sheet_name):
+    try:
+        if get.precios_data:
+            # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
+            sheet = autenticar_y_abrir_sheet(sheetId, sheet_name)
+            if sheet:
+                symbols = sheet.col_values(3)
+                batch_updates = []
+                for symbol in symbols:
+                    if symbol in get.precios_data:
+                        data = get.precios_data[symbol]
+                        #print(f"Symbol: {symbol}")
+
+                        try:
+                            # Buscar el índice del símbolo en la lista de símbolos
+                            index = symbols.index(symbol) + 1  # Sumar 1 porque las filas en Google Sheets comienzan en 1
+                            for key, value in data.items():
+                               # print(f"  {key}: {value}")
+                                if key == 'max24hs':                                  
+                                    batch_updates.append({'range': f"E{index}", 'values': [[str(value).replace('.', ',')]]})
+                                elif key == 'min24hs':
+                                    batch_updates.append({'range': f"F{index}", 'values': [[str(value).replace('.', ',')]]})
+                                elif key == 'last24hs':
+                                    batch_updates.append({'range': f"G{index}", 'values': [[str(value).replace('.', ',')]]})
+                        except ValueError:
+                            print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
+
+                # Actualizar en lotes
+                if batch_updates:
+                    try:
+                        sheet.batch_update(batch_updates)
+                        print("El sheet se ha actualizado correctamente.")
+                    except Exception as e:
+                        print(f"Error en el proceso de actualización: {e}")
+                        # Retorna False solo si la actualización falla
+                        return False
+    except Exception as e:
+        print(f"Error en el proceso de actualización: {e}")
+        return False
+    return True
 # Función de codificación personalizada para datetime
 def datetime_encoder(obj):
     if isinstance(obj, datetime):
