@@ -13,18 +13,7 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="form-group">
-          
-            <select class="form-control" id="brokerSelect" onchange="redirectBroker()">
-                <option value="" selected disabled>links</option>
-                <option value="https://www.mercadopago.com.ar/developers/es/reference/subscriptions/_preapproval/post">suscripciones</option>
-                <option value="https://www.youtube.com/watch?v=LHWRwd-FWr8&list=PLeJgM44JQrILyXsy-tu3MFEAWw27IgoPS&index=4">video</option>
-               
-            </select>
-        </div>
-
-
-        <div class="col-md-6">
+        <div class="col-md-3">
             <div class="card">
                 <div class="card-body createSubscription">
                     <h1 class="card-title text-center text-black">Crear Planes</h1>
@@ -61,9 +50,68 @@
                     </form>
                 </div>
             </div>
+            <div class="row justify-content-center">
+                <div class="col-md-10">
+                    <div class="card mt-3 mx-auto">
+                        <div class="card-body">
+                            <h2 class="card-title text-center text-black">Planes Existentes</h2>
+                            <div class="table-responsive">
+                                <table class="table" id="plansTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Frecuencia</th>
+                                            <th>Monto</th>
+                                            <th>Motivo</th>
+                                            <th>Frecuencia Tipo</th>
+                                            <th>Moneda</th>
+                                            <th>Repeticiones</th>
+                                            <th>Día de facturación</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Contenido dinámico -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+
+<!-- Modal for updating plan -->
+<div id="updatePlanModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <form id="updatePlanForm" onsubmit="submitUpdate(event)">
+            <input type="hidden" id="planId">
+            <label for="frequency">Frequency:</label>
+            <input type="text" id="frequency" name="frequency"><br>
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount"><br>
+            <label for="reason">Reason:</label>
+            <input type="text" id="reason" name="reason"><br>
+            <label for="frequency_type">Frequency Type:</label>
+            <input type="text" id="frequency_type" name="frequency_type"><br>
+            <label for="currency_id">Currency ID:</label>
+            <input type="text" id="currency_id" name="currency_id"><br>
+            <label for="repetitions">Repetitions:</label>
+            <input type="number" id="repetitions" name="repetitions"><br>
+            <label for="billing_day">Billing Day:</label>
+            <input type="number" id="billing_day" name="billing_day"><br>
+            <button type="submit">Update Plan</button>
+        </form>
+    </div>
+</div>
+
+
+
+
 
 {% include 'layouts/layout_footer.html' %}
 
@@ -116,12 +164,62 @@
             // Manejar la respuesta del servidor
             console.log(data);
             alert('Plan de preaprobación creado con éxito. ID: ' + data.id);
+            updatePlansTable(data.planes); // Actualizar la tabla con los nuevos datos
            
         })
         .catch(error => {
             console.error('Error:', error);
             alert('Error al crear la suscripción');
         });
+    }
+
+    function updatePlansTable(planes) {
+        const tableBody = document.getElementById('plansTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+    
+        planes.forEach(plan => {
+            const row = tableBody.insertRow();
+    
+            row.insertCell(0).textContent = plan.id;
+            row.insertCell(1).textContent = plan.frequency;
+            row.insertCell(2).textContent = plan.amount;
+            row.insertCell(3).textContent = plan.reason;
+            row.insertCell(4).textContent = plan.frequency_type;
+            row.insertCell(5).textContent = plan.currency_id;
+            row.insertCell(6).textContent = plan.repetitions;
+            row.insertCell(7).textContent = plan.billing_day;
+    
+            // Crear botón de actualizar
+            const updateButton = document.createElement('button');
+            updateButton.textContent = 'Actualizar';
+            updateButton.className = 'btn btn-primary btn-sm';
+            updateButton.onclick = () => updatePlan(plan.id); // Llamar a la función para actualizar el plan
+            row.insertCell(8).appendChild(updateButton);
+        });
+    }
+
+    function deletePlan(planId) {
+        if (confirm('¿Está seguro de que desea eliminar este plan?')) {
+            fetch(`/delete_plan/${planId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Plan eliminado con éxito');
+                    location.reload(); // Recargar la página para actualizar la tabla
+                } else {
+                    alert('Error al eliminar el plan');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar el plan');
+            });
+        }
     }
     
 </script>

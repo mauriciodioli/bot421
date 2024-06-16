@@ -7,6 +7,7 @@ import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify, abort,current_app
 from models.instrumento import Instrumento
+
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
@@ -16,6 +17,7 @@ from models.orden import Orden
 import threading
 import strategies.datoSheet as datoSheet
 import time
+from datetime import datetime
 import tokens.token as Token
 from queue import Queue
 
@@ -158,7 +160,15 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
     return datos_procesados
 
 
-
+def terminaConexionParaActualizarSheet(account):
+    get.precios_data.clear()
+    try:
+        pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
+    except KeyError:
+            # Si la clave no existe en el diccionario, pyRofexInicializada será None
+            pyRofexInicializada = None
+    pyRofexInicializada.close_websocket_connection(environment=account)
+    del get.ConexionesBroker[account]
 
 
 def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
@@ -175,17 +185,23 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(300)
-            
-          
-            enviar_leer_sheet(app, pais, user_id,'hilo',selector)
-        
+            time.sleep(240)# 4minulos
+            if len(get.diccionario_global_sheet) > 0:
+                ################################# preguntar si son las 11 ##################
+                ################################# pasar la lectura #########################                
+                if datetime.now().hour >= 14 or datetime.now().hour < 20:
+                   enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
+                ################################# pregutar si son las 17 hs #################
+                ################## apagar el ws y limpia precios_data #######################
+                now = datetime.now()
+                if 20 <= now.hour < 20 or (now.hour == 20 and now.minute < 7):
+                    terminaConexionParaActualizarSheet('44593')
 
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
      if hilo == 'hilo':
         print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
-        app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')
+        app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
         print("LEE EL SHEET POR LLAMADA DE FUNCION")
         app.logger.info('LEE EL SHEET POR LLAMADA DE FUNCION')
@@ -197,6 +213,10 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
      
      if selector != "simulado" or selector =='vacio':
         if pais == "argentina":
+            if len(get.diccionario_global_sheet) > 0:
+               if not get.conexion_existente(app,'44593'):
+                   modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores')
+                   print('modifico el sheet : ',modifico) 
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
@@ -253,3 +273,30 @@ def procesar_datos(app,pais, accountCuenta,user_id,selector):
             enviar_leer_sheet(app,pais,accountCuenta,None,selector)      
         if pais in get.diccionario_global_sheet_intercambio:
            return   get.diccionario_global_sheet_intercambio[pais]
+<<<<<<< HEAD
+=======
+       
+
+
+
+'''
+get.precios_data = {
+    'MERV - XMEV - GOOGL - 24hs': {'p24hs': None, 'max24hs': 3961.1, 'min24hs': 3962.2, 'last24hs': 3963.3},
+    'MERV - XMEV - VALE - 24hs': {'p24hs': None, 'max24hs': 7370.1, 'min24hs': 7370.2, 'last24hs': 7370.3},
+    'MERV - XMEV - RIO - 24hs': {'p24hs': None, 'max24hs': 10913.1, 'min24hs': 10913.2, 'last24hs': 10913.3},
+    'MERV - XMEV - AGRO - 24hs': {'p24hs': None, 'max24hs': 58.1, 'min24hs': 58.2, 'last24hs': 58.3},
+    'MERV - XMEV - TXAR - 24hs': {'p24hs': None, 'max24hs': 944.1, 'min24hs': 944.2, 'last24hs': 944.3},
+    'MERV - XMEV - VALO - 24hs': {'p24hs': None, 'max24hs': 303.1, 'min24hs': 303.2, 'last24hs': 303.3},
+    'MERV - XMEV - LOMA - 24hs': {'p24hs': None, 'max24hs': 1839.1, 'min24hs': 1839.2, 'last24hs': 1839.3},
+    'MERV - XMEV - GGB - 24hs': {'p24hs': None, 'max24hs': 16652.1, 'min24hs': 16652.2, 'last24hs': 16652.3},
+    'MERV - XMEV - BYMA - 24hs': {'p24hs': None, 'max24hs': 321.1, 'min24hs': 321.2, 'last24hs': 321.3},
+    'MERV - XMEV - BMA - 24hs': {'p24hs': None, 'max24hs': 7481.1, 'min24hs': 7481.2, 'last24hs': 7481.3},
+    'MERV - XMEV - CEPU - 24hs': {'p24hs': None, 'max24hs': 1182.1, 'min24hs': 1182.2, 'last24hs': 1182.3},
+    'MERV - XMEV - GGAL - 24hs': {'p24hs': None, 'max24hs': 4187.1, 'min24hs': 4187.2, 'last24hs': 4187.3},
+    'MERV - XMEV - SUPV - 24hs': {'p24hs': None, 'max24hs': 1649.1, 'min24hs': 1649.2, 'last24hs': 1649.3},
+    'MERV - XMEV - TECO2 - 24hs': {'p24hs': None, 'max24hs': 1875.1, 'min24hs': 1875.2, 'last24hs': 1875.3},
+    'MERV - XMEV - TGT - 24hs': {'p24hs': None, 'max24hs': 7940.1, 'min24hs': 7940.2, 'last24hs': 7940.3},
+    'MERV - XMEV - DGCU2 - 24hs': {'p24hs': None, 'max24hs': 1170.1, 'min24hs': 1170.2, 'last24hs': 1170.3}
+}
+'''
+>>>>>>> 271655ea044cf15343e8d8674731fe4ee1b83e7a

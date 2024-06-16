@@ -27,8 +27,11 @@ from sistemaDePagos.crearPlanes import crearPlanes
 from sistemaDePagos.createOrden import createOrden
 from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
+from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
 from productosComerciales.descipcionProductos import descrpcionProductos
-from sistema_pago.suscripciones_producto_usuario import suscripciones_producto_usuario
+from productosComerciales.planes import planes
+from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
+
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 
@@ -134,7 +137,16 @@ logs_file_path = os.path.join(src_directory, 'logs.log')
 file_handler = logging.FileHandler(logs_file_path, encoding='utf-8')
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(formatter)
+
+
+# Crear un manejador de logs que escriba a `stdout`
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.DEBUG)
+console_handler.setFormatter(formatter)
+
+
 app.logger.addHandler(file_handler)
+app.logger.addHandler(console_handler)
 # Configura el manejo de autenticación JWT
 app.config['JWT_SECRET_KEY'] = '621289'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
@@ -162,7 +174,9 @@ app.register_blueprint(crearPlanes)
 app.register_blueprint(createOrden)
 app.register_blueprint(createSuscripcion)
 app.register_blueprint(descrpcionProductos)
-app.register_blueprint(suscripciones_producto_usuario)
+app.register_blueprint(planes)
+app.register_blueprint(suscripcionPlanUsuario)
+app.register_blueprint(deleteSuscripcion)
 app.register_blueprint(tarjetaUsuario)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
@@ -222,6 +236,7 @@ def log_connection_info(dbapi_connection, connection_record):
     global connection_count
     connection_count += 1
     print(f"Conexión establecida ({connection_count} veces)")
+    app.logger.info(f"Conexión establecida ({connection_count} veces)")
 
 event.listen(engine, 'connect', log_connection_info)
 db = SQLAlchemy(app)
@@ -278,7 +293,7 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas

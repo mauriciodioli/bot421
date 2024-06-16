@@ -21,3 +21,4 @@ sdk_produccion = os.getenv('sdk_produccion') #test
 MERCADOPAGO_KEY_API = os.getenv('MERCADOPAGO_KEY_API')#para produccion
 MERCADOPAGO_URL = os.getenv('MERCADOPAGO_URL')
 DOMAIN = os.getenv('DOMAIN')
+
