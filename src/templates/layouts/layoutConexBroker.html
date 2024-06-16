@@ -35,7 +35,7 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
+  
    
     
 </head>
@@ -61,36 +61,6 @@
             </button>
             <div class="collapse navbar-collapse " id="navbarNav" >
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                      
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Administracion</a>
-                        <ul class="dropdown-menu">            
-                          <li><a class="dropdown-item" href="/usuarios/" >Usuarios</a></li>  
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">Estrategias</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias Lista</a></li>
-                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Estrategias Sistema</a></li>
-                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Estrategia Usuario</a></li>
-                            </ul>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
-                        <li><hr class="dropdown-divider"></li>  
-                        <li class="dropdown-submenu">
-                            <a class="dropdown-item dropdown-toggle" href="#">Sistema Pagos</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="/crearSuscricpionesMP/">Crear planes</a></li>
-                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Consulta</a></li>
-                                <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
-                            </ul>
-                        </li>      
-                        </ul>
-                        
-                    </li>
                     <li class="nav-item ">
                         <a class="nav-link active" aria-current="page" href="/home">Home</a>
                     </li>
@@ -369,23 +339,7 @@
     <script>
     debugger;
       
-  // Custom JavaScript to handle submenu toggle
-  $(document).ready(function() {
-    $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        $(this).next('.dropdown-menu').toggle();
-        $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
-    });
-
-    // Close submenu when clicking outside
-    $(document).on("click", function() {
-        $('.dropdown-submenu .dropdown-menu').hide();
-    });
-});
-
-
-
+ 
 
         selectedCountry  = localStorage.getItem('paisSeleccionado');
         document.getElementById('guardarPaisSeleccionado2').addEventListener('click', function() {
@@ -394,10 +348,14 @@
         
             usuario_id = localStorage.getItem('usuario_id');
             access_token = localStorage.getItem('access_token');
+<<<<<<< HEAD
             
+=======
+            var selector = localStorage.getItem('selector');
+>>>>>>> 9e4d8c0de460bf5066a8934a2d2acb59f95dfe71
         
             var layoutOrigen = 'layoutConexBroker';
-            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
+            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
             window.location.href = url;
           }); 
         
@@ -410,9 +368,16 @@
         
             var usuario_id = localStorage.getItem('usuario_id');
             access_token = localStorage.getItem('access_token');
+<<<<<<< HEAD
             account = localStorage.getItem('cuenta');
             var layoutOrigen = 'layoutConexBroker';
             var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&account='+account;
+=======
+            var selector =  localStorage.getItem('selector');
+        
+            var layoutOrigen = 'layoutConexBroker';
+            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
+>>>>>>> 9e4d8c0de460bf5066a8934a2d2acb59f95dfe71
             window.location.href = url;
         }
          debugger;

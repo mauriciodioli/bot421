@@ -133,9 +133,10 @@
             localStorage.setItem('paisSeleccionado', pais);           
             var usuario_id = localStorage.getItem('usuario_id');
             access_token = localStorage.getItem('access_token');
+            var selector = localStorage.getItem('selector');
             debugger;
             var layoutOrigen = 'layout_signal';
-            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
+            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
             window.location.href = url;
         }
         
@@ -156,9 +157,9 @@
             localStorage.setItem('paisSeleccionado', pais);
             debugger;
             usuario_id = localStorage.getItem('usuario_id');
-           
+            var selector = localStorage.getItem('selector');
             var layoutOrigen = 'layout_signal';
-            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+' &access_token='+access_token;
+            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+' &access_token='+access_token+'&selector='+selector;
             window.location.href = url;
         });
         

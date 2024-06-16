@@ -104,10 +104,11 @@
       localStorage.setItem('hasVisited', 'true'); // Marcar como visitado
     
       var usuario_id = localStorage.getItem('usuario_id');
+      var selector = localStorage.getItem('selector');
       var pais = 'argentina';  
       var layoutOrigen = 'layoutConexBroker';
       
-      var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token;
+      var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token+'&selector='+selector;
       window.location.href = url;
     }
   });
