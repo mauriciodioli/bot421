@@ -15,10 +15,18 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
+from strategies.estrategiasUsuarios.Remarkets_REM6603_001 import Remarkets_REM6603_001
+from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
+from strategies.estrategiasUsuarios.Bull_Market_351653_001 import Bull_Market_351653_001
 ########################################################################
 from models.creaTablas import crea_tablas_DB
 
 from sistemaDePagos.payment_page import payment_page
+from sistemaDePagos.success_failure import success_failure
+from sistemaDePagos.crearPlanes import crearPlanes
+from sistemaDePagos.createOrden import createOrden
+from sistemaDePagos.createSuscripcion import createSuscripcion
+from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from productosComerciales.descipcionProductos import descrpcionProductos
 from sistema_pago.suscripciones_producto_usuario import suscripciones_producto_usuario
 from strategies.estrategias import estrategias
@@ -142,12 +150,20 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 #####################zona blueprin de usuarios##############
+app.register_blueprint(Remarkets_REM6603_001)
+app.register_blueprint(Bull_Market_10861_001)
+app.register_blueprint(Bull_Market_351653_001)
 ############################################################
 
 app.register_blueprint(logs)
 app.register_blueprint(payment_page)
+app.register_blueprint(success_failure)
+app.register_blueprint(crearPlanes)
+app.register_blueprint(createOrden)
+app.register_blueprint(createSuscripcion)
 app.register_blueprint(descrpcionProductos)
 app.register_blueprint(suscripciones_producto_usuario)
+app.register_blueprint(tarjetaUsuario)
 app.register_blueprint(creaTabla)
 app.register_blueprint(token)
 app.register_blueprint(instrumentos)
@@ -250,7 +266,7 @@ def logs():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    #crea_tablas_DB()
+    crea_tablas_DB()
     
     return redirect("index")
 

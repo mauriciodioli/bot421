@@ -35,12 +35,16 @@
                     <p style="margin-bottom: 5px; color: #7fff7f;">El costo es en dolares y el porcentaje es en pesos.</p>
                     <p>Este sistema de trading automático ha sido cuidadosamente diseñado para operar con instrumentos tanto del mercado argentino como del estadounidense. Se activa automáticamente todos los días a la misma hora, realiza las operaciones necesarias y luego se apaga hasta el día siguiente, garantizando una gestión eficiente y sin intervención manual.</p>
                     <p style="color: #7fff7f;">Además, contamos con un sistema semiautomático que permite a los usuarios operar directamente desde la plataforma sin necesidad de recurrir a un broker. Este sistema ofrece la conveniencia de realizar operaciones a la hora deseada, brindando a los usuarios un mayor control sobre sus inversiones.</p>
-                    <form id="subscriptionForm" action="/pago" method="GET">
+                  
+                    <form id="subscriptionForm" action="/pago/" method="POST">
+                        <input type="hidden" id="reason" name="reason" value="bot automatico">
                         <input type="hidden" id="costo_base" name="costo_base" value="15">
                         <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="6">
+
                         <button id="subscribeButton" class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir ahora</button>
                     </form>
                 </div>
+                
             </div>
         </div>
     </div>

@@ -14,90 +14,159 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
-#from mercadopago import MercadoPago
+import mercadopago
+import asyncio
+import httpx
 
-# Inicializar la instancia de MercadoPago con tus credenciales
+from config import DOMAIN # mercado pago
+from config import MERCADOPAGO_URL
+from config import MERCADOPAGO_KEY_API #para produccion
+from config import sdk_produccion # test
+from config import sdk_prueba # test
+
 #mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
 
 payment_page = Blueprint('payment_page',__name__)
 
 
-YOUR_ACCESS_TOKEN = 'TEST-7897622499833241-051414-fa868bef7e053a323b97ebbd953bf95b-630055'
-preapproval_plan_id = 'YOUR_PREAPPROVAL_PLAN_ID'
+# Definir URLs utilizando el dominio
+SUCCESS_URL = f"{DOMAIN}/success"
+FAILURE_URL = f"{DOMAIN}/failure"
+PENDING_URL = f"{DOMAIN}/pending"
+NOTIFICATION_URL = f"{DOMAIN}/webhook"
+
+# Definir URLs de la API de MercadoPago
+CARD_TOKEN_URL = f"{MERCADOPAGO_URL}/v1/card_tokens"
+PREFERENCE_URL = f"{MERCADOPAGO_URL}/checkout/preferences"
+PREAPPROVAL_PLAN_URL = f"{MERCADOPAGO_URL}/preapproval_plan"
+PREAPPROVAL_URL = f"{MERCADOPAGO_URL}/preapproval"
 
 
+mp = mercadopago.SDK(sdk_produccion)
 
 
-@payment_page.route('/pago', methods=['GET'])
+@payment_page.route('/pago/', methods=['POST'])
 def pago():
-    # Obtener los valores de los inputs ocultos
-    costo_base = request.args.get('costo_base')
-    porcentaje_retorno = request.args.get('porcentaje_retorno')
-    
-    # Convertir los valores a números flotantes
-    try:
-        costo_base = float(costo_base)
-        porcentaje_retorno = float(porcentaje_retorno)
-    except (ValueError, TypeError):
-        # Manejar el caso en que los valores no puedan ser convertidos a flotantes
-        costo_base = 0
-        porcentaje_retorno = 0
-    
-    # Calcular el total
-   # total = costo_base * (1 + porcentaje_retorno / 100)
-    total = costo_base
-    # Renderizar la plantilla y pasar los valores como argumentos
-    return render_template('sistemaDePagos/payment_page.html', costo_base=costo_base, porcentaje_retorno=porcentaje_retorno, total=total)
+    if request.method == 'POST':
+        costo_base = float(request.form['costo_base'])
+        reason = request.form['reason']
+        porcentaje_retorno = float(request.form['porcentaje_retorno'])
+
+        # Calcular el total
+        total = costo_base * (1 + porcentaje_retorno / 100)
+
+        # Aquí puedes realizar cualquier operación adicional necesaria
+
+        # Renderizar el template con los datos necesarios
+        return render_template('sistemaDePagos/payment_page.html', costo_base=costo_base, porcentaje_retorno=porcentaje_retorno, total=total, reason = reason)
+    else:
+        return "Método de solicitud no permitido"
 
 
-@payment_page.route('/process_payment', methods=['POST'])
-def process_payment():
-    try:
-        # Aquí se manejaría la lógica de procesamiento de pagos
-        # Por ejemplo, integrar con una API de pasarela de pagos
-        data = request.json
-        card_number = data.get('card_number')
-        amount = data.get('amount')
-       # Crear un pago
-        payment_data = {
-            "transaction_amount": 100,
-            "reason": "Compra de producto",
-            "payer": {
-                "email": "test_user_123456@testuser.com"
-            },
-            "payment_method_id": "visa",
-            "installments": 1
-        }
-        #payment_response = mp.post("/v1/payments", payment_data)
-        payment_response = 'vacio'
-        # Verificar si el pago fue aprobado
-        if payment_response["status"] == 201:
-            print("El pago fue exitoso.")
-        else:
-            print("El pago falló.")
-        # Respuesta simulada para el ejemplo
-        response = {
-            'status': 'success',
-            'message': f'Payment of {amount} ARS with card ending {card_number[-4:]} processed successfully.'
-        }
-        return jsonify(response)
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@payment_page.route('/crear_preferencia', methods=['POST'])
+def crear_preferencia():
     
+    preference_id = obtener_preference_id()
+    return jsonify({'preference_id': preference_id})
+
+
+
 payment_page.route('/producto/<int:producto_id>')
 def producto(producto_id):
     return render_template(f'producto{producto_id}.html')
 
-@payment_page.route('/payment_page_process_payment/', methods=['POST'])
-def payment_page_process_payment():
+
+
+
+
+@payment_page.route('/create_order_plan/', methods=['POST'])
+def create_order_plan():
     try:
-        data = request.json
-        card_number = data.get('card_number')
-        amount = data.get('amount')
-        response = {
-            'status': 'success',
-            'message': f'Payment of {amount} ARS with card ending {card_number[-4:]} processed successfully.'
+        # Obtén los datos de la solicitud
+        data = request.get_json()
+
+        # Extrae los valores necesarios
+        costo_base = data.get("items")[0].get("unit_price")
+        porcentaje_retorno = data.get("porcentaje_retorno", 0)
+        costo_base = float(costo_base)
+
+        # Asegúrate de que el costo base sea al menos 15 ARS
+        if costo_base < 15.00:
+            return jsonify({"error": "El monto mínimo permitido es de 15 ARS"}), 400
+
+        # Crea los datos de la preferencia  
+             
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + sdk_prueba
         }
-        return jsonify(response)
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)})
+        payload = {
+            "auto_recurring": {
+                "frequency": 1,
+                "frequency_type": "months",
+                "repetitions": 12,
+                "billing_day": 10,
+                "billing_day_proportional": False,
+                "free_trial": {
+                    "frequency": 1,
+                    "frequency_type": "months"
+                },
+                "transaction_amount": costo_base,  # Usa el costo_base obtenido
+                "currency_id": "ARS"
+            },
+            "back_url": SUCCESS_URL,
+            "payment_methods_allowed": {
+                "payment_types": [
+                    {"id": "credit_card"}
+                ],
+                "payment_methods": [
+                    {"id": "bolbradesco"}
+                ]
+            },
+            "reason": "Bot de estrategias"
+        }
+
+        response = requests.post(PREAPPROVAL_PLAN_URL, json=payload, headers=headers)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except requests.HTTPError as e:
+        # Imprime el contenido de la respuesta de error
+        error_response = e.response.json()
+        print(f"Error: {error_response}")
+        return jsonify({"error": error_response}), e.response.status_code
+
+
+
+
+def obtener_preference_id():
+    # Configurar el SDK de Mercado Pago con tu clave pública
+    global mp
+    # Crear un objeto de preferencia de pago
+    preference = {
+        "items": [
+            {
+                "title": "Producto de ejemplo",
+                "quantity": 1,
+                "currency_id": "ARS",  # Moneda (ARS para Argentina)
+                "unit_price": 1000  # Precio en centavos
+            }
+        ]
+    }
+    
+    # Crear la preferencia en Mercado Pago
+    preference_response = mp.preference().create(preference)   
+    preference_result = preference_response["response"]
+
+    # Obtener el ID de preferencia de la respuesta
+    preference_id = preference_result['id']
+
+    return preference_id
+
+#Llamar a create_preapproval_plan() para crear un plan de preaprobación.
+#Llamar a create_preference() o create_order() para crear una preferencia de pago.
+#Después de que el cliente complete el pago, redirigirlo a la página de éxito (/success) o manejar la lógica de redireccionamiento según tu flujo.
+#Finalmente, llamar a create_order_suscripcion() para suscribir al cliente al plan de preaprobación creado previamente.
+
+
+

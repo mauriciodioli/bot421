@@ -19,6 +19,7 @@ import time
 import tokens.token as Token
 from queue import Queue
 
+
 panelControl = Blueprint('panelControl',__name__)
 
 # Crear una cola global para la comunicación
@@ -34,20 +35,23 @@ def obtener_pais():
 
 @panelControl.route('/panel_control_sin_cuenta')
 def panel_control_sin_cuenta():
-   
+        
     pais = request.args.get('country')
     layout = request.args.get('layoutOrigen')
     usuario_id = request.args.get('usuario_id')
     access_token = request.args.get('access_token')
     refresh_token = request.args.get('refresh_token')
+    selector = request.args.get('selector')
     account = ''
+    ####COLOCADA ESTA RESPUESTA CUANDO NO HAY DATOS PARA CARGAR DESDE SHEET####
+   # return render_template('notificaciones/noPoseeDatos.html',layout=layout)
    
    
     if access_token and Token.validar_expiracion_token(access_token=access_token):
         app = current_app._get_current_object()       
-        respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,account)
+        respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,account,selector)
         
-        datos_desempaquetados = procesar_datos(app,pais, account,usuario_id)
+        datos_desempaquetados = procesar_datos(app,pais, account,usuario_id,selector)
         
         if layout == 'layout_signal':
             return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
@@ -67,14 +71,15 @@ def panel_control():
      usuario_id = request.args.get('usuario_id')
      access_token = request.args.get('access_token')
      accountCuenta = request.args.get('account')
+     selector =  request.args.get('selector')
      if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
         try:  
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             
-                respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,accountCuenta)
+                respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,accountCuenta,selector)
                 
-                datos_desempaquetados = procesar_datos(app,pais, accountCuenta,usuario_id)
+                datos_desempaquetados = procesar_datos(app,pais, accountCuenta,usuario_id,selector)
                 
                 if layout == 'layout_signal':
                     return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
@@ -92,12 +97,12 @@ def panel_control():
      else:
         return render_template('usuarios/logOutSystem.html')     
 
-@panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/<account>/", methods=['GET'])
-def panel_control_atomatico(pais,usuario_id,access_token,account):
+@panelControl.route("/panel_control_atomatico/<pais>/<usuario_id>/<access_token>/<account>/<selector>/", methods=['GET'])
+def panel_control_atomatico(pais,usuario_id,access_token,account,selector):
     
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
-        ContenidoSheet = procesar_datos(app,pais, account,usuario_id)
+        ContenidoSheet = procesar_datos(app,pais, account,usuario_id,selector)
         datos_desempaquetados = forma_datos_para_envio_paneles(app,ContenidoSheet,usuario_id)
         if datos_desempaquetados:
         # print(datos_desempaquetados)
@@ -156,38 +161,55 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
 
 
 
-def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id):
+def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
     if pais in get.hilo_iniciado_panel_control and get.hilo_iniciado_panel_control[pais].is_alive():
         return f"Hilo para {pais} ya está en funcionamiento"
 
-    hilo = threading.Thread(target=ejecutar_en_hilo, args=(app, pais, user_id))
+    hilo = threading.Thread(target=ejecutar_en_hilo, args=(app, pais, user_id,selector,))
     get.hilo_iniciado_panel_control[pais] = hilo
     hilo.start()
 
 
     return f"Hilo iniciado para {pais}"
 
-def ejecutar_en_hilo(app,pais,user_id):
+def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
             time.sleep(300)
-            print("ENTRA A THREAD Y LEE EL SHEET")
+            
           
-            enviar_leer_sheet(app, pais, user_id,'hilo')
+            enviar_leer_sheet(app, pais, user_id,'hilo',selector)
         
 
-def enviar_leer_sheet(app,pais,user_id,hilo):
-      
+def enviar_leer_sheet(app,pais,user_id,hilo,selector):
+    
+     if hilo == 'hilo':
+        print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
+        app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')
+     else: 
+        print("LEE EL SHEET POR LLAMADA DE FUNCION")
+        app.logger.info('LEE EL SHEET POR LLAMADA DE FUNCION')
+
      if pais not in ["argentina", "usa","hilo"]:
         # Si el país no es válido, retorna un código de estado HTTP 404 y un mensaje de error
         abort(404, description="País no válido")
-   
-     if pais == "argentina":
-         ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-     elif pais == "usa":
-          ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
-     else:
-         return "País no válido"
+        
+     
+     if selector != "simulado" or selector =='vacio':
+        if pais == "argentina":
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+        elif pais == "usa":
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
+        else:
+            return "País no válido"
+     else:   
+        if pais == "argentina":
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+        elif pais == "usa":
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+        else:
+            return "País no válido"
+        
      ContenidoSheetList = list(ContenidoSheet)
      get.diccionario_global_sheet[pais] ={}
      # Adquirir el bloqueo antes de modificar las variables compartidas
@@ -218,7 +240,7 @@ def determinar_pais(pais):
         print(f"'get.diccionario_global_sheet' no está disponible o no es un diccionario con las listas asociadas a los países.")
         return None
 
-def procesar_datos(app,pais, accountCuenta,user_id):
+def procesar_datos(app,pais, accountCuenta,user_id,selector):
     if determinar_pais(pais) is not None:
         if pais not in get.diccionario_global_sheet_intercambio:
             datos_desempaquetados = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], user_id)
@@ -228,6 +250,6 @@ def procesar_datos(app,pais, accountCuenta,user_id):
             return get.diccionario_global_sheet_intercambio[pais]
     else:
         if len(get.diccionario_global_sheet) == 0 or pais not in get.diccionario_global_sheet:
-            enviar_leer_sheet(app,pais,accountCuenta,None)      
+            enviar_leer_sheet(app,pais,accountCuenta,None,selector)      
         if pais in get.diccionario_global_sheet_intercambio:
            return   get.diccionario_global_sheet_intercambio[pais]
