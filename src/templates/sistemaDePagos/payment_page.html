@@ -109,6 +109,11 @@
         .close-button:hover {
             color: #333;
         }
+        button[disabled] {
+            background-color: lightgray; /* Color de fondo para botones deshabilitados */
+            color: #888; /* Color de texto para botones deshabilitados */
+            cursor: not-allowed; /* Cambia el cursor a no permitido cuando el botón está deshabilitado */
+        }
     
     </style>
 </head>
@@ -116,7 +121,12 @@
     <div class="payment-container">
         <a href="/" class="close-button" onclick="closePayment()">&#10006;</a>
         <h2>Método de pago</h2>
-        
+        <select class="form-control" id="pagoSelect" onchange="updatePaymentMethod()">       
+            <option value="" selected disabled>Seleccione</option>
+            <option value="Mercado Libre">Mercado Libre</option>
+            <option value="PayPal">PayPal</option>       
+        </select>
+        <h3 id="paymentMethod">Método de pago</h3>
         <div class="payment-details" style="background-color: lightgray; padding: 10px;"> 
             <table style="border-collapse: collapse; width: 100%;">
                 <tr>
@@ -138,10 +148,11 @@
             <img src="{{ url_for('static', filename='visa.png') }}" alt="Visa" class="credit-card-logo" id="visa-logo">
             <img src="{{ url_for('static', filename='mastercard.png') }}" alt="Mastercard" class="credit-card-logo" id="mastercard-logo">
         </div>
-        <input type="text" id="card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo()" value="5031755734530604"/>
+        <input type="text" id="card_number" placeholder="Número de la tarjeta" oninput="updateCardLogo()"/>
         <input type="hidden" id="reason" value="{{ reason }}">
         <br>
-        <button onclick="processPayment()" id="buy-now-button">Comprar ahora</button>
+        
+        <button onclick="processPayment()" id="buy-now-button" disabled>Comprar ahora</button>
         <br>
         <a class="toggle-link mb-4" onclick="toggleForm()">Usa una tarjeta diferente</a>
         <div class="hidden-form" id="card-form">
@@ -156,11 +167,71 @@
             <input type="checkbox" id="save_card" name="save_card">
             <label for="save_card">Guardar tarjeta para futuras compras</label>
             <p>Usaremos esta tarjeta para futuras compras y renovaciones de tu suscripción. Puedes borrar los datos de tu tarjeta en cualquier momento desde los ajustes.</p>          
-            <button onclick="processNewCardPayment()">Pagar con nueva tarjeta</button>
+            <button onclick="processNewCardPayment()" id="new-card-payment-button" disabled>Pagar con nueva tarjeta</button>
         </div>
     </div>
-   
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+//****************** actualiza el select ***********************
+function updatePaymentMethod() {
+    var selectedBroker = document.getElementById("pagoSelect").value;
+    var paymentMethod = document.getElementById("paymentMethod");
+    var buyNowButton = document.getElementById("buy-now-button");
+    var newCardPaymentButton = document.getElementById("new-card-payment-button");
+   
+    if (selectedBroker === "Mercado Libre" || selectedBroker === "PayPal") {
+        // Si se selecciona un método de pago válido, habilitar los botones de pago
+        buyNowButton.disabled = false;
+        newCardPaymentButton.disabled = false;
+    } else {
+        // Si no se selecciona un método de pago válido, deshabilitar los botones de pago
+        buyNowButton.disabled = true;
+        newCardPaymentButton.disabled = true;
+    }
+
+    if (selectedBroker === "Mercado Libre") {
+        paymentMethod.style.color = "white";
+        paymentMethod.style.backgroundColor = "skyblue";
+        paymentMethod.innerText = 'Mercado Libre';
+
+    } else if (selectedBroker === "PayPal") {
+        paymentMethod.style.color = "black";
+        paymentMethod.style.backgroundColor = "yellow";       
+        paymentMethod.innerText = 'PayPal';
+    } else {
+        // Restablecer estilos predeterminados si no se selecciona ninguna opción válida
+        paymentMethod.style.color = "black";
+        paymentMethod.style.backgroundColor = "transparent";
+    }
+}
+//****************** acutaliza el numero de tarjeta*************
+        $(document).ready(function() {
+            access_token = localStorage.getItem('access_token')
+            $.ajax({
+                type: "POST",
+                url: "/pyment_page_carga_numero_tarjeta/",
+                data: {
+                    access_token: access_token  // Reemplaza "tu_access_token" con el valor correcto
+                },
+                success: function(response) {
+                    // Actualizar el valor del campo de entrada card_number con el número de tarjeta devuelto por el servidor
+                    var tarjeta = response.tarjeta;
+                    $("#card_number").val(tarjeta);
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error al cargar el número de tarjeta:", error);
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+//****************** paga con otra tarjeta*************
         function toggleForm() {
             const form = document.getElementById('card-form');
             const buyNowButton = document.getElementById('buy-now-button');
@@ -193,19 +264,60 @@
                 mastercardLogo.style.display = 'none';
             }
         }
-    
+
+
+
+ //**************************** aqui compra por numero de tarjeta almacenada previamente ************************   
         async function processPayment() {
             const cardNumber = document.getElementById('card_number').value;
             const email = localStorage.getItem('correo_electronico');
+            const reason = document.getElementById('reason').value;
+            const access_token = localStorage.getItem('access_token')
+            const transaction_amount = document.getElementById('transaction_amount').value;
+            const pagoTarjetaPrevia = true;
+            const isChecked = false
+
+
         
             // Validar si cardNumber tiene datos
             if (cardNumber.trim() === '') {
                 alert('Por favor, ingresa el número de la tarjeta.');
                 return; // Detener la ejecución si no hay datos en cardNumber
             }
+               
+               
+            
+                try {
+                    // Enviar el token y el correo electrónico al backend para procesar el pago
+                    fetch('/create_order_suscripcion', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            cardNumber: cardNumber,                          
+                            reason: reason,
+                            transaction_amount: transaction_amount,
+                            pagoTarjetaPrevia: pagoTarjetaPrevia,
+                            email: email,
+                            isChecked: isChecked,
+                            access_token: access_token
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        window.location.href = data.init_point;
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                } catch (error) {
+                    console.error('Token creation error:', error);
+                }
+           }
         
-        }
-        
+    
+//***************************** aqui paga con otra tarjeta *******************************        
         async function processNewCardPayment() {
             if (validatePayment()) {
                 const cardNumber = document.getElementById('new_card_number').value;
@@ -216,6 +328,9 @@
                 const reason = document.getElementById('reason').value;
                 const access_token = localStorage.getItem('access_token')
                 const transaction_amount = document.getElementById('transaction_amount').value;
+                const pagoTarjetaPrevia = false;
+                const saveCardCheckbox = document.getElementById('save_card');
+                const isChecked = saveCardCheckbox.checked;
         
                 try {
                     // Enviar el token y el correo electrónico al backend para procesar el pago
@@ -232,6 +347,8 @@
                             cvv: cvv,
                             reason: reason,
                             transaction_amount: transaction_amount,
+                            pagoTarjetaPrevia: pagoTarjetaPrevia,
+                            isChecked: isChecked,
                             access_token: access_token
                         })
                     })

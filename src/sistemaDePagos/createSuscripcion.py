@@ -18,10 +18,10 @@ from models.brokers import Broker
 from models.cuentas import Cuenta
 from sistemaDePagos.tarjetaUsuario import altaTarjeta
 from models.payment_page.plan import Plan
+from models.payment_page.tarjetaUsuario import TarjetaUsuario
 from models.payment_page.suscripcionPlanUsuario import SuscripcionPlanUsuario
 import mercadopago
 import asyncio
-import httpx
 import re
 
 from config import DOMAIN # mercado pago
@@ -55,32 +55,54 @@ def create_order_suscripcion():
     try:
        # Datos de la solicitud
         data = request.get_json()
-        cardNumber = data.get("cardNumber")
-        cardName = data.get("cardName")
-        expiryDate =data.get("expiryDate")
-        security_code = data.get("cvv")
-        payer_email =data.get("email")
-        transaction_amount = data.get("transaction_amount")
-        reason = data.get("reason")
+        pagoTarjetaPrevia = data.get('pagoTarjetaPrevia')
         access_token = data.get("access_token")
-       # Limpiar espacios en blanco del número de tarjeta si los hay
+        isChecked = data.get('isChecked')
+       
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             correo_electronico = decoded_token.get("correo_electronico")
             numero_de_cuenta = decoded_token.get("numero_de_cuenta")
             user_id = decoded_token.get("sub")
-      
+            if pagoTarjetaPrevia == False:
+                cardName = data.get("cardName")
+                expiryDate =data.get("expiryDate")
+                security_code = data.get("cvv")
+                payer_email =data.get("email")
+            else:
+                tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(user_id=user_id).first()
+                cardName = tarjeta_existente.nombreApellidoTarjeta
+                expiryDate =tarjeta_existente.fecha_vencimiento
+                security_code = tarjeta_existente.cvv
+                payer_email = tarjeta_existente.correo_electronico
+                    
+            
+            cardNumber = data.get("cardNumber")           
+            transaction_amount = data.get("transaction_amount")        
+            reason = data.get("reason")
+        
             if cardNumber:
                 cardNumber = re.sub(r"\s+", "", cardNumber)
             
-            required_fields = ["cardNumber", "cardName", "expiryDate", "cvv", "email", "transaction_amount", "reason", "access_token"]
+            required_fields = ["cardNumber", "cardName", "expiryDate", "security_code", "payer_email", "transaction_amount", "reason", "access_token"]
             
             for field in required_fields:
-                if field not in data:
+                 if not locals()[field]: 
                     return jsonify({"message": f"El campo {field} es obligatorio."}), 400
-
-            cargarTarjeta(user_id,numero_de_cuenta,data)
+        # Crear un diccionario con los datos recogidos
+            datos = {
+                "cardNumber": cardNumber,
+                "cardName": cardName,
+                "expiryDate": expiryDate,
+                "cvv": security_code,
+                "email": payer_email,
+                "transaction_amount": transaction_amount,
+                "reason": reason
+            }
+            
+            if isChecked == True:
+                cargarTarjeta(user_id,numero_de_cuenta,datos)
 
             # Extraer el mes y el año de la fecha de vencimiento si está presente
             expiration_month = None
@@ -110,7 +132,7 @@ def create_order_suscripcion():
             #obtengo el token
             card_token_id = generate_card_token(card_data)
             
-      
+    
             # Consultar el plan existente en la base de datos
             plan_existente = db.session.query(Plan).filter_by(reason=reason).first()
 
@@ -121,7 +143,7 @@ def create_order_suscripcion():
 
             # Cargar el payload para la suscripción
             payload = cargarDatosPlan(reason, payer_email, card_token_id)
-           
+        
             # Datos para crear la preaprobación
             headers = {
                 'Content-Type': 'application/json',
@@ -156,7 +178,7 @@ def create_order_suscripcion():
                 })
             
             
-        
+            
     except requests.HTTPError as e:
         error_response = e.response.json()
         return jsonify({"error": error_response}), e.response.status_code

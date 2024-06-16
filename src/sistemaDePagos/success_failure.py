@@ -14,9 +14,6 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
-import mercadopago
-import asyncio
-import httpx
 from dotenv import load_dotenv
 import os
 

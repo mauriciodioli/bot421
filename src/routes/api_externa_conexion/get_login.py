@@ -84,7 +84,7 @@ SPREADSHEET_ID_PRUEBA='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de
 SPREADSHEET_ID_PRODUCCION='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
 SPREADSHEET_ID_USA='1sxbKe5pjF3BsGgUCUzBDGmI-zV5hWbd6nzJwRFw3yyU'#de produccion USA
 
-
+precios_data = {} #para mdh 0
 accountLocalStorage = ""
 VariableParaBotonPanico = 0
 VariableParaSaldoCta = 0
@@ -102,6 +102,11 @@ hilos_iniciados_shedule = []
 ultima_entrada = time.time()
 CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
+
+
+marca_de_tiempo_para_leer_sheet = int(datetime.now().timestamp()) * 1000  # Tiempo inicial
+VariableParaTiempoLeerSheet = 0  # Variable para guardar el tiempo transcurrido
+
 ContenidoSheet_list = None
 api_url = None
 ws_url = None
@@ -481,7 +486,17 @@ def loginExtCuentaSeleccionadaBroker():
 
 
 
-
+def conexion_existente(app,accountCuenta):
+    if len(precios_data)> 0:       
+        return False
+    else:
+        user_id = 1
+        correo_electronico = 'madioli26@hotmail.com'
+        selector = 'produccion'
+        with app.app_context():
+            conexionShedule(current_app, Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+        return True 
+        
 def buscar_conexion(client_id, cuenta):
     for key, websocket in ConexionesBroker.items():
         print(f"Comparando clave: (client_id={key[0]}, cuenta={key[1]})")  # Print para mostrar la clave que está siendo comparada

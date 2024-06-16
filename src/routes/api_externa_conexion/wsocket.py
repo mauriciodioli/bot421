@@ -6,7 +6,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import enviar_leer_sheet
-
+from strategies.datoSheet import update_precios
 from datetime import datetime
 
 import pandas as pd
@@ -26,7 +26,7 @@ wsocket = Blueprint('wsocket',__name__)
 
 
 reporte_de_instrumentos = []
-
+tiempo_inicial = time.time()  # Captura el tiempo actual
 
 def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=None,idUser=None,correo_electronico=None,selector=None):
   
@@ -80,12 +80,48 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
    if not get.ContenidoSheet_list:
       get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
-   pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
-   pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
+   if accountCuenta != '44593':
+    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
  
+   pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
+   
 
 def market_data_handler_0(message):
-    print(message)
+   # Limitar el número de elementos en precios_data
+    MAX_PRECIOS_DATA = 73
+    
+   
+    
+    if control_tiempo_lectura(180000, get.marca_de_tiempo_para_leer_sheet):   
+        if len(get.precios_data) <= MAX_PRECIOS_DATA:
+            try:
+                update_precios(message)
+                
+                pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
+                
+                # Aquí se envia una operacion fallida para generar trafico
+                ticker = message.get('ticker', 'DEFAULT_TICKER')  # Asume 'DEFAULT_TICKER' si no se encuentra en el mensaje
+                side = message.get('side', 'BUY')  # Asume 'BUY' si no se especifica
+                size = 1  # Definido en el código original
+                order_type = 'LIMIT'  # Cambia esto según el tipo de orden deseado
+                price = message.get('price', 10)  # Asume 100.0 si no se especifica
+
+                # Enviar la orden a través del WebSocket
+                pyRofexInicializada.send_order_via_websocket(
+                    ticker=ticker, 
+                    side=side, 
+                    size=size, 
+                    order_type=order_type, 
+                    price=price
+                )
+                
+                # Actualizar el timestamp de la última ejecución
+            
+            except Exception as e:
+              pass
+              #print(datetime.now())
+    
+
 
 def order_report_handler_0(message):
   print(message)
@@ -276,7 +312,7 @@ def cargaSymbolParaValidarDb(message):
     listado_final = []
     for instrumento  in message: 
         listado_final.append(instrumento.symbol)
-        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
+    print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         
     return listado_final
 
@@ -288,14 +324,14 @@ def cargaSymbolParaValidar(message):
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                                 if Symbol != '':
                                 #if trade_en_curso == 'LONG_':
-                                    if senial != '':
+                                   #   if senial != '':
                                             
-                                                if tipo_de_activo =='CEDEAR':
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
-                                                 listado_final.append(Symbol)
-                                                if tipo_de_activo =='ARG':
-                                                 listado_final.append(Symbol)
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
+                                        if tipo_de_activo =='CEDEAR':
+                                        # print(f'El instrumento {Symbol} existe en el mercado')
+                                          listado_final.append(Symbol)
+                                        if tipo_de_activo =='ARG':
+                                          listado_final.append(Symbol)
+                                        # print(f'El instrumento {Symbol} existe en el mercado')
  
     return listado_final
   
@@ -323,6 +359,44 @@ def get_instrumento_para_suscripcion_json():
         print("El archivo no se encuentra.")
    except json.JSONDecodeError:
         print("Error al decodificar el JSON.")
+
+
+def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
+    # Obtener el tiempo actual en milisegundos
+    tiempo_actual_ms = int(datetime.now().timestamp()) * 1000
+    
+    # Calcular la diferencia de tiempo desde la última vez que fue llamada la función
+    diferencia_tiempo_ms = tiempo_actual_ms - tiempo_inicial_ms
+    
+    # Lógica para determinar si se puede realizar la lectura del sheet
+    if diferencia_tiempo_ms < tiempo_espera_ms:
+        # Aún no ha pasado suficiente tiempo, no se realiza la lectura del sheet
+        #print(f"No se realiza la lectura del sheet. Tiempo transcurrido: {diferencia_tiempo_ms} ms.")
+        # Retornar False u otra indicación según sea necesario
+        return False
+    else:
+        # Ha pasado suficiente tiempo, se realiza la lectura del sheet
+        minutos = diferencia_tiempo_ms // 60000
+        segundos = (diferencia_tiempo_ms % 60000) // 1000
+        print(f"Se realiza la lectura del sheet. Tiempo transcurrido: {minutos}m {segundos}s.")
+       
+        
+        # Reiniciar el tiempo inicial para la próxima llamada
+        get.marca_de_tiempo_para_leer_sheet = tiempo_actual_ms
+        
+        # Retornar True u otra indicación según sea necesario
+        return True
+
+
+
+
+
+
+
+
+
+
+
 ##########################esto es para ws#############################
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 

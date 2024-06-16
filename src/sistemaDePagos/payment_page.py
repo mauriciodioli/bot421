@@ -14,9 +14,8 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
+from models.payment_page.tarjetaUsuario import TarjetaUsuario
 import mercadopago
-import asyncio
-import httpx
 
 from config import DOMAIN # mercado pago
 from config import MERCADOPAGO_URL
@@ -45,8 +44,26 @@ PREAPPROVAL_URL = f"{MERCADOPAGO_URL}/preapproval"
 mp = mercadopago.SDK(sdk_produccion)
 
 
-@payment_page.route('/pago/', methods=['POST'])
-def pago():
+@payment_page.route('/pyment_page_carga_numero_tarjeta/', methods=['POST'])
+def pyment_page_carga_numero_tarjeta():    
+      if request.method == 'POST':
+         access_token = request.form['access_token']
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
+            # Decodificar el token una sola vez
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+
+            # Obtener los valores del token decodificado
+            correo_electronico = decoded_token.get("correo_electronico")
+            numero_de_cuenta = decoded_token.get("numero_de_cuenta")
+            user_id = decoded_token.get("sub")
+
+            tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(user_id=user_id).first()
+
+         return jsonify({"message": "Tarjeta creada con éxito", "tarjeta": tarjeta_existente.numeroTarjeta}), 201
+
+    
+@payment_page.route('/payment_page_pago/', methods=['POST'])
+def payment_page_pago():
     if request.method == 'POST':
         costo_base = float(request.form['costo_base'])
         reason = request.form['reason']
