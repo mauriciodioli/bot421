@@ -25,6 +25,8 @@ from sistemaDePagos.payment_page import payment_page
 from sistemaDePagos.success_failure import success_failure
 from sistemaDePagos.crearPlanes import crearPlanes
 from sistemaDePagos.createOrden import createOrden
+from sistemaDePagos.updatePlanes import updatePlanes
+from sistemaDePagos.deletePlanes import deletePlanes
 from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
@@ -173,6 +175,8 @@ app.register_blueprint(success_failure)
 app.register_blueprint(crearPlanes)
 app.register_blueprint(createOrden)
 app.register_blueprint(createSuscripcion)
+app.register_blueprint(updatePlanes)
+app.register_blueprint(deletePlanes)
 app.register_blueprint(descrpcionProductos)
 app.register_blueprint(planes)
 app.register_blueprint(suscripcionPlanUsuario)
