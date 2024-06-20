@@ -204,7 +204,7 @@ def actualizar_precios(sheetId, sheet_name):
                             # Buscar el índice del símbolo en la lista de símbolos
                             index = symbols.index(symbol) + 1  # Sumar 1 porque las filas en Google Sheets comienzan en 1
                             for key, value in data.items():
-                               # print(f"  {key}: {value}")
+                                print(f"  {key}: {value}")
                                 if key == 'max24hs':                                  
                                     batch_updates.append({'range': f"E{index}", 'values': [[str(value).replace('.', ',')]]})
                                 elif key == 'min24hs':
