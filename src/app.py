@@ -25,6 +25,8 @@ from sistemaDePagos.payment_page import payment_page
 from sistemaDePagos.success_failure import success_failure
 from sistemaDePagos.crearPlanes import crearPlanes
 from sistemaDePagos.createOrden import createOrden
+from sistemaDePagos.updatePlanes import updatePlanes
+from sistemaDePagos.deletePlanes import deletePlanes
 from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
@@ -173,6 +175,8 @@ app.register_blueprint(success_failure)
 app.register_blueprint(crearPlanes)
 app.register_blueprint(createOrden)
 app.register_blueprint(createSuscripcion)
+app.register_blueprint(updatePlanes)
+app.register_blueprint(deletePlanes)
 app.register_blueprint(descrpcionProductos)
 app.register_blueprint(planes)
 app.register_blueprint(suscripcionPlanUsuario)
@@ -281,7 +285,7 @@ def logs():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    crea_tablas_DB()
+    #crea_tablas_DB()
     
     return redirect("index")
 
@@ -293,7 +297,7 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
    
 
     # Ciclo para ejecutar las tareas programadas
