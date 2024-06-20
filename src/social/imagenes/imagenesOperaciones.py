@@ -20,7 +20,7 @@ def subirVideo():
 
 @imagenesOperaciones.route('/mostrarGaleria/')
 def mostrarGaleria():
-    return render_template("media/principalMedia/mostrarGaleria.html")
+    return render_template("media/principalMedia/mostrarGaleria.html", layout = 'layout')
 
 @imagenesOperaciones.route('/cargarVideo', methods=['POST'])
 def cargarVideo():
@@ -208,7 +208,8 @@ def mostrar_imagenes():
         # Procesar y asignar los paths solo a las imágenes filtradas
         for img in imagenes_filtradas:
             original_filepath = img.filepath
-            img.image_paths = original_filepath.replace('static\\', '').replace('\\', '/')
+            img.image_paths = original_filepath.replace('static/', '')
+           # img.image_paths = original_filepath.replace('static\\', '').replace('\\', '/')
             print(f"Original: {original_filepath}, Modificado: {img.image_paths}")
             sys.stdout.flush() 
   # Buscar el usuario correspondiente
