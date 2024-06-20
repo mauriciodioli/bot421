@@ -88,32 +88,29 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
 
 def market_data_handler_0(message):
    # Limitar el número de elementos en precios_data
-    MAX_PRECIOS_DATA = 73
-    
-   
-    
-    if control_tiempo_lectura(180000, get.marca_de_tiempo_para_leer_sheet):   
+        MAX_PRECIOS_DATA = 73
+  
         if len(get.precios_data) <= MAX_PRECIOS_DATA:
             try:
                 update_precios(message)
-                
-                pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
-                
-                # Aquí se envia una operacion fallida para generar trafico
-                ticker = message.get('ticker', 'DEFAULT_TICKER')  # Asume 'DEFAULT_TICKER' si no se encuentra en el mensaje
-                side = message.get('side', 'BUY')  # Asume 'BUY' si no se especifica
-                size = 1  # Definido en el código original
-                order_type = 'LIMIT'  # Cambia esto según el tipo de orden deseado
-                price = message.get('price', 10)  # Asume 100.0 si no se especifica
+                if control_tiempo_lectura(180000, get.marca_de_tiempo_para_leer_sheet):   
+                    pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
+                    
+                    # Aquí se envia una operacion fallida para generar trafico
+                    ticker = message.get('ticker', 'DEFAULT_TICKER')  # Asume 'DEFAULT_TICKER' si no se encuentra en el mensaje
+                    side = message.get('side', 'BUY')  # Asume 'BUY' si no se especifica
+                    size = 1  # Definido en el código original
+                    order_type = 'LIMIT'  # Cambia esto según el tipo de orden deseado
+                    price = message.get('price', 10)  # Asume 100.0 si no se especifica
 
-                # Enviar la orden a través del WebSocket
-                pyRofexInicializada.send_order_via_websocket(
-                    ticker=ticker, 
-                    side=side, 
-                    size=size, 
-                    order_type=order_type, 
-                    price=price
-                )
+                    # Enviar la orden a través del WebSocket
+                    pyRofexInicializada.send_order_via_websocket(
+                        ticker=ticker, 
+                        side=side, 
+                        size=size, 
+                        order_type=order_type, 
+                        price=price
+                    )
                 
                 # Actualizar el timestamp de la última ejecución
             

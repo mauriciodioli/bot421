@@ -200,6 +200,7 @@ def ejecutar_en_hilo(app,pais,user_id,selector):
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
      if hilo == 'hilo':
+        pais = 'argentina'
         print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
         app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 

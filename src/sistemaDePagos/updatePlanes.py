@@ -47,15 +47,11 @@ PREAPPROVAL_URL = f"{MERCADOPAGO_URL}/preapproval"
 mp = mercadopago.SDK(sdk_produccion)
 
 
-@updatePlanes.route('/update_preapproval_plan_html', methods=['GET'])
-def update_preapproval_plan_html():
-    layout = request.args.get('layout', 'layout')  # Obtiene el valor de 'layout' de la URL, 'default' es un valor predeterminado
-    return render_template('sistemaDePagos/updatePlanes.html', layout=layout)
-
-@updatePlanes.route('/update_preapproval_plan/<plan_id>/', methods=['PUT'])
-def update_preapproval_plan(plan_id):
+@updatePlanes.route('/updatePlanes_preapproval_plan/', methods=['PUT'])
+def update_planes_preapproval_plan():
     try:
         data = request.json
+        plan_id = data.get('id')
         frequency = data.get('frequency')
         amount = data.get('amount')
         reason = data.get('reason')
@@ -63,34 +59,63 @@ def update_preapproval_plan(plan_id):
         currency_id = data.get('currency_id')
         repetitions = data.get('repetitions')
         billing_day = data.get('billing_day')
+        access_token = data.get('access_token')
 
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + sdk_prueba
-        }
-        payload = {
-            "reason": reason,
-            "auto_recurring": {
-                "frequency": frequency,
-                "frequency_type": frequency_type,
-                "repetitions": repetitions,
-                "billing_day": billing_day,
-                "billing_day_proportional": True,
-                "free_trial": {
-                    "frequency": frequency,
-                    "frequency_type": frequency_type
-                },
-                "transaction_amount": amount,
-                "currency_id": currency_id
-            },
-            "back_url": SUCCESS_URL
-        }
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
+            app = current_app._get_current_object()
 
-        update_url = f"{PREAPPROVAL_PLAN_URL}/{plan_id}"
-        response = requests.put(update_url, json=payload, headers=headers)
-        response.raise_for_status()
+            try:
+                user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                plan = db.session.query(Plan).filter_by(idPlan=plan_id).first()
 
-        return jsonify({"message": "Plan updated successfully"})
+                if plan is None:
+                    return jsonify({"error": "Plan no encontrado o no autorizado"}), 404
 
+                headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + sdk_prueba
+                }
+                payload = {
+                    "reason": reason,
+                    "auto_recurring": {
+                        "frequency": frequency,
+                        "frequency_type": frequency_type,
+                        "repetitions": repetitions,
+                        "billing_day": billing_day,
+                        "billing_day_proportional": True,
+                        "free_trial": {
+                            "frequency": frequency,
+                            "frequency_type": frequency_type
+                        },
+                        "transaction_amount": amount,
+                        "currency_id": currency_id
+                    },
+                    "back_url": SUCCESS_URL
+                }
+
+                update_url = f"{PREAPPROVAL_PLAN_URL}/{plan_id}"
+                response = requests.put(update_url, json=payload, headers=headers)
+                response.raise_for_status()
+
+                plan.frequency = frequency
+                plan.amount = amount
+                plan.reason = reason
+                plan.frequency_type = frequency_type
+                plan.currency_id = currency_id
+                plan.repetitions = repetitions
+                plan.billing_day = billing_day
+
+                db.session.commit()
+                db.session.close()
+
+                return jsonify({"success": True, "message": "Plan updated successfully"})
+            except jwt.ExpiredSignatureError:
+                return jsonify({"error": "Token expired"}), 401
+            except jwt.InvalidTokenError:
+                return jsonify({"error": "Invalid token"}), 401
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
     except requests.exceptions.HTTPError as err:
         return jsonify({"error": str(err)}), err.response.status_code
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
