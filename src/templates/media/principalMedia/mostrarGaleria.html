@@ -1,7 +1,44 @@
 
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block title %}Galeria imagenes{% endblock %}
 {% block content %}
 <div>
-  
+   <div class="container">
+        <div class="post-card">
+            <div class="post-header">
+                <img src="static/uploads/user-avatar.jpg" alt="User Avatar" class="avatar">
+                <input type="text" placeholder="Crear publicación" class="post-input">
+            </div>
+            <div class="post-options">
+                <div class="option">
+                    <img src="static/icons/media-icon.png" alt="Multimedia Icon" class="icon">
+                    <span>Contenido multimedia</span>
+                </div>
+                <div class="option">
+                    <img src="static/icons/experience-icon.png" alt="Experience Icon" class="icon">
+                    <span>Contribuye con tu experiencia</span>
+                </div>
+                <div class="option">
+                    <img src="static/icons/article-icon.png" alt="Article Icon" class="icon">
+                    <span>Escribir artículo</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
   <div class="image-grid">
     {% for imagen in imagenes %}
@@ -18,14 +55,113 @@
         <p>Descripción de la imagen: {{ imagen.descripcion }}</p> <!-- Reemplaza con la descripción real de la imagen -->
       </div>
     </div>
+    <div class="container">
+      <div class="new-post">
+          <input type="text" id="user" placeholder="Your Name">
+          <textarea id="content" placeholder="What's on your mind?"></textarea>
+          <input type="text" id="media_url" placeholder="Video URL (optional)">
+          <button onclick="createPost()">Post</button>
+      </div>
+      <div class="sort-options">
+          <select id="sort-by" onchange="fetchPosts()">
+              <option value="timestamp">Most Recent</option>
+              <option value="views">Most Viewed</option>
+          </select>
+      </div>
+      <div id="posts"></div>
+  </div>
+  
   {% endfor %}
   
   </div>
 </div>
 
+
+
+
+
+
 <!-- ... Tu código HTML ... -->
 {% include 'layouts/layout_footer.html' %}
 <script>
+
+
+
+
+
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchPosts();
+});
+
+function fetchPosts() {
+    const sortBy = document.getElementById('sort-by').value;
+    fetch(`/api/posts?sort_by=${sortBy}`)
+        .then(response => response.json())
+        .then(posts => {
+            const postsContainer = document.getElementById('posts');
+            postsContainer.innerHTML = '';
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <img src="https://via.placeholder.com/40" alt="User Image">
+                        <strong>${post.user}</strong>
+                        <span>${post.timestamp}</span>
+                    </div>
+                    <div class="post-body">
+                        <p>${post.content}</p>
+                        ${post.media_url ? `<video controls src="${post.media_url}"></video>` : ''}
+                    </div>
+                    <div class="post-footer">
+                        <div class="views">Views: ${post.views}</div>
+                        <div class="actions">
+                            <button class="action">Comment</button>
+                            <button class="action">Share</button>
+                            <button class="action">Forward</button>
+                        </div>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        });
+}
+
+function createPost() {
+    const user = document.getElementById('user').value;
+    const content = document.getElementById('content').value;
+    const media_url = document.getElementById('media_url').value;
+
+    if (user && content) {
+        fetch('/api/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ user, content, media_url })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('user').value = '';
+            document.getElementById('content').value = '';
+            document.getElementById('media_url').value = '';
+            fetchPosts();
+        });
+    } else {
+        alert('Please enter your name and content');
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
   function eliminarImagen(imageName) {
     // Mostrar un cuadro de confirmación antes de proceder
     var confirmarEliminacion = confirm('¿Estás seguro de que deseas eliminar esta imagen?');

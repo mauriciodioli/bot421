@@ -273,8 +273,6 @@ def procesar_datos(app,pais, accountCuenta,user_id,selector):
             enviar_leer_sheet(app,pais,accountCuenta,None,selector)      
         if pais in get.diccionario_global_sheet_intercambio:
            return   get.diccionario_global_sheet_intercambio[pais]
-<<<<<<< HEAD
-=======
        
 
 
@@ -299,4 +297,3 @@ get.precios_data = {
     'MERV - XMEV - DGCU2 - 24hs': {'p24hs': None, 'max24hs': 1170.1, 'min24hs': 1170.2, 'last24hs': 1170.3}
 }
 '''
->>>>>>> 271655ea044cf15343e8d8674731fe4ee1b83e7a
