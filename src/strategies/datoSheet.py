@@ -165,6 +165,7 @@ def update_precios(message):
         if Symbol and p_value is not None:
             #print(message)
             update_precios_data(Symbol, p_value, suffix)
+    return True
 
 
 
@@ -183,7 +184,8 @@ def update_precios_data(symbol, p_value, suffix):
         if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
             get.precios_data[symbol]['min24hs'] = p_value
         # Mostrar el contenido actualizado para el símbolo específico
-    #print(f"{symbol}: {get.precios_data[symbol]}")
+    print(f"{symbol}: {get.precios_data[symbol]}")
+    return True
 
     
 

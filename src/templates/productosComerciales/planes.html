@@ -43,79 +43,61 @@
     </div>
 </div>
 
+
+
+
+
+<div class="modal fade" id="modificarModal" tabindex="-1" aria-labelledby="modificarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modificarModalLabel" style="color: black;">Modificar Plan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="modificarForm">
+            <div class="mb-3">
+              <label for="planFrequency" class="form-label" style="color: black;">Frecuencia</label>
+              <input type="text" class="form-control" id="planFrequency" required>
+            </div>
+            <div class="mb-3">
+              <label for="planAmount" class="form-label" style="color: black;">Monto</label>
+              <input type="text" class="form-control" id="planAmount" required>
+            </div>
+            <div class="mb-3">
+              <label for="planReason" class="form-label" style="color: black;">Razón</label>
+              <input type="text" class="form-control" id="planReason" required>
+            </div>
+            <div class="mb-3">
+              <label for="planFrequencyType" class="form-label" style="color: black;">Tipo de Frecuencia</label>
+              <input type="text" class="form-control" id="planFrequencyType" required>
+            </div>
+            <div class="mb-3">
+              <label for="planCurrencyId" class="form-label" style="color: black;">Moneda</label>
+              <input type="text" class="form-control" id="planCurrencyId" required>
+            </div>
+            <div class="mb-3">
+              <label for="planRepetitions" class="form-label" style="color: black;">Repeticiones</label>
+              <input type="text" class="form-control" id="planRepetitions" required>
+            </div>
+            <div class="mb-3">
+              <label for="planBillingDay" class="form-label" style="color: black;">Día de Facturación</label>
+              <input type="text" class="form-control" id="planBillingDay" required>
+            </div>
+            <input type="hidden" id="planId">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          
+          <button type="button" class="btn btn-primary" onclick="submitModificarForm()">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
 {% include 'layouts/layout_footer.html' %}
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        fetch('/productosComerciales_planes_muestra_planes/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.planes) {
-                console.log(data);
-                updatePlansTable(data.planes);
-            } else {
-                console.error('Error en la respuesta del servidor:', data);
-                alert('Error al cargar los planes');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error al cargar los planes');
-        });
-    });
-
-    function updatePlansTable(planes) {
-        const tableBody = document.getElementById('plansTable').getElementsByTagName('tbody')[0];
-        tableBody.innerHTML = '';
-
-        planes.forEach(plan => {
-            const row = tableBody.insertRow();
-
-            row.insertCell(0).textContent = plan.id;
-            row.insertCell(1).textContent = plan.frequency;
-            row.insertCell(2).textContent = plan.amount;
-            row.insertCell(3).textContent = plan.reason;
-            row.insertCell(4).textContent = plan.frequency_type;
-            row.insertCell(5).textContent = plan.currency_id;
-            row.insertCell(6).textContent = plan.repetitions;
-            row.insertCell(7).textContent = plan.billing_day;
-
-            // Crear botón de eliminar
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Eliminar';
-            deleteButton.className = 'btn btn-danger btn-sm';
-            deleteButton.onclick = () => deletePlan(plan.id);
-            row.insertCell(8).appendChild(deleteButton);
-        });
-    }
-
-    function deletePlan(planId) {
-        if (confirm('¿Está seguro de que desea eliminar este plan?')) {
-            fetch(`/delete_plan/${planId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Plan eliminado con éxito');
-                    location.reload(); // Recargar la página para actualizar la tabla
-                } else {
-                    alert('Error al eliminar el plan');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al eliminar el plan');
-            });
-        }
-    }
+<script>  
 </script>
 {% endblock %}
