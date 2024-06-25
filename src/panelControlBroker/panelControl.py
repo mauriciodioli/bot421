@@ -185,11 +185,11 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(240)# 4minulos
+            time.sleep(120)# 4minulos
             if len(get.diccionario_global_sheet) > 0:
                 ################################# preguntar si son las 11 ##################
                 ################################# pasar la lectura #########################                
-                if datetime.now().hour >= 14 or datetime.now().hour < 20:
+                if datetime.now().hour >= 11 or datetime.now().hour < 20:
                    enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
                 ################################# pregutar si son las 17 hs #################
                 ################## apagar el ws y limpia precios_data #######################
@@ -201,6 +201,7 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
      if hilo == 'hilo':
         pais = 'argentina'
+       
         print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
         app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
@@ -215,9 +216,13 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
      if selector != "simulado" or selector =='vacio':
         if pais == "argentina":
             if len(get.diccionario_global_sheet) > 0:
-               if not get.conexion_existente(app,'44593'):
-                   modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores')
-                   print('modifico el sheet : ',modifico) 
+               if not get.conexion_existente(app,get.CUENTA_ACTUALIZAR_SHEET,
+                                                 get.CORREO_E_ACTUALIZAR_SHEET,
+                                                 get.VARIABLE_ACTUALIZAR_SHEET,
+                                                 get.ID_USER_ACTUALIZAR_SHEET):
+                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                  print(' PANELCONTROL.PY ESTA COMENTADA LA LINEA DESCOMENTAR ANTES DE SUBIR A GIT ACTION') 
+                  # print('modifico el sheet : ',modifico) 
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
