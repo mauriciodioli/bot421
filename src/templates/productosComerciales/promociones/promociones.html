@@ -1,0 +1,47 @@
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% endif %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            {% include 'productosComerciales/planes/tablaPlanes/Tablaplanes.html' %}
+        </div>
+        <div class="col-md-5">
+            <div class="card mt-3 mx-auto">
+                <div class="card-body">
+                    <h2 class="card-title text-center text-black">Promociones Existentes</h2>
+                    <div class="table-responsive">
+                        <table class="table" id="plansTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>IDPLAN</th>
+                                    <th>RAZON</th>
+                                    <th>DESC</th>
+                                    <th>PRECIO</th>
+                                    <th>DISCONT</th>
+                                    <th>IMAGEN</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+  
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}
