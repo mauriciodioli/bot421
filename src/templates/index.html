@@ -433,8 +433,9 @@
       
                             <div class="form-group">
                               <!--<label for="password" class="text-white">Contraseña:</label>-->
-                              <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Contraseña" required>
-                            </div>
+                              <input type="password" class="form-control" id="password" name="password" required>
+                              <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+                            </div>                            
       
                             <div class="row justify-content-center">
                               <div class="col-md-6 mb-4">
@@ -527,6 +528,23 @@
    
 
 
+
+
+
+
+      
+  function togglePasswordVisibility(id) {
+    var passwordField = document.getElementById(id);
+    var icon = passwordField.nextElementSibling;
+
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      icon.textContent = "🙈";
+    } else {
+      passwordField.type = "password";
+      icon.textContent = "👁️";
+    }
+  }
 
 
   </script>

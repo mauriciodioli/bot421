@@ -173,47 +173,81 @@ def update_precios_data(symbol, p_value, suffix):
 
     
 
-def actualizar_precios(sheetId, sheet_name,pais):
+def actualizar_precios(sheetId, sheet_name, pais):
     try:
         if get.precios_data:
-            if get.sheet_manager.autenticar():
-                sheet = get.sheet_manager.abrir_sheet(sheetId, sheet_name)
-                if sheet:
-                    ranges = ['C:C']  # Rango de símbolos/tickers en la hoja de cálculo
-                   
-                    try:
-                        data = sheet.batch_get(ranges)
-                        batch_updates = []
-                        for index, row in enumerate(data[0]):
-                                if isinstance(row, list) and row != []:
+            batch_updates = []
+            
+            if len(get.symbols_sheet_valores) <= 0:
+                if get.sheet_manager.autenticar():
+                    get.sheet = get.sheet_manager.abrir_sheet(sheetId, sheet_name)
+                    if get.sheet:
+                        ranges = ['C:C']  # Rango de símbolos/tickers en la hoja de cálculo
+                        try:
+                            data = get.sheet.batch_get(ranges)
+                            for index, row in enumerate(data[0]):
+                                if isinstance(row, list) and row:
                                     symbol = str(row[0]).strip("['").strip("']")
-                                     
+                                    get.symbols_sheet_valores.append(symbol)
+                                    
                                     if symbol in get.precios_data:
                                         precios_data = get.precios_data[symbol]
                                         try:
                                             if 'max24hs' in precios_data:
-                                                batch_updates.append({'range': f"E{index + 1}", 'values': [[str(precios_data['max24hs']).replace('.', ',')]]})
+                                                batch_updates.append({
+                                                    'range': f"E{index + 1}", 
+                                                    'values': [[str(precios_data['max24hs']).replace('.', ',')]]
+                                                })
                                             if 'min24hs' in precios_data:
-                                                batch_updates.append({'range': f"F{index + 1}", 'values': [[str(precios_data['min24hs']).replace('.', ',')]]})
+                                                batch_updates.append({
+                                                    'range': f"F{index + 1}", 
+                                                    'values': [[str(precios_data['min24hs']).replace('.', ',')]]
+                                                })
                                             if 'last24hs' in precios_data:
-                                                batch_updates.append({'range': f"G{index + 1}", 'values': [[str(precios_data['last24hs']).replace('.', ',')]]})
+                                                batch_updates.append({
+                                                    'range': f"G{index + 1}", 
+                                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                                })
                                         except ValueError:
                                             print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
-                                                        # Actualizar en lotes
-                        if batch_updates:
-                            try:
-                                sheet.batch_update(batch_updates)
-                                print("Actualización en lotes exitosa.")
-                            except Exception as e:
-                                print(f"Error en la actualización en lotes: {e}")
-                        else:
-                            print("No hay datos para actualizar.")
-                    except Exception as e:
-                        print(f"Error en el proceso de actualización: {e}")   
+                        except Exception as e:
+                            print(f"Error en el proceso de actualización: {e}")
+            else:
+                for index, symbol in enumerate(get.symbols_sheet_valores):
+                    if symbol in get.precios_data:
+                        precios_data = get.precios_data[symbol]
+                        try:
+                            if 'max24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"E{index + 1}", 
+                                    'values': [[str(precios_data['max24hs']).replace('.', ',')]]
+                                })
+                            if 'min24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"F{index + 1}", 
+                                    'values': [[str(precios_data['min24hs']).replace('.', ',')]]
+                                })
+                            if 'last24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"G{index + 1}", 
+                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                })
+                        except ValueError:
+                            print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
+            
+            if batch_updates:
+                try:
+                    get.sheet.batch_update(batch_updates)
+                    print("Actualización en lotes exitosa.")
+                except Exception as e:
+                    print(f"Error en la actualización en lotes: {e}")
+            else:
+                print("No hay datos para actualizar.")
     except Exception as e:
         print(f"Error en el proceso de actualización: {e}")
         return False
     return True
+
 # Función de codificación personalizada para datetime
 def datetime_encoder(obj):
     if isinstance(obj, datetime):
