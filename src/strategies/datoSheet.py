@@ -177,39 +177,39 @@ def actualizar_precios(sheetId, sheet_name,pais):
     try:
         if get.precios_data:
             if get.sheet_manager.autenticar():
-                sheet = get.sheet_manager.abrir_sheet(sheetId,sheet_name)
+                sheet = get.sheet_manager.abrir_sheet(sheetId, sheet_name)
                 if sheet:
-                    symbols = sheet.col_values(3)
-                    batch_updates = []
-                    for symbol in symbols:
-                        if symbol in get.precios_data:
-                            data = get.precios_data[symbol]
-                            #print(f"Symbol: {symbol}")
-
+                    ranges = ['C:C']  # Rango de símbolos/tickers en la hoja de cálculo
+                   
+                    try:
+                        data = sheet.batch_get(ranges)
+                        batch_updates = []
+                        for index, row in enumerate(data[0]):
+                                if isinstance(row, list) and row != []:
+                                    symbol = str(row[0]).strip("['").strip("']")
+                                     
+                                    if symbol in get.precios_data:
+                                        precios_data = get.precios_data[symbol]
+                                        try:
+                                            if 'max24hs' in precios_data:
+                                                batch_updates.append({'range': f"E{index + 1}", 'values': [[str(precios_data['max24hs']).replace('.', ',')]]})
+                                            if 'min24hs' in precios_data:
+                                                batch_updates.append({'range': f"F{index + 1}", 'values': [[str(precios_data['min24hs']).replace('.', ',')]]})
+                                            if 'last24hs' in precios_data:
+                                                batch_updates.append({'range': f"G{index + 1}", 'values': [[str(precios_data['last24hs']).replace('.', ',')]]})
+                                        except ValueError:
+                                            print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
+                                                        # Actualizar en lotes
+                        if batch_updates:
                             try:
-                                # Buscar el índice del símbolo en la lista de símbolos
-                                index = symbols.index(symbol) + 1  # Sumar 1 porque las filas en Google Sheets comienzan en 1
-                                for key, value in data.items():
-                                # print(f"  {key}: {value}")
-                                    if key == 'max24hs':                                  
-                                        batch_updates.append({'range': f"E{index}", 'values': [[str(value).replace('.', ',')]]})
-                                    elif key == 'min24hs':
-                                        batch_updates.append({'range': f"F{index}", 'values': [[str(value).replace('.', ',')]]})
-                                    elif key == 'last24hs':
-                                        batch_updates.append({'range': f"G{index}", 'values': [[str(value).replace('.', ',')]]})
-                            except ValueError:
-                                print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
-
-                    # Actualizar en lotes
-                    if batch_updates:
-                        try:
-
-                            sheet.batch_update(batch_updates)
-                            print("El sheet se ha actualizado correctamente.")
-                        except Exception as e:
-                            print(f"Error en el proceso de actualización: {e}")
-                            # Retorna False solo si la actualización falla
-                            return False
+                                sheet.batch_update(batch_updates)
+                                print("Actualización en lotes exitosa.")
+                            except Exception as e:
+                                print(f"Error en la actualización en lotes: {e}")
+                        else:
+                            print("No hay datos para actualizar.")
+                    except Exception as e:
+                        print(f"Error en el proceso de actualización: {e}")   
     except Exception as e:
         print(f"Error en el proceso de actualización: {e}")
         return False
