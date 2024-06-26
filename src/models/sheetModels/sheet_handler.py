@@ -13,31 +13,43 @@ class SheetHandler:
             if sheet:
                 # Definimos los rangos correctos
                 ranges = [
-                    f'{self.sheet_name}!E:E',    # symbol - ticker de mercado
-                    f'{self.sheet_name}!V:V',    # tipo_de_activo - cedear, arg o usa
-                    f'{self.sheet_name}!Y:Y',    # precioUt - en planilla usa no trae precio
-                    f'{self.sheet_name}!S:S',    # trade_en_curso - long, short o nada
-                    f'{self.sheet_name}!T:T',    # ut - cantidad a operar
-                    f'{self.sheet_name}!U:U',    # senial - Open o Close
-                    f'{self.sheet_name}!Z:Z',    # gan_tot
-                    f'{self.sheet_name}!AD:AD'   # dias_operado - Dias habiles operado
+                    'E:E',    # symbol - ticker de mercado
+                    'V:V',    # tipo_de_activo - cedear, arg o usa
+                    'Y:Y',    # precioUt - en planilla usa no trae precio
+                    'S:S',    # trade_en_curso - long, short o nada
+                    'T:T',    # ut - cantidad a operar
+                    'U:U',    # senial - Open o Close
+                    'Z:Z',    # gan_tot
+                    'AD:AD'   # dias_operado - Dias habiles operado
                 ]
 
+              
                 for _ in range(3):  # Intentar hasta 3 veces
                     try:
                         data = sheet.batch_get(ranges)
                         if data:
-                            symbol = data[0][0] if len(data) > 0 else []
-                            tipo_de_activo = data[1][0] if len(data) > 1 else []
-                            precioUt = data[2][0] if len(data) > 2 else []
-                            trade_en_curso = data[3][0] if len(data) > 3 else []
-                            ut = data[4][0] if len(data) > 4 else []
-                            senial = data[5][0] if len(data) > 5 else []
-                            gan_tot = data[6][0] if len(data) > 6 else []
-                            dias_operado = data[7][0] if len(data) > 7 else []
+                            # Asumiendo que cada lista dentro de data representa una columna de datos
+                            symbol = [str(item[0]).strip("['").strip("']") for item in data[0][1:]] if len(data) > 0 and len(data[0]) > 1 else []
+                            tipo_de_activo = [str(item).strip("['").strip("']") for item in data[1][1:]] if len(data) > 1 and len(data[1]) > 1 else []
+                            precioUt = [str(item).strip("['").strip("']") for item in data[2][1:]] if len(data) > 2 and len(data[2]) > 1 else []
+                            trade_en_curso = [str(item).strip("['").strip("']") for item in data[3][1:]] if len(data) > 3 and len(data[3]) > 1 else []
+                            ut = [str(item).strip("['").strip("']") for item in data[4][1:]] if len(data) > 4 and len(data[4]) > 1 else []
+                            senial = [str(item).strip("['").strip("']") for item in data[5][1:]] if len(data) > 5 and len(data[5]) > 1 else []
+                            gan_tot = [str(item).strip("['").strip("']") for item in data[6][1:]] if len(data) > 6 and len(data[6]) > 1 else []
+                            dias_operado = [str(item).strip("['").strip("']") for item in data[7][1:]] if len(data) > 7 and len(data[7]) > 1 else []
+
+                            # Eliminar los encabezados si están presentes y combinar las columnas
+                            symbol = symbol[1:] if len(symbol) > 1 else []
+                            tipo_de_activo = tipo_de_activo[1:] if len(tipo_de_activo) > 1 else []
+                            precioUt = precioUt[1:] if len(precioUt) > 1 else []
+                            trade_en_curso = trade_en_curso[1:] if len(trade_en_curso) > 1 else []
+                            ut = ut[1:] if len(ut) > 1 else []
+                            senial = senial[1:] if len(senial) > 1 else []
+                            gan_tot = gan_tot[1:] if len(gan_tot) > 1 else []
+                            dias_operado = dias_operado[1:] if len(dias_operado) > 1 else []
 
                             union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado, precioUt)
-                            return list(union)
+                            return union
                     except gspread.exceptions.APIError as e:
                         print(f"Error al leer la hoja: {e}")
                         if e.response.status_code == 500:
