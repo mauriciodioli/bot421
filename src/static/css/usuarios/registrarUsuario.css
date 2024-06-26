@@ -1,0 +1,19 @@
+.form-group {
+    position: relative;
+    margin-bottom: 15px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding-right: 40px; /* Espacio para el ícono */
+    box-sizing: border-box; /* Asegura que el padding se incluya en el tamaño total del input */
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    margin-top: 15px; /* Ajusta la posición vertical del ícono */
+  }

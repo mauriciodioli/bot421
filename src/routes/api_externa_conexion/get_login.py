@@ -83,16 +83,18 @@ reporte_de_ordenes = []
 SPREADSHEET_ID_PRUEBA='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
 SPREADSHEET_ID_PRODUCCION='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
 SPREADSHEET_ID_USA='1sxbKe5pjF3BsGgUCUzBDGmI-zV5hWbd6nzJwRFw3yyU'#de produccion USA
-CUENTA_ACTUALIZAR_SHEET = '44593'
-CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'
-ID_USER_ACTUALIZAR_SHEET = 1
+#CUENTA_ACTUALIZAR_SHEET = '44593'
+#CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'
+#ID_USER_ACTUALIZAR_SHEET = 1
 VARIABLE_ACTUALIZAR_SHEET = 'produccion'
 
 
-#CUENTA_ACTUALIZAR_SHEET = '10861'
-#CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'
-#ID_USER_ACTUALIZAR_SHEET = 10
+CUENTA_ACTUALIZAR_SHEET = '10861'
+CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'
+ID_USER_ACTUALIZAR_SHEET = 10
 precios_data = {} #para mdh 0
+symbols_sheet_valores = []
+sheet = None
 accountLocalStorage = ""
 VariableParaBotonPanico = 0
 VariableParaSaldoCta = 0
