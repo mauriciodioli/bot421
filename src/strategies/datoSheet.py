@@ -98,22 +98,29 @@ def autenticar_y_abrir_sheet(sheetId, sheet_name):
 
 def leerSheet(sheetId,sheet_name): 
      
-     # recibo la tupla pero como este es para el bot leo el primer elemento 
-     credentials_path = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
-    # Crear instancia del gestor de hojas
-     get.sheet_manager = GoogleSheetManager(credentials_path)
+        if not get.autenticado_sheet:        
+            # recibo la tupla pero como este es para el bot leo el primer elemento 
+            credentials_path = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
+            # Crear instancia del gestor de hojas
+            get.sheet_manager = GoogleSheetManager(credentials_path)
 
-    # Autenticar
-     if get.sheet_manager.autenticar():
-        # Crear instancia del manejador de hoja con el gestor y los datos de la hoja
-        handler = SheetHandler(get.sheet_manager, sheetId, sheet_name)
-        
-        # Ejemplo de uso de leerSheet
+            if get.sheet_manager.autenticar():
+                get.autenticado_sheet = True
+                handler = SheetHandler(get.sheet_manager, sheetId, sheet_name)
+        else:
+            # Autenticar
+            if  get.autenticado_sheet:
+                # Crear instancia del manejador de hoja con el gestor y los datos de la hoja
+                handler = SheetHandler(get.sheet_manager, sheetId, sheet_name)
+            else:
+                    print("Error al autenticar. Revisa los detalles del error.")
+                    get.autenticado_sheet = False
+                    return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_fichas')    
+                
+                # Ejemplo de uso de leerSheet
         return handler.leerSheet()
-        
-     else:
-            print("Error al autenticar. Revisa los detalles del error.")
-            return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_fichas')
+                
+            
 
 def leerDb(app):
      with app.app_context():   
