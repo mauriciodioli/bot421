@@ -185,7 +185,7 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(120)# 4minulos
+            time.sleep(30)# 4minulos
             if len(get.diccionario_global_sheet) > 0:
                 ################################# preguntar si son las 11 ##################
                 ################################# pasar la lectura #########################                
@@ -220,9 +220,9 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
                                                  get.CORREO_E_ACTUALIZAR_SHEET,
                                                  get.VARIABLE_ACTUALIZAR_SHEET,
                                                  get.ID_USER_ACTUALIZAR_SHEET):
-                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
-                  print(' PANELCONTROL.PY ESTA COMENTADA LA LINEA DESCOMENTAR ANTES DE SUBIR A GIT ACTION') 
-                  # print('modifico el sheet : ',modifico) 
+                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                 # print(' PANELCONTROL.PY ESTA COMENTADA LA LINEA DESCOMENTAR ANTES DE SUBIR A GIT ACTION') 
+                  print('modifico el sheet : ',modifico) 
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
