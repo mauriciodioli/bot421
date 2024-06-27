@@ -20,7 +20,6 @@ from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_108
 from strategies.estrategiasUsuarios.Bull_Market_351653_001 import Bull_Market_351653_001
 ########################################################################
 from models.creaTablas import crea_tablas_DB
-
 from sistemaDePagos.payment_page import payment_page
 from sistemaDePagos.success_failure import success_failure
 from sistemaDePagos.crearPlanes import crearPlanes
@@ -176,6 +175,7 @@ app.register_blueprint(crearPlanes)
 app.register_blueprint(createOrden)
 app.register_blueprint(createSuscripcion)
 app.register_blueprint(updatePlanes)
+
 app.register_blueprint(deletePlanes)
 app.register_blueprint(descrpcionProductos)
 app.register_blueprint(planes)

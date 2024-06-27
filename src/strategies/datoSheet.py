@@ -15,6 +15,7 @@ import time
 import json
 from models.orden import Orden
 from models.cuentas import Cuenta
+from models.googleSheetManager import GoogleSheetManager
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
 
@@ -97,6 +98,9 @@ def autenticar_y_abrir_sheet(sheetId, sheet_name):
 def leerSheet(sheetId,sheet_name): 
      
      # recibo la tupla pero como este es para el bot leo el primer elemento 
+    # get.sheet_manager = GoogleSheetManager(sheetId, sheet_name)
+    # sheet = get.sheet_manager.sheet  # Accede al sheet ya autenticado
+
      sheet= autenticar_y_abrir_sheet(sheetId,sheet_name) 
      if sheet: 
         symbol = sheet.col_values(5)       # ticker de mercado
@@ -165,7 +169,6 @@ def update_precios(message):
         if Symbol and p_value is not None:
             #print(message)
             update_precios_data(Symbol, p_value, suffix)
-    return True
 
 
 
@@ -184,8 +187,7 @@ def update_precios_data(symbol, p_value, suffix):
         if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
             get.precios_data[symbol]['min24hs'] = p_value
         # Mostrar el contenido actualizado para el símbolo específico
-    print(f"{symbol}: {get.precios_data[symbol]}")
-    return True
+    #print(f"{symbol}: {get.precios_data[symbol]}")
 
     
 
@@ -194,6 +196,7 @@ def actualizar_precios(sheetId, sheet_name):
         if get.precios_data:
             # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
             sheet = autenticar_y_abrir_sheet(sheetId, sheet_name)
+            #sheet = get.sheet_manager.sheet
             if sheet:
                 symbols = sheet.col_values(3)
                 batch_updates = []
