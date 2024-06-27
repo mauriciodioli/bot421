@@ -27,7 +27,7 @@ def cuentas_endPointBrokers():
          total_brokers = len(todos_brokers)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          
-         return render_template("brokers/broker.html", datos=todos_brokers)
+         return render_template("brokers/broker.html", layout='layout', datos=todos_brokers)
     except:        
         return render_template("notificaciones/noPoseeDatos.html" )
 
