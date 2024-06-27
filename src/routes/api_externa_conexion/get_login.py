@@ -91,6 +91,7 @@ VariableParaSaldoCta = 0
 pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
+sheet_manager = None
 
 indice_cuentas = {}
 diccionario_global_sheet = {}
