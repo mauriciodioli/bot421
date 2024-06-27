@@ -8,6 +8,8 @@ import routes.instrumentos as inst
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
+from models.sheetModels.GoogleSheetManager import GoogleSheetManager
+from models.sheetModels.sheet_handler import SheetHandler
 import copy
 import socket
 import requests
@@ -97,44 +99,30 @@ def autenticar_y_abrir_sheet(sheetId, sheet_name):
 
 def leerSheet(sheetId,sheet_name): 
      
-     # recibo la tupla pero como este es para el bot leo el primer elemento 
-    # get.sheet_manager = GoogleSheetManager(sheetId, sheet_name)
-    # sheet = get.sheet_manager.sheet  # Accede al sheet ya autenticado
+        if not get.autenticado_sheet:        
+            # recibo la tupla pero como este es para el bot leo el primer elemento 
+            credentials_path = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
+            # Crear instancia del gestor de hojas
+            get.sheet_manager = GoogleSheetManager(credentials_path)
 
-     sheet= autenticar_y_abrir_sheet(sheetId,sheet_name) 
-     if sheet: 
-        symbol = sheet.col_values(5)       # ticker de mercado
-        tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
-        precioUt = sheet.col_values(25) # en planilla usa no trae precio
-        trade_en_curso = sheet.col_values(19)  # long, short o nada
-        ut = sheet.col_values(20)              # cantidad a operar
-        senial = sheet.col_values(21)          # Open o Close
-        gan_tot = sheet.col_values(26)
-        dias_operado = sheet.col_values(30)    # Dias habiles operado
-        #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
-        
-       
-        union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado,precioUt)
-      #  datos = construir_lista_de_datos(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado)
-      #  guardar_datos_json(datos)
-        #union = leer_datos_json()
-      #  for dato in union:
-      #   if ((dato[1] == 'USA' or dato[1] == 'ARG' or dato[1] == 'CEDEAR') and 
-      #          dato[2] == 'LONG_' or (dato[2] == 'SHORT' and dato[1] != 'ARG' and dato[1] != 'CEDEAR')):
-      #          if (dato[3] > '0'):
-      #              if (dato[4] == 'OPEN.' or dato[4] == 'closed.'):
-      #                  print(f"Datos {dato} - Pasa la condición")
-      #              else:
-      #                  print(f"Datos {dato} - No pasa la condición de la posición 4")
-      #          else:
-      #              print(f"Datos {dato} - No pasa la condición de la posición 3")
-      #   else:
-      #          print(f"Datos {dato} - No pasa la condición inicial")
-        
-        return union
-     else:
-       
-        return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_fichas')
+            if get.sheet_manager.autenticar():
+                get.autenticado_sheet = True
+                handler = SheetHandler(get.sheet_manager, sheetId, sheet_name)
+        else:
+            # Autenticar
+            if  get.autenticado_sheet:
+                # Crear instancia del manejador de hoja con el gestor y los datos de la hoja
+                handler = SheetHandler(get.sheet_manager, sheetId, sheet_name)
+            else:
+                    print("Error al autenticar. Revisa los detalles del error.")
+                    get.autenticado_sheet = False
+                    return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_fichas')    
+                
+                # Ejemplo de uso de leerSheet
+        return handler.leerSheet()
+                
+            
+
 def leerDb(app):
      with app.app_context():   
         all_ins = db.session.query(InstrumentoSuscriptos).all()
@@ -187,51 +175,86 @@ def update_precios_data(symbol, p_value, suffix):
         if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
             get.precios_data[symbol]['min24hs'] = p_value
         # Mostrar el contenido actualizado para el símbolo específico
-    #print(f"{symbol}: {get.precios_data[symbol]}")
+   #print(f"{symbol}: {get.precios_data[symbol]}")
+    return True
 
     
 
-def actualizar_precios(sheetId, sheet_name):
+def actualizar_precios(sheetId, sheet_name, pais):
     try:
         if get.precios_data:
-            # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
-            sheet = autenticar_y_abrir_sheet(sheetId, sheet_name)
-            #sheet = get.sheet_manager.sheet
-            if sheet:
-                symbols = sheet.col_values(3)
-                batch_updates = []
-                for symbol in symbols:
-                    if symbol in get.precios_data:
-                        data = get.precios_data[symbol]
-                        #print(f"Symbol: {symbol}")
-
+            batch_updates = []
+            
+            if len(get.symbols_sheet_valores) <= 0:
+                if get.sheet_manager.autenticar():
+                    get.sheet = get.sheet_manager.abrir_sheet(sheetId, sheet_name)
+                    if get.sheet:
+                        ranges = ['C:C']  # Rango de símbolos/tickers en la hoja de cálculo
                         try:
-                            # Buscar el índice del símbolo en la lista de símbolos
-                            index = symbols.index(symbol) + 1  # Sumar 1 porque las filas en Google Sheets comienzan en 1
-                            for key, value in data.items():
-                                print(f"  {key}: {value}")
-                                if key == 'max24hs':                                  
-                                    batch_updates.append({'range': f"E{index}", 'values': [[str(value).replace('.', ',')]]})
-                                elif key == 'min24hs':
-                                    batch_updates.append({'range': f"F{index}", 'values': [[str(value).replace('.', ',')]]})
-                                elif key == 'last24hs':
-                                    batch_updates.append({'range': f"G{index}", 'values': [[str(value).replace('.', ',')]]})
+                            data = get.sheet.batch_get(ranges)
+                            for index, row in enumerate(data[0]):
+                                if isinstance(row, list) and row:
+                                    symbol = str(row[0]).strip("['").strip("']")
+                                    get.symbols_sheet_valores.append(symbol)
+                                    
+                                    if symbol in get.precios_data:
+                                        precios_data = get.precios_data[symbol]
+                                        try:
+                                            if 'max24hs' in precios_data:
+                                                batch_updates.append({
+                                                    'range': f"E{index + 1}", 
+                                                    'values': [[str(precios_data['max24hs']).replace('.', ',')]]
+                                                })
+                                            if 'min24hs' in precios_data:
+                                                batch_updates.append({
+                                                    'range': f"F{index + 1}", 
+                                                    'values': [[str(precios_data['min24hs']).replace('.', ',')]]
+                                                })
+                                            if 'last24hs' in precios_data:
+                                                batch_updates.append({
+                                                    'range': f"G{index + 1}", 
+                                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                                })
+                                        except ValueError:
+                                            print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
+                        except Exception as e:
+                            print(f"Error en el proceso de actualización: {e}")
+            else:
+                for index, symbol in enumerate(get.symbols_sheet_valores):
+                    if symbol in get.precios_data:
+                        precios_data = get.precios_data[symbol]
+                        try:
+                            if 'max24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"E{index + 1}", 
+                                    'values': [[str(precios_data['max24hs']).replace('.', ',')]]
+                                })
+                            if 'min24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"F{index + 1}", 
+                                    'values': [[str(precios_data['min24hs']).replace('.', ',')]]
+                                })
+                            if 'last24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"G{index + 1}", 
+                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                })
                         except ValueError:
                             print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
-
-                # Actualizar en lotes
-                if batch_updates:
-                    try:
-                        sheet.batch_update(batch_updates)
-                        print("El sheet se ha actualizado correctamente.")
-                    except Exception as e:
-                        print(f"Error en el proceso de actualización: {e}")
-                        # Retorna False solo si la actualización falla
-                        return False
+            
+            if batch_updates:
+                try:
+                    get.sheet.batch_update(batch_updates)
+                    print("Actualización en lotes exitosa.")
+                except Exception as e:
+                    print(f"Error en la actualización en lotes: {e}")
+            else:
+                print("No hay datos para actualizar.")
     except Exception as e:
         print(f"Error en el proceso de actualización: {e}")
         return False
     return True
+
 # Función de codificación personalizada para datetime
 def datetime_encoder(obj):
     if isinstance(obj, datetime):
