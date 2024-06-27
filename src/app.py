@@ -29,9 +29,11 @@ from sistemaDePagos.deletePlanes import deletePlanes
 from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
+from sistemaDePagos.carrucelPromocionOfertas import carrucelPromocionOfertas
 from productosComerciales.descipcionProductos import descrpcionProductos
 from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
+from productosComerciales.promociones.promociones import promociones
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
@@ -183,6 +185,8 @@ app.register_blueprint(suscripcionPlanUsuario)
 app.register_blueprint(deleteSuscripcion)
 app.register_blueprint(tarjetaUsuario)
 app.register_blueprint(creaTabla)
+app.register_blueprint(carrucelPromocionOfertas)
+app.register_blueprint(promociones)
 app.register_blueprint(token)
 app.register_blueprint(instrumentos)
 app.register_blueprint(instrumentosGet)
