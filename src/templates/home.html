@@ -12,7 +12,10 @@
 </div>
 {% include 'layouts/layout_footer.html' %}   
 <script>
-  
+
+
+
+
 // Definir la función showError
 function showError(message) {
   console.error(message);
@@ -20,7 +23,25 @@ function showError(message) {
 }
 let guardada = localStorage.getItem("date")
 access_token = localStorage.getItem("access_token")  
-console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage
+correo_electronico = localStorage.getItem("correo_electronico")  
+  
+// Verificar si el access_token está presente y no ha expirado
+
+if (!access_token || !correo_electronico || tokenExpirado(access_token)) {
+  showError("Debe iniciar sesión para acceder a esta página.");
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  // Redirigir al usuario a la página de login u otra página adecuada
+  window.location.href = "/";  // Ejemplo: redirigir a la página de inicio de sesión
+} else {
+  // Token válido, continuar con la lógica de la página home
+  console.log("Token válido. Usuario permitido acceder a /home.");
+
+  // Aquí puedes continuar con la lógica de tu página home
+  // Por ejemplo, realizar solicitudes AJAX u otras operaciones permitidas para usuarios autenticados
+}
+
+
 // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
 if (!access_token || tokenExpirado(access_token)) {
 // Obtener los tokens desde el diccionario de contexto de Flask

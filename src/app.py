@@ -49,8 +49,8 @@ from strategies.gestion_estrategias.abm_estrategias import abm_estrategias
 from strategies.gestion_estrategias.unidad_trader import unidad_trader
 
 from tokens.token import token
+import tokens.token as Token
 
- 
 from routes.instrumentos import instrumentos
 from routes.instrumentosGet import instrumentosGet
 from routes.api_externa_conexion.get_login import get_login
@@ -290,13 +290,16 @@ def send_local_storage():
     if data:
         ruta_de_logeo = data.get('rutaDeLogeo')
         refresh_token = data.get('refresh_token')
+        access_token = data.get('access_token')
         correo_electronico = data.get('correo_electronico')
         cuenta = data.get('cuenta')
         usuario = data.get('usuario')
         simuladoOproduccion = data.get('simuladoOproduccion')
-        
-        if correo_electronico:
-            redirect_route = 'home'
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
+           if correo_electronico:
+              redirect_route = 'home'
+           else:
+             redirect_route = 'index'    
         else:
             redirect_route = 'index'
         

@@ -4,13 +4,25 @@
     <meta charset="UTF-8">
     <title>Página de Entrada</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: black; /* Establece el color de fondo negro para todo el cuerpo del documento */
+            color: white; /* Cambia el color del texto a blanco para mejor contraste */
+            font-family: Arial, sans-serif; /* Define una fuente para el texto */
+        }
+    </style>
 </head>
 <body>
+      <!-- Contenido de tu página aquí 
+      <h1>Bienvenido a la Página de Entrada</h1>
+      <p>Esta es una página con fondo negro.</p>
+      -->
     <script>
         $(document).ready(function() {
             // Función para enviar los datos de localStorage al servidor
             function sendLocalStorage() {
                 var refresh_token = localStorage.getItem('refresh_token');
+                var access_token = localStorage.getItem('access_token');
                 var correo_electronico = localStorage.getItem('correo_electronico');
                 var cuenta = localStorage.getItem("cuenta");
                 var usuario = localStorage.getItem("usuario");
@@ -26,6 +38,7 @@
                         'correo_electronico': correo_electronico,
                         'cuenta': cuenta,
                         'usuario': usuario,
+                        'access_token':access_token,
                         'simuladoOproduccion': simuladoOproduccion
                     }),
                     success: function(data) {
