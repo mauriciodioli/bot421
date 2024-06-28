@@ -11,7 +11,7 @@
 {% endif %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+<div class="d-flex justify-content-center align-items-start" style="min-height: 80vh;">
   <div class="card custom-card text-center" style="width: 18rem;">
     <div class="card-body">
       <h5 class="card-title custom-card-title">Estado del MDH</h5>
@@ -24,36 +24,6 @@
 
 {% include 'layouts/layout_footer.html' %}
 
-<style>
-    .custom-card {
-        background-color: #f8f9fa !important; /* Color de fondo gris claro */
-        border: 1px solid #e0e0e0 !important; /* Borde ligero */
-        border-radius: 10px !important; /* Esquinas redondeadas */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra sutil */
-    }
-    .custom-card-title {
-        color: #007bff !important; /* Color primario de Bootstrap */
-    }
-    .custom-card-text {
-        color: #6c757d !important; /* Color de texto secundario de Bootstrap */
-    }
-    #statusLight {
-        width: 50px;
-        height: 50px;
-        background-color: grey;
-        border-radius: 50%;
-        margin: 20px auto;
-        transition: background-color 0.3s, box-shadow 0.3s; /* Transición suave */
-    }
-    #statusLight.green {
-        background-color: #00ff00; /* Verde brillante */
-        box-shadow: 0 0 15px #00ff00; /* Efecto de lámpara */
-    }
-    #statusLight.red {
-        background-color: #ff0000; /* Rojo */
-        box-shadow: 0 0 15px #ff0000; /* Efecto de lámpara */
-    }
-</style>
 
 <script>
 document.getElementById('checkStatusButton').addEventListener('click', function() {
