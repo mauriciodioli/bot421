@@ -45,7 +45,8 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/herramientasAdmin/controlMdh.css')}}>
-    <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script> 
+    <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
+    <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script> 
 </head>
 
 <body>
@@ -75,7 +76,7 @@
                                 <a class="dropdown-item dropdown-toggle" href="#">Herramientas</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_iniciar">Iniciar Ws Sheet</a></li>
-                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_detener">Deteber Ws Sheet</a></li>
+                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_detener">Detener Ws Sheet</a></li>
                                     <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_controlMDH">Control MDH</a></li>
                                 </ul>
                             </li>      
