@@ -1,6 +1,6 @@
 #from re import template
 
-from flask import (Flask,Blueprint,Response,render_template,request,redirect,url_for,flash,jsonify)
+from flask import (Flask,Blueprint,Response,make_response,render_template,request,redirect,url_for,flash,jsonify)
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -284,7 +284,26 @@ def logs():
 
 
 
-
+@app.route("/send_local_storage", methods=["POST"])
+def send_local_storage():
+    data = request.json
+    if data:
+        ruta_de_logeo = data.get('rutaDeLogeo')
+        refresh_token = data.get('refresh_token')
+        correo_electronico = data.get('correo_electronico')
+        cuenta = data.get('cuenta')
+        usuario = data.get('usuario')
+        simuladoOproduccion = data.get('simuladoOproduccion')
+        
+        if correo_electronico:
+            redirect_route = 'home'
+        else:
+            redirect_route = 'index'
+        
+         # Devuelve una respuesta JSON con la ruta
+        return jsonify(success=True, ruta=redirect_route)
+    else:
+        return jsonify(success=False, message="No data received")
 
 
 @app.route("/")
@@ -293,7 +312,7 @@ def entrada():
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
     #crea_tablas_DB()
     
-    return redirect("index")
+    return  render_template("entrada.html")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -303,7 +322,7 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
    
 
     # Ciclo para ejecutar las tareas programadas
