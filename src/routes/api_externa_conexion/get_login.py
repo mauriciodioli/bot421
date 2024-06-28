@@ -101,6 +101,7 @@ VariableParaSaldoCta = 0
 pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
+luzMDH_funcionando = False
 sheet_manager = None
 
 indice_cuentas = {}

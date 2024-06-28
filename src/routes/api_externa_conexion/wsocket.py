@@ -89,7 +89,7 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
 def market_data_handler_0(message):
    # Limitar el número de elementos en precios_data
         MAX_PRECIOS_DATA = 73
-  
+        get.luzMDH_funcionando = True
         if len(get.precios_data) <= MAX_PRECIOS_DATA:
             try:
                 update_precios(message)

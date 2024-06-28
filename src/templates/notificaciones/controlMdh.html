@@ -1,0 +1,85 @@
+{% if layout == 'layout'%}
+    {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+  <div class="card custom-card text-center" style="width: 18rem;">
+    <div class="card-body">
+      <h5 class="card-title custom-card-title">Estado del MDH</h5>
+      <p class="card-text custom-card-text">Presione el botón para saber si el MDH está andando. Si la luz es verde, puede operar con normalidad.</p>
+      <button id="checkStatusButton" class="btn btn-primary">Verificar</button>
+      <div id="statusLight"></div>
+    </div>
+  </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+
+<style>
+    .custom-card {
+        background-color: #f8f9fa !important; /* Color de fondo gris claro */
+        border: 1px solid #e0e0e0 !important; /* Borde ligero */
+        border-radius: 10px !important; /* Esquinas redondeadas */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra sutil */
+    }
+    .custom-card-title {
+        color: #007bff !important; /* Color primario de Bootstrap */
+    }
+    .custom-card-text {
+        color: #6c757d !important; /* Color de texto secundario de Bootstrap */
+    }
+    #statusLight {
+        width: 50px;
+        height: 50px;
+        background-color: grey;
+        border-radius: 50%;
+        margin: 20px auto;
+        transition: background-color 0.3s, box-shadow 0.3s; /* Transición suave */
+    }
+    #statusLight.green {
+        background-color: #00ff00; /* Verde brillante */
+        box-shadow: 0 0 15px #00ff00; /* Efecto de lámpara */
+    }
+    #statusLight.red {
+        background-color: #ff0000; /* Rojo */
+        box-shadow: 0 0 15px #ff0000; /* Efecto de lámpara */
+    }
+</style>
+
+<script>
+document.getElementById('checkStatusButton').addEventListener('click', function() {
+    fetch('/herramientasSheet_accionesSheet_actualizaLuz')
+        .then(response => response.json())
+        .then(data => {
+            const statusLight = document.getElementById('statusLight');
+            if (data.luzMDH_control) {
+                // Si está funcionando, poner verde
+                statusLight.style.backgroundColor = '#00ff00'; // Opcional, solo para asegurarse que se cambie directamente
+                statusLight.classList.remove('red');
+                statusLight.classList.add('green');
+            } else {
+                // Si no está funcionando, poner rojo
+                statusLight.style.backgroundColor = '#ff0000'; // Opcional, solo para asegurarse que se cambie directamente
+                statusLight.classList.remove('green');
+                statusLight.classList.add('red');
+            }
+            // Reiniciar el estado a gris después de 3 segundos
+            setTimeout(() => {
+                statusLight.style.backgroundColor = 'grey';
+                statusLight.classList.remove('green', 'red'); // Limpiar clases adicionales
+            }, 3000);
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>
+
+{% endblock %}
