@@ -10,6 +10,11 @@
    {% extends 'layouts/layoutConexBroker.html' %}    
 {% endif %}
 
+{% if layout == 'layout_signal'%}
+    {% extends 'layouts/layout_signal.html' %}
+{% endif %}
+
+
 {% block content %}
 
 <div class="jumbotron">
