@@ -10,15 +10,16 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-5">
-            {% include 'productosComerciales/planes/tablaPlanes/Tablaplanes.html' %}
-        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+            Abrir Modal
+        </button>
+          
         <div class="col-md-5">
             <div class="card mt-3 mx-auto">
                 <div class="card-body">
-                    <h2 class="card-title text-center text-black">Promociones Existentes</h2>
+                    <h2 class="card-title text-center text-black">Armar Promociones</h2>
                     <div class="table-responsive">
-                        <table class="table" id="plansTable">
+                        <table class="table" id="promocionesTabla">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -41,7 +42,43 @@
         </div>
     </div>
 </div>
- 
+
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Planes Existentes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table" id="planesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Frecuencia</th>
+                                <th>Monto</th>
+                                <th>Motivo</th>
+                                <th>Frecuencia Tipo</th>
+                                <th>Moneda</th>
+                                <th>Repeticiones</th>
+                                <th>Día de facturación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Contenido dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
   
 {% include 'layouts/layout_footer.html' %}
+
 {% endblock %}
