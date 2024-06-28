@@ -36,10 +36,11 @@ from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
 
+from herramientasAdmin.accionesSheet import accionesSheet
+
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 
-from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
 from strategies.arbitraje_001 import arbitraje_001
@@ -225,6 +226,7 @@ app.register_blueprint(arbitraje_001)
 app.register_blueprint(programar_trigger)
 app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
+app.register_blueprint(accionesSheet)
 
 
 print(DATABASE_CONNECTION_URI)
