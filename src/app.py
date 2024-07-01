@@ -294,15 +294,26 @@ def send_local_storage():
         cuenta = data.get('cuenta')
         usuario = data.get('usuario')
         simuladoOproduccion = data.get('simuladoOproduccion')
+        client_ip = request.remote_addr  # Obtiene la IP del cliente
+        data['client_ip'] = client_ip
+
         if access_token and Token.validar_expiracion_token(access_token=access_token):
-           if correo_electronico:
-              redirect_route = 'home'
-           else:
-             redirect_route = 'index'    
+            if correo_electronico:
+                app.logger.info(client_ip)
+                app.logger.info(correo_electronico)  
+                redirect_route = 'home'
+            else:
+                app.logger.info('____INTENTO ENTRAR____')  
+                app.logger.info(client_ip)
+                app.logger.info(correo_electronico)  
+                redirect_route = 'index'    
         else:
+            app.logger.info('____INTENTO ENTRAR____') 
+            app.logger.info(client_ip) 
+            app.logger.info(correo_electronico)  
             redirect_route = 'index'
         
-         # Devuelve una respuesta JSON con la ruta
+        # Devuelve una respuesta JSON con la ruta
         return jsonify(success=True, ruta=redirect_route)
     else:
         return jsonify(success=False, message="No data received")

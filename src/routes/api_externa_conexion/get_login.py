@@ -373,7 +373,7 @@ def loginExtCuentaSeleccionadaBroker():
         accountCuenta = request.form.get('cuenta')
         access_token = request.form.get('access_token')       
         src_directory1 = os.getcwd()#busca directorio raiz src o app 
-        logs_file_path = os.path.join(src_directory1, 'logs.log') 
+        logs_file_path = os.path.join(src_directory1, 'logs.log')
         global ConexionesBroker,api_url, ws_url  
        
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
