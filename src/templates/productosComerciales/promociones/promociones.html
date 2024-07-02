@@ -8,61 +8,44 @@
     {% extends 'layouts/layout_signal.html' %}
 {% endif %}
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
-            Abrir Modal
-        </button>
-          
-        <div class="col-md-5">
-            <div class="card mt-3 mx-auto">
-                <div class="card-body">
-                    <h2 class="card-title text-center text-black">Armar Promociones</h2>
-                    <div class="table-responsive">
-                        <table class="table" id="promocionesTabla">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>IDPLAN</th>
-                                    <th>RAZON</th>
-                                    <th>DESC</th>
-                                    <th>PRECIO</th>
-                                    <th>DISCONT</th>
-                                    <th>IMAGEN</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Contenido dinámico -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<style>
+    #planesTable th:nth-child(1),
+    #planesTable td:nth-child(1) {
+        display: none; /* Ocultar la primera columna */
+    }
+    #planesTable th:nth-child(2),
+    #planesTable td:nth-child(2) {
+        display: none; /* Ocultar la segunda columna */
+    }
 
-<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Planes Existentes</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+    /* Estilos para centrar los elementos */
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+       
+    }
+</style>
+
+<div class="container mt-auto">
+    <!-- Tarjeta para Armar Promociones -->
+    <div class="col-md-5">
+        <div class="card mt-3">
+            <div class="card-body">
+                <h2 class="card-title text-center text-black">Armar Promociones</h2>
                 <div class="table-responsive">
-                    <table class="table" id="planesTable">
+                    <table class="table" id="promocionesTabla">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Frecuencia</th>
-                                <th>Monto</th>
-                                <th>Motivo</th>
-                                <th>Frecuencia Tipo</th>
-                                <th>Moneda</th>
-                                <th>Repeticiones</th>
-                                <th>Día de facturación</th>
+                                <th>IDPLAN</th>
+                                <th>MONTO</th>
+                                <th>DESCRIP</th>
+                                <th>RAZON</th>
+                                <th>MONEDA</th>
+                                <th>IMAGEN</th>
+                                <th>MESES</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -72,13 +55,88 @@
                     </table>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+    </div>
+    <div class="col-md-5">
+         <!-- Botón "Enviar Tabla" debajo de la tarjeta "Armar Promociones" -->
+    <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#myModal">
+        Abrir Modal
+    </button>   
+        <button id="enviarTablaBtn" class="btn btn-primary">Crear Promocion</button>
+    </div>
+
+    <!-- Tarjeta para Promociones Actuales -->
+    <div class="col-md-5">
+        <div class="card mt-3">
+            <div class="card-body">
+                <h2 class="card-title text-center text-black">Promociones Actuales</h2>
+                <div class="table-responsive">
+                    <table class="table" id="promocionesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Precio</th>
+                                <th>Descripción</th>
+                                <th>Descuento</th>
+                                <th>Razón</th>
+                                <th>Estado</th>
+                                <th>Cluster</th>
+                                <th>Moneda</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Contenido dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal para mostrar planes existentes -->
+<div class="container p-4">   
+    <div class="table-responsive">  
+        <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Planes Existentes</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table" id="planesTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Frecuencia</th>
+                                        <th>Monto</th>
+                                        <th>Motivo</th>
+                                        <th>Frecuencia Tipo</th>
+                                        <th>Moneda</th>
+                                        <th>Repeticiones</th>
+                                        <th>Día de facturación</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Contenido dinámico -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-  
+
 {% include 'layouts/layout_footer.html' %}
 
 {% endblock %}
