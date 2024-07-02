@@ -299,7 +299,7 @@ def send_local_storage():
 
         if access_token and Token.validar_expiracion_token(access_token=access_token):
             if correo_electronico:
-                app.logger.info(client_ip)
+              #  app.logger.info(client_ip)
                 app.logger.info(correo_electronico)  
                 redirect_route = 'home'
             else:
@@ -335,8 +335,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-  #  app.run(host='0.0.0.0', port=5001, debug=True)
-  app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
+    #app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas

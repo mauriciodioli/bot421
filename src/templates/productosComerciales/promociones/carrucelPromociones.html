@@ -1,0 +1,46 @@
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% endif %}
+{% block content %}
+
+<div class="container mt-auto">
+    <div id="offersCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            {% set active = false %}
+            {% for promocion in promociones %}
+                <div class="carousel-item {% if not active %}active{% endif %}">
+                    {% set active = true %}
+                    <div class="card text-center">
+                        <div class="card-header">
+                            MEJOR OFERTA
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ promocion.reason }}</h5>
+                            <p class="card-text">{{ promocion.price }} {{ promocion.currency_id }} c/u</p>
+                            <p class="card-text">AHORRA {{ promocion.discount }}%</p>
+                            <a href="#" class="btn btn-success">Seleccionar</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#offersCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#offersCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+
+{% endblock %}

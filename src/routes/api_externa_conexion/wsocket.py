@@ -89,7 +89,8 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
 def market_data_handler_0(message):
    # Limitar el número de elementos en precios_data
         MAX_PRECIOS_DATA = 73
-        get.luzMDH_funcionando = True
+        if  get.luzMDH_funcionando == False:
+            get.luzMDH_funcionando = True
         if len(get.precios_data) <= MAX_PRECIOS_DATA:
             try:
                 update_precios(message)
@@ -287,7 +288,11 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector):
             #### aqui define el MarketDataEntry
             entries = [pyRofexInicializada.MarketDataEntry.BIDS,
                         pyRofexInicializada.MarketDataEntry.OFFERS,
-                        pyRofexInicializada.MarketDataEntry.LAST]
+                        pyRofexInicializada.MarketDataEntry.LAST,
+                        pyRofexInicializada.MarketDataEntry.HIGH_PRICE,
+                        pyRofexInicializada.MarketDataEntry.LOW_PRICE,
+                        pyRofexInicializada.MarketDataEntry.CLOSING_PRICE]
+          
             merdado_id = pyRofexInicializada.Market.ROFEX
             pyRofexInicializada.market_data_subscription(
                                         tickers=instrumentos_existentes,
