@@ -371,11 +371,12 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                if elemento1[0] == elemento2['Symbol']:
                     if elemento2['Symbol'] not in símbolos_vistos: 
                         print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:',elemento2['_ut_'],'**** ',elemento1[4],' tipo:',elemento1[1])
-                        elemento1[3] = elemento2['_ut_']
+                       
+                        elemento1[3] = int(elemento2['_ut_'])
                         coincidencias.append(elemento1)
                         símbolos_vistos.add(elemento2['Symbol'])    
                     else:
-                        elemento1[3] = '0'   
+                        elemento1[3] = 0   
                         coincidencias.append(elemento1)
                         símbolos_vistos.add(elemento2['Symbol'])        
         contador_1 += 1                           
@@ -389,7 +390,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
               #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
                # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
                 if elemento1[2] == 'LONG_':
-                     if elemento1[3] != '0':
+                     if elemento1[3] != 0:
                          # if elemento1[4] == 'OPEN.':
                           if elemento1[4] == 'OPEN.':
                             if elemento1[0] == elemento2:
@@ -408,11 +409,11 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
          cadena_correcta = cadena_sin_puntos.replace(',', '.')
         # Paso 3: Convertir la cadena a float
          numero = float(cadena_correcta)
-         if elemento[3] == '0':
+         if elemento[3] == 0:
             ut = unidadTrader.ut/numero
             ut = abs(int(ut))
          else:
-            ut = abs(int(elemento[3]))         
+            ut = abs(elemento[3])         
          if ut > 0:
         #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
             #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
@@ -560,7 +561,7 @@ def _operada(order_report):
          
 
             for key, operacionGlobal in diccionario_global_operaciones.items():  
-                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':                    
+                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == 0:                    
                     operacionGlobal['status'] = '1'
                     print(key," : ",operacionGlobal['status']," :",operacionGlobal['ut'])
                 else:  # Si alguna operación no es 'si'
