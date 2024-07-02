@@ -135,6 +135,7 @@ def operaciones_desde_seniales_sin_cuenta():
             signal = request.form['senial']           
             cuentaUser = request.form['correo_electronico']
             pais = request.form['paisSeleccionado']
+            selector = request.form['selector']
             layouts = 'layout_signal'
             if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()  
@@ -183,8 +184,9 @@ def operaciones_desde_seniales_sin_cuenta():
                 db.session.close()
               
                 
-               
-                datos_desempaquetados = procesar_datos(app,pais, None,userId)
+                if selector == 'vacio':
+                  selector = 'produccion'
+                datos_desempaquetados = procesar_datos(app,pais, None,userId,selector)
               
                 
               

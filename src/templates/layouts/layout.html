@@ -45,7 +45,9 @@
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
-    <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script> 
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/herramientasAdmin/controlMdh.css')}}>
+    <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
+    <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script> 
 </head>
 
 <body>
@@ -70,7 +72,16 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">                      
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Administracion</a>
-                        <ul class="dropdown-menu">            
+                        <ul class="dropdown-menu">   
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Herramientas</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_iniciar">Iniciar Ws Sheet</a></li>
+                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_detener">Detener Ws Sheet</a></li>
+                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_controlMDH">Control MDH</a></li>
+                                </ul>
+                            </li>      
+                          <li><hr class="dropdown-divider"></li>     
                           <li><a class="dropdown-item" href="/usuarios/" >Usuarios</a></li>  
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>

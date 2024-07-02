@@ -83,15 +83,15 @@ reporte_de_ordenes = []
 SPREADSHEET_ID_PRUEBA='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
 SPREADSHEET_ID_PRODUCCION='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
 SPREADSHEET_ID_USA='1sxbKe5pjF3BsGgUCUzBDGmI-zV5hWbd6nzJwRFw3yyU'#de produccion USA
-CUENTA_ACTUALIZAR_SHEET = '44593'
-CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'
-ID_USER_ACTUALIZAR_SHEET = 1
+#CUENTA_ACTUALIZAR_SHEET = '44593'
+#CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'
+#ID_USER_ACTUALIZAR_SHEET = 1
 VARIABLE_ACTUALIZAR_SHEET = 'produccion'
 
 
-#CUENTA_ACTUALIZAR_SHEET = '10861'
-#CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'
-#ID_USER_ACTUALIZAR_SHEET = 2
+CUENTA_ACTUALIZAR_SHEET = '10861'
+CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'
+ID_USER_ACTUALIZAR_SHEET = 2
 precios_data = {} #para mdh 0
 symbols_sheet_valores = []
 sheet = None
@@ -101,6 +101,7 @@ VariableParaSaldoCta = 0
 pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
+luzMDH_funcionando = False
 sheet_manager = None
 
 indice_cuentas = {}
@@ -372,7 +373,8 @@ def loginExtCuentaSeleccionadaBroker():
         accountCuenta = request.form.get('cuenta')
         access_token = request.form.get('access_token')       
         src_directory1 = os.getcwd()#busca directorio raiz src o app 
-        logs_file_path = os.path.join(src_directory1, 'logs.log') 
+        logs_file_path = os.path.join(src_directory1, 'logs.log')
+        
         global ConexionesBroker,api_url, ws_url  
        
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
