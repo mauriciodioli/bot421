@@ -130,55 +130,23 @@ def leerDb(app):
         return all_ins
 
 
-
-def update_precios1(message):
-    
-    # Definición de variables iniciales
-    p_last24 = None
-    suffix = None
-    Symbol = message["instrumentId"]["symbol"]
-    # Comprobación del sufijo del símbolo y asignación de valores
-    if '24hs' in Symbol:    
-        p_last24 = float(message["marketData"]["LA"]['price'])  # Precio "last" para 24hs
-        suffix = "24hs"
-        update_precios_data(Symbol, p_last24, suffix)
-        
 def update_precios(message):
-    # Definición de variables iniciales
+     # Definición de variables iniciales
     p_value = None
     suffix = None
     # Comprobación del sufijo del símbolo y asignación de valores
-    Symbol = message["instrumentId"]["symbol"]
-    if Symbol.endswith("24hs"):
+    symbol = message["instrumentId"]["symbol"]
+    if symbol.endswith("24hs"):
         p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
-        suffix = "24hs"
-    if suffix:    # Llamada a la función update_symbol_data si hay un sufijo válido
-        if Symbol and p_value is not None:
-            #print(message)
-            update_precios_data(Symbol, p_value, suffix)
-    return True
+        if symbol not in get.precios_data:
+            get.precios_data[symbol] = {
+                'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
+            }
+        get.precios_data[symbol]['max24hs'] = float(message["marketData"]["HI"])
+        get.precios_data[symbol]['p24hs'] = float(message["marketData"]["LA"]["price"])
+        get.precios_data[symbol]['last24hs'] = float(message["marketData"]["CL"]["price"])
+        get.precios_data[symbol]['min24hs'] = float(message["marketData"]["LO"])
 
-
-
-
-def update_precios_data(symbol, p_value, suffix):
-    if symbol not in get.precios_data:
-        get.precios_data[symbol] = {
-            'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
-        }
-
-    if suffix == "24hs":
-        #precios_data[symbol]['p24hs'] = p_value
-        get.precios_data[symbol]['last24hs'] = p_value
-        if get.precios_data[symbol]['max24hs'] is None or p_value > get.precios_data[symbol]['max24hs']:
-                                            get.precios_data[symbol]['max24hs'] = p_value
-        if get.precios_data[symbol]['min24hs'] is None or p_value < get.precios_data[symbol]['min24hs']:
-            get.precios_data[symbol]['min24hs'] = p_value
-        # Mostrar el contenido actualizado para el símbolo específico
-   #print(f"{symbol}: {get.precios_data[symbol]}")
-    return True
-
-    
 
 def actualizar_precios(sheetId, sheet_name, pais):
     try:
