@@ -1,6 +1,6 @@
 #from re import template
 
-from flask import (Flask,Blueprint,Response,render_template,request,redirect,url_for,flash,jsonify)
+from flask import (Flask,Blueprint,Response,make_response,render_template,request,redirect,url_for,flash,jsonify)
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
@@ -35,10 +35,11 @@ from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
 
+from herramientasAdmin.accionesSheet import accionesSheet
+
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
 
-from strategies.datoSheet import datoSheet
 from strategies.datoSheet import datoSheet
 from strategies.Experimental.FuncionesBasicas01 import FuncionesBasicas01
 from strategies.arbitraje_001 import arbitraje_001
@@ -47,8 +48,8 @@ from strategies.gestion_estrategias.abm_estrategias import abm_estrategias
 from strategies.gestion_estrategias.unidad_trader import unidad_trader
 
 from tokens.token import token
+import tokens.token as Token
 
- 
 from routes.instrumentos import instrumentos
 from routes.instrumentosGet import instrumentosGet
 from routes.api_externa_conexion.get_login import get_login
@@ -225,6 +226,7 @@ app.register_blueprint(arbitraje_001)
 app.register_blueprint(programar_trigger)
 app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
+app.register_blueprint(accionesSheet)
 
 
 print(DATABASE_CONNECTION_URI)
@@ -236,8 +238,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SQLALCHEMY_POOL_SIZE'] = 100
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000, max_overflow=10)
-
+engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000, max_overflow=10, pool_recycle=3600)
 
 def log_connection_info(dbapi_connection, connection_record):
     """Log connection events."""
@@ -282,7 +283,40 @@ def logs():
 
 
 
+@app.route("/send_local_storage", methods=["POST"])
+def send_local_storage():
+    data = request.json
+    if data:
+        ruta_de_logeo = data.get('rutaDeLogeo')
+        refresh_token = data.get('refresh_token')
+        access_token = data.get('access_token')
+        correo_electronico = data.get('correo_electronico')
+        cuenta = data.get('cuenta')
+        usuario = data.get('usuario')
+        simuladoOproduccion = data.get('simuladoOproduccion')
+        client_ip = request.remote_addr  # Obtiene la IP del cliente
+        data['client_ip'] = client_ip
 
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
+            if correo_electronico:
+                app.logger.info(client_ip)
+                app.logger.info(correo_electronico)  
+                redirect_route = 'home'
+            else:
+                app.logger.info('____INTENTO ENTRAR____')  
+                app.logger.info(client_ip)
+                app.logger.info(correo_electronico)  
+                redirect_route = 'index'    
+        else:
+            app.logger.info('____INTENTO ENTRAR____') 
+            app.logger.info(client_ip) 
+            app.logger.info(correo_electronico)  
+            redirect_route = 'index'
+        
+        # Devuelve una respuesta JSON con la ruta
+        return jsonify(success=True, ruta=redirect_route)
+    else:
+        return jsonify(success=False, message="No data received")
 
 
 @app.route("/")
@@ -291,7 +325,7 @@ def entrada():
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
     #crea_tablas_DB()
     
-    return redirect("index")
+    return  render_template("entrada.html")
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -301,7 +335,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    app.run(host='0.0.0.0', port=5001, debug=True)
+  #  app.run(host='0.0.0.0', port=5001, debug=True)
+  app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas

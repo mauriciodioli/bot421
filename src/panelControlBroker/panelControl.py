@@ -160,15 +160,18 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
     return datos_procesados
 
 
-def terminaConexionParaActualizarSheet(account):
-    get.precios_data.clear()
+def terminaConexionParaActualizarSheet(account):   
     try:
         pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
+        pyRofexInicializada.close_websocket_connection(environment=account)
+        # Eliminar la conexión del diccionario solo si existe
+        del get.ConexionesBroker[account]
     except KeyError:
-            # Si la clave no existe en el diccionario, pyRofexInicializada será None
-            pyRofexInicializada = None
-    pyRofexInicializada.close_websocket_connection(environment=account)
-    del get.ConexionesBroker[account]
+        # Si la clave no existe en el diccionario, pyRofexInicializada será None
+        pyRofexInicializada = None
+        print(f"La cuenta {account} no existe en ConexionesBroker.")
+        
+    get.precios_data.clear()
 
 
 def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
@@ -185,29 +188,28 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 def ejecutar_en_hilo(app,pais,user_id,selector):
           while True:
             #time.sleep(420)# 420 son 7 minutos
-            time.sleep(60)# 4minulos
+            time.sleep(120)# 4minulos
             if len(get.diccionario_global_sheet) > 0:
                 ################################# preguntar si son las 11 ##################
                 ################################# pasar la lectura #########################                
-                if datetime.now().hour >= 11 or datetime.now().hour < 20:
-                   enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
+                if datetime.now().hour >= 14 and datetime.now().hour < 20:
+                    enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
                 ################################# pregutar si son las 17 hs #################
                 ################## apagar el ws y limpia precios_data #######################
                 now = datetime.now()
-                if 20 <= now.hour < 20 or (now.hour == 20 and now.minute < 7):
+                if (now.hour == 20 and now.minute >= 0 and now.minute <= 59) and get.luzMDH_funcionando:
                     terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
                     get.symbols_sheet_valores.clear()
-                    get.sheet_manager.clear()
+                    get.sheet_manager = None
                     get.autenticado_sheet = False
+                    
+                    
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
      if hilo == 'hilo':
         pais = 'argentina'
-       
-        print("ENTRA A THREAD Y LEE EL SHEET POR HILO")
         app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
-        print("LEE EL SHEET POR LLAMADA DE FUNCION")
         app.logger.info('LEE EL SHEET POR LLAMADA DE FUNCION')
 
      if pais not in ["argentina", "usa","hilo"]:
@@ -222,7 +224,8 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
                                                  get.CORREO_E_ACTUALIZAR_SHEET,
                                                  get.VARIABLE_ACTUALIZAR_SHEET,
                                                  get.ID_USER_ACTUALIZAR_SHEET):
-                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
                 #  print(' PANELCONTROL.PY ESTA COMENTADA LA LINEA DESCOMENTAR ANTES DE SUBIR A GIT ACTION') 
                   app.logger.info('MODIFICO EL SHEET CORRECTAMENTE')
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
