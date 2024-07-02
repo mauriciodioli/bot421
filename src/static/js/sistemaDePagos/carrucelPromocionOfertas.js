@@ -1,15 +1,15 @@
 
 $(document).ready(function(){
-    $('#carrucelPromocionOfertasForm').submit(function(event){
+    
         // Prevent the form from submitting and the page from reloading
-        event.preventDefault();
+    
 
         // Log a message to the console to confirm the function was called
         console.log('cargarOfertaTable called');
 
         // Call the function to handle the form data
         cargarOfertaTable();
-    });
+    
 });
 
 function cargarOfertaTable() {
@@ -39,8 +39,8 @@ function cargarOfertaTable() {
         // Show an alert with the response data
         alert('Plan de preaprobación creado con éxito. ID: ' + data.id);
 
-        // Update the offer table with the new data
-        updateOfertaTable(data.ofertas);
+          // Actualizar el carrusel con los datos recibidos
+          actualizarCarrusel(data.promociones);
     })
     .catch(error => {
         // Log any errors to the console
@@ -51,6 +51,32 @@ function cargarOfertaTable() {
     });
 }
 
-function updateOfertaTable(ofertas) {
-    // Logic to update the offer table with new data
+
+// Función para actualizar el carrusel con las promociones recibidas
+function actualizarCarrusel(promociones) {
+    // Obtener el elemento del carrusel
+    var carouselInner = document.querySelector('.carousel-inner');
+    carouselInner.innerHTML = '';  // Limpiar cualquier contenido anterior del carrusel
+
+    // Iterar sobre las promociones recibidas y agregarlas al carrusel
+    promociones.forEach(function(promocion, index) {
+        var carouselItem = document.createElement('div');
+        carouselItem.classList.add('carousel-item');
+        if (index === 0) {
+            carouselItem.classList.add('active');
+        }
+
+        var img = document.createElement('img');
+        img.classList.add('d-block', 'w-100');
+        img.src = promocion.image_url;
+        img.alt = 'Promoción ' + promocion.id;
+
+        var carouselCaption = document.createElement('div');
+        carouselCaption.classList.add('carousel-caption');
+        carouselCaption.innerHTML = '<h5>' + promocion.description + '</h5><p>' + promocion.price + '</p>';
+
+        carouselItem.appendChild(img);
+        carouselItem.appendChild(carouselCaption);
+        carouselInner.appendChild(carouselItem);
+    });
 }

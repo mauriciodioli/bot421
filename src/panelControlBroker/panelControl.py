@@ -196,7 +196,7 @@ def ejecutar_en_hilo(app,pais,user_id,selector):
                    get.luzThred_funcionando = True
                 ################################# preguntar si son las 11 ##################
                 ################################# pasar la lectura #########################                
-                if datetime.now().hour >= 12 and datetime.now().hour < 20:
+                if datetime.now().hour >= 14 and datetime.now().hour < 20:
                     enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
                 ################################# pregutar si son las 17 hs #################
                 ################## apagar el ws y limpia precios_data #######################
