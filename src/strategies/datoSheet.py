@@ -103,7 +103,7 @@ def leerSheet(sheetId,sheet_name):
             # recibo la tupla pero como este es para el bot leo el primer elemento 
             credentials_path = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
             # Crear instancia del gestor de hojas
-            get.sheet_manager = GoogleSheetManager(credentials_path)
+            get.sheet_manager = GoogleSheetManager(credentials_path,sheet_name)
 
             if get.sheet_manager.autenticar():
                 get.autenticado_sheet = True
@@ -203,10 +203,10 @@ def actualizar_precios(sheetId, sheet_name, pais):
                                     'range': f"F{index + 1}", 
                                     'values': [[str(precios_data['min24hs']).replace('.', ',')]]
                                 })
-                            if 'last24hs' in precios_data:
+                            if 'p24hs' in precios_data:
                                 batch_updates.append({
                                     'range': f"G{index + 1}", 
-                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                    'values': [[str(precios_data['p24hs']).replace('.', ',')]]
                                 })
                         except ValueError:
                             print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
