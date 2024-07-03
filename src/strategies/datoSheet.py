@@ -139,14 +139,6 @@ def update_precios(message):
     symbol = message["instrumentId"]["symbol"]
     if symbol.endswith("24hs"):
         p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
-<<<<<<< HEAD
-        suffix = "24hs"
-    if suffix:    # Llamada a la función update_symbol_data si hay un sufijo válido
-        if Symbol and p_value is not None:
-            #print(message)
-            update_precios_data(Symbol, p_value, suffix)
-
-=======
         if symbol not in get.precios_data:
             get.precios_data[symbol] = {
                 'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
@@ -155,7 +147,6 @@ def update_precios(message):
         get.precios_data[symbol]['p24hs'] = float(message["marketData"]["LA"]["price"])
         get.precios_data[symbol]['last24hs'] = float(message["marketData"]["CL"]["price"])
         get.precios_data[symbol]['min24hs'] = float(message["marketData"]["LO"])
->>>>>>> aaadf113df9827d8279bbd849aa6e58906e3923b
 
 
 def actualizar_precios(sheetId, sheet_name, pais):
@@ -188,10 +179,10 @@ def actualizar_precios(sheetId, sheet_name, pais):
                                                     'range': f"F{index + 1}", 
                                                     'values': [[str(precios_data['min24hs']).replace('.', ',')]]
                                                 })
-                                            if 'last24hs' in precios_data:
+                                            if 'p24hs' in precios_data:
                                                 batch_updates.append({
                                                     'range': f"G{index + 1}", 
-                                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                                    'values': [[str(precios_data['p24hs']).replace('.', ',')]]
                                                 })
                                         except ValueError:
                                             print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
