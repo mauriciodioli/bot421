@@ -17,7 +17,6 @@ import time
 import json
 from models.orden import Orden
 from models.cuentas import Cuenta
-from models.googleSheetManager import GoogleSheetManager
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
 
@@ -103,7 +102,7 @@ def leerSheet(sheetId,sheet_name):
             # recibo la tupla pero como este es para el bot leo el primer elemento 
             credentials_path = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
             # Crear instancia del gestor de hojas
-            get.sheet_manager = GoogleSheetManager(credentials_path,sheet_name)
+            get.sheet_manager = GoogleSheetManager(credentials_path)
 
             if get.sheet_manager.autenticar():
                 get.autenticado_sheet = True

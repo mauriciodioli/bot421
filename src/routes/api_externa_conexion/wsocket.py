@@ -50,7 +50,7 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=No
               sobreEscituraPyRofex = True
               if sobreEscituraPyRofex == True:
                   ambiente = copy.deepcopy(get.envNuevo)
-                  pyRofexInicializada = pyRofex
+                  pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
                   pyRofexInicializada._add_environment_config(enumCuenta=account,env=ambiente)
                   environments = account
               else:    
