@@ -125,7 +125,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
                     accountCuenta = diccionario_global_operaciones[Symbol]['accountCuenta']
-                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=pyRofexInicializada.Side.BUY,order_type=pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=accountCuenta)
+                    #pyRofexInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=pyRofexInicializada.Side.BUY,order_type=pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=accountCuenta)
 
                     ws_client_order_id = _ws_client_order_id
                         
@@ -172,7 +172,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
                     accountCuenta = diccionario_global_operaciones[Symbol]['accountCuenta']
-                    pyRofexInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=pyRofexInicializada.Side.SELL,order_type=pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=accountCuenta)
+                    #pyRofexInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=pyRofexInicializada.Side.SELL,order_type=pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=accountCuenta)
                     ws_client_order_id = _ws_client_order_id
                     
                     
