@@ -34,6 +34,7 @@ def herramientasSheet_accionesSheet_detener():
     get.symbols_sheet_valores.clear()
     get.ContenidoSheet_list = None
     get.sheet_manager = None
+    get.precios_data.clear()
     
     get.autenticado_sheet = False
     return render_template('notificaciones/stopProceso.html', layout='layout')

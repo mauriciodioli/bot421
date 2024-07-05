@@ -40,13 +40,13 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
             numero_de_cuenta = decoded_token.get("numero_de_cuenta")
             user_id = decoded_token.get("sub")
             
-            promociones = db.session.query(Promotion).all()
+            promociones_todas = db.session.query(Promotion).all()
             db.session.close()
 
            # Crear un diccionario vacío para agrupar las promociones por cluster
             promociones_por_cluster = {}
 
-            for promocione in promociones:
+            for promocione in promociones_todas:
                 cluster = promocione.cluster
                 # Verificar si el cluster ya existe en el diccionario
                 if cluster not in promociones_por_cluster:
