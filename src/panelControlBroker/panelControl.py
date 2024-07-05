@@ -172,6 +172,7 @@ def terminaConexionParaActualizarSheet(account):
         print(f"La cuenta {account} no existe en ConexionesBroker.")
         
     get.precios_data.clear()
+    return True
 
 
 def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):

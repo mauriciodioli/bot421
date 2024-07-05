@@ -50,7 +50,7 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=No
               sobreEscituraPyRofex = True
               if sobreEscituraPyRofex == True:
                   ambiente = copy.deepcopy(get.envNuevo)
-                  pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
+                  pyRofexInicializada = pyRofex
                   pyRofexInicializada._add_environment_config(enumCuenta=account,env=ambiente)
                   environments = account
               else:    
@@ -81,18 +81,17 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
       get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
    if accountCuenta != get.CUENTA_ACTUALIZAR_SHEET:
-    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
+      pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
  
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
    
 
 def market_data_handler_0(message):
-   # Limitar el número de elementos en precios_data
-        MAX_PRECIOS_DATA = 73
-        if  get.luzMDH_funcionando == False:
-            get.luzMDH_funcionando = True
-        if len(get.precios_data) <= MAX_PRECIOS_DATA:
-            try:
+   # Limitar el número de elementos en precios_data  
+            try:     
+                if  get.luzMDH_funcionando == False:
+                    get.luzMDH_funcionando = True       
+            
                 update_precios(message)
                 if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
                     pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']

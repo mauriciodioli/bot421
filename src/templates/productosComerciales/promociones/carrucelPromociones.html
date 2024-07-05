@@ -12,23 +12,33 @@
 <div class="container mt-auto">
     <div id="offersCarousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
-            {% set active = false %}
-            {% for promocion in promociones %}
-                <div class="carousel-item {% if not active %}active{% endif %}">
-                    {% set active = true %}
-                    <div class="card text-center">
-                        <div class="card-header">
-                            MEJOR OFERTA
+            {% set active = False %}
+            <div class="carousel-item {% if not active %}active{% set active = True %}{% endif %}">
+                <div class="row justify-content-center">
+                    {% for promocion in promociones %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card text-center shadow-card">
+                                <div class="card-header">
+                                    MEJOR OFERTA
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ promocion.reason }}</h5>
+                                    <p class="card-text">{{ promocion.price }} {{ promocion.currency_id }} c/u</p>
+                                    <p class="card-text ahorro">AHORRA {{ promocion.discount }}%</p>
+                                    <form class="donationForm">
+                                        <input type="hidden" id="reason" name="reason" value="{{ promocion.reason }}">
+                                        <input type="hidden" id="costo_base" name="costo_base" value="{{ promocion.price }}">
+                                        <input type="hidden" id="currency_id" name="currency_id" value="{{ promocion.currency_id }}">
+                                        <input type="hidden" id="discount" name="discount" value="{{ promocion.discount }}">
+                                        <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
+                                        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Seleccionar</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{ promocion.reason }}</h5>
-                            <p class="card-text">{{ promocion.price }} {{ promocion.currency_id }} c/u</p>
-                            <p class="card-text">AHORRA {{ promocion.discount }}%</p>
-                            <a href="#" class="btn btn-success">Seleccionar</a>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            </div>
         </div>
         <a class="carousel-control-prev" href="#offersCarousel" role="button" data-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
