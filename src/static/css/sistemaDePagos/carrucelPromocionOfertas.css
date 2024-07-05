@@ -1,8 +1,60 @@
+
+.carousel-item {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
 .card {
     width: 18rem;
+    border: 1px solid #f3f3f3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin: 0 auto;
 }
 
-.carousel-item {
-    text-align: center;
+.card-header {
+    background-color: #f5e1ff;
+    color: #5e3e91;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.card-body {
+    background-color: #ffffff;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    color: #000000;
+}
+
+.card-text {
+    font-size: 1.2rem;
+    color: #000000;
+}
+.card-text.ahorro {
+    background-color: #d1b4f4; /* Color del botón */
+    color: #5e3e91; /* Texto más oscuro */
+    font-weight: bold; /* Texto en negrita */
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+    display: inline-block; /* Para que el fondo abarque solo el texto */
+}
+.btn-success {
+    background-color: #b07df0;
+    border-color: #b07df0;
+    font-size: 1.2rem;
+    border-radius: 1.5rem;
+}
+
+.btn-success:hover {
+    background-color: #945ed1;
+    border-color: #945ed1;
+}
+
+
+.shadow-card {
+    background-color: #ffffff; /* Fondo blanco para la tarjeta */
+    box-shadow: 0 10px 26px #945ed1;
+   /* box-shadow: 0 10px 26px rgba(0, 123, 255, 0.8);*/ /* Sombra más ancha y visible */
 }
