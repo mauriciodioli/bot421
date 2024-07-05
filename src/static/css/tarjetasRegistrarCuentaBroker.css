@@ -16,7 +16,7 @@
     cursor: pointer; /* Cambia el cursor al pasar por encima de las tarjetas */
     border-radius: 5px; /* Agrega bordes redondeados a las tarjetas */
     background-color: #333; /* Fondo gris oscuro para las tarjetas */
-    box-shadow: 0 6px 12px rgba(255, 8, 131, 0.973); /* Sombra dorada en las tarjetas */
+    box-shadow: 0 6px 12px rgba(223, 220, 3, 0.973); /* Sombra dorada en las tarjetas */
     max-width: 300px;
     margin: 10px;
   }
@@ -24,7 +24,7 @@
   /* Estilos adicionales para aplicar sombra más grande al pasar el mouse o seleccionar */
   .cardIndexCuentaBroker:hover,
   .cardIndexCuentaBroker:focus {
-    box-shadow: 0 10px 20px rgb(255, 20, 243); /* Sombra más grande al pasar el mouse o seleccionar */
+    box-shadow: 0 10px 20px rgba(223, 220, 3, 0.973);  /* Sombra más grande al pasar el mouse o seleccionar */
   }
   /* Estilos para las tarjetas */
   .cardIndexCuentaBrokerAzul {
