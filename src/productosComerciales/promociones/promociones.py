@@ -221,3 +221,40 @@ def sistemaDePagos_get_promociones():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+@promociones.route('/productosComerciales_promociones_modifica_promocionesSinPlan', methods=['POST'])
+def productosComerciales_promociones_modifica_promocionesSinPlan():
+
+    try: 
+        data = request.json
+        access_token = data.get('access_token')
+        correo_electronico = data.get('correo_electronico')
+      
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            numero_de_cuenta = decoded_token.get("numero_de_cuenta")
+            user_id = decoded_token.get("sub")        
+
+            promociones = db.session.query(Promotion).all()
+            db.session.close()
+
+            # Serializar los planes
+            promociones_serializados = [
+                {
+                    'id': promocione.idPlan,
+                    'description': promocione.description,
+                    'price': promocione.price,
+                    'reason': promocione.reason,
+                    'discount': promocione.discount,
+                    'image_url': promocione.image_url,
+                    'state': promocione.state,
+                    'cluster': promocione.cluster,
+                    'currency_id': promocione.currency_id 
+                        
+                } for promocione in promociones
+            ]
+
+            return jsonify({'promociones': promociones_serializados})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
