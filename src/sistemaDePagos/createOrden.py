@@ -51,17 +51,23 @@ def create_order():
 
         # Extrae los valores necesarios
         costo_base = data.get("items")[0].get("unit_price")
-        porcentaje_retorno = data.get("porcentaje_retorno", 0)
+        porcentaje_retorno = data.get("items")[0].get("porcentaje_retorno")
+        currency_id =  data.get("items")[0].get("currency_id")
+        quantity =  data.get("items")[0].get("quantity")
+        final_price = data.get("items")[0].get("final_price")
+        title =  data.get("items")[0].get("title")
         costo_base = float(costo_base)
+        porcentaje_retorno = float(porcentaje_retorno)
+       
 
         # Crea los datos de la preferencia
         preference_data = {
             "items": [
                 {
-                    "title": "Donacion de prueba",  # Título del artículo
+                    "title": title,  # Título del artículo
                     "quantity": 1,
-                    "unit_price": costo_base,  # Precio unitario
-                    "currency_id": "ARS"
+                    "unit_price": final_price,  # Precio unitario
+                    "currency_id": currency_id
                 }
             ],
             "back_urls": {

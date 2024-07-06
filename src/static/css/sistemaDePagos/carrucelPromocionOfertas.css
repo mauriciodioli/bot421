@@ -1,6 +1,5 @@
 .carousel-item {
-    display: flex;
-    justify-content: center;
+    display: block;
     text-align: center;
 }
 
@@ -32,6 +31,15 @@
 .card-text {
     font-size: 1.2rem;
     color: #000000;
+}
+
+.card-text.mensaje {
+    background-color: #d1b4f4;
+    color: #5e3e91;
+    font-weight: bold;
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+    display: inline-block;
 }
 
 .card-text.ahorro {
