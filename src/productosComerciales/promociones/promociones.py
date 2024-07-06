@@ -29,6 +29,10 @@ def sistemaDePagos_get_planes_promociones():
     layout = request.args.get('layout', 'layout')
     return render_template('productosComerciales/promociones/promociones.html', layout = layout)
 
+@promociones.route('/productosComerciales_promociones_get_promociones', methods=['GET'])
+def productosComerciales_promociones_get_promociones():
+    layout = request.args.get('layout', 'layout')
+    return render_template('productosComerciales/promociones/agregaPromocionesSinPlan.html', layout = layout)
 
 @promociones.route('/productosComerciales_promociones_muestra_promociones', methods=['POST'])
 def productosComerciales_promociones_muestra_promociones():  
@@ -118,6 +122,67 @@ def productosComerciales_promociones_agrega_promociones():
         return jsonify({'error': str(e)}), 500
 
 
+
+@promociones.route('/productosComerciales_promociones_agrega_promocionesSinPlan', methods=['POST'])
+def productosComerciales_promociones_agrega_promocionesSinPlan():
+    try:
+        data = request.json
+        promociones = data  # Esto asume que recibes una lista de promociones
+        promocion = db.session.query(Promotion).order_by(Promotion.cluster.desc()).first()
+        if promocion is None:
+            nuevo_cluster = 1
+        else:
+            nuevo_cluster = promocion.cluster + 1
+        
+       
+        monto = data.get('precio')
+        descripcion = data.get('descripcion')  # Nota: 'descripcion' es la clave que parece estar en tus datos
+        descuento = data.get('descuento')
+        reason = data.get('razon')
+        estado = data.get('estado')
+        currency_id = data.get('moneda')
+        
+        
+        
+        promocion_nueva = Promotion(
+            idPlan='',
+            description=descripcion,
+            price=float(monto),
+            reason=reason,
+            discount= float(descuento), #porcentaje de descuento
+            image_url='',
+            state=estado,
+            cluster=nuevo_cluster,
+            currency_id = currency_id
+        )
+        
+        db.session.add(promocion_nueva)
+        db.session.commit()
+    
+       
+        promociones = db.session.query(Promotion).all()
+        db.session.close()
+
+        # Serializar los planes
+        promociones_serializados = [
+            {
+                'id': promocione.idPlan,
+                'description': promocione.description,
+                'price': promocione.price,
+                'reason': promocione.reason,
+                'discount': promocione.discount,
+                'image_url': promocione.image_url,
+                'state': promocione.state,
+                'cluster': promocione.cluster,
+                'currency_id': promocione.currency_id 
+                    
+            } for promocione in promociones
+        ]
+
+        return jsonify({'promociones': promociones_serializados})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @promociones.route('/sistemaDePagos_get_promociones', methods=['POST'])
 def sistemaDePagos_get_promociones():
