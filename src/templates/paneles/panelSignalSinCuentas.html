@@ -8,11 +8,11 @@
     <div class="jumbotron">
       <p class="lead">To operate you can press the button with the corresponding color</p>
       <form id="sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html" method="POST" action="/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html">
-        <input type="hidden" id="access_token_btn_donacion" name="access_token_btn_donacion" >
-        <input type="hidden" id="correo_electronico_btn_donacion" name="correo_electronico_btn_donacion">   
-        <input type="hidden" id="cluster_btn_donacion" name="cluster_btn_donacion" value='1'>        
-        <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout_signal">
-        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $17</button>
+          <input type="hidden" id="access_token_btn_donacion" name="access_token_btn_donacion" >
+          <input type="hidden" id="correo_electronico_btn_donacion" name="correo_electronico_btn_donacion">   
+          <input type="hidden" id="cluster_btn_donacion" name="cluster_btn_donacion" value='1'>        
+          <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout_signal">
+          <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Ayudanos a mejorar</button>
       </form>
 
     
@@ -660,51 +660,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-$(document).ready(function(){
-  $('#donationForm').submit(function(event){
-      event.preventDefault(); // Evita que el formulario se envíe de manera convencional
 
-      // Obtén los datos del formulario
-      var formData = {
-          costo_base: $('#costo_base').val(),
-          porcentaje_retorno: $('#porcentaje_retorno').val()
-      };
-
-      // Crea los datos de la preferencia
-      var preference_data = {
-          items: [
-              {
-                  title: "Donacion de prueba",
-                  quantity: 1,
-                  unit_price: formData.costo_base
-              }
-          ],
-          back_urls: {
-              success: "https://89ae-190-225-182-66.ngrok-free.app/success",
-              failure: "https://89ae-190-225-182-66.ngrok-free.app/failure",
-              pending: "https://89ae-190-225-182-66.ngrok-free.app/pending"
-          },
-          notification_url: "https://89ae-190-225-182-66.ngrok-free.app/webhook",
-          auto_return: "approved"
-      };
-
-      // Envía la solicitud AJAX
-      $.ajax({
-          url: '/create_order/',
-          type: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify(preference_data),
-          success: function(response) {
-              // Redirige a la URL de inicialización de la preferencia
-              window.location.href = response.init_point;
-          },
-          error: function(xhr, status, error) {
-              console.error('Error: ' + error);
-              alert('Hubo un error al procesar la donación.');
-          }
-      });
-  });
-});
 </script>
 <body> 
 {% endblock%}
