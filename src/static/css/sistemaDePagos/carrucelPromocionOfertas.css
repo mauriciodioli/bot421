@@ -1,8 +1,24 @@
 .carousel-item {
     display: block;
     text-align: center;
+    flex: 0 0 90%; /* Show one card fully and 5% of the adjacent cards */
+    margin: 0 5%;
 }
 
+.carousel-inner {
+    display: flex;
+}
+
+.carousel-indicators {
+    bottom: -30px;
+}
+.long-button {
+    width: 100%;
+}
+
+.mensaje h5 {
+    margin-bottom: 20px;
+}
 .card {
     width: 18rem;
     border: 1px solid #f3f3f3;
@@ -68,3 +84,4 @@
     box-shadow: 0 10px 26px #945ed1;
     border-radius: 1rem;
 }
+
