@@ -94,21 +94,28 @@ function actualizarCarrusel(promociones) {
 
 $(document).ready(function(){
     $(document).on('submit', '.donationForm', function(event){
-        event.preventDefault(); // Evita que el formulario se envíe de manera convencional
-        
-        // Obtén los datos del formulario
+        event.preventDefault(); // Prevent the default form submission
+
+        // Get the form data
         var formData = {
-            costo_base: $(this).find('input[name="costo_base"]').val(),
-            porcentaje_retorno: $(this).find('input[name="porcentaje_retorno"]').val()
+            costo_base: parseFloat($(this).find('input[name="costo_base"]').val()), // Convert to number
+            porcentaje_retorno: $(this).find('input[name="discount"]').val(),
+            titulo: $(this).find('input[name="reason"]').val(),
+            currency_id: $(this).find('input[name="currency_id"]').val()
         };
-  
-        // Crea los datos de la preferencia
+        // Calculate the final price after applying the discount
+        var final_price = formData.costo_base - (formData.costo_base * formData.porcentaje_retorno / 100);
+
+        // Create the preference data
         var preference_data = {
             items: [
                 {
-                    title: "Donacion de prueba",
+                    title: formData.titulo,
                     quantity: 1,
-                    unit_price: parseFloat(formData.costo_base) // Asegúrate de convertir a número
+                    porcentaje_retorno: formData.porcentaje_retorno,
+                    currency_id: formData.currency_id,
+                    final_price:final_price,
+                    unit_price: formData.costo_base
                 }
             ],
             back_urls: {
@@ -119,21 +126,26 @@ $(document).ready(function(){
             notification_url: "https://89ae-190-225-182-66.ngrok-free.app/webhook",
             auto_return: "approved"
         };
-  
-        // Envía la solicitud AJAX
+
+        // Send the AJAX request
         $.ajax({
             url: '/create_order/',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(preference_data),
             success: function(response) {
-                // Redirige a la URL de inicialización de la preferencia
+                // Redirect to the initialization URL of the preference
                 window.location.href = response.init_point;
             },
             error: function(xhr, status, error) {
                 console.error('Error: ' + error);
-                alert('Hubo un error al procesar la donación.');
+                alert('There was an error processing the donation.');
             }
         });
     });
 });
+
+
+
+
+
