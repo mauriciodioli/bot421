@@ -3,13 +3,12 @@
 
 <div class="jumbotron">
 
-  <div class="row">
+  
     <div class="ubicacion-imagenes">
       <!-- Aquí se incrustará la galería de imágenes -->
     </div>
   </div>
-  
-</div>
+
 {% include 'layouts/layout_footer.html' %}   
 <script>
 
@@ -44,31 +43,31 @@ if (!access_token || !correo_electronico || tokenExpirado(access_token)) {
 
 // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
 if (!access_token || tokenExpirado(access_token)) {
-// Obtener los tokens desde el diccionario de contexto de Flask
-{% if tokens is defined %}
-  access_token = "{{ tokens[0] }}";
-  const refresh_token = "{{ tokens[1] }}";
-  correo_electronico = "{{ tokens[2] }}";
-  const expiry_timestamp = "{{ tokens[3] }}";  // Marca de tiempo de expiración
-  const roll = "{{ tokens[4] }}";
-  const cuenta = "{{ tokens[5] }}";
-  const selector = "{{ tokens[6] }}";
-  const usuario = "{{ tokens[7] }}";
-  const usuario_id = "{{ tokens[8] }}";
+  // Obtener los tokens desde el diccionario de contexto de Flask
+  {% if tokens is defined %}
+    access_token = "{{ tokens[0] }}";
+    const refresh_token = "{{ tokens[1] }}";
+    correo_electronico = "{{ tokens[2] }}";
+    const expiry_timestamp = "{{ tokens[3] }}";  // Marca de tiempo de expiración
+    const roll = "{{ tokens[4] }}";
+    const cuenta = "{{ tokens[5] }}";
+    const selector = "{{ tokens[6] }}";
+    const usuario = "{{ tokens[7] }}";
+    const usuario_id = "{{ tokens[8] }}";
 
 
-  // Almacenar los tokens y la marca de tiempo de expiración en el localStorage
-  localStorage.setItem("access_token", access_token);
-  localStorage.setItem("refresh_token", refresh_token);
-  localStorage.setItem("correo_electronico", correo_electronico);
-  localStorage.setItem("expiry_timestamp", expiry_timestamp);
-  localStorage.setItem("roll",roll);
-  localStorage.setItem("cuenta",cuenta);
-  localStorage.setItem("selector",selector);
-  localStorage.setItem("usuario",usuario);
-  localStorage.removeItem('usuario_id');
-  localStorage.setItem("usuario_id",usuario_id);
-{% endif %}
+    // Almacenar los tokens y la marca de tiempo de expiración en el localStorage
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
+    localStorage.setItem("correo_electronico", correo_electronico);
+    localStorage.setItem("expiry_timestamp", expiry_timestamp);
+    localStorage.setItem("roll",roll);
+    localStorage.setItem("cuenta",cuenta);
+    localStorage.setItem("selector",selector);
+    localStorage.setItem("usuario",usuario);
+    localStorage.removeItem('usuario_id');
+    localStorage.setItem("usuario_id",usuario_id);
+  {% endif %}
 }else {
 // Token válido, usarlo para la solicitud AJAX
 //document.getElementById("access_token").value = access_token;
