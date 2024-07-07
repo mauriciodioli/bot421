@@ -26,6 +26,10 @@
         justify-content: center;
        
     }
+    .modal-body {
+        max-height: 70vh; /* Limita la altura del cuerpo del modal al 70% de la altura de la ventana */
+        overflow-y: auto; /* Habilita el desplazamiento vertical */
+      }
 </style>
 
 <div class="container mt-auto">
@@ -106,7 +110,7 @@
         </div>
         <div class="modal-body">
           <div class="table-responsive">
-            <table class="table table-bordered" id="planesTable">
+            <table class="table table-bordered table-hover" id="planesTable">
               <thead class="table-dark">
                 <tr>
                   <th>ID</th>
@@ -132,7 +136,7 @@
       </div>
     </div>
   </div>
-
+  
 {% include 'layouts/layout_footer.html' %}
 
 {% endblock %}
