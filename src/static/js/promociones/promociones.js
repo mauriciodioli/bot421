@@ -148,10 +148,30 @@ function updateTablePromociones(promociones) {
         // Ocultar la primera columna (index 0, correspondiente a promocion.id)
         row.cells[0].style.display = 'none';
     });
+
+    // Añadir eventListener a los botones de modificar
+    const modificarButtons = document.querySelectorAll('.modificar-promocion');
+    modificarButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute('data-id');
+            const promocion = promocionesGlobal.find(promo => promo.id == id);
+            if (promocion) {
+                // Llenar el formulario del modal con los datos de la promoción
+                document.getElementById('promotionPrice').value = promocion.price;
+                document.getElementById('promotionDescription').value = promocion.description;
+                document.getElementById('promotionDiscount').value = promocion.discount;
+                document.getElementById('promotionReason').value = promocion.reason;
+                document.getElementById('promotionStatus').value = promocion.state;
+                document.getElementById('promotionCurrency').value = promocion.currency_id;
+                document.getElementById('promotionCluster').value = promocion.cluster;
+                
+                // Mostrar el modal
+                const modal = new bootstrap.Modal(document.getElementById('modalModificaPromocion'));
+                modal.show();
+            }
+        });
+    });
 }
-
-
-
 
 
 
