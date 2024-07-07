@@ -48,7 +48,8 @@
    <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/herramientasAdmin/controlMdh.css')}}>
     <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
     <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script> 
-    <script src="{{url_for('static',filename='js/promociones/agregaPromocionesSinPlan.js')}}"></script> 
+    <script src="{{url_for('static',filename='js/promociones/agregaPromocionesSinPlan.js')}}"></script>
+    <script src="{{url_for('static',filename='js/promociones/consultaPromociones.js')}}"></script>  
 </head>
 
 <body>
@@ -110,7 +111,6 @@
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">Suscripciones</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/create_preapproval_html?layout=layout">Crear suscripcion</a></li>
                                     <li><a class="dropdown-item"  href="/productosComerciales_suscripciones_muestra?layout=layout">Consulta</a></li>
                                     <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
                                 </ul>
