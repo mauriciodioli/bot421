@@ -34,6 +34,12 @@ def productosComerciales_promociones_get_promociones():
     layout = request.args.get('layout', 'layout')
     return render_template('productosComerciales/promociones/agregaPromocionesSinPlan.html', layout = layout)
 
+@promociones.route('/productosComerciales_promociones_consulta_promociones', methods=['GET'])
+def productosComerciales_promociones_consulta_promociones():
+    layout = request.args.get('layout', 'layout')
+    return render_template('productosComerciales/promociones/consultaPromociones.html', layout = layout)
+
+
 @promociones.route('/productosComerciales_promociones_muestra_promociones', methods=['POST'])
 def productosComerciales_promociones_muestra_promociones():  
     try:
