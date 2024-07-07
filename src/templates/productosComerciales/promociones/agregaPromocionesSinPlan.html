@@ -106,8 +106,7 @@
 
 
 <!-- Modal para cargar promociones -->
-<div class="container">   
-    <div class="table-responsive">  
+
         <div class="modal fade" id="modalAgregarPromocionSinPlan" tabindex="-1" aria-labelledby="exampleModalLabelAgregarPromocion" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -116,36 +115,40 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="promotionFormAgregarPromocion">
-                            <div class="form-group">
-                                <label for="promotionPrice">Precio</label>
-                                <input type="text" class="form-control" id="promotionPrice" required>
+                        <div class="container p-4">   
+                            <div class="table-responsive">  
+                                <form id="promotionFormAgregarPromocion">
+                                    <div class="form-group">
+                                        <label for="promotionPrice">Precio</label>
+                                        <input type="text" class="form-control" id="promotionPrice" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionDescription">Descripción</label>
+                                        <input type="text" class="form-control" id="promotionDescription" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionDiscount">Descuento</label>
+                                        <input type="text" class="form-control" id="promotionDiscount" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionReason">Razón</label>
+                                        <input type="text" class="form-control" id="promotionReason" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionStatusn">Estado</label>
+                                        <input type="text" class="form-control" id="promotionStatus" required>
+                                    </div>                            
+                                    <div class="form-group">
+                                        <label for="promotionCurrency">Moneda</label>
+                                        <input type="text" class="form-control" id="promotionCurrency" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionCluster">Cluster</label>
+                                        <input type="text" class="form-control" id="promotionCluster" required>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="form-group">
-                                <label for="promotionDescription">Descripción</label>
-                                <input type="text" class="form-control" id="promotionDescription" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="promotionDiscount">Descuento</label>
-                                <input type="text" class="form-control" id="promotionDiscount" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="promotionReason">Razón</label>
-                                <input type="text" class="form-control" id="promotionReason" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="promotionStatusn">Estado</label>
-                                <input type="text" class="form-control" id="promotionStatus" required>
-                            </div>                            
-                            <div class="form-group">
-                                <label for="promotionCurrency">Moneda</label>
-                                <input type="text" class="form-control" id="promotionCurrency" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="promotionCluster">Cluster</label>
-                                <input type="text" class="form-control" id="promotionCluster" required>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -154,8 +157,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+  
 {% include 'layouts/layout_footer.html' %}
 
 {% endblock %}

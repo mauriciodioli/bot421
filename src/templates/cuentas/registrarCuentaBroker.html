@@ -98,68 +98,63 @@
 
 
 
-
 <!-- Modal Agregar cuenta broker-->
-  
-  <div class="table-responsive">  
-    <div class="modal fade" id="agregarCuentaBroker" tabindex="-1" aria-labelledby="agregarCuentaBrokerLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="agregarCuentaBrokerLabel">Registrar Cuenta</h5>
-            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+<div class="modal fade" id="agregarCuentaBroker" tabindex="-1" aria-labelledby="agregarCuentaBrokerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="agregarCuentaBrokerLabel">Registrar Cuenta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid p-4">
+          <div class="table-responsive">
+            <form name="registrar_cuenta" action="/registrar_cuenta" method="post" class="btn-guardar_inst">
+              <input type="hidden" name="fecha" id="fecha" class="mb-3">
+              <input type="hidden" name="access_token" id="access_token" class="mb-3">
+              <input type="hidden" name="correo_electronico" id="correo_electronico" class="mb-3">
+              <input type="hidden" name="environment" id="environment" class="mb-3">
+              <input type="hidden" name="origin_page" value="registrarCuentaBroker" class="mb-3">
+
+              <div class="form-group">
+                <input type="text" name="usuario" class="form-control mb-3" placeholder="user">
+              </div>
+              <div class="form-group">
+                <input type="text" name="cuenta" class="form-control mb-3" placeholder="account">
+              </div>
+              <div class="form-group">
+                <input type="text" name="contraseña" class="form-control mb-3" placeholder="password">
+              </div>
+
+              <input type="hidden" name="broker_id" id="broker_id" class="mb-3">
+              <input type="hidden" name="broker_nombre" id="broker_nombre" class="mb-3">
+
+              <div class="form-group">
+                <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment1" id="selctorEnvironment1">
+                  <option selected>Open this select menu</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment2" id="selctorEnvironment2">
+                  <option selected>Open this select menu</option>
+                  <option value="1">Simulacion</option>
+                  <option value="2">Produccion</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary my-2">Agregar cuenta</button>
+              </div>
+            </form>
           </div>
-          <div class="modal-body">
-            <div class="container-fluid">
-              <form name="registrar_cuenta" action="/registrar_cuenta" method="post" class="btn-guardar_inst">
-                <input type="hidden" name="fecha" id="fecha" class="mb-3">
-                <input type="hidden" name="access_token" id="access_token" class="mb-3">
-                <input type="hidden" name="correo_electronico" id="correo_electronico" class="mb-3">
-                <input type="hidden" name="environment" id="environment" class="mb-3">
-                <input type="hidden" name="origin_page" value="registrarCuentaBroker" class="mb-3">
-
-                <div class="form-group">
-                  <input type="text" name="usuario" class="form-control mb-3" placeholder="user">
-                </div>
-                <div class="form-group">
-                  <input type="text" name="cuenta" class="form-control mb-3" placeholder="account">
-                </div>
-                <div class="form-group">
-                  <input type="text" name="contraseña" class="form-control mb-3" placeholder="password">
-                </div>
-
-                <input type="hidden" name="broker_id" id="broker_id" class="mb-3">
-                <input type="hidden" name="broker_nombre" id="broker_nombre" class="mb-3">
-
-                <div class="form-group">
-                  <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment1" id="selctorEnvironment1">
-                    <option selected>Open this select menu</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment2" id="selctorEnvironment2">
-                    <option selected>Open this select menu</option>
-                    <option value="1">Simulacion</option>
-                    <option value="2">Produccion</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <button type="submit" class="btn btn-primary my-2">Agregar cuenta</button>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-          </div>
-        
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
+</div>
 
 
 
