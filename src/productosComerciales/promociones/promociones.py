@@ -50,7 +50,8 @@ def productosComerciales_promociones_muestra_promociones():
         # Serializar los planes
         promociones_serializados = [
             {
-                'id': promocione.idPlan,
+                'id': promocione.id,
+                'idPlan': promocione.idPlan,
                 'description': promocione.description,
                 'price': promocione.price,
                 'reason': promocione.reason,
@@ -109,7 +110,8 @@ def productosComerciales_promociones_agrega_promociones():
         # Serializar los planes
         promociones_serializados = [
             {
-                'id': promocione.idPlan,
+                'id': promocione.id,
+                'idPlan': promocione.idPlan,
                 'description': promocione.description,
                 'price': promocione.price,
                 'reason': promocione.reason,
@@ -172,7 +174,8 @@ def productosComerciales_promociones_agrega_promocionesSinPlan():
         # Serializar los planes
         promociones_serializados = [
             {
-                'id': promocione.idPlan,
+                'id': promocione.id,
+                'idPlan': promocione.idPlan,
                 'description': promocione.description,
                 'price': promocione.price,
                 'reason': promocione.reason,
@@ -209,7 +212,8 @@ def sistemaDePagos_get_promociones():
             # Serializar los planes
             promociones_serializados = [
                 {
-                    'id': promocione.idPlan,
+                    'id': promocione.id,
+                    'idPlan': promocione.idPlan,
                     'description': promocione.description,
                     'price': promocione.price,
                     'reason': promocione.reason,
@@ -229,38 +233,57 @@ def sistemaDePagos_get_promociones():
 
 @promociones.route('/productosComerciales_promociones_modifica_promocionesSinPlan', methods=['POST'])
 def productosComerciales_promociones_modifica_promocionesSinPlan():
-
-    try: 
+    try:
         data = request.json
-        access_token = data.get('access_token')
-        correo_electronico = data.get('correo_electronico')
-      
-        if access_token and Token.validar_expiracion_token(access_token=access_token): 
-            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
-            numero_de_cuenta = decoded_token.get("numero_de_cuenta")
-            user_id = decoded_token.get("sub")        
+        
+        id = data.get('id')
+        monto = data.get('precio')
+        descripcion = data.get('descripcion')
+        descuento = data.get('descuento')
+        reason = data.get('razon')
+        estado = data.get('estado')
+        currency_id = data.get('moneda')
+        cluster = data.get('cluster')
+        
+        # Buscar la promoción existente por ID
+        promocion = db.session.query(Promotion).filter_by(id=id).first()
+        
+        if not promocion:
+            return jsonify({'error': 'Promoción no encontrada'}), 404
+        
+        # Actualizar los campos de la promoción
+        promocion.price = float(monto)
+        promocion.description = descripcion
+        promocion.discount = float(descuento)
+        promocion.reason = reason
+        promocion.state = estado
+        promocion.currency_id = currency_id
+        promocion.cluster = cluster
+        
+        db.session.commit()
+        
+        # Recuperar todas las promociones para enviar al cliente
+        promociones = db.session.query(Promotion).all()
+        db.session.close()
 
-            promociones = db.session.query(Promotion).all()
-            db.session.close()
+        # Serializar las promociones
+        promociones_serializados = [
+            {
+                'id': promocione.id,
+                'idPlan': promocione.idPlan,
+                'description': promocione.description,
+                'price': promocione.price,
+                'reason': promocione.reason,
+                'discount': promocione.discount,
+                'image_url': promocione.image_url,
+                'state': promocione.state,
+                'cluster': promocione.cluster,
+                'currency_id': promocione.currency_id 
+                    
+            } for promocione in promociones
+        ]
 
-            # Serializar los planes
-            promociones_serializados = [
-                {
-                    'id': promocione.idPlan,
-                    'description': promocione.description,
-                    'price': promocione.price,
-                    'reason': promocione.reason,
-                    'discount': promocione.discount,
-                    'image_url': promocione.image_url,
-                    'state': promocione.state,
-                    'cluster': promocione.cluster,
-                    'currency_id': promocione.currency_id 
-                        
-                } for promocione in promociones
-            ]
-
-            return jsonify({'promociones': promociones_serializados})
+        return jsonify({'promociones': promociones_serializados})
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
