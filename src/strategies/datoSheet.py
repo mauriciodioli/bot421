@@ -136,6 +136,7 @@ def update_precios(message):
     suffix = None
     # Comprobación del sufijo del símbolo y asignación de valores
     symbol = message["instrumentId"]["symbol"]
+   
     if symbol.endswith("24hs"):
         p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
         if symbol not in get.precios_data:
@@ -146,7 +147,7 @@ def update_precios(message):
         get.precios_data[symbol]['p24hs'] = float(message["marketData"]["LA"]["price"])
         get.precios_data[symbol]['last24hs'] = float(message["marketData"]["CL"]["price"])
         get.precios_data[symbol]['min24hs'] = float(message["marketData"]["LO"])
-
+    
 
 def actualizar_precios(sheetId, sheet_name, pais):
     try:
@@ -164,7 +165,8 @@ def actualizar_precios(sheetId, sheet_name, pais):
                                 if isinstance(row, list) and row:
                                     symbol = str(row[0]).strip("['").strip("']")
                                     get.symbols_sheet_valores.append(symbol)
-                                    
+                                   # if symbol == 'MERV - XMEV - VIST - 24hs':
+                                    #    print(get.precios_data[symbol])
                                     if symbol in get.precios_data:
                                         precios_data = get.precios_data[symbol]
                                         try:

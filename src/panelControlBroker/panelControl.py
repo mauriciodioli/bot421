@@ -193,8 +193,14 @@ def ejecutar_en_hilo(app,pais,user_id,selector):
             time.sleep(120)# 4minulos
             
             if len(get.diccionario_global_sheet) > 0:
-                if  get.luzThred_funcionando == False:
-                   get.luzThred_funcionando = True
+                now = datetime.now()
+                if get.luzThred_funcionando['luz'] == False:
+                    get.luzThred_funcionando['luz'] = True
+                    get.luzThred_funcionando['hora'] = now.hour
+                    get.luzThred_funcionando['minuto'] = now.minute
+                    get.luzThred_funcionando['segundo'] = now.second
+                   
+                   
                 ################################# preguntar si son las 11 ##################
                 ################################# pasar la lectura #########################                
                 if datetime.now().hour >= 14 and datetime.now().hour < 20:
