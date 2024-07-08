@@ -102,7 +102,7 @@ pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
 luzMDH_funcionando = False
-luzThred_funcionando = False
+luzThred_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0}
 sheet_manager = None
 
 indice_cuentas = {}
