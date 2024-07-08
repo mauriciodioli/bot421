@@ -8,13 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
 function fetchPromocionesSinPlan() {
     $('#savePromotionBtnAgregarPromocion').click(function() {
         const promotionData = {
-            precio: $('#promotionPrice').val(),
-            descripcion: $('#promotionDescription').val(),
-            descuento: $('#promotionDiscount').val(),
-            razon: $('#promotionReason').val(),
-            estado: $('#promotionStatus').val(),
-            moneda: $('#promotionCurrency').val(),
-            cluster: $('#promotionCluster').val()
+            precio: $('#promotionPrice1').val(),
+            descripcion: $('#promotionDescription1').val(),
+            descuento: $('#promotionDiscount1').val(),
+            razon: $('#promotionReason1').val(),
+            estado: $('#promotionStatus1').val(),
+            moneda: $('#promotionCurrency1').val(),
+            cluster: $('#promotionCluster1').val()
         };
 
         $.ajax({
@@ -175,9 +175,10 @@ function setupModificarButtons(promociones) {
         button.addEventListener('click', (event) => {
             const id = event.target.getAttribute('data-id');
             const promocion = promociones.find(promo => promo.id == id);
-            if (promocion) {                
+            if (promocion) { 
+                
+                document.getElementById('promotionId').value = promocion.id; 
                 document.getElementById('promotionPrice').value = promocion.price;
-                document.getElementById('promotionId').value = promocion.id;
                 document.getElementById('promotionDescription').value = promocion.description;
                 document.getElementById('promotionDiscount').value = promocion.discount;
                 document.getElementById('promotionReason').value = promocion.reason;
