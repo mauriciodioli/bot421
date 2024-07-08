@@ -65,7 +65,7 @@ function setupEnviarTablaBtn() {
 
             document.querySelectorAll('#promocionesTabla tbody tr').forEach(function(row) {
                 const rowData = {
-                    idPlan: row.cells[0].textContent,
+                    id: row.cells[0].textContent,
                     frecuencia: row.cells[1].textContent,
                     monto: row.cells[2].textContent,
                     descripcion: row.cells[3].textContent,
@@ -163,8 +163,7 @@ function updateTablePromociones(promociones) {
         const cellAcciones = row.insertCell(8);
         cellAcciones.appendChild(modificarButton);
         cellAcciones.appendChild(eliminarButton);
-
-        row.cells[0].style.display = 'none';
+       // row.cells[0].style.display = 'none';
     });
 
     setupModificarButtons(promociones);
@@ -176,9 +175,9 @@ function setupModificarButtons(promociones) {
         button.addEventListener('click', (event) => {
             const id = event.target.getAttribute('data-id');
             const promocion = promociones.find(promo => promo.id == id);
-            if (promocion) {
-                document.getElementById('promotionId').value = promocion.id;
+            if (promocion) {                
                 document.getElementById('promotionPrice').value = promocion.price;
+                document.getElementById('promotionId').value = promocion.id;
                 document.getElementById('promotionDescription').value = promocion.description;
                 document.getElementById('promotionDiscount').value = promocion.discount;
                 document.getElementById('promotionReason').value = promocion.reason;
