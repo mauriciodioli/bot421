@@ -43,6 +43,19 @@
 
                         <button id="subscribeButton" class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir ahora</button>
                     </form>
+                    <form id="sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html" method="POST" action="/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html">
+                        <input type="hidden" id="access_token_btn_donacion" name="access_token_btn_donacion" >
+                        <input type="hidden" id="correo_electronico_btn_donacion" name="correo_electronico_btn_donacion">   
+                        <input type="hidden" id="cluster_btn_donacion" name="cluster_btn_donacion" value='2'>        
+                        {% if layout == 'layout_signal' %}
+                             <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout_signal">
+                        {% endif %}
+                        {% if layout == 'layout' %}
+                             <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
+                        {% endif %}
+                       
+                        <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Suscribir ahora</button>
+                    </form>
                 </div>
                 
             </div>
@@ -73,6 +86,13 @@
 {% include 'layouts/layout_footer.html' %}
 
 <script>
+//alamcen datos para enviar al boton donacion 
+var access_token_btn_donacion = localStorage.getItem('access_token');
+var correo_electronico_btn_donacion = localStorage.getItem('correo_electronico');
+document.getElementById('access_token_btn_donacion').value = access_token_btn_donacion;
+document.getElementById('correo_electronico_btn_donacion').value = correo_electronico_btn_donacion;
+
+
 document.getElementById('subscribeButton').addEventListener('click', function(event) {
     event.preventDefault();
     if (!localStorage.getItem('access_token')) {
