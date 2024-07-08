@@ -350,11 +350,7 @@
         
             usuario_id = localStorage.getItem('usuario_id');
             access_token = localStorage.getItem('access_token');
-<<<<<<< HEAD
-            
-=======
             var selector = localStorage.getItem('selector');
->>>>>>> 9e4d8c0de460bf5066a8934a2d2acb59f95dfe71
         
             var layoutOrigen = 'layoutConexBroker';
             var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
@@ -370,16 +366,10 @@
         
             var usuario_id = localStorage.getItem('usuario_id');
             access_token = localStorage.getItem('access_token');
-<<<<<<< HEAD
-            account = localStorage.getItem('cuenta');
-            var layoutOrigen = 'layoutConexBroker';
-            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&account='+account;
-=======
             var selector =  localStorage.getItem('selector');
         
             var layoutOrigen = 'layoutConexBroker';
             var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
->>>>>>> 9e4d8c0de460bf5066a8934a2d2acb59f95dfe71
             window.location.href = url;
         }
          debugger;

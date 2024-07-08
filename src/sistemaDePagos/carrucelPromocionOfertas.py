@@ -34,6 +34,7 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
         correo_electronico = data.get('correo_electronico_btn_donacion')
         cluster_btn_donacion = data.get('cluster_btn_donacion')
         layoutOrigen = data.get('layoutOrigen')
+        productoComercial = data.get('productoComercial')
         
         if access_token and Token.validar_expiracion_token(access_token=access_token):
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
@@ -68,7 +69,7 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
             cluster_solicitado = int(cluster_btn_donacion)
             promociones_filtradas = promociones_por_cluster.get(cluster_solicitado, [])
 
-            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_filtradas, layout=layoutOrigen)
+            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_filtradas, layout=layoutOrigen, productoComercial=productoComercial)
         
         return jsonify({'error': 'Error de autenticación o datos incompletos'}), 401
       
