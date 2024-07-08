@@ -1,71 +1,68 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Datos a enviar
+    fetchPromocionesSinPlan();
+    fetchPromociones();
+    setupEnviarTablaBtn();
+    setupSavePromotionBtn();
+});
+
+function fetchPromocionesSinPlan() {
+    $('#savePromotionBtnAgregarPromocion').click(function() {
+        const promotionData = {
+            precio: $('#promotionPrice').val(),
+            descripcion: $('#promotionDescription').val(),
+            descuento: $('#promotionDiscount').val(),
+            razon: $('#promotionReason').val(),
+            estado: $('#promotionStatus').val(),
+            moneda: $('#promotionCurrency').val(),
+            cluster: $('#promotionCluster').val()
+        };
+
+        $.ajax({
+            url: '/productosComerciales_promociones_agrega_promocionesSinPlan',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(promotionData),
+            success: function(response) {
+                alert('Promoción agregada exitosamente');
+                $('#modalAgregarPromocionSinPlan').modal('hide');
+                fetchPromociones(); // Refresh the table after adding
+            },
+            error: function(error) {
+                alert('Error al agregar promoción');
+            }
+        });
+    });
+}
+
+function fetchPromociones() {
     const dataToSend = {
         access_token: localStorage.getItem('access_token'),
         correo_electronico: localStorage.getItem('correo_electronico')
     };
 
-    // Enviar los datos por AJAX usando fetch
     fetch('/sistemaDePagos_get_promociones', {
-        method: 'POST', // Método POST para enviar datos
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(dataToSend) // Convertir datos a formato JSON
+        body: JSON.stringify(dataToSend)
     })
     .then(response => response.json())
     .then(data => {
         console.log('Respuesta del servidor:', data);
-        // Procesar la respuesta según sea necesario
         updateTablePromociones(data.promociones);
     })
     .catch(error => {
         console.error('Error al enviar datos por AJAX:', error);
     });
-});
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Verifica si el elemento #enviarTablaBtn existe
+function setupEnviarTablaBtn() {
     const enviarTablaBtn = document.getElementById('enviarTablaBtn');
     if (enviarTablaBtn) {
-        // Agrega un event listener al hacer clic en el botón
         enviarTablaBtn.addEventListener('click', function() {
             const dataToSend = [];
 
-            // Iterar sobre cada fila de la tabla #promocionesTabla
             document.querySelectorAll('#promocionesTabla tbody tr').forEach(function(row) {
                 const rowData = {
                     idPlan: row.cells[0].textContent,
@@ -75,12 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     razon: row.cells[4].textContent,
                     moneda: row.cells[5].textContent,
                     meses: row.cells[7].textContent
-                    // Agrega más propiedades según sea necesario
                 };
                 dataToSend.push(rowData);
             });
 
-            // Enviar los datos por AJAX usando fetch
             fetch('/productosComerciales_promociones_agrega_promociones', {
                 method: 'POST',
                 headers: {
@@ -91,8 +86,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 console.log('Respuesta del servidor:', data);
-                 // Procesar la respuesta según sea necesario
-                 updateTablePromociones(data.promociones);
+                updateTablePromociones(data.promociones);
+                alert('Promoción agregada con éxito.');
             })
             .catch(error => {
                 console.error('Error al enviar datos por AJAX:', error);
@@ -101,15 +96,42 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('El elemento #enviarTablaBtn no se encontró en el DOM.');
     }
-});
+}
+
+function setupSavePromotionBtn() {
+    $('#savePromotionBtnModificaPromocion').click(function() {
+        const promotionData = {
+            id: $('#promotionId').val(),
+            precio: $('#promotionPrice').val(),
+            descripcion: $('#promotionDescription').val(),
+            descuento: $('#promotionDiscount').val(),
+            razon: $('#promotionReason').val(),
+            estado: $('#promotionStatus').val(),
+            moneda: $('#promotionCurrency').val(),
+            cluster: $('#promotionCluster').val()
+        };
+
+        $.ajax({
+            url: '/productosComerciales_promociones_modifica_promocionesSinPlan',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(promotionData),
+            success: function(response) {
+                alert('Promoción modificada exitosamente');
+                $('#modalModificaPromocion').modal('hide');
+                fetchPromociones(); // Refresh the table after modification
+            },
+            error: function(error) {
+                alert('Error al modificar promoción');
+            }
+        });
+    });
+}
 
 function updateTablePromociones(promociones) {
-    promocionesGlobal = promociones; // Hacer accesible promociones globalmente
-    
-    // Verificar si existe el elemento con ID promocionesTable
     const table = document.getElementById('promocionesTable');
     if (!table) {
-         console.error('No se encontró el elemento con ID promocionesTable correcto control en Home');
+        console.error('No se encontró el elemento con ID promocionesTable.');
         return;
     }
 
@@ -120,43 +142,42 @@ function updateTablePromociones(promociones) {
         const row = tableBody.insertRow();
 
         row.insertCell(0).textContent = promocion.id;
-        row.insertCell(1).textContent = promocion.description;
-        row.insertCell(2).textContent = promocion.price;
-        row.insertCell(3).textContent = promocion.reason;
-        row.insertCell(4).textContent = promocion.discount;
-        row.insertCell(5).textContent = promocion.image_url;
-        row.insertCell(6).textContent = promocion.state;
-        row.insertCell(7).textContent = promocion.cluster;
-        row.insertCell(8).textContent = promocion.currency_id;
-        
-        // Crear botón de modificar
+        row.insertCell(1).textContent = promocion.price;
+        row.insertCell(2).textContent = promocion.description;
+        row.insertCell(3).textContent = promocion.discount;
+        row.insertCell(4).textContent = promocion.reason;
+        row.insertCell(5).textContent = promocion.state;
+        row.insertCell(6).textContent = promocion.cluster;
+        row.insertCell(7).textContent = promocion.currency_id;
+
         const modificarButton = document.createElement('button');
         modificarButton.textContent = 'Modificar';
         modificarButton.className = 'btn btn-success btn-sm modificar-promocion';
         modificarButton.setAttribute('data-id', promocion.id);
 
-        // Crear botón de eliminar
         const eliminarButton = document.createElement('button');
         eliminarButton.textContent = 'Eliminar';
         eliminarButton.className = 'btn btn-danger btn-sm eliminar-promocion';
         eliminarButton.setAttribute('data-id', promocion.id);
-        
-        const cellAcciones = row.insertCell(9);
+
+        const cellAcciones = row.insertCell(8);
         cellAcciones.appendChild(modificarButton);
         cellAcciones.appendChild(eliminarButton);
 
-        // Ocultar la primera columna (index 0, correspondiente a promocion.id)
         row.cells[0].style.display = 'none';
     });
 
-    // Añadir eventListener a los botones de modificar
-    const modificarButtons = document.querySelectorAll('.modificar-promocion');
-    modificarButtons.forEach(button => {
+    setupModificarButtons(promociones);
+    setupEliminarButtons();
+}
+
+function setupModificarButtons(promociones) {
+    document.querySelectorAll('.modificar-promocion').forEach(button => {
         button.addEventListener('click', (event) => {
             const id = event.target.getAttribute('data-id');
-            const promocion = promocionesGlobal.find(promo => promo.id == id);
+            const promocion = promociones.find(promo => promo.id == id);
             if (promocion) {
-                // Llenar el formulario del modal con los datos de la promoción
+                document.getElementById('promotionId').value = promocion.id;
                 document.getElementById('promotionPrice').value = promocion.price;
                 document.getElementById('promotionDescription').value = promocion.description;
                 document.getElementById('promotionDiscount').value = promocion.discount;
@@ -164,8 +185,7 @@ function updateTablePromociones(promociones) {
                 document.getElementById('promotionStatus').value = promocion.state;
                 document.getElementById('promotionCurrency').value = promocion.currency_id;
                 document.getElementById('promotionCluster').value = promocion.cluster;
-                
-                // Mostrar el modal
+
                 const modal = new bootstrap.Modal(document.getElementById('modalModificaPromocion'));
                 modal.show();
             }
@@ -173,8 +193,34 @@ function updateTablePromociones(promociones) {
     });
 }
 
+function setupEliminarButtons() {
+    document.querySelectorAll('.eliminar-promocion').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const id = event.target.getAttribute('data-id');
+            const data = { id: id };
 
-
+            fetch('/productosComerciales_promociones_elimina_promociones', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error:', data.error);
+                } else {
+                    updateTablePromociones(data.promociones);
+                    alert('Promoción eliminada con éxito.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    });
+}
 
 
 
