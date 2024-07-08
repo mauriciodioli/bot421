@@ -31,6 +31,7 @@ import os #obtener el directorio de trabajo actual
 import json
 import sys
 import csv
+import re
 
 #import drive
 #drive.mount('/content/gdrive')
@@ -136,9 +137,17 @@ def update_precios(message):
     suffix = None
     # Comprobación del sufijo del símbolo y asignación de valores
     symbol = message["instrumentId"]["symbol"]
-   
+    patron = r'\bVIST\b'
+    resultado = re.search(patron, symbol)
+  
+    # Verificar si se encontró y extraer el valor
+    if resultado:
+        visit = resultado.group()
+        print(f'Encontrado: {visit}')
+        
     if symbol.endswith("24hs"):
         p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
+       
         if symbol not in get.precios_data:
             get.precios_data[symbol] = {
                 'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
@@ -164,9 +173,7 @@ def actualizar_precios(sheetId, sheet_name, pais):
                             for index, row in enumerate(data[0]):
                                 if isinstance(row, list) and row:
                                     symbol = str(row[0]).strip("['").strip("']")
-                                    get.symbols_sheet_valores.append(symbol)
-                                   # if symbol == 'MERV - XMEV - VIST - 24hs':
-                                    #    print(get.precios_data[symbol])
+                                    get.symbols_sheet_valores.append(symbol)                                    
                                     if symbol in get.precios_data:
                                         precios_data = get.precios_data[symbol]
                                         try:

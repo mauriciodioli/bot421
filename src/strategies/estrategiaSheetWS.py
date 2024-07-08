@@ -301,7 +301,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
        # if get.diccionario_global_operaciones[Symbol] == message["instrumentId"]["symbol"]:
         if diccionario_global_operaciones[Symbol]['status'] == "0":
                
-                if diccionario_global_operaciones[Symbol]['ut'] !="0": 
+                if diccionario_global_operaciones[Symbol]['ut'] !=0: 
                                                  
                     if senial != "":
                         
@@ -320,7 +320,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                     cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']
                                     VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
+                                        if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
                                                 print('operacionews')
                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                         else:                                          
@@ -340,7 +340,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                           Liquidez_ahora_cedear = Liquidez_ahora_cedear
                                
                                  if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
+                                        if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
                                                 print('Symbol ',Symbol)
                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                         else:                                          
@@ -371,14 +371,13 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                if elemento1[0] == elemento2['Symbol']:
                     if elemento2['Symbol'] not in símbolos_vistos: 
                         print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:',elemento2['_ut_'],'**** ',elemento1[4],' tipo:',elemento1[1])
-                       
                         elemento1[3] = int(elemento2['_ut_'])
                         coincidencias.append(elemento1)
-                        símbolos_vistos.add(elemento2['Symbol'])    
+                        símbolos_vistos.add(elemento2['Symbol'])   
                     else:
                         elemento1[3] = 0   
                         coincidencias.append(elemento1)
-                        símbolos_vistos.add(elemento2['Symbol'])        
+                        símbolos_vistos.add(elemento2['Symbol'])    
         contador_1 += 1                           
      #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
     
@@ -390,13 +389,14 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
               #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
                # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
                 if elemento1[2] == 'LONG_':
-                     if elemento1[3] != 0:
+                     if int(elemento1[3]) != 0:
                          # if elemento1[4] == 'OPEN.':
                           if elemento1[4] == 'OPEN.':
                             if elemento1[0] == elemento2:
                                 coincidencias.append(elemento1)
                                # print(' elemento1[] ', elemento1[0])
                                # print(coincidencias)
+                            
         contador += 1  
           
     
@@ -409,11 +409,11 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
          cadena_correcta = cadena_sin_puntos.replace(',', '.')
         # Paso 3: Convertir la cadena a float
          numero = float(cadena_correcta)
-         if elemento[3] == 0:
+         if int(elemento[3]) == 0:
             ut = unidadTrader.ut/numero
             ut = abs(int(ut))
          else:
-            ut = abs(elemento[3])         
+            ut = abs(int(elemento[3]))
          if ut > 0:
         #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
             #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
@@ -451,8 +451,8 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                 'marketId': '',           
                 'symbol': elemento[0],
                 'tipo_de_activo': elemento[1],
-                'tradeEnCurso': elemento[2],
-                'ut':str(ut),            
+                'tradeEnCurso': elemento[2],                
+                'ut':ut,            
                 'senial': elemento[4],
                 'status': '0',
                 'tiempoSaldo':tiempoLecturaSaldo,
@@ -473,11 +473,11 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
     #     db.session.add(nueva_orden)
     #     db.session.commit() 
      #get.current_session = db.session
-     #for clave, valor in get.diccionario_global_operaciones.items():
-     #     print(f'Clave: {clave}, Valor: {valor}')
-        
+     #for clave, valor in diccionario_global_operaciones.items():
+        #  print(f'Clave: {clave}, Valor: {valor}')
+   
     # db.session.close()
-    # print("sale de cargar operaciones")
+     print("sale de cargar operaciones")
 
 def es_numero(numero):
     try:
@@ -522,32 +522,37 @@ def _operada(order_report):
     if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
               if symbol in diccionario_global_operaciones:                  
                 for key, operacion in diccionario_operaciones_enviadas.items():#11111
-                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
-                                ut_a_devolver = operacion['_ut_']   
+                            if  operacion['status'] == 'ANTERIOR':
                                 if status == 'REJECTED' :
-                                    ut_a_devolver = 0
-                                    print('ut_a_devolver ',ut_a_devolver) 
-                                    
-                                    if ut_a_devolver <= 0:
-                                       print('ut_a_devolver  == 0',ut_a_devolver)
-                                       operacion['status'] = 'TERMINADA'
-                                    else: 
-                                       operacion['status'] = '0'
-                                else:                            
                                     operacion['status'] = 'TERMINADA'
-                                for key, operacionGlobal in diccionario_global_operaciones.items():
-                                    if operacionGlobal['symbol'] == symbol :
-                                        operacionGlobal['ut'] = int(operacionGlobal['ut']) + int(ut_a_devolver)
-                                        #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
-                                        #pprint.pprint(get.diccionario_global_operaciones)
-                                        if operacionGlobal['status'] != '0':
-                                            operacionGlobal['status']== '0'
-                             # aqui termina las ordenes canceladas que se cargaron inicalmente               
-                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and operacion['status'] == 'CANCELLED':                
-                                operacion['status'] = 'TERMINADA'
-                               # pprint.pprint(g et.diccionario_global_operaciones_)
-                               # pprint.pprint(g et.diccionario_operaciones_enviadas) 
-                          
+                            else:                                                  
+                                if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
+                                    ut_a_devolver = operacion['_ut_']   
+                                    if status == 'REJECTED' :
+                                        ut_a_devolver = 0 
+                                        print('ut_a_devolver ',ut_a_devolver) 
+                                        
+                                        if ut_a_devolver <= 0:
+                                            print('ut_a_devolver  == 0',ut_a_devolver)
+                                            operacion['status'] = 'TERMINADA'
+                                        else: 
+                                            
+                                         operacion['status'] = 'TERMINADA'
+                                    else:                            
+                                        operacion['status'] = 'TERMINADA'
+                                    for key, operacionGlobal in diccionario_global_operaciones.items():
+                                        if operacionGlobal['symbol'] == symbol :
+                                            operacionGlobal['ut'] = int(operacionGlobal['ut']) + int(ut_a_devolver)
+                                            #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
+                                            #pprint.pprint(get.diccionario_global_operaciones)
+                                            if operacionGlobal['status'] != '0':
+                                                operacionGlobal['status']== '0'
+                                # aqui termina las ordenes canceladas que se cargaron inicalmente               
+                                if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and operacion['status'] == 'CANCELLED':                
+                                    operacion['status'] = 'TERMINADA'
+                                # pprint.pprint(g et.diccionario_global_operaciones_)
+                                # pprint.pprint(g et.diccionario_operaciones_enviadas) 
+                            
                 
 
     if status in['FILLED','REJECTED']:  

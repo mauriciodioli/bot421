@@ -302,7 +302,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
        # if get.diccionario_global_operaciones[Symbol] == message["instrumentId"]["symbol"]:
         if diccionario_global_operaciones[Symbol]['status'] == "0":
                
-                if diccionario_global_operaciones[Symbol]['ut'] !="0": 
+                if diccionario_global_operaciones[Symbol]['ut'] !=0: 
                                                  
                     if senial != "":
                         
@@ -321,7 +321,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                     cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']
                                     VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
+                                        if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
                                                 print('operacionews')
                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                         else:                                          
@@ -341,7 +341,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                           Liquidez_ahora_cedear = Liquidez_ahora_cedear
                                
                                  if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
+                                        if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
                                                 print('Symbol ',Symbol)
                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                         else:                                          
@@ -390,7 +390,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
               #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
                # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
                 if elemento1[2] == 'LONG_':
-                     if elemento1[3] != 0:
+                     if int(elemento1[3]) != 0:
                          # if elemento1[4] == 'OPEN.':
                           if elemento1[4] == 'OPEN.':
                             if elemento1[0] == elemento2:
@@ -410,11 +410,11 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
          cadena_correcta = cadena_sin_puntos.replace(',', '.')
         # Paso 3: Convertir la cadena a float
          numero = float(cadena_correcta)
-         if elemento[3] == 0:
+         if int(elemento[3]) == 0:
             ut = unidadTrader.ut/numero
             ut = abs(int(ut))
          else:
-            ut = abs(elemento[3])
+            ut = abs(int(elemento[3]))
          if ut > 0:
         #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
             #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
@@ -453,7 +453,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                 'symbol': elemento[0],
                 'tipo_de_activo': elemento[1],
                 'tradeEnCurso': elemento[2],                
-                'ut':str(ut),            
+                'ut':ut,            
                 'senial': elemento[4],
                 'status': '0',
                 'tiempoSaldo':tiempoLecturaSaldo,
@@ -474,11 +474,11 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
     #     db.session.add(nueva_orden)
     #     db.session.commit() 
      #get.current_session = db.session
-     #for clave, valor in get.diccionario_global_operaciones.items():
-     #     print(f'Clave: {clave}, Valor: {valor}')
-        
+     #for clave, valor in diccionario_global_operaciones.items():
+        #  print(f'Clave: {clave}, Valor: {valor}')
+   
     # db.session.close()
-    # print("sale de cargar operaciones")
+     print("sale de cargar operaciones")
 
 def es_numero(numero):
     try:
