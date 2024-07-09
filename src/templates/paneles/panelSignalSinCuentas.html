@@ -117,8 +117,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
-
+  var filasTablaDatos = [];
   document.getElementById('splash').style.display = 'block';
   //{% if cuenta is defined %}
   // Acceder a los tokens desde el diccionario de contexto de Flask
@@ -170,7 +169,100 @@ document.addEventListener('DOMContentLoaded', function() {
   // Llama a la función de actualización inicial
   window.addEventListener('load', function() {
     updateTable();
+    
   });
+
+
+  function enviarNotificacionesTelegram() {
+    var notificacionTelegram = localStorage.getItem('notificacionTelegram');
+
+    // Verificar si notificacionTelegram es 'True'
+    if (notificacionTelegram == 'True') {
+        var paisSeleccionado = localStorage.getItem('paisSeleccionado');
+        var access_token = localStorage.getItem('access_token');
+        var selector = localStorage.getItem('selector');
+
+        // Iterar sobre las filas de datos y enviar cada fila por AJAX
+        filasTablaDatos.forEach(function(fila) {
+            var formData = {
+                access_token: access_token,
+                symbol: fila[1], // Ajusta el índice según la posición de symbol en tu fila
+                ut: fila[5], // Ajusta el índice según la posición de ut en tu fila
+                senial: fila[3], // Ajusta el índice según la posición de senial en tu fila
+                correo_electronico: document.getElementById('correo_electronico').value,
+                paisSeleccionado: paisSeleccionado,
+                selector: selector
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '/envio_notificacion_tlegram_desde_seniales_sin_cuenta/',
+                contentType: 'application/json', // Asegúrate de que el tipo de contenido sea JSON
+                data: JSON.stringify(formData), // Convertir formData a JSON
+                success: function(response) {
+                    // Manejar la respuesta del servidor si es necesario
+                    console.log("Respuesta del servidor:", response);
+                    // Aquí puedes agregar lógica adicional según la respuesta del servidor
+                },
+                error: function(error) {
+                    console.error("Error al enviar datos por AJAX:", error);
+                    // Manejar errores si es necesario
+                }
+            });
+        });
+    } else {
+        // Manejar el caso cuando notificacionTelegram no es 'True'
+        console.log("La notificación no está activada.");
+        // Puedes mostrar un mensaje al usuario u otra acción adecuada
+    }
+}
+
+  
+
+
+function leerFilasTabla(tableBody) {
+  var rows = tableBody.getElementsByTagName('tr');
+  filasTablaDatos = []; // Limpiar la variable global antes de llenarla de nuevo
+
+  for (var i = 1; i < rows.length; i++) { // Empieza en 1 para saltar el encabezado
+      var cells = rows[i].getElementsByTagName('td');
+      var datosFila = [];
+      for (var j = 0; j < cells.length; j++) {
+          datosFila.push(cells[j].innerText);
+      }
+      filasTablaDatos.push(datosFila);
+  }
+  
+  // Obtener la hora actual
+  var ahora = new Date();
+  var hora = ahora.getHours();
+
+  // Verificar si la hora actual está entre las 14:00 y las 20:00
+  if (hora >= 14 && hora < 20) {
+      enviarNotificacionesTelegram();
+  }
+
+  // console.log('Datos de la tabla cargados:', filasTablaDatos);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   function updateTable() {
     // Guarda los elementos visibles antes de la actualización
@@ -185,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var selector = localStorage.getItem('selector');
     var account = 'vacio'
     var xhr = new XMLHttpRequest();
-    debugger;
+    
     var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/'+selector+'/';
     
     xhr.open('GET', url, true);
@@ -202,7 +294,6 @@ document.addEventListener('DOMContentLoaded', function() {
         tableBody.innerHTML = ''; // Limpiar el contenido actual de la tabla
 
         
-      
       //  var filasCambiadas = comparaFilas(elementosAntes, response);
         //console.log(filasCambiadas);
 
@@ -231,8 +322,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
           var dato = response.datos[i];
         
-          debugger;
-          console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
+          //debugger;
+         // console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
          
           if (
               (dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
@@ -511,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // console.log('Cambios en estado OPEN:', openChanged);
       //  console.log('Cambios en estado closed:', closedChanged);
       // Oculta las filas que no cambiaron
-    
+      leerFilasTabla(tableBody);
       } else {
         // Hubo un error en la solicitud
         showError('Error al obtener los datos: ' + xhr.statusText);
@@ -524,6 +615,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //console.log('XHR:', xhr);
     //console.log('URL:', xhr.url);
     xhr.send();
+  
   }
 
   // Llama a la función de actualización inicial/
@@ -544,7 +636,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Establece un intervalo para actualizar la tabla cada 5 minutos
   //setInterval(updateTable, 300000); // 300000 milisegundos = 5 minutos
   //setInterval(updateTable, 90000); // 90000 milisegundos = 1 minuto 30 segundos
-  setInterval(updateTable, 420000); // 15 segundos
+  setInterval(updateTable, 240000); // 4 minutos
 
   // Definir la función showError
   function showError(message) {

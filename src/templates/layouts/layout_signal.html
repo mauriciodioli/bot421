@@ -79,6 +79,10 @@
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('usa')">USA</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a id="notificacionTelegramLink" class="dropdown-item" href="#" onclick="toggleNotificacionTelegram()">Notificación activa</a>
+                          </li>
                         </ul>
                     </li>
                     
@@ -131,6 +135,38 @@
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     
     <script>
+     // Función para activar/desactivar la notificación y cambiar el texto y color del enlace
+     function toggleNotificacionTelegram() {
+        var currentStatus = localStorage.getItem('notificacionTelegram');
+        
+        if (currentStatus === 'True') {
+            localStorage.setItem('notificacionTelegram', 'False');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación inactiva';
+            document.getElementById('notificacionTelegramLink').style.color = 'grey'; // Color gris
+        } else {
+            localStorage.setItem('notificacionTelegram', 'True');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación activa';
+            document.getElementById('notificacionTelegramLink').style.color = '#00ff00'; // Verde más fuerte y brillante
+        }
+    }
+
+    // Al cargar la página, verifica el estado actual y aplica el texto y color correspondiente
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentStatus = localStorage.getItem('notificacionTelegram');
+
+        if (currentStatus === 'True') {
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación activa';
+            document.getElementById('notificacionTelegramLink').style.color = '#00ff00'; // Verde más fuerte y brillante si está activo
+        } else {
+            localStorage.setItem('notificacionTelegram', 'False');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación inactiva';
+            document.getElementById('notificacionTelegramLink').style.color = 'grey'; // Color gris si está desactivado
+        }
+    });
+
+
+
+
         function seleccionarPais(pais) {
             localStorage.setItem('paisSeleccionado', pais);           
             var usuario_id = localStorage.getItem('usuario_id');
