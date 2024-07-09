@@ -121,6 +121,7 @@ SQLAlchemy==1.4.31
 sseclient==0.0.27
 stack-data==0.6.2
 starlette==0.17.1
+python-telegram-bot==13.7
 tomlkit==0.8.0
 tornado==6.2
 tqdm==4.62.3
