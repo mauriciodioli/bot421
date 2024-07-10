@@ -1,9 +1,7 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash,jsonify,g
-import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
-from pyRofex.clients.websocket_rfx import WebSocketClient
 
 import re
 import jwt
@@ -13,7 +11,6 @@ import random
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
-import strategies.datoSheet as datoSheet
 import strategies.opera_estrategias as op  
 import requests
 import routes.api_externa_conexion.cuenta as cuenta
@@ -23,7 +20,6 @@ import routes.api_externa_conexion.operaciones as operaciones
 from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
 import enum
-from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 from models.unidadTrader import UnidadTrader
 import socket
 import pprint
@@ -151,16 +147,29 @@ def market_data_handler_estrategia(message):
                 else:
                     tiempo_saldo = diccionario_operaciones_enviadas[Symbol]['tiempoSaldo']    
 
+
+
+                current_time_check = datetime.now()     # **44
+               
+
+
                 # Convertir 'tiempo_saldo' a milisegundos
                 milisegundos_tiempo_saldo = int(tiempo_saldo.timestamp() * 1000)
                # Calculamos la diferencia en milisegundos entre el tiempo actual y el tiempo anterior
                 diferencia_milisegundos = marca_de_tiempo - milisegundos_tiempo_saldo
                 #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
+                
+                
+                
+                
+                
+                
                 if diferencia_milisegundos > 30000:                  
                     segundos = marca_de_tiempo / 1000  # Convertir milisegundos a segundos
                     marca_de_tiempo = datetime.fromtimestamp(segundos)
                     diccionario_global_operaciones[Symbol]['tiempoSaldo'] =  datetime.now()
                     VariableParaTiemposMDHandler = diferencia_milisegundos
+                    diferencia_milisegundos = 0
                    # print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
                     cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']        
                     VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
@@ -323,10 +332,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                     if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
                                                 print('operacionews')
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                         else:                                          
                                                 print('operacionews')
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
+                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
                        else:
                             
                               if senial == 'closed.':  
@@ -343,10 +352,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                  if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                         if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
                                                 print('Symbol ',Symbol)
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                         else:                                          
                                                 print('Symbol ',Symbol)       
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
+                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
                                     
    # else:  
         #print(message['instrumentId']['symbol'])  

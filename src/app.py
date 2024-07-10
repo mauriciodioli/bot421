@@ -35,6 +35,8 @@ from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
 
+from social.media.telegram import telegram
+
 from herramientasAdmin.accionesSheet import accionesSheet
 
 from strategies.estrategias import estrategias
@@ -227,6 +229,7 @@ app.register_blueprint(programar_trigger)
 app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
 app.register_blueprint(accionesSheet)
+app.register_blueprint(telegram)
 
 
 print(DATABASE_CONNECTION_URI)

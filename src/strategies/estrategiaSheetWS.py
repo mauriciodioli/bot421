@@ -1,9 +1,7 @@
 from flask import Blueprint, render_template,session, request, redirect, url_for, flash,jsonify,g
-import routes.instrumentosGet as instrumentosGet
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
-from pyRofex.clients.websocket_rfx import WebSocketClient
 
 import re
 import jwt
@@ -13,7 +11,6 @@ import random
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 import routes.instrumentos as inst
-import strategies.datoSheet as datoSheet
 import strategies.opera_estrategias as op  
 import requests
 import routes.api_externa_conexion.cuenta as cuenta
@@ -23,7 +20,6 @@ import routes.api_externa_conexion.operaciones as operaciones
 from datetime import datetime,timedelta, timezone
 from pytz import timezone as pytz_timezone
 import enum
-from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 from models.unidadTrader import UnidadTrader
 import socket
 import pprint
