@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var paisSeleccionado = localStorage.getItem('paisSeleccionado');
         var access_token = localStorage.getItem('access_token');
         var selector = localStorage.getItem('selector');
-
+        var idtelegram = localStorage.getItem('idtelegram');
         // Iterar sobre las filas de datos y enviar cada fila por AJAX
         filasTablaDatos.forEach(function(fila) {
             var formData = {
@@ -191,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 senial: fila[3], // Ajusta el índice según la posición de senial en tu fila
                 correo_electronico: document.getElementById('correo_electronico').value,
                 paisSeleccionado: paisSeleccionado,
+                idtelegram: idtelegram,
                 selector: selector
             };
 
@@ -238,7 +239,7 @@ function leerFilasTabla(tableBody) {
   var hora = ahora.getHours();
 
   // Verificar si la hora actual está entre las 14:00 y las 20:00
-  if (hora >= 14 && hora < 20) {
+  if (hora >= 9  && hora < 20) {
       enviarNotificacionesTelegram();
   }
 
@@ -635,8 +636,8 @@ function leerFilasTabla(tableBody) {
 
   // Establece un intervalo para actualizar la tabla cada 5 minutos
   //setInterval(updateTable, 300000); // 300000 milisegundos = 5 minutos
-  //setInterval(updateTable, 90000); // 90000 milisegundos = 1 minuto 30 segundos
-  setInterval(updateTable, 240000); // 4 minutos
+  setInterval(updateTable, 90000); // 90000 milisegundos = 1 minuto 30 segundos
+  //setInterval(updateTable, 240000); // 4 minutos
 
   // Definir la función showError
   function showError(message) {

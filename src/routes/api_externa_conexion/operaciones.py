@@ -12,7 +12,7 @@ from models.orden import Orden
 from models.logs import Logs
 from models.usuario import Usuario
 from models.cuentas import Cuenta
-from models.modelMedia.whatsapp_messenger import WhatsAppMessenger
+from models.modelMedia.TelegramNotifier import TelegramNotifier
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
@@ -143,6 +143,7 @@ def envio_notificacion_tlegram_desde_seniales_sin_cuenta():
             signal = data.get('senial')
             cuentaUser = data.get('correo_electronico')
             pais = data.get('paisSeleccionado')
+            chat_id = data.get('idtelegram')
             selector = data.get('selector')
             layouts = 'layout_signal'
             # Validación del token si es necesario
@@ -152,9 +153,10 @@ def envio_notificacion_tlegram_desde_seniales_sin_cuenta():
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 
                 # Lógica para enviar mensaje asíncrono
-                asyncio.run(enviar_mensaje_async(ticker, ut1, signal))
-             
-                # Intentamos encontrar el registro con el symbol específico
+                telegram_notifier = TelegramNotifier()      
+                asyncio.run(telegram_notifier.enviar_mensaje_async(chat_id, ticker, ut1, signal))
+                asyncio.run(telegram_notifier.enviar_mensaje_async('-1001285216353', ticker, ut1, signal))
+                 # Intentamos encontrar el registro con el symbol específico
                 orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
           
                 if orden_existente:
@@ -214,14 +216,14 @@ def envio_notificacion_tlegram_desde_seniales_sin_cuenta():
 
 
 
-async def enviar_mensaje_async( ticker, ut1, signal): 
+async def enviar_mensaje_async(idtelegram, ticker, ut1, signal): 
     #https://api.telegram.org/bot7264333617:AAFlrcw9yObB8ksp6k1P--zW6D6uk0gCgqc/getupdates  direccion para conseguir el id del grupo
     # Reemplaza 'YOUR_BOT_TOKEN' con el token de tu bot de Telegram
     token = "7264333617:AAFlrcw9yObB8ksp6k1P--zW6D6uk0gCgqc"
    
     # Reemplaza 'CHAT_ID_DEL_USUARIO' con el chat_id del usuario al que deseas enviar el mensaje   
    # chat_id = "-1001285216353"
-    chat_id = "1561108741"
+    chat_id = idtelegram
     message = f"Ticker: {ticker}\nUT1: {ut1}\nSignal: {signal}"
 
 
