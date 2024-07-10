@@ -13,7 +13,6 @@ from models.logs import Logs
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.modelMedia.whatsapp_messenger import WhatsAppMessenger
-#from telegram import Bot
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
