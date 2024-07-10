@@ -136,7 +136,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <input type="text" id="idTelegramInput" class="form-control" value="">
+                  <input type="text" id="idTelegramInput" class="form-control" value="" placeholder="ID TELEGRAM">
                   <hr>
                   <p class="mb-0" style="color: black;">Instrucciones para conseguir el ID de Telegram:</p>
                   <ol style="color: black;">
@@ -178,7 +178,7 @@
             var idTelegram = localStorage.getItem('idtelegram');
 
             // Set the value of the input if the idTelegram is not null
-            document.getElementById('idTelegramInput').value = idTelegram ? idTelegram : '';
+            document.getElementById('idTelegramInput').value = idTelegram;
 
             // Show the modal
             $('#telegramModal').modal('show');
