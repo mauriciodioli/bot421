@@ -202,8 +202,9 @@ def ejecutar_en_hilo(app,pais,user_id,selector):
                    
                    
                 ################################# preguntar si son las 11 ##################
-                ################################# pasar la lectura #########################                
-                if datetime.now().hour >= 14 and datetime.now().hour < 20:
+                ################################# pasar la lectura #########################   
+                now = datetime.now()             
+                if  (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
                 ################################# pregutar si son las 17 hs #################
                 ################## apagar el ws y limpia precios_data #######################
