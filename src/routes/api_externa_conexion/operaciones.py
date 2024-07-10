@@ -155,7 +155,7 @@ def envio_notificacion_tlegram_desde_seniales_sin_cuenta():
                 # Lógica para enviar mensaje asíncrono
                 telegram_notifier = TelegramNotifier()      
                 asyncio.run(telegram_notifier.enviar_mensaje_async(chat_id, ticker, ut1, signal))
-                asyncio.run(telegram_notifier.enviar_mensaje_async('-1001285216353', ticker, ut1, signal))
+             #   asyncio.run(telegram_notifier.enviar_mensaje_async('-1001285216353', ticker, ut1, signal))
                  # Intentamos encontrar el registro con el symbol específico
                 orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
           

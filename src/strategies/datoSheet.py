@@ -137,14 +137,15 @@ def update_precios(message):
     suffix = None
     # Comprobación del sufijo del símbolo y asignación de valores
     symbol = message["instrumentId"]["symbol"]
-    patron = r'\bVIST\b'
-    resultado = re.search(patron, symbol)
+    ###################### para buscar un patron visit en este caso #############
+   # patron = r'\bVIST\b'
+    #resultado = re.search(patron, symbol)
   
     # Verificar si se encontró y extraer el valor
-    if resultado:
-        visit = resultado.group()
-        print(f'Encontrado: {visit}')
-        
+    #if resultado:
+       # visit = resultado.group()
+       # print(f'Encontrado: {visit}')
+    ##############################################################################  
     if symbol.endswith("24hs"):
         p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
        
