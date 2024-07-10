@@ -19,3 +19,16 @@ class TelegramNotifier:
                     print(data)
             except Exception as e:
                 print(f"Error al enviar mensaje: {e}")
+    
+    async def enviar_mensaje_grupo(self, chat_id,mensaj):
+        chat_id = chat_id.strip()  # Eliminar espacios en blanco
+        message = f"{mensaj}"
+        payload = {'chat_id': chat_id, 'text': message}
+
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.post(self.base_url, data=payload) as response:
+                    data = await response.json()
+                    print(data)
+            except Exception as e:
+                print(f"Error al enviar mensaje: {e}")
