@@ -9,7 +9,7 @@ $(document).ready(function() {
         const access_token = localStorage.getItem('access_token');
         
         const data = {
-            access_token: access_token,           
+            access_token: access_token,
             message: message
         };
 
@@ -20,6 +20,9 @@ $(document).ready(function() {
             data: JSON.stringify(data),
             success: function(response) {
                 alert('Mensaje enviado con éxito');
+                // Limpiar los campos del formulario
+                $('#header').val('');
+                $('#body').val('');
             },
             error: function(xhr, status, error) {
                 alert('Error al enviar el mensaje');
