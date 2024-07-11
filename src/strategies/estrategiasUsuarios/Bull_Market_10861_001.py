@@ -630,7 +630,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
             print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
             
-            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='api',environment=cuentaGlobal) 
+            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='ISV_PBCP',environment=cuentaGlobal) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
             for key, operacion_enviada in diccionario_operaciones_enviadas.items(): 
