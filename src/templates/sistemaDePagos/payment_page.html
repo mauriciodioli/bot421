@@ -131,7 +131,7 @@
             <table style="border-collapse: collapse; width: 100%;">
                 <tr>
                     <td style="text-align: left; border-bottom: 1px solid gray; padding: 8px; border-right: none;">Costo base:</td>
-                    <td style="text-align: right; border-bottom: 1px solid gray; padding: 8px; border-left: none;">{{ '{:,.2f}'.format(costo_base) }} USD</td>
+                    <td style="text-align: right; border-bottom: 1px solid gray; padding: 8px; border-left: none;">{{ '{:,.2f}'.format(costo_base) }} {{ currency_id }}</td>
                 </tr>
                 <tr>
                     <td style="text-align: left; border-bottom: 1px solid gray; padding: 8px; border-right: none;">Porcentaje de retorno:</td>
@@ -139,7 +139,7 @@
                 </tr>
                 <tr>
                     <td style="text-align: left; padding: 8px; border-right: none;"><strong>Total:</strong></td>
-                    <td style="text-align: right; padding: 8px; border-left: none;"><strong>{{ '{:,.2f}'.format(total) }} USD</strong></td>
+                    <td style="text-align: right; padding: 8px; border-left: none;"><strong>{{ '{:,.2f}'.format(total) }} {{ currency_id }}</strong></td>
                 </tr>
             </table>
         </div>
