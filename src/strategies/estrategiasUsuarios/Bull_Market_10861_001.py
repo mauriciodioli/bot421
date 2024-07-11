@@ -128,7 +128,7 @@ def market_data_handler_estrategia(message):
     
     if response != 1: ### si es 1 el boton de panico fue activado
        # _cancela_orden(300)
-       # _cancela_orden(300000)
+        
       #  print(" FUN: market_data_handler_estrategia: _")
         
       
@@ -146,10 +146,11 @@ def market_data_handler_estrategia(message):
           if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
   
                 # Verifica si han pasado 30 segundos
-                han_pasado_30_segundos, tiempo_inicial_30s_ms = control_tiempo_lectura(30000, tiempo_inicial_30s_ms, marca_de_tiempo)
+                han_pasado_30_segundos, tiempo_inicial_30s_ms = control_tiempo_lectura(5000, tiempo_inicial_30s_ms, marca_de_tiempo)
 
                 if han_pasado_30_segundos:
                     print('Pasaron 30 segundos')
+                    _cancela_orden(0)
                     VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
                     # Reinicia el tiempo_inicial_30s_ms para el próximo intervalo
                     tiempo_inicial_30s_ms = marca_de_tiempo
@@ -161,6 +162,7 @@ def market_data_handler_estrategia(message):
                 banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
                 if han_pasado_5_minutos:
                     print('Pasaron 5 minutos')
+                   
                     banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
                     # Reinicia el tiempo_inicial_5min_ms para el próximo intervalo
                     tiempo_inicial_5min_ms = marca_de_tiempo
@@ -303,11 +305,11 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                         VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' :
                                             if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
-                                                    print('operaciones Symbol ',Symbol, ' OPEN.')
-                                                    #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                                    #print('operaciones Symbol ',Symbol, ' OPEN.')
+                                                    op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                             else:                                          
-                                                     print('operaciones Symbol ',Symbol, 'OPEN.')
-                                                    #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
+                                                     #print('operaciones Symbol ',Symbol, 'OPEN.')
+                                                    op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
                                     else:
                                             
                                             if senial == 'closed.':  
@@ -324,11 +326,11 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                             
                                                 if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                                         if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
-                                                                print('operaciones Symbol ',Symbol, 'closed.')
-                                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                                                #print('operaciones Symbol ',Symbol, 'closed.')
+                                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                                         else:                                          
-                                                                print('operaciones Symbol ',Symbol, 'closed.')       
-                                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
+                                                                #print('operaciones Symbol ',Symbol, 'closed.')       
+                                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
                                     
    # else:  
         #print(message['instrumentId']['symbol'])  
@@ -420,6 +422,11 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                                     status='0'
                                 )
             # Cargar los valores del objeto en el diccionario global
+            if elemento[2] =='':
+                tradeEnCurso = 'LONG_'
+            else:
+                tradeEnCurso =  elemento[2]
+                
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
@@ -434,7 +441,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                 'marketId': '',           
                 'symbol': elemento[0],
                 'tipo_de_activo': elemento[1],
-                'tradeEnCurso': elemento[2],                
+                'tradeEnCurso': tradeEnCurso,                
                 'ut':ut,            
                 'senial': elemento[4],
                 'status': '0',
@@ -622,7 +629,8 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
             print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
-            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+            
+            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='api',environment=cuentaGlobal) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
             for key, operacion_enviada in diccionario_operaciones_enviadas.items(): 
