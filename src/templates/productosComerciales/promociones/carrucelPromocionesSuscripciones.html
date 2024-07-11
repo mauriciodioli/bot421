@@ -28,7 +28,7 @@
                                     <h5 class="card-title carrucelPromociones">{{ promocion.reason }}</h5>
                                     <p class="card-text carrucelPromociones">{{ promocion.price }} {{ promocion.currency_id }} c/u</p>
                                     <p class="card-text ahorro">AHORRA {{ promocion.discount }}%</p>
-                                    <form class="donationForm">
+                                    <form id="subscriptionForm" action="/payment_page_pago/" method="POST">
                                         <input type="hidden" id="reason" name="reason" value="{{ promocion.reason }}">
                                         <input type="hidden" id="costo_base" name="costo_base" value="{{ promocion.price }}">
                                         <input type="hidden" id="currency_id" name="currency_id" value="{{ promocion.currency_id }}">
