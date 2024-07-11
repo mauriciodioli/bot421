@@ -89,9 +89,9 @@ VARIABLE_ACTUALIZAR_SHEET = 'produccion'
 #CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'
 #ID_USER_ACTUALIZAR_SHEET = 1
 
-#CUENTA_ACTUALIZAR_SHEET = '10861'
-#CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'
-#ID_USER_ACTUALIZAR_SHEET = 2
+CUENTA_ACTUALIZAR_SHEET = '10861'
+CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'
+ID_USER_ACTUALIZAR_SHEET = 2
 precios_data = {} #para mdh 0
 symbols_sheet_valores = []
 sheet = None
