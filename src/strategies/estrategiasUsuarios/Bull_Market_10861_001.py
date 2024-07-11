@@ -45,8 +45,7 @@ cuentaGlobal = None
 VariableParaSaldoCta = None
 VariableParaTiemposMDHandler = 0
 VariableParaTiempoLeerSheet = 0
-
-
+tiempo_inicial_ms = 0
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {} 
 
@@ -115,7 +114,7 @@ def BullMarket10861001():
      
        
 def market_data_handler_estrategia(message):
-    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet,VariableParaSaldoCta
+    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet,VariableParaSaldoCta,tiempo_inicial_ms
    
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
@@ -158,9 +157,10 @@ def market_data_handler_estrategia(message):
                # Calculamos la diferencia en milisegundos entre el tiempo actual y el tiempo anterior
                 diferencia_milisegundos = marca_de_tiempo - milisegundos_tiempo_saldo
                 #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
+                tiempo_inicial_ms = marca_de_tiempo - milisegundos_tiempo_saldo
                 
-                
-                
+                if control_tiempo_lectura(30000, tiempo_inicial_ms,marca_de_tiempo):
+                    print('pasaron 30')
                 
                 
                 
@@ -316,9 +316,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                     if senial != "":
                         
                        if TradeEnCurso == 'LONG_': 
-                           
+                                    Liquidez_ahora_cedear = 0  
                                     if senial == 'OPEN.':
-                                        #if message["marketData"]["OF"] != None:     
+                                        #if message["marketData"]["OF"] != None:  
+                                        
                                         if isinstance(message["marketData"]["OF"][0]["size"], int):                                  
                                             Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
                                         else:
@@ -327,35 +328,36 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                                 Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
                                         
 
-                                    cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']
-                                    VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
-                                    if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
-                                                print('operacionews')
-                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
-                                        else:                                          
-                                                print('operacionews')
-                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
-                       else:
-                            
-                              if senial == 'closed.':  
-                                        #if message["marketData"]["BI"] != None: 
-                                 if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
-                                       Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                       Liquidez_ahora_cedear = Liquidez_ahora_cedear
-                                 else:
-                                       #if message["marketData"]["LA"] != None:
-                                       if isinstance(message["marketData"]["LA"]["size"], int):                                  
-                                          Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                          Liquidez_ahora_cedear = Liquidez_ahora_cedear
-                               
-                                 if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < diccionario_global_operaciones[Symbol]['ut']:
-                                                print('Symbol ',Symbol)
-                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
-                                        else:                                          
-                                                print('Symbol ',Symbol)       
-                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
+                                        cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']
+                                        VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
+                                        if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' :
+                                            if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
+                                                    print('operacionews')
+                                                    #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                            else:                                          
+                                                    print('operacionews')
+                                                    #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
+                                    else:
+                                            
+                                            if senial == 'closed.':  
+                                                        #if message["marketData"]["BI"] != None: 
+                                              
+                                                if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
+                                                    Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
+                                                    Liquidez_ahora_cedear = Liquidez_ahora_cedear
+                                                else:
+                                                    #if message["marketData"]["LA"] != None:
+                                                    if isinstance(message["marketData"]["LA"]["size"], int):                                  
+                                                        Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
+                                                        Liquidez_ahora_cedear = Liquidez_ahora_cedear
+                                            
+                                                if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
+                                                        if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
+                                                                print('Symbol ',Symbol)
+                                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                                        else:                                          
+                                                                print('Symbol ',Symbol)       
+                                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
                                     
    # else:  
         #print(message['instrumentId']['symbol'])  
@@ -628,7 +630,7 @@ def _cancela_orden(delay):
             # Convertir las cadenas de texto en objetos datetime
             diferencia_segundos = tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario)
            
-
+          
           #  print("FUN _cancela_orden: diferencia [seg]",diferencia_segundos)
             
             
@@ -943,3 +945,14 @@ def append_order_report_to_csv(report, rutaORH):
             else:
                 values.append(value)
         writer.writerow(values)
+        
+        
+        
+def control_tiempo_lectura(espera,tiempo_espera_ms, tiempo_inicial_ms):
+      if tiempo_inicial_ms < espera: # 5 minutos
+            time = datetime.now()
+            tiempoInicio2 = int(time.timestamp())*1000
+            tiempo_inicial_ms =  tiempoInicio2 - tiempo_espera_ms
+            return False
+      else:
+            return True
