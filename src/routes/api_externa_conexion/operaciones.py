@@ -789,14 +789,14 @@ def cancelarOrden():
           price = request.form.get('price') 
           proprietary= request.form.get('proprietary') 
           estado= request.form.get('estado') 
-          accountId= request.form.get('accountId')
+          account= request.form.get('accountId')
          
           print("clOrdId ", clOrdId)
           print("symbol ", symbol)
           print("price ", price)
           print("proprietary ", proprietary)
           print("estado ", estado)
-          print("accountId ", accountId)
+          print("accountId ", account)
          
          
           
@@ -807,15 +807,19 @@ def cancelarOrden():
         
           
           # ojo se comento por compromiso con la homologacion restaurar **66
-          
-          order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
-          #print("order_status ",order_status)          
-          if order_status["order"]["status"] == "NEW":
-            # Cancel Order
-            get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId)
-            #cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
-          else:
-            flash('No se puede cancelar la Orden, ya fue OPERADA')  
+          pyRofexInicializada = get.ConexionesBroker.get(account)
+          if pyRofexInicializada:
+              order_status = pyRofexInicializada['pyRofex'].get_order_status(clOrdId,proprietary)
+        
+            
+              #print("order_status ",order_status)          
+              if order_status["order"]["status"] == "NEW":
+                # Cancel Order
+                pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='ISV_PBCP',environment=account) 
+            
+                #cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
+              else:
+                flash('No se puede cancelar la Orden, ya fue OPERADA')  
            
        
           #print("cancel_order ")
