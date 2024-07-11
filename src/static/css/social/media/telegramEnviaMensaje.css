@@ -15,7 +15,8 @@
     text-align: center;
 }
 
-h2, label, input, textarea, button {
+/* Estilos aplicados solo a los elementos con ID */
+#headerTitle, #headerLabel, #bodyLabel, #header, #body, #submitButton {
     color: black; /* Textos en negro */
 }
 
