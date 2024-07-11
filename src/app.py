@@ -30,10 +30,12 @@ from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
 from sistemaDePagos.carrucelPromocionOfertas import carrucelPromocionOfertas
+from sistemaDePagos.carrucelPromocionSuscripciones import carrucelPromocionSuscripciones
 from productosComerciales.descipcionProductos import descrpcionProductos
 from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
+
 
 from social.media.telegram import telegram
 
@@ -188,6 +190,7 @@ app.register_blueprint(suscripcionPlanUsuario)
 app.register_blueprint(deleteSuscripcion)
 app.register_blueprint(tarjetaUsuario)
 app.register_blueprint(creaTabla)
+app.register_blueprint(carrucelPromocionSuscripciones)
 app.register_blueprint(carrucelPromocionOfertas)
 app.register_blueprint(promociones)
 app.register_blueprint(token)
@@ -338,8 +341,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    ##app.run(host='0.0.0.0', port=5001, debug=True)
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
+    #app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas

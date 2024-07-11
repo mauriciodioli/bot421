@@ -7,12 +7,10 @@ from models.payment_page.Promotion import Promotion
 
 
 
-carrucelPromocionOfertas = Blueprint('carrucelPromocionOfertas',__name__)
+carrucelPromocionSuscripciones = Blueprint('carrucelPromocionSuscripciones',__name__)
 
-
-
-@carrucelPromocionOfertas.route('/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html', methods=['POST'])
-def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
+@carrucelPromocionSuscripciones.route('/sistemaDePagos_get_ofertas_suscripciones/',methods=['POST'])
+def sistemaDePagos_get_ofertas_suscripciones():
     try:
         data = request.form
         access_token = data.get('access_token_btn_donacion')
@@ -54,7 +52,7 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
             cluster_solicitado = int(cluster_btn_donacion)
             promociones_filtradas = promociones_por_cluster.get(cluster_solicitado, [])
 
-            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_filtradas, layout=layoutOrigen, productoComercial=productoComercial)
+            return render_template('productosComerciales/promociones/carrucelPromocionesSuscripciones.html', promociones=promociones_filtradas, layout=layoutOrigen, productoComercial=productoComercial)
         
         return jsonify({'error': 'Error de autenticación o datos incompletos'}), 401
       
@@ -63,7 +61,7 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
         
-@carrucelPromocionOfertas.route('/sistemaDePagos_carrucelPromocionOfertas_get_promociones', methods=['POST'])
+@carrucelPromocionSuscripciones.route('/sistemaDePagos_carrucelPromocionOfertas_get_promociones', methods=['POST'])
 def sistemaDePagos_carrucelPromocionOfertas_get_promociones():
     try:
         data = request.json
