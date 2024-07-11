@@ -299,10 +299,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                         VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' :
                                             if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
-                                                    #print('operacionews')
+                                                    #print('operaciones Symbol ',Symbol, ' OPEN.')
                                                     op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                             else:                                          
-                                                    #print('operacionews')
+                                                    #print('operaciones Symbol ',Symbol, ' OPEN.')
                                                     op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
                                     else:
                                             
@@ -320,10 +320,10 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                             
                                                 if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                                         if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
-                                                                #print('Symbol ',Symbol)
+                                                                #print('operaciones Symbol ',Symbol, 'closed.')
                                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                                         else:                                          
-                                                                #print('Symbol ',Symbol)       
+                                                                #print('operaciones Symbol ',Symbol, 'closed.')     
                                                                 op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
                                     
    # else:  
@@ -416,6 +416,10 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                                     status='0'
                                 )
             # Cargar los valores del objeto en el diccionario global
+            if elemento[2] =='':
+                tradeEnCurso = 'LONG_'
+            else:
+                tradeEnCurso =  elemento[2]
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
@@ -618,7 +622,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
             print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
-            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,environment=cuentaGlobal) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
             for key, operacion_enviada in diccionario_operaciones_enviadas.items(): 
