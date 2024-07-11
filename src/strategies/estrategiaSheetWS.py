@@ -28,26 +28,21 @@ instrumentos_existentes_arbitrador1=[]
 import sys
 
 
-
-
-
 estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
-
-
-class States(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2
 
 pyRofexInicializada = None
 cuentaGlobal = None
 VariableParaSaldoCta = None
-VariableParaTiemposMDHandler = 0
-VariableParaTiempoLeerSheet = 0
+
+
+
+tiempo_inicial_30s_ms = None
+tiempo_inicial_5min_ms = None
 
 
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {} 
+
 
 
 
@@ -114,8 +109,7 @@ def estrategiaSheetWS_001():
      
        
 def market_data_handler_estrategia(message):
-    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet,VariableParaSaldoCta
-   
+    global tiempo_inicial_30s_ms,tiempo_inicial_5min_ms,VariableParaSaldoCta   
     ## mensaje = Ticker+','+cantidad+','+spread
     #print(message)
     
@@ -133,54 +127,41 @@ def market_data_handler_estrategia(message):
        # _cancela_orden(300000)
       #  print(" FUN: market_data_handler_estrategia: _")
         
-            #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
-        marca_de_tiempo = message["timestamp"]
+      
+       
+
+        # Obtén el timestamp del mensaje
+        marca_de_tiempo = int(message["timestamp"])
+
+        
         marca_de_tiempo_para_leer_sheet = marca_de_tiempo
         Symbol = message["instrumentId"]["symbol"]
         # Supongamos que 'tiempo_saldo' es un objeto datetime
         # Supongamos que 'tiempo_saldo' es un objeto datetime
         if diccionario_global_operaciones or diccionario_operaciones_enviadas:
           if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
-                if diccionario_global_operaciones:
-                    tiempo_saldo = diccionario_global_operaciones[Symbol]['tiempoSaldo']
-                else:
-                    tiempo_saldo = diccionario_operaciones_enviadas[Symbol]['tiempoSaldo']    
+  
+                # Verifica si han pasado 30 segundos
+                han_pasado_30_segundos, tiempo_inicial_30s_ms = control_tiempo_lectura(30000, tiempo_inicial_30s_ms, marca_de_tiempo)
 
-                # Convertir 'tiempo_saldo' a milisegundos
-                milisegundos_tiempo_saldo = int(tiempo_saldo.timestamp() * 1000)
-               # Calculamos la diferencia en milisegundos entre el tiempo actual y el tiempo anterior
-                diferencia_milisegundos = marca_de_tiempo - milisegundos_tiempo_saldo
-                #print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", diferencia_milisegundos   )
-                if diferencia_milisegundos > 30000:                  
-                    segundos = marca_de_tiempo / 1000  # Convertir milisegundos a segundos
-                    marca_de_tiempo = datetime.fromtimestamp(segundos)
-                    diccionario_global_operaciones[Symbol]['tiempoSaldo'] =  datetime.now()
-                    VariableParaTiemposMDHandler = diferencia_milisegundos
-                   # print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
-                    cuentaGlobal = diccionario_global_operaciones[Symbol]['accountCuenta']        
+                if han_pasado_30_segundos:
+                    print('Pasaron 30 segundos')
                     VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
-                    diccionario_global_operaciones[Symbol]['saldo'] = VariableParaSaldoCta
+                    # Reinicia el tiempo_inicial_30s_ms para el próximo intervalo
+                    tiempo_inicial_30s_ms = marca_de_tiempo
                 
-                else:
-                     VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']   
-                # print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
-               
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
-                #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
+                
+                
+                    # Verifica si han pasado 5 minutos
+                han_pasado_5_minutos, tiempo_inicial_5min_ms = control_tiempo_lectura(300000, tiempo_inicial_5min_ms, marca_de_tiempo)
                 banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-                if VariableParaTiempoLeerSheet < 300000: # 5 minutos
-                    time = datetime.now()
-                    tiempoInicio2 = int(time.timestamp())*1000
-                    VariableParaTiempoLeerSheet =  tiempoInicio2 - marca_de_tiempo_para_leer_sheet
-                #    print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
-                else:
-                        VariableParaTiempoLeerSheet = 0
-                    #  print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
-                        # esto hay que hacerlo aca, solo cada x segundos
-                        banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
-          
+                if han_pasado_5_minutos:
+                    print('Pasaron 5 minutos')
+                    banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
+                    # Reinicia el tiempo_inicial_5min_ms para el próximo intervalo
+                    tiempo_inicial_5min_ms = marca_de_tiempo
+                
+                      
                 # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
                 # para cumplir con el evento de mercado market data
 
@@ -318,11 +299,11 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                         VariableParaSaldoCta=diccionario_global_operaciones[Symbol]['saldo']
                                         if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != '' :
                                             if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
-                                                    print('operacionews')
-                                                    #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                                    #print('operacionews')
+                                                    op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                             else:                                          
-                                                    print('operacionews')
-                                                    #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
+                                                    #print('operacionews')
+                                                    op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)
                                     else:
                                             
                                             if senial == 'closed.':  
@@ -339,16 +320,16 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                             
                                                 if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
                                                         if Liquidez_ahora_cedear < diccionario_global_operaciones[Symbol]['ut']:
-                                                                print('Symbol ',Symbol)
-                                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
+                                                                #print('Symbol ',Symbol)
+                                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message)
                                                         else:                                          
-                                                                print('Symbol ',Symbol)       
-                                                                #op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
+                                                                #print('Symbol ',Symbol)       
+                                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, 0, senial, message)    
                                     
    # else:  
         #print(message['instrumentId']['symbol'])  
-    #    print('______________________________________________________')                               
-
+    #    print('______________________________________________________')                                   
+                              
 
 
 def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
@@ -930,3 +911,10 @@ def append_order_report_to_csv(report, rutaORH):
             else:
                 values.append(value)
         writer.writerow(values)
+        
+def control_tiempo_lectura(intervalo_ms, tiempo_inicial, marca_de_tiempo):
+    # Inicializa el tiempo_inicial si es la primera vez que se ejecuta
+    if tiempo_inicial is None:
+        tiempo_inicial = marca_de_tiempo
+        return False, tiempo_inicial
+    return (marca_de_tiempo - tiempo_inicial) >= intervalo_ms, tiempo_inicial
