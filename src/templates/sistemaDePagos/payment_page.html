@@ -36,13 +36,15 @@
             margin: 5px 0;
         }
 
+       
         .payment-container input {
-            width: 100%;
+            width: calc(100% - 22px); /* Ajusta el ancho para dejar espacio al padding */
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
+        
 
         .payment-container button {
             width: 100%;
@@ -60,10 +62,14 @@
 
         .credit-card-logo {
             width: 50px;
+            margin-top: 20px; /* Agrega un margen superior para separar las imágenes del resto de los elementos */
             margin-right: 10px;
             display: none;
         }
-
+        .credit-card-container {
+            text-align: center;
+        }
+        
         .hidden-form {
             display: none;
             margin-top: 20px;
@@ -144,7 +150,7 @@
             </table>
         </div>
         
-        <div>
+        <div class="credit-card-container">
             <img src="{{ url_for('static', filename='visa.png') }}" alt="Visa" class="credit-card-logo" id="visa-logo">
             <img src="{{ url_for('static', filename='mastercard.png') }}" alt="Mastercard" class="credit-card-logo" id="mastercard-logo">
         </div>
@@ -252,18 +258,19 @@ function updatePaymentMethod() {
             const cardNumber = type === 'existing' ? document.getElementById('card_number').value : document.getElementById('new_card_number').value;
             const visaLogo = document.getElementById('visa-logo');
             const mastercardLogo = document.getElementById('mastercard-logo');
-    
+        
             if (cardNumber.startsWith('4')) {
-                visaLogo.style.display = 'block';
+                visaLogo.style.display = 'inline-block'; // Cambia a 'inline-block' para que se muestre centrado
                 mastercardLogo.style.display = 'none';
             } else if (cardNumber.startsWith('5')) {
-                mastercardLogo.style.display = 'block';
+                mastercardLogo.style.display = 'inline-block'; // Cambia a 'inline-block' para que se muestre centrado
                 visaLogo.style.display = 'none';
             } else {
                 visaLogo.style.display = 'none';
                 mastercardLogo.style.display = 'none';
             }
         }
+        
 
 
 
