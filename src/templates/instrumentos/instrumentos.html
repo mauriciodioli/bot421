@@ -86,21 +86,33 @@
     
     function submitForm(form) {
         var formData = new FormData(form);
-        debugger;
         fetch('/SuscripcionWs/', {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
-            console.log('Success:', data);
+           // console.log('Success:', data);
             // Aquí puedes manejar la respuesta del servidor
-            updateTable(data); // Actualizar la tabla con los datos recibidos
+            updateTable_despues_suscribir(data); // Actualizar la tabla con los datos recibidos
+             // Mostrar mensaje de éxito
+            alert('Instrumento suscripto correctamente');
+
+            // Opcional: limpiar el formulario después de éxito
+            form.reset();
+    
         })
         .catch(error => {
             console.error('Error:', error);
+            // Aquí puedes manejar errores, como mostrar un mensaje de error al usuario
         });
     }
+    
     
    
     function filterTable() {
@@ -135,7 +147,7 @@
 
     function updateTable(data) {
         // Obtener el cuerpo de la tabla
-        debugger;
+       
         const tbody = document.querySelector('.table-responsive tbody');
         
         // Limpiar el contenido existente en la tabla
@@ -177,6 +189,64 @@
           // Asociar eventos de clic a los botones de envío
     assignSubmitEvents();
     }
+
+
+
+
+
+
+
+    function updateTable_despues_suscribir(data) {
+        // Obtener el cuerpo de la tabla
+        const tbody = document.querySelector('.table-responsive tbody');
+        
+        // Limpiar el contenido existente en la tabla
+        tbody.innerHTML = '';
+    
+        // Verificar que 'data.datos' sea un array antes de iterar
+        if (Array.isArray(data.datos)) {
+            // Iterar sobre los datos y crear nuevas filas
+            data.datos.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.setAttribute('data-symbol', item.instrumentId.symbol); // Ajustar según la estructura de tu objeto
+    
+                // Crear y agregar las celdas a la fila
+                row.innerHTML = `
+                    <th scope="row">${item.instrumentId.symbol}</th>
+                    <td>${item.maturityDate}</td>
+                    <td>${item.maxTradeVol}</td>
+                    <td>${item.minTradeVol}</td>
+                    <td>${item.priceConvertionFactor}</td>
+                    <td>
+                        <form class="subscriptionForm" method="POST">
+                            <div class="form-group">
+                                <input type="hidden" name="symbol" value="${item.instrumentId.symbol}" class="form-control">
+                            </div> 
+                            <div class="form-group">
+                                <input type="hidden" name="websocketSuscricionCuenta" class="websocketSuscricionCuenta">
+                            </div>
+                            <div class="form-group">
+                                <input type="hidden" name="websocketSuscricionToken" class="websocketSuscricionToken">
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-sm btn-block form-control submitBtn">Submit</button>
+                            </div>
+                        </form>
+                    </td>
+                `;
+    
+                // Agregar la fila al cuerpo de la tabla
+                tbody.appendChild(row);
+            });
+    
+            // Asociar eventos de clic a los botones de envío
+            assignSubmitEvents();
+        } else {
+            console.error('Los datos recibidos no son válidos:', data);
+        }
+    }
+    
+
 
 
     
