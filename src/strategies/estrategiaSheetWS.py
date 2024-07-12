@@ -416,8 +416,8 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                                     status='0'
                                 )
             # Cargar los valores del objeto en el diccionario global
-            if elemento[2] =='':
-                tradeEnCurso = 'LONG_'
+            if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
+                 tradeEnCurso = 'LONG_'
             else:
                 tradeEnCurso =  elemento[2]
             nueva_orden_para_dic = {
