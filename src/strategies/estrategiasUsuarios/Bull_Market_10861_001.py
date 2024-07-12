@@ -149,8 +149,7 @@ def market_data_handler_estrategia(message):
                 han_pasado_30_segundos, tiempo_inicial_30s_ms = control_tiempo_lectura(30000, tiempo_inicial_30s_ms, marca_de_tiempo)
 
                 if han_pasado_30_segundos:
-                    print('Pasaron 30 segundos')
-                    _cancela_orden(0)
+                    print('Pasaron 30 segundos')                    
                     VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
                     # Reinicia el tiempo_inicial_30s_ms para el próximo intervalo
                     tiempo_inicial_30s_ms = marca_de_tiempo
@@ -162,7 +161,7 @@ def market_data_handler_estrategia(message):
                 banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
                 if han_pasado_5_minutos:
                     print('Pasaron 5 minutos')
-                   
+                    _cancela_orden(0)
                     banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
                     # Reinicia el tiempo_inicial_5min_ms para el próximo intervalo
                     tiempo_inicial_5min_ms = marca_de_tiempo
