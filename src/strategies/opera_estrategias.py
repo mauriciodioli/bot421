@@ -110,7 +110,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                 _ws_client_order_id =  1001+random.randint(1, 100000)
             
                 if senial == 'OPEN.':#    **55                    
-                    precio = message["marketData"]["OF"][0]["price"]   
+                    precio = message["marketData"]["BI"][2]["price"]   
                     if precio:
                         pass
                     else:
@@ -160,7 +160,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                 
                 elif senial == 'closed.':# **66
                  
-                    precio = message["marketData"]["OF"][2]["price"]   
+                    precio = message["marketData"]["BI"][0]["price"]   
                     if precio:
                        pass
                     else:

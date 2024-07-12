@@ -146,7 +146,7 @@ def market_data_handler_estrategia(message):
           if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
   
                 # Verifica si han pasado 30 segundos
-                han_pasado_30_segundos, tiempo_inicial_30s_ms = control_tiempo_lectura(5000, tiempo_inicial_30s_ms, marca_de_tiempo)
+                han_pasado_30_segundos, tiempo_inicial_30s_ms = control_tiempo_lectura(30000, tiempo_inicial_30s_ms, marca_de_tiempo)
 
                 if han_pasado_30_segundos:
                     print('Pasaron 30 segundos')
@@ -422,7 +422,7 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                                     status='0'
                                 )
             # Cargar los valores del objeto en el diccionario global
-            if elemento[2] =='':
+            if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
                 tradeEnCurso = 'LONG_'
             else:
                 tradeEnCurso =  elemento[2]
