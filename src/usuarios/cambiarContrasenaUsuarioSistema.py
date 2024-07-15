@@ -6,7 +6,6 @@ import string
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from flask_mail import Mail
 # Creating  Routes
 from pipes import Template
 from unittest import result
@@ -31,7 +30,6 @@ app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')  # Obtener contras
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 
-mail = Mail(app)
 
 # Almacén temporal para códigos de verificación
 verification_codes = {}
