@@ -25,7 +25,11 @@
         <form id="new-password-form" class="mt-4" style="display: none;">
             <div class="form-group">
                 <label for="new-password">Nueva Contraseña</label>
-                <input type="password" class="form-control" id="new-password" required>
+                <input type="password" class="form-control" id="new-password" name="new-password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirmar Nueva Contraseña</label>
+                <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
             </div>
             <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
         </form>
