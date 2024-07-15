@@ -186,35 +186,36 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 
     return f"Hilo iniciado para {pais}"
 
-def ejecutar_en_hilo(app,pais,user_id,selector):
-          while True:
-            #time.sleep(420)# 420 son 7 minutos
-           
-            time.sleep(120)# 4minulos
+def ejecutar_en_hilo(app, pais, user_id, selector):
+    while True:
+        # Obtener el día actual de la semana
+        dia_actual = datetime.now().weekday()
+
+        # Verificar si el día actual está en la lista de días de ejecución
+        if dia_actual in [get.DIAS_SEMANA[dia] for dia in get.DIAS_EJECUCION]:
+            time.sleep(120)  # Espera de 4 minutos
             
             if len(get.diccionario_global_sheet) > 0:
                 now = datetime.now()
-                if get.luzThred_funcionando['luz'] == False:
+                if not get.luzThred_funcionando['luz']:
                     get.luzThred_funcionando['luz'] = True
                     get.luzThred_funcionando['hora'] = now.hour
                     get.luzThred_funcionando['minuto'] = now.minute
                     get.luzThred_funcionando['segundo'] = now.second
-                   
-                   
-                ################################# preguntar si son las 11 ##################
-                ################################# pasar la lectura #########################   
-                now = datetime.now()             
-                if  (now.hour >= 11 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
-                    enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
-                ################################# pregutar si son las 17 hs #################
-                ################## apagar el ws y limpia precios_data #######################
-                now = datetime.now()
-                if (now.hour == 20 and now.minute >= 0 and now.minute <= 59) and get.luzMDH_funcionando:
+
+                # Preguntar si son las 11:00 y pasar la lectura
+                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                    enviar_leer_sheet(app, pais, user_id, 'hilo', selector)
+                
+                # Preguntar si son las 20:00 y apagar el ws y limpiar precios_data
+                if (now.hour == 20 and now.minute >= 6 and now.minute <= 59) and get.luzMDH_funcionando:
                     terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
                     get.symbols_sheet_valores.clear()
                     get.sheet_manager = None
                     get.autenticado_sheet = False
-                    
+        else:
+            time.sleep(86400)  # Espera de 24 horas
+                        
                     
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     

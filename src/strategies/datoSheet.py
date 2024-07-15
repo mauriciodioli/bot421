@@ -1,26 +1,12 @@
 from flask import Blueprint, render_template, request,current_app, redirect, url_for, flash,jsonify
-import routes.instrumentos as instrumentos
 import routes.api_externa_conexion.get_login as get
-import routes.api_externa_conexion.validaInstrumentos as val
-import routes.instrumentos as inst
-
-
 from datetime import datetime
-import enum
-from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 from models.sheetModels.GoogleSheetManager import GoogleSheetManager
 from models.sheetModels.sheet_handler import SheetHandler
-import copy
-import socket
-import requests
-import time
 import json
-from models.orden import Orden
-from models.cuentas import Cuenta
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
-
-import random
+from dotenv import load_dotenv
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 #import routes.api_externa_conexion.cuenta as cuenta
@@ -33,6 +19,7 @@ import sys
 import csv
 import re
 
+load_dotenv()
 #import drive
 #drive.mount('/content/gdrive')
 
@@ -43,23 +30,8 @@ datoSheet = Blueprint('datoSheet',__name__)
 newPath = os.path.join(os.getcwd(), 'strategies/credentials_module.json') 
 directorio_credenciales = newPath 
 
-#SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
-#SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
-SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
-#1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s
+SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
 
-class States(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2
-    
-class Ordenes(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2 
-    #NEW  
-    #PENDING_NEW
-    #TIMESTAMP_ENVIO
 
 precios_data = {}
 
@@ -388,7 +360,7 @@ def instrument_by_symbol_para_CalculoMep(symbol):
             
             #print("symbolllllllllllllllllllllll ",symbol)
            #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
-            repuesta_instrumento = pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+            repuesta_instrumento = get.pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
            
             
             #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)

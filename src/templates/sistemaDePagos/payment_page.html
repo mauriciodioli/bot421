@@ -179,6 +179,10 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
 //****************** actualiza el select ***********************
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("pagoSelect").value = "Mercado Libre";
+    updatePaymentMethod();
+});
 function updatePaymentMethod() {
     var selectedBroker = document.getElementById("pagoSelect").value;
     var paymentMethod = document.getElementById("paymentMethod");

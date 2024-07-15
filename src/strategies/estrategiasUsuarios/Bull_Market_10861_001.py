@@ -90,7 +90,7 @@ def BullMarket10861001():
                         cuentaGlobal = data['cuenta']
                         pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
                         cuentaGlobal = accountCuenta
-                    
+                        CargOperacionAnterioDiccionarioEnviadas1(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
                         CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
                         carga_operaciones(pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
@@ -703,6 +703,102 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
+
+
+
+
+
+
+
+
+def CargOperacionAnterioDiccionarioEnviadas1(pyRofexInicializada=None, account=None, user_id=None, userCuenta=None):
+    try:
+        global VariableParaSaldoCta
+        accountCuenta = account
+        tiempoLecturaSaldo = datetime.now()
+        
+        # Obtener saldo de la cuenta
+        VariableParaSaldoCta = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account)
+        
+        # Obtener posiciones de la cuenta
+        respuesta_operacion = pyRofexInicializada.get_account_position(account=account, environment=account)
+        reporte = respuesta_operacion['positions']
+        
+        # Diccionario para almacenar totales de buySize y sellSize por símbolo
+        totales = {}
+        
+        # Iterar sobre las posiciones para calcular totales por símbolo
+        for posicion in reporte:
+            symbol = posicion['symbol']
+            buySize = abs(int(posicion['buySize']))
+            sellSize = abs(int(posicion['sellSize']))
+            print("Símbolo:", symbol)
+            print("Estan en matriz, Cantidad de stock buySize:", posicion['buySize'])
+            print("Estan en matriz, Cantidad de stock sellSize:", posicion['sellSize'])
+            print()
+            # Si el símbolo no está en totales, inicializarlo
+            if symbol not in totales:
+                totales[symbol] = {'buySize': 0, 'sellSize': 0}
+            
+            # Sumar buySize y sellSize
+            totales[symbol]['buySize'] += buySize
+            totales[symbol]['sellSize'] += sellSize
+        
+        # Limpiar diccionario global de operaciones enviadas
+        diccionario_operaciones_enviadas.clear()
+        
+        # Iterar sobre totales para determinar qué acciones deben venderse
+        for symbol, sizes in totales.items():
+            buySize = sizes['buySize']
+            sellSize = sizes['sellSize']
+            
+            # Calcular diferencia de acciones para vender
+            if buySize > sellSize:
+                acciones_a_vender = buySize - sellSize
+                
+                # Crear diccionario con la información de la operación
+                diccionario = {
+                    "Symbol": symbol,
+                    "_t_": 'None',
+                    "_tr_": 'None',
+                    "_s_": 'None',
+                    "_ut_": acciones_a_vender,
+                    "precio Offer": 'None',
+                    "_ws_client_order_id": 'None',
+                    "_cliOrderId": 0,
+                    "timestamp": datetime.now(),
+                    "status": 'ANTERIOR',
+                    "statusActualBotonPanico": 'ANTERIOR',
+                    "user_id": user_id,
+                    "userCuenta": userCuenta,
+                    "accountCuenta": accountCuenta,
+                    "tiempoSaldo": tiempoLecturaSaldo,
+                    "saldo": VariableParaSaldoCta
+                }
+                
+                # Agregar diccionario al diccionario global de operaciones enviadas
+                diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
+        
+        return 'ok'  # Retorna 'ok' si la operación fue exitosa
+    
+    except Exception as e:
+        print(f"Error: {e}")  # Imprimir error en caso de excepción
+        return 'error'  # Retorna 'error' si ocurre una excepción
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
  
    try: 
@@ -772,6 +868,15 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=Non
         print("error de carga de diccionario de enviados", e)  
         flash(' error de carga de diccionario de enviados')    
    return 'ok'                   
+
+
+
+
+
+
+
+
+
 def estadoOperacionAnterioCargaDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
    try:        
         repuesta_operacion = pyRofexInicializada.get_all_orders_status()
