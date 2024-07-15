@@ -1,0 +1,35 @@
+{% extends 'layouts/layout_without_navbar.html' %}
+
+{% block content %}
+
+<body class="bg-dark text-white">
+    <div class="container">
+        <h2 class="mt-5 text-center">Cambio de Contraseña</h2>
+        <form id="password-reset-form" class="mt-4">
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Correo de Recuperación</button>
+        </form>
+
+        <form id="verification-form" class="mt-4" style="display: none;">
+            <div class="form-group">
+                <label for="verification-code">Código de Verificación</label>
+                <input type="text" class="form-control" id="verification-code" required>
+            </div>
+            <button type="button" class="btn btn-primary" id="verify-code-btn">Verificar Código</button>
+            <p id="countdown" class="text-center mt-2"></p> <!-- Contador descendente -->
+        </form>
+
+        <form id="new-password-form" class="mt-4" style="display: none;">
+            <div class="form-group">
+                <label for="new-password">Nueva Contraseña</label>
+                <input type="password" class="form-control" id="new-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+        </form>
+    </div>
+
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}
