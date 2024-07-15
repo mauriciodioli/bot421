@@ -401,64 +401,72 @@
            
               <div class="horizontal-padding vertical-padding py-4">
                 <section class="ingreso" id="ingreso">
-                  <div class="ingreso-info">              
-                    <h1 class="ingreso-titulo" style="color: gold;">Login</h1>
-                    {% with messages = get_flashed_messages() %}
-                      {% if messages %}
-                        <ul class="flashes">
-                          {% for message in messages %}
-                            <li>{{ message }}</li>
-                          {% endfor %}
-                        </ul>
-                      {% endif %}
-                    {% endwith %}
-      
-                    <div class="form-container">
-                      <div class="row">
-                          {% with messages = get_flashed_messages() %}
+                    <div class="ingreso-info">              
+                        <h1 class="ingreso-titulo" style="color: gold;">Login</h1>
+                        {% with messages = get_flashed_messages() %}
                             {% if messages %}
-                              <div class="alert alert-danger">
-                                {% for message in messages %}
-                                  <p>{{ message }}</p>
-                                {% endfor %}
-                              </div>
+                                <ul class="flashes">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
                             {% endif %}
-                          {% endwith %}
-      
-                          <form method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
-                            <div class="form-group">
-                              <!--<label for="correo_electronico" class="text-white">Correo electrónico:</label>-->
-                              <input type="email" class="form-control mb-3" id="correo_electronico" name="correo_electronico" placeholder="Correo electrónico" required>
+                        {% endwith %}
+            
+                        <div class="form-container">
+                            <div class="row">
+                                {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                        <div class="alert alert-danger">
+                                            {% for message in messages %}
+                                                <p>{{ message }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+            
+                                <form method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
+                                    <div class="form-group">
+                                        <!--<label for="correo_electronico" class="text-white">Correo electrónico:</label>-->
+                                        <input type="email" class="form-control mb-3" id="correo_electronico" name="correo_electronico" placeholder="Correo electrónico" required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <!--<label for="password" class="text-white">Contraseña:</label>-->
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                        <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+                                    </div>                            
+            
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-6 mb-4">
+                                            <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <a href="/registrar_usuario">
+                                                <button type="button" class="btn btn-secondary">Registrarse</button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+            
+                                <form action="/login/google" method="get" class="mt-4 bts">
+                                    <a class="gplogin social"><i class="fa fa-google-plus"></i><span>Iniciar sesión con Google</span></a>
+                                    <!--<button type="submit" class="btn btn-primary btn-block my-2">Iniciar sesión con Google</button>-->
+                                </form>
+                                
+                                <!-- Enlace para recuperación de contraseña -->
+                                <div class="row justify-content-center mt-3">
+                                    <div class="col-md-12 text-center">
+                                        <a href="/usuarios_recuperar_contrasena_usuario_sistema" class="btn btn-link text-white">¿Olvidaste tu contraseña?</a>
+                                    </div>
+                                </div>
+            
                             </div>
-      
-                            <div class="form-group">
-                              <!--<label for="password" class="text-white">Contraseña:</label>-->
-                              <input type="password" class="form-control" id="password" name="password" required>
-                              <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
-                            </div>                            
-      
-                            <div class="row justify-content-center">
-                              <div class="col-md-6 mb-4">
-                                  <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-                              </div>
-                              <div class="col-md-6 mb-2">
-                                  <a href="/registrar_usuario">
-                                      <button type="button" class="btn btn-secondary">Registrarse</button>
-                                  </a>
-                              </div>
-                            </div>
-                          
-                          </form>
-
-                          <form action="/login/google" method="get" class="mt-4 bts">
-                            <a class="gplogin social"><i class="fa fa-google-plus"></i><span>Iniciar sesión con Google</span></a>
-                            <!--<button type="submit" class="btn btn-primary btn-block my-2">Iniciar sesión con Google</button>-->
-                          </form>
-                      </div>
+                        </div>
                     </div>
-                  </div>
                 </section> 
-              </div>   
+            </div>
+            
 
 
             </div> <!-- aqui va todo ubicado en el centro es el fin de la etiqueta que contiene al centro--> 

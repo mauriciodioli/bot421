@@ -92,6 +92,20 @@ ID_USER_ACTUALIZAR_SHEET = 1
 #CUENTA_ACTUALIZAR_SHEET = '10861'
 #CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'
 #ID_USER_ACTUALIZAR_SHEET = 2
+# Días de la semana a los que debe ejecutar la función
+
+DIAS_EJECUCION = ["lunes", "martes", "miercoles", "jueves", "viernes"]
+
+# Diccionario para convertir el nombre del día a su valor numérico
+DIAS_SEMANA = {
+    "lunes": 0,
+    "martes": 1,
+    "miercoles": 2,
+    "jueves": 3,
+    "viernes": 4,
+    "sabado": 5,
+    "domingo": 6
+}
 precios_data = {} #para mdh 0
 symbols_sheet_valores = []
 sheet = None
