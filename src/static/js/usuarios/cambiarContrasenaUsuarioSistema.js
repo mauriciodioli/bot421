@@ -98,3 +98,16 @@ document.getElementById("new-password-form").addEventListener("submit", function
         event.preventDefault(); // Evita que el formulario se envíe
     }
 });
+
+function togglePasswordVisibility(id) {
+    var passwordField = document.getElementById(id);
+    var icon = passwordField.nextElementSibling.querySelector('.toggle-password');
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        icon.textContent = "🙈";
+    } else {
+        passwordField.type = "password";
+        icon.textContent = "👁️";
+    }
+}

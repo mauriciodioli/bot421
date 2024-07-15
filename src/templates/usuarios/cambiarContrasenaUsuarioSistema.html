@@ -25,15 +25,51 @@
         <form id="new-password-form" class="mt-4" style="display: none;">
             <div class="form-group">
                 <label for="new-password">Nueva Contraseña</label>
-                <input type="password" class="form-control" id="new-password" name="new-password" required>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="new-password" name="new-password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text toggle-password" onclick="togglePasswordVisibility('new-password')">👁️</span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label for="confirm-password">Confirmar Nueva Contraseña</label>
-                <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text toggle-password" onclick="togglePasswordVisibility('confirm-password')">👁️</span>
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
         </form>
     </div>
 
+    <style>
+        .input-group {
+            position: relative;
+        }
+    
+        .input-group-text.toggle-password {
+            cursor: pointer;
+            background-color: transparent;
+            border: none;
+            margin-left: -35px; /* Ajusta este valor según sea necesario para centrar */
+            vertical-align: middle; /* Ajusta la alineación vertical del icono */
+            z-index: 10; /* Asegura que esté sobre el campo de entrada */
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            margin-top: 1px; /* Ajusta la posición vertical del ícono */
+             
+        }
+    
+        .form-control {
+            padding-right: 40px; /* Espacio para el icono de visibilidad */
+        }
+       
+    </style>
 {% include 'layouts/layout_footer.html' %}
 {% endblock %}
