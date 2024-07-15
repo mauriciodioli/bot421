@@ -9,7 +9,7 @@ $(document).ready(function() {
             contentType: "application/json",
             data: JSON.stringify({ email: email }),
             success: function(response) {
-                alert(response.message);
+                alert('SE ENVIO CODIGO DE RECUPERACION DE CONTRASEÑA, REVISE SU CORREO');
                 $("#password-reset-form").hide();
                 $("#verification-form").show();
                 
@@ -58,7 +58,7 @@ $(document).ready(function() {
             contentType: "application/json",
             data: JSON.stringify({ verification_code: verificationCode }),
             success: function(response) {
-                alert(response.message);
+                alert('CODIGO CORRECTO, INGRESE NUEVA CONTRASEÑA');
                 $("#verification-form").hide();
                 $("#new-password-form").show();
             },
@@ -86,4 +86,15 @@ $(document).ready(function() {
             }
         });
     });
+});
+
+// Validación de coincidencia de contraseñas
+document.getElementById("new-password-form").addEventListener("submit", function(event) {
+    var newPassword = document.getElementById("new-password").value;
+    var confirmPassword = document.getElementById("confirm-password").value;
+
+    if (newPassword !== confirmPassword) {
+        alert("Las contraseñas no coinciden. Por favor, inténtelo de nuevo.");
+        event.preventDefault(); // Evita que el formulario se envíe
+    }
 });
