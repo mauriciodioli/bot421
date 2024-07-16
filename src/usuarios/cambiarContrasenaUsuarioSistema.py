@@ -1,8 +1,8 @@
 import os
-import os
 import smtplib
 import secrets
 import string
+import bcrypt
 from datetime import datetime, timedelta
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -53,7 +53,7 @@ def send_reset_email():
         verification_codes[email] = {
             'code': verification_code,
             'timestamp': datetime.now(),
-            'expiry': timedelta(hours=1)
+            'expiry': timedelta(minutes=2)
         }
         print(f"Generated verification code: {verification_code}")
 
@@ -89,10 +89,6 @@ def send_reset_email():
         body += '\n'
         body += '\n'
         body += f'Hora de envio: {str(time)}\n'
-       
-     
-
-       
         
         message.attach(MIMEText(body, 'plain'))
 
@@ -151,13 +147,53 @@ def verify_code():
 
 
 
+
+
+
 @cambiarContrasenaUsuarioSistema.route('/reset_password', methods=['POST'])
 def reset_password():
-    data = request.get_json()
-    new_password = data['new_password']
-    
-    # Aquí deberías verificar el código de verificación y cambiar la contraseña en la base de datos
-    # Este ejemplo omite esos pasos por simplicidad.
-    
-    return jsonify({'message': 'Contraseña cambiada exitosamente.'})
+    try:
+        data = request.get_json()
+        email = data.get('correo_electronico')
+        new_password = data.get('new_password')
+
+        # Validar que se hayan proporcionado el correo electrónico y la nueva contraseña
+        if not email or not new_password:
+            return jsonify({'error': 'Correo electrónico y nueva contraseña son requeridos.'}), 400
+
+        # Verificar si existe un código de verificación válido para el correo electrónico
+        if email not in verification_codes:
+            return jsonify({'error': 'No se encontró ningún código de verificación para este correo electrónico.'}), 400
+        
+        # Obtener el código de verificación y su información
+        verification_info = verification_codes[email]
+        verification_code = verification_info['code']
+        timestamp = verification_info['timestamp']
+        expiry = verification_info['expiry']
+
+        # Verificar si el código de verificación ha expirado
+        current_time = datetime.now()
+        if current_time > timestamp + expiry:
+            return jsonify({'error': 'El código de verificación ha expirado. Solicite uno nuevo.'}), 400
+
+       
+        # Obtener al usuario y verificar si la nueva contraseña es igual a la anterior
+        usuario = db.session.query(Usuario).filter_by(correo_electronico=email).first()
+        if usuario:
+            if bcrypt.checkpw(new_password.encode('utf-8'), usuario.password):
+                return jsonify({'error': 'La nueva contraseña no puede ser igual a la anterior.'}), 400
+
+            # Cambiar la contraseña
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+            usuario.password = hashed_password
+            db.session.commit()
+            flash('Contraseña cambiada exitosamente.')
+            return jsonify({'message': 'Contraseña cambiada exitosamente.'})
+        else:
+            return jsonify({'error': 'No se encontró ningún usuario con el correo electrónico proporcionado.'}), 404
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 
