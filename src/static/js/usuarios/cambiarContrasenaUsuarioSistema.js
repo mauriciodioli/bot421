@@ -1,8 +1,9 @@
 $(document).ready(function() {
+    // Evento para enviar el formulario de restablecimiento de contraseña
     $("#password-reset-form").on("submit", function(e) {
         e.preventDefault();
         let email = $("#email").val();
-        
+        localStorage.setItem('correo_electronico', email);
         $.ajax({
             url: "/send_reset_email",
             type: "POST",
@@ -68,37 +69,39 @@ $(document).ready(function() {
         });
     });
 
-    // Evento para enviar el formulario de nueva contraseña
+    // Evento para enviar el formulario de nueva contraseña y validar coincidencia
     $("#new-password-form").on("submit", function(e) {
         e.preventDefault();
         let newPassword = $("#new-password").val();
+        let confirmPassword = $("#confirm-password").val();
+        let correo_electronico = localStorage.getItem("correo_electronico");
+
+        if (newPassword !== confirmPassword) {
+            alert("Las contraseñas no coinciden. Por favor, inténtelo de nuevo.");
+            return; // Evita que el formulario se envíe
+        }
 
         $.ajax({
             url: "/reset_password",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ new_password: newPassword }),
+            data: JSON.stringify({
+                new_password: newPassword,
+                correo_electronico: correo_electronico
+            }),
             success: function(response) {
                 alert(response.message);
+                window.location.href = "/index#ingreso"; // Redirigir a /index#login
             },
             error: function(error) {
-                alert("Error al cambiar la contraseña.");
+                alert(error.responseJSON.error); // Mostrar el mensaje de error del servidor
+          
             }
         });
     });
 });
 
-// Validación de coincidencia de contraseñas
-document.getElementById("new-password-form").addEventListener("submit", function(event) {
-    var newPassword = document.getElementById("new-password").value;
-    var confirmPassword = document.getElementById("confirm-password").value;
-
-    if (newPassword !== confirmPassword) {
-        alert("Las contraseñas no coinciden. Por favor, inténtelo de nuevo.");
-        event.preventDefault(); // Evita que el formulario se envíe
-    }
-});
-
+// Función para alternar la visibilidad de la contraseña
 function togglePasswordVisibility(id) {
     var passwordField = document.getElementById(id);
     var icon = passwordField.nextElementSibling.querySelector('.toggle-password');
