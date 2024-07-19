@@ -70,7 +70,7 @@ def estrategias_usuario_general():
                 trigger.ut =  ut_object.ut
         
       
-        return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,estrategias])
+        return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,estrategias], layout='layout')
 
           
     except:
@@ -119,7 +119,7 @@ def estrategias_usuario_nadmin():
            
                    
             #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias], layout='layoutConexBroker')
           else:
                return render_template('notificaciones/tokenVencidos.html', layout='layout')  
     except:
@@ -138,7 +138,7 @@ def estrategias_usuario():
                 print("Name:", estrategia.userCuenta)
                 # Print other attributes as needed
                 print()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
     
     except:
        print('no hay estrategias') 
@@ -200,7 +200,7 @@ def eliminar_trigger():
         estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
       
         db.session.close()   
-        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
     else:
          flash('El token a expirado')
          return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
@@ -218,7 +218,7 @@ def editar_trigger_nombre():
     
     estrategias = db.session.query(TriggerEstrategia).all()
     db.session.close()
-    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
     
 @estrategias.route("/editar-Trigger/", methods = ["POST"] )
 def editar_Trigger():
@@ -246,7 +246,7 @@ def editar_Trigger():
             flash('Estrategia editada correctamente.')
             estrategias = db.session.query(TriggerEstrategia).all()
             db.session.close()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
                     
     except:
                 print('no hay estrategias')
@@ -535,7 +535,7 @@ def alta_estrategias_trig():
                     # Realizar la solicitud POST con los datos
                     response = requests.post(url, json=data)
                 
-                return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias])
+                return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias],layout='layoutConexBroker')
            
     except:
         print('no hay estrategias')
