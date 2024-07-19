@@ -58,7 +58,7 @@ def BullMarket10861001():
     if request.method == 'POST':
         try:
             
-            test.entradaTest()
+            #test.entradaTest()
             data = request.get_json()
 
             # Accede a los datos individualmente
@@ -483,7 +483,7 @@ def order_report_handler(order_report):
     clOrdId = order_data['clOrdId']        
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']  
-    print('___________ORH_______STATUS__ENTREGADO: ', status)
+    print('___________ORH_______STATUS__ENTREGADO: ', status, ' symbol: ', symbol)
     timestamp_order_report = order_data['transactTime']  
    
     if es_numero(clOrdId):

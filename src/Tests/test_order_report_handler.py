@@ -81,7 +81,6 @@ test_cases = [
     simulate_order_report(121, 'AAPL', 'REJECTED', '2024-07-18T12:00:00Z', 'Stock 10'),
     simulate_order_report(131, 'AAPL', 'CANCELLED', '2024-07-18T12:00:00Z', 'Stock 10'),
     simulate_order_report(141, 'AAPL', 'REJECTED', '2024-07-18T12:00:00Z', 'Stock 10'),
-    
     simulate_order_report(102, 'AAPL', 'FILLED', '2024-07-18T12:01:00Z', 'Stock 10'),
     simulate_order_report(103, 'AAPL', 'REJECTED', '2024-07-18T12:02:00Z', 'Stock 20'),
     simulate_order_report(104, 'AAPL', 'CANCELLED', '2024-07-18T12:03:00Z', 'Stock 30'),
@@ -127,7 +126,7 @@ def order_report_handler(order_report):
     clOrdId = order_data['clOrdId']        
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']  
-    print('___________ORH_______STATUS__ENTREGADO: ', status)
+    print('___________ORH_______STATUS__ENTREGADO: ', status, 'symbol: ',symbol)
     timestamp_order_report = order_data['transactTime']  
    
     if es_numero(clOrdId):

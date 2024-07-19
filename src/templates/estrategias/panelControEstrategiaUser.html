@@ -9,7 +9,23 @@
   {% endif %}
 {% endwith %}
 
-{% extends 'layouts/layoutConexBroker.html' %}
+{% if layout == 'layout_detalle_productos' %}
+{% extends "layouts/layout_detalle_productos.html" %}
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
 
 {% block content %}
 
