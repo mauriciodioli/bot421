@@ -48,11 +48,13 @@ diccionario_global_operaciones = {
 
 diccionario_operaciones_enviadas = {
     '101': simulate_operacion_enviada(101, 'AAPL', 'ANTERIOR', 10),
-    '102': simulate_operacion_enviada(102, 'AAPL', 'FILLED', 7),
-    '103': simulate_operacion_enviada(103, 'AAPL', 'NEW', 2),
-    '104': simulate_operacion_enviada(104, 'AAPL', 'REJECTED', 8),
-    '105': simulate_operacion_enviada(105, 'AAPL', 'CANCELLED', 3),
-    '125': simulate_operacion_enviada(125, 'AAPL', 'FILLED', 3),
+    '121': simulate_operacion_enviada(121, 'AAPL', 'ANTERIOR', 10),   
+    '131': simulate_operacion_enviada(131, 'AAPL', 'ANTERIOR', 10),
+    #'102': simulate_operacion_enviada(102, 'AAPL', 'FILLED', 7),
+    #'103': simulate_operacion_enviada(103, 'AAPL', 'NEW', 2),
+    #'104': simulate_operacion_enviada(104, 'AAPL', 'REJECTED', 8),
+    #'105': simulate_operacion_enviada(105, 'AAPL', 'CANCELLED', 3),
+    #'125': simulate_operacion_enviada(125, 'AAPL', 'FILLED', 3),
     #'201': simulate_operacion_enviada(201, 'GOOG', 'ANTERIOR', 20),
     #'202': simulate_operacion_enviada(202, 'GOOG', 'FILLED', 15),
     #'203': simulate_operacion_enviada(203, 'GOOG', 'NEW', 5),
@@ -76,6 +78,10 @@ diccionario_operaciones_enviadas = {
 # Escenarios de prueba
 test_cases = [
     simulate_order_report(101, 'AAPL', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(121, 'AAPL', 'REJECTED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(131, 'AAPL', 'CANCELLED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(141, 'AAPL', 'REJECTED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    
     simulate_order_report(102, 'AAPL', 'FILLED', '2024-07-18T12:01:00Z', 'Stock 10'),
     simulate_order_report(103, 'AAPL', 'REJECTED', '2024-07-18T12:02:00Z', 'Stock 20'),
     simulate_order_report(104, 'AAPL', 'CANCELLED', '2024-07-18T12:03:00Z', 'Stock 30'),
@@ -136,67 +142,58 @@ def _operada(order_report):
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']
     stock_para_closed = int(float(obtenerStock(order_data['text'])))
-    
+
     print(f'Processing order {clOrdId} for {symbol} with status {status}')
 
-    # Verificar si el estado está en la lista de estados relevantes
+    # Verifica si el estado está en la lista de estados relevantes
     if status in ['CANCELLED', 'ERROR', 'REJECTED', 'EXPIRED']:
-        if symbol in diccionario_global_operaciones:
-            for key, operacion in diccionario_operaciones_enviadas.items():
-                # Si la operación está 'ANTERIOR' y el estado es 'REJECTED'
-                if operacion['status'] == 'ANTERIOR' and status == 'REJECTED':
-                    operacion['status'] = 'TERMINADA'
-                
-                # Si la operación corresponde al símbolo y clOrdId, y no está 'TERMINADA' ni 'CANCELLED'
-                if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
-                    if operacion['status'] not in ['TERMINADA', 'CANCELLED']:
-                        ut_a_devolver = 0 if status == 'REJECTED' else operacion['_ut_']
-                        operacion['status'] = 'TERMINADA'
-                        
-                        # Actualizar el diccionario global
-                        operacionGlobal = diccionario_global_operaciones.get(symbol)
-                        if operacionGlobal:
-                            operacionGlobal['ut'] += int(ut_a_devolver)
-                            if operacionGlobal['status'] != '0':
-                                operacionGlobal['status'] = '0'
-                    elif operacion['status'] == 'CANCELLED':
-                        operacion['status'] = 'TERMINADA'
+        actualizar_diccionario_enviadas(order_data, symbol, status)
 
-    if status in ['FILLED', 'REJECTED']: 
-        endingGlobal = 'SI'
-        endingEnviadas = 'SI'
-        for operacion_enviada in diccionario_operaciones_enviadas.values():
-            if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and operacion_enviada['status'] != 'TERMINADA':
-                operacion_enviada['status'] = 'TERMINADA'
-        
-        for key, operacionGlobal in diccionario_global_operaciones.items():  
-            if operacionGlobal['symbol'] == symbol:
-                if operacionGlobal['ut'] == 0 :
+    # Procesa el estado final
+    if status in ['FILLED', 'REJECTED']:
+        procesar_estado_final(symbol, clOrdId)
+
+
+
+def procesar_estado_final(symbol, clOrdId):
+    global endingGlobal, endingEnviadas
+
+    endingGlobal = 'SI'
+    endingEnviadas = 'SI'
+
+    # Actualiza el estado de las operaciones enviadas
+    for operacion_enviada in diccionario_operaciones_enviadas.values():
+        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and operacion_enviada['status'] != 'TERMINADA':
+            operacion_enviada['status'] = 'TERMINADA'
+
+    # Revisa las operaciones globales
+    for key, operacionGlobal in diccionario_global_operaciones.items():
+        if operacionGlobal['symbol'] == symbol:
+            if operacionGlobal['ut'] == 0:
+                # Verifica si todas las operaciones relacionadas están terminadas
+                all_enviadas_terminadas = all(
+                    operacion['status'] == 'TERMINADA'
+                    for operacion in diccionario_operaciones_enviadas.values()
+                    if operacion["Symbol"] == symbol
+                )
+                if all_enviadas_terminadas:
                     operacionGlobal['status'] = '1'
-                    # Check if all related 'enviadas' operations are 'TERMINADAS'
-                    all_enviadas_terminadas = all(
-                        operacion['status'] == 'TERMINADA' 
-                        for operacion in diccionario_operaciones_enviadas.values()
-                        if operacion["Symbol"] == symbol
-                    )
-                    if all_enviadas_terminadas:
-                        # Mark global status as finished only if all related sent operations are terminated
-                        endingGlobal = 'SI'
-                    else:
-                        endingGlobal = 'NO'
+                    endingGlobal = 'SI'
                 else:
                     endingGlobal = 'NO'
-        
-        # Ensure `endingEnviadas` is still 'SI' if we should check for it
-        if endingGlobal == 'SI' and endingEnviadas == 'SI':
-            print(f'Final state: endingGlobal={endingGlobal}, endingEnviadas={endingEnviadas}, symbol={symbol}')
-            endingOperacionBot(endingGlobal, endingEnviadas, symbol)
-            
-def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
-    if symbol in diccionario_global_operaciones:
-        print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
+            else:
+                endingGlobal = 'NO'
 
-    if endingGlobal == 'SI' and endingEnviadas == 'SI' and not diccionario_operaciones_enviadas:
+    # Asegura que `endingEnviadas` siga siendo 'SI' si corresponde
+    if endingGlobal == 'SI' and endingEnviadas == 'SI':
+        print(f'Final state: endingGlobal={endingGlobal}, endingEnviadas={endingEnviadas}, symbol={symbol}')
+        endingOperacionBot(endingGlobal, endingEnviadas, symbol)   
+        
+        
+              
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+    if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
+        print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
         # Clear the dictionary if all conditions are met
         diccionario_operaciones_enviadas.clear()
         print("###############################################") 
@@ -208,7 +205,42 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
         print("###############################################") 
 
 
-
+def actualizar_diccionario_enviadas(order_data, symbol, status):
+    """Actualiza el diccionario de operaciones enviadas según el estado de la orden."""
+    
+    clOrdId = order_data['clOrdId']
+    
+    if symbol in diccionario_global_operaciones:
+        for key, operacion in diccionario_operaciones_enviadas.items():
+            # Si la operación corresponde al símbolo y clOrdId
+            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
+                # Si la operación no está 'TERMINADA' ni 'CANCELLED'
+                if operacion['status'] not in ['TERMINADA', 'CANCELLED']:
+                    # Orden Rechazada ('REJECTED'): Si la orden tiene estado 'REJECTED'
+                    if status == 'REJECTED':
+                        ut_a_devolver = 0
+                    # Otros Estados de la Orden: Si la orden tiene cualquier otro estado
+                    else:
+                        ut_a_devolver = operacion['_ut_']
+                    # Marca la operación como 'TERMINADA'
+                    operacion['status'] = 'TERMINADA'
+                    
+                    # Llamar a la función para actualizar el diccionario global
+                    actualizar_diccionario_global(symbol, ut_a_devolver)
+                elif operacion['status'] == 'ANTERIOR' and status == 'REJECTED':
+                    operacion['status'] = 'TERMINADA'
+                elif operacion['status'] == 'CANCELLED':
+                    operacion['status'] = 'TERMINADA'
+                    
+def actualizar_diccionario_global(symbol, ut_a_devolver):
+    """Actualiza el diccionario global de operaciones."""
+    operacionGlobal = diccionario_global_operaciones.get(symbol)
+    if operacionGlobal:
+        operacionGlobal['ut'] += int(ut_a_devolver)
+        if operacionGlobal['status'] != '0':
+            operacionGlobal['status'] = '0'
+            
+            
 # Llamada a la función order_report_handler con cada caso de prueba
 def entradaTest():
     for i, report in enumerate(test_cases):
