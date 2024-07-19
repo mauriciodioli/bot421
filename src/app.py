@@ -15,7 +15,6 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
-from strategies.estrategiasUsuarios.Remarkets_REM6603_001 import Remarkets_REM6603_001
 from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 from strategies.estrategiasUsuarios.Bull_Market_351653_001 import Bull_Market_351653_001
 ########################################################################
@@ -173,7 +172,6 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 #####################zona blueprin de usuarios##############
-app.register_blueprint(Remarkets_REM6603_001)
 app.register_blueprint(Bull_Market_10861_001)
 app.register_blueprint(Bull_Market_351653_001)
 ############################################################
