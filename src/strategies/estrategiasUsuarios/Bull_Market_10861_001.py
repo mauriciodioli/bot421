@@ -478,95 +478,118 @@ def es_numero(numero):
     except:
         return False
   
-def order_report_handler( order_report):
-        # Obtener el diccionario de datos del reporte de orden
-        
-        order_data = order_report['orderReport']
-        clOrdId = order_data['clOrdId']        
-        symbol = order_data['instrumentId']['symbol']
-        status = order_data['status']  
-        print('___________order_report_handler_______OPERADA__ ',status)
-        timestamp_order_report = order_data['transactTime']  
-        
-        rutaORH = 'C:\\Users\\mDioli\\Documents\\tmp\\operacionesORH_01.csv'
-        print('status ',status)
-        #append_order_report_to_csv(order_report, rutaORH)
-        # se fija que cuando venga el reporte el diccionario tenga elementos
-        if es_numero(clOrdId):#esto se pone por que el clOrdId puede traer basura
-            if len(diccionario_operaciones_enviadas) != 0:
-                asignarClOrId(order_report)#__
-                    
-                    # if status == 'EXECUTED':
-                if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                    _operada(order_report)   
+def order_report_handler(order_report):
+    order_data = order_report['orderReport']
+    clOrdId = order_data['clOrdId']        
+    symbol = order_data['instrumentId']['symbol']
+    status = order_data['status']  
+    print('___________ORH_______STATUS__ENTREGADO: ', status)
+    timestamp_order_report = order_data['transactTime']  
+   
+    if es_numero(clOrdId):
+        if len(diccionario_operaciones_enviadas) != 0:
+            asignarClOrId(order_report)
+            if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
+                _operada(order_report)   
+
                        
         
 def _operada(order_report):
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
-    status = order_data['status']   
-    #print(symbol,' _______************  OPERADA ****************_____________ ',order_data['text'])
+    status = order_data['status']
+    stock_para_closed = int(float(obtenerStock(order_data['text'])))
+
+    print(f'Processing order {clOrdId} for {symbol} with status {status}')
+
+    # Verifica si el estado está en la lista de estados relevantes
+    if status in ['CANCELLED', 'ERROR', 'REJECTED', 'EXPIRED']:
+        actualizar_diccionario_enviadas(order_data, symbol, status)
+
+    # Procesa el estado final
+    if status in ['FILLED', 'REJECTED']:
+        procesar_estado_final(symbol, clOrdId)
+ 
+ 
+ 
+def procesar_estado_final(symbol, clOrdId):
+    global endingGlobal, endingEnviadas
+
+    endingGlobal = 'SI'
+    endingEnviadas = 'SI'
+
+    # Actualiza el estado de las operaciones enviadas
+    for operacion_enviada in diccionario_operaciones_enviadas.values():
+        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and operacion_enviada['status'] != 'TERMINADA':
+            operacion_enviada['status'] = 'TERMINADA'
+
+    # Revisa las operaciones globales
+    for key, operacionGlobal in diccionario_global_operaciones.items():
+        if operacionGlobal['symbol'] == symbol:
+            if operacionGlobal['ut'] == 0:
+                # Verifica si todas las operaciones relacionadas están terminadas
+                all_enviadas_terminadas = all(
+                    operacion['status'] == 'TERMINADA'
+                    for operacion in diccionario_operaciones_enviadas.values()
+                    if operacion["Symbol"] == symbol
+                )
+                if all_enviadas_terminadas:
+                    operacionGlobal['status'] = '1'
+                    endingGlobal = 'SI'
+                else:
+                    endingGlobal = 'NO'
+            else:
+                endingGlobal = 'NO'
+
+    # Asegura que `endingEnviadas` siga siendo 'SI' si corresponde
+    if endingGlobal == 'SI' and endingEnviadas == 'SI':
+        print(f'Final state: endingGlobal={endingGlobal}, endingEnviadas={endingEnviadas}, symbol={symbol}')
+        endingOperacionBot(endingGlobal, endingEnviadas, symbol)   
+        
+
+
+
+def actualizar_diccionario_enviadas(order_data, symbol, status):
+    """Actualiza el diccionario de operaciones enviadas según el estado de la orden."""
     
-    stock_para_closed = obtenerStock(order_data['text']) 
-    stock_para_closed = int(float(stock_para_closed))
-    #print('stock_para_closed ',stock_para_closed)
-    if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
-              if symbol in diccionario_global_operaciones:                  
-                for key, operacion in diccionario_operaciones_enviadas.items():#11111
-                            if  operacion['status'] == 'ANTERIOR':
-                                if status == 'REJECTED' :
-                                    operacion['status'] = 'TERMINADA'
-                            else:                                                  
-                                if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
-                                    ut_a_devolver = operacion['_ut_']   
-                                    if status == 'REJECTED' :
-                                        ut_a_devolver = 0 
-                                        print('ut_a_devolver ',ut_a_devolver) 
-                                        
-                                        if ut_a_devolver <= 0:
-                                            print('ut_a_devolver  == 0',ut_a_devolver)
-                                            operacion['status'] = 'TERMINADA'
-                                        else: 
-                                            
-                                         operacion['status'] = 'TERMINADA'
-                                    else:                            
-                                        operacion['status'] = 'TERMINADA'
-                                    for key, operacionGlobal in diccionario_global_operaciones.items():
-                                        if operacionGlobal['symbol'] == symbol :
-                                            operacionGlobal['ut'] = int(operacionGlobal['ut']) + int(ut_a_devolver)
-                                            #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
-                                            #pprint.pprint(get.diccionario_global_operaciones)
-                                            if operacionGlobal['status'] != '0':
-                                                operacionGlobal['status']== '0'
-                                # aqui termina las ordenes canceladas que se cargaron inicalmente               
-                                if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and operacion['status'] == 'CANCELLED':                
-                                    operacion['status'] = 'TERMINADA'
-                                # pprint.pprint(g et.diccionario_global_operaciones_)
-                                # pprint.pprint(g et.diccionario_operaciones_enviadas) 
-                            
+    clOrdId = order_data['clOrdId']
+    
+    if symbol in diccionario_global_operaciones:
+        for key, operacion in diccionario_operaciones_enviadas.items():
+            # Si la operación corresponde al símbolo y clOrdId
+            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
+                # Si la operación no está 'TERMINADA' ni 'CANCELLED'
+                if operacion['status'] not in ['TERMINADA', 'CANCELLED']:
+                    # Orden Rechazada ('REJECTED'): Si la orden tiene estado 'REJECTED'
+                    if status == 'REJECTED':
+                        ut_a_devolver = 0
+                    # Otros Estados de la Orden: Si la orden tiene cualquier otro estado
+                    else:
+                        ut_a_devolver = operacion['_ut_']
+                    # Marca la operación como 'TERMINADA'
+                    operacion['status'] = 'TERMINADA'
+                    
+                    # Llamar a la función para actualizar el diccionario global
+                    actualizar_diccionario_global(symbol, ut_a_devolver)
+                elif operacion['status'] == 'ANTERIOR' and status == 'REJECTED':
+                    operacion['status'] = 'TERMINADA'
+                elif operacion['status'] == 'CANCELLED':
+                    operacion['status'] = 'TERMINADA'
                     
 
-    if status in['FILLED','REJECTED']: 
-            endingGlobal = 'SI'  # Suponiendo inicialmente que todas las operaciones son 'si'
-            endingEnviadas = 'SI'
-            for operacion_enviada in diccionario_operaciones_enviadas.values():  
-                print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas,'  operacion_enviada[status] ', operacion_enviada['status'])
-                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA' :
-                    operacion_enviada['status'] = 'TERMINADA'                     
-                    print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas)
-         
 
-            for key, operacionGlobal in diccionario_global_operaciones.items():  
-                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == 0:                    
-                    operacionGlobal['status'] = '1'
-                    print(key," : ",operacionGlobal['status']," :",operacionGlobal['ut'])
-                else:  # Si alguna operación no es 'si'
-                    endingGlobal = 'NO'
-               
+
+def actualizar_diccionario_global(symbol, ut_a_devolver):
+    """Actualiza el diccionario global de operaciones."""
+    operacionGlobal = diccionario_global_operaciones.get(symbol)
+    if operacionGlobal:
+        operacionGlobal['ut'] += int(ut_a_devolver)
+        if operacionGlobal['status'] != '0':
+            operacionGlobal['status'] = '0'
             
-            endingOperacionBot(endingGlobal,endingEnviadas,symbol)                               
-                               
+ 
+ 
 def convert_datetime(original_datetime_str, desired_timezone_str):
     # Convertir la cadena a un objeto datetime
     original_datetime = datetime.strptime(original_datetime_str, "%Y%m%d-%H:%M:%S.%f")
@@ -883,13 +906,10 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot (endingGlobal,endingEnviadas,symbol):
-     if symbol in diccionario_global_operaciones:
-           account = diccionario_global_operaciones[symbol]['accountCuenta']
-           print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas,'symbol: ',symbol,' account: ',account)
-   
-     if endingGlobal == 'SI' and endingEnviadas == 'SI' and diccionario_operaciones_enviadas:
-         
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+    if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
+        print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
+        # Clear the dictionary if all conditions are met
         diccionario_operaciones_enviadas.clear()
         print("###############################################") 
         print("###############################################") 
@@ -898,11 +918,10 @@ def endingOperacionBot (endingGlobal,endingEnviadas,symbol):
         print("###############################################") 
         print("###############################################") 
         print("###############################################") 
-        if symbol in diccionario_global_operaciones:
-           account = diccionario_global_operaciones[symbol]['accountCuenta']
-           pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
-           pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
-          #      return render_template('home.html')    
+        account = diccionario_global_operaciones[symbol]['accountCuenta']
+        pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
+        pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
+        #      return render_template('home.html')    
 
 
 
