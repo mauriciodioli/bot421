@@ -9,28 +9,19 @@ import csv
 import json
 import random
 import routes.api_externa_conexion.get_login as get
-import routes.api_externa_conexion.validaInstrumentos as val
-import routes.instrumentos as inst
 import strategies.opera_estrategias as op  
-import requests
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 
 
-from datetime import datetime,timedelta, timezone
+from datetime import datetime
 from pytz import timezone as pytz_timezone
-import enum
+
 from models.unidadTrader import UnidadTrader
-import socket
 import pprint
 import tokens.token as Token
 instrumentos_existentes_arbitrador1=[]
-import sys
 import Tests.test_order_report_handler as test
-
-
-
-
 
 
 Bull_Market_10861_001 = Blueprint('Bull_Market_10861_001',__name__)
@@ -73,8 +64,7 @@ def BullMarket10861001():
             
             get.accountLocalStorage = data['cuenta']
             
-            #get.accountLocalStorage = "20225833983"
-            
+                      
             tiempoInicio = data['tiempoInicio']
             tiempoFin = data['tiempoFin']
             automatico = data['automatico']
@@ -114,7 +104,7 @@ def BullMarket10861001():
        
 def market_data_handler_estrategia(message):
     global tiempo_inicial_30s_ms,tiempo_inicial_5min_ms,VariableParaSaldoCta   
-    ## mensaje = Ticker+','+cantidad+','+spread
+   
     #print(message)
     
   
@@ -127,21 +117,14 @@ def market_data_handler_estrategia(message):
    
     
     if response != 1: ### si es 1 el boton de panico fue activado
-       # _cancela_orden(300)
-        
+     
       #  print(" FUN: market_data_handler_estrategia: _")
-        
-      
-       
 
         # Obtén el timestamp del mensaje
         marca_de_tiempo = int(message["timestamp"])
-
-        
         marca_de_tiempo_para_leer_sheet = marca_de_tiempo
         Symbol = message["instrumentId"]["symbol"]
-        # Supongamos que 'tiempo_saldo' es un objeto datetime
-        # Supongamos que 'tiempo_saldo' es un objeto datetime
+       
         if diccionario_global_operaciones or diccionario_operaciones_enviadas:
           if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
   
@@ -300,11 +283,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                         else:
                             # Manejo de otro tipo de TradeEnCurso si es necesario
                             pass
-
-# else:  
-        #print(message['instrumentId']['symbol'])  
-    #    print('______________________________________________________')                                   
-
 
 def obtener_liquidez_actual(message, key):
     if message and "marketData" in message and key in message["marketData"]:
@@ -588,8 +566,7 @@ def actualizar_diccionario_global(symbol, ut_a_devolver):
         if operacionGlobal['status'] != '0':
             operacionGlobal['status'] = '0'
             
- 
- 
+  
 def convert_datetime(original_datetime_str, desired_timezone_str):
     # Convertir la cadena a un objeto datetime
     original_datetime = datetime.strptime(original_datetime_str, "%Y%m%d-%H:%M:%S.%f")
@@ -654,7 +631,6 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
             print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
-            
             pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='ISV_PBCP',environment=cuentaGlobal) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
@@ -729,10 +705,6 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
-
-
-
-
 
 
 
@@ -823,7 +795,6 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(pyRofexInicializada=None,acco
    try:        
         repuesta_operacion = pyRofexInicializada.get_all_orders_status()
      
-        
         datos = repuesta_operacion['orders']
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
         diccionario = {}
@@ -966,9 +937,7 @@ def append_order_report_to_csv(report, rutaORH):
             else:
                 values.append(value)
         writer.writerow(values)
-        
-        
-        
+               
 def control_tiempo_lectura(intervalo_ms, tiempo_inicial, marca_de_tiempo):
     # Inicializa el tiempo_inicial si es la primera vez que se ejecuta
     if tiempo_inicial is None:

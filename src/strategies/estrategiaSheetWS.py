@@ -9,23 +9,19 @@ import csv
 import json
 import random
 import routes.api_externa_conexion.get_login as get
-import routes.api_externa_conexion.validaInstrumentos as val
-import routes.instrumentos as inst
 import strategies.opera_estrategias as op  
-import requests
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 
 
-from datetime import datetime,timedelta, timezone
+from datetime import datetime
 from pytz import timezone as pytz_timezone
-import enum
+
 from models.unidadTrader import UnidadTrader
-import socket
 import pprint
 import tokens.token as Token
 instrumentos_existentes_arbitrador1=[]
-import sys
+import Tests.test_order_report_handler as test
 
 
 estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
@@ -53,7 +49,7 @@ def estrategiaSheetWS_001():
     if request.method == 'POST':
         try:
             
-            
+            #test.entradaTest()
             data = request.get_json()
 
             # Accede a los datos individualmente
@@ -68,7 +64,6 @@ def estrategiaSheetWS_001():
             
             get.accountLocalStorage = data['cuenta']
             
-            #get.accountLocalStorage = "20225833983"
             
             tiempoInicio = data['tiempoInicio']
             tiempoFin = data['tiempoFin']
@@ -95,7 +90,6 @@ def estrategiaSheetWS_001():
          
         
             
-        
             else:
                return render_template('usuarios/logOutSystem.html')
         except jwt.ExpiredSignatureError:
@@ -110,7 +104,7 @@ def estrategiaSheetWS_001():
        
 def market_data_handler_estrategia(message):
     global tiempo_inicial_30s_ms,tiempo_inicial_5min_ms,VariableParaSaldoCta   
-    ## mensaje = Ticker+','+cantidad+','+spread
+    
     #print(message)
     
   
@@ -123,21 +117,14 @@ def market_data_handler_estrategia(message):
    
     
     if response != 1: ### si es 1 el boton de panico fue activado
-       # _cancela_orden(300)
-       # _cancela_orden(300000)
-      #  print(" FUN: market_data_handler_estrategia: _")
-        
-      
-       
+     
+      #  print(" FUN: market_data_handler_estrategia: _") 
 
         # Obtén el timestamp del mensaje
         marca_de_tiempo = int(message["timestamp"])
-
-        
         marca_de_tiempo_para_leer_sheet = marca_de_tiempo
         Symbol = message["instrumentId"]["symbol"]
-        # Supongamos que 'tiempo_saldo' es un objeto datetime
-        # Supongamos que 'tiempo_saldo' es un objeto datetime
+       
         if diccionario_global_operaciones or diccionario_operaciones_enviadas:
           if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
   
@@ -157,6 +144,7 @@ def market_data_handler_estrategia(message):
                 banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
                 if han_pasado_5_minutos:
                     print('Pasaron 5 minutos')
+                    _cancela_orden(0)
                     banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
                     # Reinicia el tiempo_inicial_5min_ms para el próximo intervalo
                     tiempo_inicial_5min_ms = marca_de_tiempo
@@ -235,7 +223,6 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
-    
     if banderaLecturaSheet == 0:
         print('entra en estrategiaSheetNuevaWS punto de control sheeeet')
         ContenidoSheet = get.diccionario_global_sheet['argentina']
@@ -296,7 +283,13 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                             # Manejo de otro tipo de TradeEnCurso si es necesario
                             pass
        
-
+def obtener_liquidez_actual(message, key):
+    if message and "marketData" in message and key in message["marketData"]:
+        if isinstance(message["marketData"][key][0]["size"], int):
+            return message["marketData"][key][0]["size"]
+        elif "LA" in message["marketData"] and isinstance(message["marketData"]["LA"]["size"], int):
+            return message["marketData"]["LA"]["size"]
+    return 0
 
 def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
@@ -455,15 +448,6 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
     # db.session.close()
      print("sale de cargar operaciones")
      
-     
-     
-     
-     
-     
-     
-     
-     
-
 def es_numero(numero):
     try:
           int(numero)
@@ -646,7 +630,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
             print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
-            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,environment=cuentaGlobal) 
+            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='ISV_PBCP',environment=cuentaGlobal) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
             for key, operacion_enviada in diccionario_operaciones_enviadas.items(): 
@@ -664,7 +648,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     except Exception as e:
         print("Error en Envio de Cancelacion de orden:", e)
     #    print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
-        
+               
 def tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario):
      fecha2_obj = datetime.strptime(timestamp_order_report, "%Y%m%d-%H:%M:%S.%f%z")
      fecha_comun_enviada = tiempo_diccionario.strftime("%Y%m%d-%H:%M:%S")
@@ -892,13 +876,10 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot (endingGlobal,endingEnviadas,symbol):
-     if symbol in diccionario_global_operaciones:
-           account = diccionario_global_operaciones[symbol]['accountCuenta']
-           print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas,'symbol: ',symbol,' account: ',account)
-   
-     if endingGlobal == 'SI' and endingEnviadas == 'SI' and diccionario_operaciones_enviadas:
-         
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+    if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
+        print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
+        # Clear the dictionary if all conditions are met
         diccionario_operaciones_enviadas.clear()
         print("###############################################") 
         print("###############################################") 
@@ -907,11 +888,10 @@ def endingOperacionBot (endingGlobal,endingEnviadas,symbol):
         print("###############################################") 
         print("###############################################") 
         print("###############################################") 
-        if symbol in diccionario_global_operaciones:
-           account = diccionario_global_operaciones[symbol]['accountCuenta']
-           pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
-           pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
-          #      return render_template('home.html')    
+        account = diccionario_global_operaciones[symbol]['accountCuenta']
+        pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
+        pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
+        #      return render_template('home.html')    
 
 
 
