@@ -260,12 +260,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 updatePlanesTable(data.planes); // Llamar a la función de actualización con data.planes
             } else {
                 console.error('Error en la respuesta del servidor:', data);
-                alert('Error al cargar las planes');
+             
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al cargar las planes');
+           
         });
     });
 });
