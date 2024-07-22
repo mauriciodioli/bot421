@@ -30,10 +30,34 @@ $(document).ready(function() {
         });
     });
 });
+// Function to insert the selected emoticon into the textarea
+function insertEmoticon(emoticon) {
+    const bodyTextarea = document.getElementById('body');
+    const cursorPosition = bodyTextarea.selectionStart;
+    const textBefore = bodyTextarea.value.substring(0, cursorPosition);
+    const textAfter = bodyTextarea.value.substring(cursorPosition);
+    bodyTextarea.value = textBefore + emoticon + textAfter;
+    bodyTextarea.focus();
+    bodyTextarea.selectionStart = cursorPosition + emoticon.length;
+    bodyTextarea.selectionEnd = cursorPosition + emoticon.length;
 
-//lista de emoticones
+    // Close the modal
+    const modalElement = document.getElementById('emoticonModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modal.hide();
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    const modal = document.getElementById('emoticonModal');
+    if (modal) {
+        modal.addEventListener('shown.bs.modal', loadEmoticons);
+    } else {
+        console.error('Modal element not found.');
+    }
+});
+
 function toggleEmoticons() {
-    const emoticonsDiv = document.getElementById('emoticons');
+    const emoticonsDiv = document.getElementById('emoticonEmoticons');
     const isVisible = getComputedStyle(emoticonsDiv).display !== 'none';
 
     if (isVisible) {
@@ -50,35 +74,10 @@ function loadEmoticons() {
     fetch('/emoticons')
         .then(response => response.json())
         .then(data => {
-            const emoticonsDiv = document.getElementById('emoticons');
+            const emoticonsDiv = document.getElementById('emoticonEmoticons');
             emoticonsDiv.innerHTML = data.map(emoticon => 
                 `<span class="emoticon" onclick="insertEmoticon('${emoticon}')">${emoticon}</span>`
             ).join(' ');
         })
         .catch(error => console.error('Error:', error));
 }
-
- // Function to insert the selected emoticon into the textarea
- function insertEmoticon(emoticon) {
-    const bodyTextarea = document.getElementById('body');
-    const cursorPosition = bodyTextarea.selectionStart;
-    const textBefore = bodyTextarea.value.substring(0, cursorPosition);
-    const textAfter = bodyTextarea.value.substring(cursorPosition);
-    bodyTextarea.value = textBefore + emoticon + textAfter;
-    bodyTextarea.focus();
-    bodyTextarea.selectionStart = cursorPosition + emoticon.length;
-    bodyTextarea.selectionEnd = cursorPosition + emoticon.length;
-
-    // Close the modal
-    const modalElement = document.getElementById('seleccionarEmoticonModal');
-    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-    modal.hide();
-}
-document.addEventListener('DOMContentLoaded', (event) => {
-    const modal = document.getElementById('seleccionarEmoticonModal');
-    if (modal) {
-        modal.addEventListener('shown.bs.modal', loadEmoticons);
-    } else {
-        console.error('Modal element not found.');
-    }
-});
