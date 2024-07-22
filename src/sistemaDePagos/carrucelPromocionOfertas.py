@@ -1,26 +1,11 @@
 
-# Creating  Routes
-from pipes import Template
-from unittest import result
-from flask import current_app
-
-import requests
-import json
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-from models.instrumento import Instrumento
+from flask import current_app,Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from utils.db import db
-import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
-from datetime import datetime, timedelta
 import jwt
-from models.usuario import Usuario
-from models.brokers import Broker
-from models.payment_page.plan import Plan
 from models.payment_page.Promotion import Promotion
 
 
-
-#mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
 
 carrucelPromocionOfertas = Blueprint('carrucelPromocionOfertas',__name__)
 
@@ -34,19 +19,20 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
         correo_electronico = data.get('correo_electronico_btn_donacion')
         cluster_btn_donacion = data.get('cluster_btn_donacion')
         layoutOrigen = data.get('layoutOrigen')
+        productoComercial = data.get('productoComercial')
         
         if access_token and Token.validar_expiracion_token(access_token=access_token):
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             numero_de_cuenta = decoded_token.get("numero_de_cuenta")
             user_id = decoded_token.get("sub")
             
-            promociones = db.session.query(Promotion).all()
+            promociones_todas = db.session.query(Promotion).all()
             db.session.close()
 
            # Crear un diccionario vacío para agrupar las promociones por cluster
             promociones_por_cluster = {}
 
-            for promocione in promociones:
+            for promocione in promociones_todas:
                 cluster = promocione.cluster
                 # Verificar si el cluster ya existe en el diccionario
                 if cluster not in promociones_por_cluster:
@@ -68,7 +54,7 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
             cluster_solicitado = int(cluster_btn_donacion)
             promociones_filtradas = promociones_por_cluster.get(cluster_solicitado, [])
 
-            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_filtradas, layout=layoutOrigen)
+            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_filtradas, layout=layoutOrigen, productoComercial=productoComercial)
         
         return jsonify({'error': 'Error de autenticación o datos incompletos'}), 401
       

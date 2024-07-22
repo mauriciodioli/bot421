@@ -12,9 +12,11 @@ from models.orden import Orden
 from models.logs import Logs
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from models.modelMedia.TelegramNotifier import TelegramNotifier
 import routes.api_externa_conexion.validaInstrumentos as val
 import pandas as pd
 import time
+import os
 import routes.api_externa_conexion.wsocket as getWs
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.instrumentos as inst
@@ -25,6 +27,7 @@ from panelControlBroker.panelControl import procesar_datos
 from panelControlBroker.panelControl import forma_datos_para_envio_paneles
 import threading
 import jwt
+import asyncio
 from datetime import datetime  # Agrega esta línea para obtener la fecha y hora actual
 
  
@@ -124,6 +127,118 @@ def estadoOperacion():
 
     return render_template("notificaciones/noPoseeDatos.html")
 
+
+
+
+
+@operaciones.route("/envio_notificacion_tlegram_desde_seniales_sin_cuenta/", methods=["POST"]) 
+def envio_notificacion_tlegram_desde_seniales_sin_cuenta():
+    try:
+        
+        if request.method == 'POST':
+            data = request.get_json()  # Obtener los datos JSON del cuerpo de la solicitud
+            access_token = data.get('access_token')
+            ticker = data.get('symbol')
+            ut1 = data.get('ut')
+            signal = data.get('senial')
+            cuentaUser = data.get('correo_electronico')
+            pais = data.get('paisSeleccionado')
+            chat_id = data.get('idtelegram')
+            selector = data.get('selector')
+            layouts = 'layout_signal'
+            # Validación del token si es necesario
+            if access_token and Token.validar_expiracion_token(access_token=access_token):
+                # Obtener userId del token (decodificación JWT)
+                app = current_app._get_current_object()
+                userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                
+                # Lógica para enviar mensaje asíncrono
+                telegram_notifier = TelegramNotifier()      
+                asyncio.run(telegram_notifier.enviar_mensaje_async(chat_id, ticker, ut1, signal))
+             #   asyncio.run(telegram_notifier.enviar_mensaje_async('-1001285216353', ticker, ut1, signal))
+                 # Intentamos encontrar el registro con el symbol específico
+                orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+          
+                if orden_existente:
+                    # Si el registro existe, lo actualizamos
+                    orden_existente.user_id = userId
+                    orden_existente.userCuenta = cuentaUser
+                    orden_existente.ut = ut1
+                    orden_existente.senial = signal
+                    orden_existente.clOrdId_alta_timestamp=datetime.now()
+                    orden_existente.status = 'terminado'              
+                else:
+                    # Si no existe, creamos un nuevo registro
+                    nueva_orden = Orden(
+                        user_id=userId,
+                        userCuenta=cuentaUser,
+                        accountCuenta="sin cuenta broker",
+                        clOrdId_alta=random.randint(1,100000),
+                        clOrdId_baja='',
+                        clientId=0,
+                        wsClOrdId_timestamp=datetime.now(),
+                        clOrdId_alta_timestamp=datetime.now(),
+                        clOrdId_baja_timestamp=None,
+                        proprietary=True,
+                        marketId='',
+                        symbol=ticker,
+                        tipo="sin tipo",
+                        tradeEnCurso="si",
+                        ut=ut1,
+                        senial=signal,
+                        status='operado'
+                    )
+                  
+                    db.session.add(nueva_orden)
+                if signal == 'closed.' :                  
+                      db.session.delete(orden_existente)
+                db.session.commit() 
+                    #get.current_session = db.session
+                db.session.close()
+              
+                
+                if selector == 'vacio':
+                  selector = 'produccion'
+                datos_desempaquetados = procesar_datos(app,pais, None,userId,selector)
+              
+                
+              
+                return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+            else: 
+              return render_template('notificaciones/tokenVencidos.html',layout = layouts)       
+        else:
+            return jsonify({'error': 'Método no permitido'}), 405  # 405 significa Método no permitido
+    except Exception as e:
+        # Tu código de manejo de excepciones aquí
+        return render_template('notificaciones/errorOperacionSinCuenta.html', layout = layouts)           
+
+
+
+
+
+async def enviar_mensaje_async(idtelegram, ticker, ut1, signal): 
+    #https://api.telegram.org/bot7264333617:AAFlrcw9yObB8ksp6k1P--zW6D6uk0gCgqc/getupdates  direccion para conseguir el id del grupo
+    # Reemplaza 'YOUR_BOT_TOKEN' con el token de tu bot de Telegram
+    token = "7264333617:AAFlrcw9yObB8ksp6k1P--zW6D6uk0gCgqc"
+   
+    # Reemplaza 'CHAT_ID_DEL_USUARIO' con el chat_id del usuario al que deseas enviar el mensaje   
+   # chat_id = "-1001285216353"
+    chat_id = idtelegram
+    message = f"Ticker: {ticker}\nUT1: {ut1}\nSignal: {signal}"
+
+
+    # Enviar el mensaje utilizando la API de requests
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload = {'chat_id': chat_id, 'text': message}
+      
+    try:
+        response = requests.post(url, data=payload)
+        data = response.json()
+        print(data)
+    except Exception as e:
+        print(f"Error al enviar mensaje: {e}")
+
+
 @operaciones.route("/operaciones_desde_seniales_sin_cuenta/", methods=["POST"]) 
 def operaciones_desde_seniales_sin_cuenta():
     try:
@@ -140,8 +255,6 @@ def operaciones_desde_seniales_sin_cuenta():
             if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()  
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                  
-
                 # Intentamos encontrar el registro con el symbol específico
                 orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
           
@@ -676,14 +789,14 @@ def cancelarOrden():
           price = request.form.get('price') 
           proprietary= request.form.get('proprietary') 
           estado= request.form.get('estado') 
-          accountId= request.form.get('accountId')
+          account= request.form.get('accountId')
          
           print("clOrdId ", clOrdId)
           print("symbol ", symbol)
           print("price ", price)
           print("proprietary ", proprietary)
           print("estado ", estado)
-          print("accountId ", accountId)
+          print("accountId ", account)
          
          
           
@@ -694,15 +807,19 @@ def cancelarOrden():
         
           
           # ojo se comento por compromiso con la homologacion restaurar **66
-          
-          order_status= get.pyRofexInicializada.get_order_status(clOrdId,proprietary)
-          #print("order_status ",order_status)          
-          if order_status["order"]["status"] == "NEW":
-            # Cancel Order
-            get.pyConectionWebSocketInicializada.cancel_order_via_websocket(client_order_id=clOrdId)
-            #cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
-          else:
-            flash('No se puede cancelar la Orden, ya fue OPERADA')  
+          pyRofexInicializada = get.ConexionesBroker.get(account)
+          if pyRofexInicializada:
+              order_status = pyRofexInicializada['pyRofex'].get_order_status(clOrdId,proprietary)
+        
+            
+              #print("order_status ",order_status)          
+              if order_status["order"]["status"] == "NEW":
+                # Cancel Order
+                pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='ISV_PBCP',environment=account) 
+            
+                #cancel_order = get.pyRofexInicializada.cancel_order(clOrdId,proprietary)
+              else:
+                flash('No se puede cancelar la Orden, ya fue OPERADA')  
            
        
           #print("cancel_order ")

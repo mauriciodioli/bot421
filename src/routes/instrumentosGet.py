@@ -49,7 +49,7 @@ def guarda_instrumento():
 
 def guarda_instrumento_para_suscripcion_ws(message):
     
-     ob = InstrumentoSuscriptos.query.filter_by(symbol=message).first()
+     ob = db.session.query(InstrumentoSuscriptos).filter_by(symbol=message).first()
      
      print("salida query",ob)   
      if ob is None:

@@ -8,9 +8,12 @@ sed -i "s/app.run(host='0\.0\.0\.0', port=5001, debug=False)/#app.run(host='0\.0
 sed -i "s/#modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)/modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)/g"  src/panelControlBroker/panelControl.py
 sed -i "s/modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)/#modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)/g"  src/panelControlBroker/panelControl.py
 
+sed -i "s/#ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')/ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')/g"  src/panelControlBroker/panelControl.py
+sed -i "s/ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')/#ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')/g"  src/panelControlBroker/panelControl.py
+
 # Modificar accionesSheet.py
-sed -i "s/#modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores','argentina')/modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores','argentina')/g"  src/herramientasAdmin/accionesSheet.py
 sed -i "s/modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores','argentina')/#modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores','argentina')/g"  src/herramientasAdmin/accionesSheet.py
+sed -i "s/#modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores','argentina')/modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores','argentina')/g"  src/herramientasAdmin/accionesSheet.py
 
 
 # Modificar get_login

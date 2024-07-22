@@ -34,6 +34,7 @@ def herramientasSheet_accionesSheet_detener():
     get.symbols_sheet_valores.clear()
     get.ContenidoSheet_list = None
     get.sheet_manager = None
+    get.precios_data.clear()
     
     get.autenticado_sheet = False
     return render_template('notificaciones/stopProceso.html', layout='layout')
@@ -65,6 +66,20 @@ def herramientasSheet_accionesSheet_actualizaLuz():
 
 @accionesSheet.route('/herramientasSheet_accionesSheet_actualizaLuz_thread')
 def herramientasSheet_accionesSheet_actualizaLuz_thread():
-    luz = get.luzThred_funcionando
-    get.luzThred_funcionando = False
-    return jsonify({'luzThread_control':luz})
+    luz = get.luzThred_funcionando['luz']
+    get.luzThred_funcionando['luz'] = False
+    # Obtener los valores de hora, minuto y segundo del diccionario
+    hora = get.luzThred_funcionando['hora']
+    minuto = get.luzThred_funcionando['minuto']
+    segundo = get.luzThred_funcionando['segundo']
+    
+    # Imprimir para verificar en la consola
+    print(hora, minuto, segundo)
+    
+    # Devolver como respuesta un JSON que incluye el estado de 'luz' y la hora actual
+    return jsonify({
+        'luzThread_control': luz,
+        'hora': hora,
+        'minuto': minuto,
+        'segundo': segundo
+    })

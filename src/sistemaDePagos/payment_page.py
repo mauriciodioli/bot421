@@ -67,15 +67,17 @@ def payment_page_pago():
     if request.method == 'POST':
         costo_base = float(request.form['costo_base'])
         reason = request.form['reason']
-        porcentaje_retorno = float(request.form['porcentaje_retorno'])
+        discount =float(request.form['discount'])
+        currency_id=request.form['currency_id']
+       
 
         # Calcular el total
-        total = costo_base * (1 + porcentaje_retorno / 100)
-
+        total = costo_base * (discount / 100)
+        total = costo_base - total
         # Aquí puedes realizar cualquier operación adicional necesaria
 
         # Renderizar el template con los datos necesarios
-        return render_template('sistemaDePagos/payment_page.html', costo_base=costo_base, porcentaje_retorno=porcentaje_retorno, total=total, reason = reason)
+        return render_template('sistemaDePagos/payment_page.html', costo_base=costo_base, porcentaje_retorno=discount, total=total, reason = reason, currency_id=currency_id)
     else:
         return "Método de solicitud no permitido"
 
