@@ -3,7 +3,7 @@
 {% block content %}
 
 <body> 
-  
+    <!--
   <div class = 'container p-4'id="contenido" style="display:none">  
     <div class="jumbotron">
       <p class="lead">To operate you can press the button with the corresponding color</p>
@@ -12,15 +12,17 @@
         <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
         <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $17</button>
       </form>
-     
-           
-      <form id="sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html" method="POST" action="/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html">
+    -->    
+   
+       <form id="sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html" method="POST" action="/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html">
         <input type="hidden" id="access_token_btn_donacion" name="access_token_btn_donacion" >
         <input type="hidden" id="correo_electronico_btn_donacion" name="correo_electronico_btn_donacion">   
         <input type="hidden" id="cluster_btn_donacion" name="cluster_btn_donacion" value='1'>        
         <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout_signal">
         <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar $17</button>
     </form>
+      
+     
 
     
       <hr class="my-4">  
