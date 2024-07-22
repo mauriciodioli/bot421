@@ -38,7 +38,7 @@ from productosComerciales.promociones.promociones import promociones
 from Tests.test_order_report_handler import test_order_report_handler
 
 
-from social.media.telegram import telegram
+from social.telegram.telegram import telegram
 
 from herramientasAdmin.accionesSheet import accionesSheet
 

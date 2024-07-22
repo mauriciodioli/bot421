@@ -15,10 +15,17 @@
     text-align: center;
 }
 
-/* Estilos aplicados solo a los elementos con ID */
-#headerTitle, #headerLabel, #bodyLabel, #header, #body, #submitButton {
+#headerTitle, #headerLabel, #bodyLabel, #header, #body {
     color: black; /* Textos en negro */
 }
+#submitButton {
+    color: #ffffff; /* Textos en blanco */ 
+}
+
+#seleccionarEmoticonModalLabel {
+    color: #ffffff; /* Textos en blanco */ 
+}
+
 
 form {
     display: flex;
@@ -44,4 +51,88 @@ button {
 
 button:hover {
     background-color: #0056b3;
+}
+
+#emoticons {
+    font-size: 24px;
+    line-height: 2;
+    cursor: pointer;
+}
+
+.emoticon {
+    margin: 0 5px;
+    display: inline-block;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 10px; /* Espacio superior */
+}
+
+#submitButton, #emoticonButton {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#emoticonButton {
+    background-color: #f0f0f0;
+    color: #333;
+    font-size: 18px; /* Tamaño más grande para la sonrisa */
+}
+
+#emoticonButton:hover {
+    background-color: #ddd;
+}
+
+/* Modal styles */
+.modal-dialog {
+    max-width: 90%; /* Reduce el ancho para pantallas pequeñas */
+    margin: 1rem auto; /* Añade margen automático para centrar el modal */
+}
+
+.modal-content {
+    border-radius: 8px;
+    background-color: #000; /* Fondo negro para el modal */
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1rem; /* Espaciado interno */
+}
+
+/* Emoticons styling */
+#emoticons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.emoticon {
+    font-size: 24px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+/* Responsiveness for very small screens */
+@media (max-width: 576px) {
+    .modal-dialog {
+        max-width: 100%; /* Full width for very small screens */
+        margin: 0; /* Remove margin for very small screens */
+    }
+
+    .modal-body {
+        padding: 0.5rem; /* Reduce padding on very small screens */
+    }
 }
