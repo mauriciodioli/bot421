@@ -38,7 +38,8 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sistemaDePagos/carrucelPromocionOfertas.css')}}>
     <script src="{{url_for('static',filename='js/sistemaDePagos/carrucelPromocionOfertas.js')}}"></script> 
-    <!-- <script src="{{url_for('static',filename='js/paneles/panelSignalSinCuentas.js')}}"></script> -->
+    <script src="{{url_for('static',filename='js/panelSignalSinCuentas/service-worker.js') }}"></script>
+
 
    
 
@@ -79,6 +80,14 @@
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('usa')">USA</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a id="notificacionTelegramLink" class="dropdown-item" href="#" onclick="toggleNotificacionTelegram()">Notificación activa</a>
+                          </li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a id="toggleIDTelegram" class="dropdown-item" href="#" onclick="toggleIDTelegram()">ID telegram</a>
+                          </li>
                         </ul>
                     </li>
                     
@@ -116,6 +125,38 @@
 
 
     <div class = 'container p-4'>
+
+
+        <!-- Modal id Telegram-->
+   
+        <div class="modal fade" id="telegramModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel" style="color: black;">ID Telegram</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                     <input type="text" id="idTelegramInput" class="form-control" value="" placeholder="ID TELEGRAM">
+                 <hr>
+                  <p class="mb-0" style="color: black;">Instrucciones para conseguir el ID de Telegram:</p>
+                  <ol style="color: black;">
+                    <li>Abre Telegram en tu dispositivo.</li>
+                    <li>Busca el bot "Get My ID" en Telegram.</li>
+                    <li>Inicia una conversación con el bot y sigue las instrucciones proporcionadas.</li>
+                    <li>El bot te mostrará tu ID de Telegram.</li>
+                  </ol>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="saveIDTelegram()">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal id Telegram-->
+
         
       {%block content%}
       {% endblock%}
@@ -131,6 +172,68 @@
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     
     <script>
+
+
+        function toggleIDTelegram() {
+            // Get the ID from localStorage
+            var idTelegram = localStorage.getItem('idtelegram');
+
+            // Set the value of the input if the idTelegram is not null
+            document.getElementById('idTelegramInput').value = idTelegram ? idTelegram : '';
+
+            // Show the modal
+            $('#telegramModal').modal('show');
+        }
+
+
+
+        function saveIDTelegram() {
+            // Get the value from the input
+            var idTelegram = $('#idTelegramInput').val();
+      
+            // Save the value to localStorage
+            localStorage.setItem('idtelegram', idTelegram);
+      
+            // Optionally, hide the modal
+            $('#telegramModal').modal('hide');
+          }
+
+
+
+
+
+     // Función para activar/desactivar la notificación y cambiar el texto y color del enlace
+     function toggleNotificacionTelegram() {
+        var currentStatus = localStorage.getItem('notificacionTelegram');
+        
+        if (currentStatus === 'True') {
+            localStorage.setItem('notificacionTelegram', 'False');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación inactiva';
+            document.getElementById('notificacionTelegramLink').style.color = 'grey'; // Color gris
+        } else {
+            localStorage.setItem('notificacionTelegram', 'True');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación activa';
+            document.getElementById('notificacionTelegramLink').style.color = '#00ff00'; // Verde más fuerte y brillante
+        }
+    }
+
+    // Al cargar la página, verifica el estado actual y aplica el texto y color correspondiente
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentStatus = localStorage.getItem('notificacionTelegram');
+
+        if (currentStatus === 'True') {
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación activa';
+            document.getElementById('notificacionTelegramLink').style.color = '#00ff00'; // Verde más fuerte y brillante si está activo
+        } else {
+            localStorage.setItem('notificacionTelegram', 'False');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación inactiva';
+            document.getElementById('notificacionTelegramLink').style.color = 'grey'; // Color gris si está desactivado
+        }
+    });
+
+
+
+
         function seleccionarPais(pais) {
             localStorage.setItem('paisSeleccionado', pais);           
             var usuario_id = localStorage.getItem('usuario_id');

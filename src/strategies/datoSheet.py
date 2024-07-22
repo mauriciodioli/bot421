@@ -1,26 +1,12 @@
 from flask import Blueprint, render_template, request,current_app, redirect, url_for, flash,jsonify
-import routes.instrumentos as instrumentos
 import routes.api_externa_conexion.get_login as get
-import routes.api_externa_conexion.validaInstrumentos as val
-import routes.instrumentos as inst
-
-
 from datetime import datetime
-import enum
-from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
 from models.sheetModels.GoogleSheetManager import GoogleSheetManager
 from models.sheetModels.sheet_handler import SheetHandler
-import copy
-import socket
-import requests
-import time
 import json
-from models.orden import Orden
-from models.cuentas import Cuenta
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
-
-import random
+from dotenv import load_dotenv
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 #import routes.api_externa_conexion.cuenta as cuenta
@@ -31,7 +17,9 @@ import os #obtener el directorio de trabajo actual
 import json
 import sys
 import csv
+import re
 
+load_dotenv()
 #import drive
 #drive.mount('/content/gdrive')
 
@@ -42,23 +30,8 @@ datoSheet = Blueprint('datoSheet',__name__)
 newPath = os.path.join(os.getcwd(), 'strategies/credentials_module.json') 
 directorio_credenciales = newPath 
 
-#SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
-#SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
-SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
-#1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s
+SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
 
-class States(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2
-    
-class Ordenes(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2 
-    #NEW  
-    #PENDING_NEW
-    #TIMESTAMP_ENVIO
 
 precios_data = {}
 
@@ -136,8 +109,18 @@ def update_precios(message):
     suffix = None
     # Comprobación del sufijo del símbolo y asignación de valores
     symbol = message["instrumentId"]["symbol"]
+    ###################### para buscar un patron visit en este caso #############
+    #patron = r'\bHAVA\b'
+    #resultado = re.search(patron, symbol)
+  
+    # Verificar si se encontró y extraer el valor
+    #if resultado:
+     #   visit = resultado.group()
+      #  print(f'Encontrado: {visit}')
+    ##############################################################################  
     if symbol.endswith("24hs"):
         p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
+       
         if symbol not in get.precios_data:
             get.precios_data[symbol] = {
                 'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
@@ -146,7 +129,7 @@ def update_precios(message):
         get.precios_data[symbol]['p24hs'] = float(message["marketData"]["LA"]["price"])
         get.precios_data[symbol]['last24hs'] = float(message["marketData"]["CL"]["price"])
         get.precios_data[symbol]['min24hs'] = float(message["marketData"]["LO"])
-
+    
 
 def actualizar_precios(sheetId, sheet_name, pais):
     try:
@@ -163,8 +146,7 @@ def actualizar_precios(sheetId, sheet_name, pais):
                             for index, row in enumerate(data[0]):
                                 if isinstance(row, list) and row:
                                     symbol = str(row[0]).strip("['").strip("']")
-                                    get.symbols_sheet_valores.append(symbol)
-                                    
+                                    get.symbols_sheet_valores.append(symbol)                                    
                                     if symbol in get.precios_data:
                                         precios_data = get.precios_data[symbol]
                                         try:
@@ -178,10 +160,10 @@ def actualizar_precios(sheetId, sheet_name, pais):
                                                     'range': f"F{index + 1}", 
                                                     'values': [[str(precios_data['min24hs']).replace('.', ',')]]
                                                 })
-                                            if 'last24hs' in precios_data:
+                                            if 'p24hs' in precios_data:
                                                 batch_updates.append({
                                                     'range': f"G{index + 1}", 
-                                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                                    'values': [[str(precios_data['p24hs']).replace('.', ',')]]
                                                 })
                                         except ValueError:
                                             print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
@@ -202,10 +184,10 @@ def actualizar_precios(sheetId, sheet_name, pais):
                                     'range': f"F{index + 1}", 
                                     'values': [[str(precios_data['min24hs']).replace('.', ',')]]
                                 })
-                            if 'last24hs' in precios_data:
+                            if 'p24hs' in precios_data:
                                 batch_updates.append({
                                     'range': f"G{index + 1}", 
-                                    'values': [[str(precios_data['last24hs']).replace('.', ',')]]
+                                    'values': [[str(precios_data['p24hs']).replace('.', ',')]]
                                 })
                         except ValueError:
                             print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
@@ -378,7 +360,7 @@ def instrument_by_symbol_para_CalculoMep(symbol):
             
             #print("symbolllllllllllllllllllllll ",symbol)
            #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
-            repuesta_instrumento = pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+            repuesta_instrumento = get.pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
            
             
             #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)

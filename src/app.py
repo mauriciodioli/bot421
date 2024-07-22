@@ -15,12 +15,10 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
-from strategies.estrategiasUsuarios.Remarkets_REM6603_001 import Remarkets_REM6603_001
 from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 from strategies.estrategiasUsuarios.Bull_Market_351653_001 import Bull_Market_351653_001
 ########################################################################
 from models.creaTablas import crea_tablas_DB
-
 from sistemaDePagos.payment_page import payment_page
 from sistemaDePagos.success_failure import success_failure
 from sistemaDePagos.crearPlanes import crearPlanes
@@ -31,10 +29,16 @@ from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
 from sistemaDePagos.carrucelPromocionOfertas import carrucelPromocionOfertas
+from sistemaDePagos.carrucelPromocionSuscripciones import carrucelPromocionSuscripciones
 from productosComerciales.descipcionProductos import descrpcionProductos
 from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
+
+from Tests.test_order_report_handler import test_order_report_handler
+
+
+from social.media.telegram import telegram
 
 from herramientasAdmin.accionesSheet import accionesSheet
 
@@ -70,6 +74,7 @@ from fichasTokens.fichas import fichas
 from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from usuarios.usuario import usuario
+from usuarios.cambiarContrasenaUsuarioSistema import cambiarContrasenaUsuarioSistema
 
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
@@ -167,7 +172,6 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 #####################zona blueprin de usuarios##############
-app.register_blueprint(Remarkets_REM6603_001)
 app.register_blueprint(Bull_Market_10861_001)
 app.register_blueprint(Bull_Market_351653_001)
 ############################################################
@@ -179,6 +183,7 @@ app.register_blueprint(crearPlanes)
 app.register_blueprint(createOrden)
 app.register_blueprint(createSuscripcion)
 app.register_blueprint(updatePlanes)
+
 app.register_blueprint(deletePlanes)
 app.register_blueprint(descrpcionProductos)
 app.register_blueprint(planes)
@@ -186,6 +191,7 @@ app.register_blueprint(suscripcionPlanUsuario)
 app.register_blueprint(deleteSuscripcion)
 app.register_blueprint(tarjetaUsuario)
 app.register_blueprint(creaTabla)
+app.register_blueprint(carrucelPromocionSuscripciones)
 app.register_blueprint(carrucelPromocionOfertas)
 app.register_blueprint(promociones)
 app.register_blueprint(token)
@@ -213,6 +219,7 @@ app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
 app.register_blueprint(usuario)
+app.register_blueprint(cambiarContrasenaUsuarioSistema)
 app.register_blueprint(testWS)
 app.register_blueprint(imagenesOperaciones)
 app.register_blueprint(media_e_mail)
@@ -227,6 +234,9 @@ app.register_blueprint(programar_trigger)
 app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
 app.register_blueprint(accionesSheet)
+app.register_blueprint(telegram)
+
+app.register_blueprint(test_order_report_handler)
 
 
 print(DATABASE_CONNECTION_URI)

@@ -81,18 +81,17 @@ def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
       get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
    if accountCuenta != get.CUENTA_ACTUALIZAR_SHEET:
-    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
+      pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
  
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
    
 
 def market_data_handler_0(message):
-   # Limitar el número de elementos en precios_data
-        MAX_PRECIOS_DATA = 73
-        if  get.luzMDH_funcionando == False:
-            get.luzMDH_funcionando = True
-        if len(get.precios_data) <= MAX_PRECIOS_DATA:
-            try:
+   # Limitar el número de elementos en precios_data  
+            try:     
+                if  get.luzMDH_funcionando == False:
+                    get.luzMDH_funcionando = True       
+            
                 update_precios(message)
                 if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
                     pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
@@ -190,35 +189,48 @@ def suscriptos():
 
 @wsocket.route('/SuscripcionWs/', methods=['POST'])
 def SuscripcionWs():
-    if request.method == "POST":
+     if request.method == "POST":
         # Obtener los valores enviados desde el formulario
         Ticker = request.form.get('symbol')  # Obtener el valor del campo "symbol"
         account = request.form.get('websocketSuscricionCuenta')  # Obtener el valor del campo "websocketSuscricionCuenta"
         token = request.form.get('websocketSuscricionToken')  # Obtener el valor del campo "websocketSuscricionToken"
         
-       # print("websoooooooooooooooooketttt en wsocket.py ",Ticker)
-        #almaceno los symbol a suscribirme
+        # Almacenar el símbolo para la suscripción
         instrumentosGet.guarda_instrumento_para_suscripcion_ws(Ticker)
-        #traigo los instrumentos para suscribirme
-      
-        diccionario ={}
-        #actualizarTablaMD()
-        #diccionario.update(get.market_data_recibida)
-        pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']       
-      
-        if pyRofexInicializada:        
-            repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
-            listado_instrumentos = repuesta_listado_instrumento['instruments']
+        
+        # Intentar obtener la conexión de PyRofex
+        pyRofexInicializada = get.ConexionesBroker.get(account).get('pyRofex')
+        
+        if pyRofexInicializada:
+            try:
+                # Obtener los instrumentos detallados
+                respuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
+                listado_instrumentos = respuesta_listado_instrumento['instruments']
 
-            # Configurar paginación
+                # Configurar paginación
+                per_page = 10
+                offset = (1 - 1) * per_page
+                datos_paginated = listado_instrumentos[offset:offset + per_page]
+
+                pagination = Pagination(page=1, total=len(listado_instrumentos), per_page=per_page, css_framework='bootstrap4')
+                
+                 # Devolver los datos paginados y la paginación como JSON
+                return jsonify({
+                    'datos': datos_paginated,
+                    'pagination': {
+                        'page': 1,  # Página actual
+                        'total': len(listado_instrumentos),  # Total de instrumentos
+                        'per_page': per_page  # Instrumentos por página
+                        # Puedes agregar más atributos de paginación si es necesario
+                    }
+                })
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500  # Manejar errores con respuesta JSON y código 500
             
-            per_page = 10
-            offset = (1 - 1) * per_page
-            datos_paginated = listado_instrumentos[offset:offset + per_page]
-
-            pagination = Pagination(page=1, total=len(listado_instrumentos), per_page=per_page, css_framework='bootstrap4')
-
-            return render_template("instrumentos/instrumentos.html", datos=datos_paginated, pagination=pagination)
+        else:
+            return jsonify({'error': 'PyRofex no inicializado para la cuenta dada'}), 404  # Ejemplo de manejo de error si no se encuentra PyRofex inicializado
+    
+    
         #return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
 
 

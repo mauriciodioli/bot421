@@ -1,28 +1,25 @@
 {
     "version": "0.2.0",
     "configurations": [
- 
         {
             "name": "Python: Flask",
-            "type": "python",
+            "type": "debugpy",  // Cambio necesario: utilizar "debugpy" en lugar de "python"
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "src/app",
+                "FLASK_APP": "app.py",
                 "FLASK_DEBUG": "1",
                 "FLASK_ENV": "development",
-                "FLASK_RUN_HOST": "127.0.0.1",
+                "FLASK_RUN_HOST": "0.0.0.0",
                 "FLASK_RUN_PORT": "5001"
             },
             "args": [
                 "run"
             ],
-            "jinja":true,
-            "justMyCode":true,
-            "cwd": "C:\\Users\\mdioli\\Documents\\ITCOR\\bot421\\src"
-            
-            
-            
+            "jinja": true,
+            "justMyCode": true,
+            "pythonPath": "/usr/local/bin/python",
+            "cwd": "/workspaces/bot421/src"
         }
     ]
 }

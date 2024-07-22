@@ -53,8 +53,8 @@ def eliminar_usuario():
 
 @usuario.route("/editar-usuario",  methods=["POST"])
 def editar_usuario():
-    usuario_id = request.form['id']
-    usuario = Usuario.query.get(usuario_id)
+    usuario_id = request.form['id']    
+    usuario = db.session.query(Usuario).get(usuario_id) #Usuario.query.get(usuario_id)
     usuario.email = request.form['email']
     usuario.roll = request.form['rol']
     db.session.commit()
