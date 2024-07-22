@@ -35,5 +35,7 @@ sed -i "s/#MYSQL_DATABASE = base_dbbot421v02/MYSQL_DATABASE = base_dbbot421v02/g
 sed -i "s/EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com/#EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com/g" .github/workflows/aws.yml
 sed -i "s/#EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com/EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com/g" .github/workflows/aws.yml
 
+# Eliminar el contenido del archivo logs.log
+> logs.log
 
 echo "Configuraciones aplicadas con éxito."
