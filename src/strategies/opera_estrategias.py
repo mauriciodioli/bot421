@@ -106,13 +106,13 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
         if saldoExiste == True: 
            
                  
-            if int(diccionario_global_operaciones[Symbol]['ut']) > 0 :
+            if diccionario_global_operaciones[Symbol]['ut'] > 0 :
                 _ws_client_order_id =  1001+random.randint(1, 100000)
             
                 if senial == 'OPEN.':#    **55                    
                     precio = message["marketData"]["OF"][0]["price"]   
-                    if isinstance(precio, float):
-                        precio = float(message["marketData"]["OF"][0]["price"])
+                    if precio:
+                        pass
                     else:
                         precio = message["marketData"]["LA"]["price"]    
                         precio = float(message["marketData"]["LA"]["price"])
@@ -121,7 +121,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                         #precio2 = float(message["marketData"]["BI"][2]["price"])
                         #precio = float(message["marketData"]["OF"][0]["price"])#
                    
-                    print(Symbol)
+                    print('operaciones Symbol ',Symbol, 'OPEN.')
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
                     accountCuenta = diccionario_global_operaciones[Symbol]['accountCuenta']
@@ -153,7 +153,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                    
                     #pprint.pprint(g et.diccionario_operaciones_enviadas)
                     #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
-                    diccionario_global_operaciones[Symbol]['ut'] = str(int(diccionario_global_operaciones[Symbol]['ut']) - ut)
+                    diccionario_global_operaciones[Symbol]['ut'] = diccionario_global_operaciones[Symbol]['ut'] - ut
                     #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
                 
                    
@@ -161,8 +161,8 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                 elif senial == 'closed.':# **66
                  
                     precio = message["marketData"]["BI"][0]["price"]   
-                    if isinstance(precio, float):
-                        precio = float(message["marketData"]["BI"][0]["price"])
+                    if precio:
+                       pass
                     else:
                         precio = message["marketData"]["LA"]["price"]  
                         precio = float(message["marketData"]["LA"]["price"])# agresivo
@@ -172,6 +172,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     user_id = diccionario_global_operaciones[Symbol]['user_id']
                     userCuenta = diccionario_global_operaciones[Symbol]['userCuenta']
                     accountCuenta = diccionario_global_operaciones[Symbol]['accountCuenta']
+                    print('operaciones Symbol ',Symbol, 'closed.')
                     pyRofexInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=pyRofexInicializada.Side.SELL,order_type=pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=accountCuenta)
                     ws_client_order_id = _ws_client_order_id
                     
@@ -197,7 +198,7 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
                     #pprint.pprint(g et.diccionario_operaciones_enviadas)                            
                     print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
                     #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
-                    diccionario_global_operaciones[Symbol]['ut'] = str(int(diccionario_global_operaciones[Symbol]['ut']) - ut)
+                    diccionario_global_operaciones[Symbol]['ut'] = diccionario_global_operaciones[Symbol]['ut'] - ut
                     #print("get.diccionario_global_operaciones[Symbol]['ut'] ",get.diccionario_global_operaciones[Symbol]['ut'])
           
     except Exception as e:

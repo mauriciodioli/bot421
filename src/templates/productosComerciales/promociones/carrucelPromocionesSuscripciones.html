@@ -1,0 +1,51 @@
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% endif %}
+{% block content %}
+
+<div class="container mt-auto">
+    <div class="text-center mensaje">
+        <h5>Elige la suscripcion que mas se adecue a tu estrategia de inversion!</h5>
+    </div>
+    <div id="offersCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner carrucelPromociones">
+            {% set active = False %}
+            <div class="carousel-item carrucelPromociones {% if not active %}active{% set active = True %}{% endif %}">
+                <div class="row justify-content-center">
+                    {% for promocion in promociones %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card carrucelPromociones text-center shadow-tarj">
+                                <div class="card-header carrucelPromociones">
+                                    MEJOR OFERTA
+                                </div>
+                                <div class="card-body carrucelPromociones">
+                                    <h5 class="card-title carrucelPromociones">{{ promocion.reason }}</h5>
+                                    <p class="card-text carrucelPromociones">{{ promocion.price }} {{ promocion.currency_id }} c/u</p>
+                                    <p class="card-text ahorro">AHORRA {{ promocion.discount }}%</p>
+                                    <form id="subscriptionForm" action="/payment_page_pago/" method="POST">
+                                        <input type="hidden" id="reason" name="reason" value="{{ promocion.reason }}">
+                                        <input type="hidden" id="costo_base" name="costo_base" value="{{ promocion.price }}">
+                                        <input type="hidden" id="currency_id" name="currency_id" value="{{ promocion.currency_id }}">
+                                        <input type="hidden" id="discount" name="discount" value="{{ promocion.discount }}">
+                                        <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">Seleccionar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+      
+    </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+
+{% endblock %}

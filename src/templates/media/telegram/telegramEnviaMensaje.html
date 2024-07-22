@@ -1,0 +1,36 @@
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<div class="telegram-detalle" id="telegramDetalle">
+    <div class="telegram-item" id="telegramItem">
+        <h2 id="headerTitle">Enviar Mensaje a Telegram</h2>
+        <form id="telegramForm">
+            <label for="header" id="headerLabel">Encabezado:</label><br>
+            <input type="text" id="header" name="header" required placeholder="¡Hola a todos!"><br><br>
+            <label for="body" id="bodyLabel">Cuerpo del Mensaje:</label><br>
+            <textarea id="body" name="body" rows="4" required></textarea><br><br>
+            <button type="submit" id="submitButton">Enviar</button>
+        </form>
+    </div>
+</div>
+{% include 'layouts/layout_footer.html' %}
+<script>
+   
+
+</script>
+{% endblock %}

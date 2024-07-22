@@ -19,7 +19,9 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/static/js/actualizaTabla.js"></script>     
     <meta charset="UTF-8">
@@ -34,19 +36,24 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/themes/classic.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/pickr.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasRegistrarCuentaBroker.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/productos/descripcionProductos.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/subirImagen.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
-    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
-    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/estiloTarjetaImagen.css') }}">
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/herramientasAdmin/controlMdh.css')}}>
-    <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
+   <!----> <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
+    <!----> <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
+    <!----> <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasRegistrarCuentaBroker.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/productos/descripcionProductos.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/subirImagen.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
+   
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/herramientasAdmin/controlMdh.css')}}>
+   <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sistemaDePagos/carrucelPromocionOfertas.css')}}>
+   <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/media/telegramEnviaMensaje.css')}}> 
+   <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
+    <script src="{{url_for('static',filename='js/media/telegram//telegramEnviaMensaje.js')}}"></script>
     <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script> 
+      
 </head>
 
 <body>
@@ -108,7 +115,6 @@
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">Suscripciones</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/create_preapproval_html?layout=layout">Crear suscripcion</a></li>
                                     <li><a class="dropdown-item"  href="/productosComerciales_suscripciones_muestra?layout=layout">Consulta</a></li>
                                     <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
                                 </ul>
@@ -117,11 +123,14 @@
                             <li class="dropdown-submenu">
                                 <a class="dropdown-item dropdown-toggle" href="#">Promociones</a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="/sistemaDePagos_get_planes_promociones?layout=layout">Crear promocion</a></li>
-                                    <li><a class="dropdown-item"  href="/productosComerciales_suscripciones_muestra?layout=layout">Consulta</a></li>
+                                    <li><a class="dropdown-item" href="/productosComerciales_promociones_get_promociones?layout=layout">Crear promocion</a></li>
+                                    <li><a class="dropdown-item" href="/sistemaDePagos_get_planes_promociones?layout=layout">Crear promocion desde plan</a></li>
+                                     <li><a class="dropdown-item"  href="/productosComerciales_promociones_consulta_promociones?layout=layout">Consulta</a></li>
                                     <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
                                 </ul>
-                            </li>                                                 
+                            </li>   
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/telegram-envia-mensaje/">Telegram</a></li>                                              
                         </ul>                        
                     </li>
                     <li class="nav-item">

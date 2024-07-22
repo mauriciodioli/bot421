@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updatePlansTable(planesGlobal);
         } else {
             console.error('Error en la respuesta del servidor:', data);
-            alert('Error al cargar los planes');
+            print('Error al cargar los planes');
         }
     })
     .catch(error => {

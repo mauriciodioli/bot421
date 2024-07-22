@@ -26,6 +26,7 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/faq.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/usuarios/registrarUsuario.css')}}>
+    
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
@@ -39,6 +40,9 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
       <!--esto es para los colores-->
      <!-- Include the Pickr library -->
+
+    <script src="{{url_for('static',filename='js/usuarios/cambiarContrasenaUsuarioSistema.js')}}"></script> 
+   
  
 </head>
 

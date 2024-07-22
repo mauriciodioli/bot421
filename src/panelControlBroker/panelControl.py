@@ -172,6 +172,7 @@ def terminaConexionParaActualizarSheet(account):
         print(f"La cuenta {account} no existe en ConexionesBroker.")
         
     get.precios_data.clear()
+    return True
 
 
 def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
@@ -185,28 +186,36 @@ def llenar_diccionario_cada_15_segundos_sheet(app, pais, user_id,selector):
 
     return f"Hilo iniciado para {pais}"
 
-def ejecutar_en_hilo(app,pais,user_id,selector):
-          while True:
-            #time.sleep(420)# 420 son 7 minutos
-           
-            time.sleep(120)# 4minulos
+def ejecutar_en_hilo(app, pais, user_id, selector):
+    while True:
+        # Obtener el día actual de la semana
+        dia_actual = datetime.now().weekday()
+
+        # Verificar si el día actual está en la lista de días de ejecución
+        if dia_actual in [get.DIAS_SEMANA[dia] for dia in get.DIAS_EJECUCION]:
+            time.sleep(120)  # Espera de 4 minutos
             
             if len(get.diccionario_global_sheet) > 0:
-                if  get.luzThred_funcionando == False:
-                   get.luzThred_funcionando = True
-                ################################# preguntar si son las 11 ##################
-                ################################# pasar la lectura #########################                
-                if datetime.now().hour >= 14 and datetime.now().hour < 20:
-                    enviar_leer_sheet(app, pais, user_id,'hilo',selector)               
-                ################################# pregutar si son las 17 hs #################
-                ################## apagar el ws y limpia precios_data #######################
                 now = datetime.now()
-                if (now.hour == 20 and now.minute >= 0 and now.minute <= 59) and get.luzMDH_funcionando:
+                if not get.luzThred_funcionando['luz']:
+                    get.luzThred_funcionando['luz'] = True
+                    get.luzThred_funcionando['hora'] = now.hour
+                    get.luzThred_funcionando['minuto'] = now.minute
+                    get.luzThred_funcionando['segundo'] = now.second
+
+                # Preguntar si son las 11:00 y pasar la lectura
+                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                    enviar_leer_sheet(app, pais, user_id, 'hilo', selector)
+                
+                # Preguntar si son las 20:00 y apagar el ws y limpiar precios_data
+                if (now.hour == 20 and now.minute >= 6 and now.minute <= 59) and get.luzMDH_funcionando:
                     terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
                     get.symbols_sheet_valores.clear()
                     get.sheet_manager = None
                     get.autenticado_sheet = False
-                    
+        else:
+            time.sleep(86400)  # Espera de 24 horas
+                        
                     
 def enviar_leer_sheet(app,pais,user_id,hilo,selector):
     
@@ -232,7 +241,8 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
                   #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
                   print(' PANELCONTROL.PY ESTA COMENTADA LA LINEA DESCOMENTAR ANTES DE SUBIR A GIT ACTION') 
                   app.logger.info('MODIFICO EL SHEET CORRECTAMENTE')
-            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
         else:
