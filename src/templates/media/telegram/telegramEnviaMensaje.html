@@ -24,13 +24,32 @@
             <input type="text" id="header" name="header" required placeholder="¡Hola a todos!"><br><br>
             <label for="body" id="bodyLabel">Cuerpo del Mensaje:</label><br>
             <textarea id="body" name="body" rows="4" required></textarea><br><br>
-            <button type="submit" id="submitButton">Enviar</button>
+            <div class="button-container">
+                <button type="submit" id="submitButton">Enviar</button>
+                <button type="button" id="emoticonButton" data-bs-toggle="modal" data-bs-target="#seleccionarEmoticonModal">
+                    😊
+                </button>
+            </div>
         </form>
     </div>
 </div>
+<!-- Modal for selecting emoticons -->
+<div class="modal fade" id="seleccionarEmoticonModal" tabindex="-1" aria-labelledby="seleccionarEmoticonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="seleccionarEmoticonModalLabel">Selecciona un Emoticón</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="emoticons">
+                <!-- Emoticons will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
 {% include 'layouts/layout_footer.html' %}
-<script>
-   
+<script> 
 
 </script>
 {% endblock %}

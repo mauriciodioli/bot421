@@ -1,0 +1,119 @@
+.input-group {
+    position: relative;
+}
+
+.input-group-text.toggle-password {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    margin-left: -35px; /* Ajusta este valor según sea necesario para centrar */
+    vertical-align: middle; /* Ajusta la alineación vertical del icono */
+    z-index: 10; /* Asegura que esté sobre el campo de entrada */
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    margin-top: 1px; /* Ajusta la posición vertical del ícono */
+     
+}
+
+.form-control {
+    padding-right: 40px; /* Espacio para el icono de visibilidad */
+}
+
+
+
+#verifyCode1 {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+#verifyCode2 {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+#verifyCode3 {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+#verifyCode4 {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+#verifyCode5 {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+#verifyCode6 {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+/* Estilo del contenedor para centrar el formulario */
+.verification-box {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Cambiar align-items a flex-start para alinear hacia arriba */
+    height: 100vh;
+    text-align: center;
+    padding-top: 10vh; /* Ajustar el padding-top para mover el formulario hacia abajo */
+}
+
+.verification-box form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Aplicar estilo a los campos de entrada del código de verificación */
+.code-inputs input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    margin-right: 5px;
+    font-size: 24px;
+}
+
+/* Asegurar que los elementos no se desborden en pantallas pequeñas */
+@media (max-width: 600px) {
+    .code-inputs input {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+        margin-right: 3px;
+    }
+}
