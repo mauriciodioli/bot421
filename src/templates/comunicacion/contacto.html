@@ -1,7 +1,25 @@
 {% extends "layouts/layout_detalle_productos.html" %}
-{% block title %}Producto 1{% endblock %}
+{% block title %}Contacto{% endblock %}
+
 {% block content %}
 <div class="container my-5">
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    {% if category == 'success' %}
+                        <li style="color: green; background-color: #d4edda; border-color: #c3e6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% elif category == 'danger' %}
+                        <li style="color: red; background-color: #f8d7da; border-color: #f5c6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% else %}
+                        <li class="alert alert-{{ category }}">{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
     <div class="container-fluid" id="cardIndex">
         <div class="container py-4 row justify-content-center m-auto">
             <div class="row py-3 justify-content-center">
@@ -49,5 +67,5 @@
         </div>
     </div>
 </div>
-{% include 'layouts/layout_footer.html' %}   
+{% include 'layouts/layout_footer.html' %}
 {% endblock %}
