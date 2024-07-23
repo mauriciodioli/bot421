@@ -149,5 +149,43 @@ def enviar_correo(nombre, email, mensaje,ip,time):
         # Manejar otros errores no esperados
         print('Error inesperado:', str(e))
         return 'Error inesperado'
+
+
+
+def enviar_correo_newSletter( email, mensaje):
+    try:
+        # Configurar las variables para enviar el correo electrónico
+        sender_email = email
+        receiver_email = app.config['MAIL_USERNAME'] 
+        password = app.config['MAIL_PASSWORD']
+        smtp_server = app.config['MAIL_SERVER']
+        smtp_port = app.config['MAIL_PORT']  # Usar el puerto adecuado para TLS
+        subjet = 'newsLetter DPI bot'
+
+        # Crear el mensaje de correo electrónico
+        message = MIMEMultipart()
+        message['From'] = sender_email
+        message['To'] = receiver_email
+        message['Subject'] = f'Desde - {subjet}'
+
+       
+
+        message.attach(MIMEText(mensaje, 'plain'))
+
+        # Establecer una conexión con el servidor SMTP y enviar el correo electrónico
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+
+        return 'OK'  # Devolver una respuesta exitosa al cliente
+    except smtplib.SMTPException as e:
+        # Manejar errores relacionados con el envío del correo electrónico
+        print('Error al enviar el correo electrónico:', str(e))
+        return 'Error al enviar el correo electrónico'
+    except Exception as e:
+        # Manejar otros errores no esperados
+        print('Error inesperado:', str(e))
+        return 'Error inesperado'
     
     
