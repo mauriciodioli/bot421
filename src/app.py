@@ -80,6 +80,7 @@ from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
 
 from comunicacion.contacto import contacto
+from comunicacion.newsLetter import newsLetter
 
 from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
@@ -233,6 +234,7 @@ app.register_blueprint(arbitraje_001)
 app.register_blueprint(programar_trigger)
 app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
+app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
 app.register_blueprint(telegram)
 
