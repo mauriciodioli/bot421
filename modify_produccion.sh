@@ -19,12 +19,12 @@ sed -i "s/#modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION
 
 
 # Modificar get_login
-sed -i "s/CUENTA_ACTUALIZAR_SHEET = '44593'/#CUENTA_ACTUALIZAR_SHEET = '44593'/g" src/routes/api_externa_conexion/get_login.py
-sed -i "s/CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'/#CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')/#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')/#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')/g" src/routes/api_externa_conexion/get_login.py
 sed -i "s/ID_USER_ACTUALIZAR_SHEET = 1/#ID_USER_ACTUALIZAR_SHEET = 1/g" src/routes/api_externa_conexion/get_login.py
 
-sed -i "s/#CUENTA_ACTUALIZAR_SHEET = '10861'/CUENTA_ACTUALIZAR_SHEET = '10861'/g" src/routes/api_externa_conexion/get_login.py
-sed -i "s/#CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'/CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')/CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/#CORREO_E_ACTUALIZAR_SHEET =  os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/CORREO_E_ACTUALIZAR_SHEET =  os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/g" src/routes/api_externa_conexion/get_login.py
 sed -i "s/#ID_USER_ACTUALIZAR_SHEET = 2/ID_USER_ACTUALIZAR_SHEET = 2/g" src/routes/api_externa_conexion/get_login.py
 
 # Modificar .env
