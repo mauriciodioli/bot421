@@ -309,16 +309,16 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                     if elemento2['Symbol'] not in símbolos_vistos:
                         if elemento1[4] == 'closed.':
                             print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                            app.logger.info(elemento1)   
+                            app.logger.info(elemento1)      
                             elemento1[3] = int(elemento2['_ut_'])
                         elif elemento1[2] == 'SHORT':
                             if elemento1[4] == '':
                                 print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                                app.logger.info(elemento1)   
+                                app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                             elif elemento1[4] == 'OPEN.':
                                 print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                                app.logger.info(elemento1)   
+                                app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                         coincidencias.append(elemento1)
                         símbolos_vistos.add(elemento2['Symbol'])
@@ -450,8 +450,8 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
    
     # db.session.close()
      app.logger.info('______CARGA_OPERACIONES____') 
-     app.logger.info(diccionario_global_operaciones)    
-
+     app.logger.info(diccionario_global_operaciones) 
+               
 def es_numero(numero):
     try:
           int(numero)
@@ -781,13 +781,12 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
                 diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
         app.logger.info("________CARGA DICCIONARIO OPERACIONES ENVIADAS___________")  # Imprimir mensaje en consola
         app.logger.info(accountCuenta)  # Imprimir cuenta en consola
-       
         return 'ok'  # Retorna 'ok' si la operación fue exitosa
     
     except Exception as e:
         print(f"Error: {e}")  # Imprimir error en caso de excepción
         return 'error'  # Retorna 'error' si ocurre una excepción
-           
+
 
 
 
@@ -799,7 +798,7 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
 def estadoOperacionAnterioCargaDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
    try:        
         repuesta_operacion = pyRofexInicializada.get_all_orders_status()
-        
+     
         datos = repuesta_operacion['orders']
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
         diccionario = {}

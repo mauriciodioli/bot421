@@ -1,0 +1,179 @@
+2024-07-24 11:00:11,582 - INFO - Conexión establecida (1 veces)
+2024-07-24 11:04:42,908 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-24 12:42:18,792 - INFO - Conexión establecida (1 veces)
+2024-07-24 12:42:19,556 - INFO - dpuntillo@gmail.com
+2024-07-24 12:54:03,584 - INFO - dpuntillo@gmail.com
+2024-07-24 12:55:17,605 - INFO - ____INTENTO ENTRAR____
+2024-07-24 12:55:17,629 - INFO - 127.0.0.1
+2024-07-24 12:55:17,630 - INFO - madioli26@hotmail.com
+2024-07-24 12:55:36,062 - INFO - madioli26@hotmail.com
+2024-07-24 13:25:07,107 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-24 13:55:38,882 - INFO - Conexión establecida (2 veces)
+2024-07-24 14:01:06,096 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:03:18,328 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:03:21,256 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:05:22,904 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:05:23,550 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:07:25,130 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:07:25,674 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:09:27,374 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:09:27,892 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:11:29,424 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:11:29,891 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:13:31,136 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:13:31,594 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:15:32,778 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:15:33,301 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:17:34,684 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:17:35,130 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:19:36,294 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:19:36,770 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:21:37,941 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:21:38,463 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:23:39,897 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:23:40,343 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:25:41,719 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:25:42,185 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:27:43,424 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:27:44,246 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:29:46,034 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:29:48,608 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:31:50,047 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:31:50,512 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:33:51,984 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:33:53,438 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:35:54,984 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:35:55,445 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:37:56,630 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:37:57,107 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:39:58,443 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:39:58,964 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:42:00,153 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:42:00,578 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:44:02,273 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:44:02,828 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:46:03,970 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:46:04,433 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:48:05,616 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:48:06,070 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:50:07,225 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:50:07,774 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:52:09,169 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:52:09,922 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:54:11,437 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:54:11,998 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:56:13,709 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:56:14,201 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 14:58:15,625 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 14:58:16,120 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:00:17,311 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:00:18,009 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:02:19,216 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:02:19,674 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:04:21,064 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:04:22,073 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:06:23,605 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:06:24,119 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:08:25,702 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:08:26,315 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:10:27,697 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:10:28,188 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:12:29,345 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:12:29,795 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:14:31,364 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:14:31,862 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:16:33,130 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:16:33,527 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:18:34,534 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:18:34,932 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:20:36,020 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:20:36,742 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:22:38,130 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:22:38,560 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:24:39,729 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:24:40,447 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:26:41,587 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:26:42,558 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:28:43,765 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:28:44,220 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:30:45,578 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:30:46,115 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:32:47,451 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:32:48,013 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:34:49,488 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:34:50,005 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:36:51,565 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:36:52,066 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:38:53,501 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:38:54,049 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:40:55,477 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:40:55,905 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:42:24,373 - INFO - Conexión establecida (3 veces)
+2024-07-24 15:42:57,155 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:42:57,600 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:44:58,798 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:44:59,298 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:45:58,218 - INFO - ________CARGA DICCIONARIO OPERACIONES ENVIADAS___________
+2024-07-24 15:45:58,225 - INFO - 10861
+2024-07-24 15:47:10,845 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:47:10,854 - INFO - ______CARGA_OPERACIONES____
+2024-07-24 15:47:17,420 - INFO - {'MERV - XMEV - AGRO - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 45, 59, 643300), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - AGRO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 50, 'senial': '', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 45, 58, 249651), 'saldo': 1686576.37}, 'MERV - XMEV - TXAR - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 45, 59, 649305), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TXAR - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 45, 58, 249651), 'saldo': 1686576.37}}
+2024-07-24 15:47:17,496 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-24 15:52:07,992 - INFO - Conexión establecida (1 veces)
+2024-07-24 15:52:08,680 - INFO - dpuntillo@gmail.com
+2024-07-24 15:52:30,418 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-24 15:54:23,216 - INFO - ________CARGA DICCIONARIO OPERACIONES ENVIADAS___________
+2024-07-24 15:54:23,218 - INFO - 10861
+2024-07-24 15:54:23,230 - INFO - ['MERV - XMEV - GGAL - 24hs', 'ARG', 'SHORT', '2', 'OPEN.', '0,00%', '0', '1.055,00']
+2024-07-24 15:55:41,050 - INFO - ______CARGA_OPERACIONES____
+2024-07-24 15:55:41,051 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 15:55:41,793 - INFO - {'MERV - XMEV - AGRO - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 740788), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - AGRO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 49, 'senial': '', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - TXAR - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 795811), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TXAR - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 2, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - GGAL - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 748306), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - GGAL - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 6, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - PAMP - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 786193), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - PAMP - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - TGSU2 - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 791156), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TGSU2 - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - MIRG - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 763306), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - MIRG - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - SUPV - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 787857), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - SUPV - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - TECO2 - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 789559), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TECO2 - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - TGNO4 - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 790143), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TGNO4 - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - TRAN - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 792802), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TRAN - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - VALO - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 796814), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - VALO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 2, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - YPFD - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 797813), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - YPFD - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 8, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}, 'MERV - XMEV - BP - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 15, 54, 24, 799840), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - BP - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 15, 54, 23, 219697), 'saldo': 1686040.81}}
+2024-07-24 16:04:36,465 - INFO - Conexión establecida (1 veces)
+2024-07-24 16:04:43,650 - INFO - Conexión establecida (2 veces)
+2024-07-24 16:04:51,876 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-24 16:05:33,790 - INFO - ________CARGA DICCIONARIO OPERACIONES ENVIADAS___________
+2024-07-24 16:05:33,791 - INFO - 10861
+2024-07-24 16:05:33,802 - INFO - ['MERV - XMEV - AGRO - 24hs', 'ARG', '_2_SI', '200', 'closed.', '0,00%', '0', '60,00']
+2024-07-24 16:05:33,851 - INFO - ['MERV - XMEV - GGAL - 24hs', 'ARG', '_2_SI', '3', 'closed.', '0,00%', '0', '3.865,00']
+2024-07-24 16:05:33,876 - INFO - ['MERV - XMEV - PAMP - 24hs', 'ARG', '_2_SI', '4', 'closed.', '0,00%', '0', '2.515,00']
+2024-07-24 16:05:33,887 - INFO - ['MERV - XMEV - TGSU2 - 24hs', 'ARG', '_2_SI', '2', 'closed.', '0,00%', '0', '4.745,00']
+2024-07-24 16:05:33,924 - INFO - ['MERV - XMEV - TXAR - 24hs', 'ARG', '_2_SI', '11', 'closed.', '0,00%', '0', '1.070,00']
+2024-07-24 16:05:33,934 - INFO - ['MERV - XMEV - YPFD - 24hs', 'ARG', 'SHORT', '0', 'OPEN.', '0,00%', '0', '26.600,00']
+2024-07-24 16:05:33,971 - INFO - ['MERV - XMEV - GE - 24hs', 'CEDEAR', '_2_SI', '0', 'closed.', '0,00%', '0', '27.425,00']
+2024-07-24 16:05:34,011 - INFO - ['MERV - XMEV - GOOGL - 24hs', 'CEDEAR', 'SHORT', '3', 'OPEN.', '0,00%', '0', '3.985,00']
+2024-07-24 16:07:28,927 - INFO - ______CARGA_OPERACIONES____
+2024-07-24 16:07:28,927 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:07:28,929 - INFO - {'MERV - XMEV - AGRO - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 698245), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - AGRO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 13, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - COME - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 699389), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - COME - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 50, 'senial': '', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - GGAL - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 700467), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - GGAL - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 6, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - PAMP - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 702556), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - PAMP - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 8, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - TGSU2 - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 703729), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TGSU2 - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 4, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - TXAR - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 704947), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - TXAR - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 19, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - YPFD - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 707129), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - YPFD - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 8, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - GE - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 708141), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - GE - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'SHORT', 'ut': 1, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - GOOGL - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 710142), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - GOOGL - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'SHORT', 'ut': 5, 'senial': 'closed.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}, 'MERV - XMEV - VALO - 24hs': {'user_id': 10, 'userCuenta': 'apipuntillo22583398', 'accountCuenta': '10861', 'clOrdId_alta': '', 'clOrdId_baja': '', 'orderId': '', 'wsClOrdId_timestamp': datetime.datetime(2024, 7, 24, 16, 5, 34, 711140), 'clOrdId_alta_timestamp': None, 'clOrdId_baja_timestamp': None, 'proprietary': True, 'marketId': '', 'symbol': 'MERV - XMEV - VALO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 35, 'senial': 'OPEN.', 'status': '0', 'tiempoSaldo': datetime.datetime(2024, 7, 24, 16, 5, 33, 793782), 'saldo': 1622529.28}}
+2024-07-24 16:08:00,820 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-24 16:08:04,615 - INFO - Conexión establecida (1 veces)
+2024-07-24 16:08:08,289 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-24 16:08:32,509 - INFO - Conexión establecida (2 veces)
+2024-07-24 16:10:26,105 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:12:38,572 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:14:47,738 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:16:59,629 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:19:10,177 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:21:22,495 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:23:32,582 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:25:42,731 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:27:57,467 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:30:07,401 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:32:20,706 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:35:52,481 - INFO - Conexión establecida (1 veces)
+2024-07-24 16:35:53,251 - INFO - ____INTENTO ENTRAR____
+2024-07-24 16:35:53,253 - INFO - 127.0.0.1
+2024-07-24 16:35:53,259 - INFO - None
+2024-07-24 16:36:20,057 - INFO - madioli26@hotmail.com
+2024-07-24 16:36:22,926 - INFO - Conexión establecida (2 veces)
+2024-07-24 16:36:32,992 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-24 16:38:40,810 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:40:42,110 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:42:43,436 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:44:44,879 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:46:46,115 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:48:47,368 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:50:48,690 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:52:50,850 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:54:52,315 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:56:53,937 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-24 16:58:55,389 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
