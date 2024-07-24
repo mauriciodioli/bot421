@@ -68,16 +68,20 @@ def herramientasSheet_accionesSheet_actualizaLuz():
 def herramientasSheet_accionesSheet_actualizaLuz_thread():
     luz = get.luzThred_funcionando['luz']
     get.luzThred_funcionando['luz'] = False
+    luzMDH = get.luzMDH_funcionando
+    get.luzMDH_funcionando = False
     # Obtener los valores de hora, minuto y segundo del diccionario
     hora = get.luzThred_funcionando['hora']
     minuto = get.luzThred_funcionando['minuto']
     segundo = get.luzThred_funcionando['segundo']
-    
+   
+   
     # Imprimir para verificar en la consola
     print(hora, minuto, segundo)
     
     # Devolver como respuesta un JSON que incluye el estado de 'luz' y la hora actual
     return jsonify({
+        'luzMDH_control': luzMDH,
         'luzThread_control': luz,
         'hora': hora,
         'minuto': minuto,
