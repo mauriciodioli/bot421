@@ -24,7 +24,7 @@ sed -i "s/CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET'
 sed -i "s/ID_USER_ACTUALIZAR_SHEET = 1/#ID_USER_ACTUALIZAR_SHEET = 1/g" src/routes/api_externa_conexion/get_login.py
 
 sed -i "s/#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')/CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')/g" src/routes/api_externa_conexion/get_login.py
-sed -i "s/#CORREO_E_ACTUALIZAR_SHEET =  os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/CORREO_E_ACTUALIZAR_SHEET =  os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/g" src/routes/api_externa_conexion/get_login.py
 sed -i "s/#ID_USER_ACTUALIZAR_SHEET = 2/ID_USER_ACTUALIZAR_SHEET = 2/g" src/routes/api_externa_conexion/get_login.py
 
 # Modificar .env
