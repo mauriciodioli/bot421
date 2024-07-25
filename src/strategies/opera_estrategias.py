@@ -206,7 +206,68 @@ def OperacionWs(pyRofexInicializada, diccionario_global_operaciones,diccionario_
             print("Error en estrategies/opera_estrategi.py OperacionWs:", e)
 
       
- 
+def OperacionWs1(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, message):
+    try:
+        print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
+        trade_en_curso = diccionario_global_operaciones[Symbol]['tradeEnCurso']
+        ut = abs(int(diccionario_global_operaciones[Symbol]['ut']))
+        saldocta = diccionario_global_operaciones[Symbol]['saldo']
+
+        # Obtener precios
+        precio_of = message["marketData"].get("OF", [{}])[0].get("price", 0)
+        precio_bi = message["marketData"].get("BI", [{}])[0].get("price", 0)
+        precio_la = message["marketData"].get("LA", {}).get("price", 0)
+
+        plataoperacion1 = ut * precio_of
+        plataoperacion2 = ut * precio_bi
+        plataoperacion3 = ut * precio_la
+
+        if saldocta > plataoperacion1 and saldocta > plataoperacion2 and saldocta > plataoperacion3:
+            if diccionario_global_operaciones[Symbol]['ut'] > 0:
+                _ws_client_order_id = 1001 + random.randint(1, 100000)
+                
+                # Definir precios y sides según el tipo de señal
+                if senial == 'OPEN.':
+                    precio = precio_of if precio_of else precio_la
+                    side = pyRofexInicializada.Side.BUY
+                elif senial == 'closed.':
+                    precio = precio_bi if precio_bi else precio_la
+                    side = pyRofexInicializada.Side.SELL
+                else:
+                    print(f"Señal desconocida: {senial}")
+                    return
+                
+                # Enviar orden
+                pyRofexInicializada.send_order_via_websocket(ticker=Symbol,size=ut,side=side,order_type=pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=diccionario_global_operaciones[Symbol]['accountCuenta'])
+                
+                ws_client_order_id = _ws_client_order_id
+
+                diccionario = {
+                    "Symbol": Symbol,
+                    "_t_": tipo_de_activo,
+                    "_tr_": trade_en_curso,
+                    "_s_": senial,
+                    "_ut_": ut,
+                    "precio Offer": precio,
+                    "_ws_client_order_id": ws_client_order_id,
+                    "_cliOrderId": 0,
+                    "timestamp": datetime.now(),
+                    "status": "1",
+                    "statusActualBotonPanico": "",
+                    "user_id": diccionario_global_operaciones[Symbol]['user_id'],
+                    "userCuenta": diccionario_global_operaciones[Symbol]['userCuenta'],
+                    "accountCuenta": diccionario_global_operaciones[Symbol]['accountCuenta']
+                }
+                diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
+
+                diccionario_global_operaciones[Symbol]['ut'] -= ut
+
+        else:
+            print(f"FUN: OperacionWs__ No se puede operar Saldo Insuficiente, o no hay liquidez. El Saldo es: {saldocta}")
+
+    except Exception as e:
+        print(f"Error en estrategies/opera_estrategi.py OperacionWs: {e}")
+
         
         
  

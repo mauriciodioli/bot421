@@ -128,10 +128,26 @@ function actualizarEstado(data) {
   horaValor.textContent = data.hora;
   minutoValor.textContent = data.minuto;
   segundoValor.textContent = data.segundo;
-
+  const statusLight = document.getElementById('statusLight');
+  if (data.luzMDH_control) {
+      // Si está funcionando, poner verde
+      statusLight.style.backgroundColor = '#00ff00'; // Opcional, solo para asegurarse que se cambie directamente
+      statusLight.classList.remove('red');
+      statusLight.classList.add('green');
+  } else {
+      // Si no está funcionando, poner rojo
+      statusLight.style.backgroundColor = '#ff0000'; // Opcional, solo para asegurarse que se cambie directamente
+      statusLight.classList.remove('green');
+      statusLight.classList.add('red');
+  }
   setTimeout(() => {
     statusLightThread.style.backgroundColor = 'grey';
     statusLightThread.classList.remove('green', 'red');
+
+
+    statusLight.style.backgroundColor = 'grey';
+    statusLight.classList.remove('green', 'red'); // Limpiar clases adicionales
+
   }, 3000);
 }
 
