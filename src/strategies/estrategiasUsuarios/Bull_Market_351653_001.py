@@ -87,18 +87,18 @@ def BullMarket351653001():
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
-        
+         
         
             
             else:
-                return render_template('usuarios/logOutSystem.html')
+               return render_template('usuarios/logOutSystem.html')
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
                 return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
         except:
-            print("no pudo conectar el websocket en Bull_Market_351653_001.py ")
+           print("no pudo conectar el websocket en Bull_Market_351653_001.py ")
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -282,8 +282,7 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                         else:
                             # Manejo de otro tipo de TradeEnCurso si es necesario
                             pass
-
-
+       
 def obtener_liquidez_actual(message, key):
     if message and "marketData" in message and key in message["marketData"]:
         if isinstance(message["marketData"][key][0]["size"], int):
@@ -291,6 +290,7 @@ def obtener_liquidez_actual(message, key):
         elif "LA" in message["marketData"] and isinstance(message["marketData"]["LA"]["size"], int):
             return message["marketData"]["LA"]["size"]
     return 0
+
 def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
@@ -309,7 +309,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                     if elemento2['Symbol'] not in símbolos_vistos:
                         if elemento1[4] == 'closed.':
                             print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                            app.logger.info(elemento1)      
+                            app.logger.info(elemento1)
                             elemento1[3] = int(elemento2['_ut_'])
                         elif elemento1[2] == 'SHORT':
                             if elemento1[4] == '':
@@ -451,7 +451,8 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
     # db.session.close()
      app.logger.info('______CARGA_OPERACIONES____') 
      app.logger.info(diccionario_global_operaciones) 
-               
+
+     
 def es_numero(numero):
     try:
           int(numero)
@@ -567,9 +568,9 @@ def actualizar_diccionario_global(symbol, ut_a_devolver):
     if operacionGlobal:
         operacionGlobal['ut'] += int(ut_a_devolver)
         if operacionGlobal['status'] != '0':
-            operacionGlobal['status'] = '0'   
+            operacionGlobal['status'] = '0'
             
-                          
+ 
 def convert_datetime(original_datetime_str, desired_timezone_str):
     # Convertir la cadena a un objeto datetime
     original_datetime = datetime.strptime(original_datetime_str, "%Y%m%d-%H:%M:%S.%f")
@@ -628,7 +629,7 @@ def _cancela_orden(delay):
                _cancel_if_orders(valor["Symbol"],valor['_cliOrderId'],valor['statusActualBotonPanico'])       
       
 def _cancel_if_orders(symbol,clOrdId,order_status):
- #debe sumar de la lista de orden general
+    #debe sumar de la lista de orden general
     #eliminar de la ordenes enviadas luedo de confirmacion de cancelacion
     try:
         # Obtener el estado de la orden
@@ -779,8 +780,10 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
                 
                 # Agregar diccionario al diccionario global de operaciones enviadas
                 diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
-        app.logger.info("________CARGA DICCIONARIO OPERACIONES ENVIADAS___________")  # Imprimir mensaje en consola
+        app.logger.info("________CARGA DICCIONARIO OPERACIONES ENVIADAS___________")  
         app.logger.info(accountCuenta)  # Imprimir cuenta en consola
+      
+       
         return 'ok'  # Retorna 'ok' si la operación fue exitosa
     
     except Exception as e:
@@ -794,11 +797,11 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
 
 
 
-
+         
 def estadoOperacionAnterioCargaDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
    try:        
         repuesta_operacion = pyRofexInicializada.get_all_orders_status()
-     
+        
         datos = repuesta_operacion['orders']
         #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",datos)
         diccionario = {}
@@ -852,7 +855,7 @@ def estadoOperacionAnterioCargaDiccionarioEnviadas(pyRofexInicializada=None,acco
    except Exception as e:       
         print("error de carga de diccionario de enviados", e)  
         flash(' error de carga de diccionario de enviados')    
-   return 'ok'             
+   return 'ok'                   
 
 def obtenerStock(cadena):
 # Verificar si la cadena contiene la frase "Stock insuficiente"
@@ -947,4 +950,4 @@ def control_tiempo_lectura(intervalo_ms, tiempo_inicial, marca_de_tiempo):
     if tiempo_inicial is None:
         tiempo_inicial = marca_de_tiempo
         return False, tiempo_inicial
-    return (marca_de_tiempo - tiempo_inicial) >= intervalo_ms, tiempo_inicial       
+    return (marca_de_tiempo - tiempo_inicial) >= intervalo_ms, tiempo_inicial

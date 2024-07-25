@@ -3,7 +3,7 @@
 from pipes import Template
 from unittest import result
 from flask import current_app
-
+import os
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -13,6 +13,7 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from models.usuario import Usuario
 from models.strategy import Strategy
+from models.cuentas import Cuenta
 from models.brokers import Broker
 import strategies.gestion_estrategias.unidad_trader as utABM 
 import tokens.token as Token
@@ -20,6 +21,8 @@ from models.administracion.altaEstrategiaApp import AltaEstrategiaApp
 
 from strategies.estrategias import agregar_estrategia_nueva_app
 from strategies.estrategias import modificar_app_elimina_estrategia
+from strategies.estrategias import eliminarArhivoEstrategia
+
 from datetime import datetime
 
 abm_estrategias = Blueprint('abm_estrategias',__name__)
@@ -287,6 +290,7 @@ def abm_estrategias_eliminar_app():
             flash('Operation Removed successfully')
             todos_ = db.session.query(AltaEstrategiaApp).all()
             db.session.close()
+            eliminarArhivoEstrategia(nombreEstrategia)
             modificar_app_elimina_estrategia(nombreEstrategia)
             return render_template("estrategias/altaEstraegiaApp.html",datos = todos_)
     except: 

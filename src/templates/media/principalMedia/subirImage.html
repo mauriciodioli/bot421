@@ -1,79 +1,50 @@
 {% extends 'layouts/layout.html' %}
 
 {% block content %} 
-  <!-- Modal -->
-  <div id="modalPublicar" class="modal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Publicar</h5>
-                <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Contenido del modal -->
-                <div class="description-block" id="description-block-media_imagenes" style="max-width: 100%;">
-                    <textarea id="file-description-media_imagenes" style="max-width: 100%;" rows="3" placeholder="Ingrese su descripción aquí"></textarea>
-                    <div>
-                        <button id="color-picker-btn-media_imagenes" class="btn btn-primary">Seleccionar Color</button>
-                        <div id="selected-color-media_imagenes"></div>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="preview-image-container-media_imagenes" style="max-width: 100%;">
-                        <img id="preview-image-media_imagenes" src="#" alt="Vista previa de la imagen">
-                        <button class="close-button-media_imagenes" onclick="closePreview()" style="display: none;">X</button>
-                        <form id="myForm-media_imagenes" enctype="multipart/form-data">
-                            <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
-                                <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="previewSelectedImage()">
-                                <i class="fas fa-folder"></i> Seleccionar Imagen
-                            </label>
-                        </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <p id="mensaje-exitoso-media_imagenes" class="hidden-message-media_imagenes"></p>
-                    <button class="btn btn-primary" id="open-popup-media_imagenes" onclick="uploadImage()" disabled>Subir Imagen</button>
-                </div>
-            </div>
-        </div>
-    </div>
+ <!-- Modal -->
+<div id="modalPublicar1" class="modal-media_imagenes">
+  <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h3 class="modal-title" id="exampleModalLabel" style="color: black;">
+                  Crear publicación
+              </h3>
+              <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="modal-body-content">
+                  <!-- Primera fila -->
+                  <div class="modal-body-row">
+                      <div class="description-block" id="description-block-media_imagenes">
+                          <textarea id="file-description-media_imagenes" rows="3" placeholder="Ingrese su descripción aquí"></textarea>
+                          <div>
+                              <button id="color-picker-btn-media_imagenes" class="btn btn-primary">Seleccionar Color</button>
+                              <div id="selected-color-media_imagenes"></div>
+                          </div>
+                      </div>
+                  </div>
+                  <!-- Segunda fila -->
+                  <div class="modal-body-row">
+                    <div class="preview-image-container-media_imagenes">
+                      <img id="preview-image-media_imagenes" src="#" alt="Vista previa de la imagen">
+                      <button class="close-button-media_imagenes" onclick="closePreview()" style="display: none;">X</button>
+                      <form id="myForm-media_imagenes" enctype="multipart/form-data">
+                          <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
+                              <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="previewSelectedImage()">
+                              <i class="fas fa-folder"></i> Seleccionar Imagen
+                          </label>
+                      </form>
+                  </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <p id="mensaje-exitoso-media_imagenes" class="hidden-message-media_imagenes"></p>
+              <button class="btn btn-primary" id="open-popup-media_imagenes" onclick="uploadImage()" disabled>Subir Imagen</button>
+          </div>
+      </div>
   </div>
-
-
-
-  <div class="modal-media_imagenes">
-    <div class="modal-content-media_imagenes">
-        <span class="close-media_imagenes">&times;</span>
-        <div class="modal-header-media_imagenes">
-            <h2>Crear publicación</h2>
-        </div>
-        <div class="modal-body-media_imagenes">
-            <div class="user-info-media_imagenes">
-                <img src="path_to_user_avatar" alt="User Avatar" class="user-avatar-media_imagenes">
-                <div class="user-name-media_imagenes">Mauricio Dioli</div>
-                <div class="user-privacy-media_imagenes">Amigos</div>
-            </div>
-            <textarea id="post-text-media_imagenes" placeholder="¿Qué estás pensando, Mauricio?"></textarea>
-            <div class="upload-container-media_imagenes">
-                <label for="imagen-media_imagenes" class="btn-upload-media_imagenes">
-                    <i class="fas fa-camera"></i> Agregar fotos/videos
-                </label>
-                <input type="file" id="imagen-media_imagenes" accept="image/*">
-                <div id="preview-container-media_imagenes" class="preview-image-container-media_imagenes">
-                    <img id="preview-image-media_imagenes" src="#" alt="Image Preview">
-                    <button id="close-preview-media_imagenes" class="close-button-media_imagenes">&times;</button>
-                </div>
-            </div>
-            <div class="additional-options-media_imagenes">
-                <button class="option-button-media_imagenes"><i class="fas fa-tag"></i> Etiquetar amigos</button>
-                <button class="option-button-media_imagenes"><i class="fas fa-smile"></i> Sentimiento/Actividad</button>
-            </div>
-            <button id="submit-post-media_imagenes" class="submit-button-media_imagenes">Publicar</button>
-        </div>
-    </div>
 </div>
-
-
 
 
 
