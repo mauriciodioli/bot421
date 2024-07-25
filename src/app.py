@@ -15,8 +15,8 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
-from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 from strategies.estrategiasUsuarios.Bull_Market_351653_001 import Bull_Market_351653_001
+from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 ########################################################################
 from models.creaTablas import crea_tablas_DB
 from sistemaDePagos.payment_page import payment_page
@@ -173,8 +173,8 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 #####################zona blueprin de usuarios##############
-app.register_blueprint(Bull_Market_10861_001)
 app.register_blueprint(Bull_Market_351653_001)
+app.register_blueprint(Bull_Market_10861_001)
 ############################################################
 
 app.register_blueprint(logs)
@@ -347,8 +347,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    app.run(host='0.0.0.0', port=5001, debug=True)
-    #app.run(host='0.0.0.0', port=5001, debug=False)
+    #app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas
