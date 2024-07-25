@@ -51,7 +51,10 @@ $(document).ready(function() {
     // Evento para verificar el código de verificación
     $("#verify-code-btn").on("click", function(e) {
         e.preventDefault();
-        let verificationCode = $("#verification-code").val();
+        let verificationCode = '';
+        $('.code-inputs input').each(function() {
+            verificationCode += $(this).val();
+        });
 
         $.ajax({
             url: "/verify_code",
@@ -91,15 +94,21 @@ $(document).ready(function() {
             }),
             success: function(response) {
                 alert(response.message);
-                window.location.href = "/index#ingreso"; // Redirigir a /index#login
+                window.location.href = "/index#ingreso"; // Redirigir a /index#ingreso
             },
             error: function(error) {
                 alert(error.responseJSON.error); // Mostrar el mensaje de error del servidor
-          
             }
         });
     });
 });
+
+// Función para mover el foco al siguiente campo de entrada
+function moveToNext(current, nextFieldID) {
+    if (current.value.length == current.maxLength) {
+        document.getElementById(nextFieldID).focus();
+    }
+}
 
 // Función para alternar la visibilidad de la contraseña
 function togglePasswordVisibility(id) {

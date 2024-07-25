@@ -15,8 +15,8 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
 ######################zona de estrategias de usuarios####################
-from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 from strategies.estrategiasUsuarios.Bull_Market_351653_001 import Bull_Market_351653_001
+from strategies.estrategiasUsuarios.Bull_Market_10861_001 import Bull_Market_10861_001
 ########################################################################
 from models.creaTablas import crea_tablas_DB
 from sistemaDePagos.payment_page import payment_page
@@ -38,7 +38,7 @@ from productosComerciales.promociones.promociones import promociones
 from Tests.test_order_report_handler import test_order_report_handler
 
 
-from social.media.telegram import telegram
+from social.telegram.telegram import telegram
 
 from herramientasAdmin.accionesSheet import accionesSheet
 
@@ -80,6 +80,7 @@ from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
 
 from comunicacion.contacto import contacto
+from comunicacion.newsLetter import newsLetter
 
 from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
@@ -172,8 +173,8 @@ blueprint = make_google_blueprint(client_id='client_id',
                                    scope=['profile', 'email'])
 app.register_blueprint(blueprint, url_prefix='/login')
 #####################zona blueprin de usuarios##############
-app.register_blueprint(Bull_Market_10861_001)
 app.register_blueprint(Bull_Market_351653_001)
+app.register_blueprint(Bull_Market_10861_001)
 ############################################################
 
 app.register_blueprint(logs)
@@ -233,6 +234,7 @@ app.register_blueprint(arbitraje_001)
 app.register_blueprint(programar_trigger)
 app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
+app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
 app.register_blueprint(telegram)
 
@@ -333,7 +335,7 @@ def send_local_storage():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    #crea_tablas_DB()
+    crea_tablas_DB()
     
     return  render_template("entrada.html")
 
