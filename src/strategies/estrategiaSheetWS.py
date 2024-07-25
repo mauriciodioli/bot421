@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,session, request, redirect, url_for, flash,jsonify,g
+from flask import Blueprint,current_app,render_template,session, request, redirect, url_for, flash,jsonify,g
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
@@ -48,7 +48,7 @@ def estrategiaSheetWS_001():
     print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
     if request.method == 'POST':
         try:
-            
+            app = current_app._get_current_object()
             #test.entradaTest()
             data = request.get_json()
 
@@ -82,8 +82,8 @@ def estrategiaSheetWS_001():
                         pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
                         cuentaGlobal = accountCuenta
                     
-                        CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-                        carga_operaciones(pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                        CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
+                        carga_operaciones(app,pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
@@ -291,7 +291,7 @@ def obtener_liquidez_actual(message, key):
             return message["marketData"]["LA"]["size"]
     return 0
 
-def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
+def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
      símbolos_vistos = set()
@@ -309,13 +309,16 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
                     if elemento2['Symbol'] not in símbolos_vistos:
                         if elemento1[4] == 'closed.':
                             print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                            app.logger.info(elemento1)
                             elemento1[3] = int(elemento2['_ut_'])
                         elif elemento1[2] == 'SHORT':
                             if elemento1[4] == '':
                                 print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                             elif elemento1[4] == 'OPEN.':
                                 print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                         coincidencias.append(elemento1)
                         símbolos_vistos.add(elemento2['Symbol'])
@@ -446,7 +449,9 @@ def carga_operaciones(pyRofexInicializada,ContenidoSheet_list,account,usuario,co
         #  print(f'Clave: {clave}, Valor: {valor}')
    
     # db.session.close()
-     print("sale de cargar operaciones")
+     app.logger.info('______CARGA_OPERACIONES____') 
+     app.logger.info(diccionario_global_operaciones) 
+
      
 def es_numero(numero):
     try:
@@ -708,7 +713,7 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
 
 
 
-def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None, account=None, user_id=None, userCuenta=None):
+def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, account=None, user_id=None, userCuenta=None):
     try:
         global VariableParaSaldoCta
         accountCuenta = account
@@ -775,7 +780,10 @@ def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None, account=No
                 
                 # Agregar diccionario al diccionario global de operaciones enviadas
                 diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
-        
+        app.logger.info("________CARGA DICCIONARIO OPERACIONES ENVIADAS___________")  
+        app.logger.info(accountCuenta)  # Imprimir cuenta en consola
+      
+       
         return 'ok'  # Retorna 'ok' si la operación fue exitosa
     
     except Exception as e:

@@ -87,18 +87,7 @@ document.getElementById('access_token_btn_donacion').value = access_token_btn_do
 document.getElementById('correo_electronico_btn_donacion').value = correo_electronico_btn_donacion;
 
 
-document.getElementById('subscribeButton').addEventListener('click', function(event) {
-    event.preventDefault();
-    if (!localStorage.getItem('access_token')) {
-        $('#loginModal').modal('show');
-    } else {
-        document.getElementById('subscriptionForm').submit();
-    }
-});
 
-document.getElementById('loginRedirectButton').addEventListener('click', function() {
-    window.location.href = '/';
-});
 </script>
 {% endblock %}
 

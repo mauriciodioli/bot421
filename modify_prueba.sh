@@ -17,12 +17,12 @@ sed -i "s/#modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'va
 
 
 # Modificar get_login
-sed -i "s/#CUENTA_ACTUALIZAR_SHEET = '44593'/CUENTA_ACTUALIZAR_SHEET = '44593'/g" src/routes/api_externa_conexion/get_login.py
-sed -i "s/#CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'/CORREO_E_ACTUALIZAR_SHEET = 'madioli26@hotmail.com'/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')/CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')/CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')/g" src/routes/api_externa_conexion/get_login.py
 sed -i "s/#ID_USER_ACTUALIZAR_SHEET = 1/ID_USER_ACTUALIZAR_SHEET = 1/g" src/routes/api_externa_conexion/get_login.py
 
-sed -i "s/CUENTA_ACTUALIZAR_SHEET = '10861'/#CUENTA_ACTUALIZAR_SHEET = '10861'/g" src/routes/api_externa_conexion/get_login.py
-sed -i "s/CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'/#CORREO_E_ACTUALIZAR_SHEET = 'dpuntillo@gmail.com'/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')/#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')/g" src/routes/api_externa_conexion/get_login.py
+sed -i "s/CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')/g" src/routes/api_externa_conexion/get_login.py
 sed -i "s/ID_USER_ACTUALIZAR_SHEET = 2/#ID_USER_ACTUALIZAR_SHEET = 2/g" src/routes/api_externa_conexion/get_login.py
 
 # Modificar .env
@@ -32,6 +32,10 @@ sed -i "s/MYSQL_DATABASE = base_dbbot421v02/#MYSQL_DATABASE = base_dbbot421v02/g
 # Modificar aws.yml
 sed -i "s/#EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com/EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com/g" .github/workflows/aws.yml
 sed -i "s/EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com/#EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com/g" .github/workflows/aws.yml
+
+
+# Eliminar el contenido del archivo logs.log
+:> logs.log
 
 
 echo "Configuraciones aplicadas con éxito."
