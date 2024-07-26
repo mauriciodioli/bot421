@@ -101,6 +101,7 @@ from models.brokers import brokers
 from models.operacionHF import operacionHF
 from models.logs import logs
 from models.creaTablas import creaTabla
+from models.operacionEstrategia import operacionEstrategia
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -237,6 +238,7 @@ app.register_blueprint(contacto)
 app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
 app.register_blueprint(telegram)
+app.register_blueprint(operacionEstrategia)
 
 app.register_blueprint(test_order_report_handler)
 
