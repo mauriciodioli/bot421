@@ -2,6 +2,7 @@ from flask import Blueprint,current_app,render_template,session, request, redire
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
+from models.operacionEstrategia import operacionEstrategia, OperacionEstrategia
 
 import re
 import jwt
@@ -277,8 +278,20 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                 Liquidez_ahora_cedear = obtener_liquidez_actual(message, "BI")                            
                           
                             cantidad_a_usar = min(Liquidez_ahora_cedear, diccionario_global_operaciones[Symbol]['ut'])
-                            op.OperacionWs(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, cantidad_a_usar, senial, message)
+                            #op.OperacionWs(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, cantidad_a_usar, senial, message)
+                            estrategia = OperacionEstrategia(
+                                                                pyRofexInicializada=pyRofexInicializada,
+                                                                diccionario_global_operaciones=diccionario_global_operaciones,
+                                                                diccionario_operaciones_enviadas=diccionario_operaciones_enviadas,
+                                                                Symbol=Symbol,
+                                                                tipo_de_activo=tipo_de_activo,
+                                                                Liquidez_ahora_cedear=cantidad_a_usar,
+                                                                senial=senial,
+                                                                message=message
+                                                            )
                             
+                            estrategia.operar()
+
                         else:
                             # Manejo de otro tipo de TradeEnCurso si es necesario
                             pass

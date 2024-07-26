@@ -1,7 +1,8 @@
 
 
+from utils.db import db
+from flask_marshmallow import Marshmallow
 from flask import Blueprint
-from utils.common import Marshmallow
 import random
 from datetime import datetime
 
@@ -55,7 +56,7 @@ class OperacionEstrategia:
                         return
                     
                     # Enviar orden
-                    self.pyRofexInicializada.send_order_via_websocket(ticker=self.Symbol,size=ut,side=side,order_type=self.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=self.diccionario_global_operaciones[self.Symbol]['accountCuenta'])
+                    #self.pyRofexInicializada.send_order_via_websocket(ticker=self.Symbol,size=ut,side=side,order_type=self.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=self.diccionario_global_operaciones[self.Symbol]['accountCuenta'])
                     
                     ws_client_order_id = _ws_client_order_id
 
@@ -78,7 +79,7 @@ class OperacionEstrategia:
                     self.diccionario_operaciones_enviadas[len(self.diccionario_operaciones_enviadas) + 1] = diccionario
 
                     self.diccionario_global_operaciones[self.Symbol]['ut'] -= ut
-
+                    print(f"FUN: OperacionWs__ opero correctamente: {self.Symbol}, ut: {ut}, cuenta: {self.diccionario_global_operaciones[self.Symbol]['accountCuenta']}")
             else:
                 print(f"FUN: OperacionWs__ No se puede operar Saldo Insuficiente, o no hay liquidez. El Saldo es: {saldocta}")
 
