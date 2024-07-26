@@ -1,8 +1,9 @@
-from flask import Blueprint,current_app,render_template,session, request, redirect, url_for, flash,jsonify,g
+from flask import Blueprint,current_app, render_template,session, request, redirect, url_for, flash,jsonify,g
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
 from models.operacionEstrategia import operacionEstrategia, OperacionEstrategia
+
 
 import re
 import jwt
@@ -13,8 +14,7 @@ import routes.api_externa_conexion.get_login as get
 import strategies.opera_estrategias as op  
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
-
-
+from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
 from datetime import datetime
 from pytz import timezone as pytz_timezone
 
@@ -41,12 +41,13 @@ diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {} 
 
 
-
+idUser = None
 
 
 @Bull_Market_351653_001.route('/Bull-Market-351653-001/', methods=['POST'])
 def BullMarket351653001():
     print('00000000000000000000000 Bull-Market-351653-001 00000000000000000000000000')
+    global idUser  # Indica que estás usando la variable global
     if request.method == 'POST':
         try:
             app = current_app._get_current_object()
@@ -912,7 +913,9 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
         account = diccionario_global_operaciones[symbol]['accountCuenta']
         pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
         pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
-        #      return render_template('home.html')    
+        flash('FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO')
+        estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'],idUser)
+       
 
 
 

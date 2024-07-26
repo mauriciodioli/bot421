@@ -798,13 +798,7 @@ def cancelarOrden():
           print("estado ", estado)
           print("accountId ", account)
          
-         
-          
-          # 3-Initialize Websocket Connection with the handlers
-          #get.pyRofexInicializada.init_websocket_connection(order_report_handler=getFunction.order_report_handler_cancel,
-          #                       error_handler=getFunction.error_handler,
-          #                       exception_handler=getFunction.exception_handler)
-        
+               
           
           # ojo se comento por compromiso con la homologacion restaurar **66
           pyRofexInicializada = get.ConexionesBroker.get(account)
