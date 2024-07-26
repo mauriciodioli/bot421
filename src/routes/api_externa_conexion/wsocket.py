@@ -306,16 +306,10 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector):
                         pyRofexInicializada.MarketDataEntry.CLOSING_PRICE]
           
             merdado_id = pyRofexInicializada.Market.ROFEX
-            pyRofexInicializada.market_data_subscription(
-                                        tickers=instrumentos_existentes,
-                                        entries=entries,                                       
-                                        depth=3,
-                                        handler=None, 
-                                        environment=account
-                                    )
+            pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3,environment=account)
         
            
-            datos = ContenidoSheet_list #COMENTADO POR SHEET
+          
             
         
     #return instrumentos_existentes
