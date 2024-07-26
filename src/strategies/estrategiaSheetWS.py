@@ -308,16 +308,16 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                 if elemento1[0] == elemento2['Symbol']:
                     if elemento2['Symbol'] not in símbolos_vistos:
                         if elemento1[4] == 'closed.':
-                            print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                            print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                             app.logger.info(elemento1)
                             elemento1[3] = int(elemento2['_ut_'])
                         elif elemento1[2] == 'SHORT':
                             if elemento1[4] == '':
-                                print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                             elif elemento1[4] == 'OPEN.':
-                                print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                         coincidencias.append(elemento1)
@@ -435,7 +435,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
 
                     # Formatear los campos específicos en una sola línea
                     contenido_linea = ', '.join([f"{campo}: {contenido[campo]}" for campo in campos_especificos])
-                    print(contenido_linea)
+                    print('c: ',account,' ', contenido_linea)
             else:
                     print(f"No se encontró contenido para {elemento[0]} en diccionario_global_operaciones.")
 
@@ -450,7 +450,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
    
     # db.session.close()
      app.logger.info('______CARGA_OPERACIONES____') 
-     app.logger.info(diccionario_global_operaciones) 
+    # app.logger.info(diccionario_global_operaciones) 
 
      
 def es_numero(numero):
@@ -734,7 +734,7 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
             symbol = posicion['symbol']
             buySize = abs(int(posicion['buySize']))
             sellSize = abs(int(posicion['sellSize']))
-            print("Símbolo:", symbol)
+            print("Este esta en cartera de la cuenta: ",accountCuenta," Símbolo:", symbol)
             print("Estan en matriz, Cantidad de stock buySize:", posicion['buySize'])
             print("Estan en matriz, Cantidad de stock sellSize:", posicion['sellSize'])
             print()
