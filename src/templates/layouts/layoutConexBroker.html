@@ -172,7 +172,16 @@
                             </form>
                       
                           </li>  
-                          
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <form id="instrumentos_form" action="/caucionador_caucionar" method="post">
+                              <!-- Aquí puedes agregar los campos adicionales que desees -->
+                              <input type="hidden" name="accounCuenta_form_caucionar" id="accounCuenta_form_caucionar">
+                              <input type="hidden" name="form_caucionar_accessToken" id="form_caucionar_accessToken">
+                              <!-- El botón de enviar el formulario -->
+                              <button type="submit" class="btn  text-black">Caucion</button>
+                            </form>
+                          </li>                          
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/inicioEstrategias/">Test</a></li>                          
                         </ul>
@@ -411,9 +420,10 @@
         //estado de cuentas
         document.getElementById('accounCuenta_form_estadoOperacion').value = cuentaBroker;
         document.getElementById('form_estadoOperacion_accessToken').value = access_token;
-        
-        //repoteCuentas
-       
+        //caucionador
+        document.getElementById('accounCuenta_form_caucionar').value = cuentaBroker;
+        document.getElementById('form_caucionar_accessToken').value = access_token;
+        //repoteCuentas       
         document.getElementById("access_token_form_reporteCuenta").value = access_token;
         document.getElementById("accounCuenta_form_reporteCuenta").value = cuentaBroker;
         document.getElementById("selector_form_reporteCuenta").value = selector;

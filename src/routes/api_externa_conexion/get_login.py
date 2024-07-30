@@ -107,6 +107,7 @@ DIAS_SEMANA = {
     "domingo": 6
 }
 precios_data = {} #para mdh 0
+precios_data_caucion ={}#para caucion
 symbols_sheet_valores = []
 sheet = None
 accountLocalStorage = ""
