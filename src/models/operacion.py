@@ -55,3 +55,9 @@ class Operacion:
         else:
             print("No hay saldo suficiente para realizar la operación.")
             return False
+    def enviar_orden_sin_validar_saldo(self, cuenta=None,pyRofexInicializada=None):
+             #pass
+        pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
+        
+        return True
+       
