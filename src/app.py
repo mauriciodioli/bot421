@@ -51,6 +51,7 @@ from strategies.arbitraje_001 import arbitraje_001
 from strategies.utils.testWS import testWS
 from strategies.gestion_estrategias.abm_estrategias import abm_estrategias
 from strategies.gestion_estrategias.unidad_trader import unidad_trader
+from strategies.caucionador.caucion import caucion
 
 from tokens.token import token
 import tokens.token as Token
@@ -109,6 +110,7 @@ from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
 import schedule
 import time
+from sqlalchemy.pool import Pool
 
 from routes.api_externa_conexion.get_login import CUSTOM_LEVEL
 
@@ -239,6 +241,7 @@ app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
 app.register_blueprint(telegram)
 app.register_blueprint(operacionEstrategia)
+app.register_blueprint(caucion)
 
 app.register_blueprint(test_order_report_handler)
 
@@ -254,6 +257,7 @@ UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000, max_overflow=10, pool_recycle=3600)
 
+@event.listens_for(Pool, "connect")
 def log_connection_info(dbapi_connection, connection_record):
     """Log connection events."""
     global connection_count

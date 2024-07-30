@@ -7,6 +7,7 @@ import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import enviar_leer_sheet
 from strategies.datoSheet import update_precios
+from strategies.caucionador.caucion import determinar_caucion
 from datetime import datetime
 
 import pandas as pd
@@ -92,7 +93,12 @@ def market_data_handler_0(message):
                 if  get.luzMDH_funcionando == False:
                     get.luzMDH_funcionando = True       
             
-                update_precios(message)
+                update_precios(message)   
+                
+                now = datetime.now()                
+              #  if (now.hour == 19 and now.minute >= 20 and now.minute <= 29):
+                determinar_caucion(message)
+                
                 if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
                     pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
                     
@@ -104,13 +110,7 @@ def market_data_handler_0(message):
                     price = message.get('price', 10)  # Asume 100.0 si no se especifica
 
                     # Enviar la orden a través del WebSocket
-                    pyRofexInicializada.send_order_via_websocket(
-                        ticker=ticker, 
-                        side=side, 
-                        size=size, 
-                        order_type=order_type, 
-                        price=price
-                    )
+                    pyRofexInicializada.send_order_via_websocket(ticker=ticker,side=side,size=size,order_type=order_type,price=price)
                 
                 # Actualizar el timestamp de la última ejecución
             

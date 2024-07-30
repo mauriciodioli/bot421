@@ -16,6 +16,7 @@ from models.cuentas import Cuenta
 from models.orden import Orden
 import threading
 import strategies.datoSheet as datoSheet
+from strategies.caucionador.caucion import caucionar 
 import time
 from datetime import datetime
 import tokens.token as Token
@@ -207,6 +208,9 @@ def ejecutar_en_hilo(app, pais, user_id, selector):
                 if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id, 'hilo', selector)
                 
+                
+                if (now.hour == 19 and now.minute >= 40 and now.minute <= 55):
+                     caucionar(account)
                 # Preguntar si son las 20:00 y apagar el ws y limpiar precios_data
                 if (now.hour == 20 and now.minute >= 6 and now.minute <= 59) and get.luzMDH_funcionando:
                     terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
