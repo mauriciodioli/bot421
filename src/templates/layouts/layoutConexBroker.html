@@ -178,6 +178,7 @@
                               <!-- Aquí puedes agregar los campos adicionales que desees -->
                               <input type="hidden" name="accounCuenta_form_caucionar" id="accounCuenta_form_caucionar">
                               <input type="hidden" name="form_caucionar_accessToken" id="form_caucionar_accessToken">
+                              <input type="hidden" name="form_caucionar_layout" id="form_caucionar_layout" value="layoutConexBroker">
                               <!-- El botón de enviar el formulario -->
                               <button type="submit" class="btn  text-black">Caucion</button>
                             </form>
@@ -464,10 +465,10 @@
              cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
             document.getElementById("mensaje_simulado").innerHTML = cuenta;
 
-             enlace_correo = "<a ' style='text-decoration:none; color:blue;''>" + correo_electronico + "</a>";
+             enlace_correo = "<a ' style='text-decoration:none; color:#00ff00;''>" + correo_electronico + "</a>";
             document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
-             mensaje = "<a ' style='text-decoration:none;  color:blue;'>" + cuentaBroker + "</a>";
+             mensaje = "<a ' style='text-decoration:none;  color:#00ff00;'>" + cuentaBroker + "</a>";
             document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
             } else {
             // handle the case when the value of simulado is neither '1' nor '2'
