@@ -22,6 +22,9 @@ import json
 import os
 import copy
 
+from sqlalchemy.exc import OperationalError
+import pymysql
+
 wsocket = Blueprint('wsocket',__name__)
 
 
@@ -31,8 +34,7 @@ tiempo_inicial = time.time()  # Captura el tiempo actual
 
 def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=None,idUser=None,correo_electronico=None,selector=None):
   
-     
-      cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
+      cuenta = cargarCuenta(Cuenta,idUser,account)
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
       endPoint = get.inicializar_variables(cuenta.accountCuenta)
@@ -396,8 +398,35 @@ def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
         return True
 
 
+def cargarCuenta(Cuenta,idUser,account):
+    retries = 0
+    max_retries = 5
+    retry_delay = 5  # segundos
 
-
+    while retries < max_retries:
+        try:
+            # Realiza la consulta
+            cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
+           # db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
+            return cuenta  # Si la consulta es exitosa, retorna el resultado
+        
+        except OperationalError as e:
+            print(f"Error de conexión: {e}. Reintentando en {retry_delay} segundos...")
+            retries += 1
+            time.sleep(retry_delay)  # Espera antes de volver a intentar
+            db.session.remove()  # Elimina la sesión actual
+            
+            # Reconfigura la sesión si es necesario
+            db.session.bind = db.engine
+            
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            break  # Sale del bucle en caso de error general
+    
+    if retries == max_retries:
+        print("Error: Se ha alcanzado el límite de reintentos.")
+        # Manejo adicional de error si es necesario
+    return None
 
 
 
