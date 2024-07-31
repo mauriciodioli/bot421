@@ -266,9 +266,13 @@ def log_connection_info(dbapi_connection, connection_record):
     app.logger.info(f"Conexión establecida ({connection_count} veces)")
 
 event.listen(engine, 'connect', log_connection_info)
+
+
+
 db = SQLAlchemy(app)
 # Configurar el pool de conexiones para SQLAlchemy
 db.init_app(app)
+
 db.session.configure(bind=engine)
 
 ma = Marshmallow(app)

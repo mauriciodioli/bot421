@@ -646,8 +646,7 @@
         type: 'POST',
         url: '/unidad-trader-mostrar/', // URL del endpoint en Flask
         data: datos,
-        success: function(response) {
-          debugger;
+        success: function(response) {         
           // Actualiza el contenido del label con el valor máximo de ut
           $('#montoMinimoLabelARG').text(response.max_ut_ars);
           // Cambia el color del texto del label a rojo
