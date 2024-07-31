@@ -27,7 +27,7 @@ def caucionador_caucionar():
                             if data['recibido_pesos']:
                                 saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account_cuenta)
                                 size = int(saldo / data['price'])
-
+                               
                                 return render_template('caucionador/caucionar.html', layout='layoutConexBroker', size=size, saldo=saldo, price=data['price'], Symbol=Symbol)
                     else:
                         return render_template('notificaciones/logeePrimero.html', layout=layout)
@@ -66,7 +66,7 @@ def caucionador_caucionar_post():
             if layout == 'layoutConexBroker':
                 # Realiza aquí las acciones necesarias con los datos recibidos
                 # Por ejemplo, guardar en la base de datos, etc.
-                caucionar_desde_cuenta(account_cuenta,Symbol,price,size,saldo)
+                caucionar_desde_cuenta(account_cuenta,Symbol,price,int(size),saldo)
                 # Si todo está bien, devuelve una respuesta JSON de éxito
                 return jsonify({"status": "success", "message": "Operación realizada correctamente"}), 200
             else:
@@ -120,16 +120,16 @@ def caucionar(account):
                 print("No se pudo enviar la orden.")
 def  caucionar_desde_cuenta(account_cuenta,Symbol,price,size,saldo):
     # Verifica cada símbolo en get.precios_data_caucion
-    for Symbol, data in get.precios_data_caucion.items():       
+    if Symbol in get.precios_data_caucion:  
           if saldo >= int(size) * float(price): 
             nueva_operacion = Operacion(
                 ticker=Symbol,
                 accion='vender',
-                size=size,
+                size=float(size),
                 price=price,
                 order_type='MARKET'
             )
-            resultado = nueva_operacion.enviar_orden_sin_validar_saldo(cuenta=account_cuenta, pyRofexInicializada=get.ConexionesBroker['cuenta'].get('pyRofex'))
+            resultado = nueva_operacion.enviar_orden_sin_validar_saldo(cuenta=account_cuenta, pyRofexInicializada= get.ConexionesBroker.get(account_cuenta)['pyRofex']  )
             if resultado:
                 print("Orden de caucion enviada con éxito.")
             else:

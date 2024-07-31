@@ -1077,3 +1077,66 @@ __inicio 14:00 ___fin 19:00
 2024-07-31 13:36:34,220 - INFO - MODIFICO EL SHEET CORRECTAMENTE
 2024-07-31 13:38:36,028 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
 2024-07-31 13:38:36,578 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-31 16:25:20,464 - INFO - ____INTENTO ENTRAR____
+2024-07-31 16:25:20,468 - INFO - 127.0.0.1
+2024-07-31 16:25:20,473 - INFO - madioli26@hotmail.com
+2024-07-31 16:25:30,899 - INFO - Conexión establecida (1 veces)
+2024-07-31 16:25:35,286 - INFO - Conexión establecida (2 veces)
+2024-07-31 16:25:36,376 - INFO - Conexión establecida (3 veces)
+2024-07-31 16:25:36,947 - INFO - rciriaci@yahoo.com.ar
+2024-07-31 16:25:38,625 - INFO - Conexión establecida (4 veces)
+2024-07-31 16:25:38,647 - INFO - Conexión establecida (5 veces)
+2024-07-31 16:25:43,356 - INFO - Conexión establecida (6 veces)
+2024-07-31 16:25:43,374 - INFO - Conexión establecida (7 veces)
+2024-07-31 16:27:12,899 - INFO - Conexión establecida (1 veces)
+2024-07-31 16:27:14,096 - INFO - Conexión establecida (2 veces)
+2024-07-31 16:27:18,068 - INFO - Conexión establecida (3 veces)
+2024-07-31 16:27:19,181 - INFO - Conexión establecida (4 veces)
+2024-07-31 16:27:19,350 - INFO - Conexión establecida (5 veces)
+2024-07-31 16:27:19,933 - INFO - Conexión establecida (6 veces)
+2024-07-31 16:27:34,516 - INFO - rciriaci@yahoo.com.ar
+2024-07-31 16:27:52,544 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-31 16:28:29,726 - INFO - Conexión establecida (7 veces)
+2024-07-31 16:28:42,095 - INFO - Conexión establecida (8 veces)
+2024-07-31 16:30:07,916 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-31 16:32:01,959 - INFO - Conexión establecida (9 veces)
+2024-07-31 16:32:27,746 - INFO - Conexión establecida (10 veces)
+2024-07-31 16:32:31,227 - INFO - mauriciodioli@gmail.com
+2024-07-31 16:32:31,282 - INFO - Conexión establecida (11 veces)
+2024-07-31 16:32:33,186 - INFO - Conexión establecida (12 veces)
+2024-07-31 16:35:26,386 - INFO - Conexión establecida (1 veces)
+2024-07-31 16:35:27,484 - INFO - Conexión establecida (2 veces)
+2024-07-31 16:35:28,162 - INFO - mauriciodioli@gmail.com
+2024-07-31 16:35:30,314 - INFO - Conexión establecida (3 veces)
+2024-07-31 16:35:31,426 - INFO - Conexión establecida (4 veces)
+2024-07-31 16:35:31,597 - INFO - Conexión establecida (5 veces)
+2024-07-31 16:36:30,577 - INFO - mauriciodioli@gmail.com
+2024-07-31 16:45:05,047 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-31 16:45:08,003 - INFO - Conexión establecida (1 veces)
+2024-07-31 16:45:09,934 - INFO - Conexión establecida (2 veces)
+2024-07-31 16:45:11,038 - INFO - Conexión establecida (3 veces)
+2024-07-31 16:45:24,587 - INFO - Conexión establecida (4 veces)
+2024-07-31 16:45:24,620 - INFO - Conexión establecida (5 veces)
+2024-07-31 16:45:24,624 - INFO - Conexión establecida (6 veces)
+2024-07-31 16:45:42,034 - INFO - Conexión establecida (7 veces)
+2024-07-31 16:45:42,924 - INFO - Conexión establecida (8 veces)
+2024-07-31 16:45:43,082 - INFO - Conexión establecida (9 veces)
+2024-07-31 16:45:48,356 - INFO - Conexión establecida (10 veces)
+2024-07-31 16:47:05,154 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-31 16:49:19,640 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-31 16:51:24,711 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-31 16:54:39,908 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-31 16:54:51,735 - INFO - Conexión establecida (1 veces)
+2024-07-31 16:54:52,849 - INFO - Conexión establecida (2 veces)
+2024-07-31 16:54:56,639 - INFO - Conexión establecida (3 veces)
+2024-07-31 16:54:57,731 - INFO - Conexión establecida (4 veces)
+2024-07-31 16:54:57,924 - INFO - Conexión establecida (5 veces)
+2024-07-31 16:55:04,119 - INFO - LEE EL SHEET POR LLAMADA DE FUNCION
+2024-07-31 16:55:39,138 - INFO - Conexión establecida (6 veces)
+2024-07-31 16:57:53,098 - INFO - ENTRA A THREAD Y LEE EL SHEET POR HILO
+2024-07-31 16:57:55,187 - INFO - MODIFICO EL SHEET CORRECTAMENTE
+2024-07-31 16:58:29,055 - INFO - Conexión establecida (1 veces)
+2024-07-31 16:58:30,144 - INFO - Conexión establecida (2 veces)
+2024-07-31 16:58:33,035 - INFO - Conexión establecida (3 veces)
+2024-07-31 16:58:34,146 - INFO - Conexión establecida (4 veces)
+2024-07-31 16:58:34,315 - INFO - Conexión establecida (5 veces)
