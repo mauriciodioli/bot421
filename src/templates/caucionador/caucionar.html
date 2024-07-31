@@ -78,37 +78,46 @@
         $(document).ready(function(){
             $('#cardIndexFichas').click(function(){
                 var saldo = $(this).data('saldo');
-                var size = $(this).data('size');
+                var size = '1000'; // No es necesario comentar esta línea si es parte del código final
                 var symbol = $(this).data('symbol');
                 var price = $(this).data('price');
-                var form_caucionar_accessToken = localStorage.getItem('access_token')
-                var accounCuenta_form_caucionar = localStorage.getItem('cuenta')
-                $.ajax({
-                    url: '/caucionador_caucionar_post',  // URL de la ruta Flask
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        accounCuenta_form_caucionar:accounCuenta_form_caucionar,
-                        form_caucionar_saldo:saldo,
-                        form_caucionar_size:size,
-                        form_caucionar_price:price,
-                        form_caucionar_Symbol:symbol,
-                        form_caucionar_accessToken: form_caucionar_accessToken,  // Reemplaza con tu token de acceso
-                        form_caucionar_layout: 'layoutConexBroker'
-                    }),
-                    success: function(response) {
-                        console.log('Datos enviados exitosamente');
-                        console.log(response.message);
-                        // Aquí puedes manejar la respuesta del servidor
-                        alert(response.message);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error al enviar los datos:', error);
-                        alert('Error al procesar la solicitud: ' + error);
-                    }
-                });
+                var form_caucionar_accessToken = localStorage.getItem('access_token');
+                var accounCuenta_form_caucionar = localStorage.getItem('cuenta');
+        
+                // Mostrar el mensaje de advertencia
+                var confirmar = confirm('¿Estás seguro de que quieres enviar estos datos?');
+        
+                if (confirmar) {
+                    $.ajax({
+                        url: '/caucionador_caucionar_post',  // URL de la ruta Flask
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            accounCuenta_form_caucionar: accounCuenta_form_caucionar,
+                            form_caucionar_saldo: saldo,
+                            form_caucionar_size: size,
+                            form_caucionar_price: price,
+                            form_caucionar_Symbol: symbol,
+                            form_caucionar_accessToken: form_caucionar_accessToken,  // Reemplaza con tu token de acceso
+                            form_caucionar_layout: 'layoutConexBroker'
+                        }),
+                        success: function(response) {
+                            console.log('Datos enviados exitosamente');
+                            console.log(response.message);
+                            // Aquí puedes manejar la respuesta del servidor
+                            alert(response.message);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error al enviar los datos:', error);
+                            alert('Error al procesar la solicitud: ' + error);
+                        }
+                    });
+                } else {
+                    console.log('Envío cancelado por el usuario.');
+                }
             });
         });
+        
         
     </script>
     
