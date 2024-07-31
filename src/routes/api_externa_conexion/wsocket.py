@@ -407,7 +407,7 @@ def cargarCuenta(Cuenta,idUser,account):
         try:
             # Realiza la consulta
             cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
-            db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
+            #db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
             return cuenta  # Si la consulta es exitosa, retorna el resultado
         
         except OperationalError as e:
