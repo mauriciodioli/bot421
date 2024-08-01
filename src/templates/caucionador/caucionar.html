@@ -78,7 +78,8 @@
         $(document).ready(function(){
             $('#cardIndexFichas').click(function(){
                 var saldo = $(this).data('saldo');
-                var size = '1000'; // No es necesario comentar esta línea si es parte del código final
+                var size = $(this).data('size');
+                //var size = '1000'; // No es necesario comentar esta línea si es parte del código final
                 var symbol = $(this).data('symbol');
                 var price = $(this).data('price');
                 var form_caucionar_accessToken = localStorage.getItem('access_token');
