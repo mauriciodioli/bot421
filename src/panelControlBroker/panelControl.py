@@ -205,8 +205,8 @@ def ejecutar_en_hilo(app, pais, user_id, selector):
                     get.luzThred_funcionando['segundo'] = now.second
 
                 # Preguntar si son las 11:00 y pasar la lectura
-               # if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
-                if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+               # if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id, 'hilo', selector)
               
                 #if (now.hour == 19 and now.minute >= 40 and now.minute <= 55):
@@ -242,11 +242,11 @@ def enviar_leer_sheet(app,pais,user_id,hilo,selector):
                                                  get.CORREO_E_ACTUALIZAR_SHEET,
                                                  get.VARIABLE_ACTUALIZAR_SHEET,
                                                  get.ID_USER_ACTUALIZAR_SHEET):
-                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
-                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
+                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
                   app.logger.info('MODIFICO EL SHEET CORRECTAMENTE')
-            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
-            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
         else:
