@@ -11,14 +11,15 @@
 
 {% if layout == 'layout' %}
     {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
 {% elif layout == 'layout_fichas' %}
     {% extends 'layouts/layout_fichas.html' %}
 {% elif layout == 'layoutConexBroker' %}
     {% extends 'layouts/layoutConexBroker.html' %}
 {% endif %}
-{% elif layout == 'layout_signal' %}
-    {% extends 'layouts/layout_signal.html' %}
-{% endif %}
+
+
 
 {% block content %}
 <body>

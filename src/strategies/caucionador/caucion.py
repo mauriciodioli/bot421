@@ -42,13 +42,13 @@ def caucionador_caucionar():
                     
     except Exception as e:
        flash(f"Error al procesar la caución: {str(e)}", "danger")
-       return render_template("notificaciones/errorLogueo.html")
+       return render_template('notificaciones/logeePrimero.html', layout=layout)
 
 
 
 @caucion.route('/caucionador_caucionar_post', methods=['POST'])
 def caucionador_caucionar_post():
-    try:
+   # try:
         data = request.json  # Recibe los datos JSON
         if not data:
             raise ValueError("No se recibieron datos")
@@ -74,9 +74,9 @@ def caucionador_caucionar_post():
         else:
             raise ValueError("Token de acceso no válido o expirado")
     
-    except Exception as e:
-        flash(f"Error al procesar la caución: {str(e)}", "danger")
-        return render_template("notificaciones/errorLogueo.html"), 500
+   # except Exception as e:
+   #     flash(f"Error al procesar la caución: {str(e)}", "danger")
+   #     return render_template("notificaciones/errorLogueo.html"), 500
 
 def determinar_caucion(message):
     # Variables básicas
@@ -122,14 +122,20 @@ def  caucionar_desde_cuenta(account_cuenta,Symbol,price,size,saldo):
     # Verifica cada símbolo en get.precios_data_caucion
     if Symbol in get.precios_data_caucion:  
           if saldo >= int(size) * float(price): 
+            pyRofexInicializada = get.ConexionesBroker.get(account_cuenta)['pyRofex'] 
+            order_type = pyRofexInicializada.OrderType.MARKET
             nueva_operacion = Operacion(
                 ticker=Symbol,
                 accion='vender',
                 size=float(size),
                 price=price,
-                order_type='MARKET'
+                order_type=order_type,
+                environment=account_cuenta
             )
-            resultado = nueva_operacion.enviar_orden_sin_validar_saldo(cuenta=account_cuenta, pyRofexInicializada= get.ConexionesBroker.get(account_cuenta)['pyRofex']  )
+            
+            resultado = nueva_operacion.enviar_orden_sin_validar_saldo(cuenta=account_cuenta,pyRofexInicializada=pyRofexInicializada  )
+           # resultado1 = nueva_operacion.enviar_orden_rest_sin_validar_saldo(cuenta=account_cuenta,pyRofexInicializada= pyRofexInicializada,order_type=order_type )
+          
             if resultado:
                 print("Orden de caucion enviada con éxito.")
             else:
