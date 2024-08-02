@@ -29,6 +29,9 @@ def caucionador_caucionar():
                                 size = int(saldo / data['price'])
                                
                                 return render_template('caucionador/caucionar.html', layout='layoutConexBroker', size=size, saldo=saldo, price=data['price'], Symbol=Symbol)
+                            else:
+                                return render_template('notificaciones/logeePrimero.html', layout=layout)
+                                
                     else:
                         return render_template('notificaciones/logeePrimero.html', layout=layout)
                     
@@ -48,7 +51,7 @@ def caucionador_caucionar():
 
 @caucion.route('/caucionador_caucionar_post', methods=['POST'])
 def caucionador_caucionar_post():
-   # try:
+    try:
         data = request.json  # Recibe los datos JSON
         if not data:
             raise ValueError("No se recibieron datos")
@@ -74,9 +77,9 @@ def caucionador_caucionar_post():
         else:
             raise ValueError("Token de acceso no válido o expirado")
     
-   # except Exception as e:
-   #     flash(f"Error al procesar la caución: {str(e)}", "danger")
-   #     return render_template("notificaciones/errorLogueo.html"), 500
+    except Exception as e:
+        flash(f"Error al procesar la caución: {str(e)}", "danger")
+        return render_template("notificaciones/errorOperacionSinCuenta.html", layout=layout), 500
 
 def determinar_caucion(message):
     # Variables básicas
@@ -93,7 +96,7 @@ def determinar_caucion(message):
             }
 
         # Actualizar precios y estado según el día
-        if any(day in Symbol for day in ["- 1D", "- 2D", "- 3D", "- 4D", "- 5D", "- 6D"]):
+        if any(day in Symbol for day in ["- 1D", "- 2D", "- 3D", "- 4D", "- 5D", "- 6D", "- 7D"]):
             get.precios_data_caucion[Symbol]['price'] = market_data
             get.precios_data_caucion[Symbol]['recibido_pesos'] = True
 
@@ -126,8 +129,8 @@ def  caucionar_desde_cuenta(account_cuenta,Symbol,price,size,saldo):
             order_type = pyRofexInicializada.OrderType.MARKET
             nueva_operacion = Operacion(
                 ticker=Symbol,
-                accion='vender',
-                size=float(size),
+                accion='venta',
+                size=float(1000),
                 price=price,
                 order_type=order_type,
                 environment=account_cuenta

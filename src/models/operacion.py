@@ -62,7 +62,8 @@ class Operacion:
                                                      side=self.side, 
                                                      size=self.size, 
                                                      order_type=self.order_type, 
-                                                     price=self.price,environment=self.environment)
+                                                     price=self.price,
+                                                     environment=self.environment)
        
         return True
     
