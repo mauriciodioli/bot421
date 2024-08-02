@@ -255,21 +255,19 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['SQLALCHEMY_POOL_SIZE'] = 100
 UPLOAD_FOLDER = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000, max_overflow=10, pool_recycle=3600)
+engine = create_engine(DATABASE_CONNECTION_URI, 
+                       poolclass=QueuePool, 
+                       pool_timeout=60, 
+                       pool_size=1000,
+                       max_overflow=10, 
+                       pool_recycle=3600)
 
-@event.listens_for(Pool, "connect")
-def log_connection_info(dbapi_connection, connection_record):
-    """Log connection events."""
-    global connection_count
-    connection_count += 1
-    print(f"Conexión establecida ({connection_count} veces)")
-    app.logger.info(f"Conexión establecida ({connection_count} veces)")
-
-event.listen(engine, 'connect', log_connection_info)
 
 
 
 db = SQLAlchemy(app)
+
+
 # Configurar el pool de conexiones para SQLAlchemy
 db.init_app(app)
 
@@ -288,7 +286,30 @@ ma = Marshmallow(app)
 #login_manager.request_loader(request_loader)
 # Función para registrar eventos de conexión
 # Contador para la cantidad de conexiones
+# Variables globales para el manejo de conexiones
 connection_count = 0
+CONNECTION_LIMIT = 10  # Limite de conexiones
+@event.listens_for(Pool, "connect")
+def log_connection_info(dbapi_connection, connection_record):
+    """Log connection events and close connections if exceeding limit."""
+    global connection_count
+    connection_count += 1
+    
+    if connection_count > CONNECTION_LIMIT:
+        dbapi_connection.close()
+        connection_count -= 1  # Decrementar el contador porque se ha cerrado una conexión
+        app.logger.info(f"Conexión cerrada. Número de conexiones actuales: {connection_count}")
+    else:
+        app.logger.info(f"Conexión establecida ({connection_count} veces)")
+
+
+event.listen(engine, 'connect', log_connection_info)
+
+# Eventos para registrar la apertura y cierre de conexiones
+@event.listens_for(engine, "close")
+def receive_close(dbapi_connection, connection_record):
+    print("Conexión cerrada")
+
 
 # Definir una función de registro personalizada para el nuevo nivel
 def custom_log(self, message, *args, **kwargs):
