@@ -33,8 +33,25 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/navbar.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/productos/descripcionProductos.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sistemaDePagos/carrucelPromocionOfertas.css')}}>
+    <script src="{{url_for('static',filename='js/sistemaDePagos/carrucelPromocionOfertas.js')}}"></script> 
+    <script src="{{url_for('static',filename='js/panelSignalSinCuentas/service-worker.js') }}"></script>
 
-   
+
+    <style>
+        .navbar-center {
+            display: flex;
+            justify-content: flex-start;
+         
+        
+            margin-left: 80px; /* Mueve los elementos 43 píxeles a la derecha */
+        
+        }
+       
+    </style>
 
 </head>
 
@@ -42,9 +59,11 @@
     <!-- As a heading -->    
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" >
         <div class="container-fluid">
-            <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico" ></h1>
-            <h1 id="mensaje_cuentaBroker" name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
-      
+            <div class="navbar-center">
+                <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico"></h1>
+           </div>
+           
+          
       
       
             <button class="navbar-toggler"
@@ -62,6 +81,19 @@
                     <li class="nav-item ">
                         <a class="nav-link active" aria-current="page" href="/home">Home</a>
                     </li>
+                    <li class="nav-item ">
+                        <form id="instrumentos_form" action="/caucionador_caucionar" method="post">
+                            <!-- Aquí puedes agregar los campos adicionales que desees -->
+                            <input type="hidden" name="accounCuenta_form_caucionar" id="accounCuenta_form_caucionar">
+                            <input type="hidden" name="form_caucionar_accessToken" id="form_caucionar_accessToken">
+                            <input type="hidden" name="form_caucionar_layout" id="form_caucionar_layout" value="layout_signal">
+                             <!-- El botón de enviar el formulario -->
+                            <button type="submit" class="btn  text-white">Caución</button>
+                          </form>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout_signal">Suscribir</a>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Dashboard</a>
                         <ul class="dropdown-menu">  
@@ -70,17 +102,40 @@
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('usa')">USA</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a id="notificacionTelegramLink" class="dropdown-item" href="#" onclick="toggleNotificacionTelegram()">Notificación activa</a>
+                          </li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a id="toggleIDTelegram" class="dropdown-item" href="#" onclick="toggleIDTelegram()">ID telegram</a>
+                          </li>
                         </ul>
                     </li>
                     
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>
+                          <li>
+                            <form  name="reporteCuenta" action="/logOutSystem" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_accounCuenta"  id="autenticacion_accounCuenta"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_access_token"  id="autenticacion_access_token"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_refresh_token"  id="autenticacion_refresh_token"  class="form-control"></div>  
+                                <div class="col">  
+                                 <li><button type="submit" class="dropdown-item text-black">exit system</button></li>
+                                </div>
+                              </form> 
+                          </li>
                         </ul>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link active" aria-current="page" href="/registrar_usuario">Registrarse</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Usuario</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/llamada/index-contacto">Contacto</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/registrar_usuario">Registrarse</a></li>
+                        </ul>
                     </li>
                 </ul>
                 
@@ -92,6 +147,38 @@
 
 
     <div class = 'container p-4'>
+
+
+        <!-- Modal id Telegram-->
+   
+        <div class="modal fade" id="telegramModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel" style="color: black;">ID Telegram</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                     <input type="text" id="idTelegramInput" class="form-control" value="" placeholder="ID TELEGRAM">
+                 <hr>
+                  <p class="mb-0" style="color: black;">Instrucciones para conseguir el ID de Telegram:</p>
+                  <ol style="color: black;">
+                    <li>Abre Telegram en tu dispositivo.</li>
+                    <li>Busca el bot "Get My ID" en Telegram.</li>
+                    <li>Inicia una conversación con el bot y sigue las instrucciones proporcionadas.</li>
+                    <li>El bot te mostrará tu ID de Telegram.</li>
+                  </ol>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" onclick="saveIDTelegram()">Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal id Telegram-->
+
         
       {%block content%}
       {% endblock%}
@@ -107,13 +194,83 @@
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
     
     <script>
+
+        let correo_electronico = localStorage.getItem("correo_electronico"); 
+        let access_token = localStorage.getItem("access_token")
+        let refreshToken = localStorage.getItem("refresh_token")
+        let cuentaBroker = localStorage.getItem("cuenta")
+        //caucionador
+        document.getElementById('accounCuenta_form_caucionar').value = cuentaBroker;
+        document.getElementById('form_caucionar_accessToken').value = access_token;
+ 
+        function toggleIDTelegram() {
+            // Get the ID from localStorage
+            var idTelegram = localStorage.getItem('idtelegram');
+
+            // Set the value of the input if the idTelegram is not null
+            document.getElementById('idTelegramInput').value = idTelegram ? idTelegram : '';
+
+            // Show the modal
+            $('#telegramModal').modal('show');
+        }
+
+
+
+        function saveIDTelegram() {
+            // Get the value from the input
+            var idTelegram = $('#idTelegramInput').val();
+      
+            // Save the value to localStorage
+            localStorage.setItem('idtelegram', idTelegram);
+      
+            // Optionally, hide the modal
+            $('#telegramModal').modal('hide');
+          }
+
+
+
+
+
+     // Función para activar/desactivar la notificación y cambiar el texto y color del enlace
+     function toggleNotificacionTelegram() {
+        var currentStatus = localStorage.getItem('notificacionTelegram');
+        
+        if (currentStatus === 'True') {
+            localStorage.setItem('notificacionTelegram', 'False');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación inactiva';
+            document.getElementById('notificacionTelegramLink').style.color = 'grey'; // Color gris
+        } else {
+            localStorage.setItem('notificacionTelegram', 'True');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación activa';
+            document.getElementById('notificacionTelegramLink').style.color = '#00ff00'; // Verde más fuerte y brillante
+        }
+    }
+
+    // Al cargar la página, verifica el estado actual y aplica el texto y color correspondiente
+    document.addEventListener('DOMContentLoaded', function() {
+        var currentStatus = localStorage.getItem('notificacionTelegram');
+
+        if (currentStatus === 'True') {
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación activa';
+            document.getElementById('notificacionTelegramLink').style.color = '#00ff00'; // Verde más fuerte y brillante si está activo
+        } else {
+            localStorage.setItem('notificacionTelegram', 'False');
+            document.getElementById('notificacionTelegramLink').textContent = 'Notificación inactiva';
+            document.getElementById('notificacionTelegramLink').style.color = 'grey'; // Color gris si está desactivado
+        }
+    });
+
+
+
+
         function seleccionarPais(pais) {
             localStorage.setItem('paisSeleccionado', pais);           
             var usuario_id = localStorage.getItem('usuario_id');
             access_token = localStorage.getItem('access_token');
+            var selector = localStorage.getItem('selector');
             debugger;
             var layoutOrigen = 'layout_signal';
-            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token;
+            var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
             window.location.href = url;
         }
         
@@ -121,22 +278,62 @@
          cuentaBroker = localStorage.getItem("cuenta");  
          simulado = localStorage.getItem("selector");  
          access_token = localStorage.getItem("access_token")
+         refreshToken = localStorage.getItem("refresh_token")
          rol = localStorage.getItem('roll');
          selectedCountry  = localStorage.getItem('paisSeleccionado');
          usuario_id = localStorage.getItem('usuario_id');
-       
+         //logOutSystem
+         document.getElementById('autenticacion_accounCuenta').value = cuentaBroker;
+         document.getElementById('autenticacion_access_token').value = access_token ;
+         document.getElementById('autenticacion_refresh_token').value = refreshToken;
          document.getElementById('guardarPaisSeleccionado').addEventListener('click', function() {
             var pais = selectedCountry;
             localStorage.setItem('paisSeleccionado', pais);
             debugger;
             usuario_id = localStorage.getItem('usuario_id');
-           
+            var selector = localStorage.getItem('selector');
             var layoutOrigen = 'layout_signal';
-            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+' &access_token='+access_token;
+            var url = '/panel_control_sin_cuenta?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+' &access_token='+access_token+'&selector='+selector;
             window.location.href = url;
         });
         
-        
+        if (localStorage.getItem("selector")) {
+            let cuentaBroker = localStorage.getItem("cuenta");  
+            let simulado = localStorage.getItem("selector"); 
+            
+               // document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+          
+                if (simulado == 'simulado') {
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                     
+                    } else if (simulado == 'produccion') {
+
+                  
+                    let enlace_correo = "<a ' style='text-decoration:none; color:#00ff00;''>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+                    } else {
+                        let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                        document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+    
+                    }
+                
+                
+                    //aqui oculto generador de fichas si no posee cuenta de broker logeada
+                  
+                     
+                        cuentaLink.style.display = 'block';
+                        
+                   
+                
+                
+                }else {
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+                    console.log("El valor 'selector' no existe en localStorage.");
+                  }
+            
 
                 // Verificar si el rol es "administrador"
       //  if (rol != 'ADMINISTRADOR') {

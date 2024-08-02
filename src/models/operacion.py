@@ -9,12 +9,13 @@ ma = Marshmallow()
 operacion = Blueprint('operacion',__name__) 
 
 class Operacion:
-    def __init__(self, ticker, accion, size, price, order_type):
+    def __init__(self, ticker, accion, size, price, order_type,environment):
         self.ticker = ticker
         self.side = get.pyRofexInicializada.Side.BUY if accion == 'comprar' else get.pyRofexInicializada.Side.SELL
         self.size = size
         self.price = price
         self.order_type = order_type
+        self.environment=environment
 
     def validar_saldo(self, cuenta=None,pyRofexInicializada=None):
      
@@ -48,10 +49,31 @@ class Operacion:
 
     def enviar_orden(self, cuenta=None,pyRofexInicializada=None):
         if self.validar_saldo(cuenta=cuenta,pyRofexInicializada=pyRofexInicializada):
-            pass
-            #pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price)
+            #pass
+            pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, side=self.side, size=self.size, order_type=self.order_type, price=self.price,environment=self.environment)
            
             return True
         else:
             print("No hay saldo suficiente para realizar la operación.")
             return False
+    def enviar_orden_sin_validar_saldo(self, cuenta=None,pyRofexInicializada=None):
+             #pass
+        pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, 
+                                                     side=self.side, 
+                                                     size=self.size, 
+                                                     order_type=self.order_type, 
+                                                     price=self.price,
+                                                     environment=self.environment)
+       
+        return True
+    
+    def enviar_orden_rest_sin_validar_saldo(self, cuenta=None,pyRofexInicializada=None,order_type=None):
+             #pass
+        order = pyRofexInicializada.send_order(ticker=self.ticker,
+                           side=self.side,
+                           size=self.size,
+                           price=self.price,
+                           order_type=order_type,
+                           environment=self.environment)
+        return True
+       

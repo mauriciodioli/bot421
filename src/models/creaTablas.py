@@ -14,7 +14,11 @@ from models.brokers import Broker
 from models.triggerEstrategia import TriggerEstrategia
 from models.strategy import Strategy
 from models.unidadTrader import UnidadTrader
-
+from models.administracion.altaEstrategiaApp import AltaEstrategiaApp
+from models.payment_page.tarjetaUsuario import TarjetaUsuario
+from models.payment_page.suscripcionPlanUsuario import SuscripcionPlanUsuario
+from models.payment_page.Promotion import Promotion
+from models.newsLetter.newLetter import NewLetter
 from datetime import datetime
 from flask import Blueprint,flash
 
@@ -37,6 +41,11 @@ def crea_tablas_DB():
     Broker.crear_tabla_brokers()
     Strategy.crear_tabla_strategy()
     UnidadTrader.crear_tabla_ut()
+    AltaEstrategiaApp.crear_tabla_altaEstrategiaApp()
+    TarjetaUsuario.crear_tabla_tarjetaUsuario()
+    SuscripcionPlanUsuario.crear_tabla_suscripcionPlanUsuario()
+    Promotion.crear_tabla_promocion()
+    NewLetter.crear_tabla_newsLetter()
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     

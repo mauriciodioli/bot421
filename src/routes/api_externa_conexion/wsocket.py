@@ -5,6 +5,9 @@ import routes.api_externa_conexion.validaInstrumentos as val
 
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
+from panelControlBroker.panelControl import enviar_leer_sheet
+from strategies.datoSheet import update_precios
+from strategies.caucionador.caucion import determinar_caucion
 from datetime import datetime
 
 import pandas as pd
@@ -13,29 +16,33 @@ import time    #lo utilizo para test
 import asyncio
 import websockets
 import websocket
+from flask_paginate import Pagination, get_page_parameter
+
 import json
 import os
 import copy
+
+from sqlalchemy.exc import OperationalError
+import pymysql
 
 wsocket = Blueprint('wsocket',__name__)
 
 
 
 reporte_de_instrumentos = []
-
+tiempo_inicial = time.time()  # Captura el tiempo actual
 
 def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=None,idUser=None,correo_electronico=None,selector=None):
   
-     
-      cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
+      cuenta = cargarCuenta(Cuenta,idUser,account)
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
       endPoint = get.inicializar_variables(cuenta.accountCuenta)
       #app.logger.info(endPoint)
       api_url = endPoint[0]
       ws_url = endPoint[1]
-      if (len(get.ConexionesBroker) > 0 ):
-          if account in get.ConexionesBroker:
+      if (len(get.ConexionesBroker) > 0 and  account in get.ConexionesBroker):
+          
               #if  ConexionesBroker[accountCuenta].get('identificador') == True:
                   pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']
                   repuesta_operacion = pyRofexInicializada.get_account_report(account=account, environment=account)
@@ -62,24 +69,58 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=No
               
               get.ConexionesBroker[account] = {'pyRofex': pyRofexInicializada, 'cuenta': account,'identificador': True}
                 
-              wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta)
+              wsocketConexion(app,pyRofexInicializada,cuenta.accountCuenta,idUser,selector)
               return True
       return True
 
-def wsocketConexion(app,pyRofexInicializada,accountCuenta):
+def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
    
    # get.pyRofexInicializada.order_report_subscription()
   # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
    
    pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler,environment=accountCuenta)
-   get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta)  # <<-- aca se suscribe al mkt data
+   
+   if not get.ContenidoSheet_list:
+      get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
  
-   pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
+   if accountCuenta != get.CUENTA_ACTUALIZAR_SHEET:
+      pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
+ 
    pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
- 
+   
 
 def market_data_handler_0(message):
-    print(message)
+   # Limitar el número de elementos en precios_data  
+            try:     
+                if  get.luzMDH_funcionando == False:
+                    get.luzMDH_funcionando = True       
+            
+                update_precios(message)   
+                
+                now = datetime.now()                
+              #  if (now.hour == 19 and now.minute >= 20 and now.minute <= 29):
+                determinar_caucion(message)
+                
+                if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
+                    pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
+                    
+                    # Aquí se envia una operacion fallida para generar trafico
+                    ticker = message.get('ticker', 'DEFAULT_TICKER')  # Asume 'DEFAULT_TICKER' si no se encuentra en el mensaje
+                    side = message.get('side', 'BUY')  # Asume 'BUY' si no se especifica
+                    size = 1  # Definido en el código original
+                    order_type = 'LIMIT'  # Cambia esto según el tipo de orden deseado
+                    price = message.get('price', 10)  # Asume 100.0 si no se especifica
+
+                    # Enviar la orden a través del WebSocket
+                    pyRofexInicializada.send_order_via_websocket(ticker=ticker,side=side,size=size,order_type=order_type,price=price)
+                
+                # Actualizar el timestamp de la última ejecución
+            
+            except Exception as e:
+              pass
+              #print(datetime.now())
+    
+
 
 def order_report_handler_0(message):
   print(message)
@@ -100,10 +141,10 @@ def suscriptos():
      
           Ticker = request.form["symbol"]                 
           Ticker = Ticker.replace("*", " ")
-          account = request.form["websocketSuscricionCuenta"] 
-          access_token = request.form["websocketSuscricionToken"] 
+          account = request.form["websocketCuenta"] 
+          access_token = request.form["websocketToken"] 
           #traigo los instrumentos para suscribirme
-          mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws()
+          mis_instrumentos = instrumentosGet.get_instrumento_para_suscripcion_ws(account)
           longitudLista = len(mis_instrumentos)
           pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']  
           repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
@@ -150,41 +191,63 @@ def suscriptos():
 
 @wsocket.route('/SuscripcionWs/', methods=['POST'])
 def SuscripcionWs():
-    if request.method == "POST":
+     if request.method == "POST":
         # Obtener los valores enviados desde el formulario
         Ticker = request.form.get('symbol')  # Obtener el valor del campo "symbol"
         account = request.form.get('websocketSuscricionCuenta')  # Obtener el valor del campo "websocketSuscricionCuenta"
         token = request.form.get('websocketSuscricionToken')  # Obtener el valor del campo "websocketSuscricionToken"
         
-       # print("websoooooooooooooooooketttt en wsocket.py ",Ticker)
-        #almaceno los symbol a suscribirme
+        # Almacenar el símbolo para la suscripción
         instrumentosGet.guarda_instrumento_para_suscripcion_ws(Ticker)
-        #traigo los instrumentos para suscribirme
-      
-        diccionario ={}
-        #actualizarTablaMD()
-        #diccionario.update(get.market_data_recibida)
-        pyRofexInicializada = get.ConexionesBroker.get(account)['pyRofex']       
-        repuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
-        #repuesta_listado_instrumento = get.pyRofexInicializada.get_market_data()
-        listado_instrumentos = repuesta_listado_instrumento['instruments']
-        #for listado_instrumentos in listado_instrumentos:
-       # print("listado_instrumentos en instrumentos_detalles en intrumentos.py",listado_instrumentos)#aqui muestro los instrumentos por pantalla
-        print("listado_instrumentos en instrumentos_detalles en intrumentos.py")
-        return render_template("instrumentos.html", datos = listado_instrumentos   )
+        
+        # Intentar obtener la conexión de PyRofex
+        pyRofexInicializada = get.ConexionesBroker.get(account).get('pyRofex')
+        
+        if pyRofexInicializada:
+            try:
+                # Obtener los instrumentos detallados
+                respuesta_listado_instrumento = pyRofexInicializada.get_detailed_instruments(environment=account)
+                listado_instrumentos = respuesta_listado_instrumento['instruments']
+
+                # Configurar paginación
+                per_page = 10
+                offset = (1 - 1) * per_page
+                datos_paginated = listado_instrumentos[offset:offset + per_page]
+
+                pagination = Pagination(page=1, total=len(listado_instrumentos), per_page=per_page, css_framework='bootstrap4')
+                
+                 # Devolver los datos paginados y la paginación como JSON
+                return jsonify({
+                    'datos': datos_paginated,
+                    'pagination': {
+                        'page': 1,  # Página actual
+                        'total': len(listado_instrumentos),  # Total de instrumentos
+                        'per_page': per_page  # Instrumentos por página
+                        # Puedes agregar más atributos de paginación si es necesario
+                    }
+                })
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500  # Manejar errores con respuesta JSON y código 500
+            
+        else:
+            return jsonify({'error': 'PyRofex no inicializado para la cuenta dada'}), 404  # Ejemplo de manejo de error si no se encuentra PyRofex inicializado
+    
+    
         #return render_template('suscripcion.html', datos =  [get.market_data_recibida,longitudLista])
 
 
 
-def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
+def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector):
     # Trae los instrumentos para suscribirte
    
     ContenidoJsonDb = get_instrumento_para_suscripcion_json() 
     
     ContenidoJsonDb_list_db = list(ContenidoJsonDb.values())
     #COMENTO LA PARTE DE CONSULTAR AL SHEET POR EXPIRACION DE TOKEN
-    ContenidoSheet = get_instrumento_para_suscripcion_ws()# **44
-    ContenidoSheet_list = list(ContenidoSheet)
+    if len(get.diccionario_global_sheet) == 0 or 'argentina' not in get.diccionario_global_sheet:
+       ContenidoSheet = get_instrumento_para_suscripcion_ws(app,user_id,selector)# **44
+       ContenidoSheet_list = list(ContenidoSheet)
+    ContenidoSheet_list = get.diccionario_global_sheet['argentina']
 
     
     ContenidoSheetDb = get_instrumento_para_suscripcion_db(app)
@@ -239,18 +302,16 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta):
             #### aqui define el MarketDataEntry
             entries = [pyRofexInicializada.MarketDataEntry.BIDS,
                         pyRofexInicializada.MarketDataEntry.OFFERS,
-                        pyRofexInicializada.MarketDataEntry.LAST]
+                        pyRofexInicializada.MarketDataEntry.LAST,
+                        pyRofexInicializada.MarketDataEntry.HIGH_PRICE,
+                        pyRofexInicializada.MarketDataEntry.LOW_PRICE,
+                        pyRofexInicializada.MarketDataEntry.CLOSING_PRICE]
+          
             merdado_id = pyRofexInicializada.Market.ROFEX
-            pyRofexInicializada.market_data_subscription(
-                                        tickers=instrumentos_existentes,
-                                        entries=entries,                                       
-                                        depth=3,
-                                        handler=None, 
-                                        environment=account
-                                    )
+            pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3,environment=account)
         
            
-            datos = ContenidoSheet_list #COMENTADO POR SHEET
+          
             
         
     #return instrumentos_existentes
@@ -261,7 +322,7 @@ def cargaSymbolParaValidarDb(message):
     listado_final = []
     for instrumento  in message: 
         listado_final.append(instrumento.symbol)
-        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
+    print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         
     return listado_final
 
@@ -269,25 +330,24 @@ def cargaSymbolParaValidarDb(message):
 
 def cargaSymbolParaValidar(message):
     listado_final = []
-    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado  in message: 
+    for Symbol,tipo_de_activo,trade_en_curso,ut,senial,gan_tot, dias_operado, precioUt in message: 
         if Symbol != 'Symbol':#aqui salta la primera fila que no contiene valores
                                 if Symbol != '':
                                 #if trade_en_curso == 'LONG_':
-                                    if senial != '':
+                                   #   if senial != '':
                                             
-                                                if tipo_de_activo =='CEDEAR':
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
-                                                 listado_final.append(Symbol)
-                                                if tipo_de_activo =='ARG':
-                                                 listado_final.append(Symbol)
-                                                # print(f'El instrumento {Symbol} existe en el mercado')
+                                        if tipo_de_activo =='CEDEAR':
+                                        # print(f'El instrumento {Symbol} existe en el mercado')
+                                          listado_final.append(Symbol)
+                                        if tipo_de_activo =='ARG':
+                                          listado_final.append(Symbol)
+                                        # print(f'El instrumento {Symbol} existe en el mercado')
  
     return listado_final
   
-def get_instrumento_para_suscripcion_ws():#   **77
-      ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
-    
-      return ContenidoSheet
+def get_instrumento_para_suscripcion_ws(app,user_id,selector):#   **77
+     ContenidoSheet =  enviar_leer_sheet(app,'argentina',user_id,None,selector) 
+     return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db(app):
     ContenidoDb = datoSheet.leerDb(app)
@@ -309,6 +369,71 @@ def get_instrumento_para_suscripcion_json():
         print("El archivo no se encuentra.")
    except json.JSONDecodeError:
         print("Error al decodificar el JSON.")
+
+
+def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
+    # Obtener el tiempo actual en milisegundos
+    tiempo_actual_ms = int(datetime.now().timestamp()) * 1000
+    
+    # Calcular la diferencia de tiempo desde la última vez que fue llamada la función
+    diferencia_tiempo_ms = tiempo_actual_ms - tiempo_inicial_ms
+    
+    # Lógica para determinar si se puede realizar la lectura del sheet
+    if diferencia_tiempo_ms < tiempo_espera_ms:
+        # Aún no ha pasado suficiente tiempo, no se realiza la lectura del sheet
+        #print(f"No se realiza la lectura del sheet. Tiempo transcurrido: {diferencia_tiempo_ms} ms.")
+        # Retornar False u otra indicación según sea necesario
+        return False
+    else:
+        # Ha pasado suficiente tiempo, se realiza la lectura del sheet
+        minutos = diferencia_tiempo_ms // 60000
+        segundos = (diferencia_tiempo_ms % 60000) // 1000
+        print(f"Se realiza la lectura del sheet. Tiempo transcurrido: {minutos}m {segundos}s.")
+       
+        
+        # Reiniciar el tiempo inicial para la próxima llamada
+        get.marca_de_tiempo_para_leer_sheet = tiempo_actual_ms
+        
+        # Retornar True u otra indicación según sea necesario
+        return True
+
+
+def cargarCuenta(Cuenta,idUser,account):
+    retries = 0
+    max_retries = 5
+    retry_delay = 5  # segundos
+
+    while retries < max_retries:
+        try:
+            # Realiza la consulta
+            cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
+            #db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
+            return cuenta  # Si la consulta es exitosa, retorna el resultado
+        
+        except OperationalError as e:
+            print(f"Error de conexión: {e}. Reintentando en {retry_delay} segundos...")
+            retries += 1
+            time.sleep(retry_delay)  # Espera antes de volver a intentar
+            db.session.remove()  # Elimina la sesión actual
+            
+            # Reconfigura la sesión si es necesario
+            db.session.bind = db.engine
+            
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            break  # Sale del bucle en caso de error general
+    
+    if retries == max_retries:
+        print("Error: Se ha alcanzado el límite de reintentos.")
+        # Manejo adicional de error si es necesario
+    return None
+
+
+
+
+
+
+
 ##########################esto es para ws#############################
 #Mensaje de MarketData: {'type': 'Md', 'timestamp': 1632505852267, 'instrumentId': {'marketId': 'ROFX', 'symbol': 'DLR/DIC21'}, 'marketData': {'BI': [{'price': 108.25, 'size': 100}], 'LA': {'price': 108.35, 'size': 3, 'date': 1632505612941}, 'OF': [{'price': 108.45, 'size': 500}]}}
 
@@ -365,10 +490,3 @@ def market_data_handler(message):
 def order_report_handler(message):
   #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
-  
-  
-
-
-
-
-

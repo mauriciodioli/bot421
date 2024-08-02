@@ -1,0 +1,62 @@
+{% extends 'layouts/layout_without_navbar.html' %}
+
+{% block content %}
+
+<body class="bg-dark text-white">
+    <div class="container">
+        <h2 class="mt-5 text-center">Cambio de Contraseña</h2>
+        <form id="password-reset-form" class="mt-4">
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar Correo de Recuperación</button>
+        </form>
+
+        <div class="verification-box">
+            <form id="verification-form" class="mt-4" style="display: none;">
+                <div class="form-group">
+                    <label for="verifyCode1">Código de Verificación</label>
+                    <div class="code-inputs">
+                        <input type="text" id="verifyCode1" maxlength="1" oninput="moveToNext(this, 'verifyCode2')">
+                        <input type="text" id="verifyCode2" maxlength="1" oninput="moveToNext(this, 'verifyCode3')">
+                        <input type="text" id="verifyCode3" maxlength="1" oninput="moveToNext(this, 'verifyCode4')">
+                        <input type="text" id="verifyCode4" maxlength="1" oninput="moveToNext(this, 'verifyCode5')">
+                        <input type="text" id="verifyCode5" maxlength="1" oninput="moveToNext(this, 'verifyCode6')">
+                        <input type="text" id="verifyCode6" maxlength="1">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-success" id="verify-code-btn">Verificar Código</button>
+                <p id="countdown" class="text-center mt-2"></p> <!-- Contador descendente -->
+            </form>
+        
+        <form id="new-password-form" class="mt-4" style="display: none;">
+            <div class="form-group">
+                <label for="new-password">Nueva Contraseña</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="new-password" name="new-password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text toggle-password" onclick="togglePasswordVisibility('new-password')">👁️</span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirmar Nueva Contraseña</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="confirm-password" name="confirm-password" required>
+                    <div class="input-group-append">
+                        <span class="input-group-text toggle-password" onclick="togglePasswordVisibility('confirm-password')">👁️</span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+        </form>
+
+    </div>
+    </div>
+
+    <style>
+       
+    </style>
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}

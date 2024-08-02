@@ -1,0 +1,161 @@
+.telegram-detalle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.telegram-item {
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#headerTitle, #headerLabel, #bodyLabel, #header, #body {
+    color: black; /* Textos en negro */
+}
+#submitButton {
+    color: #ffffff; /* Textos en blanco */ 
+}
+
+#seleccionarEmoticonModalLabel {
+    color: #ffffff; /* Textos en blanco */ 
+}
+
+#custom-close-button {
+    color: white;
+    opacity: 1;
+}
+
+#custom-close-button:hover {
+    color: white;
+    opacity: 0.8;
+}
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#emoticons {
+    font-size: 24px;
+    line-height: 2;
+    cursor: pointer;
+}
+
+.emoticon {
+    margin: 0 5px;
+    display: inline-block;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 10px; /* Espacio superior */
+}
+
+#submitButton{
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#emoticonModalLabel{
+    color: #f0f0f0; /* Establece el color del texto a un gris claro */
+}
+#emoticonModal  {
+    background-color: #000; /* Fondo negro para el contenido del modal */
+    color: #f0f0f0; /* Color del texto en el contenido del modal */
+}
+
+/* Estilo para el botón con ID 'emoticonButton' */
+#emoticonButton {
+    border: none; /* Elimina el borde del botón */
+    background: transparent; /* Hace que el fondo sea transparente */
+    padding: 0; /* Elimina el relleno */
+    font-size: 24px; /* Ajusta el tamaño del emoticón si es necesario */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+    line-height: 1; /* Ajusta la altura de la línea para eliminar el espacio adicional */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra el emoticón dentro del botón */
+}
+
+/* Opcional: Asegúrate de que el emoticón esté alineado correctamente */
+#emoticonButton::before {
+    content: '😊'; /* El emoticón a mostrar */
+    font-size: inherit; /* Hereda el tamaño del texto del botón */
+}
+/* Modal styles */
+.modal-dialog {
+    max-width: 90%; /* Reduce el ancho para pantallas pequeñas */
+    margin: 1rem auto; /* Añade margen automático para centrar el modal */
+}
+
+#emoticonModal-content {
+    border-radius: 8px;
+    background-color: #000; /* Fondo negro para el modal */
+}
+
+.modal-header {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1rem; /* Espaciado interno */
+}
+
+/* Emoticons styling */
+#emoticonEmoticons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.emoticon {
+    font-size: 24px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+/* Responsiveness for very small screens */
+@media (max-width: 576px) {
+    .modal-dialog {
+        max-width: 100%; /* Full width for very small screens */
+        margin: 0; /* Remove margin for very small screens */
+    }
+
+    .modal-body {
+        padding: 0.5rem; /* Reduce padding on very small screens */
+    }
+}

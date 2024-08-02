@@ -19,7 +19,9 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     
+
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="/static/js/actualizaTabla.js"></script>     
     <meta charset="UTF-8">
@@ -34,13 +36,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/themes/classic.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/pickr.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasRegistrarCuentaBroker.css')}}>
-    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/subirImagen.css')}}>
-    <link rel=   "stylesheet" href="{{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
-    <link rel=   "stylesheet" href="{{ url_for('static', filename='css/social/estiloTarjetaImagen.css') }}">
+   <!----> <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasFichas.css')}}>
+    <!----> <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasTriggers.css')}}>
+    <!----> <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasRegistrarCuentaBroker.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/productos/descripcionProductos.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/subirImagen.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
    
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
+   <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/herramientasAdmin/controlMdh.css')}}>
+   <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sistemaDePagos/carrucelPromocionOfertas.css')}}>
+   <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/media/telegramEnviaMensaje.css')}}> 
+   <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/media/newsLetter.css')}}> 
+   <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
+    <script src="{{url_for('static',filename='js/media/telegram//telegramEnviaMensaje.js')}}"></script>
+    <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script> 
+      
 </head>
 
 <body>
@@ -65,24 +79,80 @@
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item dropdown">                      
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Administracion</a>
-                        <ul class="dropdown-menu">            
+                        <ul class="dropdown-menu">   
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Herramientas</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_iniciar">Iniciar Ws Sheet</a></li>
+                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_detener">Reiniciar MDH Sheet</a></li>
+                                    <li><a class="dropdown-item" href="/herramientasSheet_accionesSheet_controlMDH">Control MDH</a></li>
+                                </ul>
+                            </li>      
+                          <li><hr class="dropdown-divider"></li>     
                           <li><a class="dropdown-item" href="/usuarios/" >Usuarios</a></li>  
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/cuentas-Usuario-Broker/">Cuentas</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/abm-estrategias-mostrar/">Edicion Estrategias</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
-                          <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/SuscripcionPorWebSocket/">Procesos</a></li>                          
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Estrategias</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/estrategias-usuario-general/">Estrategias Lista</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar">Estrategias Sistema</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Estrategia Usuario</a></li>
+                                </ul>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/cuentas_endPointBrokers/">Brokers</a></li>
+                            <li><hr class="dropdown-divider"></li>  
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Sistema Pagos</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/create_preapproval_html?layout=layout">Crear planes</a></li>
+                                    <li><a class="dropdown-item" href="/productosComerciales_planes_muestra">Consulta</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+                                </ul>
+                            </li>  
+                            <li><hr class="dropdown-divider"></li>  
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Suscripciones</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item"  href="/productosComerciales_suscripciones_muestra?layout=layout">Consulta</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+                                </ul>
+                            </li>  
+                            <li><hr class="dropdown-divider"></li>  
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Promociones</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/productosComerciales_promociones_get_promociones?layout=layout">Crear promocion</a></li>
+                                    <li><a class="dropdown-item" href="/sistemaDePagos_get_planes_promociones?layout=layout">Crear promocion desde plan</a></li>
+                                     <li><a class="dropdown-item"  href="/productosComerciales_promociones_consulta_promociones?layout=layout">Consulta</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+                                </ul>
+                            </li>   
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Comunicacion</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/telegram-envia-mensaje/">Telegram</a></li> 
+                                    <li><a class="dropdown-item" href="/comunicacion_newsLetter_comunica">newsletter</a></li>
+                                    <li><a class="dropdown-item"  href="/productosComerciales_promociones_consulta_promociones?layout=layout">Consulta</a></li>
+                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+                                </ul>
+                            </li>  
+                                                                        
                         </ul>                        
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/home">Home</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/detalle/cuenta-demo/layout">Cuenta Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout">Suscribir</a>
+                    </li>
+ 
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Subir</a>
@@ -126,7 +196,15 @@
                         </ul>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" aria-current="page" href="/registrar_cuenta_broker">Herramientas</a>
+                        <form  name="reporteCuenta" action="/registrar_cuenta_broker" method="post" class="btn-guardar_inst">
+                            <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_accounCuenta"  id="form_cuenta_accounCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_access_token"  id="form_cuenta_access_token"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_refresh_token"  id="form_cuenta_refresh_token"  class="form-control"></div>  
+                            <div class="col">  
+                            <li><button type="submit" class="dropdown-item text-white">Herramientas</button></li>
+                          </div>
+                        </form>  
                     </li>
                     
                    <!-- 
@@ -186,12 +264,33 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
                         <ul class="dropdown-menu">                        
-                          <li><a class="dropdown-item" href="/logOutSystem">exit system</a></li>                        
+                          <li>
+                              <form  name="reporteCuenta" action="/logOutSystem" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_accounCuenta"  id="autenticacion_accounCuenta"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_access_token"  id="autenticacion_access_token"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_refresh_token"  id="autenticacion_refresh_token"  class="form-control"></div>  
+                                <div class="col">  
+                                 <li><button type="submit" class="dropdown-item text-black">exit system</button></li>
+                                </div>
+                              </form> 
+                          </li>                        
                         </ul>
                     </li>
-                    <li class="nav-item ">
-                        <a class="nav-link " aria-current="page" href="/registrar_usuario">Registrarse</a>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Usuario</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/productosComerciales_suscripciones_muestra?layout=layout">Suscripciones</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/llamada/index-contacto">Contacto</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/registrar_usuario">Registrarse</a></li>
+                        </ul>
                     </li>
+                    
+
+                
                 </ul>
                 
             </div>
@@ -217,28 +316,49 @@
 
     <script>
 
+  // Custom JavaScript to handle submenu toggle
+  $(document).ready(function() {
+    $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).next('.dropdown-menu').toggle();
+        $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
+    });
 
+    // Close submenu when clicking outside
+    $(document).on("click", function() {
+        $('.dropdown-submenu .dropdown-menu').hide();
+    });
+});
 
 
         let correo_electronico = localStorage.getItem("correo_electronico");  
         
         let access_token = localStorage.getItem("access_token")
+        let refreshToken = localStorage.getItem("refresh_token")
+        let cuentaBroker = localStorage.getItem("cuenta")
         let rol = localStorage.getItem('roll');
         var cuentaB = localStorage.getItem("cuenta");  
         document.getElementById("access_token_form_GenerarFicha").value = access_token;
         document.getElementById("access_token_form_ListarFicha").value = access_token;
         document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaB;
+
+       //herramientas
+        document.getElementById('form_cuenta_accounCuenta').value = cuentaBroker;
+        document.getElementById('form_cuenta_access_token').value = access_token ;
+        document.getElementById('form_cuenta_refresh_token').value = refreshToken;
+
+        
+        //logOutSystem
+        document.getElementById('autenticacion_accounCuenta').value = cuentaBroker;
+        document.getElementById('autenticacion_access_token').value = access_token ;
+        document.getElementById('autenticacion_refresh_token').value = refreshToken;
      //   console.log(access_token)
         var cuentaLink = document.querySelector('.nav-menu-generar');
         cuentaLink.style.display = 'none'; 
         if (localStorage.getItem("selector")) {
             let cuentaBroker = localStorage.getItem("cuenta");  
-            let simulado = localStorage.getItem("selector");  
-            console.log(correo_electronico);
-            console.log(cuentaBroker);
-            console.log(simulado);
-                
-                
+            let simulado = localStorage.getItem("selector"); 
             
                // document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
           
@@ -257,10 +377,10 @@
                     let cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
                     document.getElementById("mensaje_simulado").innerHTML = cuenta;
 
-                    let enlace_correo = "<a ' style='text-decoration:none; color:blue;''>" + correo_electronico + "</a>";
+                    let enlace_correo = "<a ' style='text-decoration:none; color:#00ff00;''>" + correo_electronico + "</a>";
                     document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
-                    let mensaje = "<a ' style='text-decoration:none;  color:blue;'>" + cuentaBroker + "</a>";
+                    let mensaje = "<a ' style='text-decoration:none;  color:#00ff00;'>" + cuentaBroker + "</a>";
                     document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
                     } else {
                         let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";

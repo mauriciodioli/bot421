@@ -16,6 +16,9 @@
     <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
     <!--font-awesome-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <!--CSS PERSONALIZADO -->
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/main.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/contact.css')}}>
@@ -27,13 +30,13 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/pieDePagina.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/faq.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/index.css')}}>
+  
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     <script src="{{ url_for('static', filename='js/notificacionAlertOperacion.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ url_for('static', filename='js/main.js')}}"></script> 
     <script src="/static/js/actualizaTabla.js"></script> 
-    <script src="{{url_for('static',filename='js/main.js')}}"></script> 
-   
+
   
     <meta charset="UTF-8">
     <title>Registro de usuarios</title>

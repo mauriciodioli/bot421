@@ -56,3 +56,26 @@ body {
   color:  rgb(128, 128, 128); /* Color de texto para elementos inactivos */
 }
 
+.nav-item button:hover {
+  background-color: blue;
+}
+/*estilo para botones index*/
+.card-button {
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.card-button:hover {
+  background-color: #0056b3;
+}
+
+.long-button {
+  width: 100%; /* Hace que el botón ocupe el 100% del ancho del contenedor padre */
+  padding: 10px; /* Ajusta el padding para hacerlo más grande */
+  font-size: 16px; /* Ajusta el tamaño de la fuente si es necesario */
+}

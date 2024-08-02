@@ -4,7 +4,8 @@ from http.client import UnimplementedFileMode
 import websockets
 import json
 import copy
-from datetime import datetime
+from pyRofex.components.exceptions import ApiException
+
 from re import template
 from socket import socket
 import pyRofex
@@ -21,7 +22,9 @@ import asyncio
 
 from routes.api_externa_conexion.wsocket import wsocketConexion as conexion
 from routes.api_externa_conexion.wsocket import websocketConexionShedule as conexionShedule
+from routes.api_externa_conexion.wsocket import SuscripcionDeSheet
 from fichasTokens.fichas import refrescoValorActualCuentaFichas
+import tokens.token as Token
 import routes.instrumentos as inst
 from models.instrumento import Instrumento
 import routes.api_externa_conexion.cuenta as cuenta
@@ -39,7 +42,7 @@ import automatizacion.shedule_triggers as shedule_triggers
 import threading
 
 from utils.db import db
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 from flask_jwt_extended import (
     JWTManager,    
@@ -77,19 +80,48 @@ market_data_recibida = []
 reporte_de_ordenes = []
 
 
-SPREADSHEET_ID_PRUEBA='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
-SPREADSHEET_ID_PRODUCCION='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
-SPREADSHEET_ID_USA='1sxbKe5pjF3BsGgUCUzBDGmI-zV5hWbd6nzJwRFw3yyU'#de produccion USA
+SPREADSHEET_ID_PRUEBA = os.environ.get('SPREADSHEET_ID_PRUEBA')
+SPREADSHEET_ID_PRODUCCION = os.environ.get('SPREADSHEET_ID_PRODUCCION')  #drpiBot de produccion
+SPREADSHEET_ID_USA= os.environ.get('SPREADSHEET_ID_USA') #de produccion USA
+VARIABLE_ACTUALIZAR_SHEET = os.environ.get('VARIABLE_ACTUALIZAR_SHEET') 
 
+CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
+CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
+ID_USER_ACTUALIZAR_SHEET = 1
 
+#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
+#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
+#ID_USER_ACTUALIZAR_SHEET = 2
+# Días de la semana a los que debe ejecutar la función
+
+DIAS_EJECUCION = ["lunes", "martes", "miercoles", "jueves", "viernes"]
+
+# Diccionario para convertir el nombre del día a su valor numérico
+DIAS_SEMANA = {
+    "lunes": 0,
+    "martes": 1,
+    "miercoles": 2,
+    "jueves": 3,
+    "viernes": 4,
+    "sabado": 5,
+    "domingo": 6
+}
+precios_data = {} #para mdh 0
+precios_data_caucion ={}#para caucion
+symbols_sheet_valores = []
+sheet = None
 accountLocalStorage = ""
 VariableParaBotonPanico = 0
 VariableParaSaldoCta = 0
 pyWsSuscriptionInicializada = pyRofex
 pyRofexInicializada = pyRofex
 ConexionesBroker = {}
+luzMDH_funcionando = False
+luzThred_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0}
+sheet_manager = None
 
 indice_cuentas = {}
+autenticado_sheet = False
 diccionario_global_sheet = {}
 diccionario_global_sheet_intercambio = {}
 ya_ejecutado_hilo_panelControl = False
@@ -99,6 +131,11 @@ hilos_iniciados_shedule = []
 ultima_entrada = time.time()
 CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
 detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detener_proceso sea True
+
+
+marca_de_tiempo_para_leer_sheet = int(datetime.now().timestamp()) * 1000  # Tiempo inicial
+VariableParaTiempoLeerSheet = 0  # Variable para guardar el tiempo transcurrido
+
 ContenidoSheet_list = None
 api_url = None
 ws_url = None
@@ -205,7 +242,7 @@ def loginExtAutomatico():
            # print('correo_electronico ',correo_electronico)
            
             sobreEscituraPyRofex = True
-            if access_token:
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()                    
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
@@ -228,7 +265,7 @@ def loginExtAutomatico():
                                           #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                          
                                             pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion(app,pyRofexInicializada) 
+                                            conexion(app,pyRofexInicializada,selector) 
                                             refrescoValorActualCuentaFichas(user_id)                                    
                                             print("está logueado en simulado en REMARKET")
                                             if rutaDeLogeo == 'Home':  
@@ -248,34 +285,36 @@ def loginExtAutomatico():
                               flash('Loggin Incorrect')
                               return render_template("errorLogueo.html")
                         else:
-                            exp_date = datetime.utcfromtimestamp(exp_timestamp)
-                            fecha_actual =   datetime.utcnow()
+                            exp_date = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
+                            fecha_actual =   datetime.now()
+                            fecha_actual_utc = fecha_actual.astimezone(timezone.utc)
                             endPoint = inicializar_variables(cuentas.accountCuenta)
                             global api_url, ws_url                          
                             api_url = endPoint[0]
                             ws_url = endPoint[1]
                             session['api_url']=endPoint[0]
                             session['ws_url']=endPoint[1]
-                            
-                            print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
-                            if fecha_actual < exp_date:#hay que corregir el direccionamiento de esto_________
+                            print('###########################################################################')
+                            print('#####################LOGEO AUTOMATICO######################################')
+                            print('###########################################################################')
+                          #  print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
+                            if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_____
                                 
                                 
-                                if (len(ConexionesBroker) > 0 ):
-                                    if accountCuenta in ConexionesBroker:
+                                if (len(ConexionesBroker) > 0 and accountCuenta in ConexionesBroker):                                    
                                         #if  ConexionesBroker[accountCuenta].get('identificador') == True:
                                             pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
                                             repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
+                                            SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)
+                                     
                                             if repuesta_operacion:
                                                 pass
                                 else:
-                                      
-                                        pyRofexInicializada = pyRofex
-                                       
+                                                                              
                                         conexionShedule(app,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
-                                        pyRofexInicializada1 = ConexionesBroker[accountCuenta]['pyRofex']
+                                        pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
                                         accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
-                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada1,accountCuenta1)
+                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
                                         ConexionesBroker[accountCuenta]['identificador'] = True
                                         resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
                                         resp.headers['Content-Type'] = 'application/json'
@@ -284,26 +323,28 @@ def loginExtAutomatico():
                                         return resp
                                       
                                 if rutaDeLogeo != 'Home':  
-                                      pyRofexInicializada1 = ConexionesBroker[accountCuenta]['pyRofex']
-                                      accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
-                                      refrescoValorActualCuentaFichas(user_id,pyRofexInicializada1,accountCuenta1)
-                                      resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                      resp.headers['Content-Type'] = 'application/json'
-                                      set_access_cookies(resp, access_token)
-                                      set_refresh_cookies(resp, refresh_token)
-                                      return resp
-                                 
-                                else:
+                                        pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
+                                        accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                        ####### TEMPORALMENTE COMPROBAR SI SE DESSUCRIBE POR ERROR DE WS#####
+                                       # SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
+                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
+                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                        resp.headers['Content-Type'] = 'application/json'
+                                        set_access_cookies(resp, access_token)
+                                        set_refresh_cookies(resp, refresh_token)
+                                        return resp
                                     
-                                    resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                    resp.headers['Content-Type'] = 'application/json'
-                                    set_access_cookies(resp, access_token)
-                                    set_refresh_cookies(resp, refresh_token)
-                                    return resp 
+                                else:
+                                        
+                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                        resp.headers['Content-Type'] = 'application/json'
+                                        set_access_cookies(resp, access_token)
+                                        set_refresh_cookies(resp, refresh_token)
+                                        return resp 
                             else:
                                  
                                   # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-                                  # Supongamos que `accountCuenta`, `user`, y `selector` son los datos que quieres enviar
+                                  # Supongamos que accountCuenta, user, y selector son los datos que quieres enviar
                                   cuenta = {
                                         'accountCuenta': account,
                                         'user': user,
@@ -349,10 +390,11 @@ def loginExtCuentaSeleccionadaBroker():
         accountCuenta = request.form.get('cuenta')
         access_token = request.form.get('access_token')       
         src_directory1 = os.getcwd()#busca directorio raiz src o app 
-        logs_file_path = os.path.join(src_directory1, 'logs.log') 
+        logs_file_path = os.path.join(src_directory1, 'logs.log')
+        
         global ConexionesBroker,api_url, ws_url  
        
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
        
                 if origin_page == 'login':
@@ -377,8 +419,13 @@ def loginExtCuentaSeleccionadaBroker():
                     ambiente = copy.deepcopy(REMARKET)
                     pyRofexInicializada._add_environment_config(enumCuenta=accountCuenta,env=ambiente)
                     environments = accountCuenta                                        
-                    pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments)    
-                    pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                    pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments) 
+                    try:   
+                        pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
+                    except ApiException as e:
+                        print(f"ApiException occurred: {e}")
+                        flash("Cuenta incorrecta: password o usuario incorrecto. Quite la cuenta")
+                        return render_template("cuentas/registrarCuentaBroker.html") 
                     ConexionesBroker[accountCuenta] = {'pyRofex': pyRofexInicializada, 'cuenta': accountCuenta, 'identificador': False}
                                             
                 else:
@@ -432,7 +479,7 @@ def loginExtCuentaSeleccionadaBroker():
                                     if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
                                     
                     
-                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
+                                        conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id,selector)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
                         
@@ -470,7 +517,14 @@ def loginExtCuentaSeleccionadaBroker():
 
 
 
-
+def conexion_existente(app,accountCuenta,correo_electronico,selector,user_id):
+    if len(precios_data)> 0:       
+        return False
+    else:        
+        with app.app_context():
+            conexionShedule(current_app, Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+        return True 
+        
 def buscar_conexion(client_id, cuenta):
     for key, websocket in ConexionesBroker.items():
         print(f"Comparando clave: (client_id={key[0]}, cuenta={key[1]})")  # Print para mostrar la clave que está siendo comparada

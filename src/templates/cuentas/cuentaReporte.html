@@ -25,13 +25,45 @@
 {% block content%}
 
  <body> 
-    
+    <style>
+        .flecha {
+            font-size: 20px; /* Ajusta el tamaño de la flecha según tus necesidades */
+            display: inline-block;
+            margin-left: 5px; /* Espacio entre el interés y la flecha */
+        }
+        
+        .flecha.up {
+            color: green;
+        }
+        
+        .flecha.down {
+            color: red;
+        }
+        
+    </style>
     
     <div class="container" id="cardIndex">       
         <div class="card card-body " id="cardIndexFichas">
           <h2>Estado de Cuenta</h2>
           <h4 class="planes-titulo" style="color: gold; font-size: 24px;">$ {{ total_mas_interes }} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Disponible</span></h4>
-          <h4 class="planes-titulo" style="color: white; font-size: 24px;">{{interes }}% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">De cuenta</span></h4>
+          
+          
+          
+          <h4 class="planes-titulo" style="color: {{ 'green' if interes > 0 else 'red' }}; font-size: 24px;">
+            {{ interes }}% 
+            <span class="planes-sub-titulo" style="color: white; font-size: 18px;">De cuenta</span>
+            <span class="flecha" style="color: {{ 'green' if interes > 0 else 'red' }};">
+                {% if interes > 0 %}
+                    &#9650; <!-- Flecha hacia arriba -->
+                {% else %}
+                    &#9660; <!-- Flecha hacia abajo -->
+                {% endif %}
+            </span>
+        </h4>
+
+
+
+
           <hr class="separator">
           <p style="margin-bottom: 5px;">Varia según mercado</p>
           <p style="margin-bottom: 5px;">Valor variable: <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Si</span></p>
@@ -79,7 +111,7 @@
 
 
 
-
+{% include 'layouts/layout_footer.html' %}   
       <script>
       
           function setFichaData(fichaId) {

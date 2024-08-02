@@ -10,10 +10,11 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.instrumento import Instrumento
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
+import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
-
+from models.cuentas import Cuenta
 endPointBrokers = Blueprint('endPointBrokers',__name__)
 
 @endPointBrokers.route("/cuentas_endPointBrokers/")
@@ -26,7 +27,7 @@ def cuentas_endPointBrokers():
          total_brokers = len(todos_brokers)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          
-         return render_template("brokers/broker.html", datos=todos_brokers)
+         return render_template("brokers/broker.html", layout='layout', datos=todos_brokers)
     except:        
         return render_template("notificaciones/noPoseeDatos.html" )
 
@@ -131,7 +132,7 @@ def cuentas_editar_endpoint():
 def cuenta_endpoint_all():
     access_token = request.json.get('accessToken')
 
-    if access_token:
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
         
         try:
@@ -160,7 +161,8 @@ def cuenta_endpoint_all():
             db.session.rollback()  # Hacer rollback de la sesión
             return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
-    return jsonify({'message': 'Solicitud no válida.'}), 400
+    return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
+   
 
 @endPointBrokers.route("/cuentas-Broker/",  methods=["GET"])
 def cuentas_Usuario_Broker():

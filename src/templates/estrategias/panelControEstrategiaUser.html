@@ -9,7 +9,23 @@
   {% endif %}
 {% endwith %}
 
-{% extends 'layouts/layoutConexBroker.html' %}
+{% if layout == 'layout_detalle_productos' %}
+{% extends "layouts/layout_detalle_productos.html" %}
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
 
 {% block content %}
 
@@ -20,8 +36,7 @@
       <table class="table table-dark table-striped" id="tabla-trigger">
         <thead>           
           <tr>
-            <th scope="col">BOTON PANICO</th> 
-            <th scope="col">Cuenta</th>
+            <th scope="col">BOTON PANICO</th>            
             <th scope="col">TiempoInicio</th>
             <th scope="col">TiempoFin</th>
             <th scope="col">Automatico</th>
@@ -39,9 +54,7 @@
                 <input type="hidden" name="account" id="account">
                 <button type="submit" id="boton-panico-estrategia-usuario-noadmin" class="btn btn-danger my-2"></button>
               </form>
-            </td>                    
-           
-            <td>{{ estrategia.accountCuenta }}</td>
+            </td>                 
             <td>{{ estrategia.horaInicio }}</td>          
             <td>{{ estrategia.horaFin }}</td>
             <td>{{ estrategia.ManualAutomatico }}</td>
@@ -60,7 +73,7 @@
                 <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
                 <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">-->
                 <input type="hidden" name="correo_electronico" id="correo_electronico" >
-                <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-trigger-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}"  data-nombreEstrategia="{{ estrategia.nombreEstrategia }}">M</button>
+                <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-trigger-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}" >M</button>
                 
              
             <!--  </form>-->
@@ -267,14 +280,44 @@
   </div>
   
   
-  
+
+
+<!-- Modal de notificacion -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: rgba(255, 255, 255, 0.9);">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notificationModalLabel">Notificación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column justify-content-center align-items-center">
+        <p id="notificationMessage" class="text-success font-weight-bold h4"></p>
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Loading...</span>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% include 'layouts/layout_footer.html' %}     
 <!-- Enlaces a scripts de JavaScript -->
 <script>
+  debugger;
   // Retrieve data from localStorage
   var correo_electronico_estrategia = localStorage.getItem("correo_electronico");
   var cuenta_estrategia = localStorage.getItem("cuenta");
   access_token = localStorage.getItem("access_token");
   selector = localStorage.getItem('selector')
+  
+
 
   // Set values of input elements
   document.getElementById("cuenta").value = cuenta_estrategia;
@@ -374,11 +417,18 @@
       document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
                  //AQUI SE DEBE APLICAR EL AJAX PARA ACTUALIZAR LA TABLA CON EL BOTON A 
                  // PARA PASAR DE MANUAL A AUTOMATICO
-                 // if (event.target && event.target.classList.contains('botonA')) { 
+                 // if (event.target && event.target.classList.contains('botonA')) {
+                              // Verifica si hay filas en la tabla
+                  var tabla = document.querySelector('#tabla-trigger');
+                  if (tabla && tabla.rows.length > 0) {
+                    // Si hay filas, establece el valor del elemento "account"
+                      cuenta_estrategia = localStorage.getItem('cuenta');
+                      document.getElementById("account").value = cuenta_estrategia;
+                  } 
                   if (event.target && event.target.classList.contains('botonM')) {
                       // Recupera el valor del atributo data-nombre
                       var clicBoton = event.target.getAttribute('data-nombre');
-                      
+                     
                       // Recupera los datos del Local Storage que deseas enviar
                       access_token = localStorage.getItem('access_token');
                       correo_electronico = localStorage.getItem('correo_electronico');
@@ -395,7 +445,14 @@
                       var tiempoInicio = event.target.getAttribute('data-horaInicio');
                       var tiempoFin = event.target.getAttribute('data-horaFin');
                       var automatico = event.target.getAttribute('data-trigger-ManualAutomatico');
-
+                      alert('Esta a punto de lanzar la Estrategia!');
+                       // Establece el mensaje de notificación en el modal
+                      var notificationMessage = "Estrategia iniciada, espere...";
+                      document.getElementById("notificationMessage").innerText = notificationMessage;
+                      
+                      // Muestra el modal
+                      var notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
+                      notificationModal.show();
                                         
                      /* console.log("userId:", idUser);
                       console.log("idTrigger:",idTrigger);
@@ -589,8 +646,7 @@
         type: 'POST',
         url: '/unidad-trader-mostrar/', // URL del endpoint en Flask
         data: datos,
-        success: function(response) {
-          debugger;
+        success: function(response) {         
           // Actualiza el contenido del label con el valor máximo de ut
           $('#montoMinimoLabelARG').text(response.max_ut_ars);
           // Cambia el color del texto del label a rojo

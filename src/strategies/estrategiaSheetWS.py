@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template,session, request, redirect, url_for, flash,jsonify,g
-import routes.instrumentosGet as instrumentosGet
+from flask import Blueprint,current_app, render_template,session, request, redirect, url_for, flash,jsonify,g
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
-from pyRofex.clients.websocket_rfx import WebSocketClient
+from models.operacionEstrategia import operacionEstrategia, OperacionEstrategia
+
 
 import re
 import jwt
@@ -11,45 +11,37 @@ import csv
 import json
 import random
 import routes.api_externa_conexion.get_login as get
-import routes.api_externa_conexion.validaInstrumentos as val
-import routes.instrumentos as inst
-import strategies.datoSheet as datoSheet
 import strategies.opera_estrategias as op  
-import requests
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
-
-
-from datetime import datetime,timedelta, timezone
+from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
+from datetime import datetime
 from pytz import timezone as pytz_timezone
-import enum
-from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
+
 from models.unidadTrader import UnidadTrader
-import socket
 import pprint
+import tokens.token as Token
 instrumentos_existentes_arbitrador1=[]
-import sys
-
-
+import Tests.test_order_report_handler as test
 
 
 estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
 
-
-class States(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2
-
 pyRofexInicializada = None
 cuentaGlobal = None
 VariableParaSaldoCta = None
-VariableParaTiemposMDHandler = 0
-VariableParaTiempoLeerSheet = 0
+
+
+
+tiempo_inicial_30s_ms = None
+tiempo_inicial_5min_ms = None
 
 
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {} 
+
+
+idUser = None
 
 
 
@@ -57,10 +49,11 @@ diccionario_operaciones_enviadas = {}
 @estrategiaSheetWS.route('/estrategiaSheetWS-001/', methods=['POST'])
 def estrategiaSheetWS_001():
     print('00000000000000000000000 estrategiaSheetWS-001 00000000000000000000000000')
+    global idUser  # Indica que estás usando la variable global
     if request.method == 'POST':
         try:
-            
-            
+            app = current_app._get_current_object()
+            #test.entradaTest()
             data = request.get_json()
 
             # Accede a los datos individualmente
@@ -75,45 +68,34 @@ def estrategiaSheetWS_001():
             
             get.accountLocalStorage = data['cuenta']
             
-            #get.accountLocalStorage = "20225833983"
             
             tiempoInicio = data['tiempoInicio']
             tiempoFin = data['tiempoFin']
             automatico = data['automatico']
             nombre = data['nombre']
             get.VariableParaBotonPanico = 0
-            for elemento in get.ConexionesBroker:
-                print("Variable agregada:", elemento)
-                accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
-             
-                if accountCuenta ==  data['cuenta']:              
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
+                for elemento in get.ConexionesBroker:
+                    print("Variable agregada:", elemento)
+                    accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
                 
-                  global pyRofexInicializada,cuentaGlobal,VariableParaSaldoCta
-                  cuentaGlobal = data['cuenta']
-                  pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
-                  cuentaGlobal = accountCuenta
-                  
-            CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-            carga_operaciones(get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
-            pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
-            pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
-            pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
+                    if accountCuenta ==  data['cuenta']:              
+                    
+                        global pyRofexInicializada,cuentaGlobal
+                        cuentaGlobal = data['cuenta']
+                        pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
+                        cuentaGlobal = accountCuenta
+                    
+                        CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
+                        carga_operaciones(app,pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                        pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
+                        pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
+                        pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
          
-       #     pyRofexWebSocket =  get.pyRofexInicializada.init_websocket_connection (
-       #                             market_data_handler=market_data_handler_estrategia,
-       #                             order_report_handler=order_report_handler,
-       #                             error_handler=error_handler,
-       #                             exception_handler=exception_handler
-       #                             )
-            #get.pyRofexInicializada.run_websocket()
-           # carga_operaciones(get.ContenidoSheet_list[0], get.accountLocalStorage ,usuario,correo_electronico,get.ContenidoSheet_list[1])
-            # Crear una instancia de RofexMarketDataHandler
-            
-
-            
-            
         
-    
+            
+            else:
+               return render_template('usuarios/logOutSystem.html')
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
                 return redirect(url_for('autenticacion.index'))
@@ -125,9 +107,8 @@ def estrategiaSheetWS_001():
      
        
 def market_data_handler_estrategia(message):
-    global VariableParaTiemposMDHandler,VariableParaTiempoLeerSheet,VariableParaSaldoCta
-   
-    ## mensaje = Ticker+','+cantidad+','+spread
+    global tiempo_inicial_30s_ms,tiempo_inicial_5min_ms,VariableParaSaldoCta   
+    
     #print(message)
     
   
@@ -140,66 +121,65 @@ def market_data_handler_estrategia(message):
    
     
     if response != 1: ### si es 1 el boton de panico fue activado
-       # _cancela_orden(300)
-       # _cancela_orden(300000)
-      #  print(" FUN: market_data_handler_estrategia: _")
-        
-        #print( " Marca de tpo guardada:",  get.VariableParaTiemposMDHandler)
-        marca_de_tiempo = message["timestamp"]
-         
-        if VariableParaTiemposMDHandler < 10000:
-            time = datetime.now()
-            tiempoInicio = int(time.timestamp())*1000
-            VariableParaTiemposMDHandler =  tiempoInicio - marca_de_tiempo
-         #   print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiemposMDHandler   )
-        else:
-            VariableParaTiemposMDHandler = 0
-           # print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 10000 Diferencia:", VariableParaTiemposMDHandler   )
-           # VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
-            
-        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 20000: # 20 segundos
-        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 60000: # 1 minuto
-        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 300000: # 5 minutos
-        #if  marca_de_tiempo - get.VariableParaTiemposMDHandler >= 600000: # 10 minutos
-        banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
-        if VariableParaTiempoLeerSheet < 300000: # 5 minutos
-            time = datetime.now()
-            tiempoInicio2 = int(time.timestamp())*1000
-            VariableParaTiempoLeerSheet =  tiempoInicio2 - marca_de_tiempo
-            print( " Marca de tpo Actual  :",  marca_de_tiempo, " Diferencia:", VariableParaTiempoLeerSheet   )
-        else:
-                VariableParaTiempoLeerSheet = 0
-                print( " Marca de tpo Actual  :",  marca_de_tiempo, ">= 300000 Diferencia:", VariableParaTiempoLeerSheet   )
-                # esto hay que hacerlo aca, solo cada x segundos
-                banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
-    
-            
-        # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
-        # para cumplir con el evento de mercado market data
+     
+      #  print(" FUN: market_data_handler_estrategia: _") 
+
+        # Obtén el timestamp del mensaje
+        marca_de_tiempo = int(message["timestamp"])
+        marca_de_tiempo_para_leer_sheet = marca_de_tiempo
+        Symbol = message["instrumentId"]["symbol"]
+       
+        if diccionario_global_operaciones or diccionario_operaciones_enviadas:
+          if Symbol in diccionario_global_operaciones or Symbol in diccionario_operaciones_enviadas:
+  
+                # Verifica si han pasado 30 segundos
+                han_pasado_30_segundos, tiempo_inicial_30s_ms = control_tiempo_lectura(30000, tiempo_inicial_30s_ms, marca_de_tiempo)
+
+                if han_pasado_30_segundos:
+                    print('Pasaron 30 segundos')
+                    VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )# cada mas de 5 segundos
+                    # Reinicia el tiempo_inicial_30s_ms para el próximo intervalo
+                    tiempo_inicial_30s_ms = marca_de_tiempo
+                
+                
+                
+                    # Verifica si han pasado 5 minutos
+                han_pasado_5_minutos, tiempo_inicial_5min_ms = control_tiempo_lectura(300000, tiempo_inicial_5min_ms, marca_de_tiempo)
+                banderaLecturaSheet = 1 #La lectura del sheet es solo cada x minutos
+                if han_pasado_5_minutos:
+                    print('Pasaron 5 minutos')
+                    _cancela_orden(0)
+                    banderaLecturaSheet = 0 #La lectura del sheet es solo cada x minutos
+                    # Reinicia el tiempo_inicial_5min_ms para el próximo intervalo
+                    tiempo_inicial_5min_ms = marca_de_tiempo
+                
+                      
+                # Va afuera de la verificacion de periodo de tiempo, porque debe ser llamada inmediatamente
+                # para cumplir con el evento de mercado market data
 
 
 
-        if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
-            pass
-            #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
-        elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
-            pass
-            #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
-        elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
-            pass
-            #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
-        else:
+                if message["marketData"]["BI"] is None or len(message["marketData"]["BI"]) == 0:
+                    pass
+                    #print("FUN market_data_handler_estrategia: message[marketData][BI] es None o está vacío")
+                elif message["marketData"]["OF"] is None or len(message["marketData"]["OF"]) == 0:
+                    pass
+                    #print("FUN market_data_handler_estrategia: message[marketData][OF] es None o está vacío")
+                elif message["marketData"]["LA"] is None or len(message["marketData"]["LA"]) == 0:            
+                    pass
+                    #print("FUN market_data_handler_estrategia: message[marketData][LA] es None o está vacío")
+                else:
+                    
+                    #tiempoAhora = datetime.now()
+                    #print('"FUN market_data_handler_estrategia')
+                    #pass
+                    estrategiaSheetNuevaWS(message, banderaLecturaSheet)
+                    
+                    #tiempoDespues = datetime.now()
+                    #teimporAhoraInt = tiempoDespues - tiempoAhora
+                    #tiempomili =  teimporAhoraInt.total_seconds() * 1000
+                #  print("FUN_ veta_capital_44593_001 tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
             
-            #tiempoAhora = datetime.now()
-            #print('"FUN market_data_handler_estrategia')
-            #pass
-            estrategiaSheetNuevaWS(message, banderaLecturaSheet)
-            
-            #tiempoDespues = datetime.now()
-            #teimporAhoraInt = tiempoDespues - tiempoAhora
-            #tiempomili =  teimporAhoraInt.total_seconds() * 1000
-        #  print("FUN_ estrategiaSheetWS tiempoTotal en microsegundos: ",teimporAhoraInt.microseconds," en milisegundo: ",tiempomili)
-    
         
 @estrategiaSheetWS.route('/botonPanicoPortfolio/', methods = ['POST']) 
 def boton_panico_portfolio():
@@ -222,11 +202,19 @@ def boton_panico_portfolio():
    
 @estrategiaSheetWS.route('/botonPanico/', methods = ['POST']) 
 def botonPanico():
-    respuesta = botonPanicoRH('true')
-    _cancela_orden(9)
-    respuesta = botonPanicoRH('false')
-    #get.pyRofexInicializada.close_websocket_connection()
-    return render_template("utils/bottonPanic.html" ) 
+    if request.method == 'POST':
+      try:           
+            account = request.form['account']
+            respuesta = botonPanicoRH('true')
+            _cancela_orden(9)
+            respuesta = botonPanicoRH('false')
+            pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
+            
+            pyRofexInicializada.close_websocket_connection(environment=account)
+            return render_template("utils/bottonPanic.html" ) 
+      except:
+           print("no pudo leer los datos de local storage")         
+           return render_template("utils/bottonPanic.html" ) 
 
 def botonPanicoRH(message):
     # Llamada al método /botonPanico utilizando la referencia a wsConnection
@@ -239,14 +227,13 @@ def botonPanicoRH(message):
         return get.VariableParaBotonPanico
     
 def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
-    
     if banderaLecturaSheet == 0:
         print('entra en estrategiaSheetNuevaWS punto de control sheeeet')
-        ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+        ContenidoSheet = get.diccionario_global_sheet['argentina']
         banderaLecturaSheet = 1
         ContenidoSheet_list = list(ContenidoSheet)
         
-        for Symbol,tipo, TradeEnCurso,ut,senial,gan_tot, dias_operado in ContenidoSheet_list[2:]:
+        for Symbol,tipo, TradeEnCurso,ut,senial,gan_tot, dias_operado,precioUt in ContenidoSheet_list[2:]:
             if Symbol in diccionario_global_operaciones:
                 if senial != '':
                     #aqui entra en caso que tenga que cambiar la señal de trading
@@ -282,75 +269,79 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
        # if get.diccionario_global_operaciones[Symbol] == message["instrumentId"]["symbol"]:
         if diccionario_global_operaciones[Symbol]['status'] == "0":
                
-                if diccionario_global_operaciones[Symbol]['ut'] !="0": 
+                if diccionario_global_operaciones[Symbol]['ut'] !=0: 
                                                  
                     if senial != "":
-                        
-                       if TradeEnCurso == 'LONG_': 
-                           
-                                    if senial == 'OPEN.':
-                                        #if message["marketData"]["OF"] != None:     
-                                        if isinstance(message["marketData"]["OF"][0]["size"], int):                                  
-                                            Liquidez_ahora_cedear = message["marketData"]["OF"][0]["size"]
-                                        else:
-                                            #if message["marketData"]["LA"] != None: 
-                                            if isinstance(message["marketData"]["LA"]["size"], int):                                  
-                                                Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                        
-
-                                  
-                                    VariableParaSaldoCta=cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=cuentaGlobal )
-                                    if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
-                                                #print('operacionews')
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, Liquidez_ahora_cedear, senial, 0, message,VariableParaSaldoCta)
-                                        else:                                          
-                                               
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, senial, 0, message,VariableParaSaldoCta)
-                       else:
+                        Liquidez_ahora_cedear = 0
+                        if TradeEnCurso in ['LONG_', 'SHORT']:
+                            if senial == 'OPEN.':
+                                Liquidez_ahora_cedear = obtener_liquidez_actual(message, "OF")
                             
-                              if senial == 'closed.':  
-                                        #if message["marketData"]["BI"] != None: 
-                                 if isinstance(message["marketData"]["BI"][0]["size"], int):                                  
-                                       Liquidez_ahora_cedear = message["marketData"]["BI"][0]["size"]
-                                       Liquidez_ahora_cedear = Liquidez_ahora_cedear
-                                 else:
-                                       #if message["marketData"]["LA"] != None:
-                                       if isinstance(message["marketData"]["LA"]["size"], int):                                  
-                                          Liquidez_ahora_cedear = message["marketData"]["LA"]["size"]
-                                          Liquidez_ahora_cedear = Liquidez_ahora_cedear
-                               
-                                 if Symbol != '' and tipo_de_activo != '' and TradeEnCurso != '' and Liquidez_ahora_cedear != 0 and senial != ''  and message != '':
-                                        if int(Liquidez_ahora_cedear) < int(diccionario_global_operaciones[Symbol]['ut']):
-                                                #print('Symbol ',Symbol)
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo,  Liquidez_ahora_cedear, senial, 0, message,VariableParaSaldoCta)
-                                        else:                                          
-                                                #print('Symbol ',Symbol)       
-                                                op.OperacionWs(pyRofexInicializada,diccionario_global_operaciones,diccionario_operaciones_enviadas,Symbol, tipo_de_activo, senial, 0, message,VariableParaSaldoCta)    
-                                    
-   # else:  
-        #print(message['instrumentId']['symbol'])  
-    #    print('______________________________________________________')                                   
+                            elif senial == 'closed.':
+                                Liquidez_ahora_cedear = obtener_liquidez_actual(message, "BI")                            
+                          
+                            cantidad_a_usar = min(Liquidez_ahora_cedear, diccionario_global_operaciones[Symbol]['ut'])
+                            #op.OperacionWs(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, cantidad_a_usar, senial, message)
+                            estrategia = OperacionEstrategia(
+                                                                pyRofexInicializada=pyRofexInicializada,
+                                                                diccionario_global_operaciones=diccionario_global_operaciones,
+                                                                diccionario_operaciones_enviadas=diccionario_operaciones_enviadas,
+                                                                Symbol=Symbol,
+                                                                tipo_de_activo=tipo_de_activo,
+                                                                Liquidez_ahora_cedear=cantidad_a_usar,
+                                                                senial=senial,
+                                                                message=message
+                                                            )
+                            
+                            estrategia.operar()
+                        else:
+                            # Manejo de otro tipo de TradeEnCurso si es necesario
+                            pass
+       
+def obtener_liquidez_actual(message, key):
+    if message and "marketData" in message and key in message["marketData"]:
+        if isinstance(message["marketData"][key][0]["size"], int):
+            return message["marketData"][key][0]["size"]
+        elif "LA" in message["marketData"] and isinstance(message["marketData"]["LA"]["size"], int):
+            return message["marketData"]["LA"]["size"]
+    return 0
 
-
-
-def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
+def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
      símbolos_vistos = set()
+     tiempoLecturaSaldo = datetime.now()
+    # saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
 
      #filtrar las coincidencias entre las dos listas
      for elemento1 in ContenidoSheet_list:
+        if not isinstance(elemento1, list):
+            elemento1 = list(elemento1)
+        
         if contador_1 >= 2:
-          if elemento1[4] == 'closed.':   
             for key, elemento2 in diccionario_operaciones_enviadas.items():
-               #print('elemento1 ', elemento1[0] ,' elemento2 ',elemento2['Symbol'])      
-               if elemento1[0] == elemento2['Symbol']:
-                    if elemento2['Symbol'] not in símbolos_vistos: 
-                        print(' elemento1[0] **********************', elemento1 )
+                if elemento1[0] == elemento2['Symbol']:
+                    if elemento2['Symbol'] not in símbolos_vistos:
+                        if elemento1[4] == 'closed.':
+                            print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                            app.logger.info(elemento1)
+                            elemento1[3] = int(elemento2['_ut_'])
+                        elif elemento1[2] == 'SHORT':
+                            if elemento1[4] == '':
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)
+                                elemento1[3] = int(elemento2['_ut_'])
+                            elif elemento1[4] == 'OPEN.':
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)
+                                elemento1[3] = int(elemento2['_ut_'])
                         coincidencias.append(elemento1)
-                        símbolos_vistos.add(elemento2['Symbol'])    
-        contador_1 += 1                           
+                        símbolos_vistos.add(elemento2['Symbol'])
+                    else:
+                        elemento1[3] = 0
+                        coincidencias.append(elemento1)
+                        símbolos_vistos.add(elemento2['Symbol'])
+        contador_1 += 1
      #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
     
      contador = 0
@@ -361,68 +352,107 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
               #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
                # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
                 if elemento1[2] == 'LONG_':
-                     if elemento1[3] != '0':
-                         # if elemento1[4] == 'OPEN.':
+                     if int(elemento1[3]) != 0:                       
                           if elemento1[4] == 'OPEN.':
                             if elemento1[0] == elemento2:
                                 coincidencias.append(elemento1)
                                # print(' elemento1[] ', elemento1[0])
                                # print(coincidencias)
+                            
         contador += 1  
           
     
      usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
      unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
      for elemento  in coincidencias:  
-       #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
-         #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
-         nueva_orden = Orden(
-                                user_id=usuariodb.id,
-                                userCuenta=usuario,
-                                accountCuenta=account,
-                                clOrdId_alta=random.randint(1,100000),
-                                clOrdId_baja='',
-                                clientId='',
-                                wsClOrdId_timestamp=datetime.now(),
-                                clOrdId_alta_timestamp=None,
-                                clOrdId_baja_timestamp=None,  # Campo vacío
-                                proprietary=True,
-                                marketId='',  # Campo vacío
-                                symbol=elemento[0],
-                                tipo=elemento[1],
-                                tradeEnCurso=elemento[2],
-                                ut=elemento[3],
-                                senial=elemento[4],
-                                status='0'
-                            )
-         # Cargar los valores del objeto en el diccionario global
-         nueva_orden_para_dic = {
-            'user_id': usuariodb.id,
-            'userCuenta': usuario,
-            'accountCuenta': account,           
-            'clOrdId_alta': '',
-            'clOrdId_baja': '',
-            'orderId': '',
-            'wsClOrdId_timestamp': datetime.now(),
-            'clOrdId_alta_timestamp': None,
-            'clOrdId_baja_timestamp': None,
-            'proprietary': True,
-            'marketId': '',           
-            'symbol': elemento[0],
-            'tipo_de_activo': elemento[1],
-            'tradeEnCurso': elemento[2],
-            'ut': unidadTrader.ut,
-            'senial': elemento[4],
-            'status': '0'
-        }
-    # Cargar cada objeto Orden en el diccionario global con una clave única
-         diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
-       
-         if elemento[0] in diccionario_global_operaciones:
-            contenido = diccionario_global_operaciones[elemento[0]]
-            print('cargó la operacion de ',elemento[0],' ut ',elemento[3],' correctmente en diccionario global de operaciones')
+         # Paso 1: Eliminar los puntos
+         cadena_sin_puntos = elemento[7].replace('.', '')
+        # Paso 2: Reemplazar la coma por un punto
+         cadena_correcta = cadena_sin_puntos.replace(',', '.')
+        # Paso 3: Convertir la cadena a float
+         numero = float(cadena_correcta)
+         if int(elemento[3]) == 0:
+            ut = unidadTrader.ut/numero
+            ut = abs(int(ut))
          else:
-            print("La clave", elemento[0], "no existe en el diccionario.")
+            ut = abs(int(elemento[3]))
+         if ut > 0:
+        #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
+            #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
+            nueva_orden = Orden(
+                                    user_id=usuariodb.id,
+                                    userCuenta=usuario,
+                                    accountCuenta=account,
+                                    clOrdId_alta=random.randint(1,100000),
+                                    clOrdId_baja='',
+                                    clientId='',
+                                    wsClOrdId_timestamp=datetime.now(),
+                                    clOrdId_alta_timestamp=None,
+                                    clOrdId_baja_timestamp=None,  # Campo vacío
+                                    proprietary=True,
+                                    marketId='',  # Campo vacío
+                                    symbol=elemento[0],
+                                    tipo=elemento[1],
+                                    tradeEnCurso=elemento[2],
+                                    ut=ut,
+                                    senial=elemento[4],
+                                    status='0'
+                                )
+            # Cargar los valores del objeto en el diccionario global
+            if  elemento[4] == 'closed.': 
+                if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
+                     tradeEnCurso = 'SHORT'
+            else:
+                 tradeEnCurso =  elemento[2]
+            
+            if  elemento[2] == 'SHORT':
+               senial='closed.'
+            else:
+               senial = elemento[4] 
+               
+            nueva_orden_para_dic = {
+                'user_id': usuariodb.id,
+                'userCuenta': usuario,
+                'accountCuenta': account,           
+                'clOrdId_alta': '',
+                'clOrdId_baja': '',
+                'orderId': '',
+                'wsClOrdId_timestamp': datetime.now(),
+                'clOrdId_alta_timestamp': None,
+                'clOrdId_baja_timestamp': None,
+                'proprietary': True,
+                'marketId': '',           
+                'symbol': elemento[0],
+                'tipo_de_activo': elemento[1],
+                'tradeEnCurso': tradeEnCurso,                
+                'ut':ut,            
+                'senial': senial,
+                'status': '0',
+                'tiempoSaldo':tiempoLecturaSaldo,
+                'saldo':VariableParaSaldoCta
+            }
+        # Cargar cada objeto Orden en el diccionario global con una clave única
+            diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
+        
+            if elemento[0] in diccionario_global_operaciones:
+                    contenido = diccionario_global_operaciones[elemento[0]]
+                   # print(f"Contenido encontrado para {contenido['symbol']}:")
+
+                    # Seleccionar los campos específicos
+                    campos_especificos = [
+                        'symbol',
+                        'tipo_de_activo',
+                        'tradeEnCurso',
+                        'ut',
+                        'senial',
+                        'status'
+                    ]
+
+                    # Formatear los campos específicos en una sola línea
+                    contenido_linea = ', '.join([f"{campo}: {contenido[campo]}" for campo in campos_especificos])
+                    print('c: ',account,' ', contenido_linea)
+            else:
+                    print(f"No se encontró contenido para {elemento[0]} en diccionario_global_operaciones.")
 
         
     # Acceder al diccionario global y a los objetos Orden
@@ -430,12 +460,14 @@ def carga_operaciones(ContenidoSheet_list,account,usuario,correo_electronico,mes
     #     db.session.add(nueva_orden)
     #     db.session.commit() 
      #get.current_session = db.session
-     #for clave, valor in get.diccionario_global_operaciones.items():
-     #     print(f'Clave: {clave}, Valor: {valor}')
-        
+     #for clave, valor in diccionario_global_operaciones.items():
+        #  print(f'Clave: {clave}, Valor: {valor}')
+   
     # db.session.close()
-    # print("sale de cargar operaciones")
+     app.logger.info('______CARGA_OPERACIONES____') 
+    # app.logger.info(diccionario_global_operaciones) 
 
+     
 def es_numero(numero):
     try:
           int(numero)
@@ -443,90 +475,117 @@ def es_numero(numero):
     except:
         return False
   
-def order_report_handler( order_report):
-        # Obtener el diccionario de datos del reporte de orden
-        
-        order_data = order_report['orderReport']
-        clOrdId = order_data['clOrdId']        
-        symbol = order_data['instrumentId']['symbol']
-        status = order_data['status']  
-        #print('___________order_report_handler_______OPERADA__ ',status)
-        timestamp_order_report = order_data['transactTime']  
-        
-        rutaORH = 'C:\\Users\\mDioli\\Documents\\tmp\\operacionesORH_01.csv'
-        print('status ',status)
-        append_order_report_to_csv(order_report, rutaORH)
-        # se fija que cuando venga el reporte el diccionario tenga elementos
-        if es_numero(clOrdId):#esto se pone por que el clOrdId puede traer basura
-            if len(diccionario_operaciones_enviadas) != 0:
-                asignarClOrId(order_report)#__
-                    
-                    # if status == 'EXECUTED':
-                if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
-                    _operada(order_report)   
+def order_report_handler(order_report):
+    order_data = order_report['orderReport']
+    clOrdId = order_data['clOrdId']        
+    symbol = order_data['instrumentId']['symbol']
+    status = order_data['status']  
+    print('___________ORH_______STATUS__ENTREGADO: ', status)
+    timestamp_order_report = order_data['transactTime']  
+   
+    if es_numero(clOrdId):
+        if len(diccionario_operaciones_enviadas) != 0:
+            asignarClOrId(order_report)
+            if status != 'NEW' and status != 'PENDING_NEW' and status != 'UNKNOWN':  
+                _operada(order_report)   
+
                        
         
 def _operada(order_report):
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']
     symbol = order_data['instrumentId']['symbol']
-    status = order_data['status']   
-    #print(symbol,' _______************  OPERADA ****************_____________ ',order_data['text'])
-    
-    stock_para_closed = obtenerStock(order_data['text']) 
-    stock_para_closed = int(float(stock_para_closed))
-    #print('stock_para_closed ',stock_para_closed)
-    if status in ['CANCELLED','ERROR','REJECTED','EXPIRED']:  
-              if symbol in diccionario_global_operaciones:                  
-                for key, operacion in diccionario_operaciones_enviadas.items():#11111
-                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and  operacion['status'] != 'TERMINADA' and operacion['status'] != 'CANCELLED':
-                                ut_a_devolver = operacion['_ut_']   
-                                if status == 'REJECTED' :
-                                    ut_a_devolver = operacion['_ut_'] + stock_para_closed 
-                                    print('ut_a_devolver ',ut_a_devolver) 
-                                    
-                                    if ut_a_devolver <= 0:
-                                       print('ut_a_devolver  == 0',ut_a_devolver)
-                                       operacion['status'] = 'TERMINADA'
-                                    else: 
-                                       operacion['status'] = '0'
-                                else:                            
-                                    operacion['status'] = 'TERMINADA'
-                                for key, operacionGlobal in diccionario_global_operaciones.items():
-                                    if operacionGlobal['symbol'] == symbol :
-                                        operacionGlobal['ut'] = int(operacionGlobal['ut']) + int(ut_a_devolver)
-                                        #datoSheet.modificar_columna_ut(operacionGlobal['symbol'],operacionGlobal['ut'])
-                                        #pprint.pprint(get.diccionario_global_operaciones)
-                                        if operacionGlobal['status'] != '0':
-                                            operacionGlobal['status']== '0'
-                             # aqui termina las ordenes canceladas que se cargaron inicalmente               
-                            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId) and operacion['status'] == 'CANCELLED':                
-                                operacion['status'] = 'TERMINADA'
-                               # pprint.pprint(g et.diccionario_global_operaciones_)
-                               # pprint.pprint(g et.diccionario_operaciones_enviadas) 
-                          
-                
+    status = order_data['status']
+    stock_para_closed = int(float(obtenerStock(order_data['text'])))
 
-    if status == 'FILLED': 
-            endingGlobal = 'SI'  # Suponiendo inicialmente que todas las operaciones son 'si'
-            endingEnviadas = 'SI'
-            for operacion_enviada in diccionario_operaciones_enviadas.values():  
-                print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas,'  operacion_enviada[status] ', operacion_enviada['status'])
-                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and  operacion_enviada['status'] != 'TERMINADA' :
-                    operacion_enviada['status'] = 'TERMINADA'                     
-                    print('operacion_enviada symbol ',symbol," endingEnviadas ",endingEnviadas)
-         
+    print(f'Processing order {clOrdId} for {symbol} with status {status}')
 
-            for key, operacionGlobal in diccionario_global_operaciones.items():  
-                if operacionGlobal['symbol'] == symbol and operacionGlobal['ut'] == '0':                    
+    # Verifica si el estado está en la lista de estados relevantes
+    if status in ['CANCELLED', 'ERROR', 'REJECTED', 'EXPIRED']:
+        actualizar_diccionario_enviadas(order_data, symbol, status)
+
+    # Procesa el estado final
+    if status in ['FILLED', 'REJECTED']:
+        procesar_estado_final(symbol, clOrdId)
+ 
+ 
+ 
+def procesar_estado_final(symbol, clOrdId):
+    global endingGlobal, endingEnviadas
+
+    endingGlobal = 'SI'
+    endingEnviadas = 'SI'
+
+    # Actualiza el estado de las operaciones enviadas
+    for operacion_enviada in diccionario_operaciones_enviadas.values():
+        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and operacion_enviada['status'] != 'TERMINADA':
+            operacion_enviada['status'] = 'TERMINADA'
+
+    # Revisa las operaciones globales
+    for key, operacionGlobal in diccionario_global_operaciones.items():
+        if operacionGlobal['symbol'] == symbol:
+            if operacionGlobal['ut'] == 0:
+                # Verifica si todas las operaciones relacionadas están terminadas
+                all_enviadas_terminadas = all(
+                    operacion['status'] == 'TERMINADA'
+                    for operacion in diccionario_operaciones_enviadas.values()
+                    if operacion["Symbol"] == symbol
+                )
+                if all_enviadas_terminadas:
                     operacionGlobal['status'] = '1'
-                    print(key," : ",operacionGlobal['status']," :",operacionGlobal['ut'])
-                else:  # Si alguna operación no es 'si'
+                    endingGlobal = 'SI'
+                else:
                     endingGlobal = 'NO'
-               
+            else:
+                endingGlobal = 'NO'
+
+    # Asegura que `endingEnviadas` siga siendo 'SI' si corresponde
+    if endingGlobal == 'SI' and endingEnviadas == 'SI':
+        print(f'Final state: endingGlobal={endingGlobal}, endingEnviadas={endingEnviadas}, symbol={symbol}')
+        endingOperacionBot(endingGlobal, endingEnviadas, symbol)   
+        
+
+
+
+def actualizar_diccionario_enviadas(order_data, symbol, status):
+    """Actualiza el diccionario de operaciones enviadas según el estado de la orden."""
+    
+    clOrdId = order_data['clOrdId']
+    
+    if symbol in diccionario_global_operaciones:
+        for key, operacion in diccionario_operaciones_enviadas.items():
+            # Si la operación corresponde al símbolo y clOrdId
+            if operacion['Symbol'] == symbol and operacion['_cliOrderId'] == int(clOrdId):
+                # Si la operación no está 'TERMINADA' ni 'CANCELLED'
+                if operacion['status'] not in ['TERMINADA', 'CANCELLED']:
+                    # Orden Rechazada ('REJECTED'): Si la orden tiene estado 'REJECTED'
+                    if status == 'REJECTED':
+                        ut_a_devolver = 0
+                    # Otros Estados de la Orden: Si la orden tiene cualquier otro estado
+                    else:
+                        ut_a_devolver = operacion['_ut_']
+                    # Marca la operación como 'TERMINADA'
+                    operacion['status'] = 'TERMINADA'
+                    
+                    # Llamar a la función para actualizar el diccionario global
+                    actualizar_diccionario_global(symbol, ut_a_devolver)
+                elif operacion['status'] == 'ANTERIOR' and status == 'REJECTED':
+                    operacion['status'] = 'TERMINADA'
+                elif operacion['status'] == 'CANCELLED':
+                    operacion['status'] = 'TERMINADA'
+                    
+
+
+
+def actualizar_diccionario_global(symbol, ut_a_devolver):
+    """Actualiza el diccionario global de operaciones."""
+    operacionGlobal = diccionario_global_operaciones.get(symbol)
+    if operacionGlobal:
+        operacionGlobal['ut'] += int(ut_a_devolver)
+        if operacionGlobal['status'] != '0':
+            operacionGlobal['status'] = '0'
             
-            endingOperacionBot (endingGlobal,endingEnviadas)                             
-                               
+ 
 def convert_datetime(original_datetime_str, desired_timezone_str):
     # Convertir la cadena a un objeto datetime
     original_datetime = datetime.strptime(original_datetime_str, "%Y%m%d-%H:%M:%S.%f")
@@ -591,7 +650,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
         # Obtener el estado de la orden
         if order_status in ['PENDING_NEW','NEW','PENDING','REJECT','ACTIVE','PARTIALLY_EXECUTED','SENT','ROUTED','ACCEPTED','PARTIALLY_FILLED','PARTIALLY_FILLED_CANCELED','PARTIALLY_FILLED_REPLACED','PENDING_REPLACE']:
             print("FUN _cancel_if_orders: ENVIA Orden DE CANCELAR: order_status:", order_status," symbol: ",symbol," clOrdId: ",clOrdId)
-            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId) 
+            pyRofexInicializada.cancel_order_via_websocket(client_order_id=clOrdId,proprietary='ISV_PBCP',environment=cuentaGlobal) 
         
             # Aumentar el valor de ut en get.diccionario_global_operaciones        
             for key, operacion_enviada in diccionario_operaciones_enviadas.items(): 
@@ -609,7 +668,7 @@ def _cancel_if_orders(symbol,clOrdId,order_status):
     except Exception as e:
         print("Error en Envio de Cancelacion de orden:", e)
     #    print("FUN _cancel_if_orders: La orden no se puede cancelar en el estado actual:", order_status)
-        
+               
 def tiempoDeEsperaOperacioncalculaTiempo(timestamp_order_report,tiempo_diccionario):
      fecha2_obj = datetime.strptime(timestamp_order_report, "%Y%m%d-%H:%M:%S.%f%z")
      fecha_comun_enviada = tiempo_diccionario.strftime("%Y%m%d-%H:%M:%S")
@@ -665,63 +724,95 @@ def cargar_estado_para_B_panico(valor,clOrdId,timestamp_order_report,symbol,stat
                 valor["statusActualBotonPanico"] = status
                 print("FUN_cargar_estado_para_B_panico status ",status, " clOrdId ",clOrdId)
                    
-def CargOperacionAnterioDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
-   accountCuenta = account
-   try:        
-        repuesta_operacion = pyRofexInicializada.get_account_position(account=account,environment=account)
-     
-        reporte = repuesta_operacion['positions']
-        
-# Crear un conjunto para almacenar los símbolos ya vistos
-        símbolos_vistos = set()
 
-        for item in reporte:
-                símbolo = item['symbol']
-            # Verificar si el símbolo ya ha sido visto antes
-           # if símbolo not in símbolos_vistos:
-                # Si es la primera vez que se ve el símbolo, mostrar los detalles
-                print("Símbolo:", símbolo)
-                print("Cantidad de stock buySize:", item['buySize'])
-                print("Cantidad de stock sellSize:", item['sellSize'])
-                print()
-                # Agregar el símbolo al conjunto de símbolos vistos
-                símbolos_vistos.add(símbolo)
-       
-        #print("posicion operacionnnnnnnnnnnnnnnnnnnnn ",reporte)
-        diccionario = {}
-        diccionario_operaciones_enviadas.clear()
+
+
+
+def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, account=None, user_id=None, userCuenta=None):
+    try:
+        global VariableParaSaldoCta
+        accountCuenta = account
+        tiempoLecturaSaldo = datetime.now()
+        
+        # Obtener saldo de la cuenta
+        VariableParaSaldoCta = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account)
+        
+        # Obtener posiciones de la cuenta
+        respuesta_operacion = pyRofexInicializada.get_account_position(account=account, environment=account)
+        reporte = respuesta_operacion['positions']
+        
+        # Diccionario para almacenar totales de buySize y sellSize por símbolo
+        totales = {}
+        
+        # Iterar sobre las posiciones para calcular totales por símbolo
         for posicion in reporte:
-            # Accedemos al símbolo de cada posición y lo almacenamos en el diccionario
-                symbol = posicion['symbol']
-           # if símbolo not in símbolos_vistos:
-             #   print('**************************** ',symbol)
+            symbol = posicion['symbol']
+            buySize = abs(int(posicion['buySize']))
+            sellSize = abs(int(posicion['sellSize']))
+            print("Este esta en cartera de la cuenta: ",accountCuenta," Símbolo:", symbol)
+            print("Estan en matriz, Cantidad de stock buySize:", posicion['buySize'])
+            print("Estan en matriz, Cantidad de stock sellSize:", posicion['sellSize'])
+            print()
+            # Si el símbolo no está en totales, inicializarlo
+            if symbol not in totales:
+                totales[symbol] = {'buySize': 0, 'sellSize': 0}
             
+            # Sumar buySize y sellSize
+            totales[symbol]['buySize'] += buySize
+            totales[symbol]['sellSize'] += sellSize
+        
+        # Limpiar diccionario global de operaciones enviadas
+        diccionario_operaciones_enviadas.clear()
+        
+        # Iterar sobre totales para determinar qué acciones deben venderse
+        for symbol, sizes in totales.items():
+            buySize = sizes['buySize']
+            sellSize = sizes['sellSize']
+            
+            # Calcular diferencia de acciones para vender
+            if buySize > sellSize:
+                acciones_a_vender = buySize - sellSize
+                
+                # Crear diccionario con la información de la operación
                 diccionario = {
-                                "Symbol": symbol,
-                                "_t_": 'None',
-                                "_tr_": 'None',
-                                "_s_": 'None',
-                                "_ut_": 'orderQty',
-                                "precio Offer": 'None',
-                                "_ws_client_order_id": 'None',
-                                "_cliOrderId": 0,
-                                "timestamp": datetime.now(),
-                                "status": 'ANTERIOR',
-                                "statusActualBotonPanico":'ANTERIOR',
-                                "user_id": user_id,
-                                "userCuenta": userCuenta,
-                                "accountCuenta": accountCuenta
-                                    }
+                    "Symbol": symbol,
+                    "_t_": 'None',
+                    "_tr_": 'None',
+                    "_s_": 'None',
+                    "_ut_": acciones_a_vender,
+                    "precio Offer": 'None',
+                    "_ws_client_order_id": 'None',
+                    "_cliOrderId": 0,
+                    "timestamp": datetime.now(),
+                    "status": 'ANTERIOR',
+                    "statusActualBotonPanico": 'ANTERIOR',
+                    "user_id": user_id,
+                    "userCuenta": userCuenta,
+                    "accountCuenta": accountCuenta,
+                    "tiempoSaldo": tiempoLecturaSaldo,
+                    "saldo": VariableParaSaldoCta
+                }
+                
+                # Agregar diccionario al diccionario global de operaciones enviadas
                 diccionario_operaciones_enviadas[len(diccionario_operaciones_enviadas) + 1] = diccionario
-                #pprint.pprint( get.diccionario_operaciones_enviadas)
-                #for key, valor in g et.diccionario_operaciones_enviadas.items():
-                #    print(key," : ",valor['_cliOrderId'])
-                símbolos_vistos.add(símbolo)
-        return 'ok'
-   except Exception as e:       
-        print("error de carga de diccionario de enviados", e)  
-        flash(' error de carga de diccionario de enviados')    
-   return 'ok'                   
+        app.logger.info("________CARGA DICCIONARIO OPERACIONES ENVIADAS___________")  
+        app.logger.info(accountCuenta)  # Imprimir cuenta en consola
+      
+       
+        return 'ok'  # Retorna 'ok' si la operación fue exitosa
+    
+    except Exception as e:
+        print(f"Error: {e}")  # Imprimir error en caso de excepción
+        return 'error'  # Retorna 'error' si ocurre una excepción
+
+
+
+
+
+
+
+
+         
 def estadoOperacionAnterioCargaDiccionarioEnviadas(pyRofexInicializada=None,account=None,user_id=None,userCuenta=None):
    try:        
         repuesta_operacion = pyRofexInicializada.get_all_orders_status()
@@ -808,10 +899,10 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot (endingGlobal,endingEnviadas):
-     print('endingGlobal___ ',endingGlobal,' endingEnviadas',endingEnviadas)
-     if endingGlobal == 'SI' and endingEnviadas == 'SI' and diccionario_operaciones_enviadas:
-         
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+    if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
+        print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
+        # Clear the dictionary if all conditions are met
         diccionario_operaciones_enviadas.clear()
         print("###############################################") 
         print("###############################################") 
@@ -820,8 +911,13 @@ def endingOperacionBot (endingGlobal,endingEnviadas):
         print("###############################################") 
         print("###############################################") 
         print("###############################################") 
-        pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia)
-          #      return render_template('home.html')    
+        account = diccionario_global_operaciones[symbol]['accountCuenta']
+        pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
+        pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
+        flash('FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO')
+        estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'],idUser)
+          
+
 
 
 
@@ -865,3 +961,10 @@ def append_order_report_to_csv(report, rutaORH):
             else:
                 values.append(value)
         writer.writerow(values)
+        
+def control_tiempo_lectura(intervalo_ms, tiempo_inicial, marca_de_tiempo):
+    # Inicializa el tiempo_inicial si es la primera vez que se ejecuta
+    if tiempo_inicial is None:
+        tiempo_inicial = marca_de_tiempo
+        return False, tiempo_inicial
+    return (marca_de_tiempo - tiempo_inicial) >= intervalo_ms, tiempo_inicial

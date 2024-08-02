@@ -9,11 +9,14 @@
 {% if layout == 'layoutConexBroker' %}
    {% extends 'layouts/layoutConexBroker.html' %}    
 {% endif %}
+{% if layout == 'layout_signal' %}
+   {% extends 'layouts/layout_signal.html' %}    
+{% endif %}
 {% block content %}
 
 <div class="jumbotron">
   <h1 class="display-4">No Obtiene Datos!</h1>  
   <h1 class="display-4">Logee Nuevamente en Broker!</h1>  
 </div>
-
+{% include 'layouts/layout_footer.html' %}
 {% endblock%}

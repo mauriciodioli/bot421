@@ -1,21 +1,12 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-import routes.instrumentos as instrumentos
+from flask import Blueprint, render_template, request,current_app, redirect, url_for, flash,jsonify
 import routes.api_externa_conexion.get_login as get
-import routes.api_externa_conexion.validaInstrumentos as val
-import routes.instrumentos as inst
-
 from datetime import datetime
-import enum
-from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
-import socket
-import requests
-import time
+from models.sheetModels.GoogleSheetManager import GoogleSheetManager
+from models.sheetModels.sheet_handler import SheetHandler
 import json
-from models.orden import Orden
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
-
-import random
+from dotenv import load_dotenv
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 #import routes.api_externa_conexion.cuenta as cuenta
@@ -23,9 +14,12 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pprint
 import os #obtener el directorio de trabajo actual
+import json
 import sys
 import csv
+import re
 
+load_dotenv()
 #import drive
 #drive.mount('/content/gdrive')
 
@@ -36,24 +30,10 @@ datoSheet = Blueprint('datoSheet',__name__)
 newPath = os.path.join(os.getcwd(), 'strategies/credentials_module.json') 
 directorio_credenciales = newPath 
 
-#SPREADSHEET_ID='1pyPq_2tZJncV3tqOWKaiR_3mt1hjchw12Bl_V8Leh74'#drpiBot2
-#SPREADSHEET_ID='1yQeBg8AWinDLaErqjIy6OFn2lp2UM8SRFIcVYyLH4Tg'#drpiBot3 de pruba
-SPREADSHEET_ID='1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s'#drpiBot de produccion
-#1GMv6fwa1-4iwhPBZqY6ZNEVppPeyZY0R4JB39Xmkc5s
+SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
 
-class States(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2
-    
-class Ordenes(enum.Enum):
-    WAITING_MARKET_DATA = 0
-    WAITING_CANCEL = 1
-    WAITING_ORDERS = 2 
-    #NEW  
-    #PENDING_NEW
-    #TIMESTAMP_ENVIO
-    
+
+precios_data = {}
 
     
     
@@ -91,39 +71,30 @@ def autenticar_y_abrir_sheet(sheetId, sheet_name):
 
 def leerSheet(sheetId,sheet_name): 
      
-     # recibo la tupla pero como este es para el bot leo el primer elemento 
-     sheet= autenticar_y_abrir_sheet(sheetId,sheet_name) 
-     if sheet: 
-        symbol = sheet.col_values(5)       # ticker de mercado
-        tipo_de_activo = sheet.col_values(22)  # cedear, arg o usa
-        trade_en_curso = sheet.col_values(19)  # long, short o nada
-        ut = sheet.col_values(20)              # cantidad a operar
-        senial = sheet.col_values(21)          # Open o Close
-        gan_tot = sheet.col_values(26)
-        dias_operado = sheet.col_values(30)    # Dias habiles operado
-        #FlagCCLCedear_col = sheet.col_values(12)          # flag del CCL correcto
-        
-        #union = zip(symbol,tipo_de_activo,trade_en_curso,ut,senial)
-        union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado)
+        if not get.autenticado_sheet:        
+            # recibo la tupla pero como este es para el bot leo el primer elemento 
+            credentials_path = os.path.join(os.getcwd(), 'strategies/pruebasheetpython.json')
+            # Crear instancia del gestor de hojas
+            get.sheet_manager = GoogleSheetManager(credentials_path)
 
-   
-       # for dato in union:
-       #  if ((dato[1] == 'USA' or dato[1] == 'ARG' or dato[1] == 'CEDEAR') and 
-       #         dato[2] == 'LONG_' or (dato[2] == 'SHORT' and dato[1] != 'ARG' and dato[1] != 'CEDEAR')):
-       #         if (dato[3] > '0'):
-       #             if (dato[4] == 'OPEN.' or dato[4] == 'closed.'):
-       #                 print(f"Datos {dato} - Pasa la condición")
-       #             else:
-       #                 print(f"Datos {dato} - No pasa la condición de la posición 4")
-       #         else:
-       #             print(f"Datos {dato} - No pasa la condición de la posición 3")
-       #  else:
-       #         print(f"Datos {dato} - No pasa la condición inicial")
-        
-        return union
-     else:
-       
-        return render_template('notificaciones/noPoseeDatos.html')
+            if get.sheet_manager.autenticar():
+                get.autenticado_sheet = True
+                handler = SheetHandler(get.sheet_manager, sheetId, sheet_name)
+        else:
+            # Autenticar
+            if  get.autenticado_sheet:
+                # Crear instancia del manejador de hoja con el gestor y los datos de la hoja
+                handler = SheetHandler(get.sheet_manager, sheetId, sheet_name)
+            else:
+                    print("Error al autenticar. Revisa los detalles del error.")
+                    get.autenticado_sheet = False
+                    return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_fichas')    
+                
+                # Ejemplo de uso de leerSheet
+        return handler.leerSheet()
+                
+            
+
 def leerDb(app):
      with app.app_context():   
         all_ins = db.session.query(InstrumentoSuscriptos).all()
@@ -131,23 +102,108 @@ def leerDb(app):
         print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
         return all_ins
 
-def modificar_columna_ut(Symbol,new_ut_values):
-    # Obtener el objeto sheet una vez, en lugar de repetir la autenticación
-    sheet = autenticar_y_abrir_sheet()
-    cell =  sheet.find(Symbol) 
-    row = cell.row
-    valores_de_la_fila = sheet.row_values(row)
-    current_ut_values = valores_de_la_fila[19]
-   
-        # Leer la columna "ut" actual
-    if current_ut_values != new_ut_values:  
-         sheet.update_cell(row,20,str(new_ut_values)) 
-   
-   
 
-    # Opcionalmente, puedes retornar las listas leídas si necesitas usarlas en otra parte del código
-    return "current_ut_values"
- 
+def update_precios(message):
+     # Definición de variables iniciales
+    p_value = None
+    suffix = None
+    # Comprobación del sufijo del símbolo y asignación de valores
+    symbol = message["instrumentId"]["symbol"]
+    ###################### para buscar un patron visit en este caso #############
+    #patron = r'\bHAVA\b'
+    #resultado = re.search(patron, symbol)
+  
+    # Verificar si se encontró y extraer el valor
+    #if resultado:
+     #   visit = resultado.group()
+      #  print(f'Encontrado: {visit}')
+    ##############################################################################  
+    if symbol.endswith("24hs"):
+        p_value = float(message["marketData"]["LA"]["price"])  # Precio "last" para 24hs
+       
+        if symbol not in get.precios_data:
+            get.precios_data[symbol] = {
+                'p24hs': None, 'max24hs': None, 'min24hs': None, 'last24hs': None
+            }
+        get.precios_data[symbol]['max24hs'] = float(message["marketData"]["HI"])
+        get.precios_data[symbol]['p24hs'] = float(message["marketData"]["LA"]["price"])
+        get.precios_data[symbol]['last24hs'] = float(message["marketData"]["CL"]["price"])
+        get.precios_data[symbol]['min24hs'] = float(message["marketData"]["LO"])
+    
+
+def actualizar_precios(sheetId, sheet_name, pais):
+    try:
+        if get.precios_data:
+            batch_updates = []
+            
+            if len(get.symbols_sheet_valores) <= 0:
+                if get.sheet_manager.autenticar():
+                    get.sheet = get.sheet_manager.abrir_sheet(sheetId, sheet_name)
+                    if get.sheet:
+                        ranges = ['C:C']  # Rango de símbolos/tickers en la hoja de cálculo
+                        try:
+                            data = get.sheet.batch_get(ranges)
+                            for index, row in enumerate(data[0]):
+                                if isinstance(row, list) and row:
+                                    symbol = str(row[0]).strip("['").strip("']")
+                                    get.symbols_sheet_valores.append(symbol)                                    
+                                    if symbol in get.precios_data:
+                                        precios_data = get.precios_data[symbol]
+                                        try:
+                                            if 'max24hs' in precios_data:
+                                                batch_updates.append({
+                                                    'range': f"E{index + 1}", 
+                                                    'values': [[str(precios_data['max24hs']).replace('.', ',')]]
+                                                })
+                                            if 'min24hs' in precios_data:
+                                                batch_updates.append({
+                                                    'range': f"F{index + 1}", 
+                                                    'values': [[str(precios_data['min24hs']).replace('.', ',')]]
+                                                })
+                                            if 'p24hs' in precios_data:
+                                                batch_updates.append({
+                                                    'range': f"G{index + 1}", 
+                                                    'values': [[str(precios_data['p24hs']).replace('.', ',')]]
+                                                })
+                                        except ValueError:
+                                            print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
+                        except Exception as e:
+                            print(f"Error en el proceso de actualización: {e}")
+            else:
+                for index, symbol in enumerate(get.symbols_sheet_valores):
+                    if symbol in get.precios_data:
+                        precios_data = get.precios_data[symbol]
+                        try:
+                            if 'max24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"E{index + 1}", 
+                                    'values': [[str(precios_data['max24hs']).replace('.', ',')]]
+                                })
+                            if 'min24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"F{index + 1}", 
+                                    'values': [[str(precios_data['min24hs']).replace('.', ',')]]
+                                })
+                            if 'p24hs' in precios_data:
+                                batch_updates.append({
+                                    'range': f"G{index + 1}", 
+                                    'values': [[str(precios_data['p24hs']).replace('.', ',')]]
+                                })
+                        except ValueError:
+                            print(f"El símbolo {symbol} no se encontró en la hoja de cálculo.")
+            
+            if batch_updates:
+                try:
+                    get.sheet.batch_update(batch_updates)
+                    print("Actualización en lotes exitosa.")
+                except Exception as e:
+                    print(f"Error en la actualización en lotes: {e}")
+            else:
+                print("No hay datos para actualizar.")
+    except Exception as e:
+        print(f"Error en el proceso de actualización: {e}")
+        return False
+    return True
 
 # Función de codificación personalizada para datetime
 def datetime_encoder(obj):
@@ -159,7 +215,66 @@ def datetime_encoder(obj):
 
     # Defines the handlers that will process the Order Reports.
 
+########################AQUI SE REALIZA EL JSON PARA LOS DATOS DEL SHEET#############
+def construir_lista_de_datos(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado):
+    datos = []
+    for i in range(1, len(symbol)):
+        datos.append({
+            'symbol': symbol[i],
+            'tipo_de_activo': tipo_de_activo[i],
+            'trade_en_curso': trade_en_curso[i],
+            'ut': ut[i],
+            'senial': senial[i],
+            'gan_tot': gan_tot[i],
+            'dias_operado': dias_operado[i]
+        })
+    return datos
      
+def guardar_datos_json(datos):
+    path_app_modelo = os.path.join(os.getcwd(), 'strategies', 'listadoInstrumentos')
+    file_path = os.path.join(path_app_modelo, 'datosSheetEstatico.json')
+
+    with open(file_path, 'w') as json_file:
+        json.dump(datos, json_file)
+        
+def leer_datos_json():
+    path_app_modelo = os.path.join(os.getcwd(), 'strategies', 'listadoInstrumentos')
+    file_path = os.path.join(path_app_modelo, 'datosSheetEstatico.json')
+    
+    try:
+        with open(file_path, 'r') as json_file:
+            data = json.load(json_file)
+    except FileNotFoundError:
+        print(f"No se pudo encontrar el archivo JSON en la ruta: {file_path}")
+        return []
+    except json.JSONDecodeError:
+        print(f"El archivo JSON en la ruta {file_path} no tiene un formato válido.")
+        return []
+
+    # Verificar si los campos necesarios están presentes en el diccionario
+    required_fields = ['symbol', 'tipo_de_activo', 'trade_en_curso', 'ut', 'senial', 'gan_tot', 'dias_operado']
+    for field in required_fields:
+        if field not in data:
+            print(f"El campo '{field}' no está presente en el archivo JSON.")
+            return []
+
+    # Construir la lista de datos en el formato necesario para el bloque HTML
+    datos = []
+    for i in range(len(data['symbol'])):
+        dato = {
+            'symbol': data['symbol'][i],
+            'tipo_de_activo': data['tipo_de_activo'][i],
+            'trade_en_curso': data['trade_en_curso'][i],
+            'ut': data['ut'][i],
+            'senial': data['senial'][i],
+            'gan_tot': data['gan_tot'][i],
+            'dias_operado': data['dias_operado'][i]
+        }
+        datos.append(dato)
+
+    return datos
+
+
 
 def calcularMepAl30():
     print("____________calcularMepAl30_____________")
@@ -245,7 +360,7 @@ def instrument_by_symbol_para_CalculoMep(symbol):
             
             #print("symbolllllllllllllllllllllll ",symbol)
            #https://api.remarkets.primary.com.ar/rest/instruments/detail?symbol=DLR/NOV23&marketId=ROFX
-            repuesta_instrumento = pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
+            repuesta_instrumento = get.pyConectionWebSocketInicializada.get_market_data(ticker=symbol, entries=entries, depth=2)
            
             
             #repuesta_instrumento = get.pyRofexInicializada.get_instrument_details(ticker=symbol)

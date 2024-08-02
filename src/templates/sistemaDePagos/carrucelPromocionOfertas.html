@@ -1,0 +1,48 @@
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% endif %}
+
+{% block title %}createSubscription{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center">
+        <h5>Sé uno de los perfiles principales de tu zona durante 30 minutos para conseguir más matches!</h5>
+    </div>
+    <div id="promotionsCarousel" class="carousel-container">
+        <div class="carousel-wrapper">
+            {% for promotion in promotions %}
+            <div class="carousel-slide {% if loop.first %}active{% endif %}">
+                <div class="card shadow-card">
+                    <img src="{{ promotion.image_url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ promotion.title }}</h5>
+                        <p class="card-text">{{ promotion.reason }}</p>
+                        <p class="card-text"><strong>Price: </strong>{{ promotion.price }} ARS</p>
+                        <p class="card-text ahorro"><strong>Discount: </strong>{{ promotion.discount }}%</p>
+                        <form class="donationForm" id="carrucelOpcionesOfertasForm" onsubmit="handleFormSubmit(event)">
+                            <input type="hidden" id="costo_base" name="costo_base" value="{{ promotion.price }}">
+                            <input type="hidden" id="discount" name="discount" value="{{ promotion.discount }}">
+                            <input type="hidden" id="description" name="description" value="{{ promotion.reason }}">
+                            <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Donar</button>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="carousel-indicators">
+            {% for promotion in promotions %}
+            <div class="dot {% if loop.first %}active{% endif %}" data-slide-to="{{ loop.index0 }}"></div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

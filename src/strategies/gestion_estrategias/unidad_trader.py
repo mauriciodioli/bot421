@@ -16,7 +16,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.triggerEstrategia import TriggerEstrategia
 from models.unidadTrader import UnidadTrader
-from routes.instrumentos import instrument_por_symbol
+from routes.instrumentos import instrument_por_symbol_para_sugerir_ut
 
 
 
@@ -25,6 +25,7 @@ unidad_trader = Blueprint('unidad_trader',__name__)
 
 @unidad_trader.route("/unidad-trader-mostrar/", methods=['POST'])
 def unidad_trader_mostrar():
+  try:  
     # Obtener los datos de la solicitud POST
     UT_usuario_id = request.form.get('UT_usuario_id')
     UT_cuenta = request.form.get('UT_cuenta')
@@ -41,24 +42,24 @@ def unidad_trader_mostrar():
         value = get.diccionario_global_sheet['argentina'][i]
         if value[1] == 'ARG':
             print(value[1])
-            resultado = instrument_por_symbol(value[0],UT_cuenta)
+            resultado = instrument_por_symbol_para_sugerir_ut(value[0],UT_cuenta)
             for item in resultado:
                 # Convierte el string JSON a un diccionario
-                json_string = item[3].replace("'", '"')
+                json_string = item[1].replace("'", '"')
                 data = json.loads(json_string)
                 # Accede al precio dentro del diccionario
-                precio = data[0]['price']
+                precio = data['price']
                 ut_ars.append(precio)
         else:
             if value[1] == 'CEDEAR':
                 print(value[1])
-                resultado = instrument_por_symbol(value[0],UT_cuenta)
+                resultado = instrument_por_symbol_para_sugerir_ut(value[0],UT_cuenta)
                 for item in resultado:
                     # Convierte el string JSON a un diccionario
-                    json_string = item[3].replace("'", '"')
+                    json_string = item[1].replace("'", '"')
                     data = json.loads(json_string)
                     # Accede al precio dentro del diccionario
-                    precio = data[0]['price']
+                    precio = data['price']
                     ut_cedears.append(precio)
 
 
@@ -72,7 +73,11 @@ def unidad_trader_mostrar():
 
     # Enviar la respuesta JSON con los datos
     return jsonify(data)
-    
+  except KeyError:
+    # Manejar la excepción si el diccionario no tiene la clave 'argentina'
+    # Puedes imprimir un mensaje de error, registrar la excepción, o realizar otra acción según sea necesario.
+    print("El diccionario no tiene la clave 'argentina'")
+    return jsonify({'error': 'El diccionario no tiene la clave \'argentina\''}), 500  # 500 es el código de estado para un error interno del servidor
    
 
 

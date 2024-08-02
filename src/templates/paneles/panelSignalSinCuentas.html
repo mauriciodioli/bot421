@@ -3,13 +3,48 @@
 {% block content %}
 
 <body> 
-  
+    
   <div class = 'container p-4'id="contenido" style="display:none">  
     <div class="jumbotron">
-      <h1 class="display-4">Signals!</h1>
       <p class="lead">To operate you can press the button with the corresponding color</p>
+      <form id="sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html" method="POST" action="/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html">
+          <input type="hidden" id="access_token_btn_donacion" name="access_token_btn_donacion" >
+          <input type="hidden" id="correo_electronico_btn_donacion" name="correo_electronico_btn_donacion"> 
+          <input type="hidden" id="productoComercial" name="productoComercial" value='donacion'> 
+          <input type="hidden" id="cluster_btn_donacion" name="cluster_btn_donacion" value='1'>        
+          <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout_signal">
+          <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Ayudanos a mejorar</button>
+      </form>
+
+    
       <hr class="my-4">  
-    </div> 
+    </div>
+     
+    <div class="jumbotron">
+      <h1 class="display-4">Select Broker!</h1>
+      <div class="form-group">
+          
+          <select class="form-control" id="brokerSelect" onchange="redirectBroker()">
+              <option value="" selected disabled>Select a broker</option>
+              <option value="https://micuenta.invertironline.com/ingresar?_gl=1*xhtvr6*_ga*MTc1MzIxMjkzNi4xNjc2MDUwNzY4*_ga_3ZJ55WFL39*MTcxNjk4NzM2My4xMjMuMS4xNzE2OTg3MzcwLjUzLjAuMA..">IOL</option>
+              <option value="https://www.bullmarketbrokers.com/Security/SignIn">Bull Market</option>
+              <option value="https://app.cocos.capital/login?_gl=1*288e0k*_ga*MTU1OTU4NjAzMi4xNzE2OTg3NTAz*_ga_GD4EVY0S82*MTcxNjk4NzUwMi4xLjAuMTcxNjk4NzUwMi42MC4wLjA.">Coco Capitales</option>
+              <option value="https://cuentas.vetacapital.com.ar/">Veta Capital</option>
+          </select>
+      </div>
+      <hr class="my-4">
+    </div>
+
+    <script>
+      function redirectBroker() {
+          var select = document.getElementById('brokerSelect');
+          var selectedValue = select.value;
+          if (selectedValue) {
+            window.open(selectedValue, '_blank');
+          }
+      }
+    </script>
+ 
    <!-- <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>-->
    <div class="table-responsive"> 
     <table class="table table-dark table-striped"  id="signalTable">
@@ -63,6 +98,9 @@
                       </div>  
                       <div class="form-group">
                         <input type="hidden" class="form-control" id="paisSeleccionado" name="paisSeleccionado">
+                      </div> 
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="selector" name="selector">
                       </div>                                  
                   </div>
                   <div class="modal-footer">
@@ -75,17 +113,18 @@
             </div>
           </form>
       </div> 
-  </div>  
+  </div> 
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
-    document.getElementById('splash').style.display = 'block';
+  var filasTablaDatos = [];
+  document.getElementById('splash').style.display = 'block';
   //{% if cuenta is defined %}
   // Acceder a los tokens desde el diccionario de contexto de Flask
   var cuenta = "{{ cuenta[0] }}";
   var usuario = "{{ cuenta[1] }}";
   var selector = "{{ cuenta[2] }}";
-  debugger;
+ 
   console.log("probanodo",cuenta)
   console.log(usuario)
   console.log(selector)
@@ -94,6 +133,15 @@ document.addEventListener('DOMContentLoaded', function() {
   localStorage.setItem("usuario", usuario);
   localStorage.setItem("selector", selector);
   //{% endif %}
+
+  //alamcen datos para enviar al boton donacion 
+  var access_token_btn_donacion = localStorage.getItem('access_token');
+  var correo_electronico_btn_donacion = localStorage.getItem('correo_electronico');
+  document.getElementById('access_token_btn_donacion').value = access_token_btn_donacion;
+  document.getElementById('correo_electronico_btn_donacion').value = correo_electronico_btn_donacion;
+
+
+
   document.addEventListener('click', function(event) {
     if (event.target && event.target.id == "boton-despues-carga-tabla") {
         document.getElementById('splash').style.display = 'block';
@@ -103,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var senial = event.target.dataset.senial;      
         var ut = event.target.dataset.ut;
         var paisS = localStorage.getItem('paisSeleccionado');
+        var selector =  localStorage.getItem('selector');
         
         // Llenar los campos ocultos en el formulario del modal
         document.getElementById('symbol').value = symbol;
@@ -111,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('access_token').value = access_token;
         document.getElementById('correo_electronico').value = cuentaEnvioAjax;
         document.getElementById('paisSeleccionado').value = paisS;
+        document.getElementById('selector').value = selector;
         // Cerrar el modal
         $('#confirmModal').modal('hide');
     }
@@ -119,7 +169,101 @@ document.addEventListener('DOMContentLoaded', function() {
   // Llama a la función de actualización inicial
   window.addEventListener('load', function() {
     updateTable();
+    
   });
+
+
+  function enviarNotificacionesTelegram() {
+    var notificacionTelegram = localStorage.getItem('notificacionTelegram');
+
+    // Verificar si notificacionTelegram es 'True'
+    if (notificacionTelegram == 'True') {
+        var paisSeleccionado = localStorage.getItem('paisSeleccionado');
+        var access_token = localStorage.getItem('access_token');
+        var selector = localStorage.getItem('selector');
+        var idtelegram = localStorage.getItem('idtelegram');
+        // Iterar sobre las filas de datos y enviar cada fila por AJAX
+        filasTablaDatos.forEach(function(fila) {
+            var formData = {
+                access_token: access_token,
+                symbol: fila[1], // Ajusta el índice según la posición de symbol en tu fila
+                ut: fila[5], // Ajusta el índice según la posición de ut en tu fila
+                senial: fila[3], // Ajusta el índice según la posición de senial en tu fila
+                correo_electronico: document.getElementById('correo_electronico').value,
+                paisSeleccionado: paisSeleccionado,
+                idtelegram: idtelegram,
+                selector: selector
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '/envio_notificacion_tlegram_desde_seniales_sin_cuenta/',
+                contentType: 'application/json', // Asegúrate de que el tipo de contenido sea JSON
+                data: JSON.stringify(formData), // Convertir formData a JSON
+                success: function(response) {
+                    // Manejar la respuesta del servidor si es necesario
+                    console.log("Respuesta del servidor:", response);
+                    // Aquí puedes agregar lógica adicional según la respuesta del servidor
+                },
+                error: function(error) {
+                    console.error("Error al enviar datos por AJAX:", error);
+                    // Manejar errores si es necesario
+                }
+            });
+        });
+    } else {
+        // Manejar el caso cuando notificacionTelegram no es 'True'
+        console.log("La notificación no está activada.");
+        // Puedes mostrar un mensaje al usuario u otra acción adecuada
+    }
+}
+
+  
+
+
+function leerFilasTabla(tableBody) {
+  var rows = tableBody.getElementsByTagName('tr');
+  filasTablaDatos = []; // Limpiar la variable global antes de llenarla de nuevo
+
+  for (var i = 1; i < rows.length; i++) { // Empieza en 1 para saltar el encabezado
+      var cells = rows[i].getElementsByTagName('td');
+      var datosFila = [];
+      for (var j = 0; j < cells.length; j++) {
+          datosFila.push(cells[j].innerText);
+      }
+      filasTablaDatos.push(datosFila);
+  }
+  
+  // Obtener la hora actual
+  var ahora = new Date();
+  var hora = ahora.getHours();
+
+  // Verificar si la hora actual está entre las 14:00 y las 20:00
+  if (hora >= 14  && hora < 20) {
+      enviarNotificacionesTelegram();
+  }
+
+  // console.log('Datos de la tabla cargados:', filasTablaDatos);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   function updateTable() {
     // Guarda los elementos visibles antes de la actualización
@@ -127,12 +271,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // var cambiosAntes = compararCambios();
     // Realizar una solicitud AJAX para obtener los nuevos datos
-    debugger;
+    
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
     var access_token = localStorage.getItem('access_token');
+    var selector = localStorage.getItem('selector');
+    var account = 'vacio'
     var xhr = new XMLHttpRequest();
-    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token;
+    
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/'+selector+'/';
     
     xhr.open('GET', url, true);
     //  encabezado Content-Type
@@ -141,14 +288,13 @@ document.addEventListener('DOMContentLoaded', function() {
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 400) {
         // La solicitud fue exitosa, actualiza la tabla  
-        
+       
         var response = JSON.parse(xhr.responseText);
       
         var tableBody = document.getElementById('signalTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Limpiar el contenido actual de la tabla
 
         
-      
       //  var filasCambiadas = comparaFilas(elementosAntes, response);
         //console.log(filasCambiadas);
 
@@ -177,15 +323,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
           var dato = response.datos[i];
         
-          debugger;
-          //console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9])
+          //debugger;
+         // console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
          
           if (
               (dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
               (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
              ) {
                     if (dato[4] === 'OPEN.'  && dato[8] === null){
-                                                                  
+                      if (Number(dato[3]) > 0) {                                          
                       //if (dato[4] !== dato[8]) {
                         //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
@@ -203,8 +349,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[4]}</td>
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
+                            <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
-                            <td>${dato[7]}</td>
                             <td>
                               <div class="form-group">
                                 <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -229,13 +375,14 @@ document.addEventListener('DOMContentLoaded', function() {
                           tableBody.appendChild(row);
                       }
 
-                   // }
+                    }
 
 
                     
-                 if (dato[4] === 'closed.' && dato[8] !== null) {    
+                 if (dato[4] === 'closed.' && dato[9] !== null) {    
                                                             
-                      if (dato[4] !== dato[8]) {
+                      if (dato[4] !== dato[9]) {
+                        if (Number(dato[3]) > 0) {
                         //if (dato[7] !== null) {
                           // var campana = document.getElementById('Campana');
                           // campana.play();
@@ -252,8 +399,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[4]}</td>
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
+                            <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
-                            <td>${dato[7]}</td>
                             <td>
                               <div class="form-group">
                                 <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -277,7 +424,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           `;
                           tableBody.appendChild(row);
                       }
-                     
+                     }
                     }
 
                 
@@ -288,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   (dato[1] === 'USA') &&
                   (dato[2] === 'LONG_' || (dato[2] === 'SHORT'))
                  ) {
-                        if (dato[4] === 'OPEN.'  && dato[8] === null){
+                        if (dato[4] === 'OPEN.'  && dato[9] === null){
                                                                       
                           //if (dato[4] !== dato[8]) {
                           //  if (dato[7] !== null) {
@@ -307,8 +454,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td>${dato[4]}</td>
                                 <td>${dato[2]}</td>
                                 <td>${dato[3]}</td>
+                                <td>${dato[9]}</td>
                                 <td>${dato[8]}</td>
-                                <td>${dato[7]}</td>
                                 <td>
                                   <div class="form-group">
                                     <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -337,9 +484,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     
                         
-                     if (dato[4] === 'closed.' && dato[8] !== null) {    
+                     if (dato[4] === 'closed.' && dato[9] !== null) {    
                                                                 
-                          if (dato[4] !== dato[8]) {
+                          if (dato[4] !== dato[9]) {
                            // if (dato[7] !== null) {
                               // var campana = document.getElementById('Campana');
                               // campana.play();
@@ -356,8 +503,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <td>${dato[4]}</td>
                                 <td>${dato[2]}</td>
                                 <td>${dato[3]}</td>
+                                <td>${dato[9]}</td>
                                 <td>${dato[8]}</td>
-                                <td>${dato[7]}</td>
                                 <td>
                                   <div class="form-group">
                                     <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
@@ -456,7 +603,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // console.log('Cambios en estado OPEN:', openChanged);
       //  console.log('Cambios en estado closed:', closedChanged);
       // Oculta las filas que no cambiaron
-    
+      leerFilasTabla(tableBody);
       } else {
         // Hubo un error en la solicitud
         showError('Error al obtener los datos: ' + xhr.statusText);
@@ -469,6 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //console.log('XHR:', xhr);
     //console.log('URL:', xhr.url);
     xhr.send();
+  
   }
 
   // Llama a la función de actualización inicial/
@@ -488,8 +636,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Establece un intervalo para actualizar la tabla cada 5 minutos
   //setInterval(updateTable, 300000); // 300000 milisegundos = 5 minutos
-  //setInterval(updateTable, 90000); // 90000 milisegundos = 1 minuto 30 segundos
-  setInterval(updateTable, 420000); // 15 segundos
+  setInterval(updateTable, 90000); // 90000 milisegundos = 1 minuto 30 segundos
+  //setInterval(updateTable, 240000); // 4 minutos
 
   // Definir la función showError
   function showError(message) {
@@ -553,7 +701,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elementosAntes.forEach(function(filaAntes) {
       var datoAntes = obtenerDatoDesdeFila(filaAntes);    
       var idAntes = datoAntes[0]; // Supongo que el primer elemento es un identificador único
-      //debugger;
+      
       //console.log("idAntes:", idAntes);
         // Busca el mismo dato en la respuesta
         var datoDespues = response.datos.find(function(dato) {

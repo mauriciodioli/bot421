@@ -1,0 +1,71 @@
+{% extends "layouts/layout_detalle_productos.html" %}
+{% block title %}Contacto{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    {% if category == 'success' %}
+                        <li style="color: green; background-color: #d4edda; border-color: #c3e6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% elif category == 'danger' %}
+                        <li style="color: red; background-color: #f8d7da; border-color: #f5c6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% else %}
+                        <li class="alert alert-{{ category }}">{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container-fluid" id="cardIndex">
+        <div class="container py-4 row justify-content-center m-auto">
+            <div class="row py-3 justify-content-center">
+                <div class="col-md-6 p-4 card card-body cardIndexPlanes"> 
+                    <main>
+                        <section>
+                            <h2 style="color: gold;">Información de Contacto</h2>
+                            <p>Para ponerte en contacto con nosotros, puedes utilizar la siguiente información:</p>
+                            <ul>
+                                <li>Teléfono: +543543690045</li>
+                                <li>Correo electrónico: info@serviciodpi.com</li>
+                                <li>Dirección: Calle Colombia #480, Córdoba, Argentina</li>
+                            </ul>
+                        </section>
+                    
+                        <section>
+                            <h2 style="color: gold;">Formulario de Contacto</h2>
+                            <form action="/enviar-email-de-contacto" method="POST">
+                                <div class="form-group">
+                                    <label style="color: gold;" for="nombre">Nombre:</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <label style="color: gold;" for="email">Correo Electrónico:</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <label style="color: gold;" for="mensaje">Mensaje:</label>
+                                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-primary" value="Enviar">
+                                </div>
+                            </form>
+                            <div class="form-group">
+                                <a href="/" class="btn btn-success mt-3">Volver</a>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}

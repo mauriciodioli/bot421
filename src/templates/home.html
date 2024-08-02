@@ -3,15 +3,18 @@
 
 <div class="jumbotron">
 
-  <div class="row">
+  
     <div class="ubicacion-imagenes">
       <!-- Aquí se incrustará la galería de imágenes -->
     </div>
   </div>
-  
-</div>
+
+{% include 'layouts/layout_footer.html' %}   
 <script>
-  
+
+
+
+
 // Definir la función showError
 function showError(message) {
   console.error(message);
@@ -19,34 +22,52 @@ function showError(message) {
 }
 let guardada = localStorage.getItem("date")
 access_token = localStorage.getItem("access_token")  
-console.log("entra en scriptt en archivo login.html y guarda la fecha: ",guardada)//muestra localStorage
+correo_electronico = localStorage.getItem("correo_electronico")  
+  
+// Verificar si el access_token está presente y no ha expirado
+
+if (!access_token || !correo_electronico || tokenExpirado(access_token)) {
+  showError("Debe iniciar sesión para acceder a esta página.");
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
+  // Redirigir al usuario a la página de login u otra página adecuada
+  window.location.href = "/";  // Ejemplo: redirigir a la página de inicio de sesión
+} else {
+  // Token válido, continuar con la lógica de la página home
+  console.log("Token válido. Usuario permitido acceder a /home.");
+
+  // Aquí puedes continuar con la lógica de tu página home
+  // Por ejemplo, realizar solicitudes AJAX u otras operaciones permitidas para usuarios autenticados
+}
+
+
 // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
 if (!access_token || tokenExpirado(access_token)) {
-// Obtener los tokens desde el diccionario de contexto de Flask
-{% if tokens is defined %}
-  access_token = "{{ tokens[0] }}";
-  const refresh_token = "{{ tokens[1] }}";
-  correo_electronico = "{{ tokens[2] }}";
-  const expiry_timestamp = "{{ tokens[3] }}";  // Marca de tiempo de expiración
-  const roll = "{{ tokens[4] }}";
-  const cuenta = "{{ tokens[5] }}";
-  const selector = "{{ tokens[6] }}";
-  const usuario = "{{ tokens[7] }}";
-  const usuario_id = "{{ tokens[8] }}";
+  // Obtener los tokens desde el diccionario de contexto de Flask
+  {% if tokens is defined %}
+    access_token = "{{ tokens[0] }}";
+    const refresh_token = "{{ tokens[1] }}";
+    correo_electronico = "{{ tokens[2] }}";
+    const expiry_timestamp = "{{ tokens[3] }}";  // Marca de tiempo de expiración
+    const roll = "{{ tokens[4] }}";
+    const cuenta = "{{ tokens[5] }}";
+    const selector = "{{ tokens[6] }}";
+    const usuario = "{{ tokens[7] }}";
+    const usuario_id = "{{ tokens[8] }}";
 
 
-  // Almacenar los tokens y la marca de tiempo de expiración en el localStorage
-  localStorage.setItem("access_token", access_token);
-  localStorage.setItem("refresh_token", refresh_token);
-  localStorage.setItem("correo_electronico", correo_electronico);
-  localStorage.setItem("expiry_timestamp", expiry_timestamp);
-  localStorage.setItem("roll",roll);
-  localStorage.setItem("cuenta",cuenta);
-  localStorage.setItem("selector",selector);
-  localStorage.setItem("usuario",usuario);
-  localStorage.removeItem('usuario_id');
-  localStorage.setItem("usuario_id",usuario_id);
-{% endif %}
+    // Almacenar los tokens y la marca de tiempo de expiración en el localStorage
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
+    localStorage.setItem("correo_electronico", correo_electronico);
+    localStorage.setItem("expiry_timestamp", expiry_timestamp);
+    localStorage.setItem("roll",roll);
+    localStorage.setItem("cuenta",cuenta);
+    localStorage.setItem("selector",selector);
+    localStorage.setItem("usuario",usuario);
+    localStorage.removeItem('usuario_id');
+    localStorage.setItem("usuario_id",usuario_id);
+  {% endif %}
 }else {
 // Token válido, usarlo para la solicitud AJAX
 //document.getElementById("access_token").value = access_token;

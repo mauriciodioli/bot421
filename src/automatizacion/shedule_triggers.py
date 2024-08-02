@@ -33,6 +33,7 @@ import traceback  # Importa el módulo traceback para obtener información detal
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import logging
+import tokens.token as Token
 
 
 shedule_triggers = Blueprint('shedule_triggers', __name__)
@@ -93,13 +94,18 @@ def muestraTriggers():
     try: 
        
          account = request.form.get('Shedule_accounCuenta')
-         # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
-         triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()        
-      
-         total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
-         db.session.close()
-         
-         return render_template("automatizacion/trigger.html", num_triggers=total_triggers)
+         access_token = request.form.get('Shedule_accessToken')
+         refreshToken = request.form.get('Shedule_refreshToken')
+         layouts = request.form.get('Shedule_layoutOrigen')
+         if access_token and Token.validar_expiracion_token(access_token=access_token): 
+            # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
+            triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()        
+        
+            total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
+            db.session.close()
+            
+            return render_template("automatizacion/trigger.html", num_triggers=total_triggers)
+         return render_template('usuarios/logOutSystem.html')  
     except:        
         return render_template("errorLogueo.html" )
    
@@ -133,7 +139,7 @@ def ArrancaShedule():
              # Supongamos que shedule_triggers es tu objeto Blueprint de Flask
             app = current_app._get_current_object() 
             hilo_principal = threading.Thread(target=planificar_schedule, 
-                                                args=(app,idUser,fecha_inicio_shedule, fecha_fin_shedule,cuenta,correo_electronico,selector ))
+                                                args=(app,idUser,fecha_inicio_shedule, fecha_fin_shedule,cuenta,correo_electronico,selector, access_token ))
 
             hilo_principal.start()
 
@@ -215,7 +221,7 @@ def terminar_hilos_shedule():
         print('FUNC__terminar_hilos_shedule___ TERMINA HILO EN SHEDULE____')
 
     # Limpiar la lista de hilos iniciados
-    get.hilos_iniciados_shedule.clear()
+        get.hilos_iniciados_shedule.clear()
 
 
     
@@ -231,7 +237,7 @@ def reiniciar_hilos(app):
             print(f"El hilo {hilo_id} aún está en ejecución y no será reiniciado.")
 
 
-def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,correo_electronico,selector ):
+def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,correo_electronico,selector,access_token ):
     def ejecutar_schedule(hilo_id):
         #busca el directorio src/logs.log
         src_directory1 = os.getcwd()#busca directorio raiz src o app   
@@ -254,7 +260,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 #        print("El contenido del archivo logs.log ha sido borrado.")
           # Variable local para mantener un registro de los hilos iniciados aquí
         app.logger.info("FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR")
-        llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, app,user_id, cuenta,correo_electronico,selector)
+        llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, app,user_id, cuenta,correo_electronico,selector,access_token)
         #tiempoInicioDelDia = '12:00'
         #tiempoFinDelDia = '14:20'
         #schedule.every().day.at(get.hora_inicio_manana.strftime('%H:%M')).do(llama_tarea)
@@ -305,7 +311,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
     
     
     
-def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electronico, selector):
+def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electronico, selector,access_token):
     app.logger.info("_______________FUNC_ llama_tarea_cada_24_horas_estrategias_____________")
     with app.app_context():
         try:
@@ -331,7 +337,7 @@ def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electron
 
                             # Si no hay un hilo iniciado para este usuario, lo inicia
                             hilo_id = f"{usuario.correo_electronico}_{triggerEstrategia.nombreEstrategia}"  # Utiliza el correo electrónico del usuario y el nombre de la estrategia como identificador único del hilo
-                            hilo = threading.Thread(target=tarea_inicio, args=(hilo_id, app, triggerEstrategia, usuario))
+                            hilo = threading.Thread(target=tarea_inicio, args=(hilo_id, app, triggerEstrategia, usuario,access_token))
         #                  hilo_id = 'hilo_shedule'
     #  hilo_schedule = threading.Thread(target=ejecutar_schedule, args=(hilo_id,))
     #  hilo_schedule.start()
@@ -352,7 +358,7 @@ def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electron
         for hilo in hilos:
             hilo.join()
 
-def tarea_inicio(user_id,app,triggerEstrategia,usuario):
+def tarea_inicio(user_id,app,triggerEstrategia,usuario,access_token):
     
     # Aquí puedes enviar los datos a otra ruta en otro archivo Python
     # utilizando la librería requests o similar
@@ -369,7 +375,7 @@ def tarea_inicio(user_id,app,triggerEstrategia,usuario):
                 datos = {
                             "userCuenta": triggerEstrategia.userCuenta,
                             "idTrigger":triggerEstrategia.id,
-                            "access_token": 'access_token',
+                            "access_token": access_token,
                             "idUser": triggerEstrategia.user_id,
                             "correo_electronico": usuario.correo_electronico,
                             "cuenta": triggerEstrategia.accountCuenta,
@@ -390,7 +396,7 @@ def tarea_inicio(user_id,app,triggerEstrategia,usuario):
                 #url =  'estrategiaSeetWS.',triggerEstrategia.nombreEstrategia
                 #response = requests.post(url_for(url), data=datos)
                 # Construir la URL de destino
-                url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia
+                url_destino = 'http://127.0.0.1:5001/' + triggerEstrategia.nombreEstrategia.replace("_", "-")
                 
             
                 # Enviar los datos a la estrategia

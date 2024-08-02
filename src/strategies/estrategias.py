@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,current_app
 import routes.instrumentosGet as instrumentosGet
+from sqlalchemy.exc import OperationalError
 import requests
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
@@ -17,6 +18,8 @@ from models.cuentas import Cuenta
 from models.ficha import Ficha
 from models.unidadTrader import UnidadTrader
 from fichasTokens.fichas import crear_ficha
+import tokens.token as Token
+from models.administracion.altaEstrategiaApp import AltaEstrategiaApp
 
 import jwt
 import os
@@ -36,38 +39,99 @@ class States(enum.Enum):
 def estrategias_usuario_general():
     try:
       if request.method == 'GET': 
-            triggerEstrategia = db.session.query(TriggerEstrategia).all()
-            ut_por_trigger = {}
+      # Obtener todos los TriggerEstrategia
+        estrategias = db.session.query(TriggerEstrategia).all()
 
-            for trigger in triggerEstrategia:
-                ut = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
-                if ut:
-                    ut_por_trigger[trigger.id] = ut
+        # Crear un diccionario para almacenar las unidades filtradas por trigger_id
+        ut_por_trigger = {}
 
-            db.session.close()
-
-            # Si no hay ningún dato de 'ut', envía solo 'triggerEstrategia'
-            if not ut_por_trigger:
-                return render_template("/estrategias/panelControEstrategiaUser.html",datos = [0,triggerEstrategia])
-
-            # Si hay datos de 'ut', envía 'ut_por_trigger'
-            return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,ut_por_trigger])
+       
+        db.session.close()
+        ut_por_trigger = {}
+        
+        for trigger in estrategias:
+            # Obtener 'ut' para el trigger actual
+            ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
+            
+            # Inicializar una lista para almacenar los valores de 'ut'
+            ut_values = []
+            
+            # Iterar sobre los objetos UnidadTrader y recopilar los valores de 'ut'
+            for ut_object in ut_objects:
+                ut_values.append(ut_object.ut)
+                print("Valor de 'ut':", ut_object.ut)
+            
+            # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
+            if not ut_values:
+                # Si la lista está vacía, asignar 0 al atributo 'ut'
+                trigger.ut = 0
+            else:
+                # Si la lista no está vacía, asignar los valores recopilados al atributo 'ut'
+                trigger.ut =  ut_object.ut
+        
+      
+        return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,estrategias], layout='layout')
 
           
     except:
        print('no hay usuarios') 
     return 'problemas con la base de datos'
 
+
+def estrategias_usuario_nadmin_desde_endingOperacionBot(account, usuario_id):
+    try:
+        # Consulta de estrategias
+        estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(
+            TriggerEstrategia.user_id == usuario_id, 
+            TriggerEstrategia.accountCuenta == account
+        ).all()
+
+        ut_por_trigger = {}
+
+        for trigger in estrategias:
+            # Obtener 'ut' para el trigger actual
+            ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
+            
+            # Inicializar una lista para almacenar los valores de 'ut'
+            ut_values = [ut_object.ut for ut_object in ut_objects]
+            
+            # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
+            trigger.ut = sum(ut_values) if ut_values else 0
+
+        # Renderizar la plantilla con los datos
+        return render_template(
+            "/estrategias/panelControEstrategiaUser.html", 
+            datos=[usuario_id, estrategias], 
+            layout='layoutConexBroker'
+        )
+    
+    except Exception as e:
+        print(f'Error en estrategias_usuario_nadmin_desde_endingOperacionBot: {e}')
+        return render_template("/notificaciones/errorEstrategiaABM.html")
+
+    finally:
+        # Asegurarse de cerrar la sesión
+        db.session.remove()
+
+
+
+
+
+
+
+
 @estrategias.route("/estrategias-usuario-nadmin",  methods=["POST"])
 def estrategias_usuario_nadmin():
     try:
       if request.method == 'POST': 
-          access_token = request.form.get('access_token_est') 
-          if access_token:
+          access_token = request.form.get('estrategias_accessToken') 
+          refreshToken = request.form.get("estrategias_refreshToken")
+          account = request.form.get("estrategias_accounCuenta")
+          if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()  
             
             usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
-            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id, TriggerEstrategia.accountCuenta == account).all()
           
          
             db.session.close()
@@ -98,10 +162,13 @@ def estrategias_usuario_nadmin():
            
                    
             #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias], layout='layoutConexBroker')
+          else:
+               return render_template('notificaciones/tokenVencidos.html', layout='layout')  
     except:
        print('no hay estrategias en strategies/estrategias.py') 
     return  render_template("/notificaciones/errorEstrategiaABM.html")
+
 
 @estrategias.route("/estrategias-usuario",  methods=["POST"])
 def estrategias_usuario():
@@ -115,7 +182,7 @@ def estrategias_usuario():
                 print("Name:", estrategia.userCuenta)
                 # Print other attributes as needed
                 print()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
     
     except:
        print('no hay estrategias') 
@@ -137,7 +204,8 @@ def eliminarArhivoEstrategia(nombreEstrategia):
         print(f"Error al intentar eliminar el archivo {nombreEstrategia}.py: {e}")
 
 def modificar_app_elimina_estrategia(nombreEstrategia):
-    path_app_modelo = os.path.join(os.getcwd(), 'src/app.py')
+    
+    path_app_modelo = os.path.join(os.getcwd(), 'app.py')
     
     try:
         # Leer el contenido del archivo original
@@ -163,19 +231,23 @@ def eliminar_trigger():
     usuario_id = request.form['user_id']
     access_token = request.form['eliminarEstrategiaToken']
     account = request.form['eliminarEstrategiaCuenta']
-    Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
-    utABM.eliminarUT(IdTrigger)
-    eliminarArhivoEstrategia(Trigger.nombreEstrategia)
-    db.session.delete(Trigger)
-    db.session.commit()
-    
-    
-    flash('Trigger eliminado correctamente.')
-    
-    estrategias = db.session.query(TriggerEstrategia).filter_by(user_id=usuario_id).all()
-    db.session.close()   
-    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
-
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
+        Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
+        utABM.eliminarUT(IdTrigger)
+        eliminarArhivoEstrategia(Trigger.nombreEstrategia)
+        
+        db.session.delete(Trigger)
+        db.session.commit()
+        
+        
+        flash('Trigger eliminado correctamente.')
+        estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
+      
+        db.session.close()   
+        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
+    else:
+         flash('El token a expirado')
+         return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
 @estrategias.route("/editar-trigger-nombre", methods=["POST"])
 def editar_trigger_nombre():
     IdTrigger = request.form['IdTrigger']
@@ -190,7 +262,7 @@ def editar_trigger_nombre():
     
     estrategias = db.session.query(TriggerEstrategia).all()
     db.session.close()
-    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
     
 @estrategias.route("/editar-Trigger/", methods = ["POST"] )
 def editar_Trigger():
@@ -218,11 +290,59 @@ def editar_Trigger():
             flash('Estrategia editada correctamente.')
             estrategias = db.session.query(TriggerEstrategia).all()
             db.session.close()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias])
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
                     
     except:
                 print('no hay estrategias')
     return render_template("/notificaciones/errorEstrategiaVacia.html")
+
+
+
+def altaEstrategiaApp(account, nombreEstrategia):
+    try:
+        # Verificar si ya existe una estrategia con el mismo nombre
+        existing_estrategia = db.session.query(AltaEstrategiaApp).filter_by(nombreEstrategia=nombreEstrategia).first()
+        
+        # Si existe una estrategia con el mismo nombre, no agregar y retornar False
+        if existing_estrategia:
+            print(f"Estrategia con nombre '{nombreEstrategia}' ya existe.")
+            return False
+
+        # Obtener la fecha actual como una cadena de texto
+        fecha_actual_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Crear una instancia de AltaEstrategiaApp
+        estrategia = AltaEstrategiaApp(
+            id=None,
+            accountCuenta=account,
+            nombreEstrategia=nombreEstrategia,
+            estado='INICIADO',
+            descripcion='NO SE AGREGÓ AÚN',
+            fecha=fecha_actual_str
+        )
+
+        # Agregar la instancia de AltaEstrategiaApp a la sesión
+        db.session.add(estrategia)
+        # Confirmar los cambios
+        db.session.commit()
+
+        return True
+
+    except OperationalError as e:
+        # Manejar la excepción de error operacional (tabla ya existe)
+        print("Error al intentar agregar la estrategia:", e)
+        return False
+    except Exception as e:
+        # Manejar cualquier otra excepción
+        print("Error inesperado:", e)
+        return False
+
+
+
+
+
+
+
 
 def agregar_estrategia_nueva_app(nombreEstrategia):
     try:
@@ -233,17 +353,55 @@ def agregar_estrategia_nueva_app(nombreEstrategia):
         with open(path_app_modelo, "r", encoding="utf-8") as archivo_entrada:
             contenido = archivo_entrada.readlines()
 
-        # Agregar la nueva línea a partir de la línea 18
-        nueva_linea = 'from strategies.' + nombreEstrategia + ' import ' + nombreEstrategia + '\n'
-        contenido.insert(17, nueva_linea)
-
-        # Agregar la segunda nueva línea después de la línea 150
+        # Definir las nuevas líneas
+        nueva_linea = 'from strategies.estrategiasUsuarios.' + nombreEstrategia + ' import ' + nombreEstrategia + '\n'
         nueva_linea2 = 'app.register_blueprint(' + nombreEstrategia + ')\n'
-        contenido.insert(150, nueva_linea2)
 
-        # Escribir el contenido modificado de vuelta al archivo
-        with open(path_app_modelo, "w", encoding="utf-8") as archivo_salida:
-            archivo_salida.writelines(contenido)
+        # Encontrar la línea que contiene '*****************'
+        linea_referencia1 = None
+        linea_referencia2 = None
+
+        # Encuentra la primera referencia
+        for i, linea in enumerate(contenido):
+            if '######################zona de estrategias de usuarios####################' in linea:
+                linea_referencia1 = i
+                # Verificar si la siguiente línea está en blanco
+                if i + 1 < len(contenido) and contenido[i + 1].strip() == "":
+                    linea_referencia1 = i+1
+                    print("La próxima línea está en blanco.")
+                break
+        # Encuentra la segunda referencia
+        for i, linea in enumerate(contenido):
+            if '#####################zona blueprin de usuarios##############' in linea:
+                linea_referencia2 = i
+                 # Verificar si la siguiente línea está en blanco
+                if i + 1 < len(contenido) and contenido[i + 1].strip() == "":
+                    linea_referencia2 = i+1
+                    print("La próxima línea está en blanco.")
+                break
+
+        #Verifica si se encontraron las referencias
+        if linea_referencia1 is not None and linea_referencia2 is not None:
+            # Inserta la primera línea en la posición encontrada
+           # if linea_referencia1 + 1 < len(contenido) and contenido[linea_referencia1 + 1].strip():
+            #    contenido.insert(linea_referencia1 + 1, '\n')
+            contenido.insert(linea_referencia1 + 1, nueva_linea)
+            
+            # Calcula la nueva posición de inserción para la segunda línea
+            if linea_referencia2 > linea_referencia1:
+                linea_referencia2 += 1
+            
+            # Inserta la segunda línea en la posición encontrada
+           # if linea_referencia2 + 1 < len(contenido) and contenido[linea_referencia2 + 1].strip():
+           #     contenido.insert(linea_referencia2 + 1, '\n')
+            contenido.insert(linea_referencia2 + 1, nueva_linea2)
+
+            # Escribir el contenido modificado de vuelta al archivo
+            with open(path_app_modelo, "w", encoding="utf-8") as archivo_salida:
+                archivo_salida.writelines(contenido)
+        else:
+            # Manejar caso donde no se encontraron las referencias
+            print("No se encontraron las referencias necesarias en el archivo.")
 
     except Exception as e:
         print("Error al agregar la estrategia nueva al archivo:", e)
@@ -326,7 +484,7 @@ def alta_estrategias_trig():
                 if nombre_broker:
                     
                     nombre_broker = nombre_broker[0].replace(" ", "_")
-                    nombreEstrategia = nombre_broker+'_001'
+                    nombreEstrategia = nombre_broker+'_'+account+'_001'
                    
             else:    
                 # Lista para almacenar los nombres
@@ -353,11 +511,16 @@ def alta_estrategias_trig():
             
                 nombre_broker = nombre_broker[0].replace(" ", "_")
 
-                nombreEstrategia = nombre_broker+'_'+numero_nuevo
+                nombreEstrategia = nombre_broker+'_'+account+'_'+numero_nuevo
               
            
             generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
            
+            #######################################################################
+            # Aquí cargo los datos a la tabla para actualizar app.py#
+            #######################################################################
+            
+            altaEstrategiaApp(account,nombreEstrategia)
          
             if cuentas:
                 print("Datos de la cuenta:")
@@ -388,12 +551,12 @@ def alta_estrategias_trig():
                 triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
                 estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == user_id,TriggerEstrategia.accountCuenta == cuentas.accountCuenta).all()
                 
-                db.session.close()
                 #######################################################################
                 # Aquí debes tener los datos que deseas pasar a la función crear_ficha#
                 #######################################################################
                 fichaStatic = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').all()
-                
+                # Cerrar la sesión
+                db.session.close()
                 if not fichaStatic:
                     reporte = obtenerSaldoCuenta(account=cuentas.accountCuenta)   
                     valor = reporte['availableToCollateral'] 
@@ -415,14 +578,15 @@ def alta_estrategias_trig():
                 
                     # Realizar la solicitud POST con los datos
                     response = requests.post(url, json=data)
-                # agregar_estrategia_nueva_app(nombreEstrategia)
-                return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias])
+                
+                return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias],layout='layoutConexBroker')
            
     except:
         print('no hay estrategias')
     flash('No se puede regitrar la estrategia.')
     return  render_template("/notificaciones/errorEstrategiaABM.html")
   
+
 
 @estrategias.route('/inicioEstrategias/')
 def inicioEstrategias():

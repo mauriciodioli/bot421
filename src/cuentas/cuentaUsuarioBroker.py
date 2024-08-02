@@ -10,6 +10,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.instrumento import Instrumento
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
+import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
@@ -24,7 +25,7 @@ def cuentaUsuarioBroker_all_cuentas_post():
 
         todasLasCuentas = []
 
-        if access_token:
+        if access_token and Token.validar_expiracion_token(access_token=access_token): 
             app = current_app._get_current_object()
             
             try:
@@ -65,7 +66,7 @@ def cuentas_Usuario_Broker():
       if request.method == 'GET': 
            cuentasBroker = db.session.query(Cuenta).all()
            db.session.close()
-           return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentasBroker)
+           return render_template("/cuentas/cuntasUsuariosBrokers.html", layout = 'layout', datos = cuentasBroker)
    except:
        print('no hay usuarios') 
    return 'problemas con la base de datos'
