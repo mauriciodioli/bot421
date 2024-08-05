@@ -6,7 +6,7 @@ body {
 }
 
 .container_galeria_imagenes {
-    width: 60%;
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
 }
@@ -58,3 +58,205 @@ body {
     height: 24px;
     margin-right: 5px;
 }
+
+/* General modal styles */
+.modal_creaPublicacion {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Black with opacity */
+}
+
+/* Modal content */
+.modal-content_creaPublicacion {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered horizontally */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Default width */
+    max-width: 600px; /* Maximum width */
+    border-radius: 8px; /* Rounded corners */
+    position: relative;
+}
+
+/* Close button */
+.close_creaPublicacion {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Close button on hover */
+.close_creaPublicacion:hover,
+.close_creaPublicacion:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 600px) {
+    .modal-content_creaPublicacion {
+        width: 95%; /* Full width on small screens */
+        margin-top: 10%; /* Adjust margin */
+    }
+}
+
+/* Style for the media icon button */
+.media-icon-button_creaPublicacion {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.media-icon-button_creaPublicacion img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.media-icon-button_creaPublicacion span {
+    font-size: 14px;
+}
+
+/* Style for the image container */
+.image-container_creaPublicacion {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust the size as needed */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-container_creaPublicacion img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+
+.image-container_creaPublicacion img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+
+/* General modal styles */
+.image-modal_creaPublicacion {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Black with opacity */
+}
+
+/* Modal content */
+.image-modal-content_creaPublicacion {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered horizontally */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Default width */
+    max-width: 600px; /* Maximum width */
+    border-radius: 8px; /* Rounded corners */
+    position: relative;
+}
+
+/* Close button */
+.close-image_creaPublicacion {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Close button on hover */
+.close-image_creaPublicacion:hover,
+.close-image_creaPublicacion:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Media inside the modal */
+#modalImage_creaPublicacion {
+    width: 100%;
+    height: auto;
+    max-height: 80vh; /* Limit height for better view */
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+.thumbnail_creaPublicacion {
+    max-width: 100px;
+    max-height: 100px;
+    cursor: pointer;
+}
+
+/* Media inside the modal */
+#modalMedia_creaPublicacion img,
+#modalMedia_creaPublicacion video {
+    width: 100%;
+    height: auto;
+    max-height: 80vh; /* Limit height for better view */
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+/* Image inside the modal */
+#modalImage_creaPublicacion {
+    width: 100%;
+    height: auto;
+    max-height: 80vh; /* Limit height for better view */
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+
+/* Style for the media container */
+.media-container_creaPublicacion {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust size as needed */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Style for images and videos inside the container */
+.media-container_creaPublicacion img,
+.media-container_creaPublicacion video {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+
+
+
+
+.cropper-container {
+    max-width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+  }
+  
+  .cropper-container img {
+    width: 100%;
+    height: auto;
+  }
+  
