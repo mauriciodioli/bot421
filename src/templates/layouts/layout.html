@@ -144,15 +144,15 @@
                         </ul>                        
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/detalle/cuenta-demo/layout">Cuenta Demo</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout">Suscribir</a>
                     </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/home">Home</a>
-                    </li>
+ 
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Subir</a>
@@ -358,12 +358,7 @@
         cuentaLink.style.display = 'none'; 
         if (localStorage.getItem("selector")) {
             let cuentaBroker = localStorage.getItem("cuenta");  
-            let simulado = localStorage.getItem("selector");  
-            console.log(correo_electronico);
-            console.log(cuentaBroker);
-            console.log(simulado);
-                
-                
+            let simulado = localStorage.getItem("selector"); 
             
                // document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
           
@@ -382,10 +377,10 @@
                     let cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
                     document.getElementById("mensaje_simulado").innerHTML = cuenta;
 
-                    let enlace_correo = "<a ' style='text-decoration:none; color:blue;''>" + correo_electronico + "</a>";
+                    let enlace_correo = "<a ' style='text-decoration:none; color:#00ff00;''>" + correo_electronico + "</a>";
                     document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
-                    let mensaje = "<a ' style='text-decoration:none;  color:blue;'>" + cuentaBroker + "</a>";
+                    let mensaje = "<a ' style='text-decoration:none;  color:#00ff00;'>" + cuentaBroker + "</a>";
                     document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
                     } else {
                         let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
