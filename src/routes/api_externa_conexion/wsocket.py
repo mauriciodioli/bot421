@@ -7,6 +7,7 @@ import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import enviar_leer_sheet
 from strategies.datoSheet import update_precios
+from strategies.caucionador.caucion import determinar_caucion
 from datetime import datetime
 
 import pandas as pd
@@ -21,6 +22,9 @@ import json
 import os
 import copy
 
+from sqlalchemy.exc import OperationalError
+import pymysql
+
 wsocket = Blueprint('wsocket',__name__)
 
 
@@ -30,8 +34,7 @@ tiempo_inicial = time.time()  # Captura el tiempo actual
 
 def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=None,idUser=None,correo_electronico=None,selector=None):
   
-     
-      cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
+      cuenta = cargarCuenta(Cuenta,idUser,account)
       passwordCuenta = cuenta.passwordCuenta
       passwordCuenta = passwordCuenta.decode('utf-8')
       endPoint = get.inicializar_variables(cuenta.accountCuenta)
@@ -92,7 +95,12 @@ def market_data_handler_0(message):
                 if  get.luzMDH_funcionando == False:
                     get.luzMDH_funcionando = True       
             
-                update_precios(message)
+                update_precios(message)   
+                
+                now = datetime.now()                
+              #  if (now.hour == 19 and now.minute >= 20 and now.minute <= 29):
+                determinar_caucion(message)
+                
                 if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
                     pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
                     
@@ -104,13 +112,7 @@ def market_data_handler_0(message):
                     price = message.get('price', 10)  # Asume 100.0 si no se especifica
 
                     # Enviar la orden a través del WebSocket
-                    pyRofexInicializada.send_order_via_websocket(
-                        ticker=ticker, 
-                        side=side, 
-                        size=size, 
-                        order_type=order_type, 
-                        price=price
-                    )
+                    pyRofexInicializada.send_order_via_websocket(ticker=ticker,side=side,size=size,order_type=order_type,price=price)
                 
                 # Actualizar el timestamp de la última ejecución
             
@@ -306,16 +308,10 @@ def SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector):
                         pyRofexInicializada.MarketDataEntry.CLOSING_PRICE]
           
             merdado_id = pyRofexInicializada.Market.ROFEX
-            pyRofexInicializada.market_data_subscription(
-                                        tickers=instrumentos_existentes,
-                                        entries=entries,                                       
-                                        depth=3,
-                                        handler=None, 
-                                        environment=account
-                                    )
+            pyRofexInicializada.market_data_subscription(tickers=instrumentos_existentes,entries=entries,depth=3,environment=account)
         
            
-            datos = ContenidoSheet_list #COMENTADO POR SHEET
+          
             
         
     #return instrumentos_existentes
@@ -402,8 +398,35 @@ def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
         return True
 
 
+def cargarCuenta(Cuenta,idUser,account):
+    retries = 0
+    max_retries = 5
+    retry_delay = 5  # segundos
 
-
+    while retries < max_retries:
+        try:
+            # Realiza la consulta
+            cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
+            #db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
+            return cuenta  # Si la consulta es exitosa, retorna el resultado
+        
+        except OperationalError as e:
+            print(f"Error de conexión: {e}. Reintentando en {retry_delay} segundos...")
+            retries += 1
+            time.sleep(retry_delay)  # Espera antes de volver a intentar
+            db.session.remove()  # Elimina la sesión actual
+            
+            # Reconfigura la sesión si es necesario
+            db.session.bind = db.engine
+            
+        except Exception as e:
+            print(f"Ocurrió un error: {e}")
+            break  # Sale del bucle en caso de error general
+    
+    if retries == max_retries:
+        print("Error: Se ha alcanzado el límite de reintentos.")
+        # Manejo adicional de error si es necesario
+    return None
 
 
 

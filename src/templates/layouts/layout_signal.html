@@ -41,7 +41,17 @@
     <script src="{{url_for('static',filename='js/panelSignalSinCuentas/service-worker.js') }}"></script>
 
 
-   
+    <style>
+        .navbar-center {
+            display: flex;
+            justify-content: flex-start;
+         
+        
+            margin-left: 80px; /* Mueve los elementos 43 píxeles a la derecha */
+        
+        }
+       
+    </style>
 
 </head>
 
@@ -49,9 +59,11 @@
     <!-- As a heading -->    
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" >
         <div class="container-fluid">
-            <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico" ></h1>
-            <h1 id="mensaje_cuentaBroker" name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
-      
+            <div class="navbar-center">
+                <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico"></h1>
+           </div>
+           
+          
       
       
             <button class="navbar-toggler"
@@ -68,6 +80,16 @@
                    
                     <li class="nav-item ">
                         <a class="nav-link active" aria-current="page" href="/home">Home</a>
+                    </li>
+                    <li class="nav-item ">
+                        <form id="instrumentos_form" action="/caucionador_caucionar" method="post">
+                            <!-- Aquí puedes agregar los campos adicionales que desees -->
+                            <input type="hidden" name="accounCuenta_form_caucionar" id="accounCuenta_form_caucionar">
+                            <input type="hidden" name="form_caucionar_accessToken" id="form_caucionar_accessToken">
+                            <input type="hidden" name="form_caucionar_layout" id="form_caucionar_layout" value="layout_signal">
+                             <!-- El botón de enviar el formulario -->
+                            <button type="submit" class="btn  text-white">Caución</button>
+                          </form>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout_signal">Suscribir</a>
@@ -173,7 +195,14 @@
     
     <script>
 
-
+        let correo_electronico = localStorage.getItem("correo_electronico"); 
+        let access_token = localStorage.getItem("access_token")
+        let refreshToken = localStorage.getItem("refresh_token")
+        let cuentaBroker = localStorage.getItem("cuenta")
+        //caucionador
+        document.getElementById('accounCuenta_form_caucionar').value = cuentaBroker;
+        document.getElementById('form_caucionar_accessToken').value = access_token;
+ 
         function toggleIDTelegram() {
             // Get the ID from localStorage
             var idTelegram = localStorage.getItem('idtelegram');
@@ -268,7 +297,43 @@
             window.location.href = url;
         });
         
-        
+        if (localStorage.getItem("selector")) {
+            let cuentaBroker = localStorage.getItem("cuenta");  
+            let simulado = localStorage.getItem("selector"); 
+            
+               // document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+          
+                if (simulado == 'simulado') {
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                     
+                    } else if (simulado == 'produccion') {
+
+                  
+                    let enlace_correo = "<a ' style='text-decoration:none; color:#00ff00;''>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+                    } else {
+                        let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                        document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+    
+                    }
+                
+                
+                    //aqui oculto generador de fichas si no posee cuenta de broker logeada
+                  
+                     
+                        cuentaLink.style.display = 'block';
+                        
+                   
+                
+                
+                }else {
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+                    console.log("El valor 'selector' no existe en localStorage.");
+                  }
+            
 
                 // Verificar si el rol es "administrador"
       //  if (rol != 'ADMINISTRADOR') {

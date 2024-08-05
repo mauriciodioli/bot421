@@ -51,6 +51,7 @@ from strategies.arbitraje_001 import arbitraje_001
 from strategies.utils.testWS import testWS
 from strategies.gestion_estrategias.abm_estrategias import abm_estrategias
 from strategies.gestion_estrategias.unidad_trader import unidad_trader
+from strategies.caucionador.caucion import caucion
 
 from tokens.token import token
 import tokens.token as Token
@@ -101,6 +102,7 @@ from models.brokers import brokers
 from models.operacionHF import operacionHF
 from models.logs import logs
 from models.creaTablas import creaTabla
+from models.operacionEstrategia import operacionEstrategia
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -108,6 +110,7 @@ from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
 import schedule
 import time
+from sqlalchemy.pool import Pool
 
 from routes.api_externa_conexion.get_login import CUSTOM_LEVEL
 
@@ -237,48 +240,150 @@ app.register_blueprint(contacto)
 app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
 app.register_blueprint(telegram)
+app.register_blueprint(operacionEstrategia)
+app.register_blueprint(caucion)
 
 app.register_blueprint(test_order_report_handler)
 
 
 print(DATABASE_CONNECTION_URI)
+
+
+# Configuración de Flask
 app.secret_key = '*0984632'
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# no cache
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
-app.config['SQLALCHEMY_POOL_SIZE'] = 100
-UPLOAD_FOLDER = 'static/uploads'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-engine = create_engine(DATABASE_CONNECTION_URI, poolclass=QueuePool, pool_timeout=60, pool_size=1000, max_overflow=10, pool_recycle=3600)
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+# Parámetros de configuración
+app.config['SQLALCHEMY_POOL_SIZE'] = 1000  # Tamaño máximo del pool
+app.config['SQLALCHEMY_MAX_OVERFLOW'] = 50  # Conexiones adicionales permitidas
 
-def log_connection_info(dbapi_connection, connection_record):
-    """Log connection events."""
-    global connection_count
-    connection_count += 1
-    print(f"Conexión establecida ({connection_count} veces)")
-    app.logger.info(f"Conexión establecida ({connection_count} veces)")
+# Configuración inicial
+INITIAL_POOL_SIZE = 2
+INITIAL_MAX_OVERFLOW = 3
+MAX_USERS_INCREMENT = 3
+POOL_SIZE_INCREMENT = 2
+MAX_USERS_AMPLIFICATION = 5
+AMPLIFICATION_INCREMENT = 3
+POOL_REDUCTION_THRESHOLD = 0.5  # Reducción del pool cuando el 50% de las conexiones están inactivas
+MAX_CONNECTIONS = 2  # Número máximo de conexiones activas permitidas
+INACTIVITY_TIMEOUT = 60  # Tiempo máximo de inactividad en segundos
 
-event.listen(engine, 'connect', log_connection_info)
+# Crear el motor de SQLAlchemy
+engine = create_engine(
+    DATABASE_CONNECTION_URI,
+    poolclass=QueuePool,
+    pool_size=INITIAL_POOL_SIZE,
+    max_overflow=INITIAL_MAX_OVERFLOW,
+    pool_timeout=30,  # Tiempo máximo en segundos que se esperará por una conexión
+    pool_recycle=3600
+)
+
+
 db = SQLAlchemy(app)
-# Configurar el pool de conexiones para SQLAlchemy
 db.init_app(app)
 db.session.configure(bind=engine)
 
 ma = Marshmallow(app)
 
-
-# Creación de la instancia del objeto LoginManager
-#login_manager = LoginManager()
-#login_manager.init_app(app)
+db = SQLAlchemy(app)
 
 
-# Registrar los métodos user_loader y request_loader
-#login_manager.user_loader(user_loader)
-#login_manager.request_loader(request_loader)
-# Función para registrar eventos de conexión
-# Contador para la cantidad de conexiones
-connection_count = 0
+
+# Contadores y estructuras para controlar las conexiones
+active_connections = set()
+connection_times = {}
+user_count = 0
+total_connections = 0
+
+def adjust_pool_size():
+    """Ajusta el tamaño del pool basado en el número de usuarios y conexiones activas."""
+    global total_connections, user_count
+    current_pool_size = engine.pool.size()
+    current_max_overflow = engine.pool._max_overflow
+
+    # Crear 2 conexiones cada 3 usuarios
+    if user_count % MAX_USERS_INCREMENT == 0:
+        new_pool_size = current_pool_size + POOL_SIZE_INCREMENT
+        engine.pool._set_pool_size(new_pool_size)
+
+    # Ampliar el pool en 3 por cada 5 usuarios
+    if user_count % MAX_USERS_AMPLIFICATION == 0:
+        new_max_overflow = current_max_overflow + AMPLIFICATION_INCREMENT
+        engine.pool._set_max_overflow(new_max_overflow)
+
+    # Reducir el tamaño del pool basado en conexiones inactivas
+    if total_connections > 0:
+        active_ratio = len(active_connections) / total_connections
+        if active_ratio < POOL_REDUCTION_THRESHOLD:
+            new_pool_size = max(INITIAL_POOL_SIZE, current_pool_size - POOL_SIZE_INCREMENT)
+            engine.pool._set_pool_size(new_pool_size)
+            app.logger.info(f"Reduciendo el tamaño del pool a {new_pool_size}. Conexiones activas: {len(active_connections)}")
+
+@event.listens_for(engine, 'connect')
+def on_connect(dbapi_connection, connection_record):
+    """Incrementar el contador de usuarios y ajustar el pool si es necesario."""
+    global user_count, total_connections, active_connections
+    user_count += 1
+    total_connections += 1
+    connection_key = id(connection_record)
+    active_connections.add(connection_key)
+    connection_times[connection_key] = time.time()
+    adjust_pool_size()
+    app.logger.info(f"Usuario conectado. Total usuarios: {user_count}")
+
+@event.listens_for(engine, 'checkin')
+def on_checkin(dbapi_connection, connection_record):
+    """Asegura que el número de conexiones no exceda el máximo al devolver conexiones al pool."""
+    global active_connections, connection_times
+    connection_key = id(connection_record)
+    if connection_key in active_connections:
+        active_connections.remove(connection_key)
+    connection_times[connection_key] = time.time()  # Actualizar tiempo de inactividad
+    app.logger.info(f"Conexión verificada. Total conexiones activas: {len(active_connections)}")
+
+@event.listens_for(engine, 'checkout')
+def on_checkout(dbapi_connection, connection_record, connection_proxy):
+    """Decrementar el contador de usuarios cuando una conexión se libera."""
+    global user_count, total_connections
+    user_count -= 1
+    if user_count < 0:
+        user_count = 0
+    app.logger.info(f"Usuario desconectado. Total usuarios: {user_count}")
+
+@event.listens_for(engine.pool, "connect")
+def log_connection_info(dbapi_connection, connection_record):
+    """Registra eventos de conexión y asegura que el número máximo de conexiones no se exceda."""
+    global active_connections, connection_times
+    connection_key = id(connection_record)
+    connection_times[connection_key] = time.time()
+    active_connections.add(connection_key)
+    app.logger.info(f"Conexión establecida. Total conexiones activas: {len(active_connections)}")
+
+    if len(active_connections) > MAX_CONNECTIONS:
+        # Cerrar conexiones inactivas si el límite se excede
+        current_time = time.time()
+        connections_to_close = [key for key, last_active in connection_times.items()
+                                if current_time - last_active > INACTIVITY_TIMEOUT]
+        
+        for conn_key in connections_to_close:
+            if len(active_connections) <= MAX_CONNECTIONS:
+                break
+            if conn_key in active_connections:
+                app.logger.info(f"Cerrando conexión inactiva: {conn_key}")
+                connection = next((conn for conn in active_connections if id(conn) == conn_key), None)
+                if connection:
+                    connection.close()  # Cerrar la conexión
+                    active_connections.remove(conn_key)  # Eliminar del conjunto de conexiones activas
+                    connection_times.pop(conn_key, None)  # Eliminar del diccionario de tiempos
+# Registro explícito de los eventos (líneas añadidas)
+event.listen(engine, 'connect', on_connect)
+event.listen(engine, 'checkin', on_checkin)
+event.listen(engine, 'checkout', on_checkout)
+event.listen(engine.pool, 'connect', log_connection_info)
+
+
 
 # Definir una función de registro personalizada para el nuevo nivel
 def custom_log(self, message, *args, **kwargs):
@@ -335,7 +440,7 @@ def send_local_storage():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    crea_tablas_DB()
+    #crea_tablas_DB()
     
     return  render_template("entrada.html")
 
@@ -347,8 +452,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    app.run(host='0.0.0.0', port=5001, debug=True)
-    #app.run(host='0.0.0.0', port=5001, debug=False)
+    #app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas
