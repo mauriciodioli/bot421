@@ -2,6 +2,8 @@ from flask import Blueprint,current_app, render_template,session, request, redir
 from utils.db import db
 from models.orden import Orden
 from models.usuario import Usuario
+from models.operacionEstrategia import operacionEstrategia, OperacionEstrategia
+
 
 import re
 import jwt
@@ -12,8 +14,7 @@ import routes.api_externa_conexion.get_login as get
 import strategies.opera_estrategias as op  
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
-
-
+from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
 from datetime import datetime
 from pytz import timezone as pytz_timezone
 
@@ -40,12 +41,13 @@ tiempo_inicial_5min_ms = None
 diccionario_global_operaciones = {}
 diccionario_operaciones_enviadas = {} 
 
-
+idUser = None
 
 
 @Bull_Market_10861_001.route('/Bull-Market-10861-001/', methods=['POST'])
 def BullMarket10861001():
     print('00000000000000000000000 Bull-Market-10861-001 00000000000000000000000000')
+    global idUser  # Indica que estás usando la variable global
     if request.method == 'POST':
         try:
             app = current_app._get_current_object()
@@ -63,7 +65,7 @@ def BullMarket10861001():
             correo_electronico = data['correo_electronico']
             
             get.accountLocalStorage = data['cuenta']
-            
+           
                       
             tiempoInicio = data['tiempoInicio']
             tiempoFin = data['tiempoFin']
@@ -278,8 +280,19 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                 Liquidez_ahora_cedear = obtener_liquidez_actual(message, "BI")                            
                           
                             cantidad_a_usar = min(Liquidez_ahora_cedear, diccionario_global_operaciones[Symbol]['ut'])
-                            op.OperacionWs(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, cantidad_a_usar, senial, message)
+                            #op.OperacionWs(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, cantidad_a_usar, senial, message)
+                            estrategia = OperacionEstrategia(
+                                                                pyRofexInicializada=pyRofexInicializada,
+                                                                diccionario_global_operaciones=diccionario_global_operaciones,
+                                                                diccionario_operaciones_enviadas=diccionario_operaciones_enviadas,
+                                                                Symbol=Symbol,
+                                                                tipo_de_activo=tipo_de_activo,
+                                                                Liquidez_ahora_cedear=cantidad_a_usar,
+                                                                senial=senial,
+                                                                message=message
+                                                            )
                             
+                            estrategia.operar()
                         else:
                             # Manejo de otro tipo de TradeEnCurso si es necesario
                             pass
@@ -309,16 +322,16 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                 if elemento1[0] == elemento2['Symbol']:
                     if elemento2['Symbol'] not in símbolos_vistos:
                         if elemento1[4] == 'closed.':
-                            print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                            print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                             app.logger.info(elemento1)      
                             elemento1[3] = int(elemento2['_ut_'])
                         elif elemento1[2] == 'SHORT':
                             if elemento1[4] == '':
-                                print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                             elif elemento1[4] == 'OPEN.':
-                                print(' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
                         coincidencias.append(elemento1)
@@ -436,7 +449,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
 
                     # Formatear los campos específicos en una sola línea
                     contenido_linea = ', '.join([f"{campo}: {contenido[campo]}" for campo in campos_especificos])
-                    print(contenido_linea)
+                    print('c: ',account,' ',contenido_linea)
             else:
                     print(f"No se encontró contenido para {elemento[0]} en diccionario_global_operaciones.")
 
@@ -451,7 +464,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
    
     # db.session.close()
      app.logger.info('______CARGA_OPERACIONES____') 
-     app.logger.info(diccionario_global_operaciones) 
+     #app.logger.info(diccionario_global_operaciones) 
                
     
 
@@ -736,7 +749,7 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
             symbol = posicion['symbol']
             buySize = abs(int(posicion['buySize']))
             sellSize = abs(int(posicion['sellSize']))
-            print("Símbolo:", symbol)
+            print("Este esta en cartera de la cuenta: ",accountCuenta," Símbolo:", symbol)
             print("Estan en matriz, Cantidad de stock buySize:", posicion['buySize'])
             print("Estan en matriz, Cantidad de stock sellSize:", posicion['sellSize'])
             print()
@@ -899,7 +912,10 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
         account = diccionario_global_operaciones[symbol]['accountCuenta']
         pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
         pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
-        #      return render_template('home.html')    
+        flash('FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO')
+        estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'],idUser)
+       
+        
 
 
 
