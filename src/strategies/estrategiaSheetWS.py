@@ -306,6 +306,14 @@ def obtener_liquidez_actual(message, key):
             return message["marketData"]["LA"]["size"]
     return 0
 
+
+def simbolo_no_en_diccionario(elemento, diccionarios):
+    for diccionario in diccionarios:
+        if elemento == diccionario['Symbol']:
+            return False
+    return True
+
+
 def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
@@ -331,7 +339,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                                 print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
-                            elif elemento1[4] == 'OPEN.':
+                        elif elemento1[4] == 'OPEN.':
                                 print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
@@ -354,10 +362,11 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                 if elemento1[2] == 'LONG_':
                      if int(elemento1[3]) != 0:                       
                           if elemento1[4] == 'OPEN.':
-                            if elemento1[0] == elemento2:
-                                coincidencias.append(elemento1)
-                               # print(' elemento1[] ', elemento1[0])
-                               # print(coincidencias)
+                            if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
+                                if elemento1[0] == elemento2:
+                                    coincidencias.append(elemento1)
+                                # print(' elemento1[] ', elemento1[0])
+                                # print(coincidencias)
                             
         contador += 1  
           
