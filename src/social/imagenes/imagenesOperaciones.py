@@ -1,14 +1,18 @@
 import os
 from flask import Flask,jsonify, request, render_template,redirect, Blueprint,current_app, url_for,flash
 from utils.db import db
+from werkzeug.utils import secure_filename
 from models.modelMedia.image import Image
 from models.usuario import Usuario
 import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError
 import sys
+import random  # Importar el módulo random
 # Configuración del Blueprint para el registro de usuarios
 imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
+
+
 
 @imagenesOperaciones.route('/subirImagen/')
 def subirImagen():
@@ -316,3 +320,120 @@ def es_formato_imagen(filepath):
 
     # Verificar si la extensión del archivo está en la lista de extensiones de imagen
     return any(filepath.lower().endswith(ext) for ext in extensiones_imagen)
+
+
+
+
+
+@imagenesOperaciones.route('/social_imagenes_crear_publicacion', methods=['POST'])
+def social_imagenes_crear_publicacion():
+    print("Iniciando social_imagenes_crear_publicacion")
+    media_files = []
+
+    for key in request.files:
+        file = request.files[key]
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            # Decide si el archivo es una imagen o un video
+            if file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
+                # Llama a la función de carga de imagen
+                file_path = cargarImagen_crearPublicacion(file, filename)
+            elif file.filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
+                # Llama a la función de carga de video
+                file_path = cargarVideo_crearPublicacion(file, filename)
+
+            if file_path:
+                media_files.append(file_path)
+    guardarPublicacion(request, media_files)
+    # Obtén otros datos del formulario
+    post_title = request.form.get('postTitle_creaPublicacion')
+    post_text = request.form.get('postText_creaPublicacion')
+    print("Título de la publicación:", post_title)
+    print("Texto de la publicación:", post_text)
+
+    print("Finalizando social_imagenes_crear_publicacion")
+    return jsonify({'message': 'Publicación creada exitosamente.', 'media_files': media_files})
+
+
+def cargarImagen_crearPublicacion(file, filename):
+    file_path = os.path.join('static', 'uploads', filename)
+    file.save(file_path)
+   
+    nombre_archivo = filename
+    descriptionImagen = 'ambitoSocial'
+    randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
+
+
+    authorization_header = request.headers.get('Authorization')
+    if not authorization_header:
+        return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+    parts = authorization_header.split()
+    if len(parts) != 2 or parts[0].lower() != 'bearer':
+        return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+
+    access_token = parts[1]
+    app = current_app._get_current_object()
+    userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+
+    nueva_imagen = Image(
+        user_id=userid,
+        title=nombre_archivo,
+        description=descriptionImagen,
+        colorDescription='',
+        filepath=file_path,
+        randomNumber=randomNumber_
+    )
+    db.session.add(nueva_imagen)
+    db.session.commit()
+
+    return file_path
+
+
+def cargarVideo_crearPublicacion(file, filename):
+    file_path = os.path.join('static', 'uploads', filename)
+    file.save(file_path)
+
+    nombre_archivo = filename
+    description_video = 'ambitoSocial'
+    randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
+
+
+    authorization_header = request.headers.get('Authorization')
+    if not authorization_header:
+        return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+    parts = authorization_header.split()
+    if len(parts) != 2 or parts[0].lower() != 'bearer':
+        return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+
+    access_token = parts[1]
+    app = current_app._get_current_object()
+    userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+
+    nuevo_video = Image(
+        user_id=userid,
+        title=nombre_archivo,
+        description=description_video,
+        colorDescription='',
+        filepath=file_path,
+        randomNumber=randomNumber_
+    )
+    db.session.add(nuevo_video)
+    db.session.commit()
+
+    return file_path
+
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'avi', 'mov'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def guardarPublicacion(request, media_files):
+    post_title = request.form.get('postTitle_creaPublicacion')
+    post_text = request.form.get('postText_creaPublicacion')
+    print("Título de la publicación:", post_title)
+    print("Texto de la publicación:", post_text)
+
+    print("Finalizando social_imagenes_crear_publicacion")
+    return jsonify({'message': 'Publicación creada exitosamente.', 'media_files': media_files})
