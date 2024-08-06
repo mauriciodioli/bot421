@@ -128,15 +128,17 @@ body {
     font-size: 14px;
 }
 
-/* Style for the image container */
-.image-container_creaPublicacion {
+/* Style for the media container */
+.media-container_creaPublicacion {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust the size as needed */
     gap: 10px;
     margin-top: 10px;
 }
 
-.image-container_creaPublicacion img {
+/* Style for images and videos inside the container */
+.media-container_creaPublicacion img,
+.media-container_creaPublicacion video {
     width: 100%;
     height: auto;
     border: 1px solid #ddd;
@@ -144,17 +146,18 @@ body {
     object-fit: cover;
 }
 
-
-.image-container_creaPublicacion img {
-    width: 100%;
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    object-fit: cover;
+.cropper-container {
+    max-width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
 }
 
+.cropper-container img {
+    width: 100%;
+    height: auto;
+}
 
-/* General modal styles */
+/* Modal styles for media */
 .image-modal_creaPublicacion {
     display: none; /* Hidden by default */
     position: fixed;
@@ -209,54 +212,54 @@ body {
     cursor: pointer;
 }
 
-/* Media inside the modal */
-#modalMedia_creaPublicacion img,
-#modalMedia_creaPublicacion video {
-    width: 100%;
-    height: auto;
-    max-height: 80vh; /* Limit height for better view */
-    object-fit: contain; /* Maintain aspect ratio */
+
+
+
+
+
+.icon-small {
+    width: 24px;
+    height: 24px;
+}
+/* Styles for the input group */
+.input-group_creaPublicacion {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust the gap as needed */
 }
 
-/* Image inside the modal */
-#modalImage_creaPublicacion {
-    width: 100%;
-    height: auto;
-    max-height: 80vh; /* Limit height for better view */
-    object-fit: contain; /* Maintain aspect ratio */
+.media-icon-button_creaPublicacion {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.media-icon-button_creaPublicacion img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.emoticon-button_creaPublicacion {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
 }
 
 
-/* Style for the media container */
-.media-container_creaPublicacion {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjust size as needed */
-    gap: 10px;
-    margin-top: 10px;
-}
-
-/* Style for images and videos inside the container */
-.media-container_creaPublicacion img,
-.media-container_creaPublicacion video {
-    width: 100%;
-    height: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    object-fit: cover;
-}
-
-
-
-
-
-.cropper-container {
-    max-width: 100%;
-    max-height: 80vh;
-    overflow: hidden;
+.modal_creaPublicacion .text-black {
+    color: #000;
   }
+
   
-  .cropper-container img {
-    width: 100%;
-    height: auto;
-  }
+
+
+
   
