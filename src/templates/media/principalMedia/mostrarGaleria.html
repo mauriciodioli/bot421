@@ -98,6 +98,8 @@
 
       <div class="input-group_creaPublicacion">
         <!-- Hidden file input -->
+        <button class="close-button-media_imagenes" onclick="closePreview()" style="display: none;">X</button>
+                    
         <input type="file" id="fileInput_creaPublicacion" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple style="display: none;">
         
         <!-- Button with media icon to trigger file input -->
@@ -453,6 +455,17 @@ function initializeMediaHandlers() {
 
 
 
+function closePreview() {
+  var previewImage = document.getElementById('preview-image-media_imagenes');
+  var fileInput = document.getElementById('imagen-media_imagenes');
+  var uploadButton = document.getElementById('open-popup-media_imagenes');
+
+  previewImage.src = '#'; // Limpiar la imagen
+  fileInput.value = ''; // Limpiar el campo de entrada de archivos
+  var closeButton = document.querySelector('.close-button-media_imagenes');
+  closeButton.style.display = 'none'; // Ocultar el botón de cerrar
+  uploadButton.disabled = true; // Deshabilitar el botón
+}
 
 
 
@@ -460,26 +473,50 @@ function initializeMediaHandlers() {
 
 $(document).ready(function() {
   $("#createPostForm_creaPublicacion").on("submit", function(event) {
-      event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); // Prevent the default form submission
 
-      var formData = new FormData(this);
+    var formData = new FormData(this);
 
-      $.ajax({
-          url: '/ruta_a_tu_archivo.py', // Reemplaza con la ruta a tu archivo .py
-          type: 'POST',
-          data: formData,
-          processData: false, // Prevent jQuery from automatically transforming the data into a query string
-          contentType: false, // Prevent jQuery from setting Content-Type header
-          success: function(response) {
-              alert("Publicación creada exitosamente.");
-              modal.style.display = "none"; // Close the modal on success
-          },
-          error: function(xhr, status, error) {
-              alert("Error al crear la publicación. Inténtalo de nuevo.");
-          }
-      });
+    // Añadir imágenes y videos cargados al FormData
+    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
+    var mediaItems = mediaContainer.getElementsByClassName('media-item_creaPublicacion');
+
+    for (var i = 0; i < mediaItems.length; i++) {
+      var mediaElement = mediaItems[i].getElementsByClassName('thumbnail_creaPublicacion')[0];
+      if (mediaElement.tagName === 'IMG' || mediaElement.tagName === 'VIDEO') {
+        var mediaSrc = mediaElement.src;
+        var mediaFile = dataURLToFile(mediaSrc, mediaElement.tagName.toLowerCase() + (i + 1) + '.' + (mediaElement.tagName === 'IMG' ? 'jpg' : 'mp4'));
+        formData.append('mediaFile_' + i, mediaFile);
+      }
+    }
+
+    $.ajax({
+      url: '/social_imagenes_crear_publicacion', // Reemplaza con la ruta a tu archivo .py
+      type: 'POST',
+      data: formData,
+      processData: false, // Prevent jQuery from automatically transforming the data into a query string
+      contentType: false, // Prevent jQuery from setting Content-Type header
+      success: function(response) {
+        alert("Publicación creada exitosamente.");
+        $("#createPostModal_creaPublicacion").hide(); // Close the modal on success
+      },
+      error: function(xhr, status, error) {
+        alert("Error al crear la publicación. Inténtalo de nuevo.");
+      }
+    });
   });
+
+  function dataURLToFile(dataURL, filename) {
+    var arr = dataURL.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, {type: mime});
+  }
+  
 });
+
 
 </script>
 
