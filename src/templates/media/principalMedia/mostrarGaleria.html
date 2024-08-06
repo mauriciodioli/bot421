@@ -20,23 +20,22 @@
    <div class="container_galeria_imagenes">
         <div class="post-card">
             <div class="post-header">
-                <img src="static/uploads/user-avatar.jpg" alt="User Avatar" class="avatar">
+              <img src="{{ url_for('static', filename='img/leon_transp.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
                 <input type="text" placeholder="Crear publicación" class="post-input_creaPublicacion" id="createPostBtn_creaPublicacion">
-      
-            </div>
+              </div>
 
             <div class="post-options">
                 <div class="option">
-                    <img src="static/icons/media-icon.png" alt="Multimedia Icon" class="icon">
-                    <span>Contenido multimedia</span>
+                  <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+                  <span>Contenido multimedia</span>
                 </div>
                 <div class="option">
-                    <img src="static/icons/experience-icon.png" alt="Experience Icon" class="icon">
+                  <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
                     <span>Contribuye con tu experiencia</span>
                 </div>
                 <div class="option">
-                    <img src="static/icons/article-icon.png" alt="Article Icon" class="icon">
-                    <span>Escribir artículo</span>
+                  <img src="{{ url_for('static', filename='icons/edit-icon-png-3598.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+                  <span>Escribir artículo</span>
                 </div>
             </div>
         </div>
@@ -81,27 +80,47 @@
 <!-- Modal for creating a post -->
 <div id="createPostModal_creaPublicacion" class="modal_creaPublicacion">
   <div class="modal-content_creaPublicacion">
-      <span class="close_creaPublicacion">&times;</span>
-      <h2>Crear Publicación</h2>
-      <form id="createPostForm_creaPublicacion" enctype="multipart/form-data">
-          <textarea name="postText_creaPublicacion" placeholder="Escribe tu publicación" required></textarea>
-          
-          <!-- Hidden file input -->
-          <input type="file" id="fileInput_creaPublicacion" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple style="display: none;">
+    <span class="close_creaPublicacion text-black">&times;</span>
+    <h2 class="modal-title_creaPublicacion text-black">Crear Publicación</h2>
+    <form id="createPostForm_creaPublicacion" enctype="multipart/form-data">
+      
+      <!-- Input for the title of the publication -->
+      <div class="form-group_creaPublicacion">
+        <label for="postTitle_creaPublicacion" class="text-black">Título:</label>
+        <input type="text" id="postTitle_creaPublicacion" name="postTitle_creaPublicacion" placeholder="Escribe el título de la publicación" required>
+      </div>
+      
+      <!-- Textarea for the body of the post -->
+      <div class="form-group_creaPublicacion">
+        <label for="body" class="text-black">Texto:</label>
+        <textarea id="body" name="postText_creaPublicacion" placeholder="Escribe tu publicación" required></textarea>
+      </div>
 
-          <!-- Button with media icon to trigger file input -->
-          <label for="fileInput_creaPublicacion" class="media-icon-button_creaPublicacion">
-              <img src="static/icons/media-icon.png" alt="Select File Icon">
-              <span>Seleccionar archivo</span>
-          </label>
+      <div class="input-group_creaPublicacion">
+        <!-- Hidden file input -->
+        <input type="file" id="fileInput_creaPublicacion" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple style="display: none;">
+        
+        <!-- Button with media icon to trigger file input -->
+        <label for="fileInput_creaPublicacion" class="media-icon-button_creaPublicacion">
+          <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+          <span class="text-black">Seleccionar archivo</span>
+        </label>
 
-          <!-- Container to display selected images and videos -->
-          <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
+        <!-- Emoticon button -->
+        <button type="button" id="emoticonButton" data-bs-toggle="modal" data-bs-target="#emoticonModal" class="text-black">
           
-          <button type="submit">Enviar</button>
-      </form>
+        </button>
+      </div>
+
+      <!-- Container to display selected images and videos -->
+      <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
+      
+      <button type="submit" class="text-black">Enviar</button>
+    </form>
   </div>
 </div>
+
+
 
 
 <!-- Modal for viewing and editing an image -->
@@ -119,7 +138,20 @@
 
 
 
-
+<!-- Modal for selecting emoticons -->
+<div class="modal fade" id="emoticonModal" tabindex="-1" aria-labelledby="emoticonModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" id="emoticonModal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="emoticonModalLabel">Selecciona un Emoticón</h5>
+              <button type="button" class="btn-close" id="custom-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="emoticonEmoticons">
+              <!-- Emoticons will be loaded here -->
+          </div>
+      </div>
+  </div>
+</div>
 
 
 <!-- ... Tu código HTML ... -->

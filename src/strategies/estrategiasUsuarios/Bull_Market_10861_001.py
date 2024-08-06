@@ -475,7 +475,7 @@ def es_numero(numero):
     except:
         return False
   
-def order_report_handler(order_report):
+def order_report_handler(order_report): 
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']        
     symbol = order_data['instrumentId']['symbol']
