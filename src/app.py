@@ -41,6 +41,7 @@ from Tests.test_order_report_handler import test_order_report_handler
 from social.telegram.telegram import telegram
 
 from herramientasAdmin.accionesSheet import accionesSheet
+from herramientasAdmin.runScript import runScript
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
@@ -239,6 +240,7 @@ app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
 app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
+app.register_blueprint(runScript)
 app.register_blueprint(telegram)
 app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
@@ -452,8 +454,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    #app.run(host='0.0.0.0', port=5001, debug=True)
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
+    #app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas
