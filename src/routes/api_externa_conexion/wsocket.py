@@ -406,6 +406,7 @@ def cargarCuenta(Cuenta,idUser,account):
     while retries < max_retries:
         try:
             # Realiza la consulta
+            db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión
             cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
             #db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
             return cuenta  # Si la consulta es exitosa, retorna el resultado
@@ -414,8 +415,8 @@ def cargarCuenta(Cuenta,idUser,account):
             print(f"Error de conexión: {e}. Reintentando en {retry_delay} segundos...")
             retries += 1
             time.sleep(retry_delay)  # Espera antes de volver a intentar
-            db.session.remove()  # Elimina la sesión actual
-            
+         
+            db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión
             # Reconfigura la sesión si es necesario
             db.session.bind = db.engine
             
