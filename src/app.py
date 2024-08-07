@@ -5,7 +5,7 @@ from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,ge
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
-
+from sqlalchemy.exc import OperationalError
 # Importar create_engine y NullPool
 import logging
 import os
@@ -150,10 +150,6 @@ logs_file_path = os.path.join(src_directory, 'logs.log')
 
 # Crear un manejador de logs que escriba en el archivo 'logs.log' en el directorio 'src'
 file_handler = logging.FileHandler(logs_file_path, encoding='utf-8')
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-
-
 # Crear un manejador de logs que escriba a `stdout`
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.DEBUG)
@@ -162,6 +158,11 @@ console_handler.setFormatter(formatter)
 
 app.logger.addHandler(file_handler)
 app.logger.addHandler(console_handler)
+app.logger.debug('Debugging message: Configuración de logger completada.')
+app.logger.info('Este es un mensaje de info.')
+app.logger.warning('Este es un mensaje de advertencia.')
+app.logger.error('Este es un mensaje de error.')
+app.logger.critical('Este es un mensaje crítico.')
 # Configura el manejo de autenticación JWT
 app.config['JWT_SECRET_KEY'] = '621289'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
@@ -283,14 +284,12 @@ engine = create_engine(
 )
 
 
+
 db = SQLAlchemy(app)
 db.init_app(app)
 db.session.configure(bind=engine)
 
 ma = Marshmallow(app)
-
-db = SQLAlchemy(app)
-
 
 
 # Contadores y estructuras para controlar las conexiones
@@ -334,25 +333,57 @@ def on_connect(dbapi_connection, connection_record):
     connection_times[connection_key] = time.time()
     adjust_pool_size()
     app.logger.info(f"Usuario conectado. Total usuarios: {user_count}")
-
+    print("Evento 'connect' disparado.")
+    
 @event.listens_for(engine, 'checkin')
 def on_checkin(dbapi_connection, connection_record):
     """Asegura que el número de conexiones no exceda el máximo al devolver conexiones al pool."""
-    global active_connections, connection_times
+    global active_connections, connection_times    
     connection_key = id(connection_record)
     if connection_key in active_connections:
         active_connections.remove(connection_key)
     connection_times[connection_key] = time.time()  # Actualizar tiempo de inactividad
     app.logger.info(f"Conexión verificada. Total conexiones activas: {len(active_connections)}")
-
+    print("Evento 'checkin' disparado.")
+    
+    
 @event.listens_for(engine, 'checkout')
 def on_checkout(dbapi_connection, connection_record, connection_proxy):
-    """Decrementar el contador de usuarios cuando una conexión se libera."""
-    global user_count, total_connections
+    """Decrementar el contador de usuarios cuando una conexión se libera y manejar conexiones inactivas."""
+    global user_count, active_connections, connection_times
+
+    # Decrementar el contador de usuarios
     user_count -= 1
     if user_count < 0:
         user_count = 0
     app.logger.info(f"Usuario desconectado. Total usuarios: {user_count}")
+
+    # Cerrar conexiones que han estado inactivas durante un período prolongado
+    current_time = time.time()
+    connections_to_close = [key for key, last_active in connection_times.items()
+                            if current_time - last_active > INACTIVITY_TIMEOUT]
+
+    for conn_key in connections_to_close:
+        if conn_key in active_connections:
+            # Encontrar la conexión en el conjunto de conexiones activas
+            connection = next((conn for conn in active_connections if id(conn) == conn_key), None)
+            if connection:
+                connection.close()  # Cerrar la conexión
+                active_connections.remove(conn_key)  # Eliminar del conjunto de conexiones activas
+                connection_times.pop(conn_key, None)  # Eliminar del diccionario de tiempos
+                app.logger.info(f"Cerrando conexión inactiva: {conn_key}")
+
+    # Crear una nueva conexión si no hay conexiones activas
+    if len(active_connections) == 0:
+        app.logger.info("No hay conexiones activas. Creando una nueva conexión...")
+        try:
+            # Forzar la creación de una nueva conexión
+            db.session.execute('SELECT 1')
+        except Exception as e:
+            app.logger.error(f"Error al crear nueva conexión: {e}")
+            # Manejar el error si es necesario
+
+
 
 @event.listens_for(engine.pool, "connect")
 def log_connection_info(dbapi_connection, connection_record):
@@ -379,13 +410,12 @@ def log_connection_info(dbapi_connection, connection_record):
                     connection.close()  # Cerrar la conexión
                     active_connections.remove(conn_key)  # Eliminar del conjunto de conexiones activas
                     connection_times.pop(conn_key, None)  # Eliminar del diccionario de tiempos
+
 # Registro explícito de los eventos (líneas añadidas)
 event.listen(engine, 'connect', on_connect)
 event.listen(engine, 'checkin', on_checkin)
 event.listen(engine, 'checkout', on_checkout)
 event.listen(engine.pool, 'connect', log_connection_info)
-
-
 
 # Definir una función de registro personalizada para el nuevo nivel
 def custom_log(self, message, *args, **kwargs):
@@ -448,9 +478,26 @@ def entrada():
 
 @login_manager.user_loader
 def load_user(user_id):
-    #return Usuario.query.get(int(user_id))
+    try:
+        # Intenta realizar una consulta simple para verificar la conexión
+        db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión
+        
+        # Realiza la consulta para obtener el usuario
+        user = db.session.query(Usuario).filter_by(id=user_id).first()
+        return user
     
-     return db.session.query(Usuario).filter_by(id=user_id).first()
+    except OperationalError as e:
+        # Manejar el error de conexión y reconfigurar si es necesario
+        app.logger.error(f"Error de conexión a la base de datos: {e}")
+        
+        # Volver a crear la sesión
+        db.session.remove()  # Elimina la sesión actual
+        db.engine.dispose()  # Cierra todas las conexiones del pool
+        db.session = db.create_scoped_session()  # Crea una nueva sesión
+        
+        # Reintenta la consulta después de reconfigurar
+        user = db.session.query(Usuario).filter_by(id=user_id).first()
+        return user
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
