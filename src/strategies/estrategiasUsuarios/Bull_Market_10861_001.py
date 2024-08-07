@@ -305,9 +305,9 @@ def obtener_liquidez_actual(message, key):
             return message["marketData"]["LA"]["size"]
     return 0
 
-def simbolo_no_en_diccionario(elemento, diccionarios):
-    for diccionario in diccionarios:
-        if elemento == diccionario['Symbol']:
+def simbolo_no_en_diccionario(simbol, diccionarios):    
+    for key, diccionario in diccionarios.items():       
+        if simbol == diccionario['Symbol']:
             return False
     return True
 
