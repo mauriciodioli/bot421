@@ -195,6 +195,7 @@ def mostrar_imagenes():
             try:
                 usuarios = db.session.query(Usuario).all()
                 imagenes = db.session.query(Image).all()
+                db.session.close()
             except Exception as e:
                 # Manejar excepciones de la base de datos
                 flash("Error en la base de datos", "error")
