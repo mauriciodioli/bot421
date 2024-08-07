@@ -271,7 +271,7 @@ MAX_USERS_AMPLIFICATION = 5
 AMPLIFICATION_INCREMENT = 3
 POOL_REDUCTION_THRESHOLD = 0.5  # Reducción del pool cuando el 50% de las conexiones están inactivas
 MAX_CONNECTIONS = 2  # Número máximo de conexiones activas permitidas
-INACTIVITY_TIMEOUT = 60  # Tiempo máximo de inactividad en segundos
+INACTIVITY_TIMEOUT = 5  # Tiempo máximo de inactividad en segundos
 
 # Crear el motor de SQLAlchemy
 engine = create_engine(
@@ -377,12 +377,15 @@ def on_checkout(dbapi_connection, connection_record, connection_proxy):
     if len(active_connections) == 0:
         app.logger.info("No hay conexiones activas. Creando una nueva conexión...")
         try:
-            # Forzar la creación de una nueva conexión
-            db.session.execute('SELECT 1')
+           
+            # Crear una nueva sesión y forzar la creación de una nueva conexión
+            pass
+            #db.session.execute('SELECT 1')  # Consulta trivial para crear una conexión
         except Exception as e:
             app.logger.error(f"Error al crear nueva conexión: {e}")
             # Manejar el error si es necesario
-
+# Registrar el evento de desconexión
+    app.logger.info(f"Usuario desconectado. Total usuarios: {user_count}")
 
 
 @event.listens_for(engine.pool, "connect")
@@ -479,9 +482,6 @@ def entrada():
 @login_manager.user_loader
 def load_user(user_id):
     try:
-        # Intenta realizar una consulta simple para verificar la conexión
-        db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión
-        
         # Realiza la consulta para obtener el usuario
         user = db.session.query(Usuario).filter_by(id=user_id).first()
         return user
@@ -491,13 +491,16 @@ def load_user(user_id):
         app.logger.error(f"Error de conexión a la base de datos: {e}")
         
         # Volver a crear la sesión
-        db.session.remove()  # Elimina la sesión actual
-        db.engine.dispose()  # Cierra todas las conexiones del pool
-        db.session = db.create_scoped_session()  # Crea una nueva sesión
-        
+      
+        db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión   
         # Reintenta la consulta después de reconfigurar
-        user = db.session.query(Usuario).filter_by(id=user_id).first()
-        return user
+        try:
+            # Reintenta la consulta después de reconfigurar
+            user = db.session.query(Usuario).filter_by(id=user_id).first()
+            return user
+        except OperationalError as e:
+            app.logger.error(f"Error de conexión a la base de datos tras reintentar: {e}")
+            return None
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()

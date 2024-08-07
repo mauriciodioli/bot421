@@ -263,3 +263,498 @@ Usuario desconectado. Total usuarios: 0
 Conexión verificada. Total conexiones activas: 1
 Usuario desconectado. Total usuarios: 0
 Conexión verificada. Total conexiones activas: 1
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario conectado. Total usuarios: 2
+Usuario desconectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 2
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 0
+madioli26@hotmail.com
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Error al crear nueva conexión: 'QueuePool' object has no attribute '_set_pool_size'
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+madioli26@hotmail.com
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Error al crear nueva conexión: 'QueuePool' object has no attribute '_set_pool_size'
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 1
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario conectado. Total usuarios: 1
+Conexión verificada. Total conexiones activas: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+madioli26@hotmail.com
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Error al crear nueva conexión: 'QueuePool' object has no attribute '_set_pool_size'
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Error al crear nueva conexión: 'QueuePool' object has no attribute '_set_pool_size'
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Error al crear nueva conexión: 'QueuePool' object has no attribute '_set_pool_size'
+Usuario desconectado. Total usuarios: 1
+Usuario desconectado. Total usuarios: 1
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Error al crear nueva conexión: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Error al crear nueva conexión: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+No hay conexiones activas. Creando una nueva conexión...:  0
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (1040, 'Too many connections')
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+madioli26@hotmail.com
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+No hay conexiones activas. Creando una nueva conexión...:  0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 2
+Conexión verificada. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+madioli26@hotmail.com
+Conexión establecida. Total conexiones activas: 1
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+No hay conexiones activas. Creando una nueva conexión...:  0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Usuario conectado. Total usuarios: 1
+Conexión establecida. Total conexiones activas: 1
+Usuario desconectado. Total usuarios: 0
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+dpuntillo@gmail.com
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
+Conexión verificada. Total conexiones activas: 0
+Usuario desconectado. Total usuarios: 0
+No hay conexiones activas. Creando una nueva conexión...
+Usuario desconectado. Total usuarios: 0
