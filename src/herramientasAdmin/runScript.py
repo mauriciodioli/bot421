@@ -4,7 +4,7 @@ import os
 
 runScript = Blueprint('runScript', __name__)
 
-@runScript.route('/run-script', methods=['POST'])
+@runScript.route('/run-script')
 def run_script():
     try:
         # Obtener el objeto de la aplicación actual
@@ -13,7 +13,8 @@ def run_script():
         # Variables de entorno o configuración para la clave privada y la IP
         private_key_path = os.getenv('SSH_PRIVATE_KEY_PATH', 'bot421dbversion2.pem')
         remote_user = 'ubuntu'
-        remote_host = 'ip-172-31-19-138'
+        remote_host = '18.207.114.83'
+        #remote_host = 'ip-172-31-19-138'
         
         # Registro de eventos
         app.logger.info("Inicio de la ejecución del script.")
@@ -32,10 +33,7 @@ def run_script():
         result = subprocess.run(ssh_command, input=script, text=True, capture_output=True)
 
         # Registro de resultados
-        app.logger.info("Ejecución del script completada.")
-        app.logger.info("STDOUT: %s", result.stdout)
-        app.logger.error("STDERR: %s", result.stderr)
-        
+        app.logger.info("Ejecución del script exitosa.")  
         # Verifica si el comando fue exitoso
         if result.returncode != 0:
             raise Exception(f"El comando SSH falló con el código de retorno {result.returncode}")
@@ -45,6 +43,6 @@ def run_script():
         app.logger.error("Error ejecutando el script: %s", e)
     
     # Redirigir a la página principal
-    return redirect(url_for('index'))
+    return render_template('index.html')
 
 

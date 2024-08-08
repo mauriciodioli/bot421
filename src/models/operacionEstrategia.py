@@ -57,7 +57,7 @@ class OperacionEstrategia:
                     
                     # Enviar orden
                     self.pyRofexInicializada.send_order_via_websocket(ticker=self.Symbol,size=ut,side=side,order_type=self.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=self.diccionario_global_operaciones[self.Symbol]['accountCuenta'])
-                    
+                     
                     ws_client_order_id = _ws_client_order_id
 
                     diccionario = {
