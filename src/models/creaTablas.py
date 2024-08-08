@@ -19,6 +19,8 @@ from models.payment_page.tarjetaUsuario import TarjetaUsuario
 from models.payment_page.suscripcionPlanUsuario import SuscripcionPlanUsuario
 from models.payment_page.Promotion import Promotion
 from models.newsLetter.newLetter import NewLetter
+from models.modelMedia.video import Video
+from models.publicaciones.publicaciones import Publicacion
 from datetime import datetime
 from flask import Blueprint,flash
 
@@ -46,6 +48,8 @@ def crea_tablas_DB():
     SuscripcionPlanUsuario.crear_tabla_suscripcionPlanUsuario()
     Promotion.crear_tabla_promocion()
     NewLetter.crear_tabla_newsLetter()
+    Video.crear_tabla_video()
+    Publicacion.crear_tabla_publicacion()
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     
