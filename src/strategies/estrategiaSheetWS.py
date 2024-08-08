@@ -334,16 +334,19 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                             print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                             app.logger.info(elemento1)
                             elemento1[3] = int(elemento2['_ut_'])
+                            coincidencias.append(elemento1)
                         elif elemento1[2] == 'SHORT':
                             if elemento1[4] == '':
                                 print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
+                                coincidencias.append(elemento1)
                         elif elemento1[4] == 'OPEN.':
+                            if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
                                 print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
-                        coincidencias.append(elemento1)
+                                coincidencias.append(elemento1)
                         símbolos_vistos.add(elemento2['Symbol'])
                     else:
                         elemento1[3] = 0
