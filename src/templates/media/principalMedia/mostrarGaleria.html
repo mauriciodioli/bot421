@@ -480,6 +480,18 @@ $(document).ready(function() {
     // Añadir imágenes y videos cargados al FormData
     var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
     var mediaItems = mediaContainer.getElementsByClassName('media-item_creaPublicacion');
+    var access_token = localStorage.getItem('access_token');
+    var ambito = 'publicidad';
+    var correo_electronico = localStorage.getItem('correo_electronico');
+    var color_texto = 'black';
+    var color_titulo = 'black';
+
+    // Agregar variables adicionales al FormData
+    formData.append('access_token', access_token);
+    formData.append('ambito', ambito);
+    formData.append('correo_electronico', correo_electronico);
+    formData.append('color_texto', color_texto);
+    formData.append('color_titulo', color_titulo);
 
     for (var i = 0; i < mediaItems.length; i++) {
       var mediaElement = mediaItems[i].getElementsByClassName('thumbnail_creaPublicacion')[0];
