@@ -3,6 +3,12 @@ from flask import Flask,jsonify, request, render_template,redirect, Blueprint,cu
 from utils.db import db
 from werkzeug.utils import secure_filename
 from models.modelMedia.image import Image
+from models.modelMedia.video import Video
+import tokens.token as Token
+import datetime
+from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.publicacion_imagen_video import Public_imagen_video
+
 from models.usuario import Usuario
 import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -328,36 +334,47 @@ def es_formato_imagen(filepath):
 
 @imagenesOperaciones.route('/social_imagenes_crear_publicacion', methods=['POST'])
 def social_imagenes_crear_publicacion():
-    print("Iniciando social_imagenes_crear_publicacion")
-    media_files = []
+    try:
+        data = request.form
+        access_token = data.get('access_token_btn_donacion')
+    
+        print("Iniciando social_imagenes_crear_publicacion")
+        media_files = []
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            user_id = decoded_token.get("sub")
+            id_publicacion = guardarPublicacion(request, media_files, user_id, imagen_id=imagen_id,video_id=video_id)
+           
+            for key in request.files:
+                file = request.files[key]
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
 
-    for key in request.files:
-        file = request.files[key]
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+                    # Decide si el archivo es una imagen o un video
+                    if file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
+                        # Llama a la función de carga de imagen
+                        file_path = cargarImagen_crearPublicacion(file, filename, id_publicacion)
+                    elif file.filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
+                        # Llama a la función de carga de video
+                        file_path = cargarVideo_crearPublicacion(file, filename, id_publicacion)
 
-            # Decide si el archivo es una imagen o un video
-            if file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
-                # Llama a la función de carga de imagen
-                file_path = cargarImagen_crearPublicacion(file, filename)
-            elif file.filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
-                # Llama a la función de carga de video
-                file_path = cargarVideo_crearPublicacion(file, filename)
+                    if file_path:
+                        media_files.append(file_path)
+            # Obtén otros datos del formulario
+            post_title = request.form.get('postTitle_creaPublicacion')
+            post_text = request.form.get('postText_creaPublicacion')
+            print("Título de la publicación:", post_title)
+            print("Texto de la publicación:", post_text)
 
-            if file_path:
-                media_files.append(file_path)
-    guardarPublicacion(request, media_files)
-    # Obtén otros datos del formulario
-    post_title = request.form.get('postTitle_creaPublicacion')
-    post_text = request.form.get('postText_creaPublicacion')
-    print("Título de la publicación:", post_title)
-    print("Texto de la publicación:", post_text)
-
-    print("Finalizando social_imagenes_crear_publicacion")
-    return jsonify({'message': 'Publicación creada exitosamente.', 'media_files': media_files})
+            print("Finalizando social_imagenes_crear_publicacion")
+            return jsonify({'message': 'Publicación creada exitosamente.', 'media_files': media_files})
+    except Exception as e:
+            # Manejo genérico de excepciones, devolver un mensaje de error
+            return jsonify({'error': str(e)}), 500
+        
 
 
-def cargarImagen_crearPublicacion(file, filename):
+def cargarImagen_crearPublicacion(file, filename, id_publicacion):
     file_path = os.path.join('static', 'uploads', filename)
     file.save(file_path)
    
@@ -387,7 +404,7 @@ def cargarImagen_crearPublicacion(file, filename):
     )
     db.session.add(nueva_imagen)
     db.session.commit()
-
+    cargar_id_publicacion_id_imagen(id_publicacion,nueva_imagen.id)
     return file_path
 
 
@@ -421,7 +438,7 @@ def cargarVideo_crearPublicacion(file, filename):
     )
     db.session.add(nuevo_video)
     db.session.commit()
-
+    cargar_id_publicacion_id_imagen(id_publicacion,nuevo_video.id)
     return file_path
 
 
@@ -430,11 +447,39 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def guardarPublicacion(request, media_files):
+def guardarPublicacion(request, media_files, user_id, imagen_id, video_id):
     post_title = request.form.get('postTitle_creaPublicacion')
-    post_text = request.form.get('postText_creaPublicacion')
-    print("Título de la publicación:", post_title)
-    print("Texto de la publicación:", post_text)
+    post_text = request.form.get('postText_creaPublicacion')   
+    ambito = request.form.get('ambito')
+    correo_electronico = request.form.get('correo_electronico')
+    color_texto = request.form.get('color_texto')
+    color_titulo = request.form.get('color_titulo')
+    
+    nueva_publicacion = Publicacion(
+            user_id=user_id, 
+            imagen_id= imagen_id ,
+            video_id = video_id,
+            titulo= post_title,
+            texto= post_text,
+            ambito= ambito,
+            correo_electronico= correo_electronico,
+            descripcion= post_text,
+            color_texto= color_texto,
+            color_titulo= color_titulo,
+            fecha_creacion= datetime.now()
+        )
+           
+    db.session.add(nueva_publicacion)
+    db.session.commit()
+    return nueva_publicacion.id
 
-    print("Finalizando social_imagenes_crear_publicacion")
-    return jsonify({'message': 'Publicación creada exitosamente.', 'media_files': media_files})
+def cargar_id_publicacion_id_imagen(id_publicacion,nueva_imagen_id):
+    nuevo_ids= Public_imagen_video(
+        publicacion_id=id_publicacion,
+        imagen_id=nueva_imagen_id,
+        video_id=0,
+        fecha_creacion=datetime.now()
+    )
+    db.session.add(nuevo_ids)
+    db.session.commit()
+    return True
