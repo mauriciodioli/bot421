@@ -300,28 +300,49 @@ total_connections = 0
 
 def adjust_pool_size():
     """Ajusta el tamaño del pool basado en el número de usuarios y conexiones activas."""
-    global total_connections, user_count
+    global total_connections, user_count, engine
+
+    # Obtener tamaño actual del pool y max_overflow
     current_pool_size = engine.pool.size()
     current_max_overflow = engine.pool._max_overflow
 
     # Crear 2 conexiones cada 3 usuarios
     if user_count % MAX_USERS_INCREMENT == 0:
         new_pool_size = current_pool_size + POOL_SIZE_INCREMENT
-        engine.pool._set_pool_size(new_pool_size)
+        new_max_overflow = current_max_overflow  # Mantener el max_overflow igual o ajustarlo si es necesario
+        engine.dispose()  # Desconectar el motor actual
+        engine = create_engine(
+            DATABASE_CONNECTION_URI,
+            pool_size=new_pool_size,
+            max_overflow=new_max_overflow
+        )
+        app.logger.info(f"Ajustado el tamaño del pool a {new_pool_size}.")
 
     # Ampliar el pool en 3 por cada 5 usuarios
     if user_count % MAX_USERS_AMPLIFICATION == 0:
         new_max_overflow = current_max_overflow + AMPLIFICATION_INCREMENT
-        engine.pool._set_max_overflow(new_max_overflow)
+        new_pool_size = engine.pool.size()  # Mantener el pool_size igual o ajustarlo si es necesario
+        engine.dispose()  # Desconectar el motor actual
+        engine = create_engine(
+            DATABASE_CONNECTION_URI,
+            pool_size=new_pool_size,
+            max_overflow=new_max_overflow
+        )
+        app.logger.info(f"Ajustado el max_overflow a {new_max_overflow}.")
 
     # Reducir el tamaño del pool basado en conexiones inactivas
     if total_connections > 0:
         active_ratio = len(active_connections) / total_connections
         if active_ratio < POOL_REDUCTION_THRESHOLD:
             new_pool_size = max(INITIAL_POOL_SIZE, current_pool_size - POOL_SIZE_INCREMENT)
-            engine.pool._set_pool_size(new_pool_size)
-            app.logger.info(f"Reduciendo el tamaño del pool a {new_pool_size}. Conexiones activas: {len(active_connections)}")
-
+            new_max_overflow = current_max_overflow  # Mantener el max_overflow igual o ajustarlo si es necesario
+            engine.dispose()  # Desconectar el motor actual
+            engine = create_engine(
+                DATABASE_CONNECTION_URI,
+                pool_size=new_pool_size,
+                max_overflow=new_max_overflow
+            )
+            app.logger.info(f"Reducido el tamaño del pool a {new_pool_size}. Conexiones activas: {len(active_connections)}.")
 @event.listens_for(engine, 'connect')
 def on_connect(dbapi_connection, connection_record):
     """Incrementar el contador de usuarios y ajustar el pool si es necesario."""

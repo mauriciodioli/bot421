@@ -54,11 +54,11 @@ def media_publiaciones_mostrar():
             # Transformar las rutas al formato almacenado en la base de datos
         # db_image_paths = [os.path.relpath(os.path.join(current_app.root_path, path), current_app.root_path).replace('/', os.sep) for path in image_paths]
 
-            for publicacion in publicaciones_data:
-                for imagen in publicacion.get('imagenes', []):
-                    imagen['filepath'] = imagen['filepath'].replace('\\', '/')
-                for video in publicacion.get('videos', []):
-                    video['filepath'] = video['filepath'].replace('\\', '/')
+           # for publicacion in publicaciones_data:
+           #     for imagen in publicacion.get('imagenes', []):
+           #         imagen['filepath'] = imagen['filepath'].replace('\\', '/')
+           #     for video in publicacion.get('videos', []):
+           #         video['filepath'] = video['filepath'].replace('\\', '/')
 
          
         # Filtrar solo las imágenes (puedes ajustar esto según tus necesidades)
@@ -117,7 +117,14 @@ def armar_publicacion(publicaciones_user):
                         'description': video.description,
                         'filepath': video.filepath
                     })
+        # Determinar el separador de ruta según el sistema operativo
+        path_separator = '/' if os.name != 'nt' else '\\'
 
+        # Ajustar las rutas de archivos según el sistema operativo
+        for imagen in imagenes:
+            imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
+        for video in videos:
+            video['filepath'] = video['filepath'].replace('\\', path_separator)
         # Agregar la publicación con sus imágenes y videos al diccionario
         publicaciones_data.append({
             'publicacion_id': publicacion.id,
