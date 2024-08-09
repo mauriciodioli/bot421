@@ -177,7 +177,7 @@ function cargarPublicaciones() {
           'Authorization': 'Bearer ' + access_token
       },
       success: function(response) {
-         console.log('Respuesta del servidor:', response);
+         
          
          if (Array.isArray(response)) {
           var postDisplayContainer = $('#postDisplayContainer');
@@ -186,14 +186,16 @@ function cargarPublicaciones() {
           response.forEach(function(post) {
              // Solo procesar publicaciones que tienen imágenes o videos
              if (post.imagenes.length > 0 || post.videos.length > 0) {
-                console.log('Procesando publicación:', post);
+                console.log('Imagenes:', post.imagenes);
+
                 
                 var mediaHtml = '';
  
                 if (Array.isArray(post.imagenes)) {
                    post.imagenes.forEach(function(image) {
                       debugger;
-                      mediaHtml += `<img src="${image.filepath}" alt="${image.title}" class="card-img-top" title="${image.description}">`;
+                      const imageUrl = normalizarRuta(image.filepath);
+                      mediaHtml += `<img src="${imageUrl}" alt="${image.title}" class="card-img-top" title="${image.description}">`;
                    });
                 } else {
                    console.warn('Se esperaba un array para imagenes, pero se encontró:', post.imagenes);
@@ -201,7 +203,8 @@ function cargarPublicaciones() {
  
                 if (Array.isArray(post.videos)) {
                    post.videos.forEach(function(video) {
-                      mediaHtml += `<video src="${video.filepath}" controls class="card-img-top" title="${video.description}"></video>`;
+                      const imageUrl = normalizarRuta(video.filepath);
+                      mediaHtml += `<video src="${imageUrl}" controls class="card-img-top" title="${video.description}"></video>`;
                    });
                 } else {
                    console.warn('Se esperaba un array para videos, pero se encontró:', post.videos);
@@ -233,6 +236,9 @@ function cargarPublicaciones() {
  });
 }
 
+function normalizarRuta(filepath) {
+  return filepath.replace(/\\/g, '/');
+}
 
 
 
