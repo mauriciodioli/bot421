@@ -21,6 +21,7 @@ from models.payment_page.Promotion import Promotion
 from models.newsLetter.newLetter import NewLetter
 from models.modelMedia.video import Video
 from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from datetime import datetime
 from flask import Blueprint,flash
 
@@ -50,6 +51,7 @@ def crea_tablas_DB():
     NewLetter.crear_tabla_newsLetter()
     Video.crear_tabla_video()
     Publicacion.crear_tabla_publicacion()
+    Public_imagen_video.crear_tabla_Public_imagen_video()
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     
