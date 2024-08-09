@@ -41,41 +41,23 @@
         </div>
     </div>
 
-  <div class="image-grid">
-    {% for imagen in imagenes %}
-    <div class="card">
-      <div class="card-header">
-        <h3>{{ imagen.user}}</h3> <!-- Reemplaza con el nombre real del usuario -->
-        <button class="close-card" onclick="cerrarTarjeta(this.parentElement.parentElement)">Cerrar</button>
+
+    <div class="container mt-4">
+      <!-- Contenedor para mostrar las publicaciones -->
+      <div id="postDisplayContainer" class="row">
+          <!-- Aquí se insertarán las tarjetas de publicaciones -->
       </div>
-      <div class="card-body">
-        <img src="{{ url_for('static', filename=imagen.image_paths) }}" alt="Imagen">
-        <button class="close-button-mostrar" onclick="eliminarImagen('{{ imagen.image_paths }}')">X</button>
-      </div>
-      <div class="card-footer">
-        <p>Descripción de la imagen: {{ imagen.descripcion }}</p> <!-- Reemplaza con la descripción real de la imagen -->
-      </div>
-    </div>
-    <div class="container">
-      <div class="new-post">
-          <input type="text" id="user" placeholder="Your Name">
-          <textarea id="content" placeholder="What's on your mind?"></textarea>
-          <input type="text" id="media_url" placeholder="Video URL (optional)">
-          <button onclick="createPost()">Post</button>
-      </div>
-      <div class="sort-options">
-          <select id="sort-by" onchange="fetchPosts()">
-              <option value="timestamp">Most Recent</option>
-              <option value="views">Most Viewed</option>
-          </select>
-      </div>
-      <div id="posts"></div>
   </div>
-  
-  {% endfor %}
-  
-  </div>
-</div>
+
+
+
+
+
+   
+
+
+
+
 
 <!-- Modal for creating a post -->
 <div id="createPostModal_creaPublicacion" class="modal_creaPublicacion">
@@ -165,11 +147,116 @@
 
 
   document.addEventListener('DOMContentLoaded', function() {
-    fetchPosts();
+      cargarPublicaciones();
+   // fetchPosts();
 });
 
-function fetchPosts() {
-    const sortBy = document.getElementById('sort-by').value;
+
+
+function cargarPublicaciones() {
+  var correo_electronico = localStorage.getItem('correo_electronico');
+  var roll = localStorage.getItem('roll');
+  var access_token = localStorage.getItem('access_token');  // Asegúrate de que access_token esté almacenado en localStorage
+  
+  if (!access_token) {
+      alert("No se ha encontrado el token de acceso.");
+      return;
+  }
+
+  var formData = new FormData();
+  formData.append('roll', roll);
+  formData.append('correo_electronico', correo_electronico);
+
+  $.ajax({
+      url: '/media-publiaciones-mostrar',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      headers: {
+          'Authorization': 'Bearer ' + access_token
+      },
+      success: function(response) {
+         console.log('Respuesta del servidor:', response);
+         
+         if (Array.isArray(response)) {
+          var postDisplayContainer = $('#postDisplayContainer');
+          postDisplayContainer.empty(); // Limpiar el contenedor antes de añadir nuevas publicaciones
+ 
+          response.forEach(function(post) {
+             // Solo procesar publicaciones que tienen imágenes o videos
+             if (post.imagenes.length > 0 || post.videos.length > 0) {
+                console.log('Procesando publicación:', post);
+                
+                var mediaHtml = '';
+ 
+                if (Array.isArray(post.imagenes)) {
+                   post.imagenes.forEach(function(image) {
+                      debugger;
+                      mediaHtml += `<img src="${image.filepath}" alt="${image.title}" class="card-img-top" title="${image.description}">`;
+                   });
+                } else {
+                   console.warn('Se esperaba un array para imagenes, pero se encontró:', post.imagenes);
+                }
+ 
+                if (Array.isArray(post.videos)) {
+                   post.videos.forEach(function(video) {
+                      mediaHtml += `<video src="${video.filepath}" controls class="card-img-top" title="${video.description}"></video>`;
+                   });
+                } else {
+                   console.warn('Se esperaba un array para videos, pero se encontró:', post.videos);
+                }
+ 
+                var cardHtml = `
+                   <div class="card" style="width: 18rem;">
+                       <div class="card-body">
+                           <h5 class="card-title">Publicación ID: ${post.publicacion_id}</h5>
+                           ${mediaHtml}
+                       </div>
+                   </div>
+                `;
+ 
+                postDisplayContainer.append(cardHtml);
+             } else {
+                console.log('Publicación sin contenido:', post.publicacion_id);
+             }
+          });
+ 
+          alert("Publicaciones cargadas exitosamente.");
+       } else {
+          console.error("La respuesta no es un array. Recibido:", response);
+       }
+    },    
+    error: function(xhr, status, error) {
+       alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
+    }
+ });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function fetchPosts() {  
+    const sortByElement = document.getElementById('sort-by');
+    if (!sortByElement) {
+        console.error('El elemento con id "sort-by" no se encuentra en el DOM.');
+        return;
+    }
+    const sortBy = sortByElement.value;
     fetch(`/api/posts?sort_by=${sortBy}`)
         .then(response => response.json())
         .then(posts => {
@@ -199,7 +286,8 @@ function fetchPosts() {
                 `;
                 postsContainer.appendChild(postElement);
             });
-        });
+        })
+        .catch(error => console.error('Error fetching posts:', error));
 }
 
 function createPost() {
@@ -487,7 +575,6 @@ $(document).ready(function() {
     var color_titulo = 'black';
 
     // Agregar variables adicionales al FormData
-    formData.append('access_token', access_token);
     formData.append('ambito', ambito);
     formData.append('correo_electronico', correo_electronico);
     formData.append('color_texto', color_texto);
@@ -508,10 +595,43 @@ $(document).ready(function() {
       data: formData,
       processData: false, // Prevent jQuery from automatically transforming the data into a query string
       contentType: false, // Prevent jQuery from setting Content-Type header
-      success: function(response) {
-        alert("Publicación creada exitosamente.");
-        $("#createPostModal_creaPublicacion").hide(); // Close the modal on success
+      headers: {
+        'Authorization': 'Bearer ' + access_token // Agregar el token de acceso en el encabezado
       },
+      success: function(response) {
+        debugger; // Esto detendrá la ejecución en este punto
+    
+        // Mostrar la publicación en una tarjeta
+        var mediaContainer = $('#mediaContainer_creaPublicacion');
+        var mediaHtml = '';
+    
+        response.media_files.forEach(function(filePath) {
+            // Cambiar la forma de mostrar según el tipo de archivo
+            var fileExtension = filePath.split('.').pop().toLowerCase();
+            if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
+                mediaHtml += `<img src="${filePath}" alt="Imagen" class="card-img-top">`;
+            } else if (['mp4', 'avi', 'mov'].includes(fileExtension)) {
+                mediaHtml += `<video src="${filePath}" controls class="card-img-top"></video>`;
+            }
+        });
+    
+        var cardHtml = `
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: ${response.color_titulo};">${response.post_title}</h5>
+                    <p class="card-text" style="color: ${response.color_texto};">${response.post_text}</p>
+                    <p class="card-text">Ámbito: ${response.ambito}</p>
+                    <p class="card-text">Correo electrónico: ${response.correo_electronico}</p>
+                    ${mediaHtml}
+                </div>
+            </div>
+        `;
+    
+        $('#postDisplayContainer').html(cardHtml); // Asegúrate de que `#postDisplayContainer` exista en tu HTML
+    
+        alert("Publicación creada exitosamente.");
+        $("#createPostModal_creaPublicacion").hide(); // Cierra el modal en caso de éxito
+    },    
       error: function(xhr, status, error) {
         alert("Error al crear la publicación. Inténtalo de nuevo.");
       }
@@ -526,8 +646,8 @@ $(document).ready(function() {
     }
     return new File([u8arr], filename, {type: mime});
   }
-  
 });
+
 
 
 </script>
