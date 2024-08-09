@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 import tokens.token as Token
-import datetime
+from datetime import datetime
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 
@@ -334,16 +334,20 @@ def es_formato_imagen(filepath):
 
 @imagenesOperaciones.route('/social_imagenes_crear_publicacion', methods=['POST'])
 def social_imagenes_crear_publicacion():
-    try:
+    #try:
         data = request.form
-        access_token = data.get('access_token_btn_donacion')
+        access_token = data.get('access_token')
+        post_title = data.get('postTitle_creaPublicacion')
+        post_text = data.get('postText_creaPublicacion')
+        
+    
     
         print("Iniciando social_imagenes_crear_publicacion")
         media_files = []
         if access_token and Token.validar_expiracion_token(access_token=access_token):
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             user_id = decoded_token.get("sub")
-            id_publicacion = guardarPublicacion(request, media_files, user_id, imagen_id=imagen_id,video_id=video_id)
+            id_publicacion = guardarPublicacion(request, media_files, user_id)
            
             for key in request.files:
                 file = request.files[key]
@@ -368,9 +372,9 @@ def social_imagenes_crear_publicacion():
 
             print("Finalizando social_imagenes_crear_publicacion")
             return jsonify({'message': 'Publicación creada exitosamente.', 'media_files': media_files})
-    except Exception as e:
+   # except Exception as e:
             # Manejo genérico de excepciones, devolver un mensaje de error
-            return jsonify({'error': str(e)}), 500
+    #        return jsonify({'error': str(e)}), 500
         
 
 
@@ -408,7 +412,7 @@ def cargarImagen_crearPublicacion(file, filename, id_publicacion):
     return file_path
 
 
-def cargarVideo_crearPublicacion(file, filename):
+def cargarVideo_crearPublicacion(file, filename,id_publicacion):
     file_path = os.path.join('static', 'uploads', filename)
     file.save(file_path)
 
@@ -447,7 +451,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def guardarPublicacion(request, media_files, user_id, imagen_id, video_id):
+def guardarPublicacion(request, media_files, user_id):
     post_title = request.form.get('postTitle_creaPublicacion')
     post_text = request.form.get('postText_creaPublicacion')   
     ambito = request.form.get('ambito')
@@ -456,9 +460,7 @@ def guardarPublicacion(request, media_files, user_id, imagen_id, video_id):
     color_titulo = request.form.get('color_titulo')
     
     nueva_publicacion = Publicacion(
-            user_id=user_id, 
-            imagen_id= imagen_id ,
-            video_id = video_id,
+            user_id=user_id,             
             titulo= post_title,
             texto= post_text,
             ambito= ambito,

@@ -1,5 +1,3 @@
-#from re import template
-
 from flask import (Flask,Blueprint,Response,make_response,render_template,request,redirect,url_for,flash,jsonify)
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
@@ -259,7 +257,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 # Parámetros de configuración
-app.config['SQLALCHEMY_POOL_SIZE'] = 1000  # Tamaño máximo del pool
+app.config['SQLALCHEMY_POOL_SIZE'] = 20  # Tamaño máximo del pool
 app.config['SQLALCHEMY_MAX_OVERFLOW'] = 50  # Conexiones adicionales permitidas
 
 # Configuración inicial
@@ -287,7 +285,7 @@ engine = create_engine(
 
 db = SQLAlchemy(app)
 db.init_app(app)
-db.session.configure(bind=engine)
+#db.session.configure(bind=engine)
 
 ma = Marshmallow(app)
 
@@ -414,6 +412,38 @@ def log_connection_info(dbapi_connection, connection_record):
                     active_connections.remove(conn_key)  # Eliminar del conjunto de conexiones activas
                     connection_times.pop(conn_key, None)  # Eliminar del diccionario de tiempos
 
+
+# Escuchar cuando se obtiene una conexión del pool
+@event.listens_for(Pool, "checkout")
+def checkout_listener(dbapi_connection, connection_record, connection_proxy):
+    print("Conexión obtenida del pool. Conexión ID:", id(dbapi_connection))
+
+# Escuchar cuando se devuelve una conexión al pool
+@event.listens_for(Pool, "checkin")
+def checkin_listener(dbapi_connection, connection_record):
+    print("Conexión devuelta al pool. Conexión ID:", id(dbapi_connection))
+
+# Escuchar cuando se abre una nueva conexión (cuando se crea una conexión nueva que no estaba en el pool)
+@event.listens_for(Pool, "connect")
+def connect_listener(dbapi_connection, connection_record):
+    print("Nueva conexión abierta. Conexión ID:", id(dbapi_connection))
+
+# Escuchar cuando se descarta una conexión del pool
+@event.listens_for(Pool, "invalidate")
+def invalidate_listener(dbapi_connection, connection_record, exception):
+    print("Conexión invalidada. Conexión ID:", id(dbapi_connection))
+
+
+def monitor_pool_state(engine):
+    pool = engine.pool
+    if pool.checkedout() >= pool.size():
+        print("Advertencia: El pool está casi lleno.")
+    else:
+        print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
+
+
+
+
 # Registro explícito de los eventos (líneas añadidas)
 event.listen(engine, 'connect', on_connect)
 event.listen(engine, 'checkin', on_checkin)
@@ -482,6 +512,7 @@ def entrada():
 @login_manager.user_loader
 def load_user(user_id):
     try:
+        monitor_pool_state(db.engine)
         # Realiza la consulta para obtener el usuario
         user = db.session.query(Usuario).filter_by(id=user_id).first()
         return user
