@@ -86,6 +86,19 @@ def media_publiaciones_mostrar():
 # Definir la función para armar las publicaciones con imágenes y videos
 def armar_publicacion(publicaciones_user):
     publicaciones_data = []
+    
+    
+    # Obtener la ruta completa de la carpeta 'static/uploads'
+    uploads_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+
+    # Obtener todas las imágenes en la carpeta 'static/uploads'
+    image_files = [file for file in os.listdir(uploads_folder) if file.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+
+    # Crear las rutas completas de las imágenes sin codificación de caracteres
+    image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
+   
+    
+    
 
     for publicacion in publicaciones_user:
         # Obtener todas las imágenes y videos asociados a esta publicación
@@ -118,13 +131,15 @@ def armar_publicacion(publicaciones_user):
                         'filepath': video.filepath
                     })
         # Determinar el separador de ruta según el sistema operativo
-        path_separator = '/' if os.name != 'nt' else '\\'
-
+        #path_separator = '/' if os.name != 'nt' else '\\'
+        path_separator = '/'
         # Ajustar las rutas de archivos según el sistema operativo
         for imagen in imagenes:
             imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
+            #imagen['filepath'] = imagen['filepath'].replace('static/', ''),
         for video in videos:
             video['filepath'] = video['filepath'].replace('\\', path_separator)
+            #video['filepath'] = video['filepath'].replace('static/', '')
         # Agregar la publicación con sus imágenes y videos al diccionario
         publicaciones_data.append({
             'publicacion_id': publicacion.id,

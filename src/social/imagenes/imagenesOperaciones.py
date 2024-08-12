@@ -215,25 +215,30 @@ def mostrar_imagenes():
         
        # Filtrar solo las imágenes (puedes ajustar esto según tus necesidades)
         imagenes_filtradas = [img for img in imagenes if es_formato_imagen(img.filepath)]
-        
+       # path_separator = '/' if os.name != 'nt' else '\\'
+        path_separator = '/'
         # Procesar y asignar los paths solo a las imágenes filtradas
         for img in imagenes_filtradas:
             original_filepath = img.filepath
-            img.image_paths = original_filepath.replace('static/', '')
-           # img.image_paths = original_filepath.replace('static\\', '').replace('\\', '/')
-            print(f"Original: {original_filepath}, Modificado: {img.image_paths}")
-            sys.stdout.flush() 
-  # Buscar el usuario correspondiente
+            # Reemplazar los separadores de ruta para que sean consistentes
+            image_paths = original_filepath.replace('\\', path_separator)
+            
+            # Reemplazar 'static/' o 'static\\' con una cadena vacía
+            img.image_paths = image_paths.replace('static/', '')
+          
+            print(f"Original: {original_filepath}, Modificado: { img.image_paths}")
+            sys.stdout.flush()
+            
+            # Buscar el usuario correspondiente
             usuario_correspondiente = next((usuario for usuario in usuarios if usuario.id == img.user_id), None)
-
+            
             # Agregar el correo electrónico del usuario a la imagen
             if usuario_correspondiente:
                 img.correo_electronico = usuario_correspondiente.correo_electronico
             else:
-                # Puedes manejar el caso en el que no se encuentra el usuario (si es relevante para tu lógica)
+                # Manejar el caso en el que no se encuentra el usuario
                 img.correo_electronico = "Usuario no encontrado"
-
-          
+                
       
     return render_template('media/principalMedia/images.html', imagenes=imagenes_filtradas)
     

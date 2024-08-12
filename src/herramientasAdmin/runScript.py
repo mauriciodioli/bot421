@@ -14,7 +14,7 @@ def run_script():
         private_key_path = os.getenv('SSH_PRIVATE_KEY_PATH', 'bot421dbversion2.pem')
         remote_user = 'ubuntu'
         remote_host = '18.207.114.83' #PRUEBA
-       # remote_host =  '44.223.20.210' #PRODUCCION
+        #remote_host = '44.223.20.210' #PRODUCCION
         #remote_host = 'ip-172-31-19-138'
         
         # Registro de eventos
