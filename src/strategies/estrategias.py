@@ -8,6 +8,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 from routes.api_externa_conexion.cuenta import obtenerSaldoCuenta
 import routes.instrumentos as inst
 import strategies.gestion_estrategias.unidad_trader as utABM
+
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
@@ -136,7 +137,15 @@ def estrategias_usuario_nadmin():
          
             db.session.close()
             ut_por_trigger = {}
-            
+            try:
+                reporte = obtenerSaldoCuenta(account=account)
+                resumenCuenta = reporte.get("availableToCollateral", 0)  # Obtener el valor, o 0 si no existe la clave
+            except Exception as e:
+                resumenCuenta = 0  # En caso de error, asignar 0
+
+            # Verificar si el valor es None o 0
+            if resumenCuenta is None or resumenCuenta == 0:
+                resumenCuenta = 0    
             for trigger in estrategias:
                 # Obtener 'ut' para el trigger actual
                 ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
@@ -162,7 +171,7 @@ def estrategias_usuario_nadmin():
            
                    
             #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias], layout='layoutConexBroker')
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta=resumenCuenta, layout='layoutConexBroker')
           else:
                return render_template('notificaciones/tokenVencidos.html', layout='layout')  
     except:
@@ -182,7 +191,7 @@ def estrategias_usuario():
                 print("Name:", estrategia.userCuenta)
                 # Print other attributes as needed
                 print()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
     
     except:
        print('no hay estrategias') 
@@ -244,7 +253,7 @@ def eliminar_trigger():
         estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
       
         db.session.close()   
-        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
+        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
     else:
          flash('El token a expirado')
          return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
@@ -262,7 +271,7 @@ def editar_trigger_nombre():
     
     estrategias = db.session.query(TriggerEstrategia).all()
     db.session.close()
-    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
+    return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
     
 @estrategias.route("/editar-Trigger/", methods = ["POST"] )
 def editar_Trigger():
@@ -290,7 +299,7 @@ def editar_Trigger():
             flash('Estrategia editada correctamente.')
             estrategias = db.session.query(TriggerEstrategia).all()
             db.session.close()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],layout='layoutConexBroker')
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
                     
     except:
                 print('no hay estrategias')

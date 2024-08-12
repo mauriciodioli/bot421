@@ -2252,3 +2252,223 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+____INTENTO ENTRAR____
+127.0.0.1
+dpuntillo@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+madioli26@hotmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+madioli26@hotmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (2013, 'Lost connection to MySQL server during query ([WinError 10060] Se produjo un error durante el intento de conexión ya que la parte conectada no respondió adecuadamente tras un periodo de tiempo, o bien se produjo un error en la conexión establecida ya que el host conectado no ha podido responder)')
+[SQL: SELECT usuarios.id AS usuarios_id, usuarios.activo AS usuarios_activo, usuarios.correo_electronico AS usuarios_correo_electronico, usuarios.password AS usuarios_password, usuarios.token AS usuarios_token, usuarios.roll AS usuarios_roll, usuarios.refresh_token AS usuarios_refresh_token 
+FROM usuarios 
+WHERE usuarios.id = %(id_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'id_1': '1', 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+LEE EL SHEET POR LLAMADA DE FUNCION
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+MODIFICO EL SHEET CORRECTAMENTE
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+MODIFICO EL SHEET CORRECTAMENTE
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+MODIFICO EL SHEET CORRECTAMENTE
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+MODIFICO EL SHEET CORRECTAMENTE
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+MODIFICO EL SHEET CORRECTAMENTE
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+dpuntillo@gmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+dpuntillo@gmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+madioli26@hotmail.com
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO
+ENTRA A THREAD Y LEE EL SHEET POR HILO

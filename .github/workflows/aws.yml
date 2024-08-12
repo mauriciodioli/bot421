@@ -111,7 +111,15 @@ jobs:
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '10i\    REMARKET = 1' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sh -c "sed -i '11i\    LIVE = 2' /usr/local/lib/python3.9/site-packages/pyRofex/components/enums.py"
         
-
+    - name: Copy bot421dbversion2.pem to Docker container
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker cp /home/ubuntu/bot421dbversion2.pem 202404:/src
+          
           # Detener el contenedor
           docker stop ${{ env.DEPLOYMENT_VERSION }} || true
 

@@ -30,9 +30,11 @@
 {% block content %}
 
   <h1>Panel Control Estrategias</h1>
-
+ 
+ 
   <div>
     <div class="table-responsive">
+      <h3 class="resumen-cuenta">{{ resumenCuenta }}</h3>
       <table class="table table-dark table-striped" id="tabla-trigger">
         <thead>           
           <tr>
@@ -321,6 +323,7 @@
 
   // Set values of input elements
   document.getElementById("cuenta").value = cuenta_estrategia;
+
   
   
   document.getElementById("access_token_form_altaEstrategia").value = access_token;
