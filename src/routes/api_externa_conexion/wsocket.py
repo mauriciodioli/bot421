@@ -424,7 +424,7 @@ def cargarCuenta(Cuenta,idUser,account):
         except Exception as e:
             print(f"Ocurrió un error: {e}")
             break  # Sale del bucle en caso de error general
-    
+    db.session.close()
     if retries == max_retries:
         print("Error: Se ha alcanzado el límite de reintentos.")
         # Manejo adicional de error si es necesario

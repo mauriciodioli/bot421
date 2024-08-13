@@ -42,6 +42,7 @@ def altaTarjeta(data):
 
         db.session.add(nueva_tarjeta)
         db.session.commit()
+        db.session.close()
         return jsonify({"message": "Tarjeta creada con éxito", "tarjeta": nueva_tarjeta.id}), 201
 
     except Exception as e:

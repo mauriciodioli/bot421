@@ -543,7 +543,7 @@ def inicializar_variables(accountCuenta):
     if cuenta:
         # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
         broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
-        
+        db.session.close()
         if broker:
               # Agregar los valores de api_url y ws_url a la lista 'valores'
             valores = [broker.api_url, broker.ws_url]

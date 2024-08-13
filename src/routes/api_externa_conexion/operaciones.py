@@ -576,7 +576,7 @@ def obtenerCuentaBroker(user_id):
    usuario = db.session.query(Usuario).get(user_id)  
 # Buscar todas las cuentas asociadas a ese usuario
    cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-
+   db.session.close()
    if cuentas:
       print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
                   
