@@ -128,8 +128,8 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
     with app.app_context():
         # Consultar todas las órdenes de la cuenta
        
-        ordenes_cuenta = db.session.query(Orden).filter_by(user_id=user_id).all()
-
+        ordenes_cuenta = db.session.query(Orden).filter_by(user_id=user_id).all()       
+        db.session.close()
         # Crear un diccionario para mapear los símbolos de las órdenes a las órdenes
         ordenes_por_simbolo = {orden.symbol: orden for orden in ordenes_cuenta}
 
@@ -159,6 +159,8 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id):
             datos_procesados.append(tuple(dato))
 
     return datos_procesados
+
+
 
 
 def terminaConexionParaActualizarSheet(account):   

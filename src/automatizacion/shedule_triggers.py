@@ -326,6 +326,7 @@ def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electron
                 for triggerEstrategia in triggerEstrategias:
                     if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
                         usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
+                        db.session.close()
                         app.logger.info(usuario)
                         if usuario:
                             print("El usuario existe en la lista triggerEstrategias.")

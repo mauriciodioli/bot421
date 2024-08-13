@@ -139,7 +139,7 @@ def cuenta_endpoint_all():
             user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                     
             endPointBrokers = db.session.query(Broker).all()
-
+            db.session.close()
             if endPointBrokers:
                 data = []  # Lista para almacenar los datos de las cuentas
                 

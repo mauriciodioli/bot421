@@ -470,7 +470,7 @@ def fichasToken_fichas_listar():
                 print(f"Ficha relacionada - ID: {ficha_relacionada.id}, Token: {ficha_relacionada.token}")
             
           
-                
+            db.session.close()    
             return render_template("fichas/fichasListado.html", datos=fichas_usuario, layout = layouts)
         
         flash('token vencido') 
@@ -520,6 +520,7 @@ def fichasToken_fichas_listar_sin_cuenta():
                         # Agregamos random_number a la ficha
                         ficha.random_number = random_number
                         db.session.commit()
+                        db.session.close()
                 except Exception as e:
                     db.session.rollback()   
                 traza_fichas_con_fichas = []  # o asigna la lista que corresponda
@@ -585,7 +586,7 @@ def fichasToken_fichas_all():
                 user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 usuario = Usuario.query.get(user_id)         
                 cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-
+                db.session.close()
                 if cuentas:
                     data = []  # Lista para almacenar los datos de las cuentas
                     
@@ -749,6 +750,7 @@ def reportar_ficha():
                 # Agregamos random_number a la ficha
                 ficha.random_number = random_number
                 db.session.commit()
+               
         except Exception as e:
                db.session.rollback()   
         
@@ -775,7 +777,7 @@ def reportar_ficha():
           
                 
             
-            
+        db.session.close()    
         return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
     flash('token vencido') 
     return render_template('usuarios/logOutSystem.html') 
@@ -817,7 +819,7 @@ def recibir_ficha():
        
               # Obtener todas las TrazaFichas con sus Fichas relacionadas
         traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
-
+        db.session.close()
         for traza_ficha in traza_fichas_con_fichas:
             ficha_relacionada = traza_ficha.ficha
      

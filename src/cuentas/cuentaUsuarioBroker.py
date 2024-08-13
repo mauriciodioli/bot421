@@ -32,7 +32,7 @@ def cuentaUsuarioBroker_all_cuentas_post():
                 user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 usuario = Usuario.query.get(user_id)         
                 cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-
+                db.session.close()
                 if cuentas:
                     data = []  # Lista para almacenar los datos de las cuentas
                     

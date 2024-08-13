@@ -48,7 +48,7 @@ def media_publiaciones_mostrar():
 
             # Obtener todas las publicaciones del usuario
             publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id).all()
-            
+            db.session.close()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion(publicaciones_user)
             # Transformar las rutas al formato almacenado en la base de datos
@@ -134,6 +134,7 @@ def armar_publicacion(publicaciones_user):
         #path_separator = '/' if os.name != 'nt' else '\\'
         path_separator = '/'
         # Ajustar las rutas de archivos según el sistema operativo
+        db.session.close()
         for imagen in imagenes:
             imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
             #imagen['filepath'] = imagen['filepath'].replace('static/', ''),
