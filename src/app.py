@@ -258,13 +258,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-# Parámetros de configuración
-app.config['SQLALCHEMY_POOL_SIZE'] = 20  # Tamaño máximo del pool
-app.config['SQLALCHEMY_MAX_OVERFLOW'] = 50  # Conexiones adicionales permitidas
+app.config['SQLALCHEMY_POOL_SIZE'] = 10
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 280
+app.config['SQLALCHEMY_MAX_OVERFLOW'] = 10  # Conexiones adicionales permitidas
 
 # Configuración inicial
 INITIAL_POOL_SIZE = 2
-INITIAL_MAX_OVERFLOW = 3
+INITIAL_MAX_OVERFLOW = 5
 MAX_USERS_INCREMENT = 3
 POOL_SIZE_INCREMENT = 2
 MAX_USERS_AMPLIFICATION = 5
@@ -276,10 +276,9 @@ INACTIVITY_TIMEOUT = 5  # Tiempo máximo de inactividad en segundos
 # Crear el motor de SQLAlchemy
 engine = create_engine(
     DATABASE_CONNECTION_URI,
-    poolclass=QueuePool,
-    pool_size=INITIAL_POOL_SIZE,
+    poolclass=QueuePool,    
     max_overflow=INITIAL_MAX_OVERFLOW,
-    pool_timeout=30,  # Tiempo máximo en segundos que se esperará por una conexión
+    pool_timeout=5,  # Tiempo máximo en segundos que se esperará por una conexión
     pool_recycle=3600
 )
 
@@ -297,6 +296,88 @@ active_connections = set()
 connection_times = {}
 user_count = 0
 total_connections = 0
+
+
+
+# Escuchar cuando se abre una nueva conexión
+@event.listens_for(Pool, "connect")
+def connect_listener(dbapi_connection, connection_record):
+    connection_key = id(connection_record)
+    print("connect_listener Nueva conexión abierta. Conexión ID:", connection_key)
+    
+    # Registrar la nueva conexión
+    active_connections.add(connection_key)
+    connection_times[connection_key] = time.time()
+    app.logger.info(f"connect_listener Conexión abierta. Total conexiones activas: {len(active_connections)}")
+
+# Escuchar cuando se obtiene una conexión del pool
+@event.listens_for(Pool, "checkout")
+def checkout_listener(dbapi_connection, connection_record,connection_proxy):
+    connection_key = id(connection_record)
+    print("checkout_listener Conexión obtenida del pool. Conexión ID:", connection_key)
+    
+    # Actualizar el tiempo de última actividad
+    if connection_key in connection_times:
+        connection_times[connection_key] = time.time()
+    else:
+        app.logger.warning(f"checkout_listener Clave de conexión no encontrada en connection_times: {connection_key}")
+
+@event.listens_for(db.engine, "close")
+def close_listener(dbapi_connection, connection_record):
+    connection_id = id(connection_record)
+    app.logger.info(f"close_listener Conexión cerrada. ID: {connection_id}")
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    # Cierra la sesión de la base de datos y libera recursos
+    db.session.remove()
+# Escuchar cuando se devuelve una conexión al pool
+@event.listens_for(Pool, "checkin")
+def checkin_listener(dbapi_connection, connection_record):
+    connection_key = id(connection_record)
+    print("Conexión devuelta al pool. Conexión ID:", connection_key)
+    
+    # Verificar y eliminar la clave de active_connections si existe
+    if connection_key in active_connections:
+        active_connections.remove(connection_key)
+    else:
+        app.logger.warning(f"Clave de conexión no encontrada en active_connections: {connection_key}")
+    
+    # Verificar y eliminar la clave de connection_times si existe
+    if connection_key in connection_times:
+        connection_times.pop(connection_key, None)
+    else:
+        app.logger.warning(f"Clave de conexión no encontrada en connection_times: {connection_key}")
+    
+    app.logger.info(f"Conexión devuelta al pool. Total conexiones activas: {len(active_connections)}")
+    
+    # Manejar el número de conexiones si es necesario
+    if len(active_connections) > MAX_CONNECTIONS:
+        current_time = time.time()
+        connections_to_close = [key for key, last_active in connection_times.items()
+                                if current_time - last_active > INACTIVITY_TIMEOUT]
+        
+        for conn_key in connections_to_close:
+            if len(active_connections) <= MAX_CONNECTIONS:
+                break
+            if conn_key in active_connections:
+                app.logger.info(f"Cerrando conexión inactiva: {conn_key}")
+                # Aquí simplemente removemos el registro, no la conexión real
+                active_connections.remove(conn_key)
+                connection_times.pop(conn_key, None)
+                pool = engine.pool
+                if pool.checkedout() >= pool.size():
+                  print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
+
+def log_connection_info(dbapi_connection, connection_record):
+    print("Registro de conexión. Conexión ID:", id(dbapi_connection))
+    
+    
+event.listen(engine, 'connect', connect_listener)
+event.listen(engine, 'checkin', checkin_listener)
+event.listen(engine, 'checkout', checkout_listener)
+event.listen(engine, 'close',close_listener)
+event.listen(engine.pool, 'connect', log_connection_info)
 
 def adjust_pool_size():
     """Ajusta el tamaño del pool basado en el número de usuarios y conexiones activas."""
@@ -343,135 +424,22 @@ def adjust_pool_size():
                 max_overflow=new_max_overflow
             )
             app.logger.info(f"Reducido el tamaño del pool a {new_pool_size}. Conexiones activas: {len(active_connections)}.")
-@event.listens_for(engine, 'connect')
-def on_connect(dbapi_connection, connection_record):
-    """Incrementar el contador de usuarios y ajustar el pool si es necesario."""
-    global user_count, total_connections, active_connections
-    user_count += 1
-    total_connections += 1
-    connection_key = id(connection_record)
-    active_connections.add(connection_key)
-    connection_times[connection_key] = time.time()
-    adjust_pool_size()
-    app.logger.info(f"Usuario conectado. Total usuarios: {user_count}")
-    print("Evento 'connect' disparado.")
-    
-@event.listens_for(engine, 'checkin')
-def on_checkin(dbapi_connection, connection_record):
-    """Asegura que el número de conexiones no exceda el máximo al devolver conexiones al pool."""
-    global active_connections, connection_times    
-    connection_key = id(connection_record)
-    if connection_key in active_connections:
-        active_connections.remove(connection_key)
-    connection_times[connection_key] = time.time()  # Actualizar tiempo de inactividad
-    app.logger.info(f"Conexión verificada. Total conexiones activas: {len(active_connections)}")
-    print("Evento 'checkin' disparado.")
-    
-    
-@event.listens_for(engine, 'checkout')
-def on_checkout(dbapi_connection, connection_record, connection_proxy):
-    """Decrementar el contador de usuarios cuando una conexión se libera y manejar conexiones inactivas."""
-    global user_count, active_connections, connection_times
-
-    # Decrementar el contador de usuarios
-    user_count -= 1
-    if user_count < 0:
-        user_count = 0
-    app.logger.info(f"Usuario desconectado. Total usuarios: {user_count}")
-
-    # Cerrar conexiones que han estado inactivas durante un período prolongado
-    current_time = time.time()
-    connections_to_close = [key for key, last_active in connection_times.items()
-                            if current_time - last_active > INACTIVITY_TIMEOUT]
-
-    for conn_key in connections_to_close:
-        if conn_key in active_connections:
-            # Encontrar la conexión en el conjunto de conexiones activas
-            connection = next((conn for conn in active_connections if id(conn) == conn_key), None)
-            if connection:
-                connection.close()  # Cerrar la conexión
-                active_connections.remove(conn_key)  # Eliminar del conjunto de conexiones activas
-                connection_times.pop(conn_key, None)  # Eliminar del diccionario de tiempos
-                app.logger.info(f"Cerrando conexión inactiva: {conn_key}")
-
-    # Crear una nueva conexión si no hay conexiones activas
-    if len(active_connections) == 0:
-        app.logger.info("No hay conexiones activas. Creando una nueva conexión...")
-        try:
-           
-            # Crear una nueva sesión y forzar la creación de una nueva conexión
-            pass
-            #db.session.execute('SELECT 1')  # Consulta trivial para crear una conexión
-        except Exception as e:
-            app.logger.error(f"Error al crear nueva conexión: {e}")
-            # Manejar el error si es necesario
-# Registrar el evento de desconexión
-    app.logger.info(f"Usuario desconectado. Total usuarios: {user_count}")
 
 
-@event.listens_for(engine.pool, "connect")
-def log_connection_info(dbapi_connection, connection_record):
-    """Registra eventos de conexión y asegura que el número máximo de conexiones no se exceda."""
-    global active_connections, connection_times
-    connection_key = id(connection_record)
-    connection_times[connection_key] = time.time()
-    active_connections.add(connection_key)
-    app.logger.info(f"Conexión establecida. Total conexiones activas: {len(active_connections)}")
-
-    if len(active_connections) > MAX_CONNECTIONS:
-        # Cerrar conexiones inactivas si el límite se excede
-        current_time = time.time()
-        connections_to_close = [key for key, last_active in connection_times.items()
-                                if current_time - last_active > INACTIVITY_TIMEOUT]
-        
-        for conn_key in connections_to_close:
-            if len(active_connections) <= MAX_CONNECTIONS:
-                break
-            if conn_key in active_connections:
-                app.logger.info(f"Cerrando conexión inactiva: {conn_key}")
-                connection = next((conn for conn in active_connections if id(conn) == conn_key), None)
-                if connection:
-                    connection.close()  # Cerrar la conexión
-                    active_connections.remove(conn_key)  # Eliminar del conjunto de conexiones activas
-                    connection_times.pop(conn_key, None)  # Eliminar del diccionario de tiempos
-
-
-# Escuchar cuando se obtiene una conexión del pool
-@event.listens_for(Pool, "checkout")
-def checkout_listener(dbapi_connection, connection_record, connection_proxy):
-    print("Conexión obtenida del pool. Conexión ID:", id(dbapi_connection))
-
-# Escuchar cuando se devuelve una conexión al pool
-@event.listens_for(Pool, "checkin")
-def checkin_listener(dbapi_connection, connection_record):
-    print("Conexión devuelta al pool. Conexión ID:", id(dbapi_connection))
-
-# Escuchar cuando se abre una nueva conexión (cuando se crea una conexión nueva que no estaba en el pool)
-@event.listens_for(Pool, "connect")
-def connect_listener(dbapi_connection, connection_record):
-    print("Nueva conexión abierta. Conexión ID:", id(dbapi_connection))
-
-# Escuchar cuando se descarta una conexión del pool
 @event.listens_for(Pool, "invalidate")
-def invalidate_listener(dbapi_connection, connection_record, exception):
+def invalidate_listener(dbapi_connection, connection_record):
     print("Conexión invalidada. Conexión ID:", id(dbapi_connection))
 
 
 def monitor_pool_state(engine):
     pool = engine.pool
     if pool.checkedout() >= pool.size():
-        print("Advertencia: El pool está casi lleno.")
+        print(f"Advertencia: El pool está casi lleno: {pool.checkedout()} / {pool.size()}")
     else:
         print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
 
 
 
-
-# Registro explícito de los eventos (líneas añadidas)
-event.listen(engine, 'connect', on_connect)
-event.listen(engine, 'checkin', on_checkin)
-event.listen(engine, 'checkout', on_checkout)
-event.listen(engine.pool, 'connect', log_connection_info)
 
 # Definir una función de registro personalizada para el nuevo nivel
 def custom_log(self, message, *args, **kwargs):
@@ -538,6 +506,7 @@ def load_user(user_id):
         monitor_pool_state(db.engine)
         # Realiza la consulta para obtener el usuario
         user = db.session.query(Usuario).filter_by(id=user_id).first()
+        db.session.close()
         return user
     
     except OperationalError as e:

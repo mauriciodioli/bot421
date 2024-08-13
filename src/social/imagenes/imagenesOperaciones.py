@@ -159,6 +159,7 @@ def cargarImagen():
             )
             db.session.add(nueva_imagen)
             db.session.commit()
+            db.session.close()
           
        # MostrarImages()
         return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo})

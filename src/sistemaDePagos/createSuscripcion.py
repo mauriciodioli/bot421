@@ -72,6 +72,7 @@ def create_order_suscripcion():
                 payer_email =data.get("email")
             else:
                 tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(user_id=user_id).first()
+                db.session.close()
                 cardName = tarjeta_existente.nombreApellidoTarjeta
                 expiryDate =tarjeta_existente.fecha_vencimiento
                 security_code = tarjeta_existente.cvv
@@ -135,7 +136,7 @@ def create_order_suscripcion():
     
             # Consultar el plan existente en la base de datos
             plan_existente = db.session.query(Plan).filter_by(reason=reason).first()
-
+            db.session.close()
             if plan_existente is None:
                 # Lanzar una excepción si el plan no existe
                 raise Exception("Plan no encontrado en la base de datos")
@@ -252,6 +253,7 @@ def cargarSuscripcion(user_id, numero_de_cuenta, json_content):
         # Agregar y confirmar la nueva suscripción en la base de datos
         db.session.add(nueva_suscripcion)
         db.session.commit()
+        db.session.close()
 
         return jsonify({"message": "Suscripción creada con éxito", "suscripcion": nueva_suscripcion.id}), 201
 

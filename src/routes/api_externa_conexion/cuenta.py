@@ -117,11 +117,11 @@ def cuenta_detalle_cuenta():
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             for elemento in get.ConexionesBroker:
-                print("Variable agregada:", elemento)
+                
                 accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
              
                 if accountCuenta == cuenta:
-               
+                  print("Variable agregada:", accountCuenta)
                   respuesta_cuenta = get.ConexionesBroker[elemento]['pyRofex'].get_account_report(account=accountCuenta, environment=accountCuenta)
                   reporte = respuesta_cuenta['accountData']
                   
@@ -584,6 +584,7 @@ def get_pass_cuenta_de_broker(user_id,account):
             todasLasCuentas = db.session.query(Cuenta).filter_by(user_id=user_id).all()
             broker_ids = [todasLasCuentas.broker_id for todasLasCuentas in todasLasCuentas if todasLasCuentas.broker_id is not None]
             brokers = db.session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
+            db.session.close()
             id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
             if todasLasCuentas:
                 for cuenta in todasLasCuentas:
