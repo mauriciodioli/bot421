@@ -165,7 +165,7 @@ def abm_estrategias_all_Brokers_post():
             
             try:
                 brokers = db.session.query(Broker).all()
-
+                db.session.close()
                 if brokers:
                     data = []  # Lista para almacenar los datos de las cuentas
                     
@@ -205,7 +205,7 @@ def abm_estrategias_all():
         try:
                      
             estrategias = db.session.query(Strategy).all()
-
+            db.session.close()
             if estrategias:
                 data = []  # Lista para almacenar los datos de las cuentas
                 

@@ -49,23 +49,35 @@ def altaTarjeta(data):
         return jsonify({"message": str(e)}), 500
 
 def bajaTarjeta(id):
-    
-    tarjeta = TarjetaUsuario.query.get_or_404(id)
-    db.session.delete(tarjeta)
-    db.session.commit()
+    try:
+        tarjeta = db.session.query(TarjetaUsuario).get_or_404(id)
+        db.session.delete(tarjeta)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise e
+    finally:
+        db.session.close()
+
     return jsonify({"message": "Tarjeta eliminada con éxito"}), 200
 
 def modificarTarjeta(id):
-    data = request.json
-    tarjeta = TarjetaUsuario.query.get_or_404(id)
-    
-    tarjeta.numeroTarjeta = data['numeroTarjeta']
-    tarjeta.fecha_vencimiento = data['fecha_vencimiento']
-    tarjeta.cvv = data['cvv']
-    tarjeta.nombreApellidoTarjeta = data['nombreApellidoTarjeta']
-    tarjeta.correo_electronico = data['correo_electronico']
-    tarjeta.accountCuenta = data.get('accountCuenta', tarjeta.accountCuenta)
-    
-    db.session.commit()
+    try:
+        data = request.json
+        tarjeta = db.session.query(TarjetaUsuario).get_or_404(id)
+        
+        tarjeta.numeroTarjeta = data['numeroTarjeta']
+        tarjeta.fecha_vencimiento = data['fecha_vencimiento']
+        tarjeta.cvv = data['cvv']
+        tarjeta.nombreApellidoTarjeta = data['nombreApellidoTarjeta']
+        tarjeta.correo_electronico = data['correo_electronico']
+        tarjeta.accountCuenta = data.get('accountCuenta', tarjeta.accountCuenta)
+        
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise e
+    finally:
+        db.session.close()
+
     return jsonify({"message": "Tarjeta actualizada con éxito"}), 200
-       

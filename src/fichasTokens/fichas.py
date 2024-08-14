@@ -50,6 +50,7 @@ def refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta):
                 for ficha in fichas_usuario:
                     ficha.valor_cuenta_actual = available_to_collateral
                     db.session.commit()
+                    
             else:
                 # Aquí puedes agregar código adicional si deseas realizar alguna acción específica cuando no hay datos.
                 pass
@@ -134,7 +135,7 @@ def fichas_asignar():
                 #consultas de las neuvas fichas aceptadas
                 ficha_aceptadas =  db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
             
-                    
+                db.session.close()    
                 return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
         return render_template('notificaciones/tokenVencidos.html',layout = 'layout')       
     except:  
@@ -326,6 +327,7 @@ def crear_ficha():
                         for ficha in fichas_usuario
                     ]
                 db.session.commit()
+                db.session.close()
             except Exception as e:
                db.session.rollback() 
             return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
@@ -400,7 +402,7 @@ def fichasToken_fichas_generar():
             
         
             print(total_para_fichas)    
-           
+            db.session.close()
             return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         else:
              flash('token vencido') 
@@ -520,7 +522,7 @@ def fichasToken_fichas_listar_sin_cuenta():
                         # Agregamos random_number a la ficha
                         ficha.random_number = random_number
                         db.session.commit()
-                        db.session.close()
+                       
                 except Exception as e:
                     db.session.rollback()   
                 traza_fichas_con_fichas = []  # o asigna la lista que corresponda
@@ -559,7 +561,7 @@ def fichasToken_fichas_listar_sin_cuenta():
                 
                         
                     
-                    
+                db.session.close()   
                 return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
         flash('token vencido') 
         return render_template('usuarios/logOutSystem.html')
@@ -648,7 +650,7 @@ def eliminar_ficha():
           if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
                     db.session.delete(ficha)
                     db.session.commit()
-                    db.session.close()
+                   
 
                     flash('Ficha eliminada correctamente.')
                     mensaje = "La ficha ha sido eliminada correctamente."
@@ -656,7 +658,8 @@ def eliminar_ficha():
             mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
         fichas_usuario = []  # o asigna la lista que corresponda
 
-        fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+        fichas_usuario = db.session.query(Ficha).filter_by(user_id=user_id).all()
+        db.session.close()
         pyRofexInicializada = get.ConexionesBroker.get(account)
         if pyRofexInicializada:
             repuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
@@ -797,10 +800,11 @@ def recibir_ficha():
                
         # Buscar y eliminar la ficha
           # Buscar y eliminar la ficha
-        ficha = Ficha.query.filter_by(id=id_ficha).first()
+        ficha = db.session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()
+     
        
         
-        traza_ficha = TrazaFicha.query.filter_by(id=ficha_id, user_id_traspaso=user_id).first()
+        traza_ficha = db.session.query(TrazaFicha).filter_by(id=ficha_id, user_id_traspaso=user_id).first() 
         
         if traza_ficha:
             if traza_ficha.estado_traza == 'ACEPTADO':

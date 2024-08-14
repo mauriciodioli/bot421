@@ -73,9 +73,10 @@ def programador_trigger():
             app = current_app._get_current_object()
             try:
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                usuario_objeto = Usuario.query.get(user_id)  # Obtener el objeto Usuario correspondiente al user_id
+                #usuario_objeto = Usuario.query.get(user_id)  # Obtener el objeto Usuario correspondiente al user_id
                 
-                cuenta = Cuenta.query.filter_by(user_id=user_id).first()
+                cuenta = db.session.query(Cuenta).filter_by(user_id=user_id).first()      
+                
                 if cuenta:
                     print("Datos de la cuenta:")
                     print("ID:", cuenta.id)
@@ -104,6 +105,7 @@ def programador_trigger():
                 db.session.add(triggerEstrategia)  # Agregar la instancia de Cuenta a la sesión
                 db.session.commit()  # Confirmar los cambios
                 db.session.refresh(triggerEstrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+                db.session.close()
                 triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
             
                 print("Auomatico registrada exitosamente!")
