@@ -144,6 +144,15 @@ def armar_publicacion(publicaciones_user):
         # Agregar la publicación con sus imágenes y videos al diccionario
         publicaciones_data.append({
             'publicacion_id': publicacion.id,
+            'user_id': publicacion.user_id,
+            'titulo':publicacion.titulo,
+            'texto': publicacion.texto,
+            'ambito': publicacion.ambito,
+            'correo_electronico': publicacion.correo_electronico,
+            'descripcion': publicacion.descripcion,
+            'color_texto': publicacion.color_texto,
+            'color_titulo': publicacion.color_titulo,
+            'fecha_creacion': publicacion.fecha_creacion,            
             'imagenes': imagenes,
             'videos': videos
         })
@@ -185,6 +194,9 @@ def social_imagenes_crear_publicacion():
             # Obtener datos del formulario
             post_title = request.form.get('postTitle_creaPublicacion')
             post_text = request.form.get('postText_creaPublicacion')
+            post_description = request.form.get('postDescription_creaPublicacion')
+            post_ambito = request.form.get('postAmbito_creaPublicacion')
+            post_estado = request.form.get('postLeido_creaPublicacion')
             
             # Procesar archivos multimedia
             media_files = []
@@ -314,6 +326,7 @@ def guardarPublicacion(request, media_files, user_id):
     correo_electronico = request.form.get('correo_electronico')
     color_texto = request.form.get('color_texto')
     color_titulo = request.form.get('color_titulo')
+    estado = request.form.get('postEstado_creaPublicacion')
     
     nueva_publicacion = Publicacion(
             user_id=user_id,             
@@ -324,7 +337,8 @@ def guardarPublicacion(request, media_files, user_id):
             descripcion= post_text,
             color_texto= color_texto,
             color_titulo= color_titulo,
-            fecha_creacion= datetime.now()
+            fecha_creacion= datetime.now(),
+            estado = estado
         )
            
     db.session.add(nueva_publicacion)
