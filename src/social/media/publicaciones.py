@@ -48,7 +48,7 @@ def media_publiaciones_mostrar():
 
             # Obtener todas las publicaciones del usuario
             publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id).all()
-            db.session.close()
+           
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion(publicaciones_user)
             # Transformar las rutas al formato almacenado en la base de datos
@@ -340,6 +340,7 @@ def cargar_id_publicacion_id_imagen(id_publicacion,nueva_imagen_id):
     )
     db.session.add(nuevo_ids)
     db.session.commit()
+    db.session.close()
     return True
 
 def show_publicacion_galeriaimagenes(request, media_files,id_publicacion):

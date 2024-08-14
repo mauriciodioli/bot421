@@ -89,6 +89,7 @@ def cargarVideo():
 
         db.session.add(nueva_imagen)
         db.session.commit()
+        db.session.close()
 
         # Realizar alguna acción adicional si es necesario, como mostrar las imágenes
      
@@ -202,7 +203,7 @@ def mostrar_imagenes():
             try:
                 usuarios = db.session.query(Usuario).all()
                 imagenes = db.session.query(Image).all()
-                db.session.close()
+               
             except Exception as e:
                 # Manejar excepciones de la base de datos
                 flash("Error en la base de datos", "error")
@@ -316,6 +317,7 @@ def eliminar_imagen():
                 # Eliminar la imagen de la base de datos
                 db.session.delete(imagen)
                 db.session.commit()
+                db.session.close()
                 ruta_imagen = os.path.join(ruta_base_datos)
                 os.remove(ruta_imagen)
                 return jsonify({'message': 'Imagen eliminada con éxito'}), 200

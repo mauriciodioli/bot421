@@ -288,7 +288,7 @@ def registrar_cuenta():
                cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
                db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
                db.session.commit()  # Confirmar los cambios
-               db.session.close()
+              
               
                todasLasCuentas = get_cuentas_de_broker(user_id)
                print("Cuenta registrada exitosamente!")
@@ -401,7 +401,7 @@ def get_cuentas_de_broker(user_id):
                 })
                 
             print(cuenta.accountCuenta)  
-            db.session.close()
+           
             return todasCuentas 
         else:
             print("El usuario", usuario.correo_electronico, "no tiene ninguna cuenta asociada.")
@@ -539,13 +539,13 @@ def delete_cuenta_usuario_broker():
             flash('Operation Removed successfully')
             all_cuenta = db.session.query(Cuenta).all()
             db.session.close()
-            return render_template("cuentas/cuentasDeUsuario.html", datos =  all_cuenta)
+            return render_template("notificaciones/logeeNuevamente.html",layout =  'layout')
     except: 
             flash('Operation No Removed')       
             all_cuenta = db.session.query(Cuenta).all()
             db.session.close()
             
-            return render_template('cuentas/cuentasDeUsuario.html', datos=all_cuenta) 
+            return render_template("notificaciones/logeeNuevamente.html",layout =  'layout') 
          
 @cuenta.route("/logOutAccount", methods=['POST'])   
 def logOutAccount():
