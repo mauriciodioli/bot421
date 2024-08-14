@@ -72,13 +72,41 @@
       <!-- Input for the title of the publication -->
       <div class="form-group_creaPublicacion">
         <label for="postTitle_creaPublicacion" class="text-black">Título:</label>
-        <input type="text" id="postTitle_creaPublicacion" name="postTitle_creaPublicacion" placeholder="Escribe el título de la publicación" required>
+        <input type="text" id="postTitle_creaPublicacion" name="postTitle_creaPublicacion" placeholder="Escribe el título de la publicación" class="form-control" required>
       </div>
       
       <!-- Textarea for the body of the post -->
       <div class="form-group_creaPublicacion">
         <label for="body" class="text-black">Texto:</label>
-        <textarea id="body" name="postText_creaPublicacion" placeholder="Escribe tu publicación" required></textarea>
+        <textarea id="body" name="postText_creaPublicacion" placeholder="Escribe tu publicación" class="form-control" required></textarea>
+      </div>
+
+      <!-- Textarea for the description of the post -->
+      <div class="form-group_creaPublicacion">
+        <label for="description" class="text-black">Descripción:</label>
+        <textarea id="description" name="postDescription_creaPublicacion" placeholder="Escribe una descripción" class="form-control" required></textarea>
+      </div>
+
+      <!-- Combobox for estado -->
+      <div class="form-group_creaPublicacion">
+        <label for="postEstado_creaPublicacion" class="text-black">Estado:</label>
+        <select id="postEstado_creaPublicacion" name="postEstado_creaPublicacion" class="form-control" required>
+          <option value="" disabled selected>Selecciona un estado</option>
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+          <option value="pendiente">Pendiente</option>
+        </select>
+      </div>
+
+      <!-- Combobox for ambitos -->
+      <div class="form-group_creaPublicacion">
+        <label for="postAmbito_creaPublicacion" class="text-black">Ámbito:</label>
+        <select id="postAmbito_creaPublicacion" name="postAmbito_creaPublicacion" class="form-control" required>
+          <option value="" disabled selected>Selecciona un ámbito</option>
+          <option value="social">Social</option>
+          <option value="educativo">Educativo</option>
+          <option value="laboral">Laboral</option>
+        </select>
       </div>
 
       <div class="input-group_creaPublicacion">
@@ -95,17 +123,19 @@
 
         <!-- Emoticon button -->
         <button type="button" id="emoticonButton" data-bs-toggle="modal" data-bs-target="#emoticonModal" class="text-black">
-          
+          <!-- Emoticon icon here -->
         </button>
       </div>
 
       <!-- Container to display selected images and videos -->
       <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
       
-      <button type="submit" class="text-black">Enviar</button>
+      <button type="submit" class="btn btn-primary text-black">Enviar</button>
     </form>
   </div>
 </div>
+
+
 
 
 
@@ -150,103 +180,129 @@
 
 
   document.addEventListener('DOMContentLoaded', function() {
-    cargarPublicaciones();  // Corrección de sintaxis
-   
-});
-
-
-
-
-
-
-function cargarPublicaciones() {
-  var correo_electronico = localStorage.getItem('correo_electronico');
-  var roll = localStorage.getItem('roll');
-  var access_token = localStorage.getItem('access_token');  // Asegúrate de que access_token esté almacenado en localStorage
+    cargarPublicaciones();
+  });
   
-  if (!access_token) {
+  function cargarPublicaciones() {
+    var correo_electronico = localStorage.getItem('correo_electronico');
+    var roll = localStorage.getItem('roll');
+    var access_token = localStorage.getItem('access_token');
+    
+    if (!access_token) {
       alert("No se ha encontrado el token de acceso.");
       return;
-  }
-
-  var formData = new FormData();
-  formData.append('roll', roll);
-  formData.append('correo_electronico', correo_electronico);
-
-  $.ajax({
+    }
+  
+    var formData = new FormData();
+    formData.append('roll', roll);
+    formData.append('correo_electronico', correo_electronico);
+  
+    $.ajax({
       url: '/media-publiaciones-mostrar',
       type: 'POST',
       data: formData,
       processData: false,
       contentType: false,
       headers: {
-          'Authorization': 'Bearer ' + access_token
+        'Authorization': 'Bearer ' + access_token
       },
       success: function(response) {
-         if (Array.isArray(response)) {
+        if (Array.isArray(response)) {
           var postDisplayContainer = $('#postDisplayContainer');
-          postDisplayContainer.empty(); // Limpiar el contenedor antes de añadir nuevas publicaciones
- 
-          response.forEach(function(post) {
-             // Solo procesar publicaciones que tienen imágenes o videos
-             if (post.imagenes.length > 0 || post.videos.length > 0) {
-             
-             
-                var mediaHtml = '';
-                var baseUrl = window.location.origin; // http://127.0.0.1:5001
+          postDisplayContainer.empty();
           
-                if (Array.isArray(post.imagenes)) {
-                   post.imagenes.forEach(function(image) {  
-                     var imageUrl = baseUrl +'/'+ image.filepath;
-                     mediaHtml += `<img src="${imageUrl}" class="img-fluid" alt="Imagen de la publicación">`;
-                   });
-                } else {
-                   console.warn('Se esperaba un array para imagenes, pero se encontró:', post.imagenes);
-                }
- 
-                if (Array.isArray(post.videos)) {
-                   post.videos.forEach(function(video) {
-                     var videoUrl = baseUrl +'/'+ video.filepath;
-                     mediaHtml += `<video controls class="video-fluid">
-                                     <source src="${videoUrl}" type="video/mp4">
-                                     Tu navegador no soporta el formato de video.
-                                   </video>`;
-                   });
-                } else {
-                   console.warn('Se esperaba un array para videos, pero se encontró:', post.videos);
-                }
- 
-                var cardHtml = `
-                   <div class="card" style="width: 18rem;">
-                       <div class="card-body">
-                           <h5 class="card-title">Publicación ID: ${post.publicacion_id}</h5>
-                           ${mediaHtml}
-                       </div>
-                   </div>
-                `;
- 
-                postDisplayContainer.append(cardHtml);
-             } else {
-                console.log('Publicación sin contenido:', post.publicacion_id);
-             }
+          response.forEach(function(post) {
+            //console.log("Publicación:", post); // Aquí se muestra cada publicación individual
+      
+            if (post.imagenes.length > 0 || post.videos.length > 0) {
+              var mediaHtml = '';
+              var baseUrl = window.location.origin;
+  
+              if (Array.isArray(post.imagenes)) {
+                post.imagenes.forEach(function(image) {  
+                  var imageUrl = baseUrl + '/' + image.filepath;
+                  mediaHtml += `<img src="${imageUrl}" alt="Imagen de la publicación">`;
+                });
+              } else {
+                console.warn('Se esperaba un array para imagenes, pero se encontró:', post.imagenes);
+              }
+  
+              if (Array.isArray(post.videos)) {
+                post.videos.forEach(function(video) {
+                  var videoUrl = baseUrl + '/' + video.filepath;
+                  mediaHtml += `<video controls>
+                                  <source src="${videoUrl}" type="video/mp4">
+                                  Tu navegador no soporta el formato de video.
+                                </video>`;
+                });
+              } else {
+                console.warn('Se esperaba un array para videos, pero se encontró:', post.videos);
+              }
+  
+              var cardHtml = `
+                            <div class="card-publicacion-admin">
+                              <div class="card-body">
+                                <h5 class="card-title">${post.titulo}</h5>
+                                <p class="card-text">${post.correo_electronico}</p>
+                                <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                <p class="card-text">${post.texto}</p>
+                                <div class="card-media-grid-publicacion-admin">
+                                  ${mediaHtml}
+                                </div>
+                                <p class="card-text">${post.ambito}</p>
+                                <p class="card-text">${post.descripcion}</p>
+                                <div class="btn-modificar-eliminar">
+                                  <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                                  <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
+                                </div>
+                              </div>
+                            </div>
+                          `;
+  
+              postDisplayContainer.append(cardHtml);
+            } else {
+              console.log('Publicación sin contenido:', post.publicacion_id);
+            }
           });
- 
-          alert("Publicaciones cargadas exitosamente.");
-       } else {
+  
+        
+        } else {
           console.error("La respuesta no es un array. Recibido:", response);
-       }
-    },    
-    error: function(xhr, status, error) {
-       alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
-    }
- });
-}
+        }
+      },
+      error: function(xhr, status, error) {
+        alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
+      }
+    });
+  }
+  
+  // Funciones para manejar los eventos de los botones
+  function modificarPublicacion(id) {
+    alert('Modificar publicación con ID: ' + id);
+    // Aquí puedes agregar el código para manejar la modificación de la publicación
+  }
+  
+  function eliminarPublicacion(id) {
+    alert('Eliminar publicación con ID: ' + id);
+    // Aquí puedes agregar el código para manejar la eliminación de la publicación
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  }
 
 
 
-
-
-
+  
 
 
 
@@ -574,29 +630,48 @@ $(document).ready(function() {
 
     var formData = new FormData(this);
 
+    
     // Añadir imágenes y videos cargados al FormData
     var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
-    var mediaItems = mediaContainer.getElementsByClassName('media-item_creaPublicacion');
+    var mediaItems = mediaContainer.getElementsByClassName('thumbnail_creaPublicacion');
     var access_token = localStorage.getItem('access_token');
-    var ambito = 'publicidad';
+    var ambito = $("#postAmbito_creaPublicacion").val();
+    var estado = $("#postEstado_creaPublicacion").val();
+    var descripcion = $("#description").val();
     var correo_electronico = localStorage.getItem('correo_electronico');
     var color_texto = 'black';
     var color_titulo = 'black';
 
     // Agregar variables adicionales al FormData
     formData.append('ambito', ambito);
+    formData.append('estado', estado);
+    formData.append('descripcion', descripcion);
     formData.append('correo_electronico', correo_electronico);
     formData.append('color_texto', color_texto);
     formData.append('color_titulo', color_titulo);
-
-    for (var i = 0; i < mediaItems.length; i++) {
+    debugger;
+    for (var i = 0; i < mediaItems.length; i++) {     
       var mediaElement = mediaItems[i].getElementsByClassName('thumbnail_creaPublicacion')[0];
+      
+      // Añade el debugger aquí
+      debugger;
+    
+      console.log('Elemento encontrado:', mediaElement ? mediaElement.tagName : 'No encontrado');
+    
       if (mediaElement.tagName === 'IMG' || mediaElement.tagName === 'VIDEO') {
         var mediaSrc = mediaElement.src;
         var mediaFile = dataURLToFile(mediaSrc, mediaElement.tagName.toLowerCase() + (i + 1) + '.' + (mediaElement.tagName === 'IMG' ? 'jpg' : 'mp4'));
         formData.append('mediaFile_' + i, mediaFile);
       }
     }
+    
+    
+
+    // Aquí puedes ver qué hay en el FormData antes de enviarlo
+      console.log('Contenido de formData:');
+      for (var pair of formData.entries()) {
+          console.log(pair[0] + ':', pair[1]);
+      }
 
     $.ajax({
       url: '/social_imagenes_crear_publicacion', // Reemplaza con la ruta a tu archivo .py

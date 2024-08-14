@@ -258,8 +258,106 @@ body {
     color: #000;
   }
 
+  .black-text {
+    color: rgb(255, 255, 255);
+  }
+
+
+
+
+  .card-media-grid-publicacion-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .card-media-grid-publicacion-admin img,
+  .card-media-grid-publicacion-admin video {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
   
 
 
 
+  .card-publicacion-admin {
+    width: 18rem; /* Tamaño fijo para las tarjetas */
+    overflow: hidden; /* Asegura que el contenido no se desborde fuera de la tarjeta */
+    border: 1px solid rgb(49, 49, 49); /* Borde dorado para la tarjeta */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: black; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    margin-bottom: 1rem; /* Espacio inferior entre tarjetas */
+  }
+  
+  .card-body {
+   /* color: gold; */ /* Texto dorado */
+    padding: 15px;
+  }
+  
+  .card-title {
+    margin-bottom: 10px; /* Espacio debajo del título */   
+    font-size: 1.25rem; /* Tamaño de fuente más grande */
+    color: #fff; /* Título blanco */
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-date {
+    margin-bottom: 10px; /* Espacio debajo de la fecha */
+    font-size: 0.9em; /* Tamaño del texto de la fecha */
+    color: #02ccff; /* Color del texto de la fecha */
+  }
+  
+  .card-text {
+    color: #fff; /* Texto blanco */
+    margin-bottom: 15px; /* Espacio debajo del texto de la publicación */
+    font-size: 1em; /* Tamaño del texto de la publicación */
+  }
+  
+  .card-media-grid-publicacion-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .card-media-grid-publicacion-admin img,
+  .card-media-grid-publicacion-admin video {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
+    object-fit: cover;
+  }
+  
+  .btn-modificar-eliminar {
+    display: flex;
+    width: 100%;
+    border: 2px solid gold;
+    border-radius: 5px;
+  }
+  
+  .btn-modificar-eliminar button {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    color: gold;
+    background-color: black;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .btn-modificar-eliminar button:hover {
+    background-color: darkgray;
+  }
+  
+  .btn-modificar-eliminar .btn-modificar {
+    border-right: 2px solid gold;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .btn-modificar-eliminar .btn-eliminar {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
   
