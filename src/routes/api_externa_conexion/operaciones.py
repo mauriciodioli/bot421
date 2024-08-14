@@ -508,7 +508,7 @@ def operaciones_desde_seniales():
       new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
       db.session.add(new_log)
       db.session.commit()
-
+      db.session.close()
     return render_template('notificaciones/errorOperacion.html')
 
 ######## FALTA IMPLEMENTAR LAS OPERACIONES AUTOMATICAS DESDE PANEL CON CUENTA #############
@@ -530,8 +530,8 @@ def operaciones_automatico_desde_senial_con_cuenta():
       # Crear un nuevo registro en Logs
     #  new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
     #  db.session.add(new_log)
-      db.session.commit()
-
+      #db.session.commit()
+      
   return render_template('notificaciones/errorOperacion.html')
 def calculaUt(precios,valor_cantidad,valor_monto,signal):
   

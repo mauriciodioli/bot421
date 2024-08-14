@@ -14,6 +14,7 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from sqlalchemy.exc import SQLAlchemyError
 
 cuentas = Blueprint('cuentas',__name__)
 
@@ -71,15 +72,42 @@ def cuentas_Usuario_Broker():
        print('no hay usuarios') 
    return 'problemas con la base de datos'
 
-@cuentas.route("/eliminar-Cuenta-broker-administracion/",  methods=["POST"])
+@cuentas.route("/eliminar-Cuenta-broker-administracion/", methods=["POST"])
 def eliminar_cuenta_broker_administracion():
+    try:
+        cuenta_id = request.form['eliminarCuentaId']
+        cuenta = db.session.query(Cuenta).get(cuenta_id)
+        
+        if cuenta:
+            db.session.delete(cuenta)
+            db.session.commit()
+            flash('Cuenta eliminada correctamente.')
+        else:
+            flash('La cuenta no existe.')
+        
+        cuentas = db.session.query(Cuenta).all()
+        return render_template("/cuentas/cuentasUsuariosBrokers.html", datos=cuentas)
+    
+    except SQLAlchemyError as e:
+        # Maneja errores de SQLAlchemy, como problemas de conexión o transacciones fallidas.
+        db.session.rollback()  # Revierte la transacción en caso de error.
+        flash('Ocurrió un error al intentar eliminar la cuenta. Por favor, inténtelo de nuevo.')
+        print(f"Error de base de datos: {str(e)}")
+        return redirect(request.url)
+    
+    except KeyError:
+        # Maneja errores si `eliminarCuentaId` no está en el formulario.
+        flash('El identificador de la cuenta no fue proporcionado.')
+        return redirect(request.url)
+    
+    except Exception as e:
+        # Maneja cualquier otro tipo de error.
+        db.session.rollback()  # Revierte la transacción en caso de error.
+        flash('Ocurrió un error inesperado. Por favor, inténtelo de nuevo.')
+        print(f"Error inesperado: {str(e)}")
+        return redirect(request.url)
+    
+    finally:
+        db.session.close()  # Cierra la sesión en el bloque `finally` para asegurar que siempre se ejecute.
 
-    cuenta_id = request.form['eliminarCuentaId']
-    cuenta = Cuenta.query.get(cuenta_id)
-    db.session.delete(cuenta)
-    db.session.commit()
-    flash('Cuenta eliminada correctamente.')
-    cuentas = db.session.query(Cuenta).all()
-    db.session.close()
-    return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentas)
 

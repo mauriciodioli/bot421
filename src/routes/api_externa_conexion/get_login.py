@@ -218,7 +218,7 @@ def panel_control_broker():
 def loginExtAutomatico():
     print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
-       # try:
+        try:
             #selector = request.form.get('environment')
             selector = request.json.get('simuladoOproduccion')
             access_token = request.json.get('access_token')
@@ -248,7 +248,8 @@ def loginExtAutomatico():
           
                 if accountCuenta is not None and accountCuenta != '':   
                    cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
-                   db.session.close()
+                 
+                 
                    passwordCuenta = cuentas.passwordCuenta
                    passwordCuenta = passwordCuenta.decode('utf-8')
                     
@@ -365,16 +366,9 @@ def loginExtAutomatico():
                     return render_template('home.html', cuenta=[accountCuenta,user,simuladoOproduccion]) 
             else:
                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
-                    
-       # except jwt.InvalidTokenError:
-       #     print("El token es inválido")
-       # except jwt.ExpiredSignatureError:
-       #     print("El token ha expirado")
-        #except Exception as e:
-        #    print("Otro error:", str(e))
-        #return render_template("cuentas/registrarCuentaBroker.html")
-
-
+        finally:
+            db.session.close()  # Asegura que la sesión de la base de datos se cierre, incluso si ocurre un error.           
+      
 
 
 
@@ -508,10 +502,10 @@ def loginExtCuentaSeleccionadaBroker():
         flash("El token ha expirado")
     except jwt.InvalidTokenError:
         flash("El token es inválido")
-    #  except Exception as e:
-    #      print('Error inesperado:', e)
-    #      flash('No se pudo iniciar sesión')
-    #      return render_template('errorLogueo.html')
+    except Exception as e:
+         print('Error inesperado:', e)
+         flash('No se pudo iniciar sesión')
+         return render_template('notificaciones/errorLogueo.html')
 
 
 
