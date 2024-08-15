@@ -387,3 +387,72 @@ def show_publicacion_galeriaimagenes(request, media_files,id_publicacion):
      return render_template('publicaciones/publicacionesGaleriaImagenes.html', media_files=media_files,id_publicacion=id_publicacion)
      
 
+@publicaciones.route('/social_imagenes_eliminar_publicacion', methods=['POST'])
+def social_imagenes_eliminar_publicacion():
+    # Obtener el encabezado Authorization
+    authorization_header = request.headers.get('Authorization')
+    if not authorization_header:
+        return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+
+    # Verificar formato del encabezado Authorization
+    parts = authorization_header.split()
+    if len(parts) != 2 or parts[0].lower() != 'bearer':
+        return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+
+    # Obtener el token de acceso
+    access_token = parts[1]
+
+    # Validar y decodificar el token
+    if Token.validar_expiracion_token(access_token=access_token):
+        app = current_app._get_current_object()
+        decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token.get("sub")
+        
+        # Obtener el ID de la publicación a eliminar
+        publicacion_id = request.form.get('publicacion_id')
+        correo_electronico = request.form.get('correo_electronico')
+
+        # Aquí deberías añadir la lógica para eliminar la publicación, imágenes y videos
+        try:
+            # Ejemplo de eliminación (ajustar según tu implementación)
+            with app.app_context():
+                eliminar_publicacion_y_medios(publicacion_id)
+
+            return jsonify({'success': True}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+    return jsonify({'error': 'Token de acceso no válido o expirado'}), 401
+
+def eliminar_publicacion_y_medios(publicacion_id):
+    try:
+        # Encuentra la publicación
+        publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
+        if publicacion:
+            # Elimina los registros de medios relacionados en la tabla intermedia
+            publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id).all()
+            for p in publicacion_imagen_video:
+                db.session.delete(p)
+                
+            # Encuentra las imágenes asociadas
+            imagenes = db.session.query(Image).filter_by(publicacion_id=publicacion_id).all()
+            for imagen in imagenes:
+                db.session.delete(imagen)
+                
+            # Encuentra los videos asociados
+            videos = db.session.query(Video).filter_by(publicacion_id=publicacion_id).all()
+            for video in videos:
+                db.session.delete(video)
+                
+            # Elimina la publicación
+            db.session.delete(publicacion)
+            
+            # Commit de todas las eliminaciones en una sola transacción
+            db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()  # Revertir cambios en caso de error
+        print(f"Error al eliminar la publicación y medios: {e}")
+        return False
+    finally:
+        db.session.close()  # Cerrar la sesión al final

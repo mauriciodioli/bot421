@@ -307,6 +307,7 @@
   
   function eliminarPublicacion(id) {
     alert('Eliminar publicación con ID: ' + id);
+    eliminarPublicacion(id)
   }
   
   function abrirModal(id) {
@@ -361,6 +362,56 @@
     }
   }
   
+
+
+
+
+
+  function eliminarPublicacion(id) {
+    var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta publicación?');
+    if (!confirmDelete) return;
+
+    var correo_electronico = localStorage.getItem('correo_electronico');
+    var access_token = localStorage.getItem('access_token');
+
+    if (!access_token) {
+        alert("No se ha encontrado el token de acceso.");
+        return;
+    }
+
+    var formData = new FormData();
+    formData.append('publicacion_id', id);
+    formData.append('correo_electronico', correo_electronico);
+
+    $.ajax({
+        url: '/social_imagenes_eliminar_publicacion',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            'Authorization': 'Bearer ' + access_token
+        },
+        success: function(response) {
+            if (response.success) {
+                alert('Publicación eliminada exitosamente.');
+                $('#card-' + id).remove(); // Eliminar la tarjeta de la interfaz
+            } else {
+                alert('Error al eliminar la publicación: ' + response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("Error al eliminar la publicación. Inténtalo de nuevo.");
+        }
+    });
+}
+
+
+
+
+
+
+
   
   
   
@@ -775,10 +826,13 @@ $(document).ready(function() {
                     <p class="card-text" style="color: ${response.color_texto};">${response.post_text}</p>
                     <p class="card-text">Ámbito: ${response.ambito}</p>
                     <p class="card-text">Correo electrónico: ${response.correo_electronico}</p>
-                    ${mediaHtml}
+                    <div class="creacion-publicacion-grilla">
+                        ${mediaHtml}
+                    </div>
                 </div>
             </div>
         `;
+
     
         $('#postDisplayContainer').html(cardHtml); // Asegúrate de que `#postDisplayContainer` exista en tu HTML
     
