@@ -410,14 +410,14 @@ def operaciones_desde_seniales():
                                         orderStatus = None
                                         timepoTransaccion = None
                                         for orden in operaciones:
-                                          if orden['instrumentId']['symbol'] == ticker:
+                                          if orden['instrumentId']['symbol'] == symbol:
                                             transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
                                             if timepoTransaccion is None or transacTime > timepoTransaccion:
                                                 timepoTransaccion = transacTime
 
                                                         
                                         for orden in operaciones:
-                                            if orden['instrumentId']['symbol'] == ticker:
+                                            if orden['instrumentId']['symbol'] == symbol:
                                                 transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
                                                 if transacTime == timepoTransaccion:                                                                   
                                                     clOrdId = orden['clOrdId'] 
@@ -426,7 +426,7 @@ def operaciones_desde_seniales():
                                               
                                         if orderStatus != 'REJECTED':     
                                             # Intentamos encontrar el registro con el symbol específico
-                                            orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+                                            orden_existente = db.session.query(Orden).filter_by(symbol=symbol).first()
 
                                             if orden_existente:
                                                 # Si el registro existe, lo actualizamos
@@ -451,7 +451,7 @@ def operaciones_desde_seniales():
                                                     clOrdId_baja_timestamp=None,
                                                     proprietary=True,
                                                     marketId='',
-                                                    symbol=ticker,
+                                                    symbol=symbol,
                                                     tipo=tipo_orden,
                                                     tradeEnCurso="si",
                                                     ut=cantidad_a_comprar_abs,

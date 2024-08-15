@@ -152,7 +152,8 @@ def armar_publicacion(publicaciones_user):
             'descripcion': publicacion.descripcion,
             'color_texto': publicacion.color_texto,
             'color_titulo': publicacion.color_titulo,
-            'fecha_creacion': publicacion.fecha_creacion,            
+            'fecha_creacion': publicacion.fecha_creacion, 
+            'estado': publicacion.estado,           
             'imagenes': imagenes,
             'videos': videos
         })
@@ -201,23 +202,27 @@ def social_imagenes_crear_publicacion():
             
             # Procesar archivos multimedia
             media_files = []
-            id_publicacion = guardarPublicacion(request, media_files, user_id)
+            id_publicacion = guardarPublicacion(request, user_id)
            
             for key in request.files:
-                file = request.files[key]
-                if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
+                if key != 'mediaFile_creaPublicacion':
+                    file = request.files[key]
+                    if file and allowed_file(file.filename):
+                        filename = secure_filename(file.filename)
+                        # Obtener el índice del archivo del formulario
+                        index = request.form.get('mediaFileIndex_' + key.split('_')[-1])
 
-                    # Decide si el archivo es una imagen o un video
-                    if file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
-                        # Llama a la función de carga de imagen
-                        file_path = cargarImagen_crearPublicacion(request,file, filename, id_publicacion,userid=user_id)
-                    elif file.filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
-                        # Llama a la función de carga de video
-                        file_path = cargarVideo_crearPublicacion(request,file, filename, id_publicacion,userid=user_id)
+                        # Decide si el archivo es una imagen o un video
+                        if file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
+                            # Llama a la función de carga de imagen
+                            file_path = cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index)
+                        elif file.filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
+                            # Llama a la función de carga de video
+                            file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index)
 
-                    if file_path:
-                        media_files.append(file_path)
+
+                        if file_path:
+                            media_files.append(file_path)
             # Obtén otros datos del formulario
            
             post_title = request.form.get('postTitle_creaPublicacion')
@@ -246,10 +251,10 @@ def social_imagenes_crear_publicacion():
         
 
 
-def cargarImagen_crearPublicacion(request,file, filename, id_publicacion,userid=0):    
+def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=0, index=None):   
     color_texto = request.form.get('color_texto')   
     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-    size = request.form.get('size')
+    size = request.form.get('mediaFileSize_' + str(index))  # Obtener tamaño del archivo usando el índice  
     file_path = os.path.join('static', 'uploads', filename)
     file.save(file_path)
    
@@ -262,7 +267,7 @@ def cargarImagen_crearPublicacion(request,file, filename, id_publicacion,userid=
 
     if imagen_existente:
         # Si la imagen ya existe, solo guarda la relación en publicacion_media
-        cargar_id_publicacion_id_imagen_video(id_publicacion,imagen_existente.id,0,'imangen')
+        cargar_id_publicacion_id_imagen_video(id_publicacion,imagen_existente.id,0,'imagen')
         return file_path
     else:
   
@@ -277,14 +282,15 @@ def cargarImagen_crearPublicacion(request,file, filename, id_publicacion,userid=
         )
         db.session.add(nueva_imagen)
         db.session.commit()
-        cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen.id,0,'imangen')
+        cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen.id,0,'imagen')
         return file_path
 
 
-def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0):   
+def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0, index=None):   
     color_texto = request.form.get('color_texto')   
     file_path = os.path.join('static', 'uploads', filename)
-    size = request.form.get('size')
+    size = request.form.get('mediaFileSize_' + str(index))  # Obtener tamaño del archivo usando el índice
+  
     file.save(file_path)
 
     nombre_archivo = filename
@@ -338,7 +344,7 @@ def es_formato_imagen(filepath):
 
 
 
-def guardarPublicacion(request, media_files, user_id):
+def guardarPublicacion(request, user_id):
     post_title = request.form.get('postTitle_creaPublicacion')
     post_text = request.form.get('postText_creaPublicacion')   
     ambito = request.form.get('ambito')
