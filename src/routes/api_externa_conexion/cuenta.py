@@ -240,76 +240,80 @@ def cuentas_de_broker_usuario_():
      todasLasCuentas =  get_cuentas_de_broker_usuario()
      return render_template('cuentasDeUsuario.html', datos=todasLasCuentas)
     
-@cuenta.route("/registrar_cuenta",  methods=["POST"])
+@cuenta.route("/registrar_cuenta", methods=["POST"])
 def registrar_cuenta():
-   if request.method == 'POST':
-         todasLasCuentas = []
-       
-         access_token = request.form['access_token']
-         correo_electronico  = request.form['correo_electronico']
-         
-         userCuenta = request.form['usuario']
-         passwordCuenta = request.form['contraseña']
-         accountCuenta = request.form['cuenta']
-         selector = request.form['environment']
-         
-          # Aquí recibimos los campos broker_id y broker_nombre
-         broker_id = request.form['broker_id']
-         broker_nombre = request.form['broker_nombre']
-        
-         # Codificar las cadenas usando UTF-8
-         userCuenta_encoded = userCuenta.encode('utf-8')
-         passwordCuenta_encoded = passwordCuenta.encode('utf-8')
-         accountCuenta_encoded = accountCuenta.encode('utf-8')
+    if request.method == 'POST':
+        access_token = request.form['access_token']
+        correo_electronico = request.form['correo_electronico']
 
-         if access_token and Token.validar_expiracion_token(access_token=access_token): 
+        userCuenta = request.form['usuario']
+        passwordCuenta = request.form['contraseña']
+        accountCuenta = request.form['cuenta']
+        selector = request.form['environment']
+
+        broker_id = request.form['broker_id']
+        broker_nombre = request.form['broker_nombre']
+
+        # Codificar las cadenas usando UTF-8
+        userCuenta_encoded = userCuenta.encode('utf-8')
+        passwordCuenta_encoded = passwordCuenta.encode('utf-8')
+        accountCuenta_encoded = accountCuenta.encode('utf-8')
+
+        if access_token and Token.validar_expiracion_token(access_token=access_token):
             app = current_app._get_current_object()
-            
+
             try:
-               user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-               #crea_tabla_cuenta()
-               
-               usuario = db.session.query(Usuario).filter_by(id=user_id).first()   # Obtener el objeto Usuario correspondiente al user_id
-              
-               if selector == '1':
-                  selectorStr = 'simulado'
-               else: 
-                  selectorStr = 'produccion'
-               
-               cuenta = Cuenta( 
-                     id=None,   
-                     user_id=user_id,
-                     userCuenta=userCuenta_encoded,
-                     passwordCuenta=passwordCuenta_encoded,
-                     accountCuenta=accountCuenta_encoded,
-                     broker_id=broker_id,
-                     selector=selectorStr              
-                     )
-               cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
-               db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
-               db.session.commit()  # Confirmar los cambios
-              
-              
-               todasLasCuentas = get_cuentas_de_broker(user_id)
-               print("Cuenta registrada exitosamente!")
-               print("Cuenta registrada usuario id !",user_id)
-               for cuenta in todasLasCuentas:
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                usuario = db.session.query(Usuario).filter_by(id=user_id).first()
+
+                # Validar si la cuenta ya existe
+                cuenta_existente = db.session.query(Cuenta).filter_by(
+                    accountCuenta=accountCuenta_encoded,
+                    userCuenta=userCuenta_encoded,
+                    broker_id=broker_id
+                ).first()
+
+                if cuenta_existente:
+                    flash('La cuenta ya está registrada para este usuario y broker.')
+                    return render_template('cuentas/registrarCuentaBroker.html')
+
+                # Definir selectorStr según el valor de selector
+                selectorStr = 'simulado' if selector == '1' else 'produccion'
+
+                # Crear nueva cuenta si no existe
+                cuenta = Cuenta(
+                    id=None,
+                    user_id=user_id,
+                    userCuenta=userCuenta_encoded,
+                    passwordCuenta=passwordCuenta_encoded,
+                    accountCuenta=accountCuenta_encoded,
+                    broker_id=broker_id,
+                    selector=selectorStr
+                )
+
+                cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
+                db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
+                db.session.commit()  # Confirmar los cambios
+
+                todasLasCuentas = get_cuentas_de_broker(user_id)
+                for cuenta in todasLasCuentas:
                     print(cuenta['accountCuenta'])
                     passwordCuenta = cuenta['passwordCuenta']
                     passwordCuenta_decoded = passwordCuenta
                     print(passwordCuenta_decoded)
-                    db.session.rollback()  # Hacer rollback de la sesión
-               db.session.close()
-               flash('Se registró correctamente la cuenta, ahora ir a cuentas existentes.')
-               return render_template('cuentas/registrarCuentaBroker.html')
-            except Exception as e:               
-                db.session.rollback()  # Hacer rollback de la sesión
+
                 db.session.close()
-                flash('"No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.')
-                print("No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.",e)
-                
-    
-   return render_template('cuentas/registrarCuentaBroker.html')
+                flash('Se registró correctamente la cuenta, ahora ir a cuentas existentes.')
+                return render_template('cuentas/registrarCuentaBroker.html')
+
+            except Exception as e:
+                db.session.rollback()
+                db.session.close()
+                flash('No se pudo registrar la cuenta, ocurrió un error.')
+                print("Error al registrar la cuenta:", e)
+
+    return render_template('cuentas/registrarCuentaBroker.html')
+
 
 @cuenta.route("/registro-Cuenta-administracion/",  methods=["POST"])
 def registrar_cuenta_administracion():

@@ -357,7 +357,7 @@ def operaciones_desde_seniales():
                     if 'ValorPrecioLimite' in request.form: 
                         precios = request.form['ValorPrecioLimite']                 
                     else:
-                      existencia = inst.instrumentos_existentes_by_symbol(yRofexInicializada=pyRofexInicializada['pyRofex'],message=symbol,account=cuentaAcount)                   
+                      existencia = inst.instrumentos_existentes_by_symbol(pyRofexInicializada=pyRofexInicializada['pyRofex'],message=symbol,account=cuentaAcount)                   
                       if existencia == True:           
                         precios = inst.instrument_por_symbol(symbol)    
                               
@@ -397,9 +397,8 @@ def operaciones_desde_seniales():
                           # Inicia el hilo para consultar el saldo después de un minuto
                           if tipo_orden == 'LIMIT' or tipo_orden == 'MARKET':
                               
-                              orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
-                              ticker = symbol
-                            
+                              orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder,environment=cuentaAcount)
+                             
                               if orden_.enviar_orden(cuenta=cuentaAcount,pyRofexInicializada=pyRofexInicializada['pyRofex']):
                                         print("Orden enviada con éxito.")
                                         flash('Operacion enviada exitosamente')
