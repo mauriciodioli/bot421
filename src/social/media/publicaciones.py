@@ -172,7 +172,7 @@ def armar_publicacion(publicaciones_user):
 
 @publicaciones.route('/social_imagenes_crear_publicacion', methods=['POST'])
 def social_imagenes_crear_publicacion():
-    try:
+    #try:
           # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
@@ -188,6 +188,7 @@ def social_imagenes_crear_publicacion():
 
         # Validar y decodificar el token
         if Token.validar_expiracion_token(access_token=access_token):  # Asegúrate de que este método acepte el token directamente
+            app = current_app._get_current_object() 
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             user_id = decoded_token.get("sub")
             
@@ -239,40 +240,51 @@ def social_imagenes_crear_publicacion():
                 'color_texto': color_texto,
                 'color_titulo': color_titulo
             })
-    except Exception as e:
+    #except Exception as e:
             # Manejo genérico de excepciones, devolver un mensaje de error
-            return jsonify({'error': str(e)}), 500
+            #return jsonify({'error': str(e)}), 500
         
 
 
 def cargarImagen_crearPublicacion(request,file, filename, id_publicacion,userid=0):    
     color_texto = request.form.get('color_texto')   
+    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
+    size = request.form.get('size')
     file_path = os.path.join('static', 'uploads', filename)
     file.save(file_path)
    
     nombre_archivo = filename
-    descriptionImagen = 'ambitoSocial'
+    descriptionImagen = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
 
+# Verificar si la imagen ya existe
+    imagen_existente = db.session.query(Image).filter_by(filepath=file_path).first()
 
+    if imagen_existente:
+        # Si la imagen ya existe, solo guarda la relación en publicacion_media
+        cargar_id_publicacion_id_imagen_video(id_publicacion,imagen_existente.id,0,'imangen')
+        return file_path
+    else:
   
-    nueva_imagen = Image(
-        user_id=userid,
-        title=nombre_archivo,
-        description=descriptionImagen,
-        colorDescription=color_texto,
-        filepath=file_path,
-        randomNumber=randomNumber_
-    )
-    db.session.add(nueva_imagen)
-    db.session.commit()
-    cargar_id_publicacion_id_imagen(id_publicacion,nueva_imagen.id)
-    return file_path
+        nueva_imagen = Image(
+            user_id=userid,
+            title=nombre_archivo,
+            description=descriptionImagen,
+            colorDescription=color_texto,
+            filepath=file_path,
+            randomNumber=randomNumber_,
+            size=size
+        )
+        db.session.add(nueva_imagen)
+        db.session.commit()
+        cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen.id,0,'imangen')
+        return file_path
 
 
 def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0):   
     color_texto = request.form.get('color_texto')   
     file_path = os.path.join('static', 'uploads', filename)
+    size = request.form.get('size')
     file.save(file_path)
 
     nombre_archivo = filename
@@ -290,18 +302,25 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0)
     access_token = parts[1]
     app = current_app._get_current_object()
     userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+    video_existente = db.session.query(Video).filter_by(filepath=file_path,size=size).first()
 
-    nuevo_video = Image(
-        user_id=userid,
-        title=nombre_archivo,
-        description=description_video,
-        colorDescription=color_texto,
-        filepath=file_path,
-        randomNumber=randomNumber_
-    )
-    db.session.add(nuevo_video)
-    db.session.commit()
-    cargar_id_publicacion_id_imagen(id_publicacion,nuevo_video.id)
+    if video_existente:
+        # Si la imagen ya existe, solo guarda la relación en publicacion_media
+        cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video')
+        return file_path
+    else:
+        nuevo_video = Image(
+            user_id=userid,
+            title=nombre_archivo,
+            description=description_video,
+            colorDescription=color_texto,
+            filepath=file_path,
+            randomNumber=randomNumber_,
+            size=size
+        )
+        db.session.add(nuevo_video)
+        db.session.commit()
+        cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video')
     return file_path
 
 
@@ -345,12 +364,13 @@ def guardarPublicacion(request, media_files, user_id):
     db.session.commit()
     return nueva_publicacion.id
 
-def cargar_id_publicacion_id_imagen(id_publicacion,nueva_imagen_id):
+def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_video_id,media_type):
     nuevo_ids= Public_imagen_video(
         publicacion_id=id_publicacion,
         imagen_id=nueva_imagen_id,
-        video_id=0,
-        fecha_creacion=datetime.now()
+        video_id=nuevo_video_id,
+        fecha_creacion=datetime.now(),
+        media_type=media_type
     )
     db.session.add(nuevo_ids)
     db.session.commit()

@@ -18,22 +18,24 @@ class Image(db.Model):
     colorDescription = db.Column(db.String(255), nullable=False) 
     filepath = db.Column(db.String(500), nullable=True)
     randomNumber = db.Column(db.Integer)
+    size = db.Column(db.Float)
     
     # Relación con Public_imagen_video
     #publicaciones_imagen = relationship("Public_imagen_video", back_populates="imagen")
     usuarios = relationship("Usuario", back_populates="imagenes")
 
-    def __init__(self, user_id, title, description, filepath, randomNumber, colorDescription):
+    def __init__(self, user_id, title, description, filepath, randomNumber, colorDescription, size):
         self.user_id = user_id
         self.title = title
         self.description = description
         self.filepath = filepath
         self.randomNumber = randomNumber
         self.colorDescription = colorDescription
+        self.size = size    
 
    
     def __repr__(self):
-        return f"Imagen(id={self.id}, user_id={self.user_id}, title={self.title}, description={self.description}, filepath={self.filepath}, randomNumber={self.randomNumber}, colorDescription={self.colorDescription})"
+        return f"Imagen(id={self.id}, user_id={self.user_id}, title={self.title}, description={self.description}, filepath={self.filepath}, randomNumber={self.randomNumber}, colorDescription={self.colorDescription}, size={self.size})"
 
     @classmethod
     def crear_tabla_image(cls):
@@ -43,7 +45,7 @@ class Image(db.Model):
 
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id", "title", "description", "filepath", "randomNumber", "colorDescription")
+        fields = ("id", "user_id", "title", "description", "filepath", "randomNumber", "colorDescription", "size")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)

@@ -651,19 +651,26 @@ $(document).ready(function() {
     formData.append('color_titulo', color_titulo);
     debugger;
     for (var i = 0; i < mediaItems.length; i++) {     
-      var mediaElement = mediaItems[i].getElementsByClassName('thumbnail_creaPublicacion')[0];
-      
-      // Añade el debugger aquí
-      debugger;
-    
-      console.log('Elemento encontrado:', mediaElement ? mediaElement.tagName : 'No encontrado');
-    
-      if (mediaElement.tagName === 'IMG' || mediaElement.tagName === 'VIDEO') {
-        var mediaSrc = mediaElement.src;
-        var mediaFile = dataURLToFile(mediaSrc, mediaElement.tagName.toLowerCase() + (i + 1) + '.' + (mediaElement.tagName === 'IMG' ? 'jpg' : 'mp4'));
-        formData.append('mediaFile_' + i, mediaFile);
+      var mediaElement = mediaItems[i];
+   
+      if (mediaElement) {
+         console.log('Elemento encontrado:', mediaElement.tagName);
+   
+         if (mediaElement.tagName === 'IMG' || mediaElement.tagName === 'VIDEO') {
+            var mediaSrc = mediaElement.src;
+            var mediaFile = dataURLToFile(mediaSrc, mediaElement.tagName.toLowerCase() + (i + 1) + '.' + (mediaElement.tagName === 'IMG' ? 'jpg' : 'mp4'));
+            
+             // Obtener el tamaño del archivo
+             var fileSize = mediaFile.size;
+            
+            formData.append('mediaFile_' + i, mediaFile);
+            formData.append('mediaFileSize_' + i, fileSize);  // Añadir tamaño del archivo
+            formData.append('mediaFileIndex_' + i, i);  // Añadir índice del archivo
+          }
+      } else {
+         console.log('Elemento no encontrado o es undefined:', mediaElement);
       }
-    }
+   }
     
     
 
