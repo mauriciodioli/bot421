@@ -187,7 +187,7 @@
     var correo_electronico = localStorage.getItem('correo_electronico');
     var roll = localStorage.getItem('roll');
     var access_token = localStorage.getItem('access_token');
-    
+  
     if (!access_token) {
       alert("No se ha encontrado el token de acceso.");
       return;
@@ -210,62 +210,87 @@
         if (Array.isArray(response)) {
           var postDisplayContainer = $('#postDisplayContainer');
           postDisplayContainer.empty();
-          
+  
           response.forEach(function(post) {
-            //console.log("Publicación:", post); // Aquí se muestra cada publicación individual
-      
             if (post.imagenes.length > 0 || post.videos.length > 0) {
               var mediaHtml = '';
               var baseUrl = window.location.origin;
   
-              if (Array.isArray(post.imagenes)) {
-                post.imagenes.forEach(function(image) {  
-                  var imageUrl = baseUrl + '/' + image.filepath;
-                  mediaHtml += `<img src="${imageUrl}" alt="Imagen de la publicación">`;
+              if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                // Mostrar solo la primera imagen
+                var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+  
+                // Guardar las demás imágenes para mostrarlas en el modal
+                var modalImagesHtml = '';
+                post.imagenes.forEach(function(image, index) {
+                  if (index > 0) { // Saltar la primera imagen
+                    var imageUrl = baseUrl + '/' + image.filepath;
+                    modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación">`;
+                  }
                 });
-              } else {
-                console.warn('Se esperaba un array para imagenes, pero se encontró:', post.imagenes);
+  
+                // Crear el HTML del modal
+                var modalHtml = `
+                  <div class="modal-image-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                    <div class="modal-content">
+                      <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                      <div class="modal-image-grid">
+                        ${modalImagesHtml}
+                      </div>
+                    </div>
+                  </div>
+                `;
+  
+                postDisplayContainer.append(modalHtml);
               }
   
-              if (Array.isArray(post.videos)) {
-                post.videos.forEach(function(video) {
-                  var videoUrl = baseUrl + '/' + video.filepath;
-                  mediaHtml += `<video controls>
-                                  <source src="${videoUrl}" type="video/mp4">
-                                  Tu navegador no soporta el formato de video.
-                                </video>`;
-                });
-              } else {
-                console.warn('Se esperaba un array para videos, pero se encontró:', post.videos);
+              var estadoClass;
+              var estadoTextClass;
+              switch (post.estado) {
+                case 'activo':
+                  estadoClass = 'estado-activo';
+                  estadoTextClass = 'estado-activo';
+                  break;
+                case 'inactivo':
+                  estadoClass = 'estado-inactivo';
+                  estadoTextClass = 'estado-inactivo';
+                  break;
+                case 'pendiente':
+                  estadoClass = 'estado-pendiente';
+                  estadoTextClass = 'estado-pendiente';
+                  break;
+                default:
+                  estadoClass = '';
+                  estadoTextClass = '';
               }
   
               var cardHtml = `
-                            <div class="card-publicacion-admin">
-                              <div class="card-body">
-                                <h5 class="card-title">${post.titulo}</h5>
-                                <p class="card-text">${post.correo_electronico}</p>
-                                <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                <p class="card-text">${post.texto}</p>
-                                <div class="card-media-grid-publicacion-admin">
-                                  ${mediaHtml}
-                                </div>
-                                <p class="card-text">${post.ambito}</p>
-                                <p class="card-text">${post.descripcion}</p>
-                                <div class="btn-modificar-eliminar">
-                                  <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
-                                  <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
-                                </div>
-                              </div>
-                            </div>
-                          `;
+                <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
+                  <div class="card-body">
+                    <h5 class="card-title">${post.titulo}</h5>
+                    <p class="card-text-estado ${estadoTextClass}">${post.estado}</p>
+                    <p class="card-text">${post.correo_electronico}</p>
+                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                    <p class="card-text">${post.texto}</p>
+                    <div class="card-media-grid-publicacion-admin">
+                      ${mediaHtml}
+                    </div>
+                    <p class="card-text">${post.ambito}</p>
+                    <p class="card-text">${post.descripcion}</p>
+                    <div class="btn-modificar-eliminar">
+                      <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                      <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
+                    </div>
+                  </div>
+                </div>
+              `;
   
               postDisplayContainer.append(cardHtml);
             } else {
               console.log('Publicación sin contenido:', post.publicacion_id);
             }
           });
-  
-        
         } else {
           console.error("La respuesta no es un array. Recibido:", response);
         }
@@ -276,17 +301,22 @@
     });
   }
   
-  // Funciones para manejar los eventos de los botones
   function modificarPublicacion(id) {
     alert('Modificar publicación con ID: ' + id);
-    // Aquí puedes agregar el código para manejar la modificación de la publicación
   }
   
   function eliminarPublicacion(id) {
     alert('Eliminar publicación con ID: ' + id);
-    // Aquí puedes agregar el código para manejar la eliminación de la publicación
   }
-
+  
+  function abrirModal(id) {
+    $('#modal-' + id).show();
+  }
+  
+  function cerrarModal(id) {
+    $('#modal-' + id).hide();
+  }
+  
   function formatDate(dateString) {
     const date = new Date(dateString);
     
@@ -299,9 +329,40 @@
     
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   }
-
-
-
+  
+  function cambiarEstado(event, id) {
+    // Evitar el cambio de estado si el clic fue en una imagen
+    if (event.target.tagName.toLowerCase() === 'img') {
+      return;
+    }
+  
+    var card = document.getElementById('card-' + id);
+    var estadoP = card.querySelector('.card-text-estado');
+  
+    switch (estadoP.textContent.trim()) {
+      case 'activo':
+        estadoP.textContent = 'inactivo';
+        card.classList.remove('estado-activo');
+        card.classList.add('estado-inactivo');
+        break;
+      case 'inactivo':
+        estadoP.textContent = 'pendiente';
+        card.classList.remove('estado-inactivo');
+        card.classList.add('estado-pendiente');
+        break;
+      case 'pendiente':
+        estadoP.textContent = 'activo';
+        card.classList.remove('estado-pendiente');
+        card.classList.add('estado-activo');
+        break;
+      default:
+        estadoP.textContent = '';
+        card.classList.add('estado-activo');
+    }
+  }
+  
+  
+  
   
 
 
