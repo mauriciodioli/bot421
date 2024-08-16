@@ -4,6 +4,12 @@
 
 <body> 
     
+<style>
+  .verde {
+    color: green;
+}
+</style>
+
   <div class = 'container p-4'id="contenido" style="display:none">  
     <div class="jumbotron">
       <p class="lead">To operate you can press the button with the corresponding color</p>
@@ -22,6 +28,7 @@
      
     <div class="jumbotron">
       <h1 class="display-4">Select Broker!</h1>
+      <h3 id="ut_usuario">Unidad de Tradeo: </h3>
       <div class="form-group">
           
           <select class="form-control" id="brokerSelect" onchange="redirectBroker()">
@@ -114,6 +121,7 @@
           </form>
       </div> 
   </div> 
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -262,7 +270,25 @@ function leerFilasTabla(tableBody) {
 
 
 
+function actualizarUnidadTradeo(){
+    // Obtener el valor de 'ut_usuario' desde localStorage
+    var ut_usuario = localStorage.getItem('ut_usuario');
+        
+    // Obtener el elemento <h3>
+    var h3Element = $('#ut_usuario');
 
+    // Verificar si 'ut_usuario' tiene un valor
+    if (ut_usuario) {
+        // Actualizar el contenido y aplicar la clase verde
+        h3Element.text('Unidad de Tradeo: ' + ut_usuario);
+        h3Element.addClass('verde');
+    } else {
+        // Si no hay valor, restablecer el contenido y eliminar la clase verde
+        h3Element.text('Unidad de Tradeo: No disponible');
+        h3Element.removeClass('verde');
+    }
+
+}
 
 
   function updateTable() {
@@ -271,7 +297,8 @@ function leerFilasTabla(tableBody) {
 
   // var cambiosAntes = compararCambios();
     // Realizar una solicitud AJAX para obtener los nuevos datos
-    
+   
+    actualizarUnidadTradeo();
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
     var access_token = localStorage.getItem('access_token');
