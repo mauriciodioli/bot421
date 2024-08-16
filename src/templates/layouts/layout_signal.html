@@ -61,7 +61,7 @@
         <div class="container-fluid">
             <div class="navbar-center">
                 <h1 id="mensaje_correo_electronico" name="mensaje_correo_electronico"></h1>
-           </div>
+            </div>
            
           
       
@@ -102,6 +102,10 @@
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('argentina')">Argentina</a></li>                           
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="#" onclick="seleccionarPais('usa')">USA</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                          <li>
+                            <a id="notificacionUtLink" class="dropdown-item" href="#" onclick="toggleCambiarUT()">Cambiar UT</a>
+                          </li>
                           <li><hr class="dropdown-divider"></li>
                           <li>
                             <a id="notificacionTelegramLink" class="dropdown-item" href="#" onclick="toggleNotificacionTelegram()">Notificación activa</a>
@@ -148,6 +152,37 @@
 
     <div class = 'container p-4'>
 
+        <!-- Modal ut usuario-->
+        
+        <div class="modal fade" id="UtUsuarioModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="color: black;">Ut</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="idUtInput" class="form-control" value="" placeholder="VALOR UT">
+                <hr>
+                <p class="mb-0" style="color: black;">Efectos de cambio de ut:</p>
+                <ol style="color: black;">
+                    <li>Al cambiar la ut se modifica la cantidad de simbolos</li>
+                    <li>Para calcular la estrategia el sistema utiliza un número de ut</li>
+                    <li>Al cambiar la Ut debe esperar 2 minutos que resfresque en los paneles</li>
+                    <li>Por defecto se calcula una Ut de $ 50000</li>
+                </ol>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveUtUsuario()">Save changes</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Modal ut usuario-->
+
+
 
         <!-- Modal id Telegram-->
    
@@ -192,6 +227,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     
     <script src="{{url_for('static',filename='js/main.js')}}"></script>
+    <script src="{{url_for('static',filename='js/panelSignalSinCuentas/actualizarUtUsuario.js')}}"></script>
     
     <script>
 
@@ -203,6 +239,39 @@
         document.getElementById('accounCuenta_form_caucionar').value = cuentaBroker;
         document.getElementById('form_caucionar_accessToken').value = access_token;
  
+        function toggleCambiarUT() {
+            // Get the ID from localStorage
+            var idUtInput = localStorage.getItem('ut_usuario');
+  
+            // Set the value of the input if the idTelegram is not null
+            document.getElementById('idUtInput').value = idUtInput ? idUtInput : '';
+  
+            // Show the modal
+            $('#UtUsuarioModal').modal('show');
+  
+       }
+
+     
+
+         // Función para activar/desactivar la notificación y cambiar el texto y color del enlace
+     function toggleNotificacionTelegram() {
+        var currentStatus = localStorage.getItem('notificacionTelegram');
+        
+        if (currentStatus === 'True') {
+            localStorage.setItem('ut_usuario', '50000');
+            document.getElementById('notificacionUtLink').textContent = 'Notificación inactiva';
+            document.getElementById('notificacionUtLink').style.color = 'grey'; // Color gris
+        } else {
+            localStorage.setItem('notificacionTelegram', 'True');
+            document.getElementById('notificacionUtLink').textContent = 'Notificación activa';
+            document.getElementById('notificacionUtLink').style.color = '#00ff00'; // Verde más fuerte y brillante
+        }
+    }
+
+        
+       
+
+        
         function toggleIDTelegram() {
             // Get the ID from localStorage
             var idTelegram = localStorage.getItem('idtelegram');
@@ -229,22 +298,8 @@
 
 
 
+    
 
-
-     // Función para activar/desactivar la notificación y cambiar el texto y color del enlace
-     function toggleNotificacionTelegram() {
-        var currentStatus = localStorage.getItem('notificacionTelegram');
-        
-        if (currentStatus === 'True') {
-            localStorage.setItem('notificacionTelegram', 'False');
-            document.getElementById('notificacionTelegramLink').textContent = 'Notificación inactiva';
-            document.getElementById('notificacionTelegramLink').style.color = 'grey'; // Color gris
-        } else {
-            localStorage.setItem('notificacionTelegram', 'True');
-            document.getElementById('notificacionTelegramLink').textContent = 'Notificación activa';
-            document.getElementById('notificacionTelegramLink').style.color = '#00ff00'; // Verde más fuerte y brillante
-        }
-    }
 
     // Al cargar la página, verifica el estado actual y aplica el texto y color correspondiente
     document.addEventListener('DOMContentLoaded', function() {
@@ -344,6 +399,14 @@
        
             // Cerrar el menú desplegable al ser seleccionado
             cerrarMenuSeleccionado();
+            saveUtUsuario();
+
+
+
+
+
+
+
     </script>
    
 </body>
