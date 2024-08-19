@@ -157,15 +157,18 @@
                     </li>
  
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" id='AdministrarPublicacionesLayout'>
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Publicar</a>
                         <ul class="dropdown-menu">              
                                      
+                        <!-- 
                           <li><a class="dropdown-item" href="/subirImagen/" >Imagen</a></li>  
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/subirVideo/">Video</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/mostrarGaleria/">Galeria</a></li>                          
+                         
+                        -->  
+                          <li><a class="dropdown-item" id='adminPublicaciones' href="/mostrarGaleria/">Administrar</a></li>                          
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -411,6 +414,11 @@
             // Ocultar el enlace del menú de administración
             var adminLink = document.querySelector('.nav-link.dropdown-toggle');
             adminLink.style.display = 'none';
+
+             var adminLink1 = document.querySelector('#AdministrarPublicacionesLayout');
+            if (adminLink1) {
+                adminLink1.style.display = 'none';
+            }
         }
 
        // Cerrar el menú desplegable al ser seleccionado

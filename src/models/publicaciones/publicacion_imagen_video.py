@@ -17,7 +17,7 @@ class Public_imagen_video(db.Model):
     video_id = db.Column(db.Integer,nullable=False)
     fecha_creacion = db.Column(db.DateTime)
     media_type = db.Column(Enum('imagen', 'video', name='media_types'), nullable=False)
-   
+    size = db.Column(db.Float)
     
     # Relaciones
     #publicacion = relationship("Publicacion", back_populates="publicacion_imagen_video")
@@ -26,15 +26,15 @@ class Public_imagen_video(db.Model):
 
   
 
-    def __init__(self, publicacion_id, imagen_id=None, video_id=None, fecha_creacion=None, media_type=None):
+    def __init__(self, publicacion_id, imagen_id=None, video_id=None, fecha_creacion=None, media_type=None,size=None):
         self.publicacion_id = publicacion_id
         self.imagen_id = imagen_id
         self.video_id = video_id        
         self.fecha_creacion = fecha_creacion if fecha_creacion else db.func.current_timestamp()
         self.media_type = media_type
-
+        self.size = size
     def __repr__(self):
-        return f"Public_imagen_video(id={self.id}, publicacion_id={self.publicacion_id}, imagen_id={self.imagen_id}, video_id={self.video_id}, fecha_creacion={self.fecha_creacion},media_type={self.media_type})"
+        return f"Public_imagen_video(id={self.id}, publicacion_id={self.publicacion_id}, imagen_id={self.imagen_id}, video_id={self.video_id}, fecha_creacion={self.fecha_creacion},media_type={self.media_type},size={self.size})"
 
     @classmethod
     def crear_tabla_Public_imagen_video(cls):
@@ -55,7 +55,7 @@ class Public_imagen_video(db.Model):
             
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "publicacion_id", "imagen_id", "video_id", "fecha_creacion")
+        fields = ("id", "publicacion_id", "imagen_id", "video_id", "fecha_creacion","media_type","size")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)

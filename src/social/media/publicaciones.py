@@ -173,7 +173,7 @@ def armar_publicacion(publicaciones_user):
 
 @publicaciones.route('/social_imagenes_crear_publicacion', methods=['POST'])
 def social_imagenes_crear_publicacion():
-    #try:
+    try:
           # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
@@ -203,7 +203,6 @@ def social_imagenes_crear_publicacion():
             # Procesar archivos multimedia
             media_files = []
             id_publicacion = guardarPublicacion(request, user_id)
-           
             for key in request.files:
                 if key != 'mediaFile_creaPublicacion':
                     file = request.files[key]
@@ -244,10 +243,10 @@ def social_imagenes_crear_publicacion():
                 'correo_electronico': correo_electronico,
                 'color_texto': color_texto,
                 'color_titulo': color_titulo
-            })
-    #except Exception as e:
+            }),200
+    except Exception as e:
             # Manejo genérico de excepciones, devolver un mensaje de error
-            #return jsonify({'error': str(e)}), 500
+            return jsonify({'error': str(e)}), 500
         
 
 
@@ -267,7 +266,7 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
 
     if imagen_existente:
         # Si la imagen ya existe, solo guarda la relación en publicacion_media
-        cargar_id_publicacion_id_imagen_video(id_publicacion,imagen_existente.id,0,'imagen')
+        cargar_id_publicacion_id_imagen_video(id_publicacion,imagen_existente.id,0,'imagen',size=size)
         return file_path
     else:
   
@@ -278,11 +277,11 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
             colorDescription=color_texto,
             filepath=file_path,
             randomNumber=randomNumber_,
-            size=size
+            size=float(size)
         )
         db.session.add(nueva_imagen)
         db.session.commit()
-        cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen.id,0,'imagen')
+        cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen.id,0,'imagen',size=size)
         return file_path
 
 
@@ -312,7 +311,7 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
 
     if video_existente:
         # Si la imagen ya existe, solo guarda la relación en publicacion_media
-        cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video')
+        cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
         return file_path
     else:
         nuevo_video = Image(
@@ -322,11 +321,11 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
             colorDescription=color_texto,
             filepath=file_path,
             randomNumber=randomNumber_,
-            size=size
+            size=float(size)
         )
         db.session.add(nuevo_video)
         db.session.commit()
-        cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video')
+        cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
     return file_path
 
 
@@ -345,38 +344,54 @@ def es_formato_imagen(filepath):
 
 
 def guardarPublicacion(request, user_id):
-    post_title = request.form.get('postTitle_creaPublicacion')
-    post_text = request.form.get('postText_creaPublicacion')   
-    ambito = request.form.get('ambito')
-    correo_electronico = request.form.get('correo_electronico')
-    color_texto = request.form.get('color_texto')
-    color_titulo = request.form.get('color_titulo')
-    estado = request.form.get('postEstado_creaPublicacion')
-    
-    nueva_publicacion = Publicacion(
+    try:
+        post_title = request.form.get('postTitle_creaPublicacion')
+        post_text = request.form.get('postText_creaPublicacion')   
+        ambito = request.form.get('ambito')
+        correo_electronico = request.form.get('correo_electronico')
+        color_texto = request.form.get('color_texto')
+        color_titulo = request.form.get('color_titulo')
+        estado = request.form.get('postEstado_creaPublicacion')
+        
+        # Verificar si ya existe una publicación con el mismo título para el mismo usuario
+        publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
+        
+        if publicacion_existente:
+            # Si existe, devolver un mensaje sugiriendo cambiar el nombre
+             return None
+        
+        # Crear una nueva publicación si no existe una con el mismo nombre
+        nueva_publicacion = Publicacion(
             user_id=user_id,             
-            titulo= post_title,
-            texto= post_text,
-            ambito= ambito,
-            correo_electronico= correo_electronico,
-            descripcion= post_text,
-            color_texto= color_texto,
-            color_titulo= color_titulo,
-            fecha_creacion= datetime.now(),
-            estado = estado
+            titulo=post_title,
+            texto=post_text,
+            ambito=ambito,
+            correo_electronico=correo_electronico,
+            descripcion=post_text,
+            color_texto=color_texto,
+            color_titulo=color_titulo,
+            fecha_creacion=datetime.now(),
+            estado=estado
         )
-           
-    db.session.add(nueva_publicacion)
-    db.session.commit()
-    return nueva_publicacion.id
+        
+        db.session.add(nueva_publicacion)
+        db.session.commit()
+        return nueva_publicacion.id
+        
+    except Exception as e:
+        print(str(e))
+        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+        return jsonify({'error': 'Ocurrió un error al guardar la publicación.'}), 500
+   
 
-def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_video_id,media_type):
+def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_video_id,media_type,size=0):
     nuevo_ids= Public_imagen_video(
         publicacion_id=id_publicacion,
         imagen_id=nueva_imagen_id,
         video_id=nuevo_video_id,
         fecha_creacion=datetime.now(),
-        media_type=media_type
+        media_type=media_type,
+        size=float(size)
     )
     db.session.add(nuevo_ids)
     db.session.commit()
@@ -416,7 +431,7 @@ def social_imagenes_eliminar_publicacion():
         try:
             # Ejemplo de eliminación (ajustar según tu implementación)
             with app.app_context():
-                eliminar_publicacion_y_medios(publicacion_id)
+                eliminar_publicacion_y_medios(publicacion_id, user_id)
 
             return jsonify({'success': True}), 200
         except Exception as e:
@@ -424,35 +439,96 @@ def social_imagenes_eliminar_publicacion():
 
     return jsonify({'error': 'Token de acceso no válido o expirado'}), 401
 
-def eliminar_publicacion_y_medios(publicacion_id):
+def eliminar_publicacion_y_medios(publicacion_id, user_id):
     try:
-        # Encuentra la publicación
-        publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
+        publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
         if publicacion:
             # Elimina los registros de medios relacionados en la tabla intermedia
             publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id).all()
-            for p in publicacion_imagen_video:
-                db.session.delete(p)
-                
-            # Encuentra las imágenes asociadas
-            imagenes = db.session.query(Image).filter_by(publicacion_id=publicacion_id).all()
-            for imagen in imagenes:
-                db.session.delete(imagen)
-                
-            # Encuentra los videos asociados
-            videos = db.session.query(Video).filter_by(publicacion_id=publicacion_id).all()
-            for video in videos:
-                db.session.delete(video)
-                
-            # Elimina la publicación
             db.session.delete(publicacion)
+            for p in publicacion_imagen_video:
+                # Eliminar la imagen asociada, si existe
+                imagen = db.session.query(Image).filter_by(id=p.imagen_id, user_id=user_id,size=p.size).first()
+                if imagen:
+                    db.session.delete(imagen)
+                    eliminar_desde_archivo(imagen.title,user_id)
+                
+                # Eliminar el video asociado, si existe
+                video = db.session.query(Video).filter_by(id=p.video_id, user_id=user_id,size=p.size).first()
+                if video:
+                    db.session.delete(video)
+                    eliminar_desde_archivo(video.title,user_id)
+                
+                # Eliminar el registro de la tabla intermedia
+                db.session.delete(p)
             
             # Commit de todas las eliminaciones en una sola transacción
             db.session.commit()
-        return True
+            db.session.close()  # Cierra la sesión después de realizar los cambios
+            
+            return True
+
     except Exception as e:
         db.session.rollback()  # Revertir cambios en caso de error
         print(f"Error al eliminar la publicación y medios: {e}")
         return False
     finally:
         db.session.close()  # Cerrar la sesión al final
+
+def eliminar_desde_archivo(title,user_id):
+    try:
+        # Reemplazar barras diagonales hacia adelante ("/") por barras diagonales hacia atrás ("\")
+        
+        #ruta_base_datos = title.replace('/', '\\')
+        file_path = os.path.join('static', 'uploads', title)
+      
+        # Agregar "static" al inicio de la ruta
+        #ruta_base_datos = os.path.normpath('static\\' + file_path)
+        ruta_ = os.path.join(file_path)
+        os.remove(ruta_)
+        return True
+    except Exception as e:
+        print(f"Error al eliminar el archivo: {e}")
+        return False
+    
+def  eliminar_desde_archivo(title,user_id):
+    try:
+        # Reemplazar barras diagonales hacia adelante ("/") por barras diagonales hacia atrás ("\")
+        
+        #ruta_base_datos = title.replace('/', '\\')
+        file_path = os.path.join('static', 'uploads', title)
+      
+        # Agregar "static" al inicio de la ruta
+        #ruta_base_datos = os.path.normpath('static\\' + file_path)
+        ruta_ = os.path.join(file_path)
+        os.remove(ruta_)
+        return True
+    except OSError as e:
+        print(f"Error al eliminar el archivo: {e}")
+        return False
+
+  
+
+def borrado_logicopublicacion(publicacion_id, user_id):
+    try:
+        # Busca la publicación específica del usuario
+        publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
+        
+        if publicacion:
+            # Marca la publicación como eliminada en lugar de eliminarla físicamente
+            publicacion.estado = 'eliminado'
+            db.session.commit()
+            db.session.close()  # Cerrar la sesión
+            return True
+        
+        # Si la publicación no existe, retornar False
+        return False
+    
+    except Exception as e:
+        print(f"Error al eliminar la publicación: {e}")
+        db.session.rollback()
+        return False
+
+            
+            
+   
