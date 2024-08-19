@@ -156,7 +156,7 @@ console_handler.setFormatter(formatter)
 
 
 app.logger.addHandler(file_handler)
-app.logger.addHandler(console_handler)
+#app.logger.addHandler(console_handler)
 app.logger.debug('Debugging message: Configuración de logger completada.')
 app.logger.info('Este es un mensaje de info.')
 app.logger.warning('Este es un mensaje de advertencia.')
@@ -303,7 +303,7 @@ total_connections = 0
 @event.listens_for(Pool, "connect")
 def connect_listener(dbapi_connection, connection_record):
     connection_key = id(connection_record)
-    print("connect_listener Nueva conexión abierta. Conexión ID:", connection_key)
+    #print("connect_listener Nueva conexión abierta. Conexión ID:", connection_key)
     
     # Registrar la nueva conexión
     active_connections.add(connection_key)
@@ -314,18 +314,19 @@ def connect_listener(dbapi_connection, connection_record):
 @event.listens_for(Pool, "checkout")
 def checkout_listener(dbapi_connection, connection_record,connection_proxy):
     connection_key = id(connection_record)
-    print("checkout_listener Conexión obtenida del pool. Conexión ID:", connection_key)
+    #print("checkout_listener Conexión obtenida del pool. Conexión ID:", connection_key)
     
     # Actualizar el tiempo de última actividad
     if connection_key in connection_times:
         connection_times[connection_key] = time.time()
     else:
-        app.logger.warning(f"checkout_listener Clave de conexión no encontrada en connection_times: {connection_key}")
+        pass
+        #app.logger.warning(f"checkout_listener Clave de conexión no encontrada en connection_times: {connection_key}")
 
 @event.listens_for(db.engine, "close")
 def close_listener(dbapi_connection, connection_record):
     connection_id = id(connection_record)
-    app.logger.info(f"close_listener Conexión cerrada. ID: {connection_id}")
+   # app.logger.info(f"close_listener Conexión cerrada. ID: {connection_id}")
 
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -341,13 +342,15 @@ def checkin_listener(dbapi_connection, connection_record):
     if connection_key in active_connections:
         active_connections.remove(connection_key)
     else:
-        app.logger.warning(f"Clave de conexión no encontrada en active_connections: {connection_key}")
+        pass
+        #app.logger.warning(f"Clave de conexión no encontrada en active_connections: {connection_key}")
     
     # Verificar y eliminar la clave de connection_times si existe
     if connection_key in connection_times:
         connection_times.pop(connection_key, None)
     else:
-        app.logger.warning(f"Clave de conexión no encontrada en connection_times: {connection_key}")
+        pass
+        #app.logger.warning(f"Clave de conexión no encontrada en connection_times: {connection_key}")
     
     app.logger.info(f"Conexión devuelta al pool. Total conexiones activas: {len(active_connections)}")
     
@@ -367,10 +370,12 @@ def checkin_listener(dbapi_connection, connection_record):
                 connection_times.pop(conn_key, None)
                 pool = engine.pool
                 if pool.checkedout() >= pool.size():
-                  print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
+                  pass
+                  #print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
 
 def log_connection_info(dbapi_connection, connection_record):
-    print("Registro de conexión. Conexión ID:", id(dbapi_connection))
+    pass
+    #print("Registro de conexión. Conexión ID:", id(dbapi_connection))
     
     
 event.listen(engine, 'connect', connect_listener)
@@ -428,15 +433,18 @@ def adjust_pool_size():
 
 @event.listens_for(Pool, "invalidate")
 def invalidate_listener(dbapi_connection, connection_record):
-    print("Conexión invalidada. Conexión ID:", id(dbapi_connection))
+    pass
+    #print("Conexión invalidada. Conexión ID:", id(dbapi_connection))
 
 
 def monitor_pool_state(engine):
     pool = engine.pool
     if pool.checkedout() >= pool.size():
-        print(f"Advertencia: El pool está casi lleno: {pool.checkedout()} / {pool.size()}")
+        pass
+       # print(f"Advertencia: El pool está casi lleno: {pool.checkedout()} / {pool.size()}")
     else:
-        print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
+        pass
+       # print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
 
 
 

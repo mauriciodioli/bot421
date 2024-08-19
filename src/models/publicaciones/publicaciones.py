@@ -16,7 +16,7 @@ class Publicacion(db.Model):
     texto = db.Column(db.Text, nullable=False)  # Cambiado a db.Text
     ambito = db.Column(db.String(120), nullable=False)
     correo_electronico = db.Column(db.String(120), nullable=False)
-    descripcion = db.Column(db.String(120), nullable=False)
+    descripcion = db.Column(db.String(1000), nullable=False)
     color_texto = db.Column(db.String(120), nullable=False)
     color_titulo = db.Column(db.String(120), nullable=False)
     fecha_creacion = db.Column(db.DateTime)
