@@ -109,10 +109,10 @@ def panel_control_atomatico(pais,usuario_id,access_token,account,selector):
         usuario_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             
         ContenidoSheet = procesar_datos(app,pais, account,usuario_id,selector)
-        datos_desempaquetados = forma_datos_para_envio_paneles(app,ContenidoSheet,usuario_id)
+        datos_desempaquetados,unidadTrader = forma_datos_para_envio_paneles(app,ContenidoSheet,usuario_id,accountCuenta=account)
         if datos_desempaquetados:
         # print(datos_desempaquetados)
-            return jsonify(datos=datos_desempaquetados)
+            return jsonify(datos=datos_desempaquetados,unidadTrader=unidadTrader)
         else:
             # Si datos_desempaquetados está vacío, devuelve una respuesta vacía
             return jsonify(datos={})
@@ -179,7 +179,7 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id,accountCuenta):
             dato.append(i + 1)
             datos_procesados.append(tuple(dato))
 
-    return datos_procesados
+    return datos_procesados,unidadTrader
 
 
 
@@ -287,7 +287,7 @@ def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
      # Adquirir el bloqueo antes de modificar las variables compartidas
      with lock:
             get.diccionario_global_sheet[pais] = ContenidoSheetList
-            datos_desempaquetados = forma_datos_para_envio_paneles(app, get.diccionario_global_sheet[pais], user_id,accountCuenta) 
+            datos_desempaquetados,unidadTrader = forma_datos_para_envio_paneles(app, get.diccionario_global_sheet[pais], user_id,accountCuenta) 
             
             if len(datos_desempaquetados) != 0:
                 get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
@@ -315,7 +315,7 @@ def determinar_pais(pais):
 def procesar_datos(app,pais, accountCuenta,user_id,selector):
     if determinar_pais(pais) is not None:
         if pais not in get.diccionario_global_sheet_intercambio:
-            datos_desempaquetados = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], user_id)
+            datos_desempaquetados,unidadTrader = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], user_id)
             if len(datos_desempaquetados) != 0:
                 get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
         else:

@@ -86,7 +86,11 @@ def sistemaDePagos_get_promociones():
 
             promociones = db.session.query(Promotion).all()
             db.session.close()
+            if not promociones:
+                
+                return jsonify({'promociones': [], 'message': 'No hay promociones disponibles'})
 
+        
             # Serializar los planes
             promociones_serializados = [
                 {
