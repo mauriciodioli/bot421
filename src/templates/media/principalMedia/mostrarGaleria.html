@@ -158,7 +158,7 @@
 <!-- Modal for selecting emoticons -->
 <div class="modal fade" id="emoticonModal" tabindex="-1" aria-labelledby="emoticonModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content" id="emoticonModal-content">
+      <div class="modal-content-selected-emoticon" id="emoticonModal-content">
           <div class="modal-header">
               <h5 class="modal-title" id="emoticonModalLabel">Selecciona un Emoticón</h5>
               <button type="button" class="btn-close" id="custom-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -792,57 +792,109 @@ $(document).ready(function() {
           console.log(pair[0] + ':', pair[1]);
       }
 
-    $.ajax({
-      url: '/social_imagenes_crear_publicacion', // Reemplaza con la ruta a tu archivo .py
-      type: 'POST',
-      data: formData,
-      processData: false, // Prevent jQuery from automatically transforming the data into a query string
-      contentType: false, // Prevent jQuery from setting Content-Type header
-      headers: {
-        'Authorization': 'Bearer ' + access_token // Agregar el token de acceso en el encabezado
-      },
-      success: function(response) {
-        debugger; // Esto detendrá la ejecución en este punto
+      $.ajax({
+        // Configuración de la solicitud AJAX
+        url: '/social_imagenes_crear_publicacion',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+          'Authorization': 'Bearer ' + access_token
+        },
+        success: function(response) {
+          if (Array.isArray(response)) {
+            var postDisplayContainer = $('#postDisplayContainer');
+            postDisplayContainer.empty();
     
-        // Mostrar la publicación en una tarjeta
-        var mediaContainer = $('#mediaContainer_creaPublicacion');
-        var mediaHtml = '';
+            response.forEach(function(post) {
+              if (post.imagenes.length > 0 || post.videos.length > 0) {
+                var mediaHtml = '';
+                var baseUrl = window.location.origin;
     
-        response.media_files.forEach(function(filePath) {
-            // Cambiar la forma de mostrar según el tipo de archivo
-            var fileExtension = filePath.split('.').pop().toLowerCase();
-            if (['png', 'jpg', 'jpeg', 'gif'].includes(fileExtension)) {
-               mediaHtml += `<img src="/${filePath}" alt="Imagen" class="card-img-top">`;
-
-            } else if (['mp4', 'avi', 'mov'].includes(fileExtension)) {
-                mediaHtml += `<video src="/${filePath}" controls class="card-img-top"></video>`;
-            }
-        });
+                if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                  // Mostrar solo la primera imagen
+                  var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                  mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
     
-        var cardHtml = `
-            <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                    <h5 class="card-title" style="color: ${response.color_titulo};">${response.post_title}</h5>
-                    <p class="card-text" style="color: ${response.color_texto};">${response.post_text}</p>
-                    <p class="card-text">Ámbito: ${response.ambito}</p>
-                    <p class="card-text">Correo electrónico: ${response.correo_electronico}</p>
-                    <div class="creacion-publicacion-grilla">
-                        ${mediaHtml}
+                  // Guardar las demás imágenes para mostrarlas en el modal
+                  var modalImagesHtml = '';
+                  post.imagenes.forEach(function(image, index) {
+                    if (index > 0) { // Saltar la primera imagen
+                      var imageUrl = baseUrl + '/' + image.filepath;
+                      modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación">`;
+                    }
+                  });
+    
+                  // Crear el HTML del modal
+                  var modalHtml = `
+                    <div class="modal-image-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                      <div class="modal-content">
+                        <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                        <div class="modal-image-grid">
+                          ${modalImagesHtml}
+                        </div>
+                      </div>
                     </div>
-                </div>
-            </div>
-        `;
-
+                  `;
     
-        $('#postDisplayContainer').html(cardHtml); // Asegúrate de que `#postDisplayContainer` exista en tu HTML
+                  postDisplayContainer.append(modalHtml);
+                }
     
-        alert("Publicación creada exitosamente.");
-        $("#createPostModal_creaPublicacion").hide(); // Cierra el modal en caso de éxito
-    },    
-      error: function(xhr, status, error) {
-        alert("Error al crear la publicación. Inténtalo de nuevo.");
-      }
-    });
+                var estadoClass;
+                var estadoTextClass;
+                switch (post.estado) {
+                  case 'activo':
+                    estadoClass = 'estado-activo';
+                    estadoTextClass = 'estado-activo';
+                    break;
+                  case 'inactivo':
+                    estadoClass = 'estado-inactivo';
+                    estadoTextClass = 'estado-inactivo';
+                    break;
+                  case 'pendiente':
+                    estadoClass = 'estado-pendiente';
+                    estadoTextClass = 'estado-pendiente';
+                    break;
+                  default:
+                    estadoClass = '';
+                    estadoTextClass = '';
+                }
+    
+                var cardHtml = `
+                  <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
+                    <div class="card-body">
+                      <h5 class="card-title">${post.titulo}</h5>
+                      <p class="card-text-estado ${estadoTextClass}">${post.estado}</p>
+                      <p class="card-text">${post.correo_electronico}</p>
+                      <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                      <p class="card-text">${post.texto}</p>
+                      <div class="card-media-grid-publicacion-admin">
+                        ${mediaHtml}
+                      </div>
+                      <p class="card-text">${post.ambito}</p>
+                      <p class="card-text">${post.descripcion}</p>
+                      <div class="btn-modificar-eliminar">
+                        <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                        <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
+                      </div>
+                    </div>
+                  </div>
+                `;
+    
+                postDisplayContainer.append(cardHtml);
+              } else {
+                console.log('Publicación sin contenido:', post.publicacion_id);
+              }
+            });
+          } else {
+            console.error("La respuesta no es un array. Recibido:", response);
+          }
+        },
+        error: function(xhr, status, error) {
+          alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
+        }
+      });
   });
 
   function dataURLToFile(dataURL, filename) {
