@@ -14945,3 +14945,1084 @@ checkout_listener Clave de conexión no encontrada en connection_times: 24854066
 Clave de conexión no encontrada en active_connections: 2485406669504
 Clave de conexión no encontrada en connection_times: 2485406669504
 Conexión devuelta al pool. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+____INTENTO ENTRAR____
+127.0.0.1
+madioli26@hotmail.com
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+madioli26@hotmail.com
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652751207632
+checkout_listener Clave de conexión no encontrada en connection_times: 1652751422176
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652751207632
+Clave de conexión no encontrada en connection_times: 1652751207632
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1652751422176
+Clave de conexión no encontrada en connection_times: 1652751422176
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+LEE EL SHEET POR LLAMADA DE FUNCION
+checkout_listener Clave de conexión no encontrada en connection_times: 1652751207632
+Clave de conexión no encontrada en active_connections: 1652751207632
+Clave de conexión no encontrada en connection_times: 1652751207632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652751422176
+Clave de conexión no encontrada en active_connections: 1652751422176
+Clave de conexión no encontrada en connection_times: 1652751422176
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1652750237504
+Clave de conexión no encontrada en active_connections: 1652750237504
+Clave de conexión no encontrada en connection_times: 1652750237504
+Conexión devuelta al pool. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812549915168
+Clave de conexión no encontrada en active_connections: 1812549915168
+Clave de conexión no encontrada en connection_times: 1812549915168
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+checkout_listener Clave de conexión no encontrada en connection_times: 1812549915168
+Conexión devuelta al pool. Total conexiones activas: 1
+Clave de conexión no encontrada en active_connections: 1812549915168
+Clave de conexión no encontrada en connection_times: 1812549915168
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551219040
+Clave de conexión no encontrada en active_connections: 1812551219040
+Clave de conexión no encontrada en connection_times: 1812551219040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812549915168
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551252336
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551219040
+Clave de conexión no encontrada en active_connections: 1812549915168
+Clave de conexión no encontrada en connection_times: 1812549915168
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1812551252336
+Clave de conexión no encontrada en connection_times: 1812551252336
+Clave de conexión no encontrada en active_connections: 1812551219040
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en connection_times: 1812551219040
+Conexión devuelta al pool. Total conexiones activas: 0
+LEE EL SHEET POR LLAMADA DE FUNCION
+checkout_listener Clave de conexión no encontrada en connection_times: 1812549915168
+Clave de conexión no encontrada en active_connections: 1812549915168
+Clave de conexión no encontrada en connection_times: 1812549915168
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551252336
+Clave de conexión no encontrada en active_connections: 1812551252336
+Clave de conexión no encontrada en connection_times: 1812551252336
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551219040
+Clave de conexión no encontrada en active_connections: 1812551219040
+Clave de conexión no encontrada en connection_times: 1812551219040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812549915168
+Clave de conexión no encontrada en active_connections: 1812549915168
+Clave de conexión no encontrada en connection_times: 1812549915168
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551252336
+Clave de conexión no encontrada en active_connections: 1812551252336
+Clave de conexión no encontrada en connection_times: 1812551252336
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551219040
+Clave de conexión no encontrada en active_connections: 1812551219040
+Clave de conexión no encontrada en connection_times: 1812551219040
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1812551219040
+close_listener Conexión cerrada. ID: 1812549915168
+close_listener Conexión cerrada. ID: 1812551252336
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+connect_listener Conexión abierta. Total conexiones activas: 3
+connect_listener Conexión abierta. Total conexiones activas: 4
+connect_listener Conexión abierta. Total conexiones activas: 5
+connect_listener Conexión abierta. Total conexiones activas: 6
+Conexión devuelta al pool. Total conexiones activas: 5
+Conexión devuelta al pool. Total conexiones activas: 4
+Conexión devuelta al pool. Total conexiones activas: 3
+Conexión devuelta al pool. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551252336
+Clave de conexión no encontrada en active_connections: 1812551252336
+Clave de conexión no encontrada en connection_times: 1812551252336
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812552274464
+checkout_listener Clave de conexión no encontrada en connection_times: 1812552149120
+checkout_listener Clave de conexión no encontrada en connection_times: 1812552277440
+Clave de conexión no encontrada en active_connections: 1812552149120
+Clave de conexión no encontrada en connection_times: 1812552149120
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1812552277440
+Clave de conexión no encontrada en connection_times: 1812552277440
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1812552274464
+Clave de conexión no encontrada en connection_times: 1812552274464
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551219040
+Clave de conexión no encontrada en active_connections: 1812551219040
+Clave de conexión no encontrada en connection_times: 1812551219040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812549915168
+Clave de conexión no encontrada en active_connections: 1812549915168
+Clave de conexión no encontrada en connection_times: 1812549915168
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551252336
+checkout_listener Clave de conexión no encontrada en connection_times: 1812552149120
+checkout_listener Clave de conexión no encontrada en connection_times: 1812552277440
+Clave de conexión no encontrada en active_connections: 1812551252336
+Clave de conexión no encontrada en connection_times: 1812551252336
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1812552149120
+Clave de conexión no encontrada en connection_times: 1812552149120
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1812552277440
+Clave de conexión no encontrada en connection_times: 1812552277440
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812552274464
+Clave de conexión no encontrada en active_connections: 1812552274464
+Clave de conexión no encontrada en connection_times: 1812552274464
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1812551219040
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+Clave de conexión no encontrada en active_connections: 2171487147536
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487147536
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171488219248
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171488219248
+Clave de conexión no encontrada en connection_times: 2171488219248
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487147536
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+LEE EL SHEET POR LLAMADA DE FUNCION
+checkout_listener Clave de conexión no encontrada en connection_times: 2171488219248
+Clave de conexión no encontrada en active_connections: 2171488219248
+Clave de conexión no encontrada en connection_times: 2171488219248
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+checkout_listener Clave de conexión no encontrada en connection_times: 2171488219248
+Clave de conexión no encontrada en active_connections: 2171488219248
+Clave de conexión no encontrada en connection_times: 2171488219248
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487147536
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171488219248
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+Clave de conexión no encontrada en active_connections: 2171488219248
+Clave de conexión no encontrada en connection_times: 2171488219248
+Clave de conexión no encontrada en active_connections: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171488219248
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171487147536
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171488219248
+Clave de conexión no encontrada en connection_times: 2171488219248
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+Clave de conexión no encontrada en active_connections: 2171487147536
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171488219248
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487147536
+checkout_listener Clave de conexión no encontrada en connection_times: 2171487146096
+Clave de conexión no encontrada en active_connections: 2171488219248
+Clave de conexión no encontrada en connection_times: 2171488219248
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487146096
+Clave de conexión no encontrada en connection_times: 2171487146096
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2171487147536
+Clave de conexión no encontrada en connection_times: 2171487147536
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2171488219248
+Clave de conexión no encontrada en active_connections: 2171488219248
+Clave de conexión no encontrada en connection_times: 2171488219248
+Conexión devuelta al pool. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 3089072901616
+Clave de conexión no encontrada en active_connections: 3089072901616
+Clave de conexión no encontrada en connection_times: 3089072901616
+Conexión devuelta al pool. Total conexiones activas: 0
+madioli26@hotmail.com
+checkout_listener Clave de conexión no encontrada en connection_times: 3089072901616
+Clave de conexión no encontrada en active_connections: 3089072901616
+Clave de conexión no encontrada en connection_times: 3089072901616
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 3089072901616
+Clave de conexión no encontrada en active_connections: 3089072901616
+Clave de conexión no encontrada en connection_times: 3089072901616
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+checkout_listener Clave de conexión no encontrada en connection_times: 3089072901616
+Clave de conexión no encontrada en active_connections: 3089072901616
+Clave de conexión no encontrada en connection_times: 3089072901616
+Conexión devuelta al pool. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 3089072901616
+Clave de conexión no encontrada en active_connections: 3089072901616
+Clave de conexión no encontrada en connection_times: 3089072901616
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 3089074744048
+checkout_listener Clave de conexión no encontrada en connection_times: 3089074701648
+checkout_listener Clave de conexión no encontrada en connection_times: 3089072901616
+Clave de conexión no encontrada en active_connections: 3089074744048
+Clave de conexión no encontrada en connection_times: 3089074744048
+Clave de conexión no encontrada en active_connections: 3089074701648
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 3089072901616
+Clave de conexión no encontrada en connection_times: 3089074701648
+Clave de conexión no encontrada en connection_times: 3089072901616
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+LEE EL SHEET POR LLAMADA DE FUNCION
+checkout_listener Clave de conexión no encontrada en connection_times: 3089074744048
+Clave de conexión no encontrada en active_connections: 3089074744048
+Clave de conexión no encontrada en connection_times: 3089074744048
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 3089074701648
+Clave de conexión no encontrada en active_connections: 3089074701648
+Clave de conexión no encontrada en connection_times: 3089074701648
+Conexión devuelta al pool. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+madioli26@hotmail.com
+checkout_listener Clave de conexión no encontrada en connection_times: 2161160093024
+Clave de conexión no encontrada en active_connections: 2161160093024
+Clave de conexión no encontrada en connection_times: 2161160093024
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2161160093024
+connect_listener Conexión abierta. Total conexiones activas: 1
+Clave de conexión no encontrada en active_connections: 2161160093024
+Clave de conexión no encontrada en connection_times: 2161160093024
+connect_listener Conexión abierta. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 2
+checkout_listener Clave de conexión no encontrada en connection_times: 2161160093024
+Clave de conexión no encontrada en active_connections: 2161160093024
+Clave de conexión no encontrada en connection_times: 2161160093024
+Conexión devuelta al pool. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2161160093024
+Clave de conexión no encontrada en active_connections: 2161160093024
+Clave de conexión no encontrada en connection_times: 2161160093024
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2161161761072
+checkout_listener Clave de conexión no encontrada en connection_times: 2161160936080
+checkout_listener Clave de conexión no encontrada en connection_times: 2161160093024
+Clave de conexión no encontrada en active_connections: 2161161761072
+Clave de conexión no encontrada en connection_times: 2161161761072
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2161160936080
+Clave de conexión no encontrada en connection_times: 2161160936080
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2161160093024
+Clave de conexión no encontrada en connection_times: 2161160093024
+Conexión devuelta al pool. Total conexiones activas: 0
+LEE EL SHEET POR LLAMADA DE FUNCION
+checkout_listener Clave de conexión no encontrada en connection_times: 2161161761072
+Clave de conexión no encontrada en active_connections: 2161161761072
+Clave de conexión no encontrada en connection_times: 2161161761072
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2161160936080
+Clave de conexión no encontrada en active_connections: 2161160936080
+Clave de conexión no encontrada en connection_times: 2161160936080
+Conexión devuelta al pool. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+LEE EL SHEET POR LLAMADA DE FUNCION
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 2226416154032
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 2226416297104
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 2226414946000
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+madioli26@hotmail.com
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Clave de conexión no encontrada en active_connections: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+LEE EL SHEET POR LLAMADA DE FUNCION
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416297104
+Clave de conexión no encontrada en active_connections: 2226416297104
+Clave de conexión no encontrada en connection_times: 2226416297104
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226416154032
+Clave de conexión no encontrada en active_connections: 2226416154032
+Clave de conexión no encontrada en connection_times: 2226416154032
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 2226414946000
+Clave de conexión no encontrada en active_connections: 2226414946000
+Clave de conexión no encontrada en connection_times: 2226414946000
+Conexión devuelta al pool. Total conexiones activas: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+LEE EL SHEET POR LLAMADA DE FUNCION
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935031655632
+close_listener Conexión cerrada. ID: 1935031654288
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935031655632
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935031654288
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 1
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+dpuntillo@gmail.com
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935031655632
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935031654288
+close_listener Conexión cerrada. ID: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+madioli26@hotmail.com
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935075656608
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935031655632
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+close_listener Conexión cerrada. ID: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 2
+connect_listener Conexión abierta. Total conexiones activas: 3
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 3
+Conexión devuelta al pool. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031654288
+Clave de conexión no encontrada en active_connections: 1935031654288
+Clave de conexión no encontrada en connection_times: 1935031654288
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935069251040
+Clave de conexión no encontrada en active_connections: 1935069251040
+Clave de conexión no encontrada en connection_times: 1935069251040
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935075656608
+Clave de conexión no encontrada en active_connections: 1935075656608
+Clave de conexión no encontrada en connection_times: 1935075656608
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935070256576
+Clave de conexión no encontrada en active_connections: 1935070256576
+Clave de conexión no encontrada en connection_times: 1935070256576
+Conexión devuelta al pool. Total conexiones activas: 0
+checkout_listener Clave de conexión no encontrada en connection_times: 1935031655632
+Clave de conexión no encontrada en active_connections: 1935031655632
+Clave de conexión no encontrada en connection_times: 1935031655632
+Conexión devuelta al pool. Total conexiones activas: 0
