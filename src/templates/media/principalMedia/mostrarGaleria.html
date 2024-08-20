@@ -734,64 +734,84 @@ function closePreview() {
 
 
 
-
+function dataURLToFile(dataURL, filename) {
+  var arr = dataURL.split(',');
+  var mime = arr[0].match(/:(.*?);/)[1];
+  var bstr = atob(arr[1]);
+  var n = bstr.length;
+  var u8arr = new Uint8Array(n);
+  while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
 
 $(document).ready(function() {
+
+
+
+  var storedFiles = []; // Array para almacenar todos los archivos seleccionados
+
+  // Evento cuando se seleccionan archivos
+  $("#fileInput_creaPublicacion").on("change", function(event) {
+    var files = event.target.files;
+
+    // Añadir cada archivo al array storedFiles
+    for (var i = 0; i < files.length; i++) {
+      storedFiles.push(files[i]);
+    }
+    
+    // Opcional: puedes mostrar una vista previa de los archivos seleccionados aquí
+  });
+
+
+
+
+
   $("#createPostForm_creaPublicacion").on("submit", function(event) {
     event.preventDefault(); // Prevent the default form submission
 
     var formData = new FormData(this);
 
     
-    // Añadir imágenes y videos cargados al FormData
-    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
-    var mediaItems = mediaContainer.getElementsByClassName('thumbnail_creaPublicacion');
-    var access_token = localStorage.getItem('access_token');
-    var ambito = $("#postAmbito_creaPublicacion").val();
-    var estado = $("#postEstado_creaPublicacion").val();
-    var descripcion = $("#description").val();
-    var correo_electronico = localStorage.getItem('correo_electronico');
-    var color_texto = 'black';
-    var color_titulo = 'black';
+     // Añadir imágenes y videos cargados al FormData
+     var access_token = localStorage.getItem('access_token');
+     var correo_electronico = localStorage.getItem('correo_electronico');
+     var color_texto = 'black'
+     var color_titulo = 'black'
+ 
+   // Añadir los datos al FormData 
+     formData.append('correo_electronico', correo_electronico);
+     formData.append('color_texto', color_texto);
+     formData.append('color_titulo', color_titulo);
+     // Añadir todos los archivos almacenados en storedFiles al FormData
+     for (var i = 0; i < storedFiles.length; i++) {
+       var file = storedFiles[i];
 
-    // Agregar variables adicionales al FormData
-    formData.append('ambito', ambito);
-    formData.append('estado', estado);
-    formData.append('descripcion', descripcion);
-    formData.append('correo_electronico', correo_electronico);
-    formData.append('color_texto', color_texto);
-    formData.append('color_titulo', color_titulo);
-    debugger;
-    for (var i = 0; i < mediaItems.length; i++) {     
-      var mediaElement = mediaItems[i];
-   
-      if (mediaElement) {
-         console.log('Elemento encontrado:', mediaElement.tagName);
-   
-         if (mediaElement.tagName === 'IMG' || mediaElement.tagName === 'VIDEO') {
-            var mediaSrc = mediaElement.src;
-            var mediaFile = dataURLToFile(mediaSrc, mediaElement.tagName.toLowerCase() + (i + 1) + '.' + (mediaElement.tagName === 'IMG' ? 'jpg' : 'mp4'));
-            
-             // Obtener el tamaño del archivo
-             var fileSize = mediaFile.size;
-            
-            formData.append('mediaFile_' + i, mediaFile);
-            formData.append('mediaFileSize_' + i, fileSize);  // Añadir tamaño del archivo
-            formData.append('mediaFileIndex_' + i, i);  // Añadir índice del archivo
-          }
-      } else {
-         console.log('Elemento no encontrado o es undefined:', mediaElement);
-      }
-   }
-    
+       formData.append('mediaFile_' + i, file);
+       formData.append('mediaFileSize_' + i, file.size);
+       formData.append('mediaFileIndex_' + i, i);
+       formData.append('mediaFileName_' + i, file.name);
+       formData.append('mediaFileType_' + i, file.type);
+       formData.append('mediaFileLastModified_' + i, file.lastModified);
+       formData.append('mediaFileLastModifiedDate_' + i, file.lastModifiedDate ? file.lastModifiedDate.toISOString() : 'No disponible');
+       formData.append('mediaFileWebkitRelativePath_' + i, file.webkitRelativePath || 'No disponible');
+ 
+       // Imprimir propiedades del archivo añadido
+      // console.log('  - Nombre del archivo:', file.name);
+      // console.log('  - Última modificación:', file.lastModified);
+      // console.log('  - Fecha de última modificación:', file.lastModifiedDate);
+      // console.log('  - Tamaño del archivo:', file.size);
+      // console.log('  - Tipo de archivo:', file.type);
+      // console.log('  - Ruta webkit relativa:', file.webkitRelativePath);
+     }
+ 
+
+
     
 
     // Aquí puedes ver qué hay en el FormData antes de enviarlo
-      console.log('Contenido de formData:');
-      for (var pair of formData.entries()) {
-          console.log(pair[0] + ':', pair[1]);
-      }
-
+     
       $.ajax({
         // Configuración de la solicitud AJAX
         url: '/social_imagenes_crear_publicacion',
