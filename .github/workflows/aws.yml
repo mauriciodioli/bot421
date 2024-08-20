@@ -12,12 +12,25 @@ jobs:
     runs-on: ubuntu-latest
  # Definir la variable de IP
     env:
-      #EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com # IMAGEN TEST     
-      EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com # IMAGEN PRODUCCION
+      EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com # IMAGEN TEST     
+      #EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com # IMAGEN PRODUCCION
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
     
+    
+    - name: Run test_operacionEstrategia.py
+      id: run-test
+      run: |
+          python src/Tests/test_operacionEstrategia.py
+      continue-on-error: true
+
+    - name: Check if the line is commented
+      if: steps.run-test.outcome == 'failure'
+      run: |
+        echo "The critical line in operacionEstrategia.py is commented out. Stopping deployment."
+        exit 1
+        
     - name: Set Dockerfile WORKDIR to /src
       run: |
           sed -i 's/WORKDIR \/app/WORKDIR \/src/' Dockerfile
