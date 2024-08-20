@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, session,request, redirect, url_for
 from utils.common import Marshmallow, db, get
 import routes.instrumentosGet as instrumentosGet
 import routes.api_externa_conexion.validaInstrumentos as val
+from models.cuentas import Cuenta
 
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
@@ -398,7 +399,7 @@ def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
         return True
 
 
-def cargarCuenta(Cuenta,idUser,account):
+def cargarCuenta(Cuentas,idUser,account):
     retries = 0
     max_retries = 5
     retry_delay = 5  # segundos
@@ -407,9 +408,13 @@ def cargarCuenta(Cuenta,idUser,account):
         try:
             # Realiza la consulta
             cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
-            #db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
-            return cuenta  # Si la consulta es exitosa, retorna el resultado
-        
+            if cuenta is not None:
+                passwordCuenta = cuenta.passwordCuenta
+                return cuenta
+            else:
+                # Manejar el caso en el que cuenta es None
+                 print("Error: cuenta es None")
+                 return None
         except OperationalError as e:
             print(f"Error de conexión: {e}. Reintentando en {retry_delay} segundos...")
             retries += 1

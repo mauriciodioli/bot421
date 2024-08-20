@@ -175,6 +175,7 @@ def armar_publicacion(publicaciones_user):
 def social_imagenes_crear_publicacion():
     try:
           # Obtener el encabezado Authorization
+          # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
             return jsonify({'error': 'Token de acceso no proporcionado'}), 401
@@ -198,35 +199,7 @@ def social_imagenes_crear_publicacion():
             post_text = request.form.get('postText_creaPublicacion')
             post_description = request.form.get('postDescription_creaPublicacion')
             post_ambito = request.form.get('postAmbito_creaPublicacion')
-            post_estado = request.form.get('postLeido_creaPublicacion')
-            
-            # Procesar archivos multimedia
-            media_files = []
-            id_publicacion = guardarPublicacion(request, user_id)
-            for key in request.files:
-                if key != 'mediaFile_creaPublicacion':
-                    file = request.files[key]
-                    if file and allowed_file(file.filename):
-                        filename = secure_filename(file.filename)
-                        # Obtener el índice del archivo del formulario
-                        index = request.form.get('mediaFileIndex_' + key.split('_')[-1])
-
-                        # Decide si el archivo es una imagen o un video
-                        if file.filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
-                            # Llama a la función de carga de imagen
-                            file_path = cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index)
-                        elif file.filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
-                            # Llama a la función de carga de video
-                            file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index)
-
-
-                        if file_path:
-                            media_files.append(file_path)
-            # Obtén otros datos del formulario
-           
-            post_title = request.form.get('postTitle_creaPublicacion')
-            post_text = request.form.get('postText_creaPublicacion')   
-            ambito = request.form.get('ambito')
+            post_estado = request.form.get('postEstado_creaPublicacion')        
             correo_electronico = request.form.get('correo_electronico')
             color_texto = request.form.get('color_texto')
             color_titulo = request.form.get('color_titulo')
@@ -234,12 +207,63 @@ def social_imagenes_crear_publicacion():
             print("Título de la publicación:", post_title)
             print("Texto de la publicación:", post_text)        
             print("Finalizando social_imagenes_crear_publicacion")
+            
+            # Procesar archivos multimedia
+            media_files = []
+            id_publicacion = 0  # Variable temporal, asegúrate de asignarle un valor correcto
+
+            # Iterar sobre los archivos recibidos
+            for key in request.files:
+                file = request.files[key]
+
+                # Verificar si el archivo tiene un nombre y es seguro
+                if file.filename == '':
+                    continue
+
+                # Seguridad: Asegúrate de usar un nombre de archivo seguro
+                filename = secure_filename(file.filename)
+                
+                # Leer los datos del archivo
+                file_size = request.form.get(f'mediaFileSize_{key.split("_")[-1]}')
+                file_type = file.content_type
+                last_modified = request.form.get(f'mediaFileLastModified_{key.split("_")[-1]}')
+                last_modified_date = request.form.get(f'mediaFileLastModifiedDate_{key.split("_")[-1]}')
+                print(f"Nombre del archivo: {filename}")
+                print(f"Tamaño del archivo: {file_size}")
+                print(f"Tipo de archivo: {file_type}")
+                print(f"Última modificación (timestamp): {last_modified}")
+                print(f"Fecha de última modificación: {last_modified_date}")
+                 # Obtener el índice del archivo del formulario usando la clave del archivo
+                index = request.form.get(f'mediaFileIndex_{key.split("_")[-1]}')
+              
+                #index = request.form.get('mediaFileIndex_' + key.split('_')[-1])
+                    # Decide si el archivo es una imagen o un video
+                 # Decide si el archivo es una imagen o un video
+                file_ext = filename.rsplit('.', 1)[1].lower()
+                if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
+              #  if filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
+                        # Llama a la función de carga de imagen
+                        #pass
+                        file_path = cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=file_size)
+                elif file_ext in {'mp4', 'avi', 'mov'}:
+               # elif filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
+                        # Llama a la función de carga de video
+                        #pass
+                        file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=file_size)
+
+
+                #if file_path:
+                #    media_files.append(file_path)
+            # Obtén otros datos del formulario
+           
+           
+            
             return jsonify({
                 'message': 'Publicación creada exitosamente.',
                 'media_files': media_files,
                 'post_title': post_title,
                 'post_text': post_text,
-                'ambito': ambito,
+                'ambito': post_ambito,
                 'correo_electronico': correo_electronico,
                 'color_texto': color_texto,
                 'color_titulo': color_titulo
@@ -250,10 +274,10 @@ def social_imagenes_crear_publicacion():
         
 
 
-def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=0, index=None):   
+def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=0, index=None, size=0):   
     color_texto = request.form.get('color_texto')   
     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-    size = request.form.get('mediaFileSize_' + str(index))  # Obtener tamaño del archivo usando el índice  
+    size = size  # Obtener tamaño del archivo usando el índice  
     file_path = os.path.join('static', 'uploads', filename)
     file.save(file_path)
    
@@ -285,11 +309,10 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
         return file_path
 
 
-def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0, index=None):   
+def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0, index=None, size=0):   
     color_texto = request.form.get('color_texto')   
     file_path = os.path.join('static', 'uploads', filename)
-    size = request.form.get('mediaFileSize_' + str(index))  # Obtener tamaño del archivo usando el índice
-  
+    size = size  # Obtener tamaño del archivo usando el índice
     file.save(file_path)
 
     nombre_archivo = filename

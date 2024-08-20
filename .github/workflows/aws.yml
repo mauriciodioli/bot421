@@ -30,7 +30,7 @@ jobs:
       run: |
         echo "The critical line in operacionEstrategia.py is commented out. Stopping deployment."
         exit 1
-        
+
     - name: Set Dockerfile WORKDIR to /src
       run: |
           sed -i 's/WORKDIR \/app/WORKDIR \/src/' Dockerfile
