@@ -125,7 +125,7 @@ def estadoOperacion():
         print(f"Error inesperado: {e}")
         flash("Ocurrió un error inesperado al obtener los datos de operaciones")
 
-    return render_template("notificaciones/noPoseeDatos.html")
+    return render_template("notificaciones/noPoseeDatos.html", layout = 'layoutBroker')
 
 
 

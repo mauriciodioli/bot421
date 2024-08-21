@@ -313,12 +313,18 @@ def simbolo_no_en_diccionario(simbol, diccionarios):
             return False
     return True
 
+def cargaUt(UT_unidadTrader,elemento7):
+    ut_trader = UT_unidadTrader/elemento7
+    return ut_trader
 
 def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
      símbolos_vistos = set()
      tiempoLecturaSaldo = datetime.now()
+    
+     usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
+     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
     # saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
 
      #filtrar las coincidencias entre las dos listas
@@ -367,15 +373,30 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                           if elemento1[4] == 'OPEN.':
                             if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
                                 if elemento1[0] == elemento2:
-                                    coincidencias.append(elemento1)
+                                      # Paso 1: Eliminar los puntos
+                                    cadena_sin_puntos = elemento1[7].replace('.', '')
+                                    # Paso 2: Reemplazar la coma por un punto
+                                    cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                                    # Paso 3: Convertir la cadena a float
+                                    precio = float(cadena_correcta)
+                                    ut = cargaUt(unidadTrader.ut,precio)
+                                    ut = abs(int(ut))
+                                    # Paso 6: Agregar a elemento1 y coincidencias
+                                    lista_modificable = list(elemento1)
+
+                                    # Modificar el valor en el índice deseado
+                                    lista_modificable[3] = str(ut)  # Cambia el valor en el índice 3
+
+                                    # Convertir la lista de nuevo a una tupla si es necesario
+                                    tupla_modificada = tuple(lista_modificable)
+                                    coincidencias.append(tupla_modificada)
                                 # print(' elemento1[] ', elemento1[0])
                                 # print(coincidencias)
                             
         contador += 1  
           
     
-     usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
-     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
+    
      for elemento  in coincidencias:  
          # Paso 1: Eliminar los puntos
          cadena_sin_puntos = elemento[7].replace('.', '')
@@ -384,7 +405,8 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
         # Paso 3: Convertir la cadena a float
          numero = float(cadena_correcta)
          if int(elemento[3]) == 0:
-            ut = unidadTrader.ut/numero
+            ut = cargaUt(unidadTrader.ut,precio)
+        
             ut = abs(int(ut))
          else:
             ut = abs(int(elemento[3]))

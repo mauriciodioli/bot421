@@ -347,7 +347,7 @@ def cargaSymbolParaValidar(message):
     return listado_final
   
 def get_instrumento_para_suscripcion_ws(app,user_id,selector):#   **77
-     ContenidoSheet =  enviar_leer_sheet(app,'argentina',user_id,None,selector) 
+     ContenidoSheet =  enviar_leer_sheet(app,'argentina',user_id,None,None,selector)                       
      return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db(app):
