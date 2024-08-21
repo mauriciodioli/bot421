@@ -163,15 +163,15 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id,accountCuenta):
                     dato_extra = (None, None)
                     dato += dato_extra
             # Paso 1: Asegurarse de que 'dato[7]' no sea None o esté vacío
-            if dato[7] is not None and dato[7].strip() != '':
+            if dato[7] is not None and dato[7].strip() != ''and dato[7] != '#N/A':
                 # Paso 1: Eliminar los puntos
                 cadena_sin_puntos = dato[7].replace('.', '')
                 # Paso 2: Reemplazar la coma por un punto
                 cadena_correcta = cadena_sin_puntos.replace(',', '.')
                 # Paso 3: Convertir la cadena a float
-                numero = float(cadena_correcta)
-                if numero != 0:
-                    ut = unidadTrader/numero
+                precio = float(cadena_correcta)
+                if precio != 0:
+                    ut = unidadTrader/precio
                     ut = abs(int(ut))
             else:
                 ut = 0
@@ -228,8 +228,8 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                     get.luzThred_funcionando['segundo'] = now.second
 
                 # Preguntar si son las 11:00 y pasar la lectura
-                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
-                #if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                #if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id,accountCuenta, 'hilo', selector)
               
                 #if (now.hour == 19 and now.minute >= 40 and now.minute <= 55):
@@ -248,7 +248,7 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
 def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
     
      if hilo == 'hilo':
-        pais = 'argentina'
+        pais = 'argentina'       
         app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
         app.logger.info('LEE EL SHEET POR LLAMADA DE FUNCION')
@@ -265,11 +265,11 @@ def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
                                                  get.CORREO_E_ACTUALIZAR_SHEET,
                                                  get.VARIABLE_ACTUALIZAR_SHEET,
                                                  get.ID_USER_ACTUALIZAR_SHEET):
-                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
-                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
+                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
                   app.logger.info('MODIFICO EL SHEET CORRECTAMENTE')
-            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
-            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
         else:

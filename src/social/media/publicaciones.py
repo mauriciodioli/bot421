@@ -207,70 +207,74 @@ def social_imagenes_crear_publicacion():
             print("Título de la publicación:", post_title)
             print("Texto de la publicación:", post_text)        
             print("Finalizando social_imagenes_crear_publicacion")
-            
+            id_publicacion = guardarPublicacion(request, user_id)
             # Procesar archivos multimedia
+       # Inicializa una lista para almacenar los datos de los archivos
             media_files = []
-            id_publicacion = 0  # Variable temporal, asegúrate de asignarle un valor correcto
-
-            # Iterar sobre los archivos recibidos
+           
             for key in request.files:
                 file = request.files[key]
 
-                # Verificar si el archivo tiene un nombre y es seguro
+                # Obtén el índice del archivo del formulario
+                index = request.form.get(f'mediaFileIndex_{key.split("_")[-1]}')
+
+                # Verifica si el índice es None o 'None'
+                if index is None or index == 'None':
+                    continue  # Salta el archivo si el índice es None
+
+                # Verifica si el archivo tiene un nombre
                 if file.filename == '':
                     continue
 
-                # Seguridad: Asegúrate de usar un nombre de archivo seguro
+                # Asegúrate de usar un nombre de archivo seguro
                 filename = secure_filename(file.filename)
-                
-                # Leer los datos del archivo
-                file_size = request.form.get(f'mediaFileSize_{key.split("_")[-1]}')
-                file_type = file.content_type
-                last_modified = request.form.get(f'mediaFileLastModified_{key.split("_")[-1]}')
-                last_modified_date = request.form.get(f'mediaFileLastModifiedDate_{key.split("_")[-1]}')
-                print(f"Nombre del archivo: {filename}")
-                print(f"Tamaño del archivo: {file_size}")
-                print(f"Tipo de archivo: {file_type}")
-                print(f"Última modificación (timestamp): {last_modified}")
-                print(f"Fecha de última modificación: {last_modified_date}")
-                 # Obtener el índice del archivo del formulario usando la clave del archivo
-                index = request.form.get(f'mediaFileIndex_{key.split("_")[-1]}')
-              
-                #index = request.form.get('mediaFileIndex_' + key.split('_')[-1])
-                    # Decide si el archivo es una imagen o un video
-                 # Decide si el archivo es una imagen o un video
-                file_ext = filename.rsplit('.', 1)[1].lower()
+
+                # Decide si el archivo es una imagen o un video
+                file_ext = filename.rsplit('.', 1)[-1].lower()
                 if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
-              #  if filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}:
-                        # Llama a la función de carga de imagen
-                        #pass
-                        file_path = cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=file_size)
+                    # Llama a la función de carga de imagen
+                    file_path = cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
+                    app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
                 elif file_ext in {'mp4', 'avi', 'mov'}:
-               # elif filename.rsplit('.', 1)[1].lower() in {'mp4', 'avi', 'mov'}:
-                        # Llama a la función de carga de video
-                        #pass
-                        file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=file_size)
+                    # Llama a la función de carga de video
+                    file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
 
+                if file_path:
+                    # Crea el diccionario del archivo solo si la carga fue exitosa
+                    file_data = {
+                        'filename': filename,
+                        'content_type': file.content_type,
+                        'size': request.form.get(f'mediaFileSize_{index}'),
+                        'last_modified': request.form.get(f'mediaFileLastModified_{index}'),
+                        'type': request.form.get(f'mediaFileType_{index}'),
+                        'name': request.form.get(f'mediaFileName_{index}'),
+                        'webkit_relative_path': request.form.get(f'mediaFileWebkitRelativePath_{index}'),
+                        'index': index,
+                        'filepath': file_path  # Agrega la ruta del archivo cargado
+                    }
+                    media_files.append(file_data)
 
-                #if file_path:
-                #    media_files.append(file_path)
-            # Obtén otros datos del formulario
-           
-           
-            
-            return jsonify({
-                'message': 'Publicación creada exitosamente.',
-                'media_files': media_files,
-                'post_title': post_title,
-                'post_text': post_text,
+            # Crear un diccionario para la publicación
+            post_data = {
+                'publicacion_id': 1,  # Aquí deberías asignar un ID real de la publicación
+                'imagenes': [{'filepath': data['filepath']} for data in media_files if data['filepath'].endswith(('jpg', 'jpeg', 'png', 'gif'))],  # Filtra solo imágenes
+                'videos': [{'filepath': data['filepath']} for data in media_files if data['filepath'].endswith(('mp4', 'mov', 'avi'))],  # Filtra solo videos
+                'titulo': post_title,
+                'texto': post_text,
+                'descripcion': post_description,
                 'ambito': post_ambito,
+                'estado': post_estado,
                 'correo_electronico': correo_electronico,
+                'fecha_creacion': '2024-08-21',  # Aquí deberías usar la fecha de creación real
                 'color_texto': color_texto,
                 'color_titulo': color_titulo
-            }),200
+            }
+
+            # Devuelve los datos de la publicación dentro de un array
+            return jsonify([post_data]), 200
     except Exception as e:
-            # Manejo genérico de excepciones, devolver un mensaje de error
-            return jsonify({'error': str(e)}), 500
+        # Manejo genérico de excepciones, devolver un mensaje de error
+        return jsonify({'error': str(e)}), 500
         
 
 
@@ -370,7 +374,7 @@ def guardarPublicacion(request, user_id):
     try:
         post_title = request.form.get('postTitle_creaPublicacion')
         post_text = request.form.get('postText_creaPublicacion')   
-        ambito = request.form.get('ambito')
+        ambito = request.form.get('postAmbito_creaPublicacion')
         correo_electronico = request.form.get('correo_electronico')
         color_texto = request.form.get('color_texto')
         color_titulo = request.form.get('color_titulo')
