@@ -26,8 +26,8 @@ from models.modelMedia.TelegramNotifier import TelegramNotifier
 
 publicaciones = Blueprint('publicaciones',__name__)
 
-@publicaciones.route('/media-publiaciones-mostrar', methods = ['POST'])
-def media_publiaciones_mostrar():
+@publicaciones.route('/media-publicaciones-mostrar', methods=['POST'])
+def media_publicaciones_mostrar():
     try:
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
@@ -51,34 +51,17 @@ def media_publiaciones_mostrar():
            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion(publicaciones_user)
-            # Transformar las rutas al formato almacenado en la base de datos
-        # db_image_paths = [os.path.relpath(os.path.join(current_app.root_path, path), current_app.root_path).replace('/', os.sep) for path in image_paths]
-
-           # for publicacion in publicaciones_data:
-           #     for imagen in publicacion.get('imagenes', []):
-           #         imagen['filepath'] = imagen['filepath'].replace('\\', '/')
-           #     for video in publicacion.get('videos', []):
-           #         video['filepath'] = video['filepath'].replace('\\', '/')
-
-         
-        # Filtrar solo las imágenes (puedes ajustar esto según tus necesidades)
-           # imagenes_filtradas = [img for img in publicaciones_data if es_formato_imagen(publicaciones_data.filepath)]
-
-            # Procesar y asignar los paths solo a las imágenes filtradas
-           # for img in imagenes_filtradas:
-           #     img.filepath = img.filepath.replace('static\\', '').replace('\\', '/')
-
-            #          img.image_paths = [img.filepath.replace('static\\', '').replace('\\', '/') for img in imagenes if es_formato_imagen(img.filepath)]
             
-           # for vid in imagenes_filtradas:
-           #     vid.filepath = vid.filepath.replace('static\\', '').replace('\\', '/')
             print(publicaciones_data)
             return jsonify(publicaciones_data)
 
-
     except Exception as e:
-                # Manejo genérico de excepciones, devolver un mensaje de error
-                return jsonify({'error': str(e)}), 500
+        # Manejo genérico de excepciones, devolver un mensaje de error
+        return jsonify({'error': str(e)}), 500
+
+    # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
+    return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
+
         
 
 
@@ -502,22 +485,6 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
     finally:
         db.session.close()  # Cerrar la sesión al final
 
-def eliminar_desde_archivo(title,user_id):
-    try:
-        # Reemplazar barras diagonales hacia adelante ("/") por barras diagonales hacia atrás ("\")
-        
-        #ruta_base_datos = title.replace('/', '\\')
-        file_path = os.path.join('static', 'uploads', title)
-      
-        # Agregar "static" al inicio de la ruta
-        #ruta_base_datos = os.path.normpath('static\\' + file_path)
-        ruta_ = os.path.join(file_path)
-        os.remove(ruta_)
-        return True
-    except Exception as e:
-        print(f"Error al eliminar el archivo: {e}")
-        return False
-    
 def  eliminar_desde_archivo(title,user_id):
     try:
         # Reemplazar barras diagonales hacia adelante ("/") por barras diagonales hacia atrás ("\")
@@ -556,6 +523,20 @@ def borrado_logicopublicacion(publicacion_id, user_id):
         db.session.rollback()
         return False
 
-            
+@publicaciones.route('/social_media_publicaciones_modificar_publicaciones', methods=['POST'])
+def publicaciones_modificar_publicaciones():
+    titulo = request.form.get('postTitle_modificaPublicacion')
+    texto = request.form.get('postText_modificaPublicacion')
+    descripcion = request.form.get('postDescription_modificaPublicacion')
+    estado = request.form.get('postEstado_modificaPublicacion')
+    ambito = request.form.get('postAmbito_modificaPublicacion')
+    # Manejar archivos subidos si es necesario
+    archivos = request.files.getlist('mediaFile_modificaPublicacion')
+    
+    # Procesar la información recibida y modificar la publicación en la base de datos
+    # ...
+    
+    return jsonify({"mensaje": "Publicación modificada con éxito!"})
+
             
    
