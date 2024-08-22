@@ -1,0 +1,64 @@
+.btn-close-publicacion {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    position: absolute;
+    top: 10px; /* Ajusta esto según sea necesario */
+    right: 10px; /* Ajusta esto según sea necesario */
+    cursor: pointer;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+.btn-close-publicacion:hover {
+    color: #ddd; /* Color al pasar el cursor sobre el botón */
+}
+.card-publicacion-admin {
+    position: relative; /* Esto es necesario para posicionar el botón absolutamente dentro de la tarjeta */
+}
+
+
+.text-truncated {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Número de líneas que se muestran antes de truncar */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-expanded {
+    display: block;
+}
+
+/* Estilo del botón */
+.btn-ver-mas {
+    background-color: transparent; /* Fondo transparente */
+    border: 1px solid transparent; /* Borde transparente */
+    color: rgb(139, 139, 139); /* Color del texto */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    text-decoration: underline; /* Subrayado del texto */
+    padding: 5px 10px; /* Espaciado interno */
+    transition: color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+/* Estilo del botón cuando se pasa el mouse sobre él */
+.btn-ver-mas:hover {
+    color: rgb(85, 85, 85); /* Color del texto al pasar el mouse */
+}
+
+/* Estilo del botón cuando está enfocado (clic o tabulación) */
+.btn-ver-mas:focus {
+    outline: none; /* Eliminar el contorno por defecto del navegador */
+    color: rgb(85, 85, 85); /* Color del texto al enfocar el botón */
+}
+
+/* Estilo del botón cuando se hace clic */
+.btn-ver-mas:active {
+    color: rgb(85, 85, 85); /* Color del texto al hacer clic */
+}
+
+/* Ocultar el botón con la clase 'hidden' */
+.btn-ver-mas.hidden {
+    display: none;
+}
+
