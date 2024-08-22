@@ -8,7 +8,7 @@ function formatDate(dateString) {
 
 // Ruta al archivo con la galería de imágenes
 var galeriaURL = '/MostrarImages/';
-var galeriaURL1 = '/media-publicaciones-mostrar';
+var galeriaURL1 = '/media-publicaciones-mostrar-home';
 var access_token = localStorage.getItem('access_token');
 
 $.ajax({
@@ -62,18 +62,17 @@ $.ajax({
                     var cardHtml = `
                         <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
                             <div class="card-body">
-                                <button class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
                                     <span class="text-white">&times;</span>
-                                </button>
+                                </a>
                                 <h5 class="card-title">${post.titulo}</h5>
-                                <p class="card-text">${post.correo_electronico}</p>
                                 <div class="card-media-grid-publicacion-admin">
                                     ${mediaHtml}
                                 </div>
                                 <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                <p class="card-text">${post.ambito}</p>
                                 <p class="card-text" id="postText-${post.publicacion_id}" class="text-truncated">${post.texto}</p>
-                                <button class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id})">Ver más</button>
+                                <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+
                                 <div class="btn-modificar-eliminar">
                                     <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Comunicarse</button>
                                     <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Abrir</button>
@@ -99,14 +98,18 @@ $.ajax({
 
 
 function cerrarPublicacion(publicacionId) {
+    var access_token = localStorage.getItem('access_token');
+
     // Enviar solicitud AJAX para actualizar el estado de la publicación
     $.ajax({
-        url: '/ruta/de/tu/servidor/para/eliminar', // Cambia esta URL a la ruta de tu servidor
+        url: '/social_media_publicaciones_borrado_logico_publicaciones', // Asegúrate de que esta URL sea correcta
         type: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + access_token // Agregar el token al encabezado Authorization
+        },
         data: {
             id: publicacionId,
-            estado: 'eliminado', // Actualizar el estado
-            usuario: 'ID_DEL_USUARIO' // Cambia esto por el ID del usuario que está realizando la acción
+            estado: 'eliminado' // Actualizar el estado
         },
         success: function(response) {
             if (response.success) {

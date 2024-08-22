@@ -1,3 +1,24 @@
+a.btn-close-publicacion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    color: white; /* Color de la X */
+    text-decoration: none; /* Elimina el subrayado */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el enlace */
+    font-size: 24px; /* Tamaño de la X */
+    padding: 0; /* Quita el espaciado interno */
+    margin: 0; /* Quita el margen si es necesario */
+    top: 10px; /* Ajusta esto según sea necesario */
+    right: 10px; /* Ajusta esto según sea necesario */
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+a.btn-close-publicacion:hover {
+    color: rgba(255, 255, 255, 0.7); /* Color de la X al pasar el mouse */
+}
+
 .btn-close-publicacion {
     background: none;
     border: none;
