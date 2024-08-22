@@ -18,6 +18,7 @@ import os
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
@@ -52,7 +53,7 @@ def media_publicaciones_mostrar():
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion(publicaciones_user)
             
-            print(publicaciones_data)
+            #print(publicaciones_data)
             return jsonify(publicaciones_data)
 
     except Exception as e:
@@ -62,14 +63,70 @@ def media_publicaciones_mostrar():
     # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
+@publicaciones.route('/media-publicaciones-mostrar-home', methods=['POST'])
+def media_publicaciones_mostrar_home():
+    try:
+        # Obtener el encabezado Authorization
+        authorization_header = request.headers.get('Authorization')
+        if not authorization_header:
+            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
         
+        # Verificar formato del encabezado Authorization
+        parts = authorization_header.split()
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
+            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+        
+        # Obtener el token de acceso
+        access_token = parts[1]
+        if Token.validar_expiracion_token(access_token=access_token):  
+            app = current_app._get_current_object()                    
+            decoded_token = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            user_id = decoded_token.get("sub")
 
+            # Inicializar la lista de publicaciones
+            publicaciones = []
 
+           # Obtener todas las publicaciones del usuario
+            publicacion_estados = db.session.query(Estado_publi_usu).filter_by(user_id=user_id).all()
+
+            if publicacion_estados:
+                # Iterar sobre cada estado de publicación
+                for estado_publicacion in publicacion_estados:
+                    # Comparar la fecha de hoy con la fecha de eliminación
+                    fecha_eliminado = estado_publicacion.fecha_eliminado
+                    if fecha_eliminado:
+                        dias_diferencia = (datetime.today().date() - fecha_eliminado).days
+                        if dias_diferencia > 30:
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id).first()
+                            if publicacion:
+                                # Agrega la publicación a la lista de publicaciones
+                                publicaciones.append(publicacion)
+                    else:
+                        # Si el estado no es "eliminado", obtén la publicación correspondiente
+                        if estado_publicacion.estado != 'eliminado':
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id).first()
+                            if publicacion:
+                                # Agrega la publicación a la lista de publicaciones
+                                publicaciones.append(publicacion)
+
+            else:
+                # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                publicaciones = db.session.query(Publicacion)
+            # Armar el diccionario con todas las publicaciones, imágenes y videos
+            publicaciones_data = armar_publicacion(publicaciones)
+            
+            return jsonify(publicaciones_data)
+
+    except Exception as e:
+        # Manejo genérico de excepciones, devolver un mensaje de error
+        return jsonify({'error': str(e)}), 500
+
+    # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
+    return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
 # Definir la función para armar las publicaciones con imágenes y videos
-def armar_publicacion(publicaciones_user):
+def armar_publicacion(publicaciones):
     publicaciones_data = []
-    
     
     # Obtener la ruta completa de la carpeta 'static/uploads'
     uploads_folder = os.path.join(current_app.root_path, 'static', 'uploads')
@@ -79,11 +136,8 @@ def armar_publicacion(publicaciones_user):
 
     # Crear las rutas completas de las imágenes sin codificación de caracteres
     image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
-   
-    
-    
 
-    for publicacion in publicaciones_user:
+    for publicacion in publicaciones:
         # Obtener todas las imágenes y videos asociados a esta publicación
         imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
         
@@ -113,22 +167,19 @@ def armar_publicacion(publicaciones_user):
                         'description': video.description,
                         'filepath': video.filepath
                     })
-        # Determinar el separador de ruta según el sistema operativo
-        #path_separator = '/' if os.name != 'nt' else '\\'
-        path_separator = '/'
+
         # Ajustar las rutas de archivos según el sistema operativo
-        db.session.close()
+        path_separator = '/'
         for imagen in imagenes:
             imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
-            #imagen['filepath'] = imagen['filepath'].replace('static/', ''),
         for video in videos:
             video['filepath'] = video['filepath'].replace('\\', path_separator)
-            #video['filepath'] = video['filepath'].replace('static/', '')
+
         # Agregar la publicación con sus imágenes y videos al diccionario
         publicaciones_data.append({
             'publicacion_id': publicacion.id,
             'user_id': publicacion.user_id,
-            'titulo':publicacion.titulo,
+            'titulo': publicacion.titulo,
             'texto': publicacion.texto,
             'ambito': publicacion.ambito,
             'correo_electronico': publicacion.correo_electronico,
@@ -142,7 +193,6 @@ def armar_publicacion(publicaciones_user):
         })
 
     return publicaciones_data
-
 
 
 
@@ -501,27 +551,81 @@ def  eliminar_desde_archivo(title,user_id):
         print(f"Error al eliminar el archivo: {e}")
         return False
 
-  
-
-def borrado_logicopublicacion(publicacion_id, user_id):
+@publicaciones.route('/social_media_publicaciones_borrado_logico_publicaciones', methods=['POST'])
+def social_media_publicaciones_borrado_logico_publicaciones(): 
     try:
-        # Busca la publicación específica del usuario
-        publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
+        # Obtener el encabezado Authorization
+        authorization_header = request.headers.get('Authorization')
+        if not authorization_header:
+            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
         
-        if publicacion:
-            # Marca la publicación como eliminada en lugar de eliminarla físicamente
-            publicacion.estado = 'eliminado'
-            db.session.commit()
-            db.session.close()  # Cerrar la sesión
-            return True
+        # Verificar formato del encabezado Authorization
+        parts = authorization_header.split()
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
+            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
         
-        # Si la publicación no existe, retornar False
-        return False
+        # Obtener el token de acceso
+        access_token = parts[1]
+
+        # Validar y decodificar el token
+        if Token.validar_expiracion_token(access_token=access_token):  # Asegúrate de que este método acepte el token directamente
+            app = current_app._get_current_object()
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            user_id = decoded_token.get("sub")
+
+            # Obtener el ID de la publicación del cuerpo de la solicitud
+            data = request.form
+            publicacion_id = data.get('id')
+            estado = data.get('estado')
+            
+            if not publicacion_id:
+                return jsonify({'error': 'ID de publicación no proporcionado'}), 400
+            
+            # Llamar a la función para el borrado lógico
+            borrado_logicopublicacion(int(publicacion_id), user_id,estado)
+
+            return jsonify({'success': True}), 200
+
+        return jsonify({'error': 'Token de acceso expirado o no válido'}), 401
     
     except Exception as e:
-        print(f"Error al eliminar la publicación: {e}")
+        return jsonify({'error': str(e)}), 500
+def borrado_logicopublicacion(publicacion_id, user_id, estado):
+    try:
+        # Inicializa una lista vacía para almacenar las publicaciones
+        publicaciones = []
+
+        # Obtén todos los estados de la publicación con el publicacion_id y user_id dados
+        publicacion_estados = db.session.query(Estado_publi_usu).filter_by(publicacion_id=publicacion_id, user_id=user_id).all()
+
+        nuevo_estado = Estado_publi_usu(
+            publicacion_id=publicacion_id,
+            user_id=user_id,
+            estado=estado,
+            visto=False,  # Puedes cambiar esto según tus necesidades
+            gusto='',  # Puedes cambiar esto según tus necesidades
+            tiempo_visto='',  # Puedes cambiar esto según tus necesidades
+            fecha_visto=datetime.now(),  # Puedes cambiar esto según tus necesidades
+            fecha_eliminado=datetime.now(),  # Puedes cambiar esto según tus necesidades
+            fecha_gustado=datetime.now()  # Puedes cambiar esto según tus necesidades
+        )
+        
+        # Agregar el nuevo estado a la base de datos
+        db.session.add(nuevo_estado)
+        db.session.commit()
+        
+        publicaciones.append(nuevo_estado)  
+                    
+        return True
+        
+    except Exception as e:
         db.session.rollback()
+        print(f"Error: {e}")
         return False
+    finally:
+        db.session.close()
+
+
 
 @publicaciones.route('/social_media_publicaciones_modificar_publicaciones', methods=['POST'])
 def publicaciones_modificar_publicaciones():
