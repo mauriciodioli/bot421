@@ -3164,3 +3164,31 @@ Conexión devuelta al pool. Total conexiones activas: 2
 Conexión devuelta al pool. Total conexiones activas: 2
 Conexión devuelta al pool. Total conexiones activas: 2
 connect_listener Conexión abierta. Total conexiones activas: 3
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+connect_listener Conexión abierta. Total conexiones activas: 2
+Conexión devuelta al pool. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+Conexión devuelta al pool. Total conexiones activas: 0
+connect_listener Conexión abierta. Total conexiones activas: 1
+Conexión devuelta al pool. Total conexiones activas: 0
