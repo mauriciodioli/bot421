@@ -22,6 +22,7 @@ from models.newsLetter.newLetter import NewLetter
 from models.modelMedia.video import Video
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
+from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from datetime import datetime
 from flask import Blueprint,flash
 
@@ -52,6 +53,7 @@ def crea_tablas_DB():
     Video.crear_tabla_video()
     Publicacion.crear_tabla_publicacion()
     Public_imagen_video.crear_tabla_Public_imagen_video()
+    Estado_publi_usu.crear_tabla_estado_publi_usu()
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     
