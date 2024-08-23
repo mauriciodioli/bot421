@@ -1,3 +1,24 @@
+.home-muestra-publicaciones-centrales {
+    display: flex;
+    flex-wrap: wrap; /* Permite que las tarjetas se envuelvan en múltiples filas */
+    justify-content: center; /* Centra las tarjetas horizontalmente */
+    gap: 20px; /* Espacio entre las tarjetas (opcional) */
+    padding: 20px; /* Espacio alrededor del contenedor (opcional) */
+}
+
+
+.card-publicacion-admin img {
+    display: block; /* Elimina el margen inferior causado por el espacio reservado para el texto en línea */
+    width: 100%; /* La imagen ocupa todo el ancho de la tarjeta */
+    height: auto; /* Mantiene la proporción original de la imagen */
+    border: none; /* Elimina cualquier borde por defecto */
+}
+
+.card-media-grid-publicacion-admin {
+    margin-bottom: 0; /* Espacio entre la imagen y el resto del contenido */
+}
+
+
 a.btn-close-publicacion {
     display: inline-flex;
     align-items: center;
@@ -35,9 +56,14 @@ a.btn-close-publicacion:hover {
     color: #ddd; /* Color al pasar el cursor sobre el botón */
 }
 .card-publicacion-admin {
-    position: relative; /* Esto es necesario para posicionar el botón absolutamente dentro de la tarjeta */
+    position: relative; /* Necesario para posicionar elementos hijos */
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto blanco para contraste con el fondo negro */
+    padding: 0; /* Eliminar el padding si lo hay */
+    border-radius: 8px; /* Bordes redondeados opcionalmente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para darle un efecto de profundidad */
+    overflow: hidden; /* Asegura que la imagen no se desborde */
 }
-
 
 .text-truncated {
     display: -webkit-box;
