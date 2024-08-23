@@ -950,8 +950,9 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
             
-            estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+            estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
+          
     except KeyError as e:
         print(f"KeyError: La clave {e} no se encontró en los diccionarios.")
     except Exception as e:
