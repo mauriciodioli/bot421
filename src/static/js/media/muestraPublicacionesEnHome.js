@@ -60,26 +60,27 @@ $.ajax({
                  
 
                     var cardHtml = `
-                        <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
-                            <div class="card-body">
-                                <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
-                                    <span class="text-white">&times;</span>
-                                </a>
-                                <h5 class="card-title">${post.titulo}</h5>
-                                <div class="card-media-grid-publicacion-admin">
-                                    ${mediaHtml}
-                                </div>
-                                <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                <p class="card-text" id="postText-${post.publicacion_id}" class="text-truncated">${post.texto}</p>
-                                <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                            <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
+                                <div class="card-body">
+                                    <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                        <span class="text-white">&times;</span>
+                                    </a>
+                                    <h5 class="card-title">${post.titulo}</h5>
+                                    <div class="card-media-grid-publicacion-admin">
+                                        ${mediaHtml}
+                                    </div>
+                                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                    <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
+                                    <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
 
-                                <div class="btn-modificar-eliminar">
-                                    <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Comunicarse</button>
-                                    <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Abrir</button>
+                                    <div class="btn-modificar-eliminar">
+                                        <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Comunicarse</button>
+                                        <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Abrir</button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+
 
                     postDisplayContainer.append(cardHtml);
                 } else {
@@ -141,3 +142,4 @@ function toggleTexto(postId) {
         button.textContent = 'Ver más';
     }
 }
+

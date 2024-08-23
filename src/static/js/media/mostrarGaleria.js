@@ -39,100 +39,139 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       success: function(response) {
         if (Array.isArray(response)) {
-          var postDisplayContainer = $('#postDisplayContainer');
-          postDisplayContainer.empty();
-  
-          response.forEach(function(post) {
-            if (post.imagenes.length > 0 || post.videos.length > 0) {
-              var mediaHtml = '';
-              var baseUrl = window.location.origin;
-  
-              if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                // Mostrar solo la primera imagen
-                //debugger;
-                var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-  
-                // Guardar las demás imágenes para mostrarlas en el modal
-                var modalImagesHtml = '';
-                post.imagenes.forEach(function(image, index) {
-                  if (index > 0) { // Saltar la primera imagen
-                    var imageUrl = baseUrl + '/' + image.filepath;
-                    modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación">`;
-                  }
-                });
-  
-                // Crear el HTML del modal
-                var modalHtml = `
-                  <div class="modal-image-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                    <div class="modal-content">
-                      <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                      <div class="modal-image-grid">
-                        ${modalImagesHtml}
+            var postDisplayContainer = $('#postDisplayContainer');
+            postDisplayContainer.empty();
+    
+            response.forEach(function(post) {
+                if (post.imagenes.length > 0 || post.videos.length > 0) {
+                    var mediaHtml = '';
+                    var baseUrl = window.location.origin;
+    
+                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                        // Mostrar solo la primera imagen
+                        var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+    
+                        // Guardar las demás imágenes para mostrarlas en el modal
+                        var modalImagesHtml = '';
+                        post.imagenes.forEach(function(image, index) {
+                            var imageUrl = baseUrl + '/' + image.filepath;
+                            modalImagesHtml += `
+                                <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
+                            `;
+                        });
+    
+                        // Crear el HTML del modal
+                        var modalHtml = `
+                            <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                              <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                                <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                                <div class="modal-image-grid">
+                                  ${modalImagesHtml}
+                                </div>
+                              </div>
+                            </div>
+                        `;
+    
+                        postDisplayContainer.append(modalHtml);
+                    }
+    
+                    var estadoClass;
+                    var estadoTextClass;
+                    
+                    switch (post.estado) {                      
+                        case 'activo':
+                            estadoClass = 'estado-activo';
+                            estadoTextClass = 'estado-activo';
+                            break;
+                        case 'inactivo':
+                            estadoClass = 'estado-inactivo';
+                            estadoTextClass = 'estado-inactivo';
+                            break;
+                        case 'pendiente':
+                            estadoClass = 'estado-pendiente';
+                            estadoTextClass = 'estado-pendiente';
+                           
+                            break;
+                        default:
+                            estadoClass = '';
+                            estadoTextClass = '';
+                    }
+                    var cardHtml = `
+                    <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
+                      <div class="card-body">
+                        <h5 class="card-title">${post.titulo}</h5>
+                        <p class="card-text-estado ${estadoTextClass}">${post.estado}</p>
+                        <p class="card-text-email">${post.correo_electronico}</p>
+                        <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                        <p class="card-text">${post.texto}</p>
+                        <div class="card-media-grid-publicacion-admin">
+                          ${mediaHtml}
+                        </div>
+                        <p class="card-text">${post.ambito}</p>
+                        <p class="card-text">${post.descripcion}</p>
+                        <div class="btn-modificar-eliminar">
+                          <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                          <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
+                        </div>
                       </div>
                     </div>
-                  </div>
                 `;
-  
-                postDisplayContainer.append(modalHtml);
-              }
-  
-              var estadoClass;
-              var estadoTextClass;
-              switch (post.estado) {
-                case 'activo':
-                  estadoClass = 'estado-activo';
-                  estadoTextClass = 'estado-activo';
-                  break;
-                case 'inactivo':
-                  estadoClass = 'estado-inactivo';
-                  estadoTextClass = 'estado-inactivo';
-                  break;
-                case 'pendiente':
-                  estadoClass = 'estado-pendiente';
-                  estadoTextClass = 'estado-pendiente';
-                  break;
-                default:
-                  estadoClass = '';
-                  estadoTextClass = '';
-              }
-  
-              var cardHtml = `
-                <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
-                  <div class="card-body">
-                    <h5 class="card-title">${post.titulo}</h5>
-                    <p class="card-text-estado ${estadoTextClass}">${post.estado}</p>
-                    <p class="card-text-email">${post.correo_electronico}</p>
-                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                    <p class="card-text">${post.texto}</p>
-                    <div class="card-media-grid-publicacion-admin">
-                      ${mediaHtml}
-                    </div>
-                    <p class="card-text">${post.ambito}</p>
-                    <p class="card-text">${post.descripcion}</p>
-                    <div class="btn-modificar-eliminar">
-                      <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
-                      <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
-                    </div>
-                  </div>
-                </div>
-              `;
-  
-              postDisplayContainer.append(cardHtml);
-            } else {
-              console.log('Publicación sin contenido:', post.publicacion_id);
-            }
-          });
+                
+                    postDisplayContainer.append(cardHtml);
+                } else {
+                    console.log('Publicación sin contenido:', post.publicacion_id);
+                }
+            });
         } else {
-          console.error("La respuesta no es un array. Recibido:", response);
+            console.error("La respuesta no es un array. Recibido:", response);
         }
-      },
+    },
+    
       error: function(xhr, status, error) {
         alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
       }
     });
   }
   
+
+
+
+
+// Función para abrir la imagen en grande
+function abrirImagenEnGrande(imageUrl) {
+  // Crear el modal si no existe
+  if ($('#modalImagenGrande').length === 0) {
+      $('body').append(`
+          <div id="modalImagenGrande" class="modal-imagen-grande" style="display:none;">
+              <div class="modal-content-imagen-grande">
+                  <span class="close" onclick="cerrarModalImagenGrande()">&times;</span>
+                  <img id="imagenEnGrande" src="" alt="Imagen en grande">
+              </div>
+          </div>
+      `);
+  }
+
+  // Mostrar la imagen en el modal
+  $('#imagenEnGrande').attr('src', imageUrl);
+  $('#modalImagenGrande').show();
+}
+
+// Función para cerrar el modal de imagen en grande
+function cerrarModalImagenGrande() {
+  $('#modalImagenGrande').hide();
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
   function cerrarModalModificacion(modalId) {
@@ -171,7 +210,37 @@ document.addEventListener('DOMContentLoaded', function() {
   
       // Limpiar el contenedor de medios y agregar la imagen
       var mediaContainer = document.getElementById('mediaContainer_modificaPublicacion');
-      mediaContainer.innerHTML = `<img src="${imagen}" alt="Imagen de la publicación">`;
+     // Limpiar el contenedor de medios
+      mediaContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos
+
+      // Obtener todas las imágenes y videos de la tarjeta
+      var images = postCard.querySelectorAll('.card-media-grid-publicacion-admin img');
+      var videos = postCard.querySelectorAll('.card-media-grid-publicacion-admin video');
+
+      images.forEach(function(img) {
+        var imgSrc = img.src;
+        var imgElement = document.createElement('img');
+        imgElement.src = imgSrc;
+        imgElement.alt = 'Imagen de la publicación';
+        imgElement.style.width = '100px'; // Ajusta el tamaño según sea necesario
+        imgElement.style.height = '100px'; // Ajusta el tamaño según sea necesario
+        imgElement.style.objectFit = 'cover'; // Asegura que la imagen se ajuste correctamente
+        mediaContainer.appendChild(imgElement);
+      });
+
+      videos.forEach(function(video) {
+        var videoSrc = video.src;
+        var videoElement = document.createElement('video');
+        videoElement.src = videoSrc;
+        videoElement.controls = true;
+        videoElement.style.width = '100px'; // Ajusta el tamaño según sea necesario
+        videoElement.style.height = '100px'; // Ajusta el tamaño según sea necesario
+        mediaContainer.appendChild(videoElement);
+      });
+    
+    
+    
+    
     }
   }
   
@@ -258,7 +327,52 @@ document.addEventListener('DOMContentLoaded', function() {
         estadoP.textContent = '';
         card.classList.add('estado-activo');
     }
-  }
+  
+  
+  
+  
+    // Obtener el estado actual
+    var estadoActual = estadoP.textContent.trim();
+    
+    // Determinar el próximo estado
+    var nuevoEstado;
+    switch (estadoActual) {
+        case 'activo':
+            nuevoEstado = 'inactivo';
+            break;
+        case 'inactivo':
+            nuevoEstado = 'pendiente';
+            break;
+        case 'pendiente':
+            nuevoEstado = 'activo';
+            break;
+        default:
+            nuevoEstado = 'activo'; // Estado por defecto
+    }
+    
+    // Actualizar el texto y la clase CSS
+    estadoP.textContent = nuevoEstado;
+    card.classList.remove('estado-activo', 'estado-inactivo', 'estado-pendiente');
+    estadoP.classList.remove('estado-activo', 'estado-inactivo', 'estado-pendiente');
+    
+    switch (nuevoEstado) {
+        case 'activo':
+            card.classList.add('estado-activo');
+            estadoP.classList.add('estado-activo');
+            break;
+        case 'inactivo':
+            card.classList.add('estado-inactivo');
+            estadoP.classList.add('estado-inactivo');
+            break;
+        case 'pendiente':
+            card.classList.add('estado-pendiente');
+            estadoP.classList.add('estado-pendiente');
+            break;
+    }
+
+    //Aquí podrías enviar el nuevo estado al servidor si es necesario
+    $.post('/media-publicaciones-camiar-estado', { id: id, nuevoEstado: nuevoEstado });
+}
   
 
 

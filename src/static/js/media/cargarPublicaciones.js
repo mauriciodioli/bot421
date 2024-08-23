@@ -266,7 +266,7 @@
                             var modalHtml = `
                                 <div class="modal-muestra-crea-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
                                     <div class="modal-content-muestra-crea-publicacion">
-                                        <span class="close-muestra-crea-publicacion" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                                        <span class="close-muestra-crea-publicacion" style="color: black;" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
                                         <div class="modal-image-grid-muestra-crea-publicacion">
                                             ${modalImagesHtml}
                                         </div>
