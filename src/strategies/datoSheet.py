@@ -103,12 +103,47 @@ def leerDb(app):
         return all_ins
 
 
+def calculo_dolar_mep(message):
+    # Definición de variables iniciales
+    symbol = message["instrumentId"]["symbol"]
+    
+    # Definir valores de compra y venta para los símbolos AL30 y GD30
+    if 'AL30' in symbol:
+        # Cargar valores de compra y venta para AL30
+        compra_al30 =float(message["marketData"]["LA"]["price"])  # Suponiendo que el valor de compra viene en el mensaje
+        venta_al30 = float(message["marketData"]["LA"]["price"])    # Suponiendo que el valor de venta viene en el mensaje
+        get.valores_mep['AL30']['compra'] = compra_al30
+        get.valores_mep['AL30']['venta'] = venta_al30
+      
+    elif 'GD30' in symbol:
+        # Cargar valores de compra y venta para GD30
+        compra_gd30 = float(message["marketData"]["LA"]["price"])  # Suponiendo que el valor de compra viene en el mensaje
+        venta_gd30 = float(message["marketData"]["LA"]["price"])    # Suponiendo que el valor de venta viene en el mensaje
+        get.valores['GD30']['compra'] = compra_gd30
+        get.valores['GD30']['venta'] = venta_gd30
+ 
+    # Realizar cálculo del dólar MEP si los valores están completos
+    if get.valores_mep['AL30']['compra'] and get.valores_mep['AL30']['venta']:
+        dolar_mep_al30 = get.valores['AL30']['compra'] / get.valores_mep['AL30']['venta']
+        print(f'Dólar MEP AL30: {dolar_mep_al30}')
+    
+    if get.valores_mep['GD30']['compra'] and get.valores_mep['GD30']['venta']:
+        dolar_mep_gd30 = get.valores_mep['GD30']['compra'] / get.valores_mep['GD30']['venta']
+        print(f'Dólar MEP GD30: {dolar_mep_gd30}')
+
+
+
+
+
 def update_precios(message):
      # Definición de variables iniciales
     p_value = None
     suffix = None
     # Comprobación del sufijo del símbolo y asignación de valores
     symbol = message["instrumentId"]["symbol"]
+    
+     # Verificar si el símbolo termina con los sufijos deseados
+   
     ###################### para buscar un patron visit en este caso #############
     #patron = r'\bHAVA\b'
     #resultado = re.search(patron, symbol)

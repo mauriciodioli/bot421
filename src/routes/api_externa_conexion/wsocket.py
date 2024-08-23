@@ -8,6 +8,7 @@ import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import enviar_leer_sheet
 from strategies.datoSheet import update_precios
+from strategies.datoSheet import calculo_dolar_mep
 from strategies.caucionador.caucion import determinar_caucion
 from datetime import datetime
 
@@ -101,6 +102,8 @@ def market_data_handler_0(message):
                 now = datetime.now()                
               #  if (now.hour == 19 and now.minute >= 20 and now.minute <= 29):
                 determinar_caucion(message)
+                
+               # calculo_dolar_mep(message)
                 
                 if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
                     pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']

@@ -82,27 +82,9 @@ def estrategias_usuario_general():
 def estrategias_usuario_nadmin_desde_endingOperacionBot(account, usuario_id):
     try:
         # Consulta de estrategias
-        estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(
-            TriggerEstrategia.user_id == usuario_id, 
-            TriggerEstrategia.accountCuenta == account
-        ).all()
-
-        ut_por_trigger = {}
-
-        for trigger in estrategias:
-            # Obtener 'ut' para el trigger actual
-            ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
-            
-            # Inicializar una lista para almacenar los valores de 'ut'
-            ut_values = [ut_object.ut for ut_object in ut_objects]
-            
-            # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
-            trigger.ut = sum(ut_values) if ut_values else 0
-
-        # Renderizar la plantilla con los datos
+       
         return render_template(
-            "/estrategias/panelControEstrategiaUser.html", 
-            datos=[usuario_id, estrategias], 
+            "/notificaciones/terminoExitoso.html",  
             layout='layoutConexBroker'
         )
     
@@ -110,9 +92,7 @@ def estrategias_usuario_nadmin_desde_endingOperacionBot(account, usuario_id):
         print(f'Error en estrategias_usuario_nadmin_desde_endingOperacionBot: {e}')
         return render_template("/notificaciones/errorEstrategiaABM.html")
 
-    finally:
-        # Asegurarse de cerrar la sesión
-        db.session.remove()
+   
 
 
 
