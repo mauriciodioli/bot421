@@ -29,7 +29,7 @@ $.ajax({
                     if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                         // Mostrar solo la primera imagen
                         var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
 
                         // Guardar las demás imágenes para mostrarlas en el modal
                         var modalImagesHtml = '';
@@ -73,10 +73,7 @@ $.ajax({
                                     <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
                                     <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
 
-                                    <div class="btn-modificar-eliminar">
-                                        <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Comunicarse</button>
-                                        <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Abrir</button>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         `;
@@ -141,5 +138,10 @@ function toggleTexto(postId) {
         postText.classList.add('text-truncated');
         button.textContent = 'Ver más';
     }
+}
+
+function abrirPublicacionHome(publicacionId) {
+    // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
+    window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}`;
 }
 
