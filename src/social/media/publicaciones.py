@@ -111,7 +111,7 @@ def media_publicaciones_mostrar_home():
 
             else:
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                publicaciones = db.session.query(Publicacion)
+                publicaciones = db.session.query(Publicacion).filter_by(estado='activo').all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion(publicaciones)
             
@@ -195,8 +195,28 @@ def armar_publicacion(publicaciones):
     return publicaciones_data
 
 
+@publicaciones.route('/media-publicaciones-camiar-estado', methods=['POST'])
+def media_publicaciones_camiar_estado():
+    data = request.form
+    publicacion_id = data.get('id')
+    nuevo_estado = data.get('nuevoEstado')
+    
+    # Validar los datos
+    if not publicacion_id or not nuevo_estado:
+        return jsonify({'error': 'Faltan parámetros'}), 400
+    
+    # Buscar la publicación en la base de datos
+    publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()    
+    if not publicacion:
+        return jsonify({'error': 'Publicación no encontrada'}), 404
+    
+    # Actualizar el estado de la publicación
+    publicacion.estado = nuevo_estado
+    db.session.commit()
+    db.session.close()
 
-
+    return jsonify({'success': True, 'nuevoEstado': nuevo_estado}), 200
+    
 
 
 
