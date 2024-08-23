@@ -119,6 +119,10 @@ ConexionesBroker = {}
 luzMDH_funcionando = False
 luzThred_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0}
 sheet_manager = None
+valores_mep = {
+    'AL30': {'compra': None, 'venta': None},
+    'GD30': {'compra': None, 'venta': None}
+}
 
 indice_cuentas = {}
 autenticado_sheet = False
