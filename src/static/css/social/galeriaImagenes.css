@@ -595,3 +595,35 @@ body {
   font-size: 24px;
   cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
+
+.image-container-modal-publicacion-crear-publicacion {
+  position: relative; /* Asegúrate de que el contenedor tenga posición relativa */
+  display: inline-block; /* Asegúrate de que las imágenes se comporten como elementos en línea */
+  margin: 10px; /* Opcional: agrega margen para separar las imágenes */
+}
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.close-button-media_imagenes:hover {
+  background-color: #d32f2f;
+}

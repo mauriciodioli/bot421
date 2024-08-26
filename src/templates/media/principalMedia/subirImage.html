@@ -1,4 +1,18 @@
+
+{% if layout == 'layout'%}
 {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
 
 {% block content %} 
  <!-- Modal -->
@@ -9,8 +23,13 @@
               <h3 class="modal-title" id="exampleModalLabel" style="color: black;">
                   Crear publicación
               </h3>
-              <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
-          </div>
+              {% if layout == 'layout'%}
+                <button type="button" onclick="window.location.href='/mostrarGaleria'" class="btn-close" aria-label="Close"></button>
+              {% endif %}
+              {% if layout == 'layoutConexBroker' %}
+                  <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
+              {% endif %}
+                  </div>
           <div class="modal-body">
               <div class="modal-body-content">
                   <!-- Primera fila -->

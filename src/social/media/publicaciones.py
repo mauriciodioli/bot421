@@ -24,6 +24,7 @@ from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
+from sqlalchemy import func
 
 publicaciones = Blueprint('publicaciones',__name__)
 
@@ -52,7 +53,7 @@ def media_publicaciones_mostrar():
            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion(publicaciones_user)
-            
+            db.session.close()
             #print(publicaciones_data)
             return jsonify(publicaciones_data)
 
@@ -114,7 +115,7 @@ def media_publicaciones_mostrar_home():
                 publicaciones = db.session.query(Publicacion).filter_by(estado='activo').all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion(publicaciones)
-            
+            db.session.close()
             return jsonify(publicaciones_data)
 
     except Exception as e:
@@ -154,7 +155,8 @@ def armar_publicacion(publicaciones):
                         'title': imagen.title,
                         'description': imagen.description,
                         'filepath': imagen.filepath,
-                        'randomNumber': imagen.randomNumber,                        
+                        'randomNumber': imagen.randomNumber,  
+                        'size': imagen.size                      
                     })
 
             # Obtener la información de los videos
@@ -165,7 +167,8 @@ def armar_publicacion(publicaciones):
                         'id': video.id,
                         'title': video.title,
                         'description': video.description,
-                        'filepath': video.filepath
+                        'filepath': video.filepath,
+                        'size': video.size
                     })
 
         # Ajustar las rutas de archivos según el sistema operativo
@@ -363,6 +366,7 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
         db.session.add(nueva_imagen)
         db.session.commit()
         cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen.id,0,'imagen',size=size)
+        db.session.close()
         return file_path
 
 
@@ -523,37 +527,51 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
     try:
         publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
         if publicacion:
-            # Elimina los registros de medios relacionados en la tabla intermedia
+            # Obtener los registros de medios relacionados en la tabla intermedia
             publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id).all()
-            db.session.delete(publicacion)
+            
+            # Eliminar la publicación
+            db.session.delete(publicacion)          
+          
             for p in publicacion_imagen_video:
-                # Eliminar la imagen asociada, si existe
-                imagen = db.session.query(Image).filter_by(id=p.imagen_id, user_id=user_id,size=p.size).first()
-                if imagen:
-                    db.session.delete(imagen)
-                    eliminar_desde_archivo(imagen.title,user_id)
+                # Verificar si la imagen está asociada a más de una publicación
+                imagen_en_multiples_publicaciones = (
+                    db.session.query(func.count(Public_imagen_video.publicacion_id))
+                    .filter_by(imagen_id=p.imagen_id)
+                    .scalar() > 1
+                )
+                if not imagen_en_multiples_publicaciones:
+                    # Eliminar la imagen asociada, si no está en otras publicaciones
+                    imagen = db.session.query(Image).filter_by(id=p.imagen_id, user_id=user_id, size=float(p.size)).first()
+                    if imagen:
+                        db.session.delete(imagen)
+                        eliminar_desde_archivo(imagen.title, user_id)
                 
-                # Eliminar el video asociado, si existe
-                video = db.session.query(Video).filter_by(id=p.video_id, user_id=user_id,size=p.size).first()
-                if video:
-                    db.session.delete(video)
-                    eliminar_desde_archivo(video.title,user_id)
-                
+                # Verificar si el video está asociado a más de una publicación
+                video_en_multiples_publicaciones = (
+                    db.session.query(func.count(Public_imagen_video.publicacion_id))
+                    .filter_by(video_id=p.video_id)
+                    .scalar() > 1
+                )
+                if not video_en_multiples_publicaciones:
+                    # Eliminar el video asociado, si no está en otras publicaciones
+                    video = db.session.query(Video).filter_by(id=p.video_id, user_id=user_id, size=float(p.size)).first()
+                    if video:
+                        db.session.delete(video)
+                        eliminar_desde_archivo(video.title, user_id)
+                    
                 # Eliminar el registro de la tabla intermedia
                 db.session.delete(p)
             
             # Commit de todas las eliminaciones en una sola transacción
             db.session.commit()
-            db.session.close()  # Cierra la sesión después de realizar los cambios
-            
             return True
 
     except Exception as e:
         db.session.rollback()  # Revertir cambios en caso de error
         print(f"Error al eliminar la publicación y medios: {e}")
         return False
-    finally:
-        db.session.close()  # Cerrar la sesión al final
+
 
 def  eliminar_desde_archivo(title,user_id):
     try:
@@ -664,3 +682,75 @@ def publicaciones_modificar_publicaciones():
 
             
    
+@publicaciones.route('/social_imagenes_eliminar_Imagenes_Publicaciones', methods=['POST'])
+def social_imagenes_eliminar_Imagenes_Publicaciones():
+    try:
+        # Obtener el encabezado Authorization
+        authorization_header = request.headers.get('Authorization')
+        if not authorization_header:
+            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+        
+        # Verificar formato del encabezado Authorization
+        parts = authorization_header.split()
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
+            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+        
+        # Obtener el token de acceso
+        access_token = parts[1]
+
+        # Validar y decodificar el token
+        if Token.validar_expiracion_token(access_token=access_token):  # Asegúrate de que este método acepte el token directamente
+            app = current_app._get_current_object()
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            user_id = decoded_token.get("sub")
+
+            # Obtener el ID de la publicación del cuerpo de la solicitud
+            data = request.form
+            publicacion_id = data.get('publicacion_id')
+            
+            if not publicacion_id:
+                return jsonify({'error': 'ID de publicación no proporcionado'}), 400
+            
+            eliminar_desde_db_imagen_video(data, user_id)
+
+            return jsonify({'success': True}), 200
+
+        return jsonify({'error': 'Token de acceso expirado o no válido'}), 401
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+def eliminar_desde_db_imagen_video(data, user_id):    
+    try:
+        publicacion_id = data.get('publicacion_id')
+        multimedia_id = data.get('id_imagen')
+        size_imagen = data.get('size_imagen')
+
+        # Obtener los registros de medios relacionados en la tabla intermedia
+        publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id, imagen_id=multimedia_id, size=float(size_imagen)).all()
+        
+        if len(publicacion_imagen_video) < 2:    
+            # Eliminar la imagen asociada, si no está en otras publicaciones
+            imagen = db.session.query(Image).filter_by(id=multimedia_id, user_id=user_id, size=float(size_imagen)).first()
+            if imagen:
+                db.session.delete(imagen)
+                eliminar_desde_archivo(imagen.title, user_id)
+        
+            # Eliminar el video asociado, si no está en otras publicaciones
+            video = db.session.query(Video).filter_by(id=multimedia_id, user_id=user_id, size=float(imagen.size)).first()
+            if video:
+                db.session.delete(video)
+                eliminar_desde_archivo(video.title, user_id)
+        
+        # Eliminar el registro de la tabla intermedia
+        for item in publicacion_imagen_video:
+            db.session.delete(item)
+        
+        # Commit de todas las eliminaciones en una sola transacción
+        db.session.commit()
+        db.session.close()
+        return True
+
+    except Exception as e:
+        db.session.rollback()
+        raise e
