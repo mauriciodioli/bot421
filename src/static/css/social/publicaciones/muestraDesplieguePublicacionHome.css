@@ -29,9 +29,14 @@
 .imagenes-muestra-despliegue-publicacion-home,
 .videos-muestra-despliegue-publicacion-home {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajusta el tamaño mínimo a 200px */
+    grid-template-columns: repeat(2, 1fr);
+    /*grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajusta el tamaño mínimo a 200px */
     gap: 10px; /* Espacio entre las imágenes y videos */
 }
+
+
+
+
 
 /* Estilo para cada imagen en la cuadrícula */
 .imagen-muestra-despliegue-publicacion-home img,
@@ -59,4 +64,26 @@
 .imagen-muestra-despliegue-publicacion-home img,
 .video-muestra-despliegue-publicacion-home video {
     cursor: pointer;
+}
+
+
+/* Para pantallas medianas (tabletas y pantallas similares) */
+@media (min-width: 768px) {
+    .imagenes-muestra-despliegue-publicacion-home {
+        grid-template-columns: repeat(3, 1fr); /* 3 columnas en pantallas medianas */
+    }
+}
+
+/* Para pantallas grandes (escritorios y pantallas más grandes) */
+@media (min-width: 1024px) {
+    .imagenes-muestra-despliegue-publicacion-home {
+        grid-template-columns: repeat(4, 1fr); /* 4 columnas en pantallas grandes */
+    }
+}
+
+/* Para pantallas muy grandes */
+@media (min-width: 1440px) {
+    .imagenes-muestra-despliegue-publicacion-home {
+        grid-template-columns: repeat(5, 1fr); /* 5 columnas en pantallas muy grandes */
+    }
 }

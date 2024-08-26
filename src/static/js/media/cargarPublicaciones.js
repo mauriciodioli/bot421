@@ -196,7 +196,8 @@
   
     $("#createPostForm_creaPublicacion").on("submit", function(event) {
       event.preventDefault(); // Prevent the default form submission
-  
+      document.getElementById('loader-modal-crear-publicacion').style.display = 'block';
+    
       var formData = new FormData(this);
   
       // Añadir datos adicionales al FormData

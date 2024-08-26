@@ -72,7 +72,9 @@ def obtener_publicacion_por_id(publicacion_id):
                             'title': imagen.title,
                             'description': imagen.description,
                             'filepath': filepath,
-                            'randomNumber': imagen.randomNumber                        
+                            'randomNumber': imagen.randomNumber,
+                            'colorDescription': imagen.colorDescription,
+                            'size': imagen.size                      
                         })
 
                 # Obtener la información de los videos
@@ -87,7 +89,10 @@ def obtener_publicacion_por_id(publicacion_id):
                             'id': video.id,
                             'title': video.title,
                             'description': video.description,
-                            'filepath': filepath
+                            'filepath': filepath,
+                            'randomNumber': video.randomNumber,
+                            'colorDescription': video.colorDescription,
+                            'size': video.size
                         })
             # Ajustar las rutas de archivos según el sistema operativo
             path_separator = '/'

@@ -26,8 +26,9 @@
 
             <div class="post-options">
                 <div class="option">
-                  <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
-                  <span>Contenido multimedia</span>
+                  <a href="{{ url_for('imagenesOperaciones.subirImagen', layout='layout') }}">
+                    <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">                    
+                </a>
                 </div>
                 <div class="option">
                   <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
