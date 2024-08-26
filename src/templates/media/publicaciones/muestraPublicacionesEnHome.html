@@ -77,6 +77,8 @@ function replaceMainMedia(src, type) {
     } else if (type === 'video') {
         container.innerHTML = '<video controls id="main-video"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
     }
+     // Desplazar suavemente hacia el contenedor de la imagen principal
+     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 

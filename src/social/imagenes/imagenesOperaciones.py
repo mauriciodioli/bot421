@@ -22,7 +22,11 @@ imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
 
 @imagenesOperaciones.route('/subirImagen/')
 def subirImagen():
-    return render_template("media/principalMedia/subirImage.html")
+    # Obtener el valor de 'layout' del parámetro de la URL
+    layout = request.args.get('layout', default='layout', type=str)
+    
+    # Pasar el valor de 'layout' al template
+    return render_template("media/principalMedia/subirImage.html", layout=layout)
 
 @imagenesOperaciones.route('/subirVideo/')
 def subirVideo():
@@ -84,7 +88,8 @@ def cargarVideo():
             description=description_video,
             colorDescription=selectedColor,
             filepath=new_path,
-            randomNumber=random_number
+            randomNumber=random_number,
+            size=0
         )
 
         db.session.add(nueva_imagen)
@@ -156,7 +161,8 @@ def cargarImagen():
                 description=descriptionImagen,
                 colorDescription=selectedColor,
                 filepath=new_path,
-                randomNumber=numeroAleatoreo
+                randomNumber=numeroAleatoreo,
+                size=0
             )
             db.session.add(nueva_imagen)
             db.session.commit()

@@ -14,6 +14,14 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   
   
+  /**
+   * Carga las publicaciones en el contenedor
+   * #postDisplayContainer y las muestra en tarjetas.
+   * Las publicaciones se obtienen haciendo una petición
+   * AJAX a la URL '/media-publicaciones-mostrar'.
+   * Se envía el token de acceso en el encabezado
+   * 'Authorization'.
+   */
   function cargarPublicaciones() {
     var correo_electronico = localStorage.getItem('correo_electronico');
     var roll = localStorage.getItem('roll');
@@ -57,8 +65,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         post.imagenes.forEach(function(image, index) {
                             var imageUrl = baseUrl + '/' + image.filepath;
                             modalImagesHtml += `
-                                <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
+                                 <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
+                                     <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
+                                  <button 
+                                      class="close-button-media_imagenes" 
+                                      onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">
+                                      X
+                                  </button>
+                                </div>
                             `;
+
                         });
     
                         // Crear el HTML del modal
@@ -66,7 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
                               <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
                                 <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                <div class="modal-image-grid">
+                                  <div class="modal-image-grid">
+                                  
                                   ${modalImagesHtml}
                                 </div>
                               </div>
@@ -199,8 +216,7 @@ function cerrarModalImagenGrande() {
       var descripcion = postCard.querySelector('.card-text').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
       var ambito = postCard.querySelector('.card-text').textContent;
-      var imagen = postCard.querySelector('.card-media-grid-publicacion-admin img').src;
-  
+     
       // Cargar los datos en el modal
       document.getElementById('postTitle_modificaPublicacion').value = titulo;
       document.getElementById('postText_modificaPublicacion').value = texto;
@@ -213,33 +229,8 @@ function cerrarModalImagenGrande() {
      // Limpiar el contenedor de medios
       mediaContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos
 
-      // Obtener todas las imágenes y videos de la tarjeta
-      var images = postCard.querySelectorAll('.card-media-grid-publicacion-admin img');
-      var videos = postCard.querySelectorAll('.card-media-grid-publicacion-admin video');
-
-      images.forEach(function(img) {
-        var imgSrc = img.src;
-        var imgElement = document.createElement('img');
-        imgElement.src = imgSrc;
-        imgElement.alt = 'Imagen de la publicación';
-        imgElement.style.width = '100px'; // Ajusta el tamaño según sea necesario
-        imgElement.style.height = '100px'; // Ajusta el tamaño según sea necesario
-        imgElement.style.objectFit = 'cover'; // Asegura que la imagen se ajuste correctamente
-        mediaContainer.appendChild(imgElement);
-      });
-
-      videos.forEach(function(video) {
-        var videoSrc = video.src;
-        var videoElement = document.createElement('video');
-        videoElement.src = videoSrc;
-        videoElement.controls = true;
-        videoElement.style.width = '100px'; // Ajusta el tamaño según sea necesario
-        videoElement.style.height = '100px'; // Ajusta el tamaño según sea necesario
-        mediaContainer.appendChild(videoElement);
-      });
     
-    
-    
+     
     
     }
   }
@@ -571,6 +562,7 @@ function createPost() {
 
 
 
+ 
 
 
 
@@ -586,6 +578,66 @@ function createPost() {
 
 
 
+
+                         
+  /**
+   * Elimina una imagen de una publicación.
+   * @param {number} id - ID de la publicación.
+   * @param {number} index_imagen - Índice de la imagen en la publicación.
+   * @param {string} title - Título de la imagen.
+   * @param {number} size - Tamaño de la imagen en bytes.
+   * @param {string} filepath - Ruta de la imagen en el servidor.
+   */
+  function removeImageFromModal(id, index_imagen, title, size, filepath) {
+    // Preguntar al usuario si está seguro de eliminar la imagen
+    var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta imagen?');
+    if (!confirmDelete) return;
+
+    // Obtener el correo electrónico del usuario y el token de acceso
+    var correo_electronico = localStorage.getItem('correo_electronico');
+    var access_token = localStorage.getItem('access_token');
+
+    // Verificar si el token de acceso existe
+    if (!access_token) {
+      alert("No se ha encontrado el token de acceso.");
+      return;
+    }
+
+    // Crear el formulario con los datos de la imagen a eliminar
+    var formData = new FormData();
+    formData.append('publicacion_id', id);
+    formData.append('id_imagen', index_imagen);
+    formData.append('nombre_imagen', title);
+    formData.append('size_imagen', size);
+    formData.append('filepath_imagen', filepath);
+    formData.append('correo_electronico', correo_electronico);
+
+    // Realizar la petición AJAX para eliminar la imagen
+    $.ajax({
+      url: '/social_imagenes_eliminar_Imagenes_Publicaciones',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      headers: {
+        'Authorization': 'Bearer ' + access_token
+      },
+      success: function(response) {
+        // Verificar si la eliminación fue exitosa
+        if (response.success) {              
+          // Eliminar la tarjeta de la interfaz
+          $('#image-container-modal-publicacion-crear-publicacion-' + index_imagen).remove();
+        } else {
+          // Mostrar un mensaje de error
+          alert('Error al eliminar la imagen: ' + response.error);
+        }
+      },
+      error: function(xhr, status, error) {
+        // Mostrar un mensaje de error
+        alert("Error al eliminar la imagen. Inténtalo de nuevo.");
+      }
+    });
+  }
 
 
 
