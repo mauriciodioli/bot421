@@ -73,25 +73,92 @@
       }
     });
   
+
+
+
+ // Función para mostrar vista previa de archivos
+ function showFilePreviews(files) {
+  var mediaContainer = $('#mediaContainer_creaPublicacion');
+  mediaContainer.empty(); // Limpiar contenedor antes de agregar nuevos elementos
+
+  files.forEach(file => {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+          var mediaElement;
+
+          if (file.type.startsWith('image/')) {
+              mediaElement = $('<img>').attr('src', e.target.result).addClass('thumbnail_creaPublicacion');
+          } else if (file.type.startsWith('video/')) {
+              mediaElement = $('<video>').attr('src', e.target.result).attr('controls', true).addClass('thumbnail_creaPublicacion');
+          }
+
+          mediaElement.on('click', function() {
+              openMediaModal(e.target.result, file.type);
+          });
+
+          mediaContainer.append(mediaElement);
+      };
+
+      reader.readAsDataURL(file);
+  });
+}
+
+
+
+    /**
+     * Abre el modal para mostrar el archivo seleccionado y permite recortar
+     * las imágenes.
+     * @param {string} src URL del archivo seleccionado
+     * @param {string} type Tipo de archivo (image/* o video/*)
+     */
     function openMediaModal(src, type) {
       if (type.startsWith('image/')) {
         modalImage.src = src;
         mediaModal.style.display = 'block';
-  
-        // Inicializar Cropper.js
+    
         cropper = new Cropper(modalImage, {
-          aspectRatio: 16 / 9, // Ajusta la relación de aspecto según sea necesario
+          aspectRatio: 16 / 9,
           viewMode: 1,
           autoCropArea: 1,
           cropBoxResizable: true,
           cropBoxMovable: true,
           movable: true,
         });
+    
+        // Manejar el evento de cierre del modal
+        mediaModal.addEventListener('hidden.bs.modal', function() {
+          if (cropper) {
+            var canvas = cropper.getCroppedCanvas();
+            if (canvas) {
+              canvas.toBlob(function(blob) {
+                if (blob) {
+                  var originalFileName = src.split('/').pop();
+                  var newFileName = originalFileName.replace(/(\.[\w\d_-]+)$/i, '-copia$1');
+                  var croppedFile = new File([blob], newFileName, { type: 'image/jpeg', lastModified: Date.now() });
+        
+                  // Asegúrate de que la imagen recortada se añade al contenedor de medios
+                  var img = document.createElement('img');
+                  img.src = URL.createObjectURL(blob);
+                  img.classList.add('thumbnail_creaPublicacion');
+                  mediaContainer.appendChild(img);
+        
+                  // Aquí, actualiza la lista de archivos si es necesario
+                  reemplazarImagenOriginal(croppedFile, src);
+                }
+              }, 'image/jpeg');
+            }
+            cropper.destroy();
+          }
+        }, { once: true });
+        
       } else if (type.startsWith('video/')) {
-        modalImage.src = ''; // Clear image when opening video
+        modalImage.src = '';
         modalImage.innerHTML = `<video src="${src}" controls style="max-width: 100%; max-height: 100%;"></video>`;
       }
     }
+    
+    
+    
   
   
   
@@ -102,16 +169,16 @@
           var img = document.createElement('img');
           img.src = url;
           img.classList.add('thumbnail_creaPublicacion');
-  
+    
           // Añadir la imagen recortada al contenedor de medios en el modal de creación
           mediaContainer.appendChild(img);
-  
+    
           // Asegurar que la imagen recortada se puede abrir en el modal
           img.addEventListener('click', function() {
             openMediaModal(url, 'image/');
           });
-  
-          // Eliminar la imagen original
+    
+          // Eliminar la imagen original del contenedor
           var thumbnails = mediaContainer.getElementsByClassName('thumbnail_creaPublicacion');
           for (var i = 0; i < thumbnails.length; i++) {
             if (thumbnails[i].src === modalImage.src) {
@@ -119,13 +186,14 @@
               break;
             }
           }
-  
+    
           // Cerrar el modal de edición y eliminar el cropper
           mediaModal.style.display = 'none';
           cropper.destroy();
         });
       }
     }
+    
   
     closeMediaModal.addEventListener('click', function() {
       mediaModal.style.display = 'none';
@@ -166,10 +234,59 @@
     }
     return new File([u8arr], filename, { type: mime });
   }
+
+
+
+  function reemplazarImagenOriginal(croppedFile, originalSrc) {
+
+      // Encuentra el índice del archivo original en el array de archivos almacenados
+      const originalIndex = storedFiles.findIndex(file => file.name === originalSrc.split('/').pop());
+    
+      // Si el archivo original existe, reemplázalo con el archivo recortado
+      if (originalIndex !== -1) {
+        storedFiles.splice(originalIndex, 1, croppedFile);
+      }
+      
+      // Aquí puedes actualizar la vista si es necesario
+      // Por ejemplo, actualizar el DOM o la vista previa de archivos
+    }
+    
+    
   
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ /**************************************************************************/
+/**************************************************************************/
+/*******************AQUI SE CREA LAS PUBLICACIOENS*************************/
+/*******************DESDE MOSTRARGALERIA.HTML******************************/
+/**************************************************************************/
+
   $(document).ready(function() {
     var storedFiles = []; // Array para almacenar todos los archivos seleccionados
-  
+  // Definir y inicializar mediaContainer
+    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
+
     // Evento cuando se seleccionan archivos
     $("#fileInput_creaPublicacion").on("change", function(event) {
       var files = event.target.files;
@@ -191,7 +308,9 @@
       // Convertir el mapa de archivos de nuevo a un array
       storedFiles = Object.values(fileMap);
     
-      // Opcional: puedes mostrar una vista previa de los archivos seleccionados aquí
+     
+       // Mostrar una vista previa de los archivos seleccionados
+       showFilePreviews(storedFiles);
     });
   
     $("#createPostForm_creaPublicacion").on("submit", function(event) {
@@ -200,6 +319,18 @@
     
       var formData = new FormData(this);
   
+
+      // Agregar archivos recortados al FormData
+      var thumbnails = mediaContainer.getElementsByClassName('thumbnail_creaPublicacion');
+      for (var i = 0; i < thumbnails.length; i++) {
+        var fileInput = document.createElement('input');
+        fileInput.type = 'hidden';
+        fileInput.name = 'mediaFile_creaPublicacion';
+        fileInput.value = thumbnails[i].src; // Puedes usar un identificador o URL en lugar del contenido real
+        formData.append(fileInput.name, fileInput.value);
+      }
+
+
       // Añadir datos adicionales al FormData
       var access_token = localStorage.getItem('access_token');
       var correo_electronico = localStorage.getItem('correo_electronico');

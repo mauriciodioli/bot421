@@ -60,7 +60,7 @@
    
 
 
-
+  
 
 
 <!-- Modal for creating a post -->
@@ -186,6 +186,8 @@
 <!-- Modal for modificar a post -->
 <div id="modificarPostModal_modificaPublicacion" class="modal_modificaPublicacion">
   <div class="modal-content_modificaPublicacion">
+    <input type="hidden" id="postId_modificaPublicacion" name="postId_modificaPublicacion" value="">
+ 
     <span class="close_modificaPublicacion text-black" onclick="cerrarModalModificacion('modificarPostModal_modificaPublicacion')">&times;</span>
    
 
@@ -238,11 +240,7 @@
                     
         <input type="file" id="fileInput_modificaPublicacion" name="mediaFile_modificaPublicacion" accept="image/*,video/*" multiple style="display: none;">
         
-        <!-- Button with media icon to trigger file input -->
-        <label for="fileInput_modificaPublicacion" class="media-icon-button_modificaPublicacion">
-          <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
-          <span class="text-black">Seleccionar archivo</span>
-        </label>
+       
 
         <!-- Emoticon button -->
         <button type="button" id="emoticonButton" data-bs-toggle="modal" data-bs-target="#emoticonModal" class="text-black">

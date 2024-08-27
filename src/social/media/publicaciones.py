@@ -667,18 +667,60 @@ def borrado_logicopublicacion(publicacion_id, user_id, estado):
 
 @publicaciones.route('/social_media_publicaciones_modificar_publicaciones', methods=['POST'])
 def publicaciones_modificar_publicaciones():
-    titulo = request.form.get('postTitle_modificaPublicacion')
-    texto = request.form.get('postText_modificaPublicacion')
-    descripcion = request.form.get('postDescription_modificaPublicacion')
-    estado = request.form.get('postEstado_modificaPublicacion')
-    ambito = request.form.get('postAmbito_modificaPublicacion')
-    # Manejar archivos subidos si es necesario
-    archivos = request.files.getlist('mediaFile_modificaPublicacion')
-    
-    # Procesar la información recibida y modificar la publicación en la base de datos
-    # ...
-    
-    return jsonify({"mensaje": "Publicación modificada con éxito!"})
+    try:
+        # Obtener los datos del formulario
+        post_id = request.form.get('postId_modificaPublicacion')
+        titulo = request.form.get('postTitle_modificaPublicacion')
+        texto = request.form.get('postText_modificaPublicacion')
+        descripcion = request.form.get('postDescription_modificaPublicacion')
+        estado = request.form.get('postEstado_modificaPublicacion')
+        ambito = request.form.get('postAmbito_modificaPublicacion')
+
+        # Obtener archivos subidos si es necesario
+        archivos = request.files.getlist('mediaFile_modificaPublicacion')
+
+        # Obtener el encabezado Authorization
+        authorization_header = request.headers.get('Authorization')
+        if not authorization_header:
+            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+        
+        # Verificar formato del encabezado Authorization
+        parts = authorization_header.split()
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
+            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+        
+        # Obtener el token de acceso
+        access_token = parts[1]
+
+        # Validar y decodificar el token
+        if Token.validar_expiracion_token(access_token=access_token):  
+            app = current_app._get_current_object()
+            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            user_id = decoded_token.get("sub")
+        else:
+            return jsonify({'error': 'Token de acceso expirado o inválido'}), 401
+
+        # Verificar si la publicación existe y pertenece al usuario
+        publicacion = db.session.query(Publicacion).filter_by(id=post_id, user_id=user_id).first()
+        if not publicacion:
+            return jsonify({'error': 'Publicación no encontrada o no autorizada'}), 404
+        
+        # Actualizar la publicación
+        publicacion.titulo = titulo
+        publicacion.texto = texto
+        publicacion.descripcion = descripcion
+        publicacion.estado = estado
+        publicacion.ambito = ambito
+        publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
+
+        db.session.commit()
+        db.session.close()
+        return jsonify({"mensaje": "Publicación modificada con éxito!"})
+
+    except Exception as e:
+        print(str(e))
+        db.session.rollback()
+        return jsonify({'error': 'Ocurrió un error al modificar la publicación.'}), 500
 
             
    

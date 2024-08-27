@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="card-media-grid-publicacion-admin">
                           ${mediaHtml}
                         </div>
-                        <p class="card-text">${post.ambito}</p>
-                        <p class="card-text">${post.descripcion}</p>
+                        <p class="card-text-ambito">${post.ambito}</p>
+                        <p class="card-text-descripcion">${post.descripcion}</p>
                         <div class="btn-modificar-eliminar">
                           <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
                           <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
@@ -191,70 +191,133 @@ function cerrarModalImagenGrande() {
 
 
 
+  /**
+   * Cierra un modal por su id
+   * @param {string} modalId - Identificador del modal a cerrar
+   */
   function cerrarModalModificacion(modalId) {
-    debugger;
+    // Obtener el modal por su id
     var modal = document.getElementById(modalId);
+
+    // Si se encontró el modal, ocultarlo
     if (modal) {
       modal.style.display = 'none'; // Ocultar el modal
     }
   }
 
+
+  /**
+   * Muestra el modal para modificar una publicación
+   * @param {number} id - Identificador de la publicación a modificar
+   */
   function modificarPublicacion(id) {
-    // Mostrar el modal
     // Mostrar el modal
     var modal = document.getElementById('modificarPostModal_modificaPublicacion');
     modal.style.display = 'block'; // Mostrar el modal
-     // Opcional: Puedes cargar los datos de la publicación en el modal
+
+    // Opcional: Puedes cargar los datos de la publicación en el modal
     cargarDatosPublicacion(id);
   }
+
+
+  /**
+   * Carga los datos de una publicación en el modal para editarla.
+   * @param {number} id - Identificador de la publicación a editar
+   */
   function cargarDatosPublicacion(id) {
     // Obtener la información del post desde el DOM si ya está cargada
     var postCard = document.getElementById(`card-${id}`);
     if (postCard) {
+      // Obtener los datos de la publicación
+      var id_publicacion = id;
       var titulo = postCard.querySelector('.card-title').textContent;
       var texto = postCard.querySelector('.card-text').textContent;
-      var descripcion = postCard.querySelector('.card-text').textContent;
+      var descripcion = postCard.querySelector('.card-text-descripcion').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
-      var ambito = postCard.querySelector('.card-text').textContent;
-     
+      var ambito = postCard.querySelector('.card-text-ambito').textContent;
+
       // Cargar los datos en el modal
+      document.getElementById('postId_modificaPublicacion').value = id_publicacion;
       document.getElementById('postTitle_modificaPublicacion').value = titulo;
       document.getElementById('postText_modificaPublicacion').value = texto;
       document.getElementById('postDescription_modificaPublicacion').value = descripcion;
       document.getElementById('postEstado_modificaPublicacion').value = estado;
       document.getElementById('postAmbito_modificaPublicacion').value = ambito;
-  
+
       // Limpiar el contenedor de medios y agregar la imagen
       var mediaContainer = document.getElementById('mediaContainer_modificaPublicacion');
-     // Limpiar el contenedor de medios
+      // Limpiar el contenedor de medios
       mediaContainer.innerHTML = ''; // Limpiar el contenedor antes de agregar nuevos elementos
-
-    
-     
-    
     }
   }
   
 
-  function enviarDatosFormulario() {
-    var formData = new FormData(document.getElementById('modificarPostForm_modificaPublicacion'));
+
+
+ 
+  
+ 
+ 
     
-    $.ajax({
-      url: '/social_media_publicaciones_modificar_publicaciones', // Cambia esta URL a la ruta correcta en tu servidor
-      type: 'POST',
-      data: formData,
-      contentType: false, // No establecer el Content-Type
-      processData: false, // No procesar los datos
-      success: function(response) {
-        alert('Publicación modificada con éxito!');
-        cerrarModalModificacion('modificarPostModal_modificaPublicacion'); // Cerrar el modal
-        // Opcional: Puedes actualizar la vista o hacer otras acciones aquí
-      },
-      error: function(xhr, status, error) {
-        alert('Error al modificar la publicación. Inténtalo de nuevo.');
-      }
-    });
+
+  function enviarDatosFormulario() {
+  var access_token = localStorage.getItem('access_token');
+  if (!access_token) {
+    alert("No se ha encontrado el token de acceso.");
+    return;
   }
+
+  var formData = new FormData(document.getElementById('modificarPostForm_modificaPublicacion'));
+  var postId = document.getElementById('postId_modificaPublicacion').value;
+  formData.append('postId_modificaPublicacion', postId);
+
+  $.ajax({
+    url: '/social_media_publicaciones_modificar_publicaciones', // Cambia esta URL a la ruta correcta en tu servidor
+    type: 'POST',
+    data: formData,
+    contentType: false, // No establecer el Content-Type
+    processData: false, // No procesar los datos
+    headers: {
+      'Authorization': 'Bearer ' + access_token
+    },
+    success: function(response) {
+      alert('Publicación modificada con éxito!');
+      actualizarTarjeta(postId); // Actualiza la tarjeta con los nuevos datos
+      cerrarModalModificacion('modificarPostModal_modificaPublicacion'); // Cerrar el modal
+    },
+    error: function(xhr, status, error) {
+      alert('Error al modificar la publicación. Inténtalo de nuevo.');
+      console.error('Error:', error); // Imprime el error en la consola para más detalles
+    }
+  });
+}
+
+function actualizarTarjeta(postId) {
+  // Obtener los nuevos datos del servidor (opcional, si necesitas obtener datos actualizados del servidor)
+  // o actualiza directamente la tarjeta con los datos conocidos
+
+  var postCard = document.getElementById(`card-${postId}`);
+  if (postCard) {
+    // Obtener los datos del formulario (puedes usar variables globales si lo prefieres)
+    var titulo = document.getElementById('postTitle_modificaPublicacion').value;
+    var texto = document.getElementById('postText_modificaPublicacion').value;
+    var descripcion = document.getElementById('postDescription_modificaPublicacion').value;
+    var estado = document.getElementById('postEstado_modificaPublicacion').value;
+    var ambito = document.getElementById('postAmbito_modificaPublicacion').value;
+
+    // Actualizar los datos en la tarjeta
+    postCard.querySelector('.card-title').textContent = titulo;
+    postCard.querySelector('.card-text-estado').textContent = estado;
+    postCard.querySelector('.card-text-email').textContent = ''; // O actualiza según sea necesario
+    postCard.querySelector('.card-date').textContent = ''; // O actualiza según sea necesario
+    postCard.querySelector('.card-text').textContent = texto;
+   // postCard.querySelector('.card-media-grid-publicacion-admin').innerHTML = ''; // Actualiza el contenido de medios si es necesario
+    postCard.querySelector('.card-text-ambito').textContent = ambito;
+    postCard.querySelector('.card-text-descripcion').textContent = descripcion;
+  }
+}
+
+  
 
 
 
