@@ -77,31 +77,6 @@
 
 
  // Función para mostrar vista previa de archivos
- function showFilePreviews(files) {
-  var mediaContainer = $('#mediaContainer_creaPublicacion');
-  mediaContainer.empty(); // Limpiar contenedor antes de agregar nuevos elementos
-
-  files.forEach(file => {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-          var mediaElement;
-
-          if (file.type.startsWith('image/')) {
-              mediaElement = $('<img>').attr('src', e.target.result).addClass('thumbnail_creaPublicacion');
-          } else if (file.type.startsWith('video/')) {
-              mediaElement = $('<video>').attr('src', e.target.result).attr('controls', true).addClass('thumbnail_creaPublicacion');
-          }
-
-          mediaElement.on('click', function() {
-              openMediaModal(e.target.result, file.type);
-          });
-
-          mediaContainer.append(mediaElement);
-      };
-
-      reader.readAsDataURL(file);
-  });
-}
 
 
 
@@ -310,7 +285,7 @@
     
      
        // Mostrar una vista previa de los archivos seleccionados
-       showFilePreviews(storedFiles);
+  
     });
   
     $("#createPostForm_creaPublicacion").on("submit", function(event) {

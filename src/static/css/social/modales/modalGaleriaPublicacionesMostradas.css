@@ -90,3 +90,41 @@
     cursor: pointer;
   }
   
+
+
+
+
+  /* Estilo para el contenedor de botones */
+.modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Estilo para el botón de agregar imagen */
+.btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion:hover {
+  background-color: darkgreen;
+}
+
+/* Estilo para el botón de agregar video */
+.btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+  background-color: yellow;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion:hover {
+  background-color: gold;
+}
