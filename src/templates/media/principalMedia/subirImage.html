@@ -16,7 +16,7 @@
 
 {% block content %} 
  <!-- Modal -->
-<div id="modalPublicar1" class="modal-media_imagenes">
+<div id="modalPublicar" class="modal-media_imagenes">
   <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
           <div class="modal-header">
@@ -48,10 +48,14 @@
                       <img id="preview-image-media_imagenes" src="#" alt="Vista previa de la imagen">
                       <button class="close-button-media_imagenes" onclick="closePreview()" style="display: none;">X</button>
                       <form id="myForm-media_imagenes" enctype="multipart/form-data">
-                          <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
+                        <input type="hidden" id="postId_subirImagenPublicacion" name="postId_subirImagenPublicacion" value="{{ publicacion_id }}">
+ 
+    
+                        <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
                               <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="previewSelectedImage()">
                               <i class="fas fa-folder"></i> Seleccionar Imagen
                           </label>
+
                       </form>
                   </div>
                   </div>

@@ -79,16 +79,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
                         // Crear el HTML del modal
                         var modalHtml = `
-                            <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                              <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                        <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                            <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
                                 <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                  <div class="modal-image-grid">
-                                  
-                                  ${modalImagesHtml}
+                                <div class="modal-image-grid">
+                                    ${modalImagesHtml}
                                 </div>
-                              </div>
+                                <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                                    <button class="btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarImagen(${post.publicacion_id})">Agregar Imagen</button>
+                                    <button class="btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarVideo(${post.publicacion_id})">Agregar Video</button>
+                                </div>
                             </div>
-                        `;
+                        </div>
+                    `;
+                    
     
                         postDisplayContainer.append(modalHtml);
                     }
@@ -472,6 +476,54 @@ function actualizarTarjeta(postId) {
     });
 }
 
+
+
+
+
+
+/*********************************************************************/
+/*********************************************************************/
+/********************Agrega imagen o video****************************/
+/*********************************************************************/
+/*********************************************************************/
+function agregarImagen(postId) {
+  // Redirige al usuario a la página para subir una imagen
+  var access_token = localStorage.getItem('access_token');
+  if (!access_token) {
+    console.error('Token de acceso no encontrado.');
+    return;
+  }
+  debugger;
+  console.log('agregar imagen para la publicación con ID:', postId);
+  // Crear una instancia de FormData
+  var formData = new FormData();
+  formData.append('publicacion_id', postId);
+
+  $.ajax({
+    url: '/subirImagen',
+    type: 'POST',
+    data: formData,
+    processData: false,
+    contentType: false,
+    headers: {
+        'Authorization': 'Bearer ' + access_token
+    },
+    success: function(response) {
+      console.log('Imagen agregada para la publicación con ID:', postId);
+      // Aquí puedes agregar código para manejar la respuesta, por ejemplo, actualizar la interfaz
+    },
+    error: function(xhr, status, error) {
+      console.error('Error al agregar la imagen:', error);
+    }
+  });
+}
+
+
+
+function agregarVideo(postId) {
+  window.location.href = `/subirVideo/?layout=layoutConexBroker&postId=${postId}`; 
+  console.log('Agregar video para la publicación con ID:', postId);
+}
 
 
 

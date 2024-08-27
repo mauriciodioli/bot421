@@ -20,17 +20,21 @@ imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
 
 
 
-@imagenesOperaciones.route('/subirImagen/')
+@imagenesOperaciones.route('/subirImagen/', methods=['POST'])
 def subirImagen():
     # Obtener el valor de 'layout' del parámetro de la URL
-    layout = request.args.get('layout', default='layout', type=str)
+    layout = request.args.get('layout', 'layout')
+    publicacion_id = request.form.get('publicacion_id')
     
     # Pasar el valor de 'layout' al template
-    return render_template("media/principalMedia/subirImage.html", layout=layout)
+    return render_template("media/principalMedia/subirImage.html", publicacion_id=publicacion_id, layout=layout)
 
 @imagenesOperaciones.route('/subirVideo/')
 def subirVideo():
-    return render_template("media/principalMedia/subirVideo.html")
+      # Obtener el valor de 'layout' del parámetro de la URL
+    layout = request.files('layout', default='layout', type=str)
+    publicacion_id = request.files('publicacion_id', default='publicacion_id', type=str)
+    return render_template("media/principalMedia/subirVideo.html", publicacion_id=publicacion_id ,layout=layout)
 
 @imagenesOperaciones.route('/mostrarGaleria/')
 def mostrarGaleria():

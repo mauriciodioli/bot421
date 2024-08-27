@@ -4,7 +4,9 @@ function saveUtUsuario() {
   
   // Guardar el valor en localStorage
   localStorage.setItem('ut_usuario', ut_usuario);
-  
+  document.getElementById('ut_usuario').textContent = 'Esperando actualización: ' + ut_usuario;
+  document.getElementById('ut_usuario').style.color = 'yellow';
+
   // Obtener otros valores de localStorage si es necesario
   var access_token = localStorage.getItem('access_token');
   var refresh_token = localStorage.getItem('refresh_token');
