@@ -934,7 +934,7 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
     try:
         if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
             print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
