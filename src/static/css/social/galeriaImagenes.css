@@ -539,12 +539,19 @@ body {
   
 
 /* Contenedor de la grilla del modal */
-.modal-image-grid-muestra-crea-publicacion {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Ajusta el tamaño mínimo y máximo de las columnas */
-  gap: 10px; /* Espacio entre las imágenes */
+.modal-muestra-crea-publicacion {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
 /* Imágenes dentro del modal */
 .modal-image-grid-muestra-crea-publicacion img.imagen-muestra-crea-publicacion {
   width: 100px;  /* Ancho fijo para todas las imágenes */

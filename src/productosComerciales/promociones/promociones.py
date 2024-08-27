@@ -308,7 +308,7 @@ def productosComerciales_promociones_elimina_promociones():
         
         # Recuperar todas las promociones para enviar al cliente
         promociones = db.session.query(Promotion).all()
-        
+        db.session.close()
         # Serializar las promociones
         promociones_serializados = [
             {
@@ -329,5 +329,4 @@ def productosComerciales_promociones_elimina_promociones():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    finally:
-        db.session.close()
+   
