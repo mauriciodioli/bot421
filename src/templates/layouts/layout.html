@@ -410,7 +410,13 @@
                     //aqui oculto generador de fichas si no posee cuenta de broker logeada
                   
                      
+                    try {
                         cuentaLink.style.display = 'block';
+                    } catch (error) {
+                        console.error('Error al cambiar el estilo de cuentaLink:', error);
+                        // Aquí puedes agregar más lógica para manejar el error si es necesario.
+                    }
+                    
                         
                    
                 

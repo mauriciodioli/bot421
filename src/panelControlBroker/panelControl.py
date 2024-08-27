@@ -135,7 +135,7 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id,accountCuenta):
         valor_usuario_ut = db.session.query(UnidadTrader).filter_by(usuario_id=user_id,).first()
         db.session.close()
         if not valor_usuario_ut:
-            unidadTrader = 50000
+            unidadTrader = 0
         else:
             unidadTrader=valor_usuario_ut.ut
        
