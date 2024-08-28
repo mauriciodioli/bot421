@@ -119,7 +119,7 @@ def estrategias_usuario_nadmin():
             ut_por_trigger = {}
             try:
                 reporte = obtenerSaldoCuenta(account=account)
-                resumenCuenta = reporte.get("availableToCollateral", 0)  # Obtener el valor, o 0 si no existe la clave
+                resumenCuenta = reporte.get("currentCash", 0)  # Obtener el valor, o 0 si no existe la clave
             except Exception as e:
                 resumenCuenta = 0  # En caso de error, asignar 0
 
