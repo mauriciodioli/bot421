@@ -30,10 +30,20 @@ function saveUtUsuario() {
           cuenta: cuenta
       },
       success: function(response) {
+        // Manejar la respuesta exitosa
+        if (response.message === 'Tiene cuenta, no puede modificar desde aquí' && response.status === 'error') {
+            alert(response.message);
+            $('#UtUsuarioModal').modal('hide');
+            // Asignar el valor de 0 a la Unidad de Tradeo
+            $('#ut_usuario').text('Unidad de Tradeo: 0');
+            // Opcionalmente, mostrar un mensaje o notificación
+            alert(response.message);
+        } else {
           // Manejar la respuesta exitosa
           console.log("UT actualizado con éxito:", response);
           // Opcionalmente, esconder el modal
           $('#UtUsuarioModal').modal('hide');
+        }
       },
       error: function(xhr, status, error) {
           // Manejar errores

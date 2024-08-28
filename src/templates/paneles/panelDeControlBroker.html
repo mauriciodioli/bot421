@@ -17,7 +17,7 @@
           <th scope="col">type </th>
           <th scope="col">Signal</th>
           <th scope="col">In Progress</th>
-          <th scope="col"> Ut</th>      
+          <th scope="col"> Precio</th>      
         </tr>            
       </thead>
       <tbody>
@@ -63,7 +63,7 @@
             {% endif %}
             
 
-            <td>{{ dato[3].replace('MERV - XMEV -', '') }}</td>                             
+            <td>$ {{ dato[7].replace('MERV - XMEV -', '') }}</td>                             
           </tr>
         {% endfor %}
       </tbody>
