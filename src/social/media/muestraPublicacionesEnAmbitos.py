@@ -27,19 +27,36 @@ from models.modelMedia.TelegramNotifier import TelegramNotifier
 
 muestraPublicacionesEnAmbitos = Blueprint('muestraPublicacionesEnAmbitos',__name__)
 
-@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar', methods=['GET'])
-def mostrar_publicaciones_en_ambitos():
-    # Obtener los parámetros de la URL
+
+
+@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos', methods=['GET'])
+def media_muestraPublicacionesEnAmbitos():
+    # Acceder a los parámetros de la URL
     publicacion_id = request.args.get('publicacion_id')
     user_id = request.args.get('user_id')
     ambito = request.args.get('ambito')
+
+     # Aquí manejas los datos recibidos y haces la lógica correspondiente
+    # Podrías devolver una página renderizada con los datos correspondientes.
+    # Ejemplo de cómo podrías usar los datos:
+    return render_template('media/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito)
+
+
+@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar', methods=['GET'])
+def mostrar_publicaciones_en_ambitos():
+    # Acceder a los datos enviados en la solicitud POST
+    data = request.json  # Si los datos se enviaron como JSON
+    publicacion_id = data.get('publicacion_id')
+    user_id = data.get('user_id')
+    ambito = data.get('ambito')
     
     # Ahora puedes usar publicacion_id, user_id, y ambito en tu lógica
-    post = obtener_publicaciones_por_usuario_y_ambito(user_id,ambito)  # Reemplaza con tu lógica de obtención
+    publicaciones = obtener_publicaciones_por_usuario_y_ambito(user_id,ambito)  # Reemplaza con tu lógica de obtención
     
-    if post:
+    if publicaciones:
         # Aquí puedes usar los parámetros adicionales si es necesario
-        return render_template('media/publicaciones/publicacionesEnAmbitos.html', post=post, user_id=user_id, ambito=ambito, layout='layout')
+       return jsonify(publicaciones)
+
     else:
         return jsonify({'error': 'Publicación no encontrada'}), 404
 def obtener_publicaciones_por_usuario_y_ambito(user_id, ambito):
@@ -63,7 +80,9 @@ def obtener_publicaciones_por_usuario_y_ambito(user_id, ambito):
                     imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
                     if imagen:
                         # Ajustar la ruta del archivo
-                        filepath = imagen.filepath.replace('static/', '', 1)
+                        filepath = imagen.filepath
+                        if filepath.startswith('static'):
+                            filepath = filepath[len('static/'):]
                         imagenes.append({
                             'id': imagen.id,
                             'title': imagen.title,
@@ -79,7 +98,9 @@ def obtener_publicaciones_por_usuario_y_ambito(user_id, ambito):
                     video = db.session.query(Video).filter_by(id=iv.video_id).first()
                     if video:
                         # Ajustar la ruta del archivo
-                        filepath = video.filepath.replace('static/', '', 1)
+                        filepath = video.filepath
+                        if filepath.startswith('static/'):
+                            filepath = filepath[len('static/'):]
                         videos.append({
                             'id': video.id,
                             'title': video.title,

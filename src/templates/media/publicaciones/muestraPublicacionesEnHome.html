@@ -24,21 +24,20 @@
         <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}"/>
        
         {% if post.videos %}
-            <!-- Mostrar el primer video si está disponible -->
-            <video controls id="main-video" style="cursor: pointer;"                   
-            onclick="abrirPublicacionEnAmbitos({{ post.publicacion_id }}, {{ post.user_id }}, '{{ post.ambito }}')">
-                
-                <source src="{{ url_for('static', filename=post.videos[0].filepath) }}" type="video/mp4">
-                Tu navegador no soporta el formato de video.
-            </video>
-        {% elif post.imagenes %}
-            <!-- Mostrar la primera imagen si no hay videos -->
-            <img id="main-image" style="cursor: pointer;"                 
-            onclick="abrirPublicacionEnAmbitos({{ post.publicacion_id }}, {{ post.user_id }}, '{{ post.ambito }}')"
-            src="{{ url_for('static', filename=post.imagenes[0].filepath) }}" alt="{{ post.imagenes[0].title }}" />
-        {% else %}
-            <p>No hay imágenes ni videos disponibles.</p>
-        {% endif %}
+        <!-- Mostrar el primer video si está disponible -->
+        <video controls id="main-video" style="cursor: pointer;"                   
+        onclick="cargarDatosPublicacion()">
+            <source src="{{ url_for('static', filename=post.videos[0].filepath) }}" type="video/mp4">
+            Tu navegador no soporta el formato de video.
+        </video>
+    {% elif post.imagenes %}
+        <!-- Mostrar la primera imagen si no hay videos -->
+        <img id="main-image" style="cursor: pointer;"                 
+        onclick="cargarDatosPublicacion()"
+        src="{{ url_for('static', filename=post.imagenes[0].filepath) }}" alt="{{ post.imagenes[0].title }}" />
+    {% else %}
+        <p>No hay imágenes ni videos disponibles.</p>
+    {% endif %}
     </div>
 
     <div class="imagenes-videos-muestra-despliegue-publicacion-home">
@@ -72,28 +71,43 @@
     <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
     <p class="texto-publicacion-despliegue-home">{{ post.texto }}</p>
 </div>
-{% include 'layouts/layout_footer.html' %}   
+{% include 'layouts/layout_footer.html' %}
+ <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
+
+<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
 
 <script>
-function replaceMainMedia(src, type) {
-    var container = document.getElementById('principal-media');
-    
-    if (type === 'image') {
-        container.innerHTML = '<img id="main-image" style="cursor: pointer;" onclick="abrirPublicacionEnAmbitos({{ post.publicacion_id }}, {{ post.user_id }}, \'{{ post.ambito }}\')" src="' + src + '" alt="Imagen seleccionada" />';
-    } else if (type === 'video') {
-        container.innerHTML = '<video controls id="main-video" style="cursor: pointer;" onclick="abrirPublicacionEnAmbitos({{ post.publicacion_id }}, {{ post.user_id }}, \'{{ post.ambito }}\')"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
+    function replaceMainMedia(src, type) {
+        var container = document.getElementById('principal-media');
+        
+        if (type === 'image') {
+            container.innerHTML = '<img id="main-image" style="cursor: pointer;" onclick="cargarDatosPublicacion()" src="' + src + '" alt="Imagen seleccionada" />';
+        } else if (type === 'video') {
+            container.innerHTML = '<video controls id="main-video" style="cursor: pointer;" onclick="cargarDatosPublicacion()"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
+        }
+        // Desplazar suavemente hacia el contenedor de la imagen principal
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-    // Desplazar suavemente hacia el contenedor de la imagen principal
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+
+
+    function cargarDatosPublicacion() {
+        // Obtener el ID de la publicación, el ID del usuario y el ámbito desde los inputs ocultos o atributos
+        var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
+        var userId = '{{ post.user_id }}'; // Esto ya está disponible en tu plantilla
+        var ambito = '{{ post.ambito }}'; // También está disponible en la plantilla
+       
+       // Redirigir a la URL construida con los parámetros
+        window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}`;
+       
+    }
+        
+
 
 function abrirPublicacionEnAmbitos(publicacionId, userId, ambito) {
-    
-    // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
-    window.location.href = `/media-muestraPublicacionesEnAmbitos-mostrar?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}`;
-   // window.location.href = `/media-muestraPublicacionesEnAmbitos-mostrar/${publicacionId}`;
-   
+    mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);
 }
 </script>
+
+
 
 {% endblock %}

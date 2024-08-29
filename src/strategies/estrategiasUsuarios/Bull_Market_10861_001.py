@@ -501,6 +501,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
     # db.session.close()
      app.logger.info('______CARGA_OPERACIONES____') 
      #app.logger.info(diccionario_global_operaciones) 
+     
                
     
 
@@ -949,7 +950,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
             #pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
-            estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
+            #estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
          
     except KeyError as e:
         print(f"KeyError: La clave {e} no se encontró en los diccionarios.")
