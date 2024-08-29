@@ -938,7 +938,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
         if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
             print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
             # Limpiar el diccionario si se cumplen todas las condiciones
-            diccionario_operaciones_enviadas.clear()
+            #diccionario_operaciones_enviadas.clear()
             print("###############################################") 
             print("###############################################") 
             print("###############################################")  
@@ -948,9 +948,9 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             print("###############################################") 
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
-            flash('FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO')
-            estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
-            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+            #flash('FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO')
+            #estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
+            #pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
     except KeyError as e:
         print(f"KeyError: La clave {e} no se encontró en los diccionarios.")
     except Exception as e:

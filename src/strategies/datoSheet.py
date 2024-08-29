@@ -12,12 +12,10 @@ from pydrive.drive import GoogleDrive
 #import routes.api_externa_conexion.cuenta as cuenta
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import pprint
 import os #obtener el directorio de trabajo actual
 import json
-import sys
-import csv
-import re
+import numpy as np
+
 
 load_dotenv()
 #import drive
@@ -103,33 +101,57 @@ def leerDb(app):
         return all_ins
 
 
+def promedio_no_vacio(valores):
+        valores_no_vacios = [v for v in valores if not np.isnan(v)]
+        if len(valores_no_vacios) == 0:
+            return np.nan
+        return np.sum(valores_no_vacios) / len(valores_no_vacios)
+    
 def calculo_dolar_mep(message):
     # Definición de variables iniciales
     symbol = message["instrumentId"]["symbol"]
     
+    # Inicializar valores_mep si no existe
+    if not hasattr(get, 'valores_mep'):
+        get.valores_mep = {
+            'AL30': {'compra': [], 'venta': []},
+            'GD30': {'compra': [], 'venta': []}
+        }
+    
     # Definir valores de compra y venta para los símbolos AL30 y GD30
     if 'AL30' in symbol:
-        # Cargar valores de compra y venta para AL30
-        compra_al30 =float(message["marketData"]["LA"]["price"])  # Suponiendo que el valor de compra viene en el mensaje
-        venta_al30 = float(message["marketData"]["LA"]["price"])    # Suponiendo que el valor de venta viene en el mensaje
-        get.valores_mep['AL30']['compra'] = compra_al30
-        get.valores_mep['AL30']['venta'] = venta_al30
+        compra_al30 = float(message["marketData"]["HI"])
+        venta_al30 = float(message["marketData"]["LO"])
+        get.valores_mep['AL30']['compra'].append(compra_al30)
+        get.valores_mep['AL30']['venta'].append(venta_al30)
       
     elif 'GD30' in symbol:
-        # Cargar valores de compra y venta para GD30
-        compra_gd30 = float(message["marketData"]["LA"]["price"])  # Suponiendo que el valor de compra viene en el mensaje
-        venta_gd30 = float(message["marketData"]["LA"]["price"])    # Suponiendo que el valor de venta viene en el mensaje
-        get.valores['GD30']['compra'] = compra_gd30
-        get.valores['GD30']['venta'] = venta_gd30
- 
-    # Realizar cálculo del dólar MEP si los valores están completos
-    if get.valores_mep['AL30']['compra'] and get.valores_mep['AL30']['venta']:
-        dolar_mep_al30 = get.valores['AL30']['compra'] / get.valores_mep['AL30']['venta']
-        print(f'Dólar MEP AL30: {dolar_mep_al30}')
+        compra_gd30 = float(message["marketData"]["HI"])
+        venta_gd30 = float(message["marketData"]["LO"])
+        get.valores_mep['GD30']['compra'].append(compra_gd30)
+        get.valores_mep['GD30']['venta'].append(venta_gd30)
+        
+    # Función para calcular el promedio ignorando valores vacíos
+   # promedio_no_vacio(get.valores_mep)
+    # Calcular el promedio del dólar MEP para AL30
+    dolar_mep_al30 = None
+    if len(get.valores_mep['AL30']['compra']) >= 1 and len(get.valores_mep['AL30']['venta']) >= 1:
+        promedio_compra_al30 = promedio_no_vacio(get.valores_mep['AL30']['compra'])
+        promedio_venta_al30 = promedio_no_vacio(get.valores_mep['AL30']['venta'])
+        if promedio_venta_al30 != 0:
+            dolar_mep_al30 = promedio_compra_al30 / promedio_venta_al30
+            print(f'Dólar MEP AL30: {dolar_mep_al30}')
     
-    if get.valores_mep['GD30']['compra'] and get.valores_mep['GD30']['venta']:
-        dolar_mep_gd30 = get.valores_mep['GD30']['compra'] / get.valores_mep['GD30']['venta']
-        print(f'Dólar MEP GD30: {dolar_mep_gd30}')
+    # Calcular el promedio del dólar MEP para GD30
+    dolar_mep_gd30 = None
+    if len(get.valores_mep['GD30']['compra']) >= 1 and len(get.valores_mep['GD30']['venta']) >= 1:
+        promedio_compra_gd30 = promedio_no_vacio(get.valores_mep['GD30']['compra'])
+        promedio_venta_gd30 = promedio_no_vacio(get.valores_mep['GD30']['venta'])
+        if promedio_venta_gd30 != 0:
+            dolar_mep_gd30 = promedio_compra_gd30 / promedio_venta_gd30
+            print(f'Dólar MEP GD30: {dolar_mep_gd30}')
+    
+    return dolar_mep_al30, dolar_mep_gd30
 
 
 

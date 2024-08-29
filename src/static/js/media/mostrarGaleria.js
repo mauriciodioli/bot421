@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    cargarPublicaciones();
+    muestraGaleriadePublicaciones();
 
  // Agregar manejador de eventos para el formulario
  var form = document.getElementById('modificarPostForm_modificaPublicacion');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * Se envía el token de acceso en el encabezado
    * 'Authorization'.
    */
-  function cargarPublicaciones() {
+  function muestraGaleriadePublicaciones() {
     var correo_electronico = localStorage.getItem('correo_electronico');
     var roll = localStorage.getItem('roll');
     var access_token = localStorage.getItem('access_token');
@@ -47,105 +47,109 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       success: function(response) {
         if (Array.isArray(response)) {
-            var postDisplayContainer = $('#postDisplayContainer');
-            postDisplayContainer.empty();
+            var postAccordion = $('#postAccordion');
+            postAccordion.empty();
     
+            // Crear un objeto para almacenar las publicaciones por ámbito
+            var postsByAmbito = {};
+    
+            // Iterar sobre las publicaciones para organizarlas por ámbito
             response.forEach(function(post) {
-                if (post.imagenes.length > 0 || post.videos.length > 0) {
+                if (!postsByAmbito[post.ambito]) {
+                    postsByAmbito[post.ambito] = [];
+                }
+                postsByAmbito[post.ambito].push(post);
+            });
+    
+            // Crear secciones del acordeón para cada ámbito
+            Object.keys(postsByAmbito).forEach(function(ambito, index) {
+                var ambitoId = 'ambito-' + index; // ID único para cada ámbito
+                var publicaciones = postsByAmbito[ambito];
+    
+                var accordionItemHtml = `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-${ambitoId}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
+                                ${ambito}
+                            </button>
+                        </h2>
+                        <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                            <div class="accordion-body">
+                                <div id="accordion-content-${ambitoId}" class="accordion-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+    
+                postAccordion.append(accordionItemHtml);
+    
+                var accordionContent = $(`#accordion-content-${ambitoId}`);
+    
+                // Agregar publicaciones al acordeón correspondiente
+                publicaciones.forEach(function(post) {
                     var mediaHtml = '';
                     var baseUrl = window.location.origin;
     
                     if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                        // Mostrar solo la primera imagen
                         var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
                         mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
     
-                        // Guardar las demás imágenes para mostrarlas en el modal
                         var modalImagesHtml = '';
-                        post.imagenes.forEach(function(image, index) {
+                        post.imagenes.forEach(function(image) {
                             var imageUrl = baseUrl + '/' + image.filepath;
                             modalImagesHtml += `
-                                 <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
-                                     <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
-                                  <button 
-                                      class="close-button-media_imagenes" 
-                                      onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">
-                                      X
-                                  </button>
+                                <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
+                                    <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
+                                    <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">X</button>
                                 </div>
                             `;
-
                         });
     
-                        // Crear el HTML del modal
                         var modalHtml = `
-                        <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                            <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                <div class="modal-image-grid">
-                                    ${modalImagesHtml}
+                            <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                                <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                                    <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                                    <div class="modal-image-grid">
+                                        ${modalImagesHtml}
+                                    </div>
+                                    <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                                        <button class="btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarImagen(${post.publicacion_id})">Agregar Imagen</button>
+                                        <button class="btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarVideo(${post.publicacion_id})">Agregar Video</button>
+                                    </div>
                                 </div>
-                                <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                    <button class="btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarImagen(${post.publicacion_id})">Agregar Imagen</button>
-                                    <button class="btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarVideo(${post.publicacion_id})">Agregar Video</button>
+                            </div>
+                        `;
+    
+                        accordionContent.append(modalHtml);
+                    }
+    
+                    var cardHtml = `
+                        <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
+                            <div class="card-body">
+                                <h5 class="card-title">${post.titulo}</h5>
+                                <p class="card-text-estado">${post.estado}</p>
+                                <p class="card-text-email">${post.correo_electronico}</p>
+                                <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                <p class="card-text">${post.texto}</p>
+                                <div class="card-media-grid-publicacion-admin">
+                                    ${mediaHtml}
+                                </div>
+                                <p class="card-text-ambito">${post.ambito}</p>
+                                <p class="card-text-descripcion">${post.descripcion}</p>
+                                <div class="btn-modificar-eliminar">
+                                    <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                                    <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
                                 </div>
                             </div>
                         </div>
+                        <hr class="separator">
                     `;
-                    
     
-                        postDisplayContainer.append(modalHtml);
-                    }
-    
-                    var estadoClass;
-                    var estadoTextClass;
-                    
-                    switch (post.estado) {                      
-                        case 'activo':
-                            estadoClass = 'estado-activo';
-                            estadoTextClass = 'estado-activo';
-                            break;
-                        case 'inactivo':
-                            estadoClass = 'estado-inactivo';
-                            estadoTextClass = 'estado-inactivo';
-                            break;
-                        case 'pendiente':
-                            estadoClass = 'estado-pendiente';
-                            estadoTextClass = 'estado-pendiente';
-                           
-                            break;
-                        default:
-                            estadoClass = '';
-                            estadoTextClass = '';
-                    }
-                    var cardHtml = `
-                    <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
-                      <div class="card-body">
-                        <h5 class="card-title">${post.titulo}</h5>
-                        <p class="card-text-estado ${estadoTextClass}">${post.estado}</p>
-                        <p class="card-text-email">${post.correo_electronico}</p>
-                        <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                        <p class="card-text">${post.texto}</p>
-                        <div class="card-media-grid-publicacion-admin">
-                          ${mediaHtml}
-                        </div>
-                        <p class="card-text-ambito">${post.ambito}</p>
-                        <p class="card-text-descripcion">${post.descripcion}</p>
-                        <div class="btn-modificar-eliminar">
-                          <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
-                          <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
-                        </div>
-                      </div>
-                    </div>
-                `;
-                
-                    postDisplayContainer.append(cardHtml);
-                } else {
-                    console.log('Publicación sin contenido:', post.publicacion_id);
-                }
+                    accordionContent.append(cardHtml);
+                });
             });
         } else {
-            console.error("La respuesta no es un array. Recibido:", response);
+            console.log('Respuesta no válida');
         }
     },
     
@@ -330,10 +334,7 @@ function actualizarTarjeta(postId) {
 
 
   
-  function eliminarPublicacion(id) {
-    alert('Eliminar publicación con ID: ' + id);
-    eliminarPublicacion(id)
-  }
+ 
   
   function abrirModal(id) {
     $('#modal-' + id).show();
@@ -435,9 +436,12 @@ function actualizarTarjeta(postId) {
 
 
 
+function eliminarPublicacion(id) {
+  alert('Eliminar publicación con ID: ' + id);
+  eliminarPublicacion(id)
+}
 
-
-  function eliminarPublicacion(id) {
+function eliminarPublicacion(id) {
     var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta publicación?');
     if (!confirmDelete) return;
 
