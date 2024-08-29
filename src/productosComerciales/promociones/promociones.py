@@ -79,13 +79,14 @@ def sistemaDePagos_get_promociones():
         correo_electronico = data.get('correo_electronico')
       
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
-            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             numero_de_cuenta = decoded_token.get("numero_de_cuenta")
             user_id = decoded_token.get("sub")        
 
             promociones = db.session.query(Promotion).all()
             db.session.close()
+            if not promociones:
+                return jsonify({'promociones': [], 'message': 'No hay promociones disponibles'})
 
             # Serializar los planes
             promociones_serializados = [
@@ -100,14 +101,17 @@ def sistemaDePagos_get_promociones():
                     'state': promocione.state,
                     'cluster': promocione.cluster,
                     'currency_id': promocione.currency_id 
-                        
                 } for promocione in promociones
             ]
 
             return jsonify({'promociones': promociones_serializados})
+    
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
+    # Respuesta por defecto si no se cumplen las condiciones anteriores
+    return jsonify({'error': 'Datos de entrada inválidos o token no válido'}), 400
 
     
 @promociones.route('/productosComerciales_promociones_agrega_promociones', methods=['POST'])
@@ -304,7 +308,7 @@ def productosComerciales_promociones_elimina_promociones():
         
         # Recuperar todas las promociones para enviar al cliente
         promociones = db.session.query(Promotion).all()
-        
+        db.session.close()
         # Serializar las promociones
         promociones_serializados = [
             {
@@ -325,5 +329,4 @@ def productosComerciales_promociones_elimina_promociones():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-    finally:
-        db.session.close()
+   

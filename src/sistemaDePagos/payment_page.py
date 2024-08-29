@@ -58,7 +58,7 @@ def pyment_page_carga_numero_tarjeta():
             user_id = decoded_token.get("sub")
 
             tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(user_id=user_id).first()
-
+            db.session.close()
          return jsonify({"message": "Tarjeta creada con éxito", "tarjeta": tarjeta_existente.numeroTarjeta}), 201
 
     

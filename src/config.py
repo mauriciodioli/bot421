@@ -12,7 +12,9 @@ port = os.environ["MYSQL_PORT"]  # Asegúrate de tener la variable de entorno MY
 
 
 #DATABASE_CONNECTION_URI = f'mysql+pymysql://{user}:{password}@{host}/{database}'
-DATABASE_CONNECTION_URI = f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}'
+#DATABASE_CONNECTION_URI = f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}'
+DATABASE_CONNECTION_URI = f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}?charset=utf8mb4'
+
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_POOL_RECYCLE = 280
 SQLALCHEMY_POOL_TIMEOUT = 20
@@ -26,4 +28,6 @@ sdk_produccion = os.getenv('sdk_produccion') #test
 MERCADOPAGO_KEY_API = os.getenv('MERCADOPAGO_KEY_API')#para produccion
 MERCADOPAGO_URL = os.getenv('MERCADOPAGO_URL')
 DOMAIN = os.getenv('DOMAIN')
+
+
 

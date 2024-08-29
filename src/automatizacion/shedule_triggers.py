@@ -99,10 +99,10 @@ def muestraTriggers():
          layouts = request.form.get('Shedule_layoutOrigen')
          if access_token and Token.validar_expiracion_token(access_token=access_token): 
             # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
-            triggers_automaticos = TriggerEstrategia.query.filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()        
-        
-            total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
+            triggers_automaticos = db.session.query(TriggerEstrategia).filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()
             db.session.close()
+            total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
+           
             
             return render_template("automatizacion/trigger.html", num_triggers=total_triggers)
          return render_template('usuarios/logOutSystem.html')  
@@ -326,6 +326,7 @@ def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electron
                 for triggerEstrategia in triggerEstrategias:
                     if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
                         usuario = db.session.query(Usuario).filter_by(id=triggerEstrategia.user_id).first()
+                       
                         app.logger.info(usuario)
                         if usuario:
                             print("El usuario existe en la lista triggerEstrategias.")
@@ -350,6 +351,7 @@ def llama_tarea_cada_24_horas_estrategias(app, user_id, account, correo_electron
                     
                         else:
                             print("El usuario no existe en la lista triggerEstrategias.")
+                db.session.close()            
         except Exception as e:
             # Agregar el mensaje de error al registro de logs con nivel de error
             logging.error(str(e), exc_info=True)

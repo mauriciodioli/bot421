@@ -91,7 +91,7 @@ def unidad_trader_alta():
    
 
     # Verificar si ya existe una entrada para la combinación cuenta_id, usuario_id y trigger_id
-    existing_ut = UnidadTrader.query.filter_by(accountCuenta=UT_cuenta, usuario_id=UT_usuario_id, trigger_id=UT_IdTrigger).first()
+    existing_ut = db.session.query(UnidadTrader).filter_by(accountCuenta=UT_cuenta, usuario_id=UT_usuario_id, trigger_id=UT_IdTrigger).first()
 
     if existing_ut:
         # Si existe, actualizar la entrada existente
