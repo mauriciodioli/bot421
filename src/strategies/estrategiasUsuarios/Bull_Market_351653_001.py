@@ -939,7 +939,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
         if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
             print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
             # Limpiar el diccionario si se cumplen todas las condiciones
-            diccionario_operaciones_enviadas.clear()
+           # diccionario_operaciones_enviadas.clear()
             print("###############################################") 
             print("###############################################") 
             print("###############################################")  
@@ -950,7 +950,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
             
-            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+           # pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
           
     except KeyError as e:
