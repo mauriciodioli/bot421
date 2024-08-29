@@ -1,0 +1,88 @@
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block title %}Publicacion desplegada{% endblock %}
+{% block content %}
+<div class="publicacion-detalle">
+    <h1>{{ post.titulo }}</h1>
+    <p>{{ post.fecha_creacion }}</p>
+    
+    <!-- Contenedor para la imagen o video principal -->
+    <div id="principal-media" class="imagen-principal-muestra-despliegue-publicacion-home">
+        {% if post.videos %}
+            <!-- Mostrar el primer video si está disponible -->
+            <video controls id="main-video">
+                <source src="{{ url_for('static', filename=post.videos[0].filepath) }}" type="video/mp4">
+                Tu navegador no soporta el formato de video.
+            </video>
+        {% elif post.imagenes %}
+            <!-- Mostrar la primera imagen si no hay videos -->
+            <img id="main-image" src="{{ url_for('static', filename=post.imagenes[0].filepath) }}" alt="{{ post.imagenes[0].title }}" />
+        {% else %}
+            <p>No hay imágenes ni videos disponibles.</p>
+        {% endif %}
+    </div>
+
+    <div class="imagenes-videos-muestra-despliegue-publicacion-home">
+        {% if post.imagenes %}
+            <div class="imagenes-muestra-despliegue-publicacion-home">
+                {% for imagen in post.imagenes %}
+                    <div class="imagen-muestra-despliegue-publicacion-home">
+                        <img src="{{ url_for('static', filename=imagen.filepath) }}" alt="{{ imagen.title }}" onclick="replaceMainMedia(this.src, 'image')" />
+                    </div>
+                 
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if post.videos %}
+            <h2>Videos:</h2>
+            <div class="videos-muestra-despliegue-publicacion-home">
+                {% for video in post.videos %}
+                    <div class="video-muestra-despliegue-publicacion-home">
+                        <video onclick="replaceMainMedia('{{ url_for('static', filename=video.filepath) }}', 'video')" controls>
+                            <source src="{{ url_for('static', filename=video.filepath) }}" type="video/mp4">
+                            Tu navegador no soporta el formato de video.
+                        </video>
+                        <p>{{ video.title }}</p>
+                        <p>{{ video.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
+    <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
+    <p class="texto-publicacion-despliegue-home">{{ post.texto }}</p>
+</div>
+{% include 'layouts/layout_footer.html' %}   
+
+<script>
+function replaceMainMedia(src, type) {
+    var container = document.getElementById('principal-media');
+    
+    if (type === 'image') {
+        container.innerHTML = '<img id="main-image" src="' + src + '" alt="Imagen seleccionada" />';
+    } else if (type === 'video') {
+        container.innerHTML = '<video controls id="main-video"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
+    }
+     // Desplazar suavemente hacia el contenedor de la imagen principal
+     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+
+
+
+
+{% endblock %}

@@ -1,16 +1,35 @@
+
+{% if layout == 'layout'%}
 {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
 
 {% block content %} 
  <!-- Modal -->
-<div id="modalPublicar1" class="modal-media_imagenes">
+<div id="modalPublicar" class="modal-media_imagenes">
   <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
           <div class="modal-header">
               <h3 class="modal-title" id="exampleModalLabel" style="color: black;">
                   Crear publicación
               </h3>
-              <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
-          </div>
+              {% if layout == 'layout'%}
+                <button type="button" onclick="window.location.href='/mostrarGaleria'" class="btn-close" aria-label="Close"></button>
+              {% endif %}
+              {% if layout == 'layoutConexBroker' %}
+                  <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
+              {% endif %}
+                  </div>
           <div class="modal-body">
               <div class="modal-body-content">
                   <!-- Primera fila -->
@@ -29,10 +48,14 @@
                       <img id="preview-image-media_imagenes" src="#" alt="Vista previa de la imagen">
                       <button class="close-button-media_imagenes" onclick="closePreview()" style="display: none;">X</button>
                       <form id="myForm-media_imagenes" enctype="multipart/form-data">
-                          <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
+                        <input type="hidden" id="postId_subirImagenPublicacion" name="postId_subirImagenPublicacion" value="{{ publicacion_id }}">
+ 
+    
+                        <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
                               <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="previewSelectedImage()">
                               <i class="fas fa-folder"></i> Seleccionar Imagen
                           </label>
+
                       </form>
                   </div>
                   </div>

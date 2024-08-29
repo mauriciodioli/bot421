@@ -4,9 +4,9 @@
 <div class="jumbotron">
 
   
-    <div class="ubicacion-imagenes">
-      <!-- Aquí se incrustará la galería de imágenes -->
-    </div>
+    <div class="home-muestra-publicaciones-centrales">
+  <!-- Aquí se incrustará la galería de imágenes -->
+</div>
   </div>
 
 {% include 'layouts/layout_footer.html' %}   
@@ -206,7 +206,10 @@ console.log("No se pudo obtener un nuevo token.");
 </script>
 
 <!--se llama para cargar imagenes-->
-<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+
+<!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnHome.css') }}">
+
+<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
 
 
 

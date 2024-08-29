@@ -154,3 +154,10 @@
 #boton-panico-estrategia-usuario-noadmin:hover {
   background-color: #115301; /* Color verde más oscuro al pasar el cursor */
 }
+
+
+.resumen-cuenta {
+  text-align: center;
+  font-weight: bold;
+  color: rgb(121, 255, 121);
+}

@@ -17,7 +17,7 @@
         <th scope="col">type </th>
         <th scope="col">Signal</th>
         <th scope="col">In Progress</th>
-        <th scope="col"> Ut</th> 
+       <th scope="col"> Precio </th>   
         <th scope="col">Ganancia</th>
         <th scope="col">Dias</th> 
           
@@ -32,7 +32,7 @@
           <td>{{ dato[1].replace('MERV - XMEV -', '') }}</td>
           <td>{{ dato[4].replace('MERV - XMEV -', '') }}</td>
           <td>{{ dato[2].replace('MERV - XMEV -', '') }}</td>
-          <td>{{ dato[3].replace('MERV - XMEV -', '') }}</td> 
+          <td>$ {{ dato[7].replace('MERV - XMEV -', '') }}</td>    
           <td>{{ dato[5] }}</td>
           <td>{{ dato[6] }}</td>    
                              
@@ -90,6 +90,9 @@
 
     });
   });
+
+
+  
 </script>
 
 

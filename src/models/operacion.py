@@ -14,7 +14,7 @@ class Operacion:
         self.side = get.pyRofexInicializada.Side.BUY if accion == 'comprar' else get.pyRofexInicializada.Side.SELL
         self.size = size
         self.price = price
-        self.order_type = order_type
+        self.order_type = order_type        
         self.environment=environment
 
     def validar_saldo(self, cuenta=None,pyRofexInicializada=None):
@@ -57,7 +57,7 @@ class Operacion:
             print("No hay saldo suficiente para realizar la operación.")
             return False
     def enviar_orden_sin_validar_saldo(self, cuenta=None,pyRofexInicializada=None):
-             #pass
+        #pass
         pyRofexInicializada.send_order_via_websocket(ticker=self.ticker, 
                                                      side=self.side, 
                                                      size=self.size, 
@@ -68,7 +68,7 @@ class Operacion:
         return True
     
     def enviar_orden_rest_sin_validar_saldo(self, cuenta=None,pyRofexInicializada=None,order_type=None):
-             #pass
+        #pass
         order = pyRofexInicializada.send_order(ticker=self.ticker,
                            side=self.side,
                            size=self.size,

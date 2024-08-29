@@ -14,9 +14,14 @@
     <!-- dropzone -->
     <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
     <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
     <!--CSS PERSONALIZADO -->
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/main.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
+    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash_modal_crear_publicacion.css')}}>
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     
 
@@ -45,17 +50,24 @@
    <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
    
    <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/modales/modalGaleriaPublicacionesMostradas.css') }}">
+   
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/modificarPublicaciones.css') }}">
+     
    <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/tarjetasPlanes.css')}}>
    <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}>
    <!---->  <link rel =  "stylesheet" href = {{ url_for('static',filename='css/herramientasAdmin/controlMdh.css')}}>
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraDesplieguePublicacionHome.css') }}">
+   
    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/sistemaDePagos/carrucelPromocionOfertas.css')}}>
    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/media/telegramEnviaMensaje.css')}}> 
    <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/media/newsLetter.css')}}> 
    <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
-    <script src="{{url_for('static',filename='js/media/telegram//telegramEnviaMensaje.js')}}"></script>
-    <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script> 
-      
-</head>
+   <script src="{{url_for('static',filename='js/media/telegram//telegramEnviaMensaje.js')}}"></script>
+   <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script> 
+
+
+  </head>
 
 <body>
     <!-- As a heading -->
@@ -154,15 +166,18 @@
                     </li>
  
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Subir</a>
+                    <li class="nav-item dropdown" id='AdministrarPublicacionesLayout'>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Publicar</a>
                         <ul class="dropdown-menu">              
                                      
+                        <!-- 
                           <li><a class="dropdown-item" href="/subirImagen/" >Imagen</a></li>  
                           <li><hr class="dropdown-divider"></li>
                           <li><a class="dropdown-item" href="/subirVideo/">Video</a></li>
                           <li><hr class="dropdown-divider"></li>
-                          <li><a class="dropdown-item" href="/mostrarGaleria/">Galeria</a></li>                          
+                         
+                        -->  
+                          <li><a class="dropdown-item" id='adminPublicaciones' href="/mostrarGaleria/">Administrar</a></li>                          
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
@@ -305,6 +320,9 @@
         <div class="splash-container" id="splash" style="display:none">
          {% include 'notificaciones/splashPage.html' %}
         </div>
+        <div class="splash-container" id="splash" style="display:none">
+            {% include 'notificaciones/splashPage_espere.html' %}
+           </div>
         
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -392,7 +410,13 @@
                     //aqui oculto generador de fichas si no posee cuenta de broker logeada
                   
                      
+                    try {
                         cuentaLink.style.display = 'block';
+                    } catch (error) {
+                        console.error('Error al cambiar el estilo de cuentaLink:', error);
+                        // Aquí puedes agregar más lógica para manejar el error si es necesario.
+                    }
+                    
                         
                    
                 
@@ -408,6 +432,11 @@
             // Ocultar el enlace del menú de administración
             var adminLink = document.querySelector('.nav-link.dropdown-toggle');
             adminLink.style.display = 'none';
+
+             var adminLink1 = document.querySelector('#AdministrarPublicacionesLayout');
+            if (adminLink1) {
+                adminLink1.style.display = 'none';
+            }
         }
 
        // Cerrar el menú desplegable al ser seleccionado

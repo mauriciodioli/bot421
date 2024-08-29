@@ -305,11 +305,25 @@ def obtener_liquidez_actual(message, key):
             return message["marketData"]["LA"]["size"]
     return 0
 
+def simbolo_no_en_diccionario(simbol, diccionarios):    
+    for key, diccionario in diccionarios.items():       
+        if simbol == diccionario['Symbol']:
+            return False
+    return True
+
+def cargaUt(UT_unidadTrader,elemento7):
+    ut_trader = UT_unidadTrader/elemento7
+    return ut_trader
+
 def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
      contador_1=0
      símbolos_vistos = set()
      tiempoLecturaSaldo = datetime.now()
+     
+     
+     usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
+     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
     # saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
 
      #filtrar las coincidencias entre las dos listas
@@ -325,16 +339,19 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                             print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                             app.logger.info(elemento1)      
                             elemento1[3] = int(elemento2['_ut_'])
+                            coincidencias.append(elemento1)
                         elif elemento1[2] == 'SHORT':
                             if elemento1[4] == '':
                                 print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
-                            elif elemento1[4] == 'OPEN.':
+                                coincidencias.append(elemento1)
+                        elif elemento1[4] == 'OPEN.':
+                            if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
                                 print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
                                 elemento1[3] = int(elemento2['_ut_'])
-                        coincidencias.append(elemento1)
+                                coincidencias.append(elemento1)
                         símbolos_vistos.add(elemento2['Symbol'])
                     else:
                         elemento1[3] = 0
@@ -353,25 +370,44 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                 if elemento1[2] == 'LONG_':
                      if int(elemento1[3]) != 0:                       
                           if elemento1[4] == 'OPEN.':
-                            if elemento1[0] == elemento2:
-                                coincidencias.append(elemento1)
-                               # print(' elemento1[] ', elemento1[0])
-                               # print(coincidencias)
+                             if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
+                                 if elemento1[0] == elemento2:
+                                      # Paso 1: Eliminar los puntos
+                                    cadena_sin_puntos = elemento1[7].replace('.', '')
+                                    # Paso 2: Reemplazar la coma por un punto
+                                    cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                                    # Paso 3: Convertir la cadena a float
+                                    precio = float(cadena_correcta)
+                                    ut = cargaUt(unidadTrader.ut,precio)
+                                    ut = abs(int(ut))
+                                    # Paso 6: Agregar a elemento1 y coincidencias
+                                    lista_modificable = list(elemento1)
+
+                                    # Modificar el valor en el índice deseado
+                                    lista_modificable[3] = str(ut)  # Cambia el valor en el índice 3
+
+                                    # Convertir la lista de nuevo a una tupla si es necesario
+                                    tupla_modificada = tuple(lista_modificable)
+                                    
+                                    coincidencias.append(tupla_modificada)
+                                # print(' elemento1[] ', elemento1[0])
+                                # print(coincidencias)
                             
         contador += 1  
           
     
-     usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
-     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
+    
      for elemento  in coincidencias:  
          # Paso 1: Eliminar los puntos
          cadena_sin_puntos = elemento[7].replace('.', '')
         # Paso 2: Reemplazar la coma por un punto
          cadena_correcta = cadena_sin_puntos.replace(',', '.')
         # Paso 3: Convertir la cadena a float
-         numero = float(cadena_correcta)
+         precio = float(cadena_correcta)
+        
          if int(elemento[3]) == 0:
-            ut = unidadTrader.ut/numero
+            ut = cargaUt(unidadTrader.ut,precio)
+            
             ut = abs(int(ut))
          else:
             ut = abs(int(elemento[3]))
@@ -475,12 +511,12 @@ def es_numero(numero):
     except:
         return False
   
-def order_report_handler(order_report):
+def order_report_handler(order_report): 
     order_data = order_report['orderReport']
     clOrdId = order_data['clOrdId']        
     symbol = order_data['instrumentId']['symbol']
     status = order_data['status']  
-    print('___________ORH_______STATUS__ENTREGADO: ', status, ' symbol: ', symbol)
+    print(diccionario_global_operaciones[symbol]['accountCuenta'],' ___________ORH_______STATUS__ENTREGADO: ', status, ' symbol: ', symbol)
     timestamp_order_report = order_data['transactTime']  
    
     if es_numero(clOrdId):
@@ -898,22 +934,28 @@ def obtenerStock(cadena):
 
 
 def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
-    if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
-        print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
-        # Clear the dictionary if all conditions are met
-        diccionario_operaciones_enviadas.clear()
-        print("###############################################") 
-        print("###############################################") 
-        print("###############################################")  
-        print("FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO") 
-        print("###############################################") 
-        print("###############################################") 
-        print("###############################################") 
-        account = diccionario_global_operaciones[symbol]['accountCuenta']
-        pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']              
-        pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia,environment=account)
-        flash('FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO')
-        estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'],idUser)
+    try:
+        if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
+            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
+            # Limpiar el diccionario si se cumplen todas las condiciones
+            diccionario_operaciones_enviadas.clear()
+            print("###############################################") 
+            print("###############################################") 
+            print("###############################################")  
+            print("FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO") 
+            print("###############################################") 
+            print("###############################################") 
+            print("###############################################") 
+            account = diccionario_global_operaciones[symbol]['accountCuenta']
+            pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
+            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+            estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
+         
+    except KeyError as e:
+        print(f"KeyError: La clave {e} no se encontró en los diccionarios.")
+    except Exception as e:
+        print(f"Ocurrió un error: {str(e)}")
+
        
         
 
