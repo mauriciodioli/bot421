@@ -16,44 +16,21 @@
 
 {% block title %}Publicación en Ámbitos{% endblock %}
 {% block content %}
-<div class="publicacion-detalle">
-    <!-- Contenedor para la imagen o video principal -->
-    <div id="principal-media" class="imagen-principal-muestra-despliegue-publicacion-home">
-        {% for post in publicaciones %}
-            <div class="card-publicacion-admin {{ post.estadoClass }}" id="card-{{ post.publicacion_id }}">
-                <div class="card-body">
-                    <a class="btn-close-publicacion" onclick="cerrarPublicacion({{ post.publicacion_id }})">
-                        <span class="text-white">&times;</span>
-                    </a>
-                    <h5 class="card-title">{{ post.titulo }}</h5>
-                    <div class="card-media-grid-publicacion-admin">
-                        {% if post.imagenes %}
-                            {% for imagen in post.imagenes %}
-                                <img src="{{ url_for('static', filename=imagen.filepath) }}" alt="{{ imagen.title }}" />
-                            {% endfor %}
-                        {% endif %}
-                        {% if post.videos %}
-                            {% for video in post.videos %}
-                                <video controls>
-                                    <source src="{{ url_for('static', filename=video.filepath) }}" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <p class="card-date">{{ post.fecha_creacion  }}</p>
-                    <p class="card-text text-truncated" id="postText-{{ post.publicacion_id }}">{{ post.texto }}</p>
-                    <a href="#" class="btn-ver-mas" onclick="toggleTexto({{ post.publicacion_id }}); return false;">Ver más</a>
-                </div>
-            </div>
-        {% else %}
-            <p>No hay imágenes ni videos disponibles.</p>
-        {% endfor %}
+<div class="home-publicaciones-ambitos">
+    <div class="home-muestra-publicaciones-en-ambitos-centrales">
+        <!-- Aquí se insertarán las publicaciones dinámicamente -->
     </div>
+</div>
 {% include 'layouts/layout_footer.html' %}
 
 <script>
-// Tu código JavaScript aquí
+
+var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
+var userId = '{{ post.user_id }}'; // Esto ya está disponible en tu plantilla
+var ambito = '{{ post.ambito }}'; // También está disponible en la plantilla
+   
+mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);   
+ 
 </script>
 
 {% endblock %}
