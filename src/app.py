@@ -1,11 +1,9 @@
-#from re import template
-
 from flask import (Flask,Blueprint,Response,make_response,render_template,request,redirect,url_for,flash,jsonify)
 from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
-
+from sqlalchemy.exc import OperationalError
 # Importar create_engine y NullPool
 import logging
 import os
@@ -41,6 +39,7 @@ from Tests.test_order_report_handler import test_order_report_handler
 from social.telegram.telegram import telegram
 
 from herramientasAdmin.accionesSheet import accionesSheet
+from herramientasAdmin.runScript import runScript
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
@@ -79,6 +78,8 @@ from usuarios.cambiarContrasenaUsuarioSistema import cambiarContrasenaUsuarioSis
 
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
+from social.media.publicaciones import publicaciones
+from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 
 from comunicacion.contacto import contacto
 from comunicacion.newsLetter import newsLetter
@@ -149,10 +150,6 @@ logs_file_path = os.path.join(src_directory, 'logs.log')
 
 # Crear un manejador de logs que escriba en el archivo 'logs.log' en el directorio 'src'
 file_handler = logging.FileHandler(logs_file_path, encoding='utf-8')
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(formatter)
-
-
 # Crear un manejador de logs que escriba a `stdout`
 console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.DEBUG)
@@ -160,7 +157,12 @@ console_handler.setFormatter(formatter)
 
 
 app.logger.addHandler(file_handler)
-app.logger.addHandler(console_handler)
+#app.logger.addHandler(console_handler)
+app.logger.debug('Debugging message: Configuración de logger completada.')
+app.logger.info('Este es un mensaje de info.')
+app.logger.warning('Este es un mensaje de advertencia.')
+app.logger.error('Este es un mensaje de error.')
+app.logger.critical('Este es un mensaje crítico.')
 # Configura el manejo de autenticación JWT
 app.config['JWT_SECRET_KEY'] = '621289'
 app.config['JWT_TOKEN_LOCATION'] = ['cookies']
@@ -239,9 +241,12 @@ app.register_blueprint(shedule_triggers)
 app.register_blueprint(contacto)
 app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
+app.register_blueprint(runScript)
 app.register_blueprint(telegram)
 app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
+app.register_blueprint(publicaciones)
+app.register_blueprint(muestraPublicacionesEnHome)
 
 app.register_blueprint(test_order_report_handler)
 
@@ -255,40 +260,37 @@ app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_CONNECTION_URI
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
-# Parámetros de configuración
-app.config['SQLALCHEMY_POOL_SIZE'] = 1000  # Tamaño máximo del pool
-app.config['SQLALCHEMY_MAX_OVERFLOW'] = 50  # Conexiones adicionales permitidas
+app.config['SQLALCHEMY_POOL_SIZE'] = 10
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 280
+app.config['SQLALCHEMY_MAX_OVERFLOW'] = 10  # Conexiones adicionales permitidas
 
 # Configuración inicial
 INITIAL_POOL_SIZE = 2
-INITIAL_MAX_OVERFLOW = 3
+INITIAL_MAX_OVERFLOW = 5
 MAX_USERS_INCREMENT = 3
 POOL_SIZE_INCREMENT = 2
 MAX_USERS_AMPLIFICATION = 5
 AMPLIFICATION_INCREMENT = 3
 POOL_REDUCTION_THRESHOLD = 0.5  # Reducción del pool cuando el 50% de las conexiones están inactivas
 MAX_CONNECTIONS = 2  # Número máximo de conexiones activas permitidas
-INACTIVITY_TIMEOUT = 60  # Tiempo máximo de inactividad en segundos
+INACTIVITY_TIMEOUT = 5  # Tiempo máximo de inactividad en segundos
 
 # Crear el motor de SQLAlchemy
 engine = create_engine(
     DATABASE_CONNECTION_URI,
-    poolclass=QueuePool,
-    pool_size=INITIAL_POOL_SIZE,
+    poolclass=QueuePool,    
     max_overflow=INITIAL_MAX_OVERFLOW,
-    pool_timeout=30,  # Tiempo máximo en segundos que se esperará por una conexión
+    pool_timeout=5,  # Tiempo máximo en segundos que se esperará por una conexión
     pool_recycle=3600
 )
 
 
+
 db = SQLAlchemy(app)
 db.init_app(app)
-db.session.configure(bind=engine)
+#db.session.configure(bind=engine)
 
 ma = Marshmallow(app)
-
-db = SQLAlchemy(app)
-
 
 
 # Contadores y estructuras para controlar las conexiones
@@ -297,72 +299,65 @@ connection_times = {}
 user_count = 0
 total_connections = 0
 
-def adjust_pool_size():
-    """Ajusta el tamaño del pool basado en el número de usuarios y conexiones activas."""
-    global total_connections, user_count
-    current_pool_size = engine.pool.size()
-    current_max_overflow = engine.pool._max_overflow
 
-    # Crear 2 conexiones cada 3 usuarios
-    if user_count % MAX_USERS_INCREMENT == 0:
-        new_pool_size = current_pool_size + POOL_SIZE_INCREMENT
-        engine.pool._set_pool_size(new_pool_size)
 
-    # Ampliar el pool en 3 por cada 5 usuarios
-    if user_count % MAX_USERS_AMPLIFICATION == 0:
-        new_max_overflow = current_max_overflow + AMPLIFICATION_INCREMENT
-        engine.pool._set_max_overflow(new_max_overflow)
-
-    # Reducir el tamaño del pool basado en conexiones inactivas
-    if total_connections > 0:
-        active_ratio = len(active_connections) / total_connections
-        if active_ratio < POOL_REDUCTION_THRESHOLD:
-            new_pool_size = max(INITIAL_POOL_SIZE, current_pool_size - POOL_SIZE_INCREMENT)
-            engine.pool._set_pool_size(new_pool_size)
-            app.logger.info(f"Reduciendo el tamaño del pool a {new_pool_size}. Conexiones activas: {len(active_connections)}")
-
-@event.listens_for(engine, 'connect')
-def on_connect(dbapi_connection, connection_record):
-    """Incrementar el contador de usuarios y ajustar el pool si es necesario."""
-    global user_count, total_connections, active_connections
-    user_count += 1
-    total_connections += 1
+# Escuchar cuando se abre una nueva conexión
+@event.listens_for(Pool, "connect")
+def connect_listener(dbapi_connection, connection_record):
     connection_key = id(connection_record)
+    #print("connect_listener Nueva conexión abierta. Conexión ID:", connection_key)
+    
+    # Registrar la nueva conexión
     active_connections.add(connection_key)
     connection_times[connection_key] = time.time()
-    adjust_pool_size()
-    app.logger.info(f"Usuario conectado. Total usuarios: {user_count}")
+    app.logger.info(f"connect_listener Conexión abierta. Total conexiones activas: {len(active_connections)}")
 
-@event.listens_for(engine, 'checkin')
-def on_checkin(dbapi_connection, connection_record):
-    """Asegura que el número de conexiones no exceda el máximo al devolver conexiones al pool."""
-    global active_connections, connection_times
+# Escuchar cuando se obtiene una conexión del pool
+@event.listens_for(Pool, "checkout")
+def checkout_listener(dbapi_connection, connection_record,connection_proxy):
     connection_key = id(connection_record)
+    #print("checkout_listener Conexión obtenida del pool. Conexión ID:", connection_key)
+    
+    # Actualizar el tiempo de última actividad
+    if connection_key in connection_times:
+        connection_times[connection_key] = time.time()
+    else:
+        pass
+        #app.logger.warning(f"checkout_listener Clave de conexión no encontrada en connection_times: {connection_key}")
+
+@event.listens_for(db.engine, "close")
+def close_listener(dbapi_connection, connection_record):
+    connection_id = id(connection_record)
+   # app.logger.info(f"close_listener Conexión cerrada. ID: {connection_id}")
+
+@app.teardown_appcontext
+def teardown_db(exception):
+    # Cierra la sesión de la base de datos y libera recursos
+    db.session.remove()
+# Escuchar cuando se devuelve una conexión al pool
+@event.listens_for(Pool, "checkin")
+def checkin_listener(dbapi_connection, connection_record):
+    connection_key = id(connection_record)
+    print("Conexión devuelta al pool. Conexión ID:", connection_key)
+    
+    # Verificar y eliminar la clave de active_connections si existe
     if connection_key in active_connections:
         active_connections.remove(connection_key)
-    connection_times[connection_key] = time.time()  # Actualizar tiempo de inactividad
-    app.logger.info(f"Conexión verificada. Total conexiones activas: {len(active_connections)}")
-
-@event.listens_for(engine, 'checkout')
-def on_checkout(dbapi_connection, connection_record, connection_proxy):
-    """Decrementar el contador de usuarios cuando una conexión se libera."""
-    global user_count, total_connections
-    user_count -= 1
-    if user_count < 0:
-        user_count = 0
-    app.logger.info(f"Usuario desconectado. Total usuarios: {user_count}")
-
-@event.listens_for(engine.pool, "connect")
-def log_connection_info(dbapi_connection, connection_record):
-    """Registra eventos de conexión y asegura que el número máximo de conexiones no se exceda."""
-    global active_connections, connection_times
-    connection_key = id(connection_record)
-    connection_times[connection_key] = time.time()
-    active_connections.add(connection_key)
-    app.logger.info(f"Conexión establecida. Total conexiones activas: {len(active_connections)}")
-
+    else:
+        pass
+        #app.logger.warning(f"Clave de conexión no encontrada en active_connections: {connection_key}")
+    
+    # Verificar y eliminar la clave de connection_times si existe
+    if connection_key in connection_times:
+        connection_times.pop(connection_key, None)
+    else:
+        pass
+        #app.logger.warning(f"Clave de conexión no encontrada en connection_times: {connection_key}")
+    
+    app.logger.info(f"Conexión devuelta al pool. Total conexiones activas: {len(active_connections)}")
+    
+    # Manejar el número de conexiones si es necesario
     if len(active_connections) > MAX_CONNECTIONS:
-        # Cerrar conexiones inactivas si el límite se excede
         current_time = time.time()
         connections_to_close = [key for key, last_active in connection_times.items()
                                 if current_time - last_active > INACTIVITY_TIMEOUT]
@@ -372,16 +367,87 @@ def log_connection_info(dbapi_connection, connection_record):
                 break
             if conn_key in active_connections:
                 app.logger.info(f"Cerrando conexión inactiva: {conn_key}")
-                connection = next((conn for conn in active_connections if id(conn) == conn_key), None)
-                if connection:
-                    connection.close()  # Cerrar la conexión
-                    active_connections.remove(conn_key)  # Eliminar del conjunto de conexiones activas
-                    connection_times.pop(conn_key, None)  # Eliminar del diccionario de tiempos
-# Registro explícito de los eventos (líneas añadidas)
-event.listen(engine, 'connect', on_connect)
-event.listen(engine, 'checkin', on_checkin)
-event.listen(engine, 'checkout', on_checkout)
+                # Aquí simplemente removemos el registro, no la conexión real
+                active_connections.remove(conn_key)
+                connection_times.pop(conn_key, None)
+                pool = engine.pool
+                if pool.checkedout() >= pool.size():
+                  pass
+                  #print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
+
+def log_connection_info(dbapi_connection, connection_record):
+    pass
+    #print("Registro de conexión. Conexión ID:", id(dbapi_connection))
+    
+    
+event.listen(engine, 'connect', connect_listener)
+event.listen(engine, 'checkin', checkin_listener)
+event.listen(engine, 'checkout', checkout_listener)
+event.listen(engine, 'close',close_listener)
 event.listen(engine.pool, 'connect', log_connection_info)
+
+def adjust_pool_size():
+    """Ajusta el tamaño del pool basado en el número de usuarios y conexiones activas."""
+    global total_connections, user_count, engine
+
+    # Obtener tamaño actual del pool y max_overflow
+    current_pool_size = engine.pool.size()
+    current_max_overflow = engine.pool._max_overflow
+
+    # Crear 2 conexiones cada 3 usuarios
+    if user_count % MAX_USERS_INCREMENT == 0:
+        new_pool_size = current_pool_size + POOL_SIZE_INCREMENT
+        new_max_overflow = current_max_overflow  # Mantener el max_overflow igual o ajustarlo si es necesario
+        engine.dispose()  # Desconectar el motor actual
+        engine = create_engine(
+            DATABASE_CONNECTION_URI,
+            pool_size=new_pool_size,
+            max_overflow=new_max_overflow
+        )
+        app.logger.info(f"Ajustado el tamaño del pool a {new_pool_size}.")
+
+    # Ampliar el pool en 3 por cada 5 usuarios
+    if user_count % MAX_USERS_AMPLIFICATION == 0:
+        new_max_overflow = current_max_overflow + AMPLIFICATION_INCREMENT
+        new_pool_size = engine.pool.size()  # Mantener el pool_size igual o ajustarlo si es necesario
+        engine.dispose()  # Desconectar el motor actual
+        engine = create_engine(
+            DATABASE_CONNECTION_URI,
+            pool_size=new_pool_size,
+            max_overflow=new_max_overflow
+        )
+        app.logger.info(f"Ajustado el max_overflow a {new_max_overflow}.")
+
+    # Reducir el tamaño del pool basado en conexiones inactivas
+    if total_connections > 0:
+        active_ratio = len(active_connections) / total_connections
+        if active_ratio < POOL_REDUCTION_THRESHOLD:
+            new_pool_size = max(INITIAL_POOL_SIZE, current_pool_size - POOL_SIZE_INCREMENT)
+            new_max_overflow = current_max_overflow  # Mantener el max_overflow igual o ajustarlo si es necesario
+            engine.dispose()  # Desconectar el motor actual
+            engine = create_engine(
+                DATABASE_CONNECTION_URI,
+                pool_size=new_pool_size,
+                max_overflow=new_max_overflow
+            )
+            app.logger.info(f"Reducido el tamaño del pool a {new_pool_size}. Conexiones activas: {len(active_connections)}.")
+
+
+@event.listens_for(Pool, "invalidate")
+def invalidate_listener(dbapi_connection, connection_record):
+    pass
+    #print("Conexión invalidada. Conexión ID:", id(dbapi_connection))
+
+
+def monitor_pool_state(engine):
+    pool = engine.pool
+    if pool.checkedout() >= pool.size():
+        pass
+       # print(f"Advertencia: El pool está casi lleno: {pool.checkedout()} / {pool.size()}")
+    else:
+        pass
+       # print(f"Conexiones en uso: {pool.checkedout()} / {pool.size()}")
+
 
 
 
@@ -446,14 +512,33 @@ def entrada():
 
 @login_manager.user_loader
 def load_user(user_id):
-    #return Usuario.query.get(int(user_id))
+    try:
+        monitor_pool_state(db.engine)
+        # Realiza la consulta para obtener el usuario
+        user = db.session.query(Usuario).filter_by(id=user_id).first()
+        db.session.close()
+        return user
     
-     return db.session.query(Usuario).filter_by(id=user_id).first()
+    except OperationalError as e:
+        # Manejar el error de conexión y reconfigurar si es necesario
+        app.logger.error(f"Error de conexión a la base de datos: {e}")
+        
+        # Volver a crear la sesión
+      
+        db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión   
+        # Reintenta la consulta después de reconfigurar
+        try:
+            # Reintenta la consulta después de reconfigurar
+            user = db.session.query(Usuario).filter_by(id=user_id).first()
+            return user
+        except OperationalError as e:
+            app.logger.error(f"Error de conexión a la base de datos tras reintentar: {e}")
+            return None
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    #app.run(host='0.0.0.0', port=5001, debug=True)
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
+    #app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas

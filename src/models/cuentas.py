@@ -59,7 +59,7 @@ class Cuenta(db.Model):
         if cuenta:
             # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
             broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
-            
+            db.session.close()
             if broker:
                 # Agregar los valores de api_url y ws_url a la lista 'valores'
                 valores = [broker.api_url, broker.ws_url]
@@ -68,6 +68,7 @@ class Cuenta(db.Model):
             else:
                 print("No se encontró el broker asociado a la cuenta.")
         else:
+            db.session.close()
             print("No se encontró la cuenta.")
 
             

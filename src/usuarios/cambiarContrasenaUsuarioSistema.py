@@ -187,6 +187,7 @@ def reset_password():
             hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
             usuario.password = hashed_password
             db.session.commit()
+            db.session.close()
             flash('Contraseña cambiada exitosamente.')
             return jsonify({'message': 'Contraseña cambiada exitosamente.'})
         else:

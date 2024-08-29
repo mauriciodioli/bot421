@@ -47,8 +47,10 @@ class SheetHandler:
                             senial = senial[1:] if len(senial) > 1 else []
                             gan_tot = gan_tot[1:] if len(gan_tot) > 1 else []
                             dias_operado = dias_operado[1:] if len(dias_operado) > 1 else []
-
+                            
                             union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado, precioUt)
+                           # for linea in union:
+#                                print(linea)
                             return union
                     except gspread.exceptions.APIError as e:
                         print(f"Error al leer la hoja: {e}")

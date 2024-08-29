@@ -4,6 +4,12 @@
 
 <body> 
     
+<style>
+  .verde {
+    color: green;
+}
+</style>
+
   <div class = 'container p-4'id="contenido" style="display:none">  
     <div class="jumbotron">
       <p class="lead">To operate you can press the button with the corresponding color</p>
@@ -22,6 +28,7 @@
      
     <div class="jumbotron">
       <h1 class="display-4">Select Broker!</h1>
+      <h3 id="ut_usuario">Unidad de Tradeo: 0</h3>
       <div class="form-group">
           
           <select class="form-control" id="brokerSelect" onchange="redirectBroker()">
@@ -114,6 +121,7 @@
           </form>
       </div> 
   </div> 
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -258,11 +266,25 @@ function leerFilasTabla(tableBody) {
 
 
 
+function actualizarUnidadTradeo(){
+    // Obtener el valor de 'ut_usuario' desde localStorage
+    var ut_usuario = localStorage.getItem('ut_usuario');
+        
+    // Obtener el elemento <h3>
+    var h3Element = $('#ut_usuario');
 
+    // Verificar si 'ut_usuario' tiene un valor
+    if (ut_usuario) {
+        // Actualizar el contenido y aplicar la clase verde
+        h3Element.text('Unidad de Tradeo: ' + ut_usuario);
+        h3Element.addClass('verde');
+    } else {
+        // Si no hay valor, restablecer el contenido y eliminar la clase verde
+        h3Element.text('Unidad de Tradeo: No disponible');
+        h3Element.removeClass('verde');
+    }
 
-
-
-
+}
 
 
   function updateTable() {
@@ -271,7 +293,8 @@ function leerFilasTabla(tableBody) {
 
   // var cambiosAntes = compararCambios();
     // Realizar una solicitud AJAX para obtener los nuevos datos
-    
+   
+    actualizarUnidadTradeo();
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = localStorage.getItem('usuario_id');
     var access_token = localStorage.getItem('access_token');
@@ -320,11 +343,11 @@ function leerFilasTabla(tableBody) {
         // Agrega la fila de encabezado a la tabla
         tableBody.appendChild(headerRow);
         for (var i = 0; i < response.datos.length; i++) {
-
+          debugger;
           var dato = response.datos[i];
         
-          //debugger;
-         // console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
+         
+          //console.log('dato[0] ',dato[0],'dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
          
           if (
               (dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
@@ -342,6 +365,7 @@ function leerFilasTabla(tableBody) {
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
                           row.setAttribute('id', filaId);
+                          debugger;
                           row.innerHTML = `
                             <td>${numeroDeOrden}</td>
                             <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -604,6 +628,39 @@ function leerFilasTabla(tableBody) {
       //  console.log('Cambios en estado closed:', closedChanged);
       // Oculta las filas que no cambiaron
       leerFilasTabla(tableBody);
+
+
+
+
+    
+          // Obtener el elemento <h3>
+      var h3Element = $('#ut_usuario');
+
+      // Verificar si 'ut_usuario' tiene un valor
+      if ( response.unidadTrader) {
+          // Actualizar el contenido y aplicar la clase verde
+          h3Element.text('Unidad de Tradeo: ' +  response.unidadTrader);
+          h3Element.addClass('verde');
+          document.getElementById('ut_usuario').style.color = 'green';
+
+
+
+
+      } else {
+        /*****SI LA UNIDAD DE TRADEO ES IGUAL A CERO SE ABRE EL MODAL*********/
+      
+          // Muestra el mensaje de alerta
+            alert('Tiene que cargar un valor de UT para poder ver las señales.');
+            // Abre el modal si el valor es 0
+            $('#UtUsuarioModal').modal('show');
+       
+
+          h3Element.removeClass('verde');
+      }
+
+
+
+
       } else {
         // Hubo un error en la solicitud
         showError('Error al obtener los datos: ' + xhr.statusText);

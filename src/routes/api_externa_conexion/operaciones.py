@@ -125,7 +125,7 @@ def estadoOperacion():
         print(f"Error inesperado: {e}")
         flash("Ocurrió un error inesperado al obtener los datos de operaciones")
 
-    return render_template("notificaciones/noPoseeDatos.html")
+    return render_template("notificaciones/noPoseeDatos.html", layout = 'layoutBroker')
 
 
 
@@ -357,7 +357,7 @@ def operaciones_desde_seniales():
                     if 'ValorPrecioLimite' in request.form: 
                         precios = request.form['ValorPrecioLimite']                 
                     else:
-                      existencia = inst.instrumentos_existentes_by_symbol(yRofexInicializada=pyRofexInicializada['pyRofex'],message=symbol,account=cuentaAcount)                   
+                      existencia = inst.instrumentos_existentes_by_symbol(pyRofexInicializada=pyRofexInicializada['pyRofex'],message=symbol,account=cuentaAcount)                   
                       if existencia == True:           
                         precios = inst.instrument_por_symbol(symbol)    
                               
@@ -397,9 +397,8 @@ def operaciones_desde_seniales():
                           # Inicia el hilo para consultar el saldo después de un minuto
                           if tipo_orden == 'LIMIT' or tipo_orden == 'MARKET':
                               
-                              orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder)
-                              ticker = symbol
-                            
+                              orden_ = Operacion(ticker=symbol, accion=accion, size=cantidad_a_comprar_abs, price=price,order_type=tipoOrder,environment=cuentaAcount)
+                             
                               if orden_.enviar_orden(cuenta=cuentaAcount,pyRofexInicializada=pyRofexInicializada['pyRofex']):
                                         print("Orden enviada con éxito.")
                                         flash('Operacion enviada exitosamente')
@@ -411,14 +410,14 @@ def operaciones_desde_seniales():
                                         orderStatus = None
                                         timepoTransaccion = None
                                         for orden in operaciones:
-                                          if orden['instrumentId']['symbol'] == ticker:
+                                          if orden['instrumentId']['symbol'] == symbol:
                                             transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
                                             if timepoTransaccion is None or transacTime > timepoTransaccion:
                                                 timepoTransaccion = transacTime
 
                                                         
                                         for orden in operaciones:
-                                            if orden['instrumentId']['symbol'] == ticker:
+                                            if orden['instrumentId']['symbol'] == symbol:
                                                 transacTime = datetime.strptime(orden['transactTime'], '%Y%m%d-%H:%M:%S.%f%z')
                                                 if transacTime == timepoTransaccion:                                                                   
                                                     clOrdId = orden['clOrdId'] 
@@ -427,7 +426,7 @@ def operaciones_desde_seniales():
                                               
                                         if orderStatus != 'REJECTED':     
                                             # Intentamos encontrar el registro con el symbol específico
-                                            orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+                                            orden_existente = db.session.query(Orden).filter_by(symbol=symbol).first()
 
                                             if orden_existente:
                                                 # Si el registro existe, lo actualizamos
@@ -452,7 +451,7 @@ def operaciones_desde_seniales():
                                                     clOrdId_baja_timestamp=None,
                                                     proprietary=True,
                                                     marketId='',
-                                                    symbol=ticker,
+                                                    symbol=symbol,
                                                     tipo=tipo_orden,
                                                     tradeEnCurso="si",
                                                     ut=cantidad_a_comprar_abs,
@@ -508,7 +507,7 @@ def operaciones_desde_seniales():
       new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
       db.session.add(new_log)
       db.session.commit()
-
+      db.session.close()
     return render_template('notificaciones/errorOperacion.html')
 
 ######## FALTA IMPLEMENTAR LAS OPERACIONES AUTOMATICAS DESDE PANEL CON CUENTA #############
@@ -530,8 +529,8 @@ def operaciones_automatico_desde_senial_con_cuenta():
       # Crear un nuevo registro en Logs
     #  new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
     #  db.session.add(new_log)
-      db.session.commit()
-
+      #db.session.commit()
+      
   return render_template('notificaciones/errorOperacion.html')
 def calculaUt(precios,valor_cantidad,valor_monto,signal):
   
@@ -576,7 +575,7 @@ def obtenerCuentaBroker(user_id):
    usuario = db.session.query(Usuario).get(user_id)  
 # Buscar todas las cuentas asociadas a ese usuario
    cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-
+   db.session.close()
    if cuentas:
       print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
                   

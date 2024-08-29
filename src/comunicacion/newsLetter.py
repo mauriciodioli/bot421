@@ -34,6 +34,7 @@ def comunicacion_newsLetter_add():
                 db.session.close()
                 return jsonify({"message": "Email registered successfully."}), 200
             else:
+                db.session.close()
                 return jsonify({"message": "Email is already registered."}), 409
         except Exception as e:
             return jsonify({"message": f"An error occurred: {str(e)}"}), 500

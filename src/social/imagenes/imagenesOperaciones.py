@@ -1,22 +1,40 @@
 import os
 from flask import Flask,jsonify, request, render_template,redirect, Blueprint,current_app, url_for,flash
 from utils.db import db
+
 from models.modelMedia.image import Image
+from models.modelMedia.video import Video
+import tokens.token as Token
+
+from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.publicacion_imagen_video import Public_imagen_video
+
 from models.usuario import Usuario
 import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError
 import sys
+
 # Configuración del Blueprint para el registro de usuarios
 imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
 
-@imagenesOperaciones.route('/subirImagen/')
+
+
+@imagenesOperaciones.route('/subirImagen/', methods=['POST'])
 def subirImagen():
-    return render_template("media/principalMedia/subirImage.html")
+    # Obtener el valor de 'layout' del parámetro de la URL
+    layout = request.args.get('layout', 'layout')
+    publicacion_id = request.form.get('publicacion_id')
+    
+    # Pasar el valor de 'layout' al template
+    return render_template("media/principalMedia/subirImage.html", publicacion_id=publicacion_id, layout=layout)
 
 @imagenesOperaciones.route('/subirVideo/')
 def subirVideo():
-    return render_template("media/principalMedia/subirVideo.html")
+      # Obtener el valor de 'layout' del parámetro de la URL
+    layout = request.files('layout', default='layout', type=str)
+    publicacion_id = request.files('publicacion_id', default='publicacion_id', type=str)
+    return render_template("media/principalMedia/subirVideo.html", publicacion_id=publicacion_id ,layout=layout)
 
 @imagenesOperaciones.route('/mostrarGaleria/')
 def mostrarGaleria():
@@ -74,11 +92,13 @@ def cargarVideo():
             description=description_video,
             colorDescription=selectedColor,
             filepath=new_path,
-            randomNumber=random_number
+            randomNumber=random_number,
+            size=0
         )
 
         db.session.add(nueva_imagen)
         db.session.commit()
+        db.session.close()
 
         # Realizar alguna acción adicional si es necesario, como mostrar las imágenes
      
@@ -145,10 +165,12 @@ def cargarImagen():
                 description=descriptionImagen,
                 colorDescription=selectedColor,
                 filepath=new_path,
-                randomNumber=numeroAleatoreo
+                randomNumber=numeroAleatoreo,
+                size=0
             )
             db.session.add(nueva_imagen)
             db.session.commit()
+            db.session.close()
           
        # MostrarImages()
         return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo})
@@ -191,6 +213,7 @@ def mostrar_imagenes():
             try:
                 usuarios = db.session.query(Usuario).all()
                 imagenes = db.session.query(Image).all()
+               
             except Exception as e:
                 # Manejar excepciones de la base de datos
                 flash("Error en la base de datos", "error")
@@ -204,25 +227,30 @@ def mostrar_imagenes():
         
        # Filtrar solo las imágenes (puedes ajustar esto según tus necesidades)
         imagenes_filtradas = [img for img in imagenes if es_formato_imagen(img.filepath)]
-        
+       # path_separator = '/' if os.name != 'nt' else '\\'
+        path_separator = '/'
         # Procesar y asignar los paths solo a las imágenes filtradas
         for img in imagenes_filtradas:
             original_filepath = img.filepath
-            img.image_paths = original_filepath.replace('static/', '')
-           # img.image_paths = original_filepath.replace('static\\', '').replace('\\', '/')
-            print(f"Original: {original_filepath}, Modificado: {img.image_paths}")
-            sys.stdout.flush() 
-  # Buscar el usuario correspondiente
+            # Reemplazar los separadores de ruta para que sean consistentes
+            image_paths = original_filepath.replace('\\', path_separator)
+            
+            # Reemplazar 'static/' o 'static\\' con una cadena vacía
+            img.image_paths = image_paths.replace('static/', '')
+          
+            print(f"Original: {original_filepath}, Modificado: { img.image_paths}")
+            sys.stdout.flush()
+            
+            # Buscar el usuario correspondiente
             usuario_correspondiente = next((usuario for usuario in usuarios if usuario.id == img.user_id), None)
-
+            
             # Agregar el correo electrónico del usuario a la imagen
             if usuario_correspondiente:
                 img.correo_electronico = usuario_correspondiente.correo_electronico
             else:
-                # Puedes manejar el caso en el que no se encuentra el usuario (si es relevante para tu lógica)
+                # Manejar el caso en el que no se encuentra el usuario
                 img.correo_electronico = "Usuario no encontrado"
-
-          
+                
       
     return render_template('media/principalMedia/images.html', imagenes=imagenes_filtradas)
     
@@ -299,6 +327,7 @@ def eliminar_imagen():
                 # Eliminar la imagen de la base de datos
                 db.session.delete(imagen)
                 db.session.commit()
+                db.session.close()
                 ruta_imagen = os.path.join(ruta_base_datos)
                 os.remove(ruta_imagen)
                 return jsonify({'message': 'Imagen eliminada con éxito'}), 200
@@ -316,3 +345,5 @@ def es_formato_imagen(filepath):
 
     # Verificar si la extensión del archivo está en la lista de extensiones de imagen
     return any(filepath.lower().endswith(ext) for ext in extensiones_imagen)
+
+

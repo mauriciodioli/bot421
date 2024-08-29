@@ -571,7 +571,22 @@ document.addEventListener('DOMContentLoaded', function() {
      // console.log('Cambios en estado OPEN:', openChanged);
      //  console.log('Cambios en estado closed:', closedChanged);
       // Oculta las filas que no cambiaron
-    
+        // Obtener el elemento <h3>
+          var h3Element = $('#ut_usuario');
+
+          // Verificar si 'ut_usuario' tiene un valor
+          if ( response.unidadTrader) {
+              // Actualizar el contenido y aplicar la clase verde
+              h3Element.text('Unidad de Tradeo: ' +  response.unidadTrader);
+              h3Element.addClass('verde');
+          } else {
+              // Si no hay valor, restablecer el contenido y eliminar la clase verde
+              h3Element.text('Unidad de Tradeo: No disponible');
+              h3Element.removeClass('verde');
+          }
+
+
+          
     } else {
         // Hubo un error en la solicitud
         showError('Error al obtener los datos: ' + xhr.statusText);

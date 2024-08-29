@@ -29,6 +29,10 @@ sed -i "s/ID_USER_ACTUALIZAR_SHEET = 2/#ID_USER_ACTUALIZAR_SHEET = 2/g" src/rout
 sed -i "s/#MYSQL_DATABASE = flaskmysql/MYSQL_DATABASE = flaskmysql/g" src/.env
 sed -i "s/MYSQL_DATABASE = base_dbbot421v02/#MYSQL_DATABASE = base_dbbot421v02/g" src/.env
 
+#runScript
+sed -i "s/#remote_host = '18.207.114.83' #PRUEBA/remote_host = '18.207.114.83' #PRUEBA/g" src/herramientasAdmin/runScript.py
+sed -i "s/remote_host = '44.223.20.210' #PRODUCCION/#remote_host = '44.223.20.210' #PRODUCCION/g" src/herramientasAdmin/runScript.py
+
 # Modificar aws.yml
 sed -i "s/#EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com/EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com/g" .github/workflows/aws.yml
 sed -i "s/EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com/#EC2_HOST: ec2-44-223-20-210.compute-1.amazonaws.com/g" .github/workflows/aws.yml

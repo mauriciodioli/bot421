@@ -85,13 +85,13 @@ SPREADSHEET_ID_PRODUCCION = os.environ.get('SPREADSHEET_ID_PRODUCCION')  #drpiBo
 SPREADSHEET_ID_USA= os.environ.get('SPREADSHEET_ID_USA') #de produccion USA
 VARIABLE_ACTUALIZAR_SHEET = os.environ.get('VARIABLE_ACTUALIZAR_SHEET') 
 
-#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
-#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
-#ID_USER_ACTUALIZAR_SHEET = 1
+CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
+CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
+ID_USER_ACTUALIZAR_SHEET = 1
 
-CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
-CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
-ID_USER_ACTUALIZAR_SHEET = 2
+#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
+#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
+#ID_USER_ACTUALIZAR_SHEET = 2
 # Días de la semana a los que debe ejecutar la función
 
 DIAS_EJECUCION = ["lunes", "martes", "miercoles", "jueves", "viernes"]
@@ -119,6 +119,10 @@ ConexionesBroker = {}
 luzMDH_funcionando = False
 luzThred_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0}
 sheet_manager = None
+valores_mep = {
+    'AL30': {'compra': None, 'venta': None},
+    'GD30': {'compra': None, 'venta': None}
+}
 
 indice_cuentas = {}
 autenticado_sheet = False
@@ -218,7 +222,7 @@ def panel_control_broker():
 def loginExtAutomatico():
     print('get_login.loginExtAutomatico ')
     if request.method == 'POST':
-       # try:
+        try:
             #selector = request.form.get('environment')
             selector = request.json.get('simuladoOproduccion')
             access_token = request.json.get('access_token')
@@ -248,7 +252,8 @@ def loginExtAutomatico():
           
                 if accountCuenta is not None and accountCuenta != '':   
                    cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
-                   db.session.close()
+                 
+                 
                    passwordCuenta = cuentas.passwordCuenta
                    passwordCuenta = passwordCuenta.decode('utf-8')
                     
@@ -365,16 +370,9 @@ def loginExtAutomatico():
                     return render_template('home.html', cuenta=[accountCuenta,user,simuladoOproduccion]) 
             else:
                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
-                    
-       # except jwt.InvalidTokenError:
-       #     print("El token es inválido")
-       # except jwt.ExpiredSignatureError:
-       #     print("El token ha expirado")
-        #except Exception as e:
-        #    print("Otro error:", str(e))
-        #return render_template("cuentas/registrarCuentaBroker.html")
-
-
+        finally:
+            db.session.close()  # Asegura que la sesión de la base de datos se cierre, incluso si ocurre un error.           
+      
 
 
 
@@ -508,10 +506,10 @@ def loginExtCuentaSeleccionadaBroker():
         flash("El token ha expirado")
     except jwt.InvalidTokenError:
         flash("El token es inválido")
-    #  except Exception as e:
-    #      print('Error inesperado:', e)
-    #      flash('No se pudo iniciar sesión')
-    #      return render_template('errorLogueo.html')
+    except Exception as e:
+         print('Error inesperado:', e)
+         flash('No se pudo iniciar sesión')
+         return render_template('notificaciones/errorLogueo.html')
 
 
 
@@ -543,7 +541,7 @@ def inicializar_variables(accountCuenta):
     if cuenta:
         # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
         broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
-        
+        db.session.close()
         if broker:
               # Agregar los valores de api_url y ws_url a la lista 'valores'
             valores = [broker.api_url, broker.ws_url]

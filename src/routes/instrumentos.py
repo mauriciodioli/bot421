@@ -37,7 +37,7 @@ def Getinstrumentos(account=None):
 ################delete de Instrumento##################
 @instrumentos.route("/delete/<string:id>")
 def delete_mer(id):
-    dato = Instrumento.query.get(id)
+    dato = db.session.query(Instrumento).get(id)
     db.session.delete(dato)
     db.session.commit()
     db.session.close()

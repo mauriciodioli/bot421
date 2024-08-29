@@ -2,11 +2,13 @@ from flask import Blueprint, render_template, session,request, redirect, url_for
 from utils.common import Marshmallow, db, get
 import routes.instrumentosGet as instrumentosGet
 import routes.api_externa_conexion.validaInstrumentos as val
+from models.cuentas import Cuenta
 
 import strategies.datoSheet as datoSheet
 import routes.instrumentos as inst
 from panelControlBroker.panelControl import enviar_leer_sheet
 from strategies.datoSheet import update_precios
+from strategies.datoSheet import calculo_dolar_mep
 from strategies.caucionador.caucion import determinar_caucion
 from datetime import datetime
 
@@ -100,6 +102,8 @@ def market_data_handler_0(message):
                 now = datetime.now()                
               #  if (now.hour == 19 and now.minute >= 20 and now.minute <= 29):
                 determinar_caucion(message)
+                
+               # calculo_dolar_mep(message)
                 
                 if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
                     pyRofexInicializada = get.ConexionesBroker.get('44593')['pyRofex']
@@ -346,7 +350,7 @@ def cargaSymbolParaValidar(message):
     return listado_final
   
 def get_instrumento_para_suscripcion_ws(app,user_id,selector):#   **77
-     ContenidoSheet =  enviar_leer_sheet(app,'argentina',user_id,None,selector) 
+     ContenidoSheet =  enviar_leer_sheet(app,'argentina',user_id,None,None,selector)                       
      return ContenidoSheet
 
 def get_instrumento_para_suscripcion_db(app):
@@ -398,7 +402,7 @@ def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
         return True
 
 
-def cargarCuenta(Cuenta,idUser,account):
+def cargarCuenta(Cuentas,idUser,account):
     retries = 0
     max_retries = 5
     retry_delay = 5  # segundos
@@ -407,22 +411,28 @@ def cargarCuenta(Cuenta,idUser,account):
         try:
             # Realiza la consulta
             cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
-            #db.engine.dispose()  # Esto cierra todas las conexiones y las elimina del pool
-            return cuenta  # Si la consulta es exitosa, retorna el resultado
-        
+            if cuenta is not None:
+                passwordCuenta = cuenta.passwordCuenta
+                return cuenta
+            else:
+                # Manejar el caso en el que cuenta es None
+                 print("Error: cuenta es None")
+                 return None
         except OperationalError as e:
             print(f"Error de conexión: {e}. Reintentando en {retry_delay} segundos...")
             retries += 1
             time.sleep(retry_delay)  # Espera antes de volver a intentar
-            db.session.remove()  # Elimina la sesión actual
-            
+         
+            db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión
+            cuenta = db.session.query(Cuenta).filter_by(user_id=idUser, accountCuenta=account).first()
+          
             # Reconfigura la sesión si es necesario
             db.session.bind = db.engine
             
         except Exception as e:
             print(f"Ocurrió un error: {e}")
             break  # Sale del bucle en caso de error general
-    
+    db.session.close()
     if retries == max_retries:
         print("Error: Se ha alcanzado el límite de reintentos.")
         # Manejo adicional de error si es necesario
