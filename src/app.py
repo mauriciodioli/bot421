@@ -80,6 +80,7 @@ from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
 from social.media.publicaciones import publicaciones
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
+from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
 
 from comunicacion.contacto import contacto
 from comunicacion.newsLetter import newsLetter
@@ -247,6 +248,7 @@ app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
 app.register_blueprint(muestraPublicacionesEnHome)
+app.register_blueprint(muestraPublicacionesEnAmbitos)
 
 app.register_blueprint(test_order_report_handler)
 
