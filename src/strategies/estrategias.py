@@ -81,16 +81,18 @@ def estrategias_usuario_general():
 
 def estrategias_usuario_nadmin_desde_endingOperacionBot(account, usuario_id):
     try:
-        # Consulta de estrategias
-       
-        return render_template(
-            "/notificaciones/terminoExitoso.html",  
-            layout='layoutConexBroker'
-        )
+        # Establecer el contexto de la aplicación Flask
+        with current_app.app_context():
+            # Consulta de estrategias
+            return render_template(
+                "/notificaciones/terminoExitoso.html",  
+                layout='layoutConexBroker'
+            )
     
     except Exception as e:
         print(f'Error en estrategias_usuario_nadmin_desde_endingOperacionBot: {e}')
-        return render_template("/notificaciones/errorEstrategiaABM.html")
+        with current_app.app_context():
+            return render_template("/notificaciones/errorEstrategiaABM.html")
 
    
 

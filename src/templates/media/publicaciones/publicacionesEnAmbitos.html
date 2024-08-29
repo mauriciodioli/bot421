@@ -1,0 +1,36 @@
+{% if layout == 'layout' %}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas' %}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block title %}Publicación en Ámbitos{% endblock %}
+{% block content %}
+<div class="home-publicaciones-ambitos">
+    <div class="home-muestra-publicaciones-en-ambitos-centrales">
+        <!-- Aquí se insertarán las publicaciones dinámicamente -->
+    </div>
+</div>
+{% include 'layouts/layout_footer.html' %}
+
+<script>
+
+var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
+var userId = '{{ post.user_id }}'; // Esto ya está disponible en tu plantilla
+var ambito = '{{ post.ambito }}'; // También está disponible en la plantilla
+   
+mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);   
+ 
+</script>
+
+{% endblock %}
