@@ -537,10 +537,12 @@ def procesar_estado_final(symbol, clOrdId):
 
     # Actualiza el estado de las operaciones enviadas
     for operacion_enviada in diccionario_operaciones_enviadas.values():
-        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and operacion_enviada['status'] != 'TERMINADA':
-            operacion_enviada['status'] = 'TERMINADA'
+        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
+          if operacion_enviada['status'] != 'TERMINADA':
+                operacion_enviada['status'] = 'TERMINADA'
         else:
               endingEnviadas = 'NO'
+              
     # Revisa las operaciones globales
     for key, operacionGlobal in diccionario_global_operaciones.items():
         if operacionGlobal['symbol'] == symbol:
