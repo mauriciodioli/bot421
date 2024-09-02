@@ -39,10 +39,10 @@ def media_muestraPublicacionesEnAmbitos():
      # Aquí manejas los datos recibidos y haces la lógica correspondiente
     # Podrías devolver una página renderizada con los datos correspondientes.
     # Ejemplo de cómo podrías usar los datos:
-    return render_template('media/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito)
+    return render_template('media/publicaciones/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito, layout='layout')
 
 
-@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar', methods=['GET'])
+@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar', methods=['POST'])
 def mostrar_publicaciones_en_ambitos():
     # Acceder a los datos enviados en la solicitud POST
     data = request.json  # Si los datos se enviaron como JSON
@@ -51,11 +51,11 @@ def mostrar_publicaciones_en_ambitos():
     ambito = data.get('ambito')
     
     # Ahora puedes usar publicacion_id, user_id, y ambito en tu lógica
-    publicaciones = obtener_publicaciones_por_usuario_y_ambito(user_id,ambito)  # Reemplaza con tu lógica de obtención
+    post = obtener_publicaciones_por_usuario_y_ambito(user_id,ambito)  # Reemplaza con tu lógica de obtención
     
-    if publicaciones:
+    if post:
         # Aquí puedes usar los parámetros adicionales si es necesario
-       return jsonify(publicaciones)
+       return jsonify(post)
 
     else:
         return jsonify({'error': 'Publicación no encontrada'}), 404
@@ -82,8 +82,8 @@ def obtener_publicaciones_por_usuario_y_ambito(user_id, ambito):
                         # Ajustar la ruta del archivo
                         filepath = imagen.filepath
                         if filepath.startswith('static'):
-                            filepath = filepath[len('static/'):]
-                        imagenes.append({
+                            #filepath = filepath[len('static/'):]
+                         imagenes.append({
                             'id': imagen.id,
                             'title': imagen.title,
                             'description': imagen.description,
@@ -99,8 +99,8 @@ def obtener_publicaciones_por_usuario_y_ambito(user_id, ambito):
                     if video:
                         # Ajustar la ruta del archivo
                         filepath = video.filepath
-                        if filepath.startswith('static/'):
-                            filepath = filepath[len('static/'):]
+                       # if filepath.startswith('static/'):
+                        filepath = filepath[len('static/'):]
                         videos.append({
                             'id': video.id,
                             'title': video.title,
