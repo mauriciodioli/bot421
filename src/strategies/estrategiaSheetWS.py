@@ -22,7 +22,6 @@ from models.unidadTrader import UnidadTrader
 import pprint
 import tokens.token as Token
 instrumentos_existentes_arbitrador1=[]
-import Tests.test_order_report_handler as test
 
 
 estrategiaSheetWS = Blueprint('estrategiaSheetWS',__name__)
@@ -413,25 +412,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
          if ut > 0:
         #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
             #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
-            nueva_orden = Orden(
-                                    user_id=usuariodb.id,
-                                    userCuenta=usuario,
-                                    accountCuenta=account,
-                                    clOrdId_alta=random.randint(1,100000),
-                                    clOrdId_baja='',
-                                    clientId='',
-                                    wsClOrdId_timestamp=datetime.now(),
-                                    clOrdId_alta_timestamp=None,
-                                    clOrdId_baja_timestamp=None,  # Campo vacío
-                                    proprietary=True,
-                                    marketId='',  # Campo vacío
-                                    symbol=elemento[0],
-                                    tipo=elemento[1],
-                                    tradeEnCurso=elemento[2],
-                                    ut=ut,
-                                    senial=elemento[4],
-                                    status='0'
-                                )
+           
             # Cargar los valores del objeto en el diccionario global
             if  elemento[4] == 'closed.': 
                 if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
@@ -447,7 +428,8 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
-                'accountCuenta': account,           
+                'accountCuenta': account,   
+                'idTrigger' : idTrigger,        
                 'clOrdId_alta': '',
                 'clOrdId_baja': '',
                 'orderId': '',
@@ -552,9 +534,11 @@ def procesar_estado_final(symbol, clOrdId):
 
     # Actualiza el estado de las operaciones enviadas
     for operacion_enviada in diccionario_operaciones_enviadas.values():
-        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and operacion_enviada['status'] != 'TERMINADA':
-            operacion_enviada['status'] = 'TERMINADA'
-
+        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
+          if operacion_enviada['status'] != 'TERMINADA':
+                operacion_enviada['status'] = 'TERMINADA'
+        else:
+              endingEnviadas = 'NO'
     # Revisa las operaciones globales
     for key, operacionGlobal in diccionario_global_operaciones.items():
         if operacionGlobal['symbol'] == symbol:
@@ -947,10 +931,16 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             print("###############################################") 
             print("###############################################") 
             account = diccionario_global_operaciones[symbol]['accountCuenta']
+            idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
-            #flash('FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO')
-            #estrategias_usuario_nadmin_desde_endingOperacionBot(get.ConexionesBroker[account]['cuenta'], idUser)
             #pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+            parametros = {
+                'accoount': get.ConexionesBroker[account]['cuenta'], 
+                'user_id': idUser, 
+                'symbol': symbol,               
+            }
+
+            get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
     except KeyError as e:
         print(f"KeyError: La clave {e} no se encontró en los diccionarios.")
     except Exception as e:

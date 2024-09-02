@@ -228,6 +228,8 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                     get.luzThred_funcionando['hora'] = now.hour
                     get.luzThred_funcionando['minuto'] = now.minute
                     get.luzThred_funcionando['segundo'] = now.second
+                
+               
 
                 # Preguntar si son las 11:00 y pasar la lectura
                 #if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
@@ -243,6 +245,8 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                     get.symbols_sheet_valores.clear()
                     get.sheet_manager = None
                     get.autenticado_sheet = False
+                
+              
         else:
             time.sleep(86400)  # Espera de 24 horas
                         
@@ -329,7 +333,15 @@ def procesar_datos(app,pais, accountCuenta,user_id,selector):
            return   get.diccionario_global_sheet_intercambio[pais]
        
 
-
+def verificar_estado_triggers():
+    # Recorre todos los triggers en estrategias_usuario__endingOperacionBot
+    for estrategia in get.estrategias_usuario__endingOperacionBot.values():
+        # Verifica si el estado es 'termino'
+        if estrategia['status'] == 'termino':
+            return True
+    
+    # Si ninguno tiene el estado 'termino', retorna False
+    return False
 
 '''
 get.precios_data = {
