@@ -131,6 +131,7 @@ diccionario_global_sheet_intercambio = {}
 ya_ejecutado_hilo_panelControl = False
 hilo_iniciado_panel_control = {}  # Un diccionario para mantener los hilos por país
 hilo_iniciado_estrategia_usuario = {}
+estrategias_usuario__endingOperacionBot = {}
 hilos_iniciados_shedule = []
 ultima_entrada = time.time()
 CUSTOM_LEVEL = 25  # Elige un número de nivel adecuado
