@@ -16,7 +16,7 @@ function formatDate(dateString) {
 function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
     var galeriaURL1 = '/media-muestraPublicacionesEnAmbitos-mostrar';
     var access_token = localStorage.getItem('access_token');
-
+    
     $.ajax({
         type: 'POST',
         url: galeriaURL1,
@@ -28,8 +28,9 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
         contentType: 'application/json', // Indica que se envía un JSON al backend
         dataType: 'json', // Asegúrate de que el backend devuelva un JSON
         headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
+
         success: function (response) {
-            window.location.href = '/media/publicacionesEnAmbitos.html';
+          //  window.location.href = '/media/publicaciones/publicacionesEnAmbitos.html';
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-centrales');
                 postDisplayContainer.empty();
@@ -38,7 +39,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
                     if (post.imagenes.length > 0 || post.videos.length > 0) {
                         var mediaHtml = '';
                         var baseUrl = window.location.origin;
-
+                        
                         if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                             var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
                             mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
