@@ -68,9 +68,8 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
 
                         var cardHtml = `
                             <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}">
-                                <div class="card-body-en-ambitos-personales">                                  
-                                        <span class="text-white">&times;</span>
-                                    </a>
+                                <div class="card-body-en-ambitos-personales">
+                                   
                                     <h5 class="card-title-en-ambitos-personales">${post.titulo}</h5>
                                     <div class="card-media-grid-publicacion-en-ambitos-personales">
                                         ${mediaHtml}
@@ -81,6 +80,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
                                 </div>
                             </div>
                         `;
+
 
                         postDisplayContainer.append(cardHtml);
                     } else {
