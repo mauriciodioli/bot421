@@ -312,7 +312,7 @@ def connect_listener(dbapi_connection, connection_record):
     # Registrar la nueva conexión
     active_connections.add(connection_key)
     connection_times[connection_key] = time.time()
-    app.logger.info(f"connect_listener Conexión abierta. Total conexiones activas: {len(active_connections)}")
+    #app.logger.info(f"connect_listener Conexión abierta. Total conexiones activas: {len(active_connections)}")
 
 # Escuchar cuando se obtiene una conexión del pool
 @event.listens_for(Pool, "checkout")
@@ -340,7 +340,7 @@ def teardown_db(exception):
 @event.listens_for(Pool, "checkin")
 def checkin_listener(dbapi_connection, connection_record):
     connection_key = id(connection_record)
-    print("Conexión devuelta al pool. Conexión ID:", connection_key)
+    #print("Conexión devuelta al pool. Conexión ID:", connection_key)
     
     # Verificar y eliminar la clave de active_connections si existe
     if connection_key in active_connections:

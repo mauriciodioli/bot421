@@ -1,0 +1,149 @@
+
+.home-publicaciones-en-ambitos-personales {
+  display: flex;
+  flex-wrap: wrap; /* Permite que las tarjetas se envuelvan en múltiples filas */
+  justify-content: center; /* Centra las tarjetas horizontalmente */
+  gap: 20px; /* Espacio entre las tarjetas (opcional) */
+  padding: 20px; /* Espacio alrededor del contenedor (opcional) */
+}
+
+.home-muestra-publicaciones-en-ambitos-personales-centrales {
+  display: flex;
+  flex-wrap: wrap; /* Permite que las tarjetas se envuelvan en múltiples filas */
+  justify-content: center; /* Centra las tarjetas horizontalmente */
+  gap: 20px; /* Espacio entre las tarjetas (opcional) */
+  padding: 20px; /* Espacio alrededor del contenedor (opcional) */
+}
+
+  .black-text {
+    color: rgb(255, 255, 255);
+  }
+
+  
+  .card-publicacion-en-ambitos-personales {
+    width: 18rem; /* Tamaño fijo para las tarjetas */
+    overflow: hidden; /* Asegura que el contenido no se desborde fuera de la tarjeta */
+    border: 1px solid rgb(49, 49, 49); /* Borde dorado para la tarjeta */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: black; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    margin-bottom: 1rem; /* Espacio inferior entre tarjetas */
+  }
+  
+  .card-body-en-ambitos-personales {
+   /* color: gold; */ /* Texto dorado */
+    padding: 15px;
+  }
+  
+  .card-title-en-ambitos-personales {
+    margin-bottom: 10px; /* Espacio debajo del título */   
+    font-size: 1.25rem; /* Tamaño de fuente más grande */
+    color: #fff; /* Título blanco */
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-date-en-ambitos-personales {
+    margin-bottom: 10px; /* Espacio debajo de la fecha */
+    font-size: 0.9em; /* Tamaño del texto de la fecha */
+    color: #02ccff; /* Color del texto de la fecha */
+  }
+  
+  .card-text-en-ambitos-personales {
+    color: #fff; /* Texto blanco */
+    margin-bottom: 15px; /* Espacio debajo del texto de la publicación */
+    font-size: 1em; /* Tamaño del texto de la publicación */
+  }
+
+
+  .card-media-grid-publicacion-en-ambitos-personales {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 0; /* Espacio entre la imagen y el resto del contenido */
+  }
+  
+
+  
+  .card-media-grid-publicacion-en-ambitos-personales img,
+  .card-media-grid-publicacion-en-ambitos-personales video {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
+    object-fit: cover;
+  }
+  
+  
+
+
+a.btn-close-publicacion-en-ambitos-personales {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    color: white; /* Color de la X */
+    text-decoration: none; /* Elimina el subrayado */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el enlace */
+    font-size: 24px; /* Tamaño de la X */
+    padding: 0; /* Quita el espaciado interno */
+    margin: 0; /* Quita el margen si es necesario */
+    top: 10px; /* Ajusta esto según sea necesario */
+    right: 10px; /* Ajusta esto según sea necesario */
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+
+
+
+
+
+
+.text-truncated-en-ambitos-personales {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Número de líneas que se muestran antes de truncar */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-expanded-en-ambitos-personales {
+    display: block;
+}
+
+/* Estilo del botón */
+.btn-ver-mas-en-ambitos-personales {
+    background-color: transparent; /* Fondo transparente */
+    border: 1px solid transparent; /* Borde transparente */
+    color: rgb(139, 139, 139); /* Color del texto */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    text-decoration: underline; /* Subrayado del texto */
+    padding: 5px 10px; /* Espaciado interno */
+    transition: color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+/* Estilo del botón cuando se pasa el mouse sobre él */
+.btn-ver-mas-en-ambitos-personales:hover {
+    color: rgb(85, 85, 85); /* Color del texto al pasar el mouse */
+}
+
+/* Estilo del botón cuando está enfocado (clic o tabulación) */
+.btn-ver-mas-en-ambitos-personales:focus {
+    outline: none; /* Eliminar el contorno por defecto del navegador */
+    color: rgb(85, 85, 85); /* Color del texto al enfocar el botón */
+}
+
+/* Estilo del botón cuando se hace clic */
+.btn-ver-mas-en-ambitos-personales:active {
+    color: rgb(85, 85, 85); /* Color del texto al hacer clic */
+}
+
+/* Ocultar el botón con la clase 'hidden' */
+.btn-ver-mas-en-ambitos-personales.hidden {
+    display: none;
+}
+
+
+
+  
+
+

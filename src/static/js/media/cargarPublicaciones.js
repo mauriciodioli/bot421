@@ -55,7 +55,7 @@
           if (file.type.startsWith('image/')) {
             mediaElement = document.createElement('img');
             mediaElement.src = e.target.result;
-            mediaElement.classList.add('thumbnail_creaPublicacion');
+            mediaElement.classList.add('thumbnail_creaPublicacion');            
           } else if (file.type.startsWith('video/')) {
             mediaElement = document.createElement('video');
             mediaElement.src = e.target.result;
@@ -185,6 +185,7 @@
   
   
   function closePreview() {
+    deb
     var previewImage = document.getElementById('preview-image-media_imagenes');
     var fileInput = document.getElementById('imagen-media_imagenes');
     var uploadButton = document.getElementById('open-popup-media_imagenes');

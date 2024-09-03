@@ -36,7 +36,7 @@ $.ajax({
                         post.imagenes.forEach(function(image, index) {
                             if (index > 0) { // Saltar la primera imagen
                                 var imageUrl = baseUrl + '/' + image.filepath;
-                                modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-crea-publicacion">`;
+                                modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-en-ambito-publicacion">`;
                             }
                         });
 
@@ -66,7 +66,7 @@ $.ajax({
                                         <span class="text-white">&times;</span>
                                     </a>
                                     <h5 class="card-title">${post.titulo}</h5>
-                                    <div class="card-media-grid-publicacion-admin">
+                                    <div class="card-media-grid-publicacion-en-ambito">
                                         ${mediaHtml}
                                     </div>
                                     <p class="card-date">${formatDate(post.fecha_creacion)}</p>
@@ -129,16 +129,21 @@ function toggleTexto(postId) {
     var postText = document.getElementById(`postText-${postId}`);
     var button = document.querySelector(`#card-${postId} .btn-ver-mas`);
     
-    if (postText.classList.contains('text-truncated')) {
-        postText.classList.remove('text-truncated');
-        postText.classList.add('text-expanded');
-        button.textContent = 'Ver menos';
+    if (button) { // Verifica si el botón existe
+        if (postText.classList.contains('text-truncated')) {
+            postText.classList.remove('text-truncated');
+            postText.classList.add('text-expanded');
+            button.textContent = 'Ver menos';
+        } else {
+            postText.classList.remove('text-expanded');
+            postText.classList.add('text-truncated');
+            button.textContent = 'Ver más';
+        }
     } else {
-        postText.classList.remove('text-expanded');
-        postText.classList.add('text-truncated');
-        button.textContent = 'Ver más';
+        console.error(`No se encontró el botón para el postId: ${postId}`);
     }
 }
+
 
 function abrirPublicacionHome(publicacionId) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
