@@ -633,3 +633,16 @@ body {
 .close-button-media_imagenes:hover {
   background-color: #d32f2f;
 }
+
+
+.card-grid-publicaciones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px; /* Ajusta este valor para controlar el espacio entre las tarjetas */
+}
+
+.card-publicacion-admin {
+  width: 100%; /* Asegura que las tarjetas ocupen todo el espacio disponible en la columna */
+  max-width: 250px; /* Ajusta este valor para controlar el tamaño máximo de las tarjetas */
+  height: auto;
+}
