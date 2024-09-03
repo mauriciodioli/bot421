@@ -396,15 +396,14 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                             
         contador += 1  
           
-    
-   
+       
      for elemento  in coincidencias:  
          # Paso 1: Eliminar los puntos
          cadena_sin_puntos = elemento[7].replace('.', '')
         # Paso 2: Reemplazar la coma por un punto
          cadena_correcta = cadena_sin_puntos.replace(',', '.')
         # Paso 3: Convertir la cadena a float
-         numero = float(cadena_correcta)
+         precio = float(cadena_correcta)
          if int(elemento[3]) == 0:
             ut = cargaUt(unidadTrader.ut,precio)
         
