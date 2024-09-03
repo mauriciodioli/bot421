@@ -44,15 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
       contentType: false,
       headers: {
         'Authorization': 'Bearer ' + access_token
-      },
-      success: function(response) {
+      },success: function(response) {
         if (Array.isArray(response)) {
             var postAccordion = $('#postAccordion');
             postAccordion.empty();
     
             // Crear un objeto para almacenar las publicaciones por ámbito
             var postsByAmbito = {};
-    
             // Iterar sobre las publicaciones para organizarlas por ámbito
             response.forEach(function(post) {
                 if (!postsByAmbito[post.ambito]) {
@@ -75,7 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         </h2>
                         <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
                             <div class="accordion-body">
-                                <div id="accordion-content-${ambitoId}" class="accordion-content"></div>
+                                <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                    <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
                 postAccordion.append(accordionItemHtml);
     
-                var accordionContent = $(`#accordion-content-${ambitoId}`);
+                var accordionContent = $(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
     
                 // Agregar publicaciones al acordeón correspondiente
                 publicaciones.forEach(function(post) {
@@ -142,7 +143,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                             </div>
                         </div>
-                        <hr class="separator">
                     `;
     
                     accordionContent.append(cardHtml);
@@ -152,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Respuesta no válida');
         }
     },
+    
     
       error: function(xhr, status, error) {
         alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
