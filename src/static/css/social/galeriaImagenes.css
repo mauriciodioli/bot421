@@ -722,3 +722,36 @@ body {
 .close-button-media_imagenes:hover {
   background: darkred;
 }
+
+.media-wrapper_creaPublicacion {
+  display: inline-block; /* Asegura que los elementos se alineen en bloque, no en línea */
+  position: relative; /* Necesario para posicionar el botón de cierre */
+  margin: 5px; /* Agrega un margen para separar los elementos */
+  vertical-align: top; /* Alinea los elementos en la parte superior */
+}
+
+.thumbnail_creaPublicacion {
+  width: 100px; /* Ajusta el tamaño según tus necesidades */
+  height: 100px;
+  object-fit: cover; /* Asegura que la imagen o video se ajuste bien */
+}
+
+.close-button_creaPublicacion {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px; /* Tamaño del botón */
+  height: 24px; /* Tamaño del botón */
+  text-align: center;
+  line-height: 24px; /* Alineación vertical del texto */
+  font-size: 16px; /* Tamaño del texto */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
