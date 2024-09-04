@@ -52,6 +52,9 @@
   
         reader.onload = function(e) {
           var mediaElement;
+          var mediaWrapper = document.createElement('div');
+          mediaWrapper.classList.add('media-wrapper_creaPublicacion'); // Envoltorio para el elemento multimedia y el botón de cerrar
+
           if (file.type.startsWith('image/')) {
             mediaElement = document.createElement('img');
             mediaElement.src = e.target.result;
@@ -62,11 +65,19 @@
             mediaElement.controls = true;
             mediaElement.classList.add('thumbnail_creaPublicacion');
           }
-  
+          var closeButton = document.createElement('button');
+          closeButton.textContent = '×';
+          closeButton.classList.add('close-button_creaPublicacion'); // Clase para estilizar el botón de cerrar
+          closeButton.addEventListener('click', function() {
+              mediaWrapper.remove(); // Elimina el elemento multimedia del contenedor
+          });
           mediaElement.addEventListener('click', function() {
             openMediaModal(e.target.result, file.type);
           });
-          mediaContainer.appendChild(mediaElement);
+          mediaWrapper.appendChild(mediaElement); // Añade el elemento multimedia al contenedor
+          mediaWrapper.appendChild(closeButton); // Añade el botón de cerrar al contenedor
+      
+          mediaContainer.appendChild(mediaWrapper);
         };
   
         reader.readAsDataURL(file);
