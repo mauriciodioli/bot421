@@ -635,14 +635,90 @@ body {
 }
 
 
+/*AQUI SE ESTABLECEN LOS ESTILOS DE LA GALERIA DE IMAGENES DENTRO DEL ACORDEON*/
+
 .card-grid-publicaciones {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px; /* Ajusta este valor para controlar el espacio entre las tarjetas */
+  grid-template-columns: repeat(4, 1fr); /* 4 columnas en pantallas grandes */
+  gap: 15px; /* Espacio entre las tarjetas */
 }
 
-.card-publicacion-admin {
-  width: 100%; /* Asegura que las tarjetas ocupen todo el espacio disponible en la columna */
-  max-width: 250px; /* Ajusta este valor para controlar el tamaño máximo de las tarjetas */
+/* Adaptar el diseño para pantallas más pequeñas */
+@media (max-width: 1200px) {
+  .card-grid-publicaciones {
+      grid-template-columns: repeat(3, 1fr); /* 3 columnas para pantallas medianas */
+  }
+}
+
+@media (max-width: 900px) {
+  .card-grid-publicaciones {
+      grid-template-columns: repeat(2, 1fr); /* 2 columnas para pantallas pequeñas */
+  }
+}
+
+@media (max-width: 600px) {
+  .card-grid-publicaciones {
+      grid-template-columns: 1fr; /* 1 columna para pantallas muy pequeñas */
+  }
+}
+
+
+
+
+.media-container_creaPublicacion {
+  position: relative; /* Para que el botón de cerrar se posicione correctamente */
+  display: inline-block;
+  margin-top: 10px;
+}
+
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.close-button-media_imagenes:hover {
+  background-color: #d32f2f;
+}
+
+.media-element-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.media-preview-image, .media-preview-video {
+  display: block;
+  max-width: 100%;
   height: auto;
+}
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 10; /* Asegura que el botón esté sobre la imagen */
+}
+
+.close-button-media_imagenes:hover {
+  background: darkred;
 }

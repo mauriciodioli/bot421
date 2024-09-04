@@ -102,6 +102,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
 
 
 function toggleTexto(postId) {
+   
     var postText = document.getElementById(`postText-${postId}`);
     var button = document.querySelector(`#card-${postId} .btn-ver-mas-en-ambitos-personales`);
     
@@ -118,6 +119,7 @@ function toggleTexto(postId) {
 
 function abrirPublicacionHome(publicacionId) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
+   
     window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}`;
 }
 

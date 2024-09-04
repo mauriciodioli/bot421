@@ -28,16 +28,16 @@
 }
 
 .custom-file-upload-media_imagenes {
-  border: 1px solid #ccc;
+  border: 1px solid #027c16;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 6px 12px;
   cursor: pointer;
   color: #ffffff; /* Color del texto del botón */
-  background-color: #6c757d; /* Gris oscuro para el fondo del botón */
+  background-color: #027c16; /* Gris oscuro para el fondo del botón */
   border-radius: 5px;
-  width: 100%; /* Ocupa todo el ancho del contenedor */
+ 
   text-align: center;
   box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
