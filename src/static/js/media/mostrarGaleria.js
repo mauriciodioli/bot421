@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="agregarImagen(${post.publicacion_id})">
                                             <i class="fas fa-folder"></i> Agregar Imagen o viedeo
                                         </label>
-                                     
+                                       <button class="btn-guardar-nueva-imagen-video" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
                                     </div>
                                 </div>
                             </div>
@@ -247,6 +247,26 @@ function cerrarModalImagenGrande() {
 }
 
 
+function guardarNuevaImagenVideo(publicacion_id) {
+  var formData = new FormData();
+  var fileInput = document.getElementById('imagen-media_imagenes');
+  formData.append('media', fileInput.files[0]); // Asegurarse de que solo envíes un archivo
+
+  $.ajax({
+      url: `/guardar_media/${publicacion_id}`, // Ruta de la API para guardar la imagen/video
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+          alert('Imagen o video guardado exitosamente.');
+          // Aquí puedes actualizar el contenido de la página o cerrar el modal
+      },
+      error: function(xhr, status, error) {
+          alert('Error al guardar la imagen o video.');
+      }
+  });
+}
 
 
 
