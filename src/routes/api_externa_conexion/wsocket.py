@@ -102,7 +102,7 @@ def market_data_handler_0(message):
                 
                 now = datetime.now()                
               #  if (now.hour == 19 and now.minute >= 20 and now.minute <= 29):
-                determinar_caucion(message)
+                #determinar_caucion(message)
                 #if control_tiempo_lectura(60000, get.marca_de_tiempo_para_leer_sheet):   
                 calculo_dolar_mep(message)
                 

@@ -22,12 +22,13 @@
     </div>
 </div>
 {% include 'layouts/layout_footer.html' %}
+<!-- Incluye el archivo JavaScript --> 
 
+<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
 <script>
-
-var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
-var userId = '{{ post.user_id }}'; // Esto ya está disponible en tu plantilla
-var ambito = '{{ post.ambito }}'; // También está disponible en la plantilla
+    var publicacionId = '{{ publicacion_id }}';
+    var userId = '{{ user_id }}'; 
+    var ambito = '{{ ambito }}'; 
    
 mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);   
  
