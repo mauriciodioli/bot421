@@ -16,14 +16,14 @@
 
 {% block title %}Publicación en Ámbitos{% endblock %}
 {% block content %}
-<div class="home-publicaciones-ambitos">
-    <div class="home-muestra-publicaciones-en-ambitos-centrales">
+<div class="home-publicaciones-en-ambitos-personales">
+    <div class="home-muestra-publicaciones-en-ambitos-personales-centrales">
         <!-- Aquí se insertarán las publicaciones dinámicamente -->
     </div>
 </div>
 {% include 'layouts/layout_footer.html' %}
 <!-- Incluye el archivo JavaScript --> 
-
+<link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/publicaciones/muestraPublicacionesEnAmbitoPersonales.css')}}>    
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
 <script>
     var publicacionId = '{{ publicacion_id }}';

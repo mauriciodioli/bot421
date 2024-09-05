@@ -44,15 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
       contentType: false,
       headers: {
         'Authorization': 'Bearer ' + access_token
-      },
-      success: function(response) {
+      },success: function(response) {
         if (Array.isArray(response)) {
             var postAccordion = $('#postAccordion');
             postAccordion.empty();
     
             // Crear un objeto para almacenar las publicaciones por ámbito
             var postsByAmbito = {};
-    
             // Iterar sobre las publicaciones para organizarlas por ámbito
             response.forEach(function(post) {
                 if (!postsByAmbito[post.ambito]) {
@@ -75,7 +73,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         </h2>
                         <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
                             <div class="accordion-body">
-                                <div id="accordion-content-${ambitoId}" class="accordion-content"></div>
+                                <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                    <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
                 postAccordion.append(accordionItemHtml);
     
-                var accordionContent = $(`#accordion-content-${ambitoId}`);
+                var accordionContent = $(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
     
                 // Agregar publicaciones al acordeón correspondiente
                 publicaciones.forEach(function(post) {
@@ -102,6 +103,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
                                     <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">X</button>
                                 </div>
+                                  <!-- Container to display selected images and videos -->
+                                  <input type="file" id="imagen-media_imagenes" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple onchange="previewSelectedMedia()">
+                                  <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
+                                   
+
                             `;
                         });
     
@@ -113,8 +119,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                         ${modalImagesHtml}
                                     </div>
                                     <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                        <button class="btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarImagen(${post.publicacion_id})">Agregar Imagen</button>
-                                        <button class="btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion" onclick="agregarVideo(${post.publicacion_id})">Agregar Video</button>
+                                        <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
+                                            <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="agregarImagen(${post.publicacion_id})">
+                                            <i class="fas fa-folder"></i> Agregar Imagen o viedeo
+                                        </label>
+                                       <button class="btn-guardar-nueva-imagen-video" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                             </div>
                         </div>
-                        <hr class="separator">
                     `;
     
                     accordionContent.append(cardHtml);
@@ -153,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     },
     
+    
       error: function(xhr, status, error) {
         alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
       }
@@ -161,6 +170,56 @@ document.addEventListener('DOMContentLoaded', function() {
   
 
 
+
+  function previewSelectedMedia() {
+    var fileInput = document.getElementById('imagen-media_imagenes');
+    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
+    mediaContainer.innerHTML = ''; // Limpiar contenido previo
+  
+    var files = fileInput.files;
+  
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+  
+        reader.onload = (function(file) {
+            return function(e) {
+                var mediaElementWrapper = document.createElement('div');
+                mediaElementWrapper.className = 'media-element-wrapper';
+  
+                var mediaElement;
+  
+                if (file.type.startsWith('image/')) {
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = e.target.result;
+                    mediaElement.className = 'media-preview-image';
+                } else if (file.type.startsWith('video/')) {
+                    mediaElement = document.createElement('video');
+                    mediaElement.src = e.target.result;
+                    mediaElement.controls = true;
+                    mediaElement.className = 'media-preview-video';
+                }
+  
+                if (mediaElement) {
+                    // Crear botón de cierre
+                    var closeButton = document.createElement('button');
+                    closeButton.className = 'close-button-media_imagenes';
+                    closeButton.textContent = 'X';
+                    closeButton.onclick = function() {
+                        mediaContainer.removeChild(mediaElementWrapper);
+                    };
+  
+                    // Añadir media y botón al contenedor
+                    mediaElementWrapper.appendChild(mediaElement);
+                    mediaElementWrapper.appendChild(closeButton);
+                    mediaContainer.appendChild(mediaElementWrapper);
+                }
+            };
+        })(file);
+  
+        reader.readAsDataURL(file);
+    }
+  }
 
 
 // Función para abrir la imagen en grande
@@ -188,6 +247,26 @@ function cerrarModalImagenGrande() {
 }
 
 
+function guardarNuevaImagenVideo(publicacion_id) {
+  var formData = new FormData();
+  var fileInput = document.getElementById('imagen-media_imagenes');
+  formData.append('media', fileInput.files[0]); // Asegurarse de que solo envíes un archivo
+
+  $.ajax({
+      url: `/guardar_media/${publicacion_id}`, // Ruta de la API para guardar la imagen/video
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+          alert('Imagen o video guardado exitosamente.');
+          // Aquí puedes actualizar el contenido de la página o cerrar el modal
+      },
+      error: function(xhr, status, error) {
+          alert('Error al guardar la imagen o video.');
+      }
+  });
+}
 
 
 
@@ -490,37 +569,55 @@ function eliminarPublicacion(id) {
 /********************Agrega imagen o video****************************/
 /*********************************************************************/
 /*********************************************************************/
-function agregarImagen(postId) {
-  // Redirige al usuario a la página para subir una imagen
-  var access_token = localStorage.getItem('access_token');
-  if (!access_token) {
-    console.error('Token de acceso no encontrado.');
-    return;
-  }
-  debugger;
-  console.log('agregar imagen para la publicación con ID:', postId);
-  // Crear una instancia de FormData
-  var formData = new FormData();
-  formData.append('publicacion_id', postId);
+function agregarImagen(postId) { 
+    // Obtener los elementos con IDs específicos de la publicación
+    var fileInput = document.getElementById('imagen-media_imagenes-' + postId);
+    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion-' + postId);
+    var uploadButton = document.getElementById('open-popup-media_imagenes-' + postId);
 
-  $.ajax({
-    url: '/subirImagen',
-    type: 'POST',
-    data: formData,
-    processData: false,
-    contentType: false,
-    headers: {
-        'Authorization': 'Bearer ' + access_token
-    },
-    success: function(response) {
-      console.log('Imagen agregada para la publicación con ID:', postId);
-      // Aquí puedes agregar código para manejar la respuesta, por ejemplo, actualizar la interfaz
-    },
-    error: function(xhr, status, error) {
-      console.error('Error al agregar la imagen:', error);
+    var files = fileInput.files;
+
+    // Limpiar contenido previo en el contenedor
+    mediaContainer.innerHTML = '';
+
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+
+        reader.onload = (function(file) {
+            return function(e) {
+                var mediaElement;
+
+                if (file.type.startsWith('image/')) {
+                    // Si el archivo es una imagen
+                    mediaElement = document.createElement('img');
+                    mediaElement.src = e.target.result;
+                    mediaElement.style.maxWidth = '100%'; // Ajustar el tamaño si es necesario
+                } else if (file.type.startsWith('video/')) {
+                    // Si el archivo es un video
+                    mediaElement = document.createElement('video');
+                    mediaElement.src = e.target.result;
+                    mediaElement.controls = true;
+                    mediaElement.style.maxWidth = '100%'; // Ajustar el tamaño si es necesario
+                }
+
+                if (mediaElement) {
+                    mediaContainer.appendChild(mediaElement);
+                }
+            };
+        })(file);
+
+        reader.readAsDataURL(file);
     }
-  });
+
+    // Control de estado del botón de subir
+    uploadButton.disabled = files.length === 0;
+
+    // Mostrar/ocultar el botón de cerrar previsualización
+    var closeButton = document.querySelector('.close-button-carga_publicaciones-' + postId);
+    closeButton.style.display = files.length > 0 ? 'block' : 'none';
 }
+
 
 
 

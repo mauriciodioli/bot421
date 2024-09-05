@@ -570,7 +570,6 @@ body {
 
 
 
-
 /* Estilo general del modal para centrar contenido */
 .modal-muestra-crea-publicacion {
   display: flex;
@@ -634,3 +633,125 @@ body {
 .close-button-media_imagenes:hover {
   background-color: #d32f2f;
 }
+
+
+/*AQUI SE ESTABLECEN LOS ESTILOS DE LA GALERIA DE IMAGENES DENTRO DEL ACORDEON*/
+
+.card-grid-publicaciones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columnas en pantallas grandes */
+  gap: 15px; /* Espacio entre las tarjetas */
+}
+
+/* Adaptar el diseño para pantallas más pequeñas */
+@media (max-width: 1200px) {
+  .card-grid-publicaciones {
+      grid-template-columns: repeat(3, 1fr); /* 3 columnas para pantallas medianas */
+  }
+}
+
+@media (max-width: 900px) {
+  .card-grid-publicaciones {
+      grid-template-columns: repeat(2, 1fr); /* 2 columnas para pantallas pequeñas */
+  }
+}
+
+@media (max-width: 600px) {
+  .card-grid-publicaciones {
+      grid-template-columns: 1fr; /* 1 columna para pantallas muy pequeñas */
+  }
+}
+
+
+
+
+.media-container_creaPublicacion {
+  position: relative; /* Para que el botón de cerrar se posicione correctamente */
+  display: inline-block;
+  margin-top: 10px;
+}
+
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.close-button-media_imagenes:hover {
+  background-color: #d32f2f;
+}
+
+.media-element-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.media-preview-image, .media-preview-video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 10; /* Asegura que el botón esté sobre la imagen */
+}
+
+.close-button-media_imagenes:hover {
+  background: darkred;
+}
+
+.media-wrapper_creaPublicacion {
+  display: inline-block; /* Asegura que los elementos se alineen en bloque, no en línea */
+  position: relative; /* Necesario para posicionar el botón de cierre */
+  margin: 5px; /* Agrega un margen para separar los elementos */
+  vertical-align: top; /* Alinea los elementos en la parte superior */
+}
+
+.thumbnail_creaPublicacion {
+  width: 100px; /* Ajusta el tamaño según tus necesidades */
+  height: 100px;
+  object-fit: cover; /* Asegura que la imagen o video se ajuste bien */
+}
+
+.close-button_creaPublicacion {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px; /* Tamaño del botón */
+  height: 24px; /* Tamaño del botón */
+  text-align: center;
+  line-height: 24px; /* Alineación vertical del texto */
+  font-size: 16px; /* Tamaño del texto */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
