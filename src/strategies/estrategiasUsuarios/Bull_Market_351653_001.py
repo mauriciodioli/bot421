@@ -394,8 +394,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                             
         contador += 1  
           
-    
-   
+       
      for elemento  in coincidencias:  
          # Paso 1: Eliminar los puntos
          cadena_sin_puntos = elemento[7].replace('.', '')
@@ -530,16 +529,17 @@ def _operada(order_report):
 def procesar_estado_final(symbol, clOrdId):
     global endingGlobal, endingEnviadas
 
-    endingGlobal = 'SI'
-    endingEnviadas = 'SI'
+    endingGlobal = 'NO'
+    endingEnviadas = 'NO'
 
     # Actualiza el estado de las operaciones enviadas
     for operacion_enviada in diccionario_operaciones_enviadas.values():
         if operacion_enviada['status'] != 'TERMINADA':
             if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
                 operacion_enviada['status'] = 'TERMINADA'
-        else:
-              endingEnviadas = 'NO'
+                endingEnviadas = 'SI'
+            else:
+                endingEnviadas = 'NO'
 
     # Revisa las operaciones globales
     for key, operacionGlobal in diccionario_global_operaciones.items():
@@ -924,7 +924,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
         if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
             print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
             # Limpiar el diccionario si se cumplen todas las condiciones
-           # diccionario_operaciones_enviadas.clear()
+            diccionario_operaciones_enviadas.clear()
             print("###############################################") 
             print("###############################################") 
             print("###############################################")  
@@ -935,7 +935,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
-            #pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
                 'accoount': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 

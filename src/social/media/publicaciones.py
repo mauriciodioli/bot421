@@ -26,7 +26,20 @@ from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from sqlalchemy import func
 
+
+#import boto3
+#from botocore.exceptions import NoCredentialsError
+
+
 publicaciones = Blueprint('publicaciones',__name__)
+
+
+
+# Configura el cliente de S3
+#s3 = boto3.client('s3', aws_access_key_id='TU_ACCESS_KEY', aws_secret_access_key='TU_SECRET_KEY', region_name='tu-region')
+
+BUCKET_NAME = 'nombre-de-tu-bucket'
+
 
 @publicaciones.route('/media-publicaciones-mostrar', methods=['POST'])
 def media_publicaciones_mostrar():
@@ -333,6 +346,16 @@ def social_imagenes_crear_publicacion():
         return jsonify({'error': str(e)}), 500
         
 
+def upload_to_s3(file, bucket_name, filename):
+    try:
+        s3.upload_fileobj(file, bucket_name, filename, ExtraArgs={"ACL": "public-read"})
+        return f"https://{bucket_name}.s3.amazonaws.com/{filename}"
+    except FileNotFoundError:
+        print("El archivo no fue encontrado")
+        return None
+   # except NoCredentialsError:
+   #     print("Credenciales no disponibles")
+   #     return None
 
 def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=0, index=None, size=0):   
     color_texto = request.form.get('color_texto')   
@@ -344,7 +367,10 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
+  # Sube la imagen a S3
+    #file_path_s3 = upload_to_s3(file, BUCKET_NAME, f"imagenes/{filename}")
 
+    #if file_path_s3:
 # Verificar si la imagen ya existe
     imagen_existente = db.session.query(Image).filter_by(filepath=file_path).first()
 
@@ -391,6 +417,11 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
     access_token = parts[1]
     app = current_app._get_current_object()
     userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+    
+    
+    # Sube el video a S3
+    #file_path_s3 = upload_to_s3(file, BUCKET_NAME, f"videos/{filename}")
+    #if file_path_s3:
     video_existente = db.session.query(Video).filter_by(filepath=file_path,size=size).first()
 
     if video_existente:
