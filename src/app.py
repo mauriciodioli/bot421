@@ -356,7 +356,7 @@ def checkin_listener(dbapi_connection, connection_record):
         pass
         #app.logger.warning(f"Clave de conexión no encontrada en connection_times: {connection_key}")
     
-    app.logger.info(f"Conexión devuelta al pool. Total conexiones activas: {len(active_connections)}")
+    #app.logger.info(f"Conexión devuelta al pool. Total conexiones activas: {len(active_connections)}")
     
     # Manejar el número de conexiones si es necesario
     if len(active_connections) > MAX_CONNECTIONS:
