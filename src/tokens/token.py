@@ -148,7 +148,7 @@ def validar_expiracion_token(access_token):
         
         if current_time < exp_date:
             # El token no ha expirado
-            print("Tiempo restante para la expiración del token:", tiempo_restante)
+            #print("Tiempo restante para la expiración del token:", tiempo_restante)
             return True
         else:
             # El token ha expirado
