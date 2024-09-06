@@ -260,7 +260,7 @@ app.register_blueprint(test_2_order_report_handler)
 
 app.register_blueprint(test_procesar_estado_final)
 
-app.register_blueprint(test_procesar_estado_final)
+
 
 print(DATABASE_CONNECTION_URI)
 
