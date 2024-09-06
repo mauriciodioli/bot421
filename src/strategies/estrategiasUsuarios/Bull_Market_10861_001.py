@@ -532,6 +532,7 @@ def procesar_estado_final(symbol, clOrdId):
     global endingGlobal, endingEnviadas
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     endingGlobal = False
     endingEnviadas = False
 
@@ -542,6 +543,12 @@ def procesar_estado_final(symbol, clOrdId):
     endingEnviadas = 'NO'
    
     # Actualiza el estado de las operaciones enviadas
+=======
+    endingGlobal = 'NO'
+    endingEnviadas = 'NO'
+   
+    # Actualiza el estado de las operaciones enviadas
+>>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
     for operacion_enviada in diccionario_operaciones_enviadas.values():     
         if operacion_enviada['status'] != 'ANTERIOR':   
             print('operacion_enviada: ', operacion_enviada)
