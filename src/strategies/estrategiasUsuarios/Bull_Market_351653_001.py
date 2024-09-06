@@ -83,7 +83,7 @@ def BullMarket351653001():
                         cuentaGlobal = accountCuenta
                     
                         CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-                        carga_operaciones(app,pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                        carga_operaciones(app,pyRofexInicializada,get.diccionario_global_sheet['argentina'],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
@@ -531,27 +531,34 @@ def procesar_estado_final(symbol, clOrdId):
 
     endingGlobal = 'NO'
     endingEnviadas = 'NO'
-
+   
     # Actualiza el estado de las operaciones enviadas
-    for operacion_enviada in diccionario_operaciones_enviadas.values():
-        if operacion_enviada['status'] != 'TERMINADA':
-            if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
-                operacion_enviada['status'] = 'TERMINADA'
-                endingEnviadas = 'SI'
-            else:
-                endingEnviadas = 'NO'
-
+    for operacion_enviada in diccionario_operaciones_enviadas.values():     
+        if operacion_enviada['status'] != 'ANTERIOR':   
+            print('operacion_enviada: ', operacion_enviada)
+            if operacion_enviada['status'] != 'TERMINADA':
+                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
+                    operacion_enviada['status'] = 'TERMINADA'
+                    endingEnviadas = 'SI'
+                else:
+                    endingEnviadas = 'NO'
+              
     # Revisa las operaciones globales
     for key, operacionGlobal in diccionario_global_operaciones.items():
         if operacionGlobal['symbol'] == symbol:
             if operacionGlobal['ut'] == 0:
-                # Verifica si todas las operaciones relacionadas están terminadas
-                all_enviadas_terminadas = all(
+                # Verifica si ninguna operación relacionada está en estado 'ANTERIOR'
+                all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
                     if operacion["Symbol"] == symbol
                 )
-                if all_enviadas_terminadas:
+                any_enviada_anterior = any(
+                    operacion['status'] == 'ANTERIOR'
+                    for operacion in diccionario_operaciones_enviadas.values()
+                    if operacion["Symbol"] == symbol
+                )
+                if all_enviadas_validas and not any_enviada_anterior:
                     operacionGlobal['status'] = '1'
                     endingGlobal = 'SI'
                 else:

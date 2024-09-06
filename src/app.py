@@ -106,6 +106,8 @@ from models.logs import logs
 from models.creaTablas import creaTabla
 from models.operacionEstrategia import operacionEstrategia
 
+from Tests.test_procesar_estado_final import test_procesar_estado_final
+
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
 from flask_cors import CORS
@@ -249,6 +251,7 @@ app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
+app.register_blueprint(test_procesar_estado_final)
 
 print(DATABASE_CONNECTION_URI)
 
