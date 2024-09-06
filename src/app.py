@@ -258,7 +258,7 @@ app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
 
-app.register_blueprint(test_procesar_estado_final)
+
 
 
 
