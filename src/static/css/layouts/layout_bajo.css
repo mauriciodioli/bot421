@@ -1,0 +1,76 @@
+.fixed-bottom-layout {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa; /* Color de fondo del layout */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000; /* Para que esté encima de otros elementos */
+    display: none; /* Oculto por defecto */
+}
+
+.fixed-bottom-layout.visible {
+    display: block; /* Mostrar el layout cuando esté visible */
+}
+
+
+
+#bottomLayout.visible {
+    bottom: 0; /* Se muestra cuando está visible */
+}
+#bottomLayout {
+    position: fixed;
+    bottom: 0; /* Visible desde el inicio */
+    width: 100%;
+    background-color: #f8f9fa;
+    transition: bottom 0.5s ease-in-out; /* Controla la velocidad del deslizamiento */
+    z-index: 1000;
+}
+
+#bottomLayout.hidden {
+    bottom: -100px; /* Se desliza hacia abajo cuando está oculto */
+}
+
+.fixed-bottom-layout {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000;
+    display: block;
+    transition: bottom 0.5s ease-in-out;
+}
+
+.fixed-bottom-layout.hidden {
+    bottom: -100px; /* Desliza hacia abajo cuando está oculto */
+}
+
+/* Contenedor de opciones bien distribuido */
+.post-options-layoutBajo {
+    display: flex;
+    justify-content: space-around; /* Distribuye las opciones uniformemente */
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+/* Estilo para cada opción */
+.option-layoutBajo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre la imagen y el texto */
+}
+
+.option-layoutBajo img {
+    width: 24px;
+    height: 24px;
+}
+
+.option-layoutBajo span {
+    color: #fff; /* Texto en blanco */
+}
+

@@ -34,6 +34,7 @@ from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
 
 from Tests.test_order_report_handler import test_order_report_handler
+from Tests.test_2_order_report_handler import test_2_order_report_handler
 
 
 from social.telegram.telegram import telegram
@@ -251,6 +252,7 @@ app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 
 app.register_blueprint(test_order_report_handler)
+app.register_blueprint(test_2_order_report_handler)
 
 
 print(DATABASE_CONNECTION_URI)
