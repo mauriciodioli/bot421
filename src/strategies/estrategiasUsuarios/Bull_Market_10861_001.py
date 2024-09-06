@@ -83,7 +83,7 @@ def BullMarket10861001():
                         pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
                         cuentaGlobal = accountCuenta
                         CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-                        carga_operaciones(app,pyRofexInicializada,get.ContenidoSheet_list[0],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                        carga_operaciones(app,pyRofexInicializada,get.diccionario_global_sheet['argentina'],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
@@ -524,7 +524,7 @@ def _operada(order_report):
         actualizar_diccionario_enviadas(order_data, symbol, status)
 
     # Procesa el estado final
-    if status in ['FILLED', 'REJECTED']:
+    if status in ['FILLED', 'REJECTED','CANCELLED']:
         procesar_estado_final(symbol, clOrdId)
  
  
@@ -532,18 +532,11 @@ def _operada(order_report):
 def procesar_estado_final(symbol, clOrdId):
     global endingGlobal, endingEnviadas
 
-    endingGlobal = 'NO'
-    endingEnviadas = 'NO'
+    endingGlobal = False
+    endingEnviadas = False
 
     # Actualiza el estado de las operaciones enviadas
-    for operacion_enviada in diccionario_operaciones_enviadas.values():        
-        if operacion_enviada['status'] != 'TERMINADA':
-            if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
-                operacion_enviada['status'] = 'TERMINADA'
-                endingEnviadas = 'SI'
-            else:
-                endingEnviadas = 'NO'
-              
+    endingEnviadas = actualizar_estado_operaciones( symbol, clOrdId)    
     # Revisa las operaciones globales
     for key, operacionGlobal in diccionario_global_operaciones.items():
         if operacionGlobal['symbol'] == symbol:
@@ -556,18 +549,32 @@ def procesar_estado_final(symbol, clOrdId):
                 )
                 if all_enviadas_terminadas:
                     operacionGlobal['status'] = '1'
-                    endingGlobal = 'SI'
+                    endingGlobal = True
                 else:
-                    endingGlobal = 'NO'
+                    endingGlobal = False
             else:
-                endingGlobal = 'NO'
+                endingGlobal = False
 
     # Asegura que `endingEnviadas` siga siendo 'SI' si corresponde
-    if endingGlobal == 'SI' and endingEnviadas == 'SI':
+    if endingGlobal == True and endingEnviadas == True:
         print(f'Final state: endingGlobal={endingGlobal}, endingEnviadas={endingEnviadas}, symbol={symbol}')
         endingOperacionBot(endingGlobal, endingEnviadas, symbol)   
         
-
+def actualizar_estado_operaciones(symbol, clOrdId):
+    todas_terminadas = True
+    for operacion_enviada in diccionario_operaciones_enviadas.values():
+        # Verifica si la operación actual no está terminada
+        if operacion_enviada['status'] != 'TERMINADA':
+            # Actualiza el estado si coincide con el símbolo y clOrdId proporcionados
+            if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId):
+                operacion_enviada['status'] = 'TERMINADA'
+        
+   # Verifica si todas las operaciones están en estado 'TERMINADA'
+    for operacion_enviada in diccionario_operaciones_enviadas.values():
+        if operacion_enviada['status'] != 'TERMINADA':
+            todas_terminadas = False
+            break  # Sale del bucle si encuentra una operación que no está terminada
+    return todas_terminadas
 
 
 def actualizar_diccionario_enviadas(order_data, symbol, status):
@@ -586,7 +593,16 @@ def actualizar_diccionario_enviadas(order_data, symbol, status):
                         ut_a_devolver = 0
                     # Otros Estados de la Orden: Si la orden tiene cualquier otro estado
                     else:
-                        ut_a_devolver = operacion['_ut_']
+                          #se coloca este if para que no se le devuelva un valor negativo si la orden tiene estado 'CANCELLED'
+                        #y se le le quita el valor de la orden
+                        #se debe quitar este if si se desea que el valor de la orden sea positivo cuando la orden sea 'CANCELLED'
+                        #if status == 'CANCELLED':
+                        #    ut_a_devolver = 0
+                        #else:
+                        if status == 'CANCELLED':
+                            ut_a_devolver = 0
+                        else:
+                            ut_a_devolver = operacion['_ut_']
                     # Marca la operación como 'TERMINADA'
                     operacion['status'] = 'TERMINADA'
                     
