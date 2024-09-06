@@ -251,7 +251,11 @@ app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
-app.register_blueprint(test_procesar_estado_final)
+
+
+
+
+
 
 print(DATABASE_CONNECTION_URI)
 

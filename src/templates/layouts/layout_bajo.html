@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <meta http-equiv = "X-UA-Compatible" content = "id=edge">
+    <title>System DPI</title>
+    <!-- Estilos y scripts aquí... -->
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/layouts/layout_bajo.css') }}">
+</head>
+
+<body>
+    <!-- El contenido principal va aquí... -->
+
+    <!-- Layout en la parte inferior -->
+    <div id="bottomLayout" class="fixed-bottom bg-dark text-white p-3">
+        <button id="closeLayout" class="btn btn-danger btn-sm">Cerrar</button>
+       
+    </div>
+ <!-- Distribuir las opciones aquí -->
+ 
+
+<!-- Contenedor principal -->
+<div id="container">
+    <!-- Otros contenidos -->
+
+    <!-- Contenedor para opciones de publicación -->
+    <div class="post-options layoutBajo">
+      
+    </div>
+
+</div>
+
+
+</div>
+    <!-- Scripts al final del body -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // No necesitamos mostrarlo después de 1 segundo porque ya está visible
+        
+            // Función para cerrar el layout al hacer clic en el botón de cerrar
+            $('#closeLayout').on('click', function() {
+                $('#bottomLayout').addClass('hidden');
+            });
+        
+            // Función para reabrir el layout al hacer scroll
+            $(window).on('scroll', function() {
+                var scrollPos = $(window).scrollTop();
+                if (scrollPos > 100) {  // Si haces scroll más de 100px, el layout permanece visible
+                    $('#bottomLayout').removeClass('hidden');
+                } else {
+                    $('#bottomLayout').addClass('hidden');
+                }
+            });
+        });
+        
+        
+    </script>
+</body>
+</html>
