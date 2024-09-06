@@ -531,6 +531,7 @@ def procesar_estado_final(symbol, clOrdId):
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     endingGlobal = False
     endingEnviadas = False
 
@@ -541,6 +542,12 @@ def procesar_estado_final(symbol, clOrdId):
     endingEnviadas = 'NO'
    
     # Actualiza el estado de las operaciones enviadas
+=======
+    endingGlobal = 'NO'
+    endingEnviadas = 'NO'
+   
+    # Actualiza el estado de las operaciones enviadas
+>>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
 =======
     endingGlobal = 'NO'
     endingEnviadas = 'NO'
@@ -558,6 +565,9 @@ def procesar_estado_final(symbol, clOrdId):
                     endingEnviadas = 'NO'
               
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
+=======
 >>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
 =======
 >>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
