@@ -535,8 +535,7 @@ def procesar_estado_final(symbol, clOrdId):
     # Actualiza el estado de las operaciones enviadas
     endingEnviadas = actualizar_estado_operaciones( symbol, clOrdId)    
     # Revisa las operaciones globales
-    for key, operacionGlobal in diccionario_global_operaciones.items():
-        if operacionGlobal['symbol'] == symbol:
+    for key, operacionGlobal in diccionario_global_operaciones.items():       
             if operacionGlobal['ut'] == 0:
                 # Verifica si ninguna operación relacionada está en estado 'ANTERIOR'
                 all_enviadas_validas = all(
@@ -573,9 +572,10 @@ def actualizar_estado_operaciones(symbol, clOrdId):
         
    # Verifica si todas las operaciones están en estado 'TERMINADA'
     for operacion_enviada in diccionario_operaciones_enviadas.values():
-        if operacion_enviada['status'] != 'TERMINADA':
-            todas_terminadas = False
-            break  # Sale del bucle si encuentra una operación que no está terminada
+        if operacion_enviada["status"] != 'ANTERIOR':
+            if operacion_enviada['status'] != 'TERMINADA':
+                todas_terminadas = False
+                break  # Sale del bucle si encuentra una operación que no está terminada
     return todas_terminadas
 
 
