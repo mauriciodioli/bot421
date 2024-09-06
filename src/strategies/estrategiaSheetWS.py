@@ -529,78 +529,11 @@ def _operada(order_report):
 def procesar_estado_final(symbol, clOrdId):
     global endingGlobal, endingEnviadas
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     endingGlobal = False
     endingEnviadas = False
 
     # Actualiza el estado de las operaciones enviadas
     endingEnviadas = actualizar_estado_operaciones( symbol, clOrdId)    
-=======
-    endingGlobal = 'NO'
-    endingEnviadas = 'NO'
-   
-    # Actualiza el estado de las operaciones enviadas
-=======
-    endingGlobal = 'NO'
-    endingEnviadas = 'NO'
-   
-    # Actualiza el estado de las operaciones enviadas
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
-    endingGlobal = 'NO'
-    endingEnviadas = 'NO'
-   
-    # Actualiza el estado de las operaciones enviadas
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
-    endingGlobal = 'NO'
-    endingEnviadas = 'NO'
-   
-    # Actualiza el estado de las operaciones enviadas
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
-    endingGlobal = 'NO'
-    endingEnviadas = 'NO'
-   
-    # Actualiza el estado de las operaciones enviadas
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
-    endingGlobal = 'NO'
-    endingEnviadas = 'NO'
-   
-    # Actualiza el estado de las operaciones enviadas
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-    for operacion_enviada in diccionario_operaciones_enviadas.values():     
-        if operacion_enviada['status'] != 'ANTERIOR':   
-            print('operacion_enviada: ', operacion_enviada)
-            if operacion_enviada['status'] != 'TERMINADA':
-                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
-                    operacion_enviada['status'] = 'TERMINADA'
-                    endingEnviadas = 'SI'
-                else:
-                    endingEnviadas = 'NO'
-              
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
-=======
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
     # Revisa las operaciones globales
     for key, operacionGlobal in diccionario_global_operaciones.items():
         if operacionGlobal['symbol'] == symbol:
