@@ -5,9 +5,10 @@ from flask import Blueprint, render_template,session, request, redirect, url_for
 import random
 
 
+import random
 
 
-test_order_report_handler = Blueprint('test_order_report_handler',__name__)
+test_procesar_estado_final = Blueprint('test_procesar_estado_final',__name__)
 
 
 # Función para simular un reporte de orden
@@ -220,30 +221,54 @@ def process_operations():
 
 
 
-def procesar_estado_final(symbol, clOrdId):
+def procesar_estado_final(order_report):
+    order_data = order_report['orderReport']
+    clOrdId = order_data['clOrdId']        
+    symbol = order_data['instrumentId']['symbol']
+    status = order_data['status']  
+    global endingGlobal, endingEnviadas
+
+    endingGlobal = 'NO'
+    endingEnviadas = 'NO'
    
-
     # Actualiza el estado de las operaciones enviadas
-    for operacion_enviada in diccionario_operaciones_enviadas.values():
-        if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId) and operacion_enviada['status'] != 'TERMINADA':
-            operacion_enviada['status'] = 'TERMINADA'
-
+    for operacion_enviada in diccionario_operaciones_enviadas.values():     
+        if operacion_enviada['status'] != 'ANTERIOR':   
+            print('operacion_enviada: ', operacion_enviada)
+            if operacion_enviada['status'] != 'TERMINADA':
+                if operacion_enviada["Symbol"] == symbol and operacion_enviada["_cliOrderId"] == int(clOrdId): 
+                    operacion_enviada['status'] = 'TERMINADA'
+                    endingEnviadas = 'SI'
+                else:
+                    endingEnviadas = 'NO'
+              
     # Revisa las operaciones globales
     for key, operacionGlobal in diccionario_global_operaciones.items():
         if operacionGlobal['symbol'] == symbol:
             if operacionGlobal['ut'] == 0:
-                # Verifica si todas las operaciones relacionadas están terminadas
-                all_enviadas_terminadas = all(
+                # Verifica si ninguna operación relacionada está en estado 'ANTERIOR'
+                all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
                     if operacion["Symbol"] == symbol
                 )
-                if all_enviadas_terminadas:
+                any_enviada_anterior = any(
+                    operacion['status'] == 'ANTERIOR'
+                    for operacion in diccionario_operaciones_enviadas.values()
+                    if operacion["Symbol"] == symbol
+                )
+                if all_enviadas_validas and not any_enviada_anterior:
                     operacionGlobal['status'] = '1'
-                    
-                
+                    endingGlobal = 'SI'
+                else:
+                    endingGlobal = 'NO'
+            else:
+                endingGlobal = 'NO'
 
-    # Asegura que endingEnviadas siga siendo 'SI' si corresponde
+    # Asegura que `endingEnviadas` siga siendo 'SI' si corresponde
+    if endingGlobal == 'SI' and endingEnviadas == 'SI':
+        print(f'Final state: endingGlobal={endingGlobal}, endingEnviadas={endingEnviadas}, symbol={symbol}')
+        endingOperacionBot(endingGlobal, endingEnviadas, symbol) 
      
         
         
@@ -400,9 +425,10 @@ def actualizar_diccionario_global(symbol, ut_a_devolver, status_terminado=False)
             
             
 # Llamada a la función order_report_handler con cada caso de prueba
-@test_order_report_handler.route('/test_order_report_handler')
-def entradaTest():
+@test_procesar_estado_final.route('/test_procesar_estado_final')
+def test_procesar_estado_final1():
     print('****************')
     for i, report in enumerate(test_cases):
         print(f'\n--- Test Case {i+1} ---')
-        order_report_handler(report)
+        #order_report_handler(report)
+        procesar_estado_final(report)
