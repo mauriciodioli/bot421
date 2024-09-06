@@ -34,12 +34,9 @@ from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
 
 
-<<<<<<< HEAD
 from Tests.test_order_report_handler import test_order_report_handler
 from Tests.test_2_order_report_handler import test_2_order_report_handler
 
-=======
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
 
 
 from social.telegram.telegram import telegram
@@ -257,7 +254,6 @@ app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
-<<<<<<< HEAD
 
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
@@ -265,9 +261,6 @@ app.register_blueprint(test_2_order_report_handler)
 app.register_blueprint(test_procesar_estado_final)
 
 
-=======
-app.register_blueprint(test_procesar_estado_final)
->>>>>>> 8af19e5fa126d7a3337e089aaabe3b9c10b0d38c
 
 print(DATABASE_CONNECTION_URI)
 
