@@ -15,6 +15,7 @@ import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
 from datetime import datetime
+import time
 from pytz import timezone as pytz_timezone
 
 from models.unidadTrader import UnidadTrader
@@ -81,13 +82,13 @@ def BullMarket10861001():
                         cuentaGlobal = data['cuenta']
                         pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
                         cuentaGlobal = accountCuenta
+                
                         CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
                         carga_operaciones(app,pyRofexInicializada,get.diccionario_global_sheet['argentina'],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
                         pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
                         pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
-         
-        
+                      
             
         
             else:
@@ -958,7 +959,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
-                'accoount': get.ConexionesBroker[account]['cuenta'], 
+                'account': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 
                 'symbol': symbol,
                 'status': 'termino'               

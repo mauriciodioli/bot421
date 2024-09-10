@@ -267,6 +267,8 @@ def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
      if selector != "simulado" or selector =='vacio':
         if pais == "argentina":
             if len(get.diccionario_global_sheet) > 0:
+               if len(get.precios_data)== 0:
+                   terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
                if not get.conexion_existente(app,get.CUENTA_ACTUALIZAR_SHEET,
                                                  get.CORREO_E_ACTUALIZAR_SHEET,
                                                  get.VARIABLE_ACTUALIZAR_SHEET,
