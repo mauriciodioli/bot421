@@ -958,7 +958,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
-                'accoount': get.ConexionesBroker[account]['cuenta'], 
+                'account': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 
                 'symbol': symbol,               
             }
