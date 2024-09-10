@@ -333,6 +333,7 @@ function actualizarUnidadTradeo(){
             <th>Signal</th>
             <th>In Progress</th>
             <th>Ut</th>
+            <th>Price</th>
             <th>Operated</th>
             <th>Date</th>
             <th>Actions</th>
@@ -343,7 +344,7 @@ function actualizarUnidadTradeo(){
         // Agrega la fila de encabezado a la tabla
         tableBody.appendChild(headerRow);
         for (var i = 0; i < response.datos.length; i++) {
-          debugger;
+         
           var dato = response.datos[i];
         
          
@@ -365,7 +366,7 @@ function actualizarUnidadTradeo(){
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
                           row.setAttribute('id', filaId);
-                          debugger;
+                         debugger;
                           row.innerHTML = `
                             <td>${numeroDeOrden}</td>
                             <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -373,6 +374,7 @@ function actualizarUnidadTradeo(){
                             <td>${dato[4]}</td>
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
+                            <td>$ ${dato[7]}</td>
                             <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
                             <td>
@@ -423,6 +425,7 @@ function actualizarUnidadTradeo(){
                             <td>${dato[4]}</td>
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
+                            <td>$ ${dato[7]}</td>
                             <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
                             <td>
@@ -478,6 +481,7 @@ function actualizarUnidadTradeo(){
                                 <td>${dato[4]}</td>
                                 <td>${dato[2]}</td>
                                 <td>${dato[3]}</td>
+                                <td>$ ${dato[7]}</td>
                                 <td>${dato[9]}</td>
                                 <td>${dato[8]}</td>
                                 <td>
@@ -527,6 +531,7 @@ function actualizarUnidadTradeo(){
                                 <td>${dato[4]}</td>
                                 <td>${dato[2]}</td>
                                 <td>${dato[3]}</td>
+                                <td>$ ${dato[7]}</td>
                                 <td>${dato[9]}</td>
                                 <td>${dato[8]}</td>
                                 <td>
