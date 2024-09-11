@@ -279,6 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <th>In Progress</th>
             <th>Ut</th>
             <th>Price</th>
+            <th>Sugerido</th>
             <th>Operated</th>
             <th>Date</th>
             <th>Actions</th>
@@ -320,6 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       var numeroDeOrden = i + 1; // Empieza desde 1
                       var filaId = 'fila-' + i;
                       row.setAttribute('id', filaId);
+                      const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
                       row.innerHTML = `
                         <td>${numeroDeOrden}</td>
                         <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -328,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${dato[2]}</td>
                         <td>${dato[3]}</td>
                         <td>$ ${dato[7]}</td>
+                        <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales -->  
                         <td>${dato[9]}</td>
                         <td>${dato[8]}</td>
                         <td>
@@ -370,6 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       var numeroDeOrden = i + 1; // Empieza desde 1
                       var filaId = 'fila-' + i;
                       row.setAttribute('id', filaId);
+                      const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
                       row.innerHTML = `
                         <td>${numeroDeOrden}</td>
                         <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -378,6 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${dato[2]}</td>
                         <td>${dato[3]}</td>
                         <td>$ ${dato[7]}</td>
+                        <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales --> 
                         <td>${dato[9]}</td>
                         <td>${dato[8]}</td>
                         <td>
@@ -426,6 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
                           row.setAttribute('id', filaId);
+                          const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
                           row.innerHTML = `
                             <td>${numeroDeOrden}</td>
                             <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -434,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
                             <td>$ ${dato[7]}</td>
+                            <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales --> 
                             <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
                             <td>
@@ -475,6 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
                           row.setAttribute('id', filaId);
+                          const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
                           row.innerHTML = `
                             <td>${numeroDeOrden}</td>
                             <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -483,6 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
                             <td>$ ${dato[7]}</td>
+                            <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales --> 
                             <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
                             <td>
