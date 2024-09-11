@@ -419,6 +419,7 @@ def loginExtCuentaSeleccionadaBroker():
                     environments = accountCuenta                                        
                     pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments) 
                     try:   
+                        
                         pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
                     except ApiException as e:
                         print(f"ApiException occurred: {e}")
