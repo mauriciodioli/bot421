@@ -13,9 +13,18 @@
     <!-- El contenido principal va aquí... -->
 
     <!-- Layout en la parte inferior -->
+    
     <div id="bottomLayout" class="fixed-bottom bg-dark text-white p-3">
-        <button id="closeLayout" class="btn btn-danger btn-sm">Cerrar</button>
-       
+        <button id="closeLayout" class="btn btn-sm">
+             <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">           
+        </button>
+        <button class="btn  btn-sm close-layout-btn">
+            <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+        </button>
+        <button class="btn  btn-sm close-layout-btn">
+            <img src="{{ url_for('static', filename='icons/edit-icon-png-3598.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+        </button>           
+        
     </div>
  <!-- Distribuir las opciones aquí -->
  
