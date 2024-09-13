@@ -173,7 +173,7 @@ def estrategias_usuario():
                 print("Name:", estrategia.userCuenta)
                 # Print other attributes as needed
                 print()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layout')
     
     except:
        print('no hay estrategias') 
