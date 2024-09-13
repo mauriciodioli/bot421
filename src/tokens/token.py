@@ -135,13 +135,13 @@ def validar_expiracion_token(access_token):
         iat_timestamp = token_info.get('iat')
         if iat_timestamp is not None:
             iat_date = datetime.fromtimestamp(iat_timestamp, tz=timezone.utc)
-            print("Tiempo de creación del token:", iat_date)
+            #print("Tiempo de creación del token:", iat_date)
 
        
 
         # Verificar si el token ha expirado
         current_time = datetime.now(timezone.utc)
-        print("Tiempo actual:", current_time)
+        #print("Tiempo actual:", current_time)
         
         # Calcular la diferencia de tiempo hasta la expiración del token
         tiempo_restante = exp_date - current_time
