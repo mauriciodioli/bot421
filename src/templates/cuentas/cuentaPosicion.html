@@ -68,10 +68,12 @@
         <!-- Lista de Instrumentos Ganadores -->
         <h5>Instrumentos Ganadores</h5>
         <ul>
+           
             {% for instrumento in datos %}
                 {% if instrumento['totalDiff'] > 0 %}
+               
                 <li>
-                    El instrumento <strong>{{ instrumento['symbol'] }}</strong> va ganando con una diferencia total de 
+                   <strong>{{ instrumento['symbol'] }}</strong> va ganando una diferencia total de 
                     <strong style="color: #ADD8E6;">{{ instrumento['totalDiff'] }}</strong>.
                 </li>
                 {% endif %}
@@ -81,10 +83,12 @@
         <!-- Lista de Instrumentos Perdedores -->
         <h5>Instrumentos Perdedores</h5>
         <ul>
+            
             {% for instrumento in datos %}
                 {% if instrumento['totalDiff'] <= 0 %}
+             
                 <li>
-                    El instrumento <strong>{{ instrumento['symbol'] }}</strong> va perdiendo con una diferencia total de 
+                    <strong>{{ instrumento['symbol'] }}</strong> va perdiendo una diferencia total de 
                     <strong style="color: red;">{{ instrumento['totalDiff'] }}</strong>.
                 </li>
                 {% endif %}
