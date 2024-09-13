@@ -95,9 +95,15 @@ def cuenta_posicion_cuenta():
              
                 if accountCuenta == cuenta:
                   respuesta_cuenta =  get.ConexionesBroker[elemento]['pyRofex'].get_account_position(account=accountCuenta, environment=accountCuenta)
-                  reporte = respuesta_cuenta['positions']  
-                  if reporte!=None:                       
-                        return render_template("cuentas/cuentaPosicion.html",datos = reporte)
+                  reporte = respuesta_cuenta['positions'] 
+                  # En tu vista o función de Python
+                  if reporte is not None:
+                        # Calcular suma de ganadores y perdedores
+                        suma_ganadores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] > 0)
+                        suma_perdedores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] <= 0)
+
+                        # Renderiza la plantilla con los datos y las sumas
+                        return render_template("cuentas/cuentaPosicion.html", datos=reporte, suma_ganadores=suma_ganadores, suma_perdedores=suma_perdedores)
         else:
           return render_template("notificaciones/noPoseeDatos.html", layout = layouts)
      except:  
