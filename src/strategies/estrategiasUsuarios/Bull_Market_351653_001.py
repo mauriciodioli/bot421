@@ -479,6 +479,16 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
         #  print(f'Clave: {clave}, Valor: {valor}')
    
     # db.session.close()
+     if len(diccionario_global_operaciones) == 0 or diccionario_global_operaciones == None:
+            parametros = {
+                    'account': get.ConexionesBroker[account]['cuenta'], 
+                    'user_id': idUser, 
+                    'symbol': '',
+                    'mensaje' : 'No hay operaciones',
+                    'status': 'termino'               
+                }
+
+            get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
      app.logger.info('______CARGA_OPERACIONES____') 
     # app.logger.info(diccionario_global_operaciones) 
 
@@ -962,6 +972,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
                 'account': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 
                 'symbol': symbol,
+                'mesaje' : 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
                 'status': 'termino'               
             }
 
