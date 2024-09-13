@@ -730,8 +730,9 @@
         success: function(response) {
             if (response.estado === 'listo') {
                 // Los datos están listos, mostrar alerta
-                alert(`Los datos están listos para la cuenta: ${response.account}`);
-                // Cerrar el modal
+         
+                alert(`${response.mensaje} : ${response.account}`);
+                 // Cerrar el modal
                 var notificationModalElement = document.getElementById('notificationModal');
                 var notificationModal = bootstrap.Modal.getInstance(notificationModalElement);
                 if (notificationModal) {

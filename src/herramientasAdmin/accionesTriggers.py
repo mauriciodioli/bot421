@@ -41,9 +41,10 @@ def verificar_estado():
         user_id = parametros.get('user_id')
         symbol = parametros.get('symbol')
         status = parametros.get('status')
+        mensaje = parametros.get('mensaje')
     
     if parametros and parametros.get('status') == 'termino':
-        return jsonify({'estado': 'listo', 'account': parametros['account']}), 200
+        return jsonify({'estado': 'listo', 'account': parametros['account'],'mensaje':parametros['mensaje']}), 200
     return jsonify({'estado': 'en_proceso'}), 200
 
 @accionesTriggers.route('/herramientasAdmin_accionesTriggers_actualizaLuzTrigger')
