@@ -395,7 +395,7 @@ def control_tiempo_lectura(tiempo_espera_ms, tiempo_inicial_ms):
         # Ha pasado suficiente tiempo, se realiza la lectura del sheet
         minutos = diferencia_tiempo_ms // 60000
         segundos = (diferencia_tiempo_ms % 60000) // 1000
-        print(f"Se realiza la lectura del sheet. Tiempo transcurrido: {minutos}m {segundos}s.")
+        #print(f"Se realiza la lectura del sheet. Tiempo transcurrido: {minutos}m {segundos}s.")
        
         
         # Reiniciar el tiempo inicial para la próxima llamada

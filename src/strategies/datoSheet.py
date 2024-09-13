@@ -97,7 +97,7 @@ def leerDb(app):
      with app.app_context():   
         all_ins = db.session.query(InstrumentoSuscriptos).all()
         db.session.close()
-        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS 178")
+        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS")
         return all_ins
 
 
@@ -252,7 +252,7 @@ def actualizar_precios(sheetId, sheet_name, pais):
             if batch_updates:
                 try:
                     get.sheet.batch_update(batch_updates)
-                    print("Actualización en lotes exitosa.")
+                    #print("Actualización en lotes exitosa.")
                 except Exception as e:
                     print(f"Error en la actualización en lotes: {e}")
             else:

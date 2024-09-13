@@ -82,11 +82,11 @@ def BullMarket351653001():
                         pyRofexInicializada =  get.ConexionesBroker[elemento]['pyRofex']
                         cuentaGlobal = accountCuenta
                     
-                        CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
-                        carga_operaciones(app,pyRofexInicializada,get.diccionario_global_sheet['argentina'],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
-                        pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
-                        pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
-                        pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
+                      #  CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=pyRofexInicializada,account=accountCuenta,user_id=usuario,userCuenta=correo_electronico)
+                      #  carga_operaciones(app,pyRofexInicializada,get.diccionario_global_sheet['argentina'],accountCuenta,usuario,correo_electronico,get.ContenidoSheet_list[1],idTrigger)
+                      #  pyRofexInicializada.order_report_subscription(account=accountCuenta,snapshot=True,handler = order_report_handler,environment=accountCuenta)
+                      #  pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_estrategia,environment=accountCuenta)
+                      #  pyRofexInicializada.add_websocket_order_report_handler(order_report_handler,environment=accountCuenta)
          
         
             
@@ -940,10 +940,9 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
     try:
         if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
-            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
             # Limpiar el diccionario si se cumplen todas las condiciones
             diccionario_operaciones_enviadas.clear()
             print("###############################################") 
@@ -956,14 +955,19 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):#terminacion
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
+            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
+          
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
                 'account': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 
-                'symbol': symbol,               
+                'symbol': symbol,
+                'status': 'termino'               
             }
 
             get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
+
+         
     except KeyError as e:
         print(f"KeyError: La clave {e} no se encontró en los diccionarios.")
     except Exception as e:

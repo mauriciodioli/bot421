@@ -944,7 +944,6 @@ def obtenerStock(cadena):
 def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
     try:
         if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
-            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
             # Limpiar el diccionario si se cumplen todas las condiciones
             diccionario_operaciones_enviadas.clear()
             print("###############################################") 
@@ -956,6 +955,8 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             print("###############################################") 
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
+            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
+           
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
