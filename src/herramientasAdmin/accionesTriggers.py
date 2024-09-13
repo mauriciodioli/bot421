@@ -45,3 +45,9 @@ def verificar_estado():
     if parametros and parametros.get('status') == 'termino':
         return jsonify({'estado': 'listo', 'account': parametros['account']}), 200
     return jsonify({'estado': 'en_proceso'}), 200
+
+@accionesTriggers.route('/herramientasAdmin_accionesTriggers_actualizaLuzTrigger')
+def herramientasAdmin_accionesTriggers_actualizaLuzTrigger():
+    luz = get.luzShedule_funcionando
+    get.luzShedule_funcionando = False
+    return jsonify({'luzTrigger_control':luz})

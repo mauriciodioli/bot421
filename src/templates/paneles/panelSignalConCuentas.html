@@ -321,7 +321,12 @@ document.addEventListener('DOMContentLoaded', function() {
                       var numeroDeOrden = i + 1; // Empieza desde 1
                       var filaId = 'fila-' + i;
                       row.setAttribute('id', filaId);
-                      const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
+                      const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                      const valor2 = parseCurrency(dato[7]);
+                      // Realizar la multiplicación                       
+                      const totalFormateado = valor1 * valor2;
+                      // Formatear el total con puntos como separadores de miles
+                      const total = formatearConMiles(totalFormateado);
                       row.innerHTML = `
                         <td>${numeroDeOrden}</td>
                         <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -330,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${dato[2]}</td>
                         <td>${dato[3]}</td>
                         <td>$ ${dato[7]}</td>
-                        <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales -->  
+                        <td>$ ${total}</td> <!-- Mostrar el total con dos decimales -->  
                         <td>${dato[9]}</td>
                         <td>${dato[8]}</td>
                         <td>
@@ -373,7 +378,12 @@ document.addEventListener('DOMContentLoaded', function() {
                       var numeroDeOrden = i + 1; // Empieza desde 1
                       var filaId = 'fila-' + i;
                       row.setAttribute('id', filaId);
-                      const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
+                      const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                      const valor2 = parseCurrency(dato[7]);
+                      // Realizar la multiplicación                       
+                      const totalFormateado = valor1 * valor2;
+                      // Formatear el total con puntos como separadores de miles
+                      const total = formatearConMiles(totalFormateado);
                       row.innerHTML = `
                         <td>${numeroDeOrden}</td>
                         <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -382,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${dato[2]}</td>
                         <td>${dato[3]}</td>
                         <td>$ ${dato[7]}</td>
-                        <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales --> 
+                        <td>$ ${total}</td> <!-- Mostrar el total con dos decimales --> 
                         <td>${dato[9]}</td>
                         <td>${dato[8]}</td>
                         <td>
@@ -431,7 +441,12 @@ document.addEventListener('DOMContentLoaded', function() {
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
                           row.setAttribute('id', filaId);
-                          const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
+                          const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                          const valor2 = parseCurrency(dato[7]);
+                          // Realizar la multiplicación                       
+                          const totalFormateado = valor1 * valor2;
+                          // Formatear el total con puntos como separadores de miles
+                          const total = formatearConMiles(totalFormateado);
                           row.innerHTML = `
                             <td>${numeroDeOrden}</td>
                             <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -440,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
                             <td>$ ${dato[7]}</td>
-                            <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales --> 
+                            <td>$ ${total}</td> <!-- Mostrar el total con dos decimales --> 
                             <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
                             <td>
@@ -482,7 +497,12 @@ document.addEventListener('DOMContentLoaded', function() {
                           var numeroDeOrden = i + 1; // Empieza desde 1
                           var filaId = 'fila-' + i;
                           row.setAttribute('id', filaId);
-                          const total = parseFloat(dato[3]) * parseFloat(dato[7]); // Convertir los valores a float y multiplicar
+                          const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                          const valor2 = parseCurrency(dato[7]);
+                          // Realizar la multiplicación                       
+                          const totalFormateado = valor1 * valor2;
+                          // Formatear el total con puntos como separadores de miles
+                          const total = formatearConMiles(totalFormateado);
                           row.innerHTML = `
                             <td>${numeroDeOrden}</td>
                             <td>${dato[0].replace('MERV - XMEV -', '')}</td>
@@ -491,7 +511,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <td>${dato[2]}</td>
                             <td>${dato[3]}</td>
                             <td>$ ${dato[7]}</td>
-                            <td>$ ${total.toFixed(2)}</td> <!-- Mostrar el total con dos decimales --> 
+                            <td>$ ${total}</td> <!-- Mostrar el total con dos decimales --> 
                             <td>${dato[9]}</td>
                             <td>${dato[8]}</td>
                             <td>
@@ -973,7 +993,20 @@ function closeModal(precio) {
 
 
 
+// Función para limpiar y convertir a float
+function parseCurrency(value) {
+  return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+}
+// Función para formatear un número con punto como separador de miles
+function formatearConMiles(num) {
+  // Convertir el número a una cadena con dos decimales
+  let [entero, decimal] = num.toFixed(2).split('.');
 
+  // Agregar los puntos como separadores de miles
+  entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  return `${entero},${decimal}`;
+}
 
 
 
