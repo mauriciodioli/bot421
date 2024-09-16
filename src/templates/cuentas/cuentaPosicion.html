@@ -99,11 +99,23 @@
         <h5>Resumen Total</h5>
         <ul>
             <li>
+                Efectividad estrategia: 
+                <span style="color: white;">(</span>
+                <strong style="color: green;">{{ porcentaje_ganadores }}</strong>
+                <span style="color: white;"> / </span>
+                <strong style="color: red;">{{ porcentaje_perdedores }}</strong>
+                <span style="color: white;">)</span>
+                <span style="color: white;">%</span>
+            </li>
+            
+            
+            <li>
                 Suma de Instrumentos Ganadores: <strong style="color: #ADD8E6;">$ {{ suma_ganadores }}</strong>
             </li>
             <li>
                 Suma de Instrumentos Perdedores: <strong style="color: red;">$ {{ suma_perdedores }}</strong>
             </li>
+            
             <li>
                 Total General: 
                 {% set total = suma_ganadores + suma_perdedores %}
