@@ -8,10 +8,7 @@ import routes.instrumentos as inst
 from panelControlBroker.panelControl import enviar_leer_sheet
 from panelControlBroker.panelControl import terminaConexionParaActualizarSheet
 from strategies.datoSheet import update_precios
-from datetime import datetime
-import threading
-
-import pandas as pd
+from werkzeug.exceptions import BadRequest
 import pyRofex #lo utilizo para test
 import time    #lo utilizo para test
 import asyncio
@@ -27,25 +24,48 @@ accionesTriggers = Blueprint('accionesTriggers',__name__)
 
 @accionesTriggers.route('/verificar_estado', methods=['POST'])
 def verificar_estado():
-    data = request.get_json()  # Obtén los datos JSON del cuerpo de la solicitud
-    idTrigger = data.get('idTrigger')
-    userId = data.get('userId')  # Obtener userId
-    cuenta = data.get('cuenta')  # Obtener userCuenta
-    
-    # Verifica si la cuenta existe en el diccionario
-    parametros = get.estrategias_usuario__endingOperacionBot.get(idTrigger)
-    
-    if  parametros:
-        # Desglosar las variables
-        account = parametros.get('account')
-        user_id = parametros.get('user_id')
-        symbol = parametros.get('symbol')
-        status = parametros.get('status')
-        mensaje = parametros.get('mensaje')
-    
-    if parametros and parametros.get('status') == 'termino':
-        return jsonify({'estado': 'listo', 'account': parametros['account'],'mensaje':parametros['mensaje']}), 200
-    return jsonify({'estado': 'en_proceso'}), 200
+    try:
+        # Obtén los datos JSON del cuerpo de la solicitud
+        data = request.get_json()
+        
+        # Verifica si los datos se obtuvieron correctamente
+        if not data:
+            raise BadRequest('No se recibió ningún dato JSON.')
+
+        # Obtén los valores del JSON
+        idTrigger = data.get('idTrigger')
+        userId = data.get('userId')
+        cuenta = data.get('cuenta')
+        
+        # Verifica si idTrigger y cuenta están presentes
+        if idTrigger is None or cuenta is None:
+            raise BadRequest('Faltan parámetros requeridos: idTrigger o cuenta.')
+
+        # Verifica si la cuenta existe en el diccionario
+        parametros = get.estrategias_usuario__endingOperacionBot.get(idTrigger)
+        
+        # Verifica si se encontraron parámetros
+        if parametros:
+            # Desglosar las variables
+            account = parametros.get('account')
+            user_id = parametros.get('user_id')
+            symbol = parametros.get('symbol')
+            status = parametros.get('status')
+            mensaje = parametros.get('mensaje')
+
+            # Verifica el estado y responde apropiadamente
+            if status == 'termino':
+                return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
+        
+        return jsonify({'estado': 'en_proceso'}), 200
+
+    except BadRequest as e:
+        # Maneja los errores de solicitud incorrecta
+        return jsonify({'error': str(e)}), 400
+
+    except Exception as e:
+        # Maneja cualquier otro error
+        return jsonify({'error': 'Ocurrió un error inesperado.', 'detalle': str(e)}), 500
 
 @accionesTriggers.route('/herramientasAdmin_accionesTriggers_actualizaLuzTrigger')
 def herramientasAdmin_accionesTriggers_actualizaLuzTrigger():
