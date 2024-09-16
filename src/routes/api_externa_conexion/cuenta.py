@@ -102,8 +102,27 @@ def cuenta_posicion_cuenta():
                         suma_ganadores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] > 0)
                         suma_perdedores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] <= 0)
 
+                        # Total de operaciones
+                        total_operaciones = suma_ganadores + suma_perdedores
+
+                        # Evitar división por cero
+                        if total_operaciones > 0:
+                            # Calcular porcentaje de ganadores
+                           numerador = suma_ganadores/suma_perdedores
+                           divisor = abs(numerador)+1
+                           porcentaje_ganadores = round(abs((numerador/divisor)*100),3)
+                           
+                           # Calcular porcentaje de perdedores
+                           numerador1 = suma_perdedores/suma_ganadores
+                           divisor1 = abs(numerador1)+1
+                           porcentaje_perdedores = round(abs((numerador1/divisor1)*100),3)
+                           
+                        else:
+                            porcentaje_ganadores = porcentaje_perdedores = 0
+                        
+                        
                         # Renderiza la plantilla con los datos y las sumas
-                        return render_template("cuentas/cuentaPosicion.html", datos=reporte, suma_ganadores=suma_ganadores, suma_perdedores=suma_perdedores)
+                        return render_template("cuentas/cuentaPosicion.html", datos=reporte, suma_ganadores=suma_ganadores, suma_perdedores=suma_perdedores,porcentaje_ganadores = porcentaje_ganadores, porcentaje_perdedores = porcentaje_perdedores, layout = layouts)
         else:
           return render_template("notificaciones/noPoseeDatos.html", layout = layouts)
      except:  
@@ -208,8 +227,42 @@ def reporteCuenta():
             except Exception as e:
                 db.session.rollback() 
              
-           
-            return render_template("cuentas/cuentaReporte.html", interes=interes,total_cuenta=total_cuenta,total_mas_interes=total_mas_interes,interes_ganado=interes_ganado, layout = layouts)
+            respuesta_cuenta =  get.ConexionesBroker[cuenta]['pyRofex'].get_account_position(account=cuenta, environment=cuenta)
+            reporte = respuesta_cuenta['positions'] 
+            # En tu vista o función de Python
+            if reporte is not None:
+                # Calcular suma de ganadores y perdedores
+                suma_ganadores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] > 0)
+                suma_perdedores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] <= 0)
+
+                # Total de operaciones
+                total_operaciones = suma_ganadores + suma_perdedores
+
+                # Evitar división por cero
+                if total_operaciones > 0:
+                    # Calcular porcentaje de ganadores
+                    numerador = suma_ganadores/suma_perdedores
+                    divisor = abs(numerador)+1
+                    porcentaje_ganadores = round(abs((numerador/divisor)*100),3)
+                    
+                    # Calcular porcentaje de perdedores
+                    numerador1 = suma_perdedores/suma_ganadores
+                    divisor1 = abs(numerador1)+1
+                    porcentaje_perdedores = round(abs((numerador1/divisor1)*100),3)
+                    
+                else:
+                    porcentaje_ganadores = porcentaje_perdedores = 0
+                return render_template("cuentas/cuentaReporte.html",    
+                                       interes=interes,
+                                       total_cuenta=total_cuenta,
+                                       total_mas_interes=total_mas_interes,
+                                       interes_ganado=interes_ganado,
+                                       suma_ganadores=round(suma_ganadores,2), 
+                                       suma_perdedores=round(suma_perdedores,2), 
+                                       porcentaje_ganadores = porcentaje_ganadores, 
+                                       porcentaje_perdedores = porcentaje_perdedores,
+                                       total_operaciones = round(total_operaciones,2), 
+                                       layout = layouts)
         else:
              flash('token expirado') 
              return render_template("usuarios/logOutSystem.html")   
