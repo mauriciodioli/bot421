@@ -310,17 +310,27 @@ def actualizar_estado_operaciones(symbol, clOrdId):
             break  # Sale del bucle si encuentra una operación que no está terminada
     return todas_terminadas
         
-def actualizar_diccionario_global(symbol, ut_a_devolver, status_terminado=False):
+#def actualizar_diccionario_global(symbol, ut_a_devolver, status_terminado=False):
+ #   """Actualiza el diccionario global de operaciones."""
+ #   operacionGlobal = diccionario_global_operaciones.get(symbol)
+ #   if operacionGlobal:
+ #       if status_terminado:
+ #           operacionGlobal['ut'] = int(ut_a_devolver)
+ #       else:
+ #           operacionGlobal['ut'] += int(ut_a_devolver)
+        
+ #       if operacionGlobal['status'] != '0':
+ #           operacionGlobal['status'] = '0'
+            
+def actualizar_diccionario_global(symbol, ut_a_devolver):
     """Actualiza el diccionario global de operaciones."""
     operacionGlobal = diccionario_global_operaciones.get(symbol)
     if operacionGlobal:
-        if status_terminado:
-            operacionGlobal['ut'] = int(ut_a_devolver)
-        else:
+         if int(ut_a_devolver) > 0:  
             operacionGlobal['ut'] += int(ut_a_devolver)
-        
-        if operacionGlobal['status'] != '0':
-            operacionGlobal['status'] = '0'
+         else:   
+            if operacionGlobal['status'] != '0':
+                    operacionGlobal['status'] = '0'
                  
               
 def endingOperacionBot(endingGlobal, endingEnviadas, symbol):

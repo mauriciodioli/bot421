@@ -42,6 +42,51 @@
         
     </style>
     
+
+    <div class="container" id="cardIndex">       
+        <div class="card card-body " id="cardIndexFichas">
+          <h2>Resumen Estrategia</h2>
+          <h4 class="planes-titulo" style="color: gold; font-size: 24px;">$ {{ total_operaciones }} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Total posicion</span></h4>
+          
+          <span class="planes-sub-titulo" style="color: white; font-size: 18px;"> Efectividad estrategia:     </span>
+            
+          <h4 class="planes-titulo" style="color: {{ 'green' if porcentaje_ganadores > 0 else 'red' }}; font-size: 24px;">
+                <span style="color: white;">(</span>
+                <strong style="color: green;">{{ porcentaje_ganadores }}</strong>
+                <span style="color: white;"> / </span>
+                <strong style="color: red;">{{ porcentaje_perdedores }}</strong>
+                <span style="color: white;">)</span>
+                <span style="color: white;">%</span>
+            
+            <span class="flecha" style="color: {{ 'green' if porcentaje_ganadores > 0 else 'red' }};">
+                {% if porcentaje_ganadores > 0 %}
+                    &#9650; <!-- Flecha hacia arriba -->
+                {% else %}
+                    &#9660; <!-- Flecha hacia abajo -->
+                {% endif %}
+            </span>
+        </h4>
+
+
+
+
+          <hr class="separator">
+          <p style="margin-bottom: 5px;">Varia según mercado</p>
+          <p style="margin-bottom: 5px;">Valor variable: <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Si</span></p>
+          <p style="margin-bottom: 5px;">Ganadoras: <strong style="color: #ADD8E6;">$ {{ suma_ganadores }}</strong> </p>
+          <p style="margin-bottom: 5px;">Perdedoras:<strong style="color: red;">$ {{ suma_perdedores }}</strong> <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Operando</span></p>
+          <p style="margin-bottom: 5px;">Total: {{total_operaciones }} <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Posición</span></p>
+          <div class="card-corner-band">
+              <div class="card-corner-text">NUEVO</div>
+          </div>        
+        
+       
+        </div>
+    </div>
+
+
+
+
     <div class="container" id="cardIndex">       
         <div class="card card-body " id="cardIndexFichas">
           <h2>Estado de Cuenta</h2>
@@ -76,6 +121,8 @@
        
         </div>
     </div>
+
+   
 
 
     <div class="modal fade" id="MuestraValorFicha" tabindex="-1" aria-labelledby="MuestraValorFichaModalLabel" aria-hidden="true">

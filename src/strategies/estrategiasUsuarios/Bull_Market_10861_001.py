@@ -634,9 +634,11 @@ def actualizar_diccionario_global(symbol, ut_a_devolver):
     """Actualiza el diccionario global de operaciones."""
     operacionGlobal = diccionario_global_operaciones.get(symbol)
     if operacionGlobal:
-        operacionGlobal['ut'] += int(ut_a_devolver)
-        if operacionGlobal['status'] != '0':
-            operacionGlobal['status'] = '0'
+         if int(ut_a_devolver) > 0:  
+            operacionGlobal['ut'] += int(ut_a_devolver)
+         else:   
+            if operacionGlobal['status'] != '0':
+                    operacionGlobal['status'] = '0'
             
   
 def convert_datetime(original_datetime_str, desired_timezone_str):
