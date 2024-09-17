@@ -711,52 +711,54 @@
 
 
 
+  let estadoListo = false; // Variable de control para saber si el estado ya es "listo"
 
-  
   function verificarEstado() {
-   var userId = localStorage.getItem('usuario_id')
-   var cuenta = localStorage.getItem('cuenta')
-   var triggerId = localStorage.getItem('idTrigger')
-
-    $.ajax({
-        type: 'POST',
-        url: '/verificar_estado',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          'userId': userId,
-          'idTrigger': triggerId,
-          'cuenta': cuenta
-      }),
-        success: function(response) {
-            if (response.estado === 'listo') {
-                // Los datos están listos, mostrar alerta
-         
-                alert(`${response.mensaje} : ${response.account}`);
-                 // Cerrar el modal
-                var notificationModalElement = document.getElementById('notificationModal');
-                var notificationModal = bootstrap.Modal.getInstance(notificationModalElement);
-                if (notificationModal) {
-                    notificationModal.hide();
-                }
-                clearInterval(interval); // Detener el sondeo
-            } else {
-                console.log('Los datos todavía no están listos...');
-            }
-        },
-        error: function(error) {
-            console.error('Error:', error);
-        }
-    });
-}
-
+      // Si ya se verificó que el estado es "listo", no volver a preguntar
+      if (estadoListo) {
+          return;
+      }
   
-   
+      var userId = localStorage.getItem('usuario_id');
+      var cuenta = localStorage.getItem('cuenta');
+      var triggerId = localStorage.getItem('idTrigger');
   
-// Iniciar el sondeo cada 60 segundos
-const interval = setInterval(function() {
-  verificarEstado();
-}, 60000);  // Intervalo de 60 segundos
-
+      $.ajax({
+          type: 'POST',
+          url: '/verificar_estado',
+          contentType: 'application/json',
+          data: JSON.stringify({
+              'userId': userId,
+              'idTrigger': triggerId,
+              'cuenta': cuenta
+          }),
+          success: function(response) {
+              if (response.estado === 'listo') {
+                  // Los datos están listos, mostrar alerta
+                  alert(`${response.mensaje} : ${response.account}`);
+                  estadoListo = true; // Marcar como "listo" para no volver a preguntar
+                  clearInterval(interval); // Detener el sondeo
+                  // Cerrar el modal
+                  var notificationModalElement = document.getElementById('notificationModal');
+                  var notificationModal = bootstrap.Modal.getInstance(notificationModalElement);
+                  if (notificationModal) {
+                      notificationModal.hide();
+                  }  
+                 
+              } else {
+                  console.log('Los datos todavía no están listos...');
+              }
+          },
+          error: function(error) {
+              console.error('Error:', error);
+          }
+      });
+  }
+  
+  // Iniciar el sondeo cada 60 segundos
+  const interval = setInterval(function() {
+      verificarEstado();
+  }, 60000);  // Intervalo de 60 segundos
 
 </script>
 {% endblock %}
