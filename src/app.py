@@ -36,6 +36,7 @@ from productosComerciales.promociones.promociones import promociones
 
 from Tests.test_order_report_handler import test_order_report_handler
 from Tests.test_2_order_report_handler import test_2_order_report_handler
+from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
 
 
 
@@ -259,6 +260,7 @@ app.register_blueprint(muestraPublicacionesEnAmbitos)
 
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
+app.register_blueprint(test_ejecutarHiloPanelControl)
 
 
 

@@ -163,23 +163,24 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id,accountCuenta):
                     dato_extra = (None, None)
                     dato += dato_extra
             # Paso 1: Asegurarse de que 'dato[7]' no sea None o esté vacío
-            if dato[7] is not None and dato[7].strip() != ''and dato[7] != '#N/A':
-                # Paso 1: Eliminar los puntos
-                cadena_sin_puntos = dato[7].replace('.', '')
-                # Paso 2: Reemplazar la coma por un punto
-                cadena_correcta = cadena_sin_puntos.replace(',', '.')
-                # Paso 3: Convertir la cadena a float
-                precio = float(cadena_correcta)
-                if precio != 0:
-                    ut = unidadTrader/precio
-                    ut = abs(int(ut))
+            if dato[0] != 'Formulas G sheets':
+                if dato[7] is not None and dato[7].strip() != ''and dato[7] != '#N/A':
+                    # Paso 1: Eliminar los puntos
+                    cadena_sin_puntos = dato[7].replace('.', '')
+                    # Paso 2: Reemplazar la coma por un punto
+                    cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                    # Paso 3: Convertir la cadena a float
+                    precio = float(cadena_correcta)
+                    if precio != 0:
+                        ut = unidadTrader/precio
+                        ut = abs(int(ut))
+                    else:
+                        ut = 0
                 else:
                     ut = 0
-            else:
-                ut = 0
-            dato[3] = str(ut)
-            dato.append(i + 1)
-            datos_procesados.append(tuple(dato))
+                dato[3] = str(ut)
+                dato.append(i + 1)
+                datos_procesados.append(tuple(dato))
 
     return datos_procesados,unidadTrader
 
@@ -232,8 +233,8 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                
 
                 # Preguntar si son las 11:00 y pasar la lectura
-                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
-               # if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+               # if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id,accountCuenta, 'hilo', selector)
               
                 #if (now.hour == 19 and now.minute >= 40 and now.minute <= 55):
