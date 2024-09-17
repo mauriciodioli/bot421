@@ -543,7 +543,11 @@ def procesar_estado_final(symbol, clOrdId):
 
     endingGlobal = False
     endingEnviadas = False
-
+# Verifica si la operación ya está en el estado 'TERMINADA'
+    if diccionario_operaciones_enviadas.get(clOrdId) == 'TERMINADA':
+        print(f"[AVISO] La operación {clOrdId} ya estaba en estado TERMINADA, se intentó actualizar nuevamente.")
+        # Puedes optar por no actualizarla de nuevo, según la lógica:
+        return
     # Actualiza el estado de las operaciones enviadas
     endingEnviadas = actualizar_estado_operaciones( symbol, clOrdId)    
     # Revisa las operaciones globales
@@ -553,12 +557,12 @@ def procesar_estado_final(symbol, clOrdId):
                 all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
-                    if operacion["Symbol"] == symbol
+                     if operacion["Symbol"] == symbol
                 )
                 any_enviada_anterior = any(
                     operacion['status'] == 'ANTERIOR'
                     for operacion in diccionario_operaciones_enviadas.values()
-                    if operacion["Symbol"] == symbol
+                     if operacion["Symbol"] == symbol
                 )
                 if all_enviadas_validas and not any_enviada_anterior:
                     operacionGlobal['status'] = '1'
