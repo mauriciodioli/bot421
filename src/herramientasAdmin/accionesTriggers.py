@@ -12,6 +12,7 @@ from werkzeug.exceptions import BadRequest
 import pyRofex #lo utilizo para test
 import time    #lo utilizo para test
 import asyncio
+from datetime import datetime, timedelta
 
 from flask_paginate import Pagination, get_page_parameter
 
@@ -52,6 +53,12 @@ def verificar_estado():
             symbol = parametros.get('symbol')
             status = parametros.get('status')
             mensaje = parametros.get('mensaje')
+            # Compara el tiempo actual con el tiempo de inicio
+            tiempo_actual = datetime.now()
+            if tiempo_inicio:
+                tiempo_inicio = datetime.strptime(tiempo_inicio, '%Y-%m-%d %H:%M:%S')
+                if tiempo_actual - tiempo_inicio > timedelta(minutes=5):
+                    return jsonify({'estado': 'terminado', 'account': account, 'mensaje': 'Operación superó los 5 minutos.'}), 200
 
             # Verifica el estado y responde apropiadamente
             if status == 'termino':
