@@ -43,8 +43,7 @@ def verificar_estado():
             raise BadRequest('Faltan parámetros requeridos: idTrigger o cuenta.')
 
         # Verifica si la cuenta existe en el diccionario
-        parametros = get.estrategias_usuario__endingOperacionBot.get(idTrigger)
-        
+        parametros = get.estrategias_usuario__endingOperacionBot.get(idTrigger)        
         # Verifica si se encontraron parámetros
         if parametros:
             # Desglosar las variables
