@@ -978,7 +978,7 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
                 'account': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 
                 'symbol': symbol,
-                'mesaje' : 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
+                'mensaje' : 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
                 'status': 'termino'               
             }
 
