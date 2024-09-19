@@ -991,6 +991,27 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
 
        
 
+@Bull_Market_351653_001.route("/strategies_estrategias_detenerMDHtrigger_lanzado", methods=['POST'])
+def strategies_estrategias_detenerMDHtrigger_lanzado():
+    try:
+        if request.method == 'POST':
+            # Obtener los datos del POST
+            usuario_id = request.form.get('usuario_id')
+            trigger_id = request.form.get('trigger_id')
+            account = request.form.get('account')
+
+            # Inicializar la conexión pyRofex y eliminar el websocket handler
+            pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
+            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+
+            # Devolver una respuesta exitosa
+            return jsonify({"message": "MDH trigger detenido correctamente"}), 200
+
+    except Exception as e:
+        print("Error al detener MDH trigger:", str(e))
+        # Devolver un mensaje de error
+        return jsonify({"error": "Error al detener MDH trigger", "details": str(e)}), 500
+
 
 
 
