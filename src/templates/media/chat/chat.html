@@ -1,0 +1,112 @@
+{% extends "layouts/layout_detalle_productos.html" %}
+{% block title %}Contacto{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    {% if category == 'success' %}
+                        <li style="color: green; background-color: #d4edda; border-color: #c3e6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% elif category == 'danger' %}
+                        <li style="color: red; background-color: #f8d7da; border-color: #f5c6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% else %}
+                        <li class="alert alert-{{ category }}">{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+<div class="container-fluid" id="cardIndex">
+    <div class="admin-chat-dashboard">
+        <h2>Mensajes Entrantes</h2>
+        <div class="chat-threads" id="chatThreads">
+            <!-- Aquí se agregarán los hilos de mensajes -->
+        </div>
+    </div>
+    
+    <div class="chat-conversation" id="chatConversation">
+        <!-- Aquí se mostrarán los mensajes del hilo seleccionado -->
+        <div id="conversationMessages"></div>
+        <input type="text" id="adminReplyMessage" placeholder="Responder..." />
+        <button id="sendReply">Enviar Respuesta</button>
+    </div>
+    
+    
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+<link rel = "stylesheet" href = {{ url_for('static',filename='css/social/chats/chat.css')}}>
+
+<script>
+    let currentUserId = null;
+
+    // Cargar hilos de conversación para el administrador
+    function loadThreads() {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", "/admin/get_threads", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let threads = JSON.parse(xhr.responseText);
+                let chatThreads = document.getElementById("chatThreads");
+                chatThreads.innerHTML = '';  // Limpia los hilos actuales
+                threads.forEach(function(thread) {
+                    let threadDiv = document.createElement("div");
+                    threadDiv.className = 'chat-thread';
+                    threadDiv.innerText = `Usuario ${thread.userId}: ${thread.lastMessage}`;
+                    threadDiv.setAttribute('data-user-id', thread.userId);
+                    threadDiv.addEventListener("click", function() {
+                        currentUserId = thread.userId;
+                        loadConversation(thread.userId);
+                    });
+                    chatThreads.appendChild(threadDiv);
+                });
+            }
+        };
+        xhr.send();
+    }
+    
+    // Cargar la conversación de un hilo
+    function loadConversation(userId) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", `/admin/get_conversation/${userId}`, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let conversation = JSON.parse(xhr.responseText);
+                let conversationDiv = document.getElementById("conversationMessages");
+                conversationDiv.innerHTML = '';  // Limpia la conversación actual
+                conversation.forEach(function(message) {
+                    let messageDiv = document.createElement("div");
+                    messageDiv.innerText = `${message.sender}: ${message.text}`;
+                    conversationDiv.appendChild(messageDiv);
+                });
+            }
+        };
+        xhr.send();
+    }
+    
+    // Enviar respuesta al usuario
+    document.getElementById("sendReply").addEventListener("click", function() {
+        let message = document.getElementById("adminReplyMessage").value;
+        if (message && currentUserId) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "/admin/send_reply", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    loadConversation(currentUserId);  // Recargar conversación
+                    document.getElementById("adminReplyMessage").value = '';  // Limpiar input
+                }
+            };
+            xhr.send(JSON.stringify({ userId: currentUserId, message: message }));
+        }
+    });
+    
+    // Cargar hilos automáticamente
+    setInterval(loadThreads, 5000);  // Recarga cada 5 segundos
+    
+</script>
+{% endblock %}
