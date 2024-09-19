@@ -611,6 +611,10 @@ def detenerWS():
         print('Error al detener WS:', str(e))
         return render_template("errorOperacion.html")  # Puedes renderizar una plantilla de error específica
     
+
+
+
+
 @estrategias.route('/cargaDatosEstrategyUno/', methods = ['POST'])
 def cargaDatosEstrategyUno():   
     if request.method == 'POST':         

@@ -283,8 +283,7 @@
   
   
 
-
-<!-- Modal de notificacion -->
+<!-- Modal de notificación -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
@@ -301,7 +300,8 @@
       </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <!-- Botón Cerrar con id para manejar el evento -->
+        <button type="button" id="closeNotificationButton" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -760,5 +760,47 @@
       verificarEstado();
   }, 30000);  // Intervalo de 30 segundos
 
+
+
+
+
+
+
+
+
+
+
+  //######################################################//
+  //##################cierra modal y cierra mdh##########//
+   // Asignar el evento de clic al botón cerrar
+   $('#closeNotificationButton').on('click', function() {
+    // Obtener los datos que quieres enviar en el POST
+    var usuario_id = localStorage.getItem('usuario_id');
+    var trigger_id = localStorage.getItem('idTrigger');
+    var account = localStorage.getItem('cuenta');
+  
+    // Enviar los datos mediante AJAX a la ruta en Flask
+    $.ajax({
+      url: '/strategies_estrategias_detenerMDHtrigger_lanzado',
+      type: 'POST',
+      data: {
+        usuario_id: usuario_id,
+        trigger_id: trigger_id,
+        account: account
+      },
+      success: function(response) {
+      
+        // Mostrar un alert cuando la estrategia se detenga correctamente
+        alert('Estrategia detenida');
+  
+        // Cerrar el modal
+        $('#notificationModal').modal('hide');
+      },
+      error: function(xhr, status, error) {
+        console.error('Error en la solicitud AJAX:', error);
+      }
+    });
+  });
+  
 </script>
 {% endblock %}
