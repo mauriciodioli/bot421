@@ -66,6 +66,82 @@
             </div>
         </div>
     </div>
+
+    <!-- Widget del Chat -->
+    <div class="chat-icon" id="openChat">
+        💬 <!-- Aquí puedes usar un ícono de chat o una imagen -->
+    </div>
+
+    <div class="chat-widget" id="chatWidget" style="display:none;">
+        <div class="chat-header">
+            <span>DPI inversiones</span>
+            <button id="closeChat">×</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <!-- Aquí se mostrarán los mensajes -->
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatMessage" placeholder="Escribe tu mensaje..." />
+            <button id="sendMessage">Enviar</button>
+        </div>
+    </div>
+    
+    
 </div>
+
 {% include 'layouts/layout_footer.html' %}
+<link rel = "stylesheet" href = {{ url_for('static',filename='css/social/chats/contacto.css')}}>
+
+<script>
+    document.getElementById("sendMessage").addEventListener("click", function() {
+        let message = document.getElementById("chatMessage").value;
+        if (message) {
+            sendMessageToServer(message);
+            updateChat(message, 'user');  // Añadimos el mensaje del usuario al chat
+            document.getElementById("chatMessage").value = '';  // Limpiamos el campo de texto
+        }
+    });
+    
+    
+    function sendMessageToServer(message) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/send_message", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+                updateChat(response.reply, 'admin');  // Añadimos la respuesta del admin al chat
+            }
+        };
+        xhr.send(JSON.stringify({ message: message, userId: "1234" }));
+    }
+    
+    function updateChat(message, sender) {
+        let chatBody = document.getElementById("chatBody");
+        let newMessage = document.createElement("div");
+        newMessage.innerText = message;
+    
+        if (sender === 'user') {
+            newMessage.classList.add('user-message');  // Aplica la clase para el usuario
+        } else {
+            newMessage.classList.add('admin-message');  // Aplica la clase para el administrador
+        }
+    
+        chatBody.appendChild(newMessage);
+        chatBody.scrollTop = chatBody.scrollHeight;  // Para que siempre esté al final del chat
+    }
+    
+    
+    
+    
+    // Para abrir y cerrar el chat
+    document.getElementById("closeChat").addEventListener("click", function() {
+        document.getElementById("chatWidget").style.display = "none";
+    });
+    
+    document.getElementById("openChat").addEventListener("click", function() {
+        document.getElementById("chatWidget").style.display = "block";
+    });
+    
+</script>
 {% endblock %}

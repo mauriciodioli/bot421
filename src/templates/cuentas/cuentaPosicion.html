@@ -119,9 +119,11 @@
             <li>
                 Total General: 
                 {% set total = suma_ganadores + suma_perdedores %}
+                {% set total_formatted = "{:.2f}".format(total) %}
                 <strong style="color: {% if total >= 0 %}green{% else %}red{% endif %};">
-                    $ {{ total }}
+                    $ {{ total_formatted }}
                 </strong>
+                
             </li>
         </ul>
     </div>
