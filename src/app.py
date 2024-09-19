@@ -41,6 +41,7 @@ from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
 
 
 from social.telegram.telegram import telegram
+from social.chats.chat import chat
 
 from herramientasAdmin.accionesSheet import accionesSheet
 from herramientasAdmin.runScript import runScript
@@ -252,6 +253,7 @@ app.register_blueprint(accionesSheet)
 app.register_blueprint(runScript)
 app.register_blueprint(accionesTriggers)
 app.register_blueprint(telegram)
+app.register_blueprint(chat)
 app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
