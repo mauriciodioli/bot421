@@ -1014,7 +1014,6 @@ def strategies_estrategias_detenerMDHtrigger_lanzado():
 
 
 
-
 def error_handler(message):
   print("error_handler Mensaje de error: {0}".format(message))
   
