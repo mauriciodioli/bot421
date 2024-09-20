@@ -18,10 +18,10 @@
             ],
             "jinja": true,
             "justMyCode": true,
-            //"pythonPath": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\venv\\Scripts\\python.exe",
-            //"cwd": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\src"
-            "pythonPath": "/usr/local/bin/python",           
-            "cwd": "/workspaces/bot421/src"
+            "pythonPath": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\venv\\Scripts\\python.exe",
+            "cwd": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\src"
+            //"pythonPath": "/usr/local/bin/python",           
+            //"cwd": "/workspaces/bot421/src"
         }
     ]
 }

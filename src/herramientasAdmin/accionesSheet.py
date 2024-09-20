@@ -47,8 +47,8 @@ def herramientasSheet_accionesSheet_iniciar():
                                           get.CORREO_E_ACTUALIZAR_SHEET,
                                           get.VARIABLE_ACTUALIZAR_SHEET,
                                           get.ID_USER_ACTUALIZAR_SHEET):
-          #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores','argentina')
-          modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores','argentina')
+          modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores','argentina')
+          #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores','argentina')
     except KeyError:
         print(f"No se pudo terminar la conexión para la cuenta {get.CUENTA_ACTUALIZAR_SHEET}.")
         return render_template('notificaciones/noPoseeDatos.html',layout = 'layout')
@@ -87,3 +87,4 @@ def herramientasSheet_accionesSheet_actualizaLuz_thread():
         'minuto': minuto,
         'segundo': segundo
     })
+    

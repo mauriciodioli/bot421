@@ -4,8 +4,16 @@ function saveUtUsuario() {
   
   // Guardar el valor en localStorage
   localStorage.setItem('ut_usuario', ut_usuario);
-  document.getElementById('ut_usuario').textContent = 'Esperando actualización: ' + ut_usuario;
-  document.getElementById('ut_usuario').style.color = 'yellow';
+   // Intentar obtener el elemento del DOM
+   var utUsuarioElement = document.getElementById('ut_usuario');
+
+   // Verificar si el elemento existe antes de modificarlo
+   if (utUsuarioElement) {
+     utUsuarioElement.textContent = 'Esperando actualización: ' + ut_usuario;
+     utUsuarioElement.style.color = 'yellow';
+   } else {
+     console.error("El elemento con el id 'ut_usuario' no existe.");
+   }
 
   // Obtener otros valores de localStorage si es necesario
   var access_token = localStorage.getItem('access_token');

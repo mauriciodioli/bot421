@@ -11,57 +11,123 @@
 {% extends 'layouts/layoutConexBroker.html'%}
 {% block content%}
 
-            <div class = 'container p-4'>                
-                  <div class = 'container p-4'>
-                 <div class="table-responsive">
-                  <table class="table table-dark table-striped">
-                    <thead>           
-                        <tr>
-                           
-                            <th scope="col">Symbol</th>
-                            <th scope="col">Buy Size</th>
-                            <th scope="col"> scope="col"Buy Price</th>
-                            <th>Sell Size</th>
-                            <th scope="col">Sell Price</th>
-                            <th scope="col">Total Daily Difference</th>
-                            <th scope="col">Total Difference</th>
-                            <th scope="col">Trading Symbol</th>
-                            <th scope="col">Original Buy Price</th>
-                            <th scope="col">Original Sell Price</th>
-                            <th scope="col">Original Buy Size</th>
-                            <th scope="col">Original Sell Size</th>
-                        </tr>            
-                    </thead>
-                    <tbody>
-                      
-                     
-                        <tr>
-                          <!--<th scope="row">{{datos[0].instrument.symbolReference}}</th>-->  
-                            {% for instrumento in datos %}
-                                <tr>
-                                    <td>{{ instrumento['symbol'] }}</td>
-                                    <td>{{ instrumento['buySize'] }}</td>
-                                    <td>{{ instrumento['buyPrice'] }}</td>
-                                    <td>{{ instrumento['sellSize'] }}</td>
-                                    <td>{{ instrumento['sellPrice'] }}</td>
-                                    <td>{{ instrumento['totalDailyDiff'] }}</td>
-                                    <td>{{ instrumento['totalDiff'] }}</td>
-                                    <td>{{ instrumento['tradingSymbol'] }}</td>
-                                    <td>{{ instrumento['originalBuyPrice'] }}</td>
-                                    <td>{{ instrumento['originalSellPrice'] }}</td>
-                                    <td>{{ instrumento['originalBuySize'] }}</td>
-                                    <td>{{ instrumento['originalSellSize'] }}</td>
-                                </tr>
-                                {% endfor %}
-                            
-                          </tr>  
-                       
+<div class="container p-4">                
+    <div class="container p-4">
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>           
+                    <tr>
+                        <th scope="col">Symbol</th>
+                        <th scope="col">Buy Size</th>
+                        <th scope="col">Buy Price</th>
+                        <th scope="col">Sell Size</th>
+                        <th scope="col">Sell Price</th>
+                        <th scope="col">Total Daily Difference</th>
+                        <th scope="col">Total Difference</th>
+                        <th scope="col">Trading Symbol</th>
+                        <th scope="col">Original Buy Price</th>
+                        <th scope="col">Original Sell Price</th>
+                        <th scope="col">Original Buy Size</th>
+                        <th scope="col">Original Sell Size</th>
+                    </tr>            
+                </thead>
+                <tbody>
+                    {% for instrumento in datos %}
+                    <tr>
+                        <td>{{ instrumento['symbol'] }}</td>
+                        <td>{{ instrumento['buySize'] }}</td>
+                        <td>{{ instrumento['buyPrice'] }}</td>
+                        <td>{{ instrumento['sellSize'] }}</td>
+                        <td>{{ instrumento['sellPrice'] }}</td>
+                        
+                        <!-- Total Daily Difference with color change based on value -->
+                        <td style="color: {% if instrumento['totalDailyDiff'] > 0 %}#ADD8E6{% else %}red{% endif %};">
+                            {{ instrumento['totalDailyDiff'] }}
+                        </td>
 
-                    </tbody>
-                </table>
-            </div> 
-            </div>
-        </div>
- {% include 'layouts/layout_footer.html' %}           
-{%endblock%}
- 
+                        <!-- Total Difference with color change based on value -->
+                        <td style="color: {% if instrumento['totalDiff'] > 0 %}#ADD8E6{% else %}red{% endif %};">
+                            {{ instrumento['totalDiff'] }}
+                        </td>
+
+                        <td>{{ instrumento['tradingSymbol'] }}</td>
+                        <td>{{ instrumento['originalBuyPrice'] }}</td>
+                        <td>{{ instrumento['originalSellPrice'] }}</td>
+                        <td>{{ instrumento['originalBuySize'] }}</td>
+                        <td>{{ instrumento['originalSellSize'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div> 
+    </div>
+
+    <div class="resumen-instrumentos mt-4">
+        <h4>Resumen de Instrumentos</h4>
+    
+        <!-- Lista de Instrumentos Ganadores -->
+        <h5>Instrumentos Ganadores</h5>
+        <ul>
+           
+            {% for instrumento in datos %}
+                {% if instrumento['totalDiff'] > 0 %}
+               
+                <li>
+                   <strong>{{ instrumento['symbol'] }}</strong> va ganando una diferencia total de 
+                    <strong style="color: #ADD8E6;">{{ instrumento['totalDiff'] }}</strong>.
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    
+        <!-- Lista de Instrumentos Perdedores -->
+        <h5>Instrumentos Perdedores</h5>
+        <ul>
+            
+            {% for instrumento in datos %}
+                {% if instrumento['totalDiff'] <= 0 %}
+             
+                <li>
+                    <strong>{{ instrumento['symbol'] }}</strong> va perdiendo una diferencia total de 
+                    <strong style="color: red;">{{ instrumento['totalDiff'] }}</strong>.
+                </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    
+        <!-- Resumen de las Sumas -->
+        <h5>Resumen Total</h5>
+        <ul>
+            <li>
+                Efectividad estrategia: 
+                <span style="color: white;">(</span>
+                <strong style="color: green;">{{ porcentaje_ganadores }}</strong>
+                <span style="color: white;"> / </span>
+                <strong style="color: red;">{{ porcentaje_perdedores }}</strong>
+                <span style="color: white;">)</span>
+                <span style="color: white;">%</span>
+            </li>
+            
+            
+            <li>
+                Suma de Instrumentos Ganadores: <strong style="color: #ADD8E6;">$ {{ suma_ganadores }}</strong>
+            </li>
+            <li>
+                Suma de Instrumentos Perdedores: <strong style="color: red;">$ {{ suma_perdedores }}</strong>
+            </li>
+            
+            <li>
+                Total General: 
+                {% set total = suma_ganadores + suma_perdedores %}
+                <strong style="color: {% if total >= 0 %}green{% else %}red{% endif %};">
+                    $ {{ total }}
+                </strong>
+            </li>
+        </ul>
+    </div>
+    
+
+</div>
+
+{% include 'layouts/layout_footer.html' %}           
+{% endblock %}

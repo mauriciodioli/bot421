@@ -49,10 +49,34 @@ def simulate_operacion_enviada(clOrdId, symbol, status, ut, user_id, userCuenta,
         'tiempoSaldo': datetime.now(),
         'saldo': saldo
     }
+
+
+
+
+user_id = 'apipuntillo22583398'
+userCuenta = 'dpuntillo@gmail.com'
+accountCuenta = '10861'
+saldo = 1581539.79
+
+diccionario_operaciones_enviadas = {
+   
+}
+
  #{'Symbol': 'MERV - XMEV - BBAR - 24hs', '_cliOrderId': 1, 'status': 'TERMINADA'},
 # Simulación de diccionarios globales y operaciones enviadas
 diccionario_global_operaciones = {
-    'AAPL': {'symbol': 'AAPL', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - AGRO - 24hs': {'symbol': 'MERV - XMEV - AGRO - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - ADBE - 24hs': {'symbol': 'MERV - XMEV - ADBE - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - AMD - 24hs': {'symbol': 'MERV - XMEV - AGRO - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - AVGO - 24hs': {'symbol': 'MERV - XMEV - AVGO - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - BABA - 24hs': {'symbol': 'MERV - XMEV - BABA - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - ALUA - 24hs': {'symbol': 'MERV - XMEV - ALUA - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - BBAR - 24hs': {'symbol': 'MERV - XMEV - BBAR - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - TRAN - 24hs': {'symbol': 'MERV - XMEV - TRAN - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - GILD - 24hs': {'symbol': 'MERV - XMEV - GILD - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - MELI - 24hs': {'symbol': 'MERV - XMEV - MELI - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - NVDA - 24hs': {'symbol': 'MERV - XMEV - NVDA - 24hs', 'ut': 0, 'status': '0'},
+    'MERV - XMEV - WMT - 24hs': {'symbol': 'MERV - XMEV - WMT - 24hs', 'ut': 0, 'status': '0'}
     #'GOOG': {'symbol': 'GOOG', 'ut': 0, 'status': '1'},
     #'MSFT': {'symbol': 'MSFT', 'ut': 3, 'status': '1'},
     #'TSLA': {'symbol': 'TSLA', 'ut': 10, 'status': '0'},
@@ -65,60 +89,20 @@ diccionario_global_operaciones = {
 }
 
 
-
-
-user_id = 'apipuntillo22583398'
-userCuenta = 'dpuntillo@gmail.com'
-accountCuenta = '10861'
-saldo = 1581539.79
-
-diccionario_operaciones_enviadas = {
-    1: simulate_operacion_enviada(101, 'AAPL', '1', 1, user_id, userCuenta, accountCuenta, saldo),
-    2: simulate_operacion_enviada(131, 'BBAR', 'ANTERIOR', 7, user_id, userCuenta, accountCuenta, saldo),
-    3: simulate_operacion_enviada(141, 'AAPL', 'ANTERIOR', 8, user_id, userCuenta, accountCuenta, saldo),
-    4: simulate_operacion_enviada(4, 'AAPL', 'ANTERIOR', 17, user_id, userCuenta, accountCuenta, saldo),
-   # 5: simulate_operacion_enviada(5, 'TSLA', 'ANTERIOR', 1, user_id, userCuenta, accountCuenta, saldo),
-   # 6: simulate_operacion_enviada(6, 'BMA', 'ANTERIOR', 4, user_id, userCuenta, accountCuenta, saldo),
-   # 7: simulate_operacion_enviada(7, 'GFGC51973O', 'ANTERIOR', 5, user_id, userCuenta, accountCuenta, saldo),
-   # 101: simulate_operacion_enviada(101, 'AAPL', '1', 3, user_id, userCuenta, accountCuenta, saldo),
-   # 121: simulate_operacion_enviada(121, 'AAPL', '1', 7, user_id, userCuenta, accountCuenta, saldo), 
-   # 131: simulate_operacion_enviada(131, 'AAPL', '1', 5, user_id, userCuenta, accountCuenta, saldo),
-   # 102: simulate_operacion_enviada(102, 'AAPL', '1', 7, user_id, userCuenta, accountCuenta, saldo),
-   # 132: simulate_operacion_enviada(132, 'AAPL', '1', 7, user_id, userCuenta, accountCuenta, saldo),    
-   # 8: simulate_operacion_enviada(8, 'MIRG', 'ANTERIOR', 1, user_id, userCuenta, accountCuenta, saldo),
-   # 9: simulate_operacion_enviada(9, 'AGRO', 'ANTERIOR', 13, user_id, userCuenta, accountCuenta, saldo),
-   # 10: simulate_operacion_enviada(10, 'COME', 'ANTERIOR', 50, user_id, userCuenta, accountCuenta, saldo),
-   # 11: simulate_operacion_enviada(11, 'LOMA', 'ANTERIOR', 1, user_id, userCuenta, accountCuenta, saldo),
-   # 12: simulate_operacion_enviada(104, 'AAPL', 'REJECTED', 8, user_id, userCuenta, accountCuenta, saldo),
-   # 105: simulate_operacion_enviada(105, 'AAPL', 'CANCELLED', 3, user_id, userCuenta, accountCuenta, saldo),
-   # 125: simulate_operacion_enviada(125, 'AAPL', 'FILLED', 3, user_id, userCuenta, accountCuenta, saldo),
-   # 201: simulate_operacion_enviada(201, 'GOOG', 'ANTERIOR', 20, user_id, userCuenta, accountCuenta, saldo),
-   # 202: simulate_operacion_enviada(202, 'GOOG', 'FILLED', 15, user_id, userCuenta, accountCuenta, saldo),
-   # 203: simulate_operacion_enviada(203, 'GOOG', 'NEW', 5, user_id, userCuenta, accountCuenta, saldo),
-   # 301: simulate_operacion_enviada(301, 'MSFT', 'ANTERIOR', 10, user_id, userCuenta, accountCuenta, saldo),
-   # 302: simulate_operacion_enviada(302, 'MSFT', 'FILLED', 8, user_id, userCuenta, accountCuenta, saldo),
-   # 401: simulate_operacion_enviada(401, 'TSLA', 'ANTERIOR', 12, user_id, userCuenta, accountCuenta, saldo),
-   # 402: simulate_operacion_enviada(402, 'TSLA', 'FILLED', 6, user_id, userCuenta, accountCuenta, saldo),
-   # 501: simulate_operacion_enviada(501, 'AMZN', 'NEW', 3, user_id, userCuenta, accountCuenta, saldo),
-    502: simulate_operacion_enviada(502, 'AMZN', 'FILLED', 7, user_id, userCuenta, accountCuenta, saldo),
-}
-
-
-
 # Escenarios de prueba
 test_cases = [
-    simulate_order_report(101, 'AAPL', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
-    simulate_order_report(502, 'AMZN', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
-    simulate_order_report(131, 'BBAR', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
-    simulate_order_report(141, 'AAPL', 'REJECTED', '2024-07-18T12:00:00Z', 'Stock 10'),
-    simulate_order_report(102, 'AAPL', 'FILLED', '2024-07-18T12:01:00Z', 'Stock 10'),
-    simulate_order_report(103, 'AAPL', 'REJECTED', '2024-07-18T12:02:00Z', 'Stock 20'),
-    simulate_order_report(4, 'AAPL', 'CANCELLED', '2024-07-18T12:03:00Z', 'Stock 30'),
-    simulate_order_report(125, 'AAPL', 'NEW', '2024-07-18T12:00:00Z', 'Stock 10'),
-    simulate_order_report(105, 'AAPL', 'PARTIALLY_FILLED', '2024-07-18T12:04:00Z', 'Stock 40'),
-    simulate_order_report(106, 'AAPL', 'EXPIRED', '2024-07-18T12:05:00Z', 'Stock 50'),
-    simulate_order_report(107, 'AAPL', 'DONE_FOR_DAY', '2024-07-18T12:06:00Z', 'Stock 60'),
-    simulate_order_report(108, 'AAPL', 'CANCEL_REJECTED', '2024-07-18T12:07:00Z', 'Stock 70'),
+    simulate_order_report(1001, 'MERV - XMEV - AGRO - 24hs', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(1002, 'MERV - XMEV - ADBE - 24hs', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(1003, 'MERV - XMEV - AMD - 24hs', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(1004, 'MERV - XMEV - AVGO - 24hs', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(1005, 'MERV - XMEV - BABA - 24hs', 'FILLED', '2024-07-18T12:01:00Z', 'Stock 10'),
+    simulate_order_report(1006, 'MERV - XMEV - ALUA - 24hs', 'FILLED', '2024-07-18T12:02:00Z', 'Stock 20'),
+    simulate_order_report(1007, 'MERV - XMEV - BBAR - 24hs', 'FILLED', '2024-07-18T12:03:00Z', 'Stock 30'),
+    simulate_order_report(1008, 'MERV - XMEV - TRAN - 24hs', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 10'),
+    simulate_order_report(1009, 'MERV - XMEV - GILD - 24hs', 'FILLED', '2024-07-18T12:04:00Z', 'Stock 40'),
+    simulate_order_report(1010, 'MERV - XMEV - MELI - 24hs', 'FILLED', '2024-07-18T12:05:00Z', 'Stock 50'),
+    simulate_order_report(1011, 'MERV - XMEV - NVDA - 24hs', 'FILLED', '2024-07-18T12:06:00Z', 'Stock 60'),
+    simulate_order_report(1012, 'MERV - XMEV - WMT - 24hs', 'FILLED', '2024-07-18T12:07:00Z', 'Stock 70'),
     #simulate_order_report(109, 'AAPL', 'PENDING_CANCEL', '2024-07-18T12:08:00Z', 'Stock 80'),
    # simulate_order_report(201, 'GOOG', 'FILLED', '2024-07-18T12:09:00Z', 'Stock 90'),
    # simulate_order_report(301, 'MSFT', 'ANTERIOR', '2024-07-18T12:10:00Z', 'Stock 100'),
@@ -133,6 +117,24 @@ test_cases = [
    # simulate_order_report(1001, 'ORCL', 'ANTERIOR', '2024-07-18T12:19:00Z', 'Stock 190')
 ]
 
+
+operaciones_a_simular = [
+    {'symbol': 'MERV - XMEV - AGRO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 13, 'senial': 'closed.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - ADBE - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - AMD - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - AVGO - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 5, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - BABA - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 2, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - ALUA - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 32, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - BBAR - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 6, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - TRAN - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'LONG_', 'ut': 16, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - GILD - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - MELI - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - NVDA - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 4, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - WMT - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 5, 'senial': 'OPEN.', 'status': '0'}
+]
+
+# Diccionario para registrar cuántas veces se actualiza cada operación
+registro_actualizaciones = {}
 # Función para obtener el stock de la orden
 def obtenerStock(text):
     return random.randint(0, 10)  # Simulación de obtener stock
@@ -158,6 +160,7 @@ def order_report_handler(order_report):
     print('___________ORH_______STATUS__ENTREGADO: ', status, 'symbol: ',symbol)
     timestamp_order_report = order_data['transactTime']  
    
+   
     if es_numero(clOrdId):
         if len(diccionario_operaciones_enviadas) != 0:
             asignarClOrId(order_report)
@@ -178,16 +181,22 @@ def _operada(order_report):
     if status in ['CANCELLED', 'ERROR', 'REJECTED', 'EXPIRED']:
         actualizar_diccionario_enviadas(order_data, symbol, status)
 
+
+
     # Procesa el estado final
     if status in ['FILLED', 'REJECTED','CANCELLED']:
         procesar_estado_final(symbol, clOrdId)
         
+    # Registra cuántas veces se ha actualizado esta operación
+    if clOrdId not in registro_actualizaciones:
+        registro_actualizaciones[clOrdId] = 0
+    registro_actualizaciones[clOrdId] += 1    
         
 def actualizar_diccionario_enviadas(order_data, symbol, status):
     """Actualiza el diccionario de operaciones enviadas según el estado de la orden."""
     
     clOrdId = order_data['clOrdId']
-    
+   
     if symbol in diccionario_global_operaciones:
         for key, operacion in diccionario_operaciones_enviadas.items():
             # Si la operación corresponde al símbolo y clOrdId
@@ -254,7 +263,11 @@ def procesar_estado_final(symbol, clOrdId):
 
     endingGlobal = False
     endingEnviadas = False
-
+ # Verifica si la operación ya está en el estado 'TERMINADA'
+    if diccionario_operaciones_enviadas.get(clOrdId) == 'TERMINADA':
+        print(f"[AVISO] La operación {clOrdId} ya estaba en estado TERMINADA, se intentó actualizar nuevamente.")
+        # Puedes optar por no actualizarla de nuevo, según la lógica:
+        return
     # Actualiza el estado de las operaciones enviadas
     endingEnviadas = actualizar_estado_operaciones( symbol, clOrdId)    
     # Revisa las operaciones globales
@@ -297,17 +310,27 @@ def actualizar_estado_operaciones(symbol, clOrdId):
             break  # Sale del bucle si encuentra una operación que no está terminada
     return todas_terminadas
         
-def actualizar_diccionario_global(symbol, ut_a_devolver, status_terminado=False):
+#def actualizar_diccionario_global(symbol, ut_a_devolver, status_terminado=False):
+ #   """Actualiza el diccionario global de operaciones."""
+ #   operacionGlobal = diccionario_global_operaciones.get(symbol)
+ #   if operacionGlobal:
+ #       if status_terminado:
+ #           operacionGlobal['ut'] = int(ut_a_devolver)
+ #       else:
+ #           operacionGlobal['ut'] += int(ut_a_devolver)
+        
+ #       if operacionGlobal['status'] != '0':
+ #           operacionGlobal['status'] = '0'
+            
+def actualizar_diccionario_global(symbol, ut_a_devolver):
     """Actualiza el diccionario global de operaciones."""
     operacionGlobal = diccionario_global_operaciones.get(symbol)
     if operacionGlobal:
-        if status_terminado:
-            operacionGlobal['ut'] = int(ut_a_devolver)
-        else:
+         if int(ut_a_devolver) > 0:  
             operacionGlobal['ut'] += int(ut_a_devolver)
-        
-        if operacionGlobal['status'] != '0':
-            operacionGlobal['status'] = '0'
+         else:   
+            if operacionGlobal['status'] != '0':
+                    operacionGlobal['status'] = '0'
                  
               
 def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
@@ -336,6 +359,17 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
 @test_2_order_report_handler.route('/test_2_order_report_handler')
 def entradaTest2():
     print('************************************************')
+    for i, operacion in enumerate(operaciones_a_simular, start=1001):
+        diccionario_operaciones_enviadas[i] = simulate_operacion_enviada(
+        clOrdId=i,
+        symbol=operacion['symbol'],
+        status=operacion['status'],
+        ut=operacion['ut'],
+        user_id=user_id,
+        userCuenta=userCuenta,
+        accountCuenta=accountCuenta,
+        saldo=saldo
+        )
     for i, report in enumerate(test_cases):
         print(f'\n--- Test Case {i+1} ---')
         order_report_handler(report)

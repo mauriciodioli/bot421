@@ -283,8 +283,7 @@
   
   
 
-
-<!-- Modal de notificacion -->
+<!-- Modal de notificación -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
@@ -301,7 +300,8 @@
       </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <!-- Botón Cerrar con id para manejar el evento -->
+        <button type="button" id="closeNotificationButton" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -312,7 +312,7 @@
 {% include 'layouts/layout_footer.html' %}     
 <!-- Enlaces a scripts de JavaScript -->
 <script>
-  debugger;
+  
   // Retrieve data from localStorage
   var correo_electronico_estrategia = localStorage.getItem("correo_electronico");
   var cuenta_estrategia = localStorage.getItem("cuenta");
@@ -364,7 +364,8 @@
     }
  
    document.addEventListener('DOMContentLoaded', function() {
-    var botonAutomatico = document.getElementById('botonAutomatico');
+    //var botonAutomatico = document.getElementById('botonAutomatico');
+    var botonAutomatico = document.getElementById('boton-automatico-estrategia-usuario-noadmin');  // Elimina el punto '.'
 
     if (botonAutomatico) {
         botonAutomatico.addEventListener('click', function () {
@@ -415,7 +416,28 @@
                     xhr.send(JSON.stringify(requestData));
       }
 
-     
+      function actualizarTabla(triggerData) {
+        var tablaTrigger = document.getElementById('tabla-trigger');
+        var filas = tablaTrigger.getElementsByTagName('tr'); // Obtener todas las filas
+        
+        for (var i = 0; i < triggerData.length; i++) {
+            var trigger = triggerData[i];
+            var fila = filas[i + 1]; // Saltar la fila de encabezado
+    
+            if (fila) {  // Verificar si la fila existe
+                var celdas = fila.getElementsByTagName('td'); // Obtener todas las celdas en la fila
+                console.log(trigger.ManualAutomatico);  // Para depurar
+    
+                if (celdas[3]) {  // Verificar si la celda para "ManualAutomatico" existe antes de asignar textContent
+                    celdas[3].textContent = trigger.ManualAutomatico; // Actualizar el contenido de la columna "Automatico"
+                }
+                // Puedes actualizar otras celdas si es necesario
+            } else {
+                console.error(`La fila ${i + 1} no existe en la tabla.`);
+            }
+        }
+    }
+    
            
       document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
                  //AQUI SE DEBE APLICAR EL AJAX PARA ACTUALIZAR LA TABLA CON EL BOTON A 
@@ -435,7 +457,7 @@
                       // Recupera los datos del Local Storage que deseas enviar
                       access_token = localStorage.getItem('access_token');
                       correo_electronico = localStorage.getItem('correo_electronico');
-                      debugger;
+                     
                       console.log("tagName:", event.target.tagName);
                       // Recupera los datos de la fila en la que se hizo clic
                       
@@ -452,7 +474,7 @@
                        // Establece el mensaje de notificación en el modal
                       var notificationMessage = "Estrategia iniciada, espere...";
                       document.getElementById("notificationMessage").innerText = notificationMessage;
-                      
+                      localStorage.setItem("idTrigger", idTrigger); 
                       // Muestra el modal
                       var notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
                       notificationModal.show();
@@ -513,30 +535,7 @@
               
 
 
-             function actualizarTabla(triggerData) {
-                  debugger;
-                  console.log(triggerData);  // Agregar esta línea para depurar
-                  var tablaTrigger = document.getElementById('tabla-trigger');
-                  var filas = tablaTrigger.getElementsByTagName('tr'); // Obtener todas las filas
-                  debugger;
-                  // Recorrer los datos recibidos y actualizar las celdas correspondientes en cada fila
-                  for (var i = 0; i < triggerData.length; i++) {
-                      var trigger = triggerData[i];
-                      var fila = filas[i + 1]; // Saltar la fila de encabezado
-                      var celdas = fila.getElementsByTagName('td'); // Obtener todas las celdas en la fila
-                      
-                      // Actualizar el contenido de las celdas con los datos correspondientes
-                     // celdas[1].textContent = trigger.id;
-                    //  celdas[2].textContent = trigger.userId;
-                    //  celdas[3].textContent = trigger.userCuenta;
-                    //  celdas[4].textContent = trigger.accountCuenta;
-                    //  celdas[5].textContent = trigger.horaInicio;
-                    //  celdas[6].textContent = trigger.horaFin;
-                      celdas[7].textContent = trigger.ManualAutomatico;
-                    //  celdas[8].textContent = trigger.nombreEstrategia;
-                      // ... Actualiza más celdas según sea necesario
-                  }
-              }
+             
               
               document.getElementById('registro-usuario-form').addEventListener('submit', function(event) {
                 // Obtener el valor del campo "estrategia"
@@ -557,7 +556,7 @@
   function seleccionarEstrategia(estrategiaId, api_url, ws_url, nombre,descripcion) {
     document.getElementById('estrategia').value = nombre;
     
-    debugger;
+
     // Puedes almacenar el ID del usuario seleccionado en un campo oculto para enviarlo junto con el formulario de registro
    
     // Cierra el modal de selección de usuario
@@ -712,14 +711,96 @@
 
 
 
+  let estadoListo = false; // Variable de control para saber si el estado ya es "listo"
 
+  function verificarEstado() {
+      // Si ya se verificó que el estado es "listo", no volver a preguntar
+      if (estadoListo) {
+          return;
+      }
   
-
+      var userId = localStorage.getItem('usuario_id');
+      var cuenta = localStorage.getItem('cuenta');
+      var triggerId = localStorage.getItem('idTrigger');
   
-   
+      $.ajax({
+          type: 'POST',
+          url: '/verificar_estado',
+          contentType: 'application/json',
+          data: JSON.stringify({
+              'userId': userId,
+              'idTrigger': triggerId,
+              'cuenta': cuenta
+          }),
+          success: function(response) {
+              if (response.estado === 'listo') {
+                  // Los datos están listos, mostrar alerta
+                  alert(`${response.mensaje} : ${response.account}`);
+                  estadoListo = true; // Marcar como "listo" para no volver a preguntar
+                  clearInterval(interval); // Detener el sondeo
+                  // Cerrar el modal
+                  var notificationModalElement = document.getElementById('notificationModal');
+                  var notificationModal = bootstrap.Modal.getInstance(notificationModalElement);
+                  if (notificationModal) {
+                      notificationModal.hide();
+                  }  
+                 
+              } else {
+                  console.log('Los datos todavía no están listos...');
+              }
+          },
+          error: function(error) {
+              console.error('Error:', error);
+          }
+      });
+  }
   
+  // Iniciar el sondeo cada 60 segundos
+  const interval = setInterval(function() {
+      verificarEstado();
+  }, 30000);  // Intervalo de 30 segundos
 
 
 
+
+
+
+
+
+
+
+
+  //######################################################//
+  //##################cierra modal y cierra mdh##########//
+   // Asignar el evento de clic al botón cerrar
+   $('#closeNotificationButton').on('click', function() {
+    // Obtener los datos que quieres enviar en el POST
+    var usuario_id = localStorage.getItem('usuario_id');
+    var trigger_id = localStorage.getItem('idTrigger');
+    var account = localStorage.getItem('cuenta');
+  
+    // Enviar los datos mediante AJAX a la ruta en Flask
+    $.ajax({
+      url: '/strategies_estrategias_detenerMDHtrigger_lanzado',
+      type: 'POST',
+      data: {
+        usuario_id: usuario_id,
+        trigger_id: trigger_id,
+        account: account
+      },
+      success: function(response) {
+      
+        // Mostrar un alert cuando la estrategia se detenga correctamente
+        alert('Estrategia detenida');
+  
+        // Cerrar el modal
+        $('#notificationModal').modal('hide');
+      },
+      error: function(xhr, status, error) {
+        console.error('Error en la solicitud AJAX:', error);
+      }
+    });
+  });
+  
 </script>
 {% endblock %}

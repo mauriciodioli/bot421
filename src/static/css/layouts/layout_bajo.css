@@ -74,3 +74,43 @@
     color: #fff; /* Texto en blanco */
 }
 
+
+#bottomLayout {
+    display: flex;
+    justify-content: space-between; /* Distribuye los botones equitativamente */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 10px;
+    background-color: #333;
+}
+
+#bottomLayout .btn {
+    flex: 1; /* Asegura que los botones ocupen el mismo espacio */
+    max-width: 50px; /* Tamaño máximo para los botones, ajustable */
+    display: flex;
+    justify-content: center; /* Centra el contenido del botón */
+    background-color: #fff; /* Fondo blanco */
+    color: #000; /* Texto negro */
+    border: 2px solid #fff; /* Bordes blancos */
+    align-items: center; /* Centra verticalmente el contenido */
+}
+
+/* Espaciado para pantallas grandes */
+@media (min-width: 992px) {
+    #bottomLayout .btn {
+        margin: 0 20px; /* Mayor espacio entre los botones en pantallas grandes */
+    }
+}
+
+/* Espaciado para pantallas medianas (tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+    #bottomLayout .btn {
+        margin: 0 15px; /* Espacio intermedio entre los botones */
+    }
+}
+
+/* Espaciado para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+    #bottomLayout .btn {
+        margin: 0 10px; /* Menor espacio entre los botones en pantallas pequeñas */
+    }
+}
