@@ -27,9 +27,9 @@ def pcEstrategiaUs_boton_a_m():
     return jsonify({'resultado': 'Operación exitosa', 'trigger_data': resultado})
 
 def cargaModo(user_id, trigger_id, user_cuenta):
-    dato = TriggerEstrategia.query.get(trigger_id)
+    triggerEstrategia = db.session.query(TriggerEstrategia).filter_by(id=trigger_id).first()
     
-    triggerEstrategia = TriggerEstrategia.query.filter_by(id=trigger_id).first() 
+     
     #print( triggerEstrategia.ManualAutomatico)
     if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
         triggerEstrategia.ManualAutomatico = "MANUAL"
@@ -37,7 +37,7 @@ def cargaModo(user_id, trigger_id, user_cuenta):
         triggerEstrategia.ManualAutomatico = "AUTOMATICO"   
    
     db.session.commit()
-    triggerEstrategia_list = db.session.query(TriggerEstrategia).all()
+    triggerEstrategia_list = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()
      
     # Construir una lista de diccionarios con los datos que deseas devolver
     trigger_data = []

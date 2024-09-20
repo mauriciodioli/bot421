@@ -26,19 +26,44 @@ class OperacionEstrategia:
     
     def operar(self):
         try:
-            print("FUN: OperacionWs__  FIN diccionario_operaciones_enviadas ")
+            print("FUN: OperacionWs__ INICIO operación")
+            
+            # Validar existencia del símbolo en el diccionario global
+            if self.Symbol not in self.diccionario_global_operaciones:
+                print(f"Error: El símbolo {self.Symbol} no se encuentra en diccionario_global_operaciones")
+                return
+            # Parámetros básicos
             trade_en_curso = self.diccionario_global_operaciones[self.Symbol]['tradeEnCurso']
             ut = abs(int(self.diccionario_global_operaciones[self.Symbol]['ut']))
             saldocta = self.diccionario_global_operaciones[self.Symbol]['saldo']
+
+            # Validar parámetros
+            if not trade_en_curso:
+                print(f"Error: trade_en_curso es None o no existe para {self.Symbol}")
+                return
+            if ut <= 0:
+                print(f"Error: Cantidad inválida (ut): {ut}")
+                return
+            if saldocta is None or saldocta <= 0:
+                print(f"Error: Saldo de cuenta inválido o insuficiente: {saldocta}")
+                return
 
             # Obtener precios
             precio_of = self.obtener_precio("OF")
             precio_bi = self.obtener_precio("BI")
             precio_la = self.obtener_precio("LA")
 
-            plataoperacion1 = ut * precio_of
-            plataoperacion2 = ut * precio_bi
-            plataoperacion3 = ut * precio_la
+            if precio_of is None and precio_bi is None and precio_la is None:
+                print("Error: No se pudo obtener ningún precio válido (OF, BI, LA)")
+                return
+
+            plataoperacion1 = ut * precio_of if precio_of else float('inf')
+            plataoperacion2 = ut * precio_bi if precio_bi else float('inf')
+            plataoperacion3 = ut * precio_la if precio_la else float('inf')
+
+            if saldocta < plataoperacion1 and saldocta < plataoperacion2 and saldocta < plataoperacion3:
+                print(f"Error: Saldo insuficiente para operar. Saldo: {saldocta}, PlataOperación: {min(plataoperacion1, plataoperacion2, plataoperacion3)}")
+                return
 
             if saldocta > plataoperacion1 and saldocta > plataoperacion2 and saldocta > plataoperacion3:
                 if self.diccionario_global_operaciones[self.Symbol]['ut'] > 0:
@@ -55,8 +80,21 @@ class OperacionEstrategia:
                         print(f"Señal desconocida: {self.senial}")
                         return
                     
+                    
+                     # Validar precio
+                    if precio is None:
+                        print(f"Error: No se pudo determinar un precio válido para la señal {self.senial}")
+                        return
+                      # Enviar orden
+                    print(f"Enviando orden con los siguientes parámetros:\n"
+                        f" - Ticker: {self.Symbol}\n"
+                        f" - Cantidad: {ut}\n"
+                        f" - Precio: {precio}\n"
+                        f" - Side: {side}\n"
+                        f" - Cuenta: {self.diccionario_global_operaciones[self.Symbol]['accountCuenta']}\n"
+                        f" - ws_client_order_id: {_ws_client_order_id}")
                     # Enviar orden
-                    #self.pyRofexInicializada.send_order_via_websocket(ticker=self.Symbol,size=ut,side=side,order_type=self.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=self.diccionario_global_operaciones[self.Symbol]['accountCuenta'])
+                    self.pyRofexInicializada.send_order_via_websocket(ticker=self.Symbol,size=ut,side=side,order_type=self.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=self.diccionario_global_operaciones[self.Symbol]['accountCuenta'])
                      
                     ws_client_order_id = _ws_client_order_id
 

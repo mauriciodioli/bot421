@@ -250,7 +250,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
         #    os.remove(src_directory)
         # Ruta al archivo de logs dentro del directorio 'src'
        
-        print(logs_file_path)
+       # print(logs_file_path)
        # logs_file_path = os.path.join(src_directory, 'logs.log')
        
 
@@ -259,6 +259,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
 #            pass  # No es necesario escribir nada, solo abrir y cerrar el archivo borrará su contenido
 #        print("El contenido del archivo logs.log ha sido borrado.")
           # Variable local para mantener un registro de los hilos iniciados aquí
+     
         app.logger.info("FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR")
         llama_tarea = functools.partial(llama_tarea_cada_24_horas_estrategias, app,user_id, cuenta,correo_electronico,selector,access_token)
         #tiempoInicioDelDia = '12:00'
@@ -290,7 +291,7 @@ def planificar_schedule(app,user_id,tiempoInicioDelDia, tiempoFinDelDia,cuenta,c
             with open(logs_file_path, 'a') as f:
                 f.write(f'__inicio {tiempoInicioDelDia} ___fin {tiempoFinDelDia}\n') 
             app.logger.log(get.CUSTOM_LEVEL, '__inicio %s ___fin %s __hora_actual %s', tiempoInicioDelDia, tiempoFinDelDia, hora_actual)
-
+            get.luzShedule_funcionando = True
 
             print("______________________________________________________________________________")
             print("comprobando schedule.run_pending() automatizacion shedule_trigger planificar_shedule  " )
