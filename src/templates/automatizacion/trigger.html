@@ -20,8 +20,8 @@
        
           
              <div id="luz" class="luz"></div> <!-- Elemento de la luz -->
-         
-       
+             <div id="statusLightThread" class="statusLight"></div>
+            
         <div class="row">
             <div class="col text-start">
                 <label for="lanzar" style="color: gold;">Cantidad de Triggers</label>
@@ -165,11 +165,14 @@
 // Función para activar la luz verde parpadeante
 function activarLuzVerde() {
   var luz = document.getElementById("luz");
+  
   luz.classList.remove("roja");
   luz.classList.add("verde");
-  localStorage.setItem('luzEstado', 'verde');
+ 
+  //localStorage.setItem('luzEstado', 'verde');
   var intervalo = setInterval(function () {
       luz.classList.toggle("verde");
+      
   }, 3000);
   localStorage.setItem('intervaloKey', intervalo.toString()); // Convertir a cadena
 }
@@ -179,7 +182,8 @@ function activarLuzRoja() {
   var luz = document.getElementById("luz");
   luz.classList.remove("verde");
   luz.classList.add("roja");
-  localStorage.setItem('luzEstado', 'roja');
+ 
+  //localStorage.setItem('luzEstado', 'roja');
   clearInterval(parseInt(localStorage.getItem('intervaloKey'))); // Convertir a entero
 }
 
@@ -188,6 +192,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var estadoLuz = localStorage.getItem('luzEstado');
   if (estadoLuz === 'verde') {
       activarLuzVerde();
+     
   } else if (estadoLuz === 'roja') {
       activarLuzRoja();
   }
@@ -206,7 +211,7 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
 
   $(document).ready(function() {
     $('#btnDetenerThreads').click(function() {
-      debugger;
+      
       $.ajax({
           type: 'GET',
           url: '/detenerWS/',
@@ -239,7 +244,7 @@ document.getElementById("detener").addEventListener("click", activarLuzRoja);
             $('#confirmationModalDetenerShedule').modal('hide');
             if (response.success) {
               // Si la solicitud fue exitosa, mostrar una notificación
-             
+              localStorage.setItem('luzEstado', 'red');
               alert('Se detuvo exitosamente el shedule');
             } else {
                 // Si hubo un problema, mostrar un mensaje de error
@@ -363,8 +368,81 @@ function actualizarActualizaciones() {
 
 // Actualizar las actualizaciones cada 30 segundos
 actualizarActualizaciones()
-//setInterval(actualizarActualizaciones, 3000);
+setInterval(actualizarLuzShedule, 3000);
 
+
+
+function actualizarEstado(data) {
+  const statusLightThread = document.getElementById('statusLightThread');
+  const horaValor = document.getElementById('horaValor');
+  const minutoValor = document.getElementById('minutoValor');
+  const segundoValor = document.getElementById('segundoValor');
+
+  if (data.luzThread_control) {
+      statusLightThread.style.backgroundColor = '#00ff00';
+      statusLightThread.classList.remove('red');
+      statusLightThread.classList.add('green');
+  } else {
+      statusLightThread.style.backgroundColor = '#ff0000';
+      statusLightThread.classList.remove('green');
+      statusLightThread.classList.add('red');
+  }
+
+  horaValor.textContent = data.hora;
+  minutoValor.textContent = data.minuto;
+  segundoValor.textContent = data.segundo;
+  const statusLight = document.getElementById('statusLight');
+  if (data.luzMDH_control) {
+      // Si está funcionando, poner verde
+      statusLight.style.backgroundColor = '#00ff00'; // Opcional, solo para asegurarse que se cambie directamente
+      statusLight.classList.remove('red');
+      statusLight.classList.add('green');
+  } else {
+      // Si no está funcionando, poner rojo
+      statusLight.style.backgroundColor = '#ff0000'; // Opcional, solo para asegurarse que se cambie directamente
+      statusLight.classList.remove('green');
+      statusLight.classList.add('red');
+  }
+  setTimeout(() => {
+    statusLightThread.style.backgroundColor = 'grey';
+    statusLightThread.classList.remove('green', 'red');
+
+
+    statusLight.style.backgroundColor = 'grey';
+    statusLight.classList.remove('green', 'red'); // Limpiar clases adicionales
+
+  }, 3000);
+}
+
+
+function actualizarLuzShedule() {
+  fetch('/herramientasAdmin_accionesTriggers_actualizaLuzTrigger')
+      .then(response => response.json())
+      .then(data => {
+         // debugger;
+          const statusLight = document.getElementById('statusLight1');
+          if (data.luzTrigger_control) {
+            
+              // Si está funcionando, poner verde
+            //  statusLight.style.backgroundColor = '#00ff00'; // Opcional, solo para asegurarse que se cambie directamente
+            //  statusLight.classList.remove('red');
+            //  statusLight.classList.add('green');
+              localStorage.setItem('luzEstado', 'green');
+          } else {
+              // Si no está funcionando, poner rojo
+             // statusLight.style.backgroundColor = '#ff0000'; // Opcional, solo para asegurarse que se cambie directamente
+             // statusLight.classList.remove('green');
+             // statusLight.classList.add('red');
+              localStorage.setItem('luzEstado', 'red');
+          }
+          // Reiniciar el estado a gris después de 3 segundos
+          setTimeout(() => {
+              statusLight.style.backgroundColor = 'grey';
+              statusLight.classList.remove('green', 'red'); // Limpiar clases adicionales
+          }, 3000);
+      })
+      .catch(error => console.error('Error:', error));
+}
 
   </script>
   

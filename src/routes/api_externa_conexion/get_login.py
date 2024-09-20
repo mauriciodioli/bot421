@@ -85,13 +85,13 @@ SPREADSHEET_ID_PRODUCCION = os.environ.get('SPREADSHEET_ID_PRODUCCION')  #drpiBo
 SPREADSHEET_ID_USA= os.environ.get('SPREADSHEET_ID_USA') #de produccion USA
 VARIABLE_ACTUALIZAR_SHEET = os.environ.get('VARIABLE_ACTUALIZAR_SHEET') 
 
-CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
-CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
-ID_USER_ACTUALIZAR_SHEET = 1
+#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
+#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
+#ID_USER_ACTUALIZAR_SHEET = 1
 
-#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
-#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
-#ID_USER_ACTUALIZAR_SHEET = 2
+CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
+CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
+ID_USER_ACTUALIZAR_SHEET = 2
 # Días de la semana a los que debe ejecutar la función
 
 DIAS_EJECUCION = ["lunes", "martes", "miercoles", "jueves", "viernes"]
@@ -118,6 +118,7 @@ pyRofexInicializada = pyRofex
 ConexionesBroker = {}
 luzMDH_funcionando = False
 luzThred_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0}
+luzShedule_funcionando = False
 sheet_manager = None
 valores_mep = {
     'AL30': {'compra': None, 'venta': None},
@@ -419,6 +420,7 @@ def loginExtCuentaSeleccionadaBroker():
                     environments = accountCuenta                                        
                     pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environments) 
                     try:   
+                        
                         pyRofexInicializada.initialize(user=user, password=password, account=accountCuenta, environment=environments)                       
                     except ApiException as e:
                         print(f"ApiException occurred: {e}")

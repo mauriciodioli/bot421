@@ -34,12 +34,17 @@ from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
 
 
+from Tests.test_order_report_handler import test_order_report_handler
+from Tests.test_2_order_report_handler import test_2_order_report_handler
+from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
+
 
 
 from social.telegram.telegram import telegram
 
 from herramientasAdmin.accionesSheet import accionesSheet
 from herramientasAdmin.runScript import runScript
+from herramientasAdmin.accionesTriggers import accionesTriggers
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS
@@ -245,6 +250,7 @@ app.register_blueprint(contacto)
 app.register_blueprint(newsLetter)
 app.register_blueprint(accionesSheet)
 app.register_blueprint(runScript)
+app.register_blueprint(accionesTriggers)
 app.register_blueprint(telegram)
 app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
@@ -252,6 +258,9 @@ app.register_blueprint(publicaciones)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 
+app.register_blueprint(test_order_report_handler)
+app.register_blueprint(test_2_order_report_handler)
+app.register_blueprint(test_ejecutarHiloPanelControl)
 
 
 

@@ -163,23 +163,24 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id,accountCuenta):
                     dato_extra = (None, None)
                     dato += dato_extra
             # Paso 1: Asegurarse de que 'dato[7]' no sea None o esté vacío
-            if dato[7] is not None and dato[7].strip() != ''and dato[7] != '#N/A':
-                # Paso 1: Eliminar los puntos
-                cadena_sin_puntos = dato[7].replace('.', '')
-                # Paso 2: Reemplazar la coma por un punto
-                cadena_correcta = cadena_sin_puntos.replace(',', '.')
-                # Paso 3: Convertir la cadena a float
-                precio = float(cadena_correcta)
-                if precio != 0:
-                    ut = unidadTrader/precio
-                    ut = abs(int(ut))
+            if dato[0] != 'Formulas G sheets':
+                if dato[7] is not None and dato[7].strip() != ''and dato[7] != '#N/A':
+                    # Paso 1: Eliminar los puntos
+                    cadena_sin_puntos = dato[7].replace('.', '')
+                    # Paso 2: Reemplazar la coma por un punto
+                    cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                    # Paso 3: Convertir la cadena a float
+                    precio = float(cadena_correcta)
+                    if precio != 0:
+                        ut = unidadTrader/precio
+                        ut = abs(int(ut))
+                    else:
+                        ut = 0
                 else:
                     ut = 0
-            else:
-                ut = 0
-            dato[3] = str(ut)
-            dato.append(i + 1)
-            datos_procesados.append(tuple(dato))
+                dato[3] = str(ut)
+                dato.append(i + 1)
+                datos_procesados.append(tuple(dato))
 
     return datos_procesados,unidadTrader
 
@@ -255,7 +256,7 @@ def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
     
      if hilo == 'hilo':
         pais = 'argentina'       
-        app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
+      #  app.logger.info('ENTRA A THREAD Y LEE EL SHEET POR HILO')       
      else: 
         app.logger.info('LEE EL SHEET POR LLAMADA DE FUNCION')
 
@@ -267,17 +268,19 @@ def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
      if selector != "simulado" or selector =='vacio':
         if pais == "argentina":
             if len(get.diccionario_global_sheet) > 0:
+               #if len(get.precios_data)== 0:
+                #   terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
                if not get.conexion_existente(app,get.CUENTA_ACTUALIZAR_SHEET,
                                                  get.CORREO_E_ACTUALIZAR_SHEET,
                                                  get.VARIABLE_ACTUALIZAR_SHEET,
                                                  get.ID_USER_ACTUALIZAR_SHEET):
-                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
-                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
+                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                  modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
                   app.logger.info('MODIFICO EL SHEET CORRECTAMENTE')
-            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
-            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
-            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')    
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bUSA')    
         else:
             return "País no válido"
      else:   

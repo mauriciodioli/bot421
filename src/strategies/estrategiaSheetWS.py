@@ -478,7 +478,16 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
      #get.current_session = db.session
      #for clave, valor in diccionario_global_operaciones.items():
         #  print(f'Clave: {clave}, Valor: {valor}')
-   
+     if len(diccionario_global_operaciones) == 0 or diccionario_global_operaciones == None:
+            parametros = {
+                    'account': get.ConexionesBroker[account]['cuenta'], 
+                    'user_id': idUser, 
+                    'symbol': '',
+                    'mensaje': 'No hay operaciones',
+                    'status': 'termino'               
+                }
+
+            get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
     # db.session.close()
      app.logger.info('______CARGA_OPERACIONES____') 
     # app.logger.info(diccionario_global_operaciones) 
@@ -531,23 +540,25 @@ def procesar_estado_final(symbol, clOrdId):
 
     endingGlobal = False
     endingEnviadas = False
-
+    if diccionario_operaciones_enviadas.get(clOrdId) == 'TERMINADA':
+            print(f"[AVISO] La operación {clOrdId} ya estaba en estado TERMINADA, se intentó actualizar nuevamente.")
+            # Puedes optar por no actualizarla de nuevo, según la lógica:
+            return
     # Actualiza el estado de las operaciones enviadas
     endingEnviadas = actualizar_estado_operaciones( symbol, clOrdId)    
     # Revisa las operaciones globales
-    for key, operacionGlobal in diccionario_global_operaciones.items():
-        if operacionGlobal['symbol'] == symbol:
+    for key, operacionGlobal in diccionario_global_operaciones.items():        
             if operacionGlobal['ut'] == 0:
                 # Verifica si ninguna operación relacionada está en estado 'ANTERIOR'
                 all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
-                    if operacion["Symbol"] == symbol
+                     if operacion["Symbol"] == symbol
                 )
                 any_enviada_anterior = any(
                     operacion['status'] == 'ANTERIOR'
                     for operacion in diccionario_operaciones_enviadas.values()
-                    if operacion["Symbol"] == symbol
+                     if operacion["Symbol"] == symbol
                 )
                 if all_enviadas_validas and not any_enviada_anterior:
                     operacionGlobal['status'] = '1'
@@ -573,9 +584,10 @@ def actualizar_estado_operaciones(symbol, clOrdId):
         
    # Verifica si todas las operaciones están en estado 'TERMINADA'
     for operacion_enviada in diccionario_operaciones_enviadas.values():
-        if operacion_enviada['status'] != 'TERMINADA':
-            todas_terminadas = False
-            break  # Sale del bucle si encuentra una operación que no está terminada
+        if operacion_enviada["status"] != 'ANTERIOR':
+            if operacion_enviada['status'] != 'TERMINADA':
+                todas_terminadas = False
+                break  # Sale del bucle si encuentra una operación que no está terminada
     return todas_terminadas
 
 
@@ -622,9 +634,11 @@ def actualizar_diccionario_global(symbol, ut_a_devolver):
     """Actualiza el diccionario global de operaciones."""
     operacionGlobal = diccionario_global_operaciones.get(symbol)
     if operacionGlobal:
-        operacionGlobal['ut'] += int(ut_a_devolver)
-        if operacionGlobal['status'] != '0':
-            operacionGlobal['status'] = '0'
+         if int(ut_a_devolver) > 0:  
+            operacionGlobal['ut'] += int(ut_a_devolver)
+         else:   
+            if operacionGlobal['status'] != '0':
+                    operacionGlobal['status'] = '0'
             
  
 def convert_datetime(original_datetime_str, desired_timezone_str):
@@ -943,7 +957,6 @@ def obtenerStock(cadena):
 def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
     try:
         if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
-            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol)
             # Limpiar el diccionario si se cumplen todas las condiciones
             diccionario_operaciones_enviadas.clear()
             print("###############################################") 
@@ -956,20 +969,48 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             account = diccionario_global_operaciones[symbol]['accountCuenta']
             idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
+            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
+          
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
-                'accoount': get.ConexionesBroker[account]['cuenta'], 
+                'account': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 
-                'symbol': symbol,               
+                'symbol': symbol,
+                'mensaje' : 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
+                'status': 'termino'               
             }
 
             get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
+
+         
     except KeyError as e:
         print(f"KeyError: La clave {e} no se encontró en los diccionarios.")
     except Exception as e:
         print(f"Ocurrió un error: {str(e)}")
 
-          
+@estrategiaSheetWS.route("/strategies_estrategias_detenerMDHtrigger_lanzado", methods=['POST'])
+def strategies_estrategias_detenerMDHtrigger_lanzado():
+    try:
+        if request.method == 'POST':
+            # Obtener los datos del POST
+            usuario_id = request.form.get('usuario_id')
+            trigger_id = request.form.get('trigger_id')
+            account = request.form.get('account')
+
+            # Inicializar la conexión pyRofex y eliminar el websocket handler
+            pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
+            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+
+            # Devolver una respuesta exitosa
+            return jsonify({"message": "MDH trigger detenido correctamente"}), 200
+
+    except Exception as e:
+        print("Error al detener MDH trigger:", str(e))
+        # Devolver un mensaje de error
+        return jsonify({"error": "Error al detener MDH trigger", "details": str(e)}), 500
+
+
+         
 
 
 

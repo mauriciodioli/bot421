@@ -31,8 +31,8 @@
 }
 
 .card-header.carrucelPromociones {
-    background-color: #f5e1ff;
-    color: #5e3e91;
+    background-color: #424041;
+    color: #ffdb38;
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -52,7 +52,7 @@
 }
 
 .card-text.mensaje {
-    background-color: #d1b4f4;
+    background-color: #f11595;
     color: #5e3e91;
     font-weight: bold;
     padding: 0.5rem;
@@ -61,8 +61,8 @@
 }
 
 .card-text.ahorro {
-    background-color: #d1b4f4;
-    color: #5e3e91;
+    background-color: #c98200;
+    color: #ffffff;
     font-weight: bold;
     padding: 0.5rem;
     border-radius: 1.5rem;
@@ -70,19 +70,19 @@
 }
 
 .card.carrucelPromociones .btn-success {
-    background-color: #b07df0;
-    border-color: #b07df0;
+    background-color: #c98200;
+    border-color: #976303;
     font-size: 1.2rem;
     border-radius: 1.5rem;
 }
 
 .card.carrucelPromociones .btn-success:hover {
-    background-color: #945ed1;
-    border-color: #945ed1;
+    background-color: #fdcc6f;
+    border-color: #976303;
 }
 
 .shadow-tarj {
     background-color: #ffffff;
-    box-shadow: 0 10px 26px #945ed1;
+    box-shadow: 0 10px 26px #d80085;
     border-radius: 1rem;
 }

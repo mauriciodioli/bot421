@@ -324,7 +324,7 @@
             var usuario_id = localStorage.getItem('usuario_id');
             access_token = localStorage.getItem('access_token');
             var selector = localStorage.getItem('selector');
-            debugger;
+           
             var layoutOrigen = 'layout_signal';
             var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
             window.location.href = url;
@@ -345,7 +345,7 @@
          document.getElementById('guardarPaisSeleccionado').addEventListener('click', function() {
             var pais = selectedCountry;
             localStorage.setItem('paisSeleccionado', pais);
-            debugger;
+           
             usuario_id = localStorage.getItem('usuario_id');
             var selector = localStorage.getItem('selector');
             var layoutOrigen = 'layout_signal';
@@ -377,9 +377,12 @@
                 
                 
                     //aqui oculto generador de fichas si no posee cuenta de broker logeada
-                  
-                     
+                    let cuentaLink = document.getElementById('cuentaLink'); // Asegúrate de usar el id correcto
+                    if (cuentaLink) {
                         cuentaLink.style.display = 'block';
+                    } else {
+                        console.log("El elemento 'cuentaLink' no está definido.");
+                    }
                         
                    
                 
