@@ -119,7 +119,7 @@ def market_data_handler_estrategia(message):
     
     if response != 1: ### si es 1 el boton de panico fue activado
      
-      #  print(" FUN: market_data_handler_estrategia: _")
+        print(" FUN: market_data_handler_estrategia: _",message["instrumentId"]["symbol"])
 
         # Obtén el timestamp del mensaje
         marca_de_tiempo = int(message["timestamp"])

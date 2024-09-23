@@ -90,7 +90,7 @@ def cuenta_posicion_cuenta():
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
       
             for elemento in get.ConexionesBroker:
-                print("Variable agregada:", elemento)
+               
                 accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
              
                 if accountCuenta == cuenta:
@@ -107,7 +107,7 @@ def cuenta_posicion_cuenta():
 
                         # Evitar división por cero
                         
-                        if total_operaciones > 0:
+                        if suma_ganadores != 0:
                          
                           if suma_perdedores != 0:
                             numerador = suma_ganadores / suma_perdedores
@@ -252,7 +252,7 @@ def reporteCuenta():
                 total_operaciones = suma_ganadores + suma_perdedores
 
                 # Evitar división por cero
-                if total_operaciones > 0:
+                if suma_ganadores != 0:
                 
                     if suma_perdedores != 0:
                         numerador = suma_ganadores / suma_perdedores

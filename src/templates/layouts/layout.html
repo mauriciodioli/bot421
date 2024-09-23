@@ -152,9 +152,9 @@
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="/telegram-envia-mensaje/">Telegram</a></li> 
                                     <li><a class="dropdown-item" href="/comunicacion_newsLetter_comunica">newsletter</a></li>
-                                    <li><a class="dropdown-item"  href="/productosComerciales_promociones_consulta_promociones?layout=layout">Consulta</a></li>
+                                    <li><a class="dropdown-item" id="consultas-link">Consultas</a></li>
                                     <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
-                                    <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>
+
                                 </ul>
                             </li>  
                                                                         
@@ -338,7 +338,13 @@
     
 
     <script>
-
+        document.addEventListener("DOMContentLoaded", function() {
+            const userId = localStorage.getItem("usuario_id");
+            if (userId) {
+              const link = document.getElementById("consultas-link");
+              link.href = `/comunicacion_contacto_consultas/layout/${userId}`;
+            }
+          });
   // Custom JavaScript to handle submenu toggle
   $(document).ready(function() {
     $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {

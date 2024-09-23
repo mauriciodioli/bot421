@@ -522,6 +522,14 @@ def conexion_existente(app,accountCuenta,correo_electronico,selector,user_id):
         return False
     else:        
         with app.app_context():
+            try: 
+                global ContenidoSheet_list  # Declara que usarás la variable global
+                if ContenidoSheet_list:
+                    ContenidoSheet_list.clear() # mantiene la referencia
+                del ConexionesBroker[accountCuenta]             
+            except KeyError:
+                # La cuenta no existe en ConexionesBroker, puedes manejarlo aquí si es necesario
+                pass
             conexionShedule(current_app, Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
         return True 
         
