@@ -86,13 +86,13 @@ class OperacionEstrategia:
                         print(f"Error: No se pudo determinar un precio válido para la señal {self.senial}")
                         return
                       # Enviar orden
-                    print(f"Enviando orden con los siguientes parámetros:\n"
-                        f" - Ticker: {self.Symbol}\n"
-                        f" - Cantidad: {ut}\n"
-                        f" - Precio: {precio}\n"
-                        f" - Side: {side}\n"
-                        f" - Cuenta: {self.diccionario_global_operaciones[self.Symbol]['accountCuenta']}\n"
-                        f" - ws_client_order_id: {_ws_client_order_id}")
+                  #  print(f"Enviando orden con los siguientes parámetros:\n"
+                  #      f" - Ticker: {self.Symbol}\n"
+                  #      f" - Cantidad: {ut}\n"
+                  #      f" - Precio: {precio}\n"
+                  #      f" - Side: {side}\n"
+                  #      f" - Cuenta: {self.diccionario_global_operaciones[self.Symbol]['accountCuenta']}\n"
+                  #      f" - ws_client_order_id: {_ws_client_order_id}")
                     # Enviar orden
                     self.pyRofexInicializada.send_order_via_websocket(ticker=self.Symbol,size=ut,side=side,order_type=self.pyRofexInicializada.OrderType.LIMIT,ws_client_order_id=_ws_client_order_id,price=precio,environment=self.diccionario_global_operaciones[self.Symbol]['accountCuenta'])
                      

@@ -233,8 +233,8 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                
 
                 # Preguntar si son las 11:00 y pasar la lectura
-               # if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
-                if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                #if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id,accountCuenta, 'hilo', selector)
               
                 #if (now.hour == 19 and now.minute >= 40 and now.minute <= 55):
