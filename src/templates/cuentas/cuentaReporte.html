@@ -50,16 +50,26 @@
           
           <span class="planes-sub-titulo" style="color: white; font-size: 18px;"> Efectividad estrategia:     </span>
             
-          <h4 class="planes-titulo" style="color: {{ 'green' if porcentaje_ganadores > 0 else 'red' }}; font-size: 24px;">
+          <h4 class="planes-titulo" style="color: {{ 'green' if total_operaciones > 0 else 'red' }}; font-size: 24px;">
                 <span style="color: white;">(</span>
-                <strong style="color: green;">{{ porcentaje_ganadores }}</strong>
+                {% if total_operaciones > 0 %}
+                     <strong style="color: green;">{{ porcentaje_ganadores }}</strong>
+                {% else %}
+                     <strong style="color: red;">{{ porcentaje_ganadores }}</strong>
+                {% endif %}
+               
                 <span style="color: white;"> / </span>
+                {% if total_operaciones > 0 %}
                 <strong style="color: red;">{{ porcentaje_perdedores }}</strong>
+                {% else %}
+                <strong style="color: green;">{{ porcentaje_perdedores }}</strong>
+                {% endif %}
+                
                 <span style="color: white;">)</span>
                 <span style="color: white;">%</span>
             
-            <span class="flecha" style="color: {{ 'green' if porcentaje_ganadores > 0 else 'red' }};">
-                {% if porcentaje_ganadores > 0 %}
+            <span class="flecha" style="color: {{ 'green' if total_operaciones > 0 else 'red' }};">
+                {% if total_operaciones > 0 %}
                     &#9650; <!-- Flecha hacia arriba -->
                 {% else %}
                     &#9660; <!-- Flecha hacia abajo -->
