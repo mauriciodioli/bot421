@@ -424,7 +424,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                senial='closed.'
             else:
                senial = elemento[4] 
-               
+            # cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
@@ -553,8 +553,8 @@ def procesar_estado_final(symbol, clOrdId):
                 all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
-                     if operacion["Symbol"] == symbol
-                )
+                       if operacion["Symbol"] == symbol and operacion['status'] != 'ANTERIOR'
+                    )
                 any_enviada_anterior = any(
                     operacion['status'] == 'ANTERIOR'
                     for operacion in diccionario_operaciones_enviadas.values()
