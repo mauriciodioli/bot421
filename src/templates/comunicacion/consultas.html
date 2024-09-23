@@ -1,0 +1,45 @@
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block title %}Consultas{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div id="chat-container"></div> <!-- Container for all chat popups -->
+      <!-- Widget del Chat -->
+      <div class="chat-icon" id="openChat">
+        💬 <!-- Aquí puedes usar un ícono de chat o una imagen -->
+    </div>
+
+    <div class="chat-widget" id="chatWidget" style="display:none;">
+        <div class="chat-header">
+            <span>DPI inversiones</span>
+            <button id="closeChat">×</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <!-- Aquí se mostrarán los mensajes -->
+        </div>
+        <div class="chat-footer">
+            <input type="text" id="chatMessage" placeholder="Escribe tu mensaje..." />
+            <button id="sendMessage">Enviar</button>
+        </div>
+    </div>
+    
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+<link rel = "stylesheet" href = {{ url_for('static',filename='css/social/chats/consultas.css')}}>
+<script src="{{ url_for('static', filename='js/media/chats/consultas.js') }}"></script>
+{% endblock %}

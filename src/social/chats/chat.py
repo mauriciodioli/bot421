@@ -17,12 +17,34 @@ from models.brokers import Broker
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from collections import defaultdict
 
+
+
 chat = Blueprint('chat',__name__)
+
+
+
+# Definimos un contexto básico (esto debería ser más específico a tu sistema)
+# Definimos un contexto más específico a tu sistema
+context = """
+Este bot automatizado opera tanto en mercados locales como internacionales, con un retorno mensual del 2%. Ideal para aquellos que buscan beneficios mensuales constantes con un total de 24% + capital.
+Sistema de Operaciones: Un sistema que permite a los usuarios operar de manera semiautomática, facilitando la toma de decisiones informadas con un máximo retorno mensual del 2%. Obtén un total de 240% + capital anual.
+Cursos: Ofrecemos una variedad de cursos online sobre trading y otros temas relevantes, con materiales de estudio y un costo mensual accesible. Ideal para mejorar tus habilidades y conocimientos.
+Motor de Operaciones: Implementa estrategias propias con un retorno mensual del 2.5%. Este servicio permite obtener beneficios anuales significativos, con un retorno de capital garantizado y un total de 300% + capital.
+Copy Trading: Permite a los usuarios copiar estrategias de trading exitosas y subir sus propias estrategias, con un máximo retorno mensual del 2% y un total de 240% + capital anual.
+Panel de Señales: Proporciona señales diarias para operar, ayudando a los usuarios a identificar oportunidades en el mercado. Aunque no garantiza el retorno de capital, ofrece un total de 240% anual.
+Sistema de Fichas: Comparte tus fichas y sigue tus inversiones con un retorno del 0.65% por ficha. Este sistema facilita el seguimiento y la optimización de tus activos.
+CF Fintech: Una oportunidad para compartir tu negocio y recibir beneficios mensuales, con un costo inicial y un porcentaje de capital. Ideal para emprendedores en el sector financiero.
+"""
+
+
 
 # Simulamos una base de datos en memoria
 administrators = defaultdict(list)  # Cada administrador tiene una lista de hilos (máx. 10)
 conversations = defaultdict(list)  # Cada usuario tiene una lista de mensajes
-
+# Conversaciones y administradores deben estar definidos antes de la función
+conversations = {}
+administrators = {}
+user_states = {}  # Para llevar el estado de cada usuario
 # Simulamos administradores disponibles
 admin_list = ["admin1", "admin2"]
 
@@ -34,22 +56,65 @@ def assign_admin():
     return None
 
 # API para manejar el hilo de mensajes
-@chat.route('/send_message', methods=['POST'])
+
+
+@chat.route('/send_message', methods=['POST']) 
 def send_message():
     data = request.get_json()
+    
+    if 'userId' not in data or 'message' not in data:
+        return jsonify({"status": "error", "message": "Faltan datos"}), 400
+
     user_id = data['userId']
     message = data['message']
+
+    # Inicializa el estado de la conversación si es un nuevo usuario
+    if user_id not in user_states:
+        user_states[user_id] = "greeting"  # Estado inicial
+
+    response_message = handle_message(user_id, message)
     
-    if user_id not in conversations:
-        admin = assign_admin()
-        if admin:
-            administrators[admin].append(user_id)
+    return jsonify({
+        "status": "Mensaje enviado",
+        "userId": user_id,
+        "reply": response_message
+    })
+
+
+def handle_message(user_id, message):
+    state = user_states[user_id]
+    
+    # Procesa el mensaje según el estado del usuario
+    if state == "greeting":
+        if message.lower() in ["hola", "buen día", "buenas tardes"]:
+            response_message = "¡Hola! ¿Qué se le ofrece?"
+            user_states[user_id] = "waiting_for_request"  # Cambia el estado
         else:
-            return jsonify({"error": "No hay administradores disponibles."}), 503
+            response_message = "Lo siento, no entiendo eso. ¿Puedes saludarme?"
     
-    conversations[user_id].append({"sender": "user", "text": message})
+    elif state == "waiting_for_request":
+        # Manejar preguntas sobre costos
+        if any(keyword in message.lower() for keyword in ["costos", "quiero saber sobre costos", "cuánto cuesta", "costos de utilización"]):
+            return (
+                "Los costos de utilización son los siguientes:\n"
+                "- Bot automatizado: 2% de retorno mensual.\n"
+                "- Sistema de operaciones: 240% + capital anual.\n"
+                "- Cursos online: costo mensual accesible.\n"
+                "- Copy trading: 2% de retorno mensual y 240% + capital anual.\n"
+                "- Sistema de fichas: 0.65% por ficha."
+            )
+        
+        if "consulta" in message.lower():
+            user_states[user_id] = "consultation"
+            return "Claro, ¿qué consulta tienes sobre nuestros servicios?"
+
+        # Aquí se maneja la consulta
+       # admin_reply = nlp(question=message, context=context)
+       # response_message = admin_reply['answer'] if admin_reply['answer'] else "Lo siento, no tengo información sobre eso."
     
-    return jsonify({"status": "Mensaje enviado"})
+    return response_message if 'response_message' in locals() else "Lo siento, no entendí tu mensaje."
+
+
 
 # Obtener hilos de mensajes para un administrador
 @chat.route('/admin/get_threads', methods=['GET'])
@@ -74,3 +139,13 @@ def send_reply():
     conversations[user_id].append({"sender": "admin", "text": message})
     
     return jsonify({"status": "Respuesta enviada"})
+
+
+# Notify when a new user starts chatting (triggered from the server)
+@chat.route('/new_chat', methods=['POST'])
+def new_chat():
+    data = request.get_json()
+    user_id = data['userId']
+    
+    # Logic to notify the frontend (maybe using WebSockets for real-time)
+    return jsonify({"newChat": True, "userId": user_id})
