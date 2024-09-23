@@ -54,6 +54,7 @@ def operar():
         return render_template('operaciones/operaciones.html', datos = lista)
   except:        
     return render_template("notificaciones/errorLogueo.html" )
+
 @operaciones.route("/operar-vacio",methods=["POST"])
 def operar_vacio():
   try:
@@ -73,7 +74,7 @@ def operar_vacio():
   except:        
     return render_template("errorLogueo.html" )
   
-    
+   
 @operaciones.route("/get_trade_history_by_symbol/",  methods=["POST"])
 def get_trade_history_by_symbol():
   try:        
@@ -126,9 +127,6 @@ def estadoOperacion():
         flash("Ocurrió un error inesperado al obtener los datos de operaciones")
 
     return render_template("notificaciones/noPoseeDatos.html", layout = 'layoutBroker')
-
-
-
 
 
 @operaciones.route("/envio_notificacion_tlegram_desde_seniales_sin_cuenta/", methods=["POST"]) 
@@ -212,10 +210,6 @@ def envio_notificacion_tlegram_desde_seniales_sin_cuenta():
         # Tu código de manejo de excepciones aquí
         return render_template('notificaciones/errorOperacionSinCuenta.html', layout = layouts)           
 
-
-
-
-
 async def enviar_mensaje_async(idtelegram, ticker, ut1, signal): 
     #https://api.telegram.org/bot7264333617:AAFlrcw9yObB8ksp6k1P--zW6D6uk0gCgqc/getupdates  direccion para conseguir el id del grupo
     # Reemplaza 'YOUR_BOT_TOKEN' con el token de tu bot de Telegram
@@ -256,7 +250,7 @@ def operaciones_desde_seniales_sin_cuenta():
                 app = current_app._get_current_object()  
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Intentamos encontrar el registro con el symbol específico
-                orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
+                orden_existente = db.session.query(Orden).filter_by(symbol=ticker, user_id=userId, accountCuenta="sin cuenta broker").first()
           
 
                 if orden_existente:
@@ -426,7 +420,7 @@ def operaciones_desde_seniales():
                                               
                                         if orderStatus != 'REJECTED':     
                                             # Intentamos encontrar el registro con el symbol específico
-                                            orden_existente = db.session.query(Orden).filter_by(symbol=symbol).first()
+                                            orden_existente = db.session.query(Orden).filter_by(symbol=symbol,user_id=user_id,accountCuenta=cuentaAcount).first()
 
                                             if orden_existente:
                                                 # Si el registro existe, lo actualizamos
@@ -825,7 +819,7 @@ def cancelarOrden():
     
 @operaciones.route("/sendOrderWS/", methods = ['POST'] )
 def sendOrderWS():
-   #try:
+  try:
     if request.method == 'POST':
         symbol = request.form['symbol']
         orderQty = request.form['orderQty']
@@ -867,10 +861,75 @@ def sendOrderWS():
             estadoOperacion()
             flash('No hay suficiente saldo para enviar la orden de compra')
             return render_template("notificaciones/errorOperacion.html" )
-   #except:        
-   # flash('Datos Incorrect')  
-   # print('datos incorrectos')
-   # return render_template("errorOperacion.html" )
+  except:        
+    flash('Datos Incorrect')  
+    print('datos incorrectos')
+    return render_template("errorOperacion.html" )
+
+
+def cargar_ordenes_db(cuentaAcount=None, 
+                      cantidad_a_comprar_abs=None, 
+                      signal=None, 
+                      clOrdId=None, 
+                      orderStatus=None, 
+                      tipo_orden=None, 
+                      symbol=None, 
+                      user_id=None, 
+                      accountCuenta=None):
+    try:
+        # Intentamos encontrar el registro con el symbol específico
+        orden_existente = db.session.query(Orden).filter_by(symbol=symbol, user_id=user_id, accountCuenta=accountCuenta).first()
+
+        if orden_existente:
+            # Si el registro existe, lo actualizamos
+            orden_existente.user_id = user_id
+            orden_existente.userCuenta = cuentaAcount
+            orden_existente.ut = cantidad_a_comprar_abs
+            orden_existente.senial = signal
+            orden_existente.clOrdId_alta = clOrdId
+            orden_existente.clOrdId_alta_timestamp = datetime.now()
+            orden_existente.status = orderStatus
+        else:
+            # Si no existe, creamos un nuevo registro
+            nueva_orden = Orden(
+                user_id=user_id,
+                userCuenta=cuentaAcount,
+                accountCuenta=cuentaAcount,
+                clOrdId_alta=clOrdId,
+                clOrdId_baja='',
+                clientId=0,
+                wsClOrdId_timestamp=datetime.now(),
+                clOrdId_alta_timestamp=datetime.now(),
+                clOrdId_baja_timestamp=None,
+                proprietary=True,
+                marketId='',
+                symbol=symbol,
+                tipo=tipo_orden,
+                tradeEnCurso="si",
+                ut=cantidad_a_comprar_abs,
+                senial=signal,
+                status=orderStatus
+            )
+            db.session.add(nueva_orden)
+
+        # Si la señal es 'closed.', eliminamos la orden existente
+        if signal == 'closed.':
+            db.session.delete(orden_existente)
+
+        # Confirmamos los cambios en la base de datos
+        db.session.commit()
+        return True
+    
+    except Exception as e:
+        # En caso de error, hacemos rollback de la sesión y capturamos el error
+        db.session.rollback()
+        print(f"Error al cargar la orden en la base de datos: {str(e)}")
+        return False
+
+    finally:
+        # Cerramos la sesión para evitar fugas de recursos
+        db.session.close()
+
 
 def error_handler(message):
   print("Mensaje de error: {0}".format(message))
@@ -881,10 +940,6 @@ def exception_error(message):
 
 def order_report_handler(message):
   
-  
-  
-  
-  #print("Mensaje de OrderRouting: {0}".format(message))
   get.reporte_de_ordenes.append(message)
   
  # 2-Defines the handlers that will process the messages and exceptions.

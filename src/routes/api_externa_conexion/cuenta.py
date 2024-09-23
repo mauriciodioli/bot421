@@ -26,17 +26,6 @@ cuenta = Blueprint('cuenta',__name__)
 
 
 # Crear la tabla cuenta si no existe
-def crea_tabla_cuenta():
-    cuenta = Cuenta(    
-        id=1,
-        user_id = "1",
-        userCuenta="mauriciodioli6603",
-        passwordCuenta="zbwitW5#",
-        accountCuenta="REM6603",
-        selector="simulado"                
-    )
-    cuenta.crear_tabla_cuentas()
-    print("Tabla creada!")
 
 
 
@@ -413,7 +402,7 @@ def registrar_cuenta_administracion():
          passwordCuenta_encoded = passwordCuenta.encode('utf-8')
          accountCuenta_encoded = accountCuenta.encode('utf-8')
 
-         crea_tabla_cuenta()
+       
          try:     
             usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()  # Obtener el objeto Usuario correspondiente al user_id
 

@@ -14,6 +14,7 @@ import strategies.opera_estrategias as op
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
+from routes.api_externa_conexion.operaciones import cargar_ordenes_db
 from datetime import datetime
 import time
 from pytz import timezone as pytz_timezone
@@ -119,7 +120,7 @@ def market_data_handler_estrategia(message):
     
     if response != 1: ### si es 1 el boton de panico fue activado
      
-        print(" FUN: market_data_handler_estrategia: _",message["instrumentId"]["symbol"])
+       # print(" FUN: market_data_handler_estrategia: _",message["instrumentId"]["symbol"])
 
         # Obtén el timestamp del mensaje
         marca_de_tiempo = int(message["timestamp"])
@@ -425,7 +426,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                senial='closed.'
             else:
                senial = elemento[4] 
-               
+           # cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
@@ -557,8 +558,9 @@ def procesar_estado_final(symbol, clOrdId):
                 all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
-                     if operacion["Symbol"] == symbol
+                    if operacion["Symbol"] == symbol and operacion['status'] != 'ANTERIOR'
                 )
+
                 any_enviada_anterior = any(
                     operacion['status'] == 'ANTERIOR'
                     for operacion in diccionario_operaciones_enviadas.values()
