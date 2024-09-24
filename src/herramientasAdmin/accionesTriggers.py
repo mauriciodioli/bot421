@@ -23,58 +23,37 @@ import copy
 accionesTriggers = Blueprint('accionesTriggers',__name__)
 
 
-@accionesTriggers.route('/verificar_estado', methods=['POST'])
-def verificar_estado():
-    try:
-        # Obtén los datos JSON del cuerpo de la solicitud
-        data = request.get_json()
-        
-        # Verifica si los datos se obtuvieron correctamente
-        if not data:
-            raise BadRequest('No se recibió ningún dato JSON.')
 
-        # Obtén los valores del JSON
-        idTrigger = data.get('idTrigger')
-        userId = data.get('userId')
-        cuenta = data.get('cuenta')
-        
-        # Verifica si idTrigger y cuenta están presentes
-        if idTrigger is None or cuenta is None:
-            raise BadRequest('Faltan parámetros requeridos: idTrigger o cuenta.')
-
-        # Verifica si la cuenta existe en el diccionario
-        parametros = get.estrategias_usuario__endingOperacionBot.get(idTrigger)        
-        # Verifica si se encontraron parámetros
-        if parametros:
-            # Desglosar las variables
-            account = parametros.get('account')
-            user_id = parametros.get('user_id')
-            symbol = parametros.get('symbol')
-            status = parametros.get('status')
-            mensaje = parametros.get('mensaje')
-            # Compara el tiempo actual con el tiempo de inicio
-            tiempo_actual = datetime.now()
-            if tiempo_inicio:
-                tiempo_inicio = datetime.strptime(tiempo_inicio, '%Y-%m-%d %H:%M:%S')
-                if tiempo_actual - tiempo_inicio > timedelta(minutes=5):
-                    return jsonify({'estado': 'terminado', 'account': account, 'mensaje': 'Operación superó los 5 minutos.'}), 200
-
-            # Verifica el estado y responde apropiadamente
-            if status == 'termino':
-                return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
-        
-        return jsonify({'estado': 'en_proceso'}), 200
-
-    except BadRequest as e:
-        # Maneja los errores de solicitud incorrecta
-        return jsonify({'error': str(e)}), 400
-
-    except Exception as e:
-        # Maneja cualquier otro error
-        return jsonify({'error': 'Ocurrió un error inesperado.', 'detalle': str(e)}), 500
-
+@accionesTriggers.route("/terminoEjecutarEstrategia")
+def terminoEjecutarEstrategia(): 
+    return render_template('notificaciones/terminoEjecutarEstrategia.html')
 @accionesTriggers.route('/herramientasAdmin_accionesTriggers_actualizaLuzTrigger')
 def herramientasAdmin_accionesTriggers_actualizaLuzTrigger():
     luz = get.luzShedule_funcionando
     get.luzShedule_funcionando = False
     return jsonify({'luzTrigger_control':luz})
+def control_tiempo_lectura_verifiar_estado(tiempo_espera_ms, tiempo_inicial_ms):
+    # Obtener el tiempo actual en milisegundos
+    tiempo_actual_ms = int(datetime.now().timestamp()) * 1000
+    
+    # Calcular la diferencia de tiempo desde la última vez que fue llamada la función
+    diferencia_tiempo_ms = tiempo_actual_ms - tiempo_inicial_ms
+    
+    # Lógica para determinar si se puede realizar la lectura del sheet
+    if diferencia_tiempo_ms < tiempo_espera_ms:
+        # Aún no ha pasado suficiente tiempo, no se realiza la lectura del sheet
+        #print(f"No se realiza la lectura del sheet. Tiempo transcurrido: {diferencia_tiempo_ms} ms.")
+        # Retornar False u otra indicación según sea necesario
+        return False
+    else:
+        # Ha pasado suficiente tiempo, se realiza la lectura del sheet
+        minutos = diferencia_tiempo_ms // 60000
+        segundos = (diferencia_tiempo_ms % 60000) // 1000
+        #print(f"Se realiza la lectura del sheet. Tiempo transcurrido: {minutos}m {segundos}s.")
+       
+        
+        # Reiniciar el tiempo inicial para la próxima llamada
+        get.marca_de_tiempo_para_verificar_estado = tiempo_actual_ms
+        
+        # Retornar True u otra indicación según sea necesario
+        return True

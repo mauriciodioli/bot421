@@ -881,20 +881,27 @@ def cargar_ordenes_db(cuentaAcount=None,
         orden_existente = db.session.query(Orden).filter_by(symbol=symbol, user_id=user_id, accountCuenta=accountCuenta).first()
 
         if orden_existente:
-            # Si el registro existe, lo actualizamos
-            orden_existente.user_id = user_id
-            orden_existente.userCuenta = cuentaAcount
-            orden_existente.ut = cantidad_a_comprar_abs
-            orden_existente.senial = signal
-            orden_existente.clOrdId_alta = clOrdId
-            orden_existente.clOrdId_alta_timestamp = datetime.now()
-            orden_existente.status = orderStatus
+              # Si la señal es 'closed.', eliminamos la orden existente
+    
+            if signal == 'closed.':
+              db.session.delete(orden_existente)
+            else:
+              # Si el registro existe, lo actualizamos
+              orden_existente.user_id = user_id
+              orden_existente.userCuenta = cuentaAcount
+              orden_existente.accountCuenta = accountCuenta
+              orden_existente.ut = cantidad_a_comprar_abs
+              orden_existente.senial = signal
+              orden_existente.clOrdId_alta = clOrdId
+              orden_existente.clOrdId_alta_timestamp = datetime.now()
+              orden_existente.status = orderStatus
+            
         else:
             # Si no existe, creamos un nuevo registro
             nueva_orden = Orden(
                 user_id=user_id,
                 userCuenta=cuentaAcount,
-                accountCuenta=cuentaAcount,
+                accountCuenta=accountCuenta,
                 clOrdId_alta=clOrdId,
                 clOrdId_baja='',
                 clientId=0,
@@ -911,11 +918,7 @@ def cargar_ordenes_db(cuentaAcount=None,
                 status=orderStatus
             )
             db.session.add(nueva_orden)
-
-        # Si la señal es 'closed.', eliminamos la orden existente
-        if signal == 'closed.':
-            db.session.delete(orden_existente)
-
+   
         # Confirmamos los cambios en la base de datos
         db.session.commit()
         return True
