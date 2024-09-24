@@ -140,6 +140,7 @@ detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detene
 
 
 marca_de_tiempo_para_leer_sheet = int(datetime.now().timestamp()) * 1000  # Tiempo inicial
+marca_de_tiempo_para_verificar_estado = int(datetime.now().timestamp()) * 1000  # Tiempo inicial
 VariableParaTiempoLeerSheet = 0  # Variable para guardar el tiempo transcurrido
 
 ContenidoSheet_list = None
