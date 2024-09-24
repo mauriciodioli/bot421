@@ -15,12 +15,14 @@ import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
 from routes.api_externa_conexion.operaciones import cargar_ordenes_db
-from datetime import datetime
 import time
 from pytz import timezone as pytz_timezone
+from datetime import datetime, timedelta
+from werkzeug.exceptions import BadRequest
+from herramientasAdmin.accionesTriggers import control_tiempo_lectura_verifiar_estado
 
 from models.unidadTrader import UnidadTrader
-import pprint
+
 import tokens.token as Token
 instrumentos_existentes_arbitrador1=[]
 
@@ -426,7 +428,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                senial='closed.'
             else:
                senial = elemento[4] 
-           # cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
+            cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
@@ -993,13 +995,10 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
         print(f"Ocurrió un error: {str(e)}")
 
 
-@Bull_Market_10861_001.route("/strategies_estrategias_detenerMDHtrigger_lanzado", methods=['POST'])
+@Bull_Market_10861_001.route("/strategies_estrategias_detenerMDHtrigger_lanzado",  methods=['GET', 'POST'])
 def strategies_estrategias_detenerMDHtrigger_lanzado():
     try:
-        if request.method == 'POST':
-            # Obtener los datos del POST
-            usuario_id = request.form.get('usuario_id')
-            trigger_id = request.form.get('trigger_id')
+       
             account = request.form.get('account')
 
             # Inicializar la conexión pyRofex y eliminar el websocket handler
@@ -1013,6 +1012,74 @@ def strategies_estrategias_detenerMDHtrigger_lanzado():
         print("Error al detener MDH trigger:", str(e))
         # Devolver un mensaje de error
         return jsonify({"error": "Error al detener MDH trigger", "details": str(e)}), 500
+
+@Bull_Market_10861_001.route("/Bull_Market_10861_001_verificar_estado/", methods=['POST'])
+def Bull_Market_10861_001_verificar_estado():
+    try:
+        # Obtén los datos JSON del cuerpo de la solicitud
+        data = request.get_json()
+        
+        # Verifica si los datos se obtuvieron correctamente
+        if not data:
+            raise BadRequest('No se recibió ningún dato JSON.')
+
+        # Obtén los valores del JSON
+        idTrigger = data.get('idTrigger')
+        userId = data.get('userId')
+        account = data.get('cuenta')
+        nombreEstrategia = data.get('nombreEstrategia')
+        
+        # Verifica si idTrigger y cuenta están presentes
+        if idTrigger is None or cuenta is None:
+            raise BadRequest('Faltan parámetros requeridos: idTrigger o cuenta.')
+
+        # Verifica si la cuenta existe en el diccionario
+        parametros = get.estrategias_usuario__endingOperacionBot.get(idTrigger)        
+        # Verifica si se encontraron parámetros
+        if parametros:
+            # Desglosar las variables
+            account = parametros.get('account')
+            user_id = parametros.get('user_id')
+            symbol = parametros.get('symbol')
+            status = parametros.get('status')
+            mensaje = parametros.get('mensaje')
+            # Compara el tiempo actual con el tiempo de inicio
+            tiempo_actual = datetime.now()
+            if tiempo_inicio:
+                tiempo_inicio = datetime.strptime(tiempo_inicio, '%Y-%m-%d %H:%M:%S')
+                if tiempo_actual - tiempo_inicio > timedelta(minutes=5):
+                    return jsonify({'estado': 'terminado', 'account': account, 'mensaje': 'Operación superó los 5 minutos.'}), 200
+
+            # Verifica el estado y responde apropiadamente
+            if status == 'termino':
+                
+                return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
+        
+        else:
+            # Verifica el tiempo de lectura
+            if control_tiempo_lectura_verifiar_estado(30000, get.marca_de_tiempo_para_verificar_estado):
+                  # Inicializar la conexión pyRofex y eliminar el websocket handler
+                pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
+                try:
+                    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+                except BadRequest as e:
+                    pass
+                return jsonify({
+                    'estado': 'listo',
+                    'account': 'cuenta',
+                    'mensaje': 'no hay datos por 5 minutos',
+                    'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
+                }), 200
+            else:
+                return jsonify({'estado': 'en_proceso'}), 200
+       
+    except BadRequest as e:
+        # Maneja los errores de solicitud incorrecta
+        return jsonify({'error': str(e)}), 400
+
+    except Exception as e:
+        # Maneja cualquier otro error
+        return jsonify({'error': 'Ocurrió un error inesperado.', 'detalle': str(e)}), 500
 
 
 

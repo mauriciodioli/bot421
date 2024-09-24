@@ -475,6 +475,7 @@
                       var notificationMessage = "Estrategia iniciada, espere...";
                       document.getElementById("notificationMessage").innerText = notificationMessage;
                       localStorage.setItem("idTrigger", idTrigger); 
+                      localStorage.setItem("nombreEstrategia",nombre)
                       // Muestra el modal
                       var notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
                       notificationModal.show();
@@ -722,14 +723,17 @@
       var userId = localStorage.getItem('usuario_id');
       var cuenta = localStorage.getItem('cuenta');
       var triggerId = localStorage.getItem('idTrigger');
-  
+      var nombreEst = localStorage.getItem('nombreEstrategia')
+      var nombreEst = localStorage.getItem('nombreEstrategia')
+      var url = '/'+nombreEst+'_verificar_estado'
       $.ajax({
           type: 'POST',
-          url: '/verificar_estado',
+          url: url,
           contentType: 'application/json',
           data: JSON.stringify({
               'userId': userId,
               'idTrigger': triggerId,
+              'nombreEstrategia':nombreEst,
               'cuenta': cuenta
           }),
           success: function(response) {
@@ -744,7 +748,10 @@
                   if (notificationModal) {
                       notificationModal.hide();
                   }  
-                 
+                  // Redirigir a la URL especificada en response.redirect
+                  if (response.redirect) {
+                    window.location.href = response.redirect; // Redirigir si hay una URL
+                   }
               } else {
                   console.log('Los datos todavía no están listos...');
               }
