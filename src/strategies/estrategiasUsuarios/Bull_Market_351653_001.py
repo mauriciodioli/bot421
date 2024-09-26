@@ -959,10 +959,9 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol,account=None):
     try:
-        if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
-            # Limpiar el diccionario si se cumplen todas las condiciones
+           # Limpiar el diccionario si se cumplen todas las condiciones
             diccionario_operaciones_enviadas.clear()
             print("###############################################") 
             print("###############################################") 
@@ -971,11 +970,13 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             print("###############################################") 
             print("###############################################") 
             print("###############################################") 
-            account = diccionario_global_operaciones[symbol]['accountCuenta']
-            idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
+            if account is None and symbol is not None:
+
+                account = diccionario_global_operaciones[symbol]['accountCuenta']
+                idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
+                print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
+           
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
-            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
-          
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
                 'account': get.ConexionesBroker[account]['cuenta'], 
@@ -1020,8 +1021,7 @@ def Bull_Market_351653_001_verificar_estado():
     try:
         # Obtén los datos JSON del cuerpo de la solicitud
         data = request.get_json()
-        
-        # Verifica si los datos se obtuvieron correctamente
+            # Verifica si los datos se obtuvieron correctamente
         if not data:
             raise BadRequest('No se recibió ningún dato JSON.')
 
@@ -1032,7 +1032,7 @@ def Bull_Market_351653_001_verificar_estado():
         nombreEstrategia = data.get('nombreEstrategia')
         
         # Verifica si idTrigger y cuenta están presentes
-        if idTrigger is None or cuenta is None:
+        if idTrigger is None or account is None:
             raise BadRequest('Faltan parámetros requeridos: idTrigger o cuenta.')
 
         # Verifica si la cuenta existe en el diccionario
@@ -1046,16 +1046,14 @@ def Bull_Market_351653_001_verificar_estado():
             status = parametros.get('status')
             mensaje = parametros.get('mensaje')
             # Compara el tiempo actual con el tiempo de inicio
-            tiempo_actual = datetime.now()
-            if tiempo_inicio:
-                tiempo_inicio = datetime.strptime(tiempo_inicio, '%Y-%m-%d %H:%M:%S')
-                if tiempo_actual - tiempo_inicio > timedelta(minutes=5):
+            
+            if control_tiempo_lectura_verifiar_estado(300000, get.marca_de_tiempo_para_verificar_estado):
+                    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
                     return jsonify({'estado': 'terminado', 'account': account, 'mensaje': 'Operación superó los 5 minutos.'}), 200
 
             # Verifica el estado y responde apropiadamente
             if status == 'termino':
-                
-                return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
+                 return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
         
         else:
             # Verifica el tiempo de lectura
@@ -1063,15 +1061,44 @@ def Bull_Market_351653_001_verificar_estado():
                   # Inicializar la conexión pyRofex y eliminar el websocket handler
                 pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
                 try:
-                    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+                    #ordenes_cargadas = db.session.query(Orden).filter_by(user_id=user_id, accountCuenta=account).all()
+
+                    repuesta_operacion = pyRofexInicializada.get_all_orders_status(account=account, environment=account)
+                    ordenes = repuesta_operacion.get('orders', [])                   
+                    # Verificar si hay órdenes para procesar
+                    if ordenes:
+                        # Recorrer la lista de órdenes
+                        symbols_encontrados = []  # Lista para almacenar los símbolos encontrados
+                        sim = ''
+                        for orden in ordenes:
+                            symbol = orden['instrumentId']['symbol']  # Obtener el symbol
+                            accountId = orden['accountId']['id']      # Obtener el accountId
+                            # Recorrer el diccionario de operaciones globales
+                            
+                            
+                         
+                            for key, operacionGlobal1 in diccionario_global_operaciones.items():
+                                if operacionGlobal1['ut'] == 0:  # Asegúrate de que 'ut' está en cada operacionGlobal
+                                    # Comparar símbolos entre la operación global y la orden cargada
+                                    if operacionGlobal1['symbol'] == symbol:
+                                        sim = symbol
+                                        symbols_encontrados.append(symbol)  # Agregar símbolo encontrado
+
+                        # Verificar si todos los símbolos de las órdenes están en symbols_encontrados
+                        if len(symbols_encontrados) == len(ordenes):
+                            # Llamada a la función endingOperacionBot si todos los símbolos están presentes
+                            endingOperacionBot(True, True, sim,account)
+                            
+                            return jsonify({
+                                'estado': 'listo',
+                                'account': account,
+                                'mensaje': 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
+                                'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
+                            }), 200
+       
                 except BadRequest as e:
                     pass
-                return jsonify({
-                    'estado': 'listo',
-                    'account': 'cuenta',
-                    'mensaje': 'no hay datos por 5 minutos',
-                    'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
-                }), 200
+        
             else:
                 return jsonify({'estado': 'en_proceso'}), 200
        
@@ -1082,6 +1109,7 @@ def Bull_Market_351653_001_verificar_estado():
     except Exception as e:
         # Maneja cualquier otro error
         return jsonify({'error': 'Ocurrió un error inesperado.', 'detalle': str(e)}), 500
+
 
 
 
