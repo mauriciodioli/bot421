@@ -318,184 +318,186 @@ def cargaUt(UT_unidadTrader,elemento7):
     return ut_trader
 
 def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
-     coincidencias = []
-     contador_1=0
-     símbolos_vistos = set()
-     tiempoLecturaSaldo = datetime.now()
-     
-     
-     usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
-     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
-    # saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
-
-     #filtrar las coincidencias entre las dos listas
-     for elemento1 in ContenidoSheet_list:
-        if not isinstance(elemento1, list):
-            elemento1 = list(elemento1)
+    try:
+        coincidencias = []
+        contador_1=0
+        símbolos_vistos = set()
+        tiempoLecturaSaldo = datetime.now()
         
-        if contador_1 >= 2:
-            for key, elemento2 in diccionario_operaciones_enviadas.items():
-                if elemento1[0] == elemento2['Symbol']:
-                    if elemento2['Symbol'] not in símbolos_vistos:
-                        if elemento1[4] == 'closed.':
-                            print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                            app.logger.info(elemento1)      
-                            elemento1[3] = int(elemento2['_ut_'])
+        
+        usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
+        unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
+        # saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
+
+        #filtrar las coincidencias entre las dos listas
+        for elemento1 in ContenidoSheet_list:
+            if not isinstance(elemento1, list):
+                elemento1 = list(elemento1)
+            
+            if contador_1 >= 2:
+                for key, elemento2 in diccionario_operaciones_enviadas.items():
+                    if elemento1[0] == elemento2['Symbol']:
+                        if elemento2['Symbol'] not in símbolos_vistos:
+                            if elemento1[4] == 'closed.':
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)      
+                                elemento1[3] = int(elemento2['_ut_'])
+                                coincidencias.append(elemento1)
+                            elif elemento1[2] == 'SHORT':
+                                if elemento1[4] == '':
+                                    print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                    app.logger.info(elemento1)
+                                    elemento1[3] = int(elemento2['_ut_'])
+                                    coincidencias.append(elemento1)
+                            elif elemento1[4] == 'OPEN.':
+                                if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
+                                    print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                    app.logger.info(elemento1)
+                                    elemento1[3] = int(elemento2['_ut_'])
+                                    coincidencias.append(elemento1)
+                            símbolos_vistos.add(elemento2['Symbol'])
+                        else:
+                            elemento1[3] = 0
                             coincidencias.append(elemento1)
-                        elif elemento1[2] == 'SHORT':
-                            if elemento1[4] == '':
-                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                                app.logger.info(elemento1)
-                                elemento1[3] = int(elemento2['_ut_'])
-                                coincidencias.append(elemento1)
-                        elif elemento1[4] == 'OPEN.':
-                            if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
-                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                                app.logger.info(elemento1)
-                                elemento1[3] = int(elemento2['_ut_'])
-                                coincidencias.append(elemento1)
-                        símbolos_vistos.add(elemento2['Symbol'])
-                    else:
-                        elemento1[3] = 0
-                        coincidencias.append(elemento1)
-                        símbolos_vistos.add(elemento2['Symbol'])
-        contador_1 += 1
-     #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
-    
-     contador = 0
-     for elemento1 in ContenidoSheet_list:
-        if contador >= 2:
-            #print('elemento1 ', elemento1)        
-            for elemento2 in message:
-              #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
-               # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
-                if elemento1[2] == 'LONG_':
-                     if int(elemento1[3]) != 0:                       
-                          if elemento1[4] == 'OPEN.':
-                             if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
-                                 if elemento1[0] == elemento2:
-                                      # Paso 1: Eliminar los puntos
-                                    cadena_sin_puntos = elemento1[7].replace('.', '')
-                                    # Paso 2: Reemplazar la coma por un punto
-                                    cadena_correcta = cadena_sin_puntos.replace(',', '.')
-                                    # Paso 3: Convertir la cadena a float
-                                    precio = float(cadena_correcta)
-                                    ut = cargaUt(unidadTrader.ut,precio)
-                                    ut = abs(int(ut))
-                                    # Paso 6: Agregar a elemento1 y coincidencias
-                                    lista_modificable = list(elemento1)
-
-                                    # Modificar el valor en el índice deseado
-                                    lista_modificable[3] = str(ut)  # Cambia el valor en el índice 3
-
-                                    # Convertir la lista de nuevo a una tupla si es necesario
-                                    tupla_modificada = tuple(lista_modificable)
-                                    
-                                    coincidencias.append(tupla_modificada)
-                                # print(' elemento1[] ', elemento1[0])
-                                # print(coincidencias)
-                            
-        contador += 1  
-          
-    
-    
-     for elemento  in coincidencias:  
-         # Paso 1: Eliminar los puntos
-         cadena_sin_puntos = elemento[7].replace('.', '')
-        # Paso 2: Reemplazar la coma por un punto
-         cadena_correcta = cadena_sin_puntos.replace(',', '.')
-        # Paso 3: Convertir la cadena a float
-         precio = float(cadena_correcta)
+                            símbolos_vistos.add(elemento2['Symbol'])
+            contador_1 += 1
+        #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
         
-         if int(elemento[3]) == 0:
-            ut = cargaUt(unidadTrader.ut,precio)
+        contador = 0
+        for elemento1 in ContenidoSheet_list:
+            if contador >= 2:
+                #print('elemento1 ', elemento1)        
+                for elemento2 in message:
+                #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
+                # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
+                    if elemento1[2] == 'LONG_':
+                        if int(elemento1[3]) != 0:                       
+                            if elemento1[4] == 'OPEN.':
+                                if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
+                                    if elemento1[0] == elemento2:
+                                        # Paso 1: Eliminar los puntos
+                                        cadena_sin_puntos = elemento1[7].replace('.', '')
+                                        # Paso 2: Reemplazar la coma por un punto
+                                        cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                                        # Paso 3: Convertir la cadena a float
+                                        precio = float(cadena_correcta)
+                                        ut = cargaUt(unidadTrader.ut,precio)
+                                        ut = abs(int(ut))
+                                        # Paso 6: Agregar a elemento1 y coincidencias
+                                        lista_modificable = list(elemento1)
+
+                                        # Modificar el valor en el índice deseado
+                                        lista_modificable[3] = str(ut)  # Cambia el valor en el índice 3
+
+                                        # Convertir la lista de nuevo a una tupla si es necesario
+                                        tupla_modificada = tuple(lista_modificable)
+                                        
+                                        coincidencias.append(tupla_modificada)
+                                    # print(' elemento1[] ', elemento1[0])
+                                    # print(coincidencias)
+                                
+            contador += 1  
             
-            ut = abs(int(ut))
-         else:
-            ut = abs(int(elemento[3]))
-         if ut > 0:
-        #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
-            #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
-           
-            # Cargar los valores del objeto en el diccionario global
-            if  elemento[4] == 'closed.': 
-                if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
-                     tradeEnCurso = 'SHORT'
-            else:
-                 tradeEnCurso =  elemento[2]
+        
+        
+        for elemento  in coincidencias:  
+            # Paso 1: Eliminar los puntos
+            cadena_sin_puntos = elemento[7].replace('.', '')
+            # Paso 2: Reemplazar la coma por un punto
+            cadena_correcta = cadena_sin_puntos.replace(',', '.')
+            # Paso 3: Convertir la cadena a float
+            precio = float(cadena_correcta)
             
-            if  elemento[2] == 'SHORT':
-               senial='closed.'
+            if int(elemento[3]) == 0:
+                ut = cargaUt(unidadTrader.ut,precio)                
+                ut = abs(int(ut))
             else:
-               senial = elemento[4] 
-            cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
-            nueva_orden_para_dic = {
-                'user_id': usuariodb.id,
-                'userCuenta': usuario,
-                'accountCuenta': account,  
-                'idTrigger' : idTrigger,         
-                'clOrdId_alta': '',
-                'clOrdId_baja': '',
-                'orderId': '',
-                'wsClOrdId_timestamp': datetime.now(),
-                'clOrdId_alta_timestamp': None,
-                'clOrdId_baja_timestamp': None,
-                'proprietary': True,
-                'marketId': '',           
-                'symbol': elemento[0],
-                'tipo_de_activo': elemento[1],
-                'tradeEnCurso': tradeEnCurso,                
-                'ut':ut,            
-                'senial': senial,
-                'status': '0',
-                'tiempoSaldo':tiempoLecturaSaldo,
-                'saldo':VariableParaSaldoCta
-            }
-        # Cargar cada objeto Orden en el diccionario global con una clave única
-            diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
-        
-            if elemento[0] in diccionario_global_operaciones:
-                    contenido = diccionario_global_operaciones[elemento[0]]
-                   # print(f"Contenido encontrado para {contenido['symbol']}:")
-
-                    # Seleccionar los campos específicos
-                    campos_especificos = [
-                        'symbol',
-                        'tipo_de_activo',
-                        'tradeEnCurso',
-                        'ut',
-                        'senial',
-                        'status'
-                    ]
-
-                    # Formatear los campos específicos en una sola línea
-                    contenido_linea = ', '.join([f"{campo}: {contenido[campo]}" for campo in campos_especificos])
-                    print('c: ',account,' ',contenido_linea)
-            else:
-                    print(f"No se encontró contenido para {elemento[0]} en diccionario_global_operaciones.")
-
-        
-    # Acceder al diccionario global y a los objetos Orden
-     
-    #     db.session.add(nueva_orden)
-    #     db.session.commit() 
-     #get.current_session = db.session
-     #for clave, valor in diccionario_global_operaciones.items():
-        #  print(f'Clave: {clave}, Valor: {valor}')
-     if len(diccionario_global_operaciones) == 0 or diccionario_global_operaciones == None:
-            parametros = {
-                    'account': get.ConexionesBroker[account]['cuenta'], 
-                    'user_id': idUser, 
-                    'symbol': '',
-                    'mensaje': 'No hay operaciones pendientes',
-                    'status': 'termino'               
+                ut = abs(int(elemento[3]))
+            if ut > 0:
+            #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
+                #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
+            
+                # Cargar los valores del objeto en el diccionario global
+                if  elemento[4] == 'closed.': 
+                    if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
+                        tradeEnCurso = 'SHORT'
+                else:
+                    tradeEnCurso =  elemento[2]
+                
+                if  elemento[2] == 'SHORT':
+                     senial='closed.'
+                else:
+                     senial = elemento[4] 
+                #cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
+                nueva_orden_para_dic = {
+                    'user_id': usuariodb.id,
+                    'userCuenta': usuario,
+                    'accountCuenta': account,  
+                    'idTrigger' : idTrigger,         
+                    'clOrdId_alta': '',
+                    'clOrdId_baja': '',
+                    'orderId': '',
+                    'wsClOrdId_timestamp': datetime.now(),
+                    'clOrdId_alta_timestamp': None,
+                    'clOrdId_baja_timestamp': None,
+                    'proprietary': True,
+                    'marketId': '',           
+                    'symbol': elemento[0],
+                    'tipo_de_activo': elemento[1],
+                    'tradeEnCurso': tradeEnCurso,                
+                    'ut':ut,            
+                    'senial': senial,
+                    'status': '0',
+                    'tiempoSaldo':tiempoLecturaSaldo,
+                    'saldo':VariableParaSaldoCta
                 }
+            # Cargar cada objeto Orden en el diccionario global con una clave única
+                diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
+            
+                if elemento[0] in diccionario_global_operaciones:
+                        contenido = diccionario_global_operaciones[elemento[0]]
+                    # print(f"Contenido encontrado para {contenido['symbol']}:")
 
-            get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
-    # db.session.close()
-     app.logger.info('______CARGA_OPERACIONES____') 
-     #app.logger.info(diccionario_global_operaciones) 
-     
+                        # Seleccionar los campos específicos
+                        campos_especificos = [
+                            'symbol',
+                            'tipo_de_activo',
+                            'tradeEnCurso',
+                            'ut',
+                            'senial',
+                            'status'
+                        ]
+
+                        # Formatear los campos específicos en una sola línea
+                        contenido_linea = ', '.join([f"{campo}: {contenido[campo]}" for campo in campos_especificos])
+                        print('c: ',account,' ',contenido_linea)
+                else:
+                        print(f"No se encontró contenido para {elemento[0]} en diccionario_global_operaciones.")
+
+            
+        # Acceder al diccionario global y a los objetos Orden
+        
+        #     db.session.add(nueva_orden)
+        #     db.session.commit() 
+        #get.current_session = db.session
+        #for clave, valor in diccionario_global_operaciones.items():
+            #  print(f'Clave: {clave}, Valor: {valor}')
+        if len(diccionario_global_operaciones) == 0 or diccionario_global_operaciones == None:
+                parametros = {
+                        'account': get.ConexionesBroker[account]['cuenta'], 
+                        'user_id': idUser, 
+                        'symbol': '',
+                        'mensaje': 'No hay operaciones pendientes',
+                        'status': 'termino'               
+                    }
+
+                get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
+        # db.session.close()
+        app.logger.info('______CARGA_OPERACIONES____') 
+        #app.logger.info(diccionario_global_operaciones) 
+    finally:
+        # Cerrar la sesión de la base de datos
+        db.session.close()
                
     
 
@@ -960,10 +962,9 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol,account=None):
     try:
-        if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
-            # Limpiar el diccionario si se cumplen todas las condiciones
+           # Limpiar el diccionario si se cumplen todas las condiciones
             diccionario_operaciones_enviadas.clear()
             print("###############################################") 
             print("###############################################") 
@@ -972,9 +973,11 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             print("###############################################") 
             print("###############################################") 
             print("###############################################") 
-            account = diccionario_global_operaciones[symbol]['accountCuenta']
-            idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
-            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
+            if account is None and symbol is not None:
+
+                account = diccionario_global_operaciones[symbol]['accountCuenta']
+                idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
+                print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
            
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
@@ -1018,7 +1021,11 @@ def Bull_Market_10861_001_verificar_estado():
     try:
         # Obtén los datos JSON del cuerpo de la solicitud
         data = request.get_json()
-        
+        diccionario_global_operaciones1 = {
+                            'MERV - XMEV - X - 24hs': {'symbol': 'MERV - XMEV - X - 24hs', 'ut': 0, 'status': '0'},
+                            'MERV - XMEV - YPFD - 24hs': {'symbol': 'MERV - XMEV - YPFD - 24hs', 'ut': 0, 'status': '0'},
+                            'MERV - XMEV - TXAR - 24hs': {'symbol': 'MERV - XMEV - TXAR - 24hs', 'ut': 0, 'status': '0'},
+                            'MERV - XMEV - BYMA - 24hs': {'symbol': 'MERV - XMEV - BYMA - 24hs', 'ut': 0, 'status': '0'}}
         # Verifica si los datos se obtuvieron correctamente
         if not data:
             raise BadRequest('No se recibió ningún dato JSON.')
@@ -1030,7 +1037,7 @@ def Bull_Market_10861_001_verificar_estado():
         nombreEstrategia = data.get('nombreEstrategia')
         
         # Verifica si idTrigger y cuenta están presentes
-        if idTrigger is None or cuenta is None:
+        if idTrigger is None or account is None:
             raise BadRequest('Faltan parámetros requeridos: idTrigger o cuenta.')
 
         # Verifica si la cuenta existe en el diccionario
@@ -1044,16 +1051,14 @@ def Bull_Market_10861_001_verificar_estado():
             status = parametros.get('status')
             mensaje = parametros.get('mensaje')
             # Compara el tiempo actual con el tiempo de inicio
-            tiempo_actual = datetime.now()
-            if tiempo_inicio:
-                tiempo_inicio = datetime.strptime(tiempo_inicio, '%Y-%m-%d %H:%M:%S')
-                if tiempo_actual - tiempo_inicio > timedelta(minutes=5):
+            
+            if control_tiempo_lectura_verifiar_estado(300000, get.marca_de_tiempo_para_verificar_estado):
+                    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
                     return jsonify({'estado': 'terminado', 'account': account, 'mensaje': 'Operación superó los 5 minutos.'}), 200
 
             # Verifica el estado y responde apropiadamente
             if status == 'termino':
-                
-                return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
+                 return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
         
         else:
             # Verifica el tiempo de lectura
@@ -1061,15 +1066,44 @@ def Bull_Market_10861_001_verificar_estado():
                   # Inicializar la conexión pyRofex y eliminar el websocket handler
                 pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
                 try:
-                    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+                    #ordenes_cargadas = db.session.query(Orden).filter_by(user_id=user_id, accountCuenta=account).all()
+
+                    repuesta_operacion = pyRofexInicializada.get_all_orders_status(account=account, environment=account)
+                    ordenes = repuesta_operacion.get('orders', [])                   
+                    # Verificar si hay órdenes para procesar
+                    if ordenes:
+                        # Recorrer la lista de órdenes
+                        symbols_encontrados = []  # Lista para almacenar los símbolos encontrados
+                        sim = ''
+                        for orden in ordenes:
+                            symbol = orden['instrumentId']['symbol']  # Obtener el symbol
+                            accountId = orden['accountId']['id']      # Obtener el accountId
+                            # Recorrer el diccionario de operaciones globales
+                            
+                            
+                         
+                            for key, operacionGlobal1 in diccionario_global_operaciones1.items():
+                                if operacionGlobal1['ut'] == 0:  # Asegúrate de que 'ut' está en cada operacionGlobal
+                                    # Comparar símbolos entre la operación global y la orden cargada
+                                    if operacionGlobal1['symbol'] == symbol:
+                                        sim = symbol
+                                        symbols_encontrados.append(symbol)  # Agregar símbolo encontrado
+
+                        # Verificar si todos los símbolos de las órdenes están en symbols_encontrados
+                        if len(symbols_encontrados) == len(ordenes):
+                            # Llamada a la función endingOperacionBot si todos los símbolos están presentes
+                            endingOperacionBot(True, True, sim,account)
+                            
+                            return jsonify({
+                                'estado': 'listo',
+                                'account': account,
+                                'mensaje': 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
+                                'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
+                            }), 200
+       
                 except BadRequest as e:
                     pass
-                return jsonify({
-                    'estado': 'listo',
-                    'account': 'cuenta',
-                    'mensaje': 'no hay datos por 5 minutos',
-                    'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
-                }), 200
+        
             else:
                 return jsonify({'estado': 'en_proceso'}), 200
        

@@ -14,7 +14,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 import routes.api_externa_conexion.validaInstrumentos as val
-import pandas as pd
+
 import time
 import os
 import routes.api_externa_conexion.wsocket as getWs
@@ -126,7 +126,7 @@ def estadoOperacion():
         print(f"Error inesperado: {e}")
         flash("Ocurrió un error inesperado al obtener los datos de operaciones")
 
-    return render_template("notificaciones/noPoseeDatos.html", layout = 'layoutBroker')
+    return render_template("notificaciones/noPoseeDatos.html", layout = 'layoutConexBroker')
 
 
 @operaciones.route("/envio_notificacion_tlegram_desde_seniales_sin_cuenta/", methods=["POST"]) 
@@ -877,51 +877,47 @@ def cargar_ordenes_db(cuentaAcount=None,
                       user_id=None, 
                       accountCuenta=None):
     try:
-        # Intentamos encontrar el registro con el symbol específico
-        orden_existente = db.session.query(Orden).filter_by(symbol=symbol, user_id=user_id, accountCuenta=accountCuenta).first()
+        if signal != '':
+          # Intentamos encontrar el registro con el symbol específico
+          orden_existente = db.session.query(Orden).filter_by(symbol=symbol, user_id=user_id, accountCuenta=accountCuenta).first()
 
-        if orden_existente:
-              # Si la señal es 'closed.', eliminamos la orden existente
+          if orden_existente:
+                # Si el registro existe, lo actualizamos
+                orden_existente.user_id = user_id
+                orden_existente.userCuenta = cuentaAcount
+                orden_existente.accountCuenta = accountCuenta
+                orden_existente.ut = cantidad_a_comprar_abs
+                orden_existente.senial = signal
+                orden_existente.clOrdId_alta = clOrdId
+                orden_existente.clOrdId_alta_timestamp = datetime.now()
+                orden_existente.status = orderStatus
+              
+          else:
+              # Si no existe, creamos un nuevo registro
+              nueva_orden = Orden(
+                  user_id=user_id,
+                  userCuenta=cuentaAcount,
+                  accountCuenta=accountCuenta,
+                  clOrdId_alta=clOrdId,
+                  clOrdId_baja='',
+                  clientId=0,
+                  wsClOrdId_timestamp=datetime.now(),
+                  clOrdId_alta_timestamp=datetime.now(),
+                  clOrdId_baja_timestamp=None,
+                  proprietary=True,
+                  marketId='',
+                  symbol=symbol,
+                  tipo=tipo_orden,
+                  tradeEnCurso="si",
+                  ut=cantidad_a_comprar_abs,
+                  senial=signal,
+                  status=orderStatus
+              )
+              db.session.add(nueva_orden)
     
-            if signal == 'closed.':
-              db.session.delete(orden_existente)
-            else:
-              # Si el registro existe, lo actualizamos
-              orden_existente.user_id = user_id
-              orden_existente.userCuenta = cuentaAcount
-              orden_existente.accountCuenta = accountCuenta
-              orden_existente.ut = cantidad_a_comprar_abs
-              orden_existente.senial = signal
-              orden_existente.clOrdId_alta = clOrdId
-              orden_existente.clOrdId_alta_timestamp = datetime.now()
-              orden_existente.status = orderStatus
-            
-        else:
-            # Si no existe, creamos un nuevo registro
-            nueva_orden = Orden(
-                user_id=user_id,
-                userCuenta=cuentaAcount,
-                accountCuenta=accountCuenta,
-                clOrdId_alta=clOrdId,
-                clOrdId_baja='',
-                clientId=0,
-                wsClOrdId_timestamp=datetime.now(),
-                clOrdId_alta_timestamp=datetime.now(),
-                clOrdId_baja_timestamp=None,
-                proprietary=True,
-                marketId='',
-                symbol=symbol,
-                tipo=tipo_orden,
-                tradeEnCurso="si",
-                ut=cantidad_a_comprar_abs,
-                senial=signal,
-                status=orderStatus
-            )
-            db.session.add(nueva_orden)
-   
-        # Confirmamos los cambios en la base de datos
-        db.session.commit()
-        return True
+          # Confirmamos los cambios en la base de datos
+          db.session.commit()
+          return True
     
     except Exception as e:
         # En caso de error, hacemos rollback de la sesión y capturamos el error
@@ -929,9 +925,6 @@ def cargar_ordenes_db(cuentaAcount=None,
         print(f"Error al cargar la orden en la base de datos: {str(e)}")
         return False
 
-    finally:
-        # Cerramos la sesión para evitar fugas de recursos
-        db.session.close()
 
 
 def error_handler(message):
