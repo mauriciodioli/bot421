@@ -113,7 +113,7 @@ from models.creaTablas import creaTabla
 from models.operacionEstrategia import operacionEstrategia
 
 from Tests.test_procesar_estado_final import test_procesar_estado_final
-from Tests.test_euler import test_euler
+
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -264,7 +264,7 @@ app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
 app.register_blueprint(test_ejecutarHiloPanelControl)
-app.register_blueprint(test_euler)
+
 
 
 
