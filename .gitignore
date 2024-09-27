@@ -4,6 +4,8 @@
 # Ignore pruebasheetpython.json
 /pruebasheetpython.json
 
+/Test/test_euler.py
+
 #Ignore pycache files
 *.pyc
 
