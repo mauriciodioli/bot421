@@ -974,7 +974,6 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol,account=None):
             print("###############################################") 
             print("###############################################") 
             if account is None and symbol is not None:
-
                 account = diccionario_global_operaciones[symbol]['accountCuenta']
                 idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
                 print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
