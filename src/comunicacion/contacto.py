@@ -26,3 +26,9 @@ def llamada(variable):
     # Añadir más productos según sea necesario
     else:
         return "No puede llamar a contacto.html", 404
+    
+@contacto.route('/comunicacion_contacto_consultas/<layout>/<user_id>', methods=['GET'])
+def comunicacion_contacto_consultas(layout, user_id):
+    return render_template('comunicacion/consultas.html', layout=layout, user_id=user_id)
+
+    

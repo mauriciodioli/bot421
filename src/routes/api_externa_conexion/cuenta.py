@@ -26,17 +26,6 @@ cuenta = Blueprint('cuenta',__name__)
 
 
 # Crear la tabla cuenta si no existe
-def crea_tabla_cuenta():
-    cuenta = Cuenta(    
-        id=1,
-        user_id = "1",
-        userCuenta="mauriciodioli6603",
-        passwordCuenta="zbwitW5#",
-        accountCuenta="REM6603",
-        selector="simulado"                
-    )
-    cuenta.crear_tabla_cuentas()
-    print("Tabla creada!")
 
 
 
@@ -90,7 +79,7 @@ def cuenta_posicion_cuenta():
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
       
             for elemento in get.ConexionesBroker:
-                print("Variable agregada:", elemento)
+               
                 accountCuenta = get.ConexionesBroker[elemento]['cuenta']                
              
                 if accountCuenta == cuenta:
@@ -106,23 +95,36 @@ def cuenta_posicion_cuenta():
                         total_operaciones = suma_ganadores + suma_perdedores
 
                         # Evitar división por cero
-                        if total_operaciones > 0:
-                            # Calcular porcentaje de ganadores
-                           numerador = suma_ganadores/suma_perdedores
-                           divisor = abs(numerador)+1
-                           porcentaje_ganadores = round(abs((numerador/divisor)*100),3)
-                           
-                           # Calcular porcentaje de perdedores
-                           numerador1 = suma_perdedores/suma_ganadores
-                           divisor1 = abs(numerador1)+1
-                           porcentaje_perdedores = round(abs((numerador1/divisor1)*100),3)
-                           
+                        
+                        if suma_ganadores != 0:
+                         
+                          if suma_perdedores != 0:
+                            numerador = suma_ganadores / suma_perdedores
+                            divisor = abs(numerador) + 1
+                            porcentaje_ganadores = round(abs((numerador / divisor) * 100), 3)
+                          else:
+                            porcentaje_ganadores = round(abs((suma_ganadores /suma_ganadores) * 100), 3)
+                            # Calcular porcentaje de perdedores
+                        
+                          if suma_ganadores != 0:
+                                numerador1 = suma_perdedores / suma_ganadores
+                                divisor1 = abs(numerador1) + 1
+                                porcentaje_perdedores = round(abs((numerador1 / divisor1) * 100), 3)
+                          else:
+                            porcentaje_ganadores = round(abs((suma_perdedores /suma_perdedores) * 100), 3)
                         else:
-                            porcentaje_ganadores = porcentaje_perdedores = 0
+                            porcentaje_ganadores = 0
+                            porcentaje_perdedores = 0
                         
-                        
+                        suma_ganadores = round(suma_ganadores, 3)
+                        suma_perdedores = round(suma_perdedores, 3)
                         # Renderiza la plantilla con los datos y las sumas
-                        return render_template("cuentas/cuentaPosicion.html", datos=reporte, suma_ganadores=suma_ganadores, suma_perdedores=suma_perdedores,porcentaje_ganadores = porcentaje_ganadores, porcentaje_perdedores = porcentaje_perdedores, layout = layouts)
+                        return render_template("cuentas/cuentaPosicion.html", datos=reporte, 
+                                               suma_ganadores=suma_ganadores, 
+                                               suma_perdedores=suma_perdedores,
+                                               porcentaje_ganadores = porcentaje_ganadores, 
+                                               porcentaje_perdedores = porcentaje_perdedores, 
+                                                   layout = layouts)
         else:
           return render_template("notificaciones/noPoseeDatos.html", layout = layouts)
      except:  
@@ -239,19 +241,28 @@ def reporteCuenta():
                 total_operaciones = suma_ganadores + suma_perdedores
 
                 # Evitar división por cero
-                if total_operaciones > 0:
-                    # Calcular porcentaje de ganadores
-                    numerador = suma_ganadores/suma_perdedores
-                    divisor = abs(numerador)+1
-                    porcentaje_ganadores = round(abs((numerador/divisor)*100),3)
+                if suma_ganadores != 0:
+                
+                    if suma_perdedores != 0:
+                        numerador = suma_ganadores / suma_perdedores
+                        divisor = abs(numerador) + 1
+                        porcentaje_ganadores = round(abs((numerador / divisor) * 100), 3)
+                    else:
+                        porcentaje_ganadores = round(abs((suma_ganadores /suma_ganadores) * 100), 3)
+                        # Calcular porcentaje de perdedores
                     
-                    # Calcular porcentaje de perdedores
-                    numerador1 = suma_perdedores/suma_ganadores
-                    divisor1 = abs(numerador1)+1
-                    porcentaje_perdedores = round(abs((numerador1/divisor1)*100),3)
-                    
+                    if suma_ganadores != 0:
+                            numerador1 = suma_perdedores / suma_ganadores
+                            divisor1 = abs(numerador1) + 1
+                            porcentaje_perdedores = round(abs((numerador1 / divisor1) * 100), 3)
+                    else:
+                        porcentaje_ganadores = round(abs((suma_perdedores /suma_perdedores) * 100), 3)
                 else:
-                    porcentaje_ganadores = porcentaje_perdedores = 0
+                    porcentaje_ganadores = 0
+                    porcentaje_perdedores = 0
+                           
+                    
+               
                 return render_template("cuentas/cuentaReporte.html",    
                                        interes=interes,
                                        total_cuenta=total_cuenta,
@@ -391,7 +402,7 @@ def registrar_cuenta_administracion():
          passwordCuenta_encoded = passwordCuenta.encode('utf-8')
          accountCuenta_encoded = accountCuenta.encode('utf-8')
 
-         crea_tabla_cuenta()
+       
          try:     
             usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()  # Obtener el objeto Usuario correspondiente al user_id
 

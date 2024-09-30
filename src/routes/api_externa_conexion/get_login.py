@@ -85,9 +85,9 @@ SPREADSHEET_ID_PRODUCCION = os.environ.get('SPREADSHEET_ID_PRODUCCION')  #drpiBo
 SPREADSHEET_ID_USA= os.environ.get('SPREADSHEET_ID_USA') #de produccion USA
 VARIABLE_ACTUALIZAR_SHEET = os.environ.get('VARIABLE_ACTUALIZAR_SHEET') 
 
-#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
-#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
-#ID_USER_ACTUALIZAR_SHEET = 1
+##CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
+##CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
+##ID_USER_ACTUALIZAR_SHEET = 1
 
 CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
 CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
@@ -140,6 +140,7 @@ detener_proceso_automatico_triggers = False  # Bucle hasta que la bandera detene
 
 
 marca_de_tiempo_para_leer_sheet = int(datetime.now().timestamp()) * 1000  # Tiempo inicial
+marca_de_tiempo_para_verificar_estado = int(datetime.now().timestamp()) * 1000  # Tiempo inicial
 VariableParaTiempoLeerSheet = 0  # Variable para guardar el tiempo transcurrido
 
 ContenidoSheet_list = None
@@ -522,6 +523,14 @@ def conexion_existente(app,accountCuenta,correo_electronico,selector,user_id):
         return False
     else:        
         with app.app_context():
+            try: 
+                global ContenidoSheet_list  # Declara que usarás la variable global
+                if ContenidoSheet_list:
+                    ContenidoSheet_list.clear() # mantiene la referencia
+                del ConexionesBroker[accountCuenta]             
+            except KeyError:
+                # La cuenta no existe en ConexionesBroker, puedes manejarlo aquí si es necesario
+                pass
             conexionShedule(current_app, Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
         return True 
         

@@ -220,7 +220,7 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
 
         # Verificar si el día actual está en la lista de días de ejecución
         if dia_actual in [get.DIAS_SEMANA[dia] for dia in get.DIAS_EJECUCION]:
-            time.sleep(120)  # Espera de 4 minutos
+            time.sleep(120)  # Espera de 2 minutos
             
             if len(get.diccionario_global_sheet) > 0:
                 now = datetime.now()
@@ -233,14 +233,16 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                
 
                 # Preguntar si son las 11:00 y pasar la lectura
-               # if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
-                if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                #if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id,accountCuenta, 'hilo', selector)
               
                 #if (now.hour == 19 and now.minute >= 40 and now.minute <= 55):
                      #caucionar(account)
-           
+              #  termina_hilo = now.minute + 2 
                 # Preguntar si son las 20:00 y apagar el ws y limpiar precios_data
+             #   if (now.hour == 12 and now.minute <= termina_hilo) and get.luzMDH_funcionando:
+                
                 if (now.hour == 20 and now.minute >= 6 and now.minute <= 59) and get.luzMDH_funcionando:
                     terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
                     get.symbols_sheet_valores.clear()
@@ -268,16 +270,14 @@ def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
      if selector != "simulado" or selector =='vacio':
         if pais == "argentina":
             if len(get.diccionario_global_sheet) > 0:
-               #if len(get.precios_data)== 0:
-                #   terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
-               if not get.conexion_existente(app,get.CUENTA_ACTUALIZAR_SHEET,
+                if not get.conexion_existente(app,get.CUENTA_ACTUALIZAR_SHEET,
                                                  get.CORREO_E_ACTUALIZAR_SHEET,
                                                  get.VARIABLE_ACTUALIZAR_SHEET,
                                                  get.ID_USER_ACTUALIZAR_SHEET):
-                  #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
+                  ##modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores',pais)
                   modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
                   app.logger.info('MODIFICO EL SHEET CORRECTAMENTE')
-            #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            ##ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
             ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
         elif pais == "usa":
             ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bUSA')    
