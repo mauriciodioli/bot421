@@ -41,6 +41,7 @@ from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
 
 
 from social.telegram.telegram import telegram
+from social.chats.chat import chat
 
 from herramientasAdmin.accionesSheet import accionesSheet
 from herramientasAdmin.runScript import runScript
@@ -112,6 +113,7 @@ from models.creaTablas import creaTabla
 from models.operacionEstrategia import operacionEstrategia
 
 from Tests.test_procesar_estado_final import test_procesar_estado_final
+
 
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
@@ -252,6 +254,7 @@ app.register_blueprint(accionesSheet)
 app.register_blueprint(runScript)
 app.register_blueprint(accionesTriggers)
 app.register_blueprint(telegram)
+app.register_blueprint(chat)
 app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
@@ -261,6 +264,8 @@ app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
 app.register_blueprint(test_ejecutarHiloPanelControl)
+
+
 
 
 
@@ -552,8 +557,13 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
+<<<<<<< HEAD
     app.run(host='0.0.0.0', port=5001, debug=True)
     #app.run(host='0.0.0.0', port=5001, debug=False)
+=======
+    ##app.run(host='0.0.0.0', port=5001, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=False)
+>>>>>>> 30f375e636d7fb1ca3cb1a0c134fce2ddb1e1aea
    
 
     # Ciclo para ejecutar las tareas programadas

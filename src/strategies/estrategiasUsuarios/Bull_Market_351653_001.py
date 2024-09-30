@@ -4,7 +4,6 @@ from models.orden import Orden
 from models.usuario import Usuario
 from models.operacionEstrategia import operacionEstrategia, OperacionEstrategia
 
-
 import re
 import jwt
 import csv
@@ -15,12 +14,17 @@ import strategies.opera_estrategias as op
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
-from datetime import datetime
+from routes.api_externa_conexion.operaciones import cargar_ordenes_db
+import time
 from pytz import timezone as pytz_timezone
+from datetime import datetime, timedelta
+from werkzeug.exceptions import BadRequest
+from herramientasAdmin.accionesTriggers import control_tiempo_lectura_verifiar_estado
 
 from models.unidadTrader import UnidadTrader
-import pprint
+
 import tokens.token as Token
+
 instrumentos_existentes_arbitrador1=[]
 
 Bull_Market_351653_001 = Blueprint('Bull_Market_351653_001',__name__)
@@ -423,7 +427,7 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                senial='closed.'
             else:
                senial = elemento[4] 
-               
+            # cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
@@ -554,7 +558,7 @@ def procesar_estado_final(symbol, clOrdId):
                 all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
-                     if operacion["Symbol"] == symbol
+                       if operacion["Symbol"] == symbol and operacion['status'] != 'ANTERIOR'
                 )
                 any_enviada_anterior = any(
                     operacion['status'] == 'ANTERIOR'
@@ -955,11 +959,10 @@ def obtenerStock(cadena):
        return '0' 
 
 
-def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
+def endingOperacionBot(endingGlobal, endingEnviadas, symbol,account=None):
     try:
-        if symbol in diccionario_global_operaciones and diccionario_operaciones_enviadas:
-            # Limpiar el diccionario si se cumplen todas las condiciones
-            diccionario_operaciones_enviadas.clear()
+           # Limpiar el diccionario si se cumplen todas las condiciones
+            
             print("###############################################") 
             print("###############################################") 
             print("###############################################")  
@@ -967,12 +970,16 @@ def endingOperacionBot(endingGlobal, endingEnviadas, symbol):
             print("###############################################") 
             print("###############################################") 
             print("###############################################") 
-            account = diccionario_global_operaciones[symbol]['accountCuenta']
-            idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
+            if account is None and symbol is not None:
+
+                account = diccionario_global_operaciones[symbol]['accountCuenta']
+                idTrigger = diccionario_global_operaciones[symbol]['idTrigger']
+                print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
+           
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
-            print('endingGlobal___ ', endingGlobal, ' endingEnviadas', endingEnviadas, 'symbol: ', symbol,'account: ', account, 'idTrigger: ', idTrigger)
-          
-            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+            if account is not None:
+                diccionario_operaciones_enviadas.clear()
+                pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
             parametros = {
                 'account': get.ConexionesBroker[account]['cuenta'], 
                 'user_id': idUser, 
@@ -1011,6 +1018,100 @@ def strategies_estrategias_detenerMDHtrigger_lanzado():
         print("Error al detener MDH trigger:", str(e))
         # Devolver un mensaje de error
         return jsonify({"error": "Error al detener MDH trigger", "details": str(e)}), 500
+@Bull_Market_351653_001.route("/Bull_Market_351653_001_verificar_estado/", methods=['POST'])
+def Bull_Market_351653_001_verificar_estado():
+    try:
+        # Obtén los datos JSON del cuerpo de la solicitud
+        data = request.get_json()
+            # Verifica si los datos se obtuvieron correctamente
+        if not data:
+            raise BadRequest('No se recibió ningún dato JSON.')
+
+        # Obtén los valores del JSON
+        idTrigger = data.get('idTrigger')
+        userId = data.get('userId')
+        account = data.get('cuenta')
+        nombreEstrategia = data.get('nombreEstrategia')
+        
+        # Verifica si idTrigger y cuenta están presentes
+        if idTrigger is None or account is None:
+            raise BadRequest('Faltan parámetros requeridos: idTrigger o cuenta.')
+
+        # Verifica si la cuenta existe en el diccionario
+        parametros = get.estrategias_usuario__endingOperacionBot.get(idTrigger)        
+        # Verifica si se encontraron parámetros
+        if parametros:
+            # Desglosar las variables
+            account = parametros.get('account')
+            user_id = parametros.get('user_id')
+            symbol = parametros.get('symbol')
+            status = parametros.get('status')
+            mensaje = parametros.get('mensaje')
+            # Compara el tiempo actual con el tiempo de inicio
+            
+            if control_tiempo_lectura_verifiar_estado(300000, get.marca_de_tiempo_para_verificar_estado):
+                    pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+                    return jsonify({'estado': 'terminado', 'account': account, 'mensaje': 'Operación superó los 5 minutos.'}), 200
+
+            # Verifica el estado y responde apropiadamente
+            if status == 'termino':
+                 return jsonify({'estado': 'listo', 'account': account, 'mensaje': mensaje}), 200
+        
+        else:
+            # Verifica el tiempo de lectura
+            if control_tiempo_lectura_verifiar_estado(30000, get.marca_de_tiempo_para_verificar_estado):
+                  # Inicializar la conexión pyRofex y eliminar el websocket handler
+                pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
+                try:
+                    #ordenes_cargadas = db.session.query(Orden).filter_by(user_id=user_id, accountCuenta=account).all()
+
+                    repuesta_operacion = pyRofexInicializada.get_all_orders_status(account=account, environment=account)
+                    ordenes = repuesta_operacion.get('orders', [])                   
+                    # Verificar si hay órdenes para procesar
+                    if ordenes:
+                        # Recorrer la lista de órdenes
+                        symbols_encontrados = []  # Lista para almacenar los símbolos encontrados
+                        sim = ''
+                        for orden in ordenes:
+                            symbol = orden['instrumentId']['symbol']  # Obtener el symbol
+                            accountId = orden['accountId']['id']      # Obtener el accountId
+                            # Recorrer el diccionario de operaciones globales
+                            
+                            
+                         
+                            for key, operacionGlobal1 in diccionario_global_operaciones.items():
+                                if operacionGlobal1['ut'] == 0:  # Asegúrate de que 'ut' está en cada operacionGlobal
+                                    # Comparar símbolos entre la operación global y la orden cargada
+                                    if operacionGlobal1['symbol'] == symbol:
+                                        sim = symbol
+                                        symbols_encontrados.append(symbol)  # Agregar símbolo encontrado
+
+                        # Verificar si todos los símbolos de las órdenes están en symbols_encontrados
+                        if len(symbols_encontrados) == len(ordenes):
+                            # Llamada a la función endingOperacionBot si todos los símbolos están presentes
+                            endingOperacionBot(True, True, sim,account)
+                            
+                            return jsonify({
+                                'estado': 'listo',
+                                'account': account,
+                                'mensaje': 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
+                                'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
+                            }), 200
+       
+                except BadRequest as e:
+                    pass
+        
+            else:
+                return jsonify({'estado': 'en_proceso'}), 200
+       
+    except BadRequest as e:
+        # Maneja los errores de solicitud incorrecta
+        return jsonify({'error': str(e)}), 400
+
+    except Exception as e:
+        # Maneja cualquier otro error
+        return jsonify({'error': 'Ocurrió un error inesperado.', 'detalle': str(e)}), 500
+
 
 
 

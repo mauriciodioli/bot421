@@ -12,7 +12,7 @@ from strategies.datoSheet import calculo_dolar_mep
 from strategies.caucionador.caucion import determinar_caucion
 from datetime import datetime
 
-import pandas as pd
+
 import pyRofex #lo utilizo para test
 import time    #lo utilizo para test
 import asyncio
