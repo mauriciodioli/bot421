@@ -23,7 +23,7 @@ imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
 @imagenesOperaciones.route('/subirImagen/', methods=['POST'])
 def subirImagen():
     # Obtener el valor de 'layout' del parámetro de la URL
-    layout = request.args.get('layout', 'layout')
+    layout = request.args.get('layout')
     publicacion_id = request.form.get('publicacion_id')
     
     # Pasar el valor de 'layout' al template
