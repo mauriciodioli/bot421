@@ -115,13 +115,13 @@ def media_publicaciones_mostrar_home():
                             if publicacion:
                                 # Agrega la publicación a la lista de publicaciones
                                 publicaciones.append(publicacion)
-                    else:
-                        # Si el estado no es "eliminado", obtén la publicación correspondiente
-                        if estado_publicacion.estado != 'eliminado':
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id).first()
-                            if publicacion:
-                                # Agrega la publicación a la lista de publicaciones
-                                publicaciones.append(publicacion)
+                    
+                    # Si el estado no es "eliminado", obtén la publicación correspondiente
+                    if estado_publicacion.estado != 'eliminado':
+                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id).first()
+                        if publicacion:
+                            # Agrega la publicación a la lista de publicaciones
+                            publicaciones.append(publicacion)
 
             else:
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
