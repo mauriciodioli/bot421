@@ -15,6 +15,10 @@ from oauth2client.service_account import ServiceAccountCredentials
 import os #obtener el directorio de trabajo actual
 import json
 import numpy as np
+import tokens.token as Token
+import jwt
+from models.usuario import Usuario
+from models.operacion import Operacion
 
 
 load_dotenv()
@@ -448,11 +452,154 @@ def instrument_by_symbol_para_CalculoMep(symbol):
         return render_template("instrumentos.html" )
    
 
+@datoSheet.route('/datoSheet_enviar_senial', methods=['POST'])
+def datoSheet_enviar_senial():
+    try:
+        if request.method == 'POST':
+            data = request.get_json()  # Obtener los datos JSON del cuerpo de la solicitud
+            access_token = data.get('access_token')
+            symbol = data.get('symbol')
+            signal = data.get('signal')
+            trade_en_curso = data.get('trade_en_curso')
+            pais = data.get('pais')
+            ut = data.get('ut')
+
+            # Verificar token de acceso y su expiración
+            if access_token and Token.validar_expiracion_token(access_token=access_token):
+                app = current_app._get_current_object()
+                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                usuario = db.session.query(Usuario).filter_by(id=user_id).first()
+               
+
+                # Llamar a la función para actualizar la señal
+                modifico = actualizar_senial(symbol, trade_en_curso, signal, ut, pais, get.SPREADSHEET_ID_PRUEBA, 'bot')
+                
+                if modifico:
+                    # Si la señal fue 'closed.', actualiza la operación, si no, agrega una nueva operación
+                    if signal == 'closed.':
+                        actualiza_operacion(symbol, signal, user_id, trade_en_curso)
+                    else:
+                        agrega_operacion(symbol, signal, user_id, trade_en_curso)
+                    db.session.close()
+                    # Retornar un mensaje exitoso
+                    return jsonify({'message': 'Señal agregada con éxito'}), 200
+                else:
+                    return jsonify({'error': 'Error al actualizar señal, no se encontró el símbolo'}), 500
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+        
+def actualizar_senial(symbol, trade_en_curso, signal,ut,pais,sheetId, sheet_name):
+    try:
+        batch_updates = []
+
+        if get.sheet_manager.autenticar():
+            get.sheet = get.sheet_manager.abrir_sheet(sheetId, sheet_name)
+            if get.sheet:
+                ranges = ['E:E']  # Rango de símbolos/tickers en la hoja de cálculo
+                try:
+                    data = get.sheet.batch_get(ranges)
+                    symbol_found = False  # Variable para verificar si se encontró el símbolo
+                   
+                    # Recorrer los datos para encontrar el símbolo y hacer las actualizaciones necesarias
+                    for index, row in enumerate(data[0]):
+                        if isinstance(row, list) and row:
+                            sheet_symbol = str(row[0]).strip("['").strip("']")  # Cambié 'symbol' por 'sheet_symbol' para no sobrescribir
+                           
+                            if sheet_symbol == symbol:  # Asegurarse de que coincide con el símbolo recibido
+                                symbol_found = True  # Marcamos que el símbolo fue encontrado
+                               
+                                try:                                   
+                                    
+                                    # Actualizar la columna 'S' con 'min24hs' de precios_data si hay trade en curso
+                                    variable = 'LONG_' if trade_en_curso else 'SHORT'
+                                    batch_updates.append({
+                                        'range': f"S{index + 1}",  # Columna 'S' para el estado de la operación
+                                        'values': [[str(variable).replace('.', ',')]]
+                                    })
+                                        
+                                    if ut:
+                                        valor_ut = ut
+                                        batch_updates.append({
+                                            'range': f"T{index + 1}", 
+                                            'values':  [[str(valor_ut).replace('.', ',')]]
+                                        })
+                                    # Actualizar la columna 'U' con la señal
+                                    if signal:
+                                        batch_updates.append({
+                                            'range': f"U{index + 1}", 
+                                            'values':  [[str(signal).replace('.', '.')]]
+                                        })
+                                    
+                                except ValueError:
+                                    print(f"Error al procesar el símbolo {symbol} en la hoja.")
+                            
+                    if not symbol_found:
+                        new_row_index = len(data[0]) + 1  # Nueva fila al final de la hoja
+                        batch_updates.append({
+                            'range': f"E{new_row_index}",  # Columna 'E' para el símbolo
+                            'values': [[symbol]]  # Agregar el símbolo
+                        })
+                        variable = 'LONG_' if trade_en_curso else 'SHORT'
+                        batch_updates.append({
+                            'range': f"S{new_row_index}",  # Columna 'S' para el estado de la operación
+                            'values': [[str(variable).replace('.', ',')]]
+                        })
+                        if ut:
+                            batch_updates.append({
+                                'range': f"T{new_row_index}",  # Columna 'T' para 'ut'
+                                'values': [[str(ut).replace('.', ',')]]
+                            })
+                        if signal:
+                            batch_updates.append({
+                                'range': f"U{new_row_index}",  # Columna 'U' para la señal
+                                'values': [[signal]]
+                            })
+                        if pais:
+                            nacion = 'ARG' if pais else 'USA'
+                            batch_updates.append({
+                                'range': f"V{new_row_index}", 
+                                'values':  [[nacion]]
+                            })    
+                        
+                        print(f"Símbolo {symbol} agregado al final de la lista en la fila {new_row_index}")
+                        
+                except Exception as e:
+                    print(f"Error obteniendo datos de la hoja de cálculo: {e}")
+                    return False  # Si ocurre un error, devuelve False
+            else:
+                print("No se pudo abrir la hoja.")
+                return False
+
+        # Si hay actualizaciones en batch, ejecutarlas
+        if batch_updates:
+            try:
+                get.sheet.batch_update(batch_updates)
+            except Exception as e:
+                print(f"Error al hacer la actualización en lotes: {e}")
+                return False
+        else:
+            print("No se encontraron actualizaciones para hacer.")
+            return False
+
+    except Exception as e:
+        print(f"Error en el proceso de actualización: {e}")
+        return False
+
+    return True
 
 
 
-
-
+def actualiza_operacion(symbol,signal,user_id,trade_en_curso):
+    return True
+    
+def agrega_operacion(symbol,signal,user_id,trade_en_curso):
+    
+    
+    return True
 
 
 
