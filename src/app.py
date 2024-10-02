@@ -557,13 +557,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-<<<<<<< HEAD
-    app.run(host='0.0.0.0', port=5001, debug=True)
-    #app.run(host='0.0.0.0', port=5001, debug=False)
-=======
-    ##app.run(host='0.0.0.0', port=5001, debug=True)
+    #app.run(host='0.0.0.0', port=5001, debug=True)
     app.run(host='0.0.0.0', port=5001, debug=False)
->>>>>>> 30f375e636d7fb1ca3cb1a0c134fce2ddb1e1aea
    
 
     # Ciclo para ejecutar las tareas programadas
