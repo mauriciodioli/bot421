@@ -85,13 +85,13 @@ SPREADSHEET_ID_PRODUCCION = os.environ.get('SPREADSHEET_ID_PRODUCCION')  #drpiBo
 SPREADSHEET_ID_USA= os.environ.get('SPREADSHEET_ID_USA') #de produccion USA
 VARIABLE_ACTUALIZAR_SHEET = os.environ.get('VARIABLE_ACTUALIZAR_SHEET') 
 
-##CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
-##CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
-##ID_USER_ACTUALIZAR_SHEET = 1
+CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET')
+CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET')
+ID_USER_ACTUALIZAR_SHEET = 1
 
-CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
-CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
-ID_USER_ACTUALIZAR_SHEET = 2
+#CUENTA_ACTUALIZAR_SHEET = os.environ.get('CUENTA_ACTUALIZAR_SHEET_PRODUCCION')
+#CORREO_E_ACTUALIZAR_SHEET = os.environ.get('CORREO_E_ACTUALIZAR_SHEET_PRODUCCION')
+#ID_USER_ACTUALIZAR_SHEET = 2
 # Días de la semana a los que debe ejecutar la función
 
 DIAS_EJECUCION = ["lunes", "martes", "miercoles", "jueves", "viernes"]
@@ -479,7 +479,8 @@ def loginExtCuentaSeleccionadaBroker():
                             
                                     if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
                                     
-                    
+                                        if ContenidoSheet_list:
+                                            SuscripcionDeSheet(app,ConexionesBroker[elemento]['pyRofex'],ConexionesBroker[elemento]['cuenta'],user_id,selector)
                                         conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id,selector)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])

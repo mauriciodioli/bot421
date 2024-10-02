@@ -37,7 +37,7 @@ from productosComerciales.promociones.promociones import promociones
 from Tests.test_order_report_handler import test_order_report_handler
 from Tests.test_2_order_report_handler import test_2_order_report_handler
 from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
-
+from Tests.test_deteccion_formas import test_deteccion_formas
 
 
 from social.telegram.telegram import telegram
@@ -265,7 +265,7 @@ app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
 app.register_blueprint(test_ejecutarHiloPanelControl)
 
-
+app.register_blueprint(test_deteccion_formas)
 
 
 
@@ -557,8 +557,8 @@ def load_user(user_id):
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
-    ##app.run(host='0.0.0.0', port=5001, debug=True)
-    app.run(host='0.0.0.0', port=5001, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
+    #app.run(host='0.0.0.0', port=5001, debug=False)
    
 
     # Ciclo para ejecutar las tareas programadas
