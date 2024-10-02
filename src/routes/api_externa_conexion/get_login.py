@@ -478,9 +478,9 @@ def loginExtCuentaSeleccionadaBroker():
                                     cuenta = ConexionesBroker[elemento]['cuenta']
                             
                                     if accountCuenta ==  cuenta and ConexionesBroker[elemento]['identificador'] == False:
+                                    
                                         if ContenidoSheet_list:
                                             SuscripcionDeSheet(app,ConexionesBroker[elemento]['pyRofex'],ConexionesBroker[elemento]['cuenta'],user_id,selector)
-                    
                                         conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id,selector)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
