@@ -1084,8 +1084,11 @@ def estrategiaSheetWS_verificar_estado():
 
                         # Verificar si todos los símbolos de las órdenes están en symbols_encontrados
                         if len(symbols_encontrados) == len(ordenes):
-                            # Llamada a la función endingOperacionBot si todos los símbolos están presentes
-                            endingOperacionBot(True, True, sim,account)
+                            # Llamada a la función endingOperacionBot si todos los símbolos están presentes                           
+                            
+                            diccionario_operaciones_enviadas.clear()
+                            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
+        
                             
                             return jsonify({
                                 'estado': 'listo',
@@ -1093,6 +1096,8 @@ def estrategiaSheetWS_verificar_estado():
                                 'mensaje': 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
                                 'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
                             }), 200
+                    else:
+                        return jsonify({'estado': 'en_proceso'}), 200               
        
                 except BadRequest as e:
                     pass
