@@ -10,7 +10,6 @@ import csv
 import json
 import random
 import routes.api_externa_conexion.get_login as get
-import strategies.opera_estrategias as op  
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
@@ -211,6 +210,7 @@ def botonPanico():
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
             
             pyRofexInicializada.close_websocket_connection(environment=account)
+            get.actualiza_luz_web_socket('',account,'',True)
             return render_template("utils/bottonPanic.html" ) 
       except:
            print("no pudo leer los datos de local storage")         
@@ -282,7 +282,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                 Liquidez_ahora_cedear = obtener_liquidez_actual(message, "BI")                            
                           
                             cantidad_a_usar = min(Liquidez_ahora_cedear, diccionario_global_operaciones[Symbol]['ut'])
-                            #op.OperacionWs(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, cantidad_a_usar, senial, message)
                             estrategia = OperacionEstrategia(
                                                                 pyRofexInicializada=pyRofexInicializada,
                                                                 diccionario_global_operaciones=diccionario_global_operaciones,
@@ -1063,7 +1062,7 @@ def Bull_Market_10861_001_verificar_estado():
         
         else:
             # Verifica el tiempo de lectura
-            if control_tiempo_lectura_verifiar_estado(30000, get.marca_de_tiempo_para_verificar_estado):
+            if control_tiempo_lectura_verifiar_estado(300000, get.marca_de_tiempo_para_verificar_estado):
                   # Inicializar la conexión pyRofex y eliminar el websocket handler
                 pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
                 try:

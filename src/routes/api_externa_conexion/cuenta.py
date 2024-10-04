@@ -631,9 +631,12 @@ def logOutAccount():
             layouts = request.form['layoutOrigen']
 
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
-            if access_token and Token.validar_expiracion_token(access_token=access_token):
+            if access_token and Token.validar_expiracion_token(access_token=access_token):            
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+       
                 pyRofexInicializada.close_websocket_connection(environment=account)
                 del get.ConexionesBroker[account]
+                get.actualiza_luz_web_socket('',account, user_id, '',False)
 
                 return render_template('cuentas/logOutAccount.html')
         except KeyError:

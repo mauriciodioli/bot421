@@ -38,6 +38,7 @@ from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker
 import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
+from panelControlBroker.panelControl import terminaConexionParaActualizarSheet
 
 autenticacion = Blueprint("autenticacion", __name__)
 
@@ -73,11 +74,19 @@ def logOutSystem():
                 # Si la clave no existe en el diccionario, pyRofexInicializada será None
                 pyRofexInicializada = None
 
+            if access_token and Token.validar_expiracion_token(access_token=access_token): 
+                user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+       
             if pyRofexInicializada is not None:
                 if access_token and Token.validar_expiracion_token(access_token=access_token):
-                    pyRofexInicializada.close_websocket_connection(environment=account)
-                    del get.ConexionesBroker[account]
-
+                    
+                    if account == get.CUENTA_ACTUALIZAR_SHEET:
+                         terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
+                    else:    
+                        pyRofexInicializada.close_websocket_connection(environment=account)
+                        del get.ConexionesBroker[account]
+                    
+                    get.actualiza_luz_web_socket('',account, user_id, '',False)
                     return render_template('usuarios/logOutSystem.html')
             else:
                 # pyRofexInicializada es None, lo que significa que no se encontró en el diccionario

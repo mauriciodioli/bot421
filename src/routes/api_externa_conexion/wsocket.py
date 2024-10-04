@@ -137,6 +137,7 @@ def order_report_handler_0(message):
 @wsocket.route('/detenerWSSuscripcionInstrumentos/')   
 def detenerWSSuscripcionInstrumentos():
      get.pyRofexInicializada.close_websocket_connection()
+       
      return render_template("home.html" )
    
 
