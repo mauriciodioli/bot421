@@ -322,6 +322,7 @@ function actualizarUnidadTradeo(){
         //console.log(filasCambiadas);
 
         // Crea una fila de encabezado
+        
         var headerRow = document.createElement('tr');
         // Agrega encabezados a cada columna
         headerRow.innerHTML = `
@@ -661,6 +662,7 @@ function actualizarUnidadTradeo(){
       //  console.log('Cambios en estado closed:', closedChanged);
       // Oculta las filas que no cambiaron
       leerFilasTabla(tableBody);
+      //actualizarNumeracionFilas(tableBody); // Llamar a la función para numerar todas las filas
 
 
 
@@ -857,6 +859,15 @@ function formatearConMiles(num) {
   return `${entero},${decimal}`;
 }
 
+//function actualizarNumeracionFilas(tableBody) {
+//    const rows = tableBody.querySelectorAll("tr"); // Selecciona todas las filas
+ 
+//  rows.forEach((row, index) => {
+//    const numeroDeOrden = index + 1; // Numerar desde 1 hasta n
+//    debugger;
+//    row.querySelector("td").innerText = numeroDeOrden; // Actualiza el primer <td> con el número de orden
+//  });
+//}
 </script>
 <body> 
 {% endblock%}

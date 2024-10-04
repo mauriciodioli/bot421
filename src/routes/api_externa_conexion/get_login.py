@@ -119,6 +119,7 @@ ConexionesBroker = {}
 luzMDH_funcionando = False
 luzThred_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0}
 luzShedule_funcionando = False
+luzWebsocket_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0,'user_id': 0,'accountCuenta': 0,'broker': 0}
 sheet_manager = None
 valores_mep = {
     'AL30': {'compra': None, 'venta': None},
@@ -313,7 +314,8 @@ def loginExtAutomatico():
                                             pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
                                             repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
                                             SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)
-                                     
+                                            actualiza_luz_web_socket(ws_url,accountCuenta,user_id,True)
+                                         
                                             if repuesta_operacion:
                                                 pass
                                 else:
@@ -481,6 +483,9 @@ def loginExtCuentaSeleccionadaBroker():
                                     
                                         if ContenidoSheet_list:
                                             SuscripcionDeSheet(app,ConexionesBroker[elemento]['pyRofex'],ConexionesBroker[elemento]['cuenta'],user_id,selector)
+                                            # Actualiza el diccionario con los valores correspondientes
+                                            actualiza_luz_web_socket(ws_url,ConexionesBroker[elemento]['cuenta'],user_id,True)
+                                           
                                         conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id,selector)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
@@ -617,7 +622,21 @@ def creaJsonParaConextarseSheetGoogle():
     print(f'Se ha creado el archivo JSON en "{ruta_archivo_json}"')
 
 
-  
+def actualiza_luz_web_socket(broker,accountCuenta,user_id,estado):
+    # Obtén la hora actual
+    now = datetime.now()
+    hora_actual = now.hour
+    minuto_actual = now.minute
+    segundo_actual = now.second
+    luzWebsocket_funcionando.update({
+        'luz': estado,  # Puedes cambiar el valor de luz según tu lógica
+        'hora': hora_actual,
+        'minuto': minuto_actual,
+        'segundo': segundo_actual,
+        'user_id': user_id,
+        'accountCuenta': accountCuenta,
+        'broker': broker
+    }) 
 
 #  reporte_de_ordenes.append(message)
 
