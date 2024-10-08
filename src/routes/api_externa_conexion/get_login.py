@@ -119,6 +119,7 @@ ConexionesBroker = {}
 luzMDH_funcionando = False
 luzThred_funcionando = {'luz': False, 'hora': 0, 'minuto': 0, 'segundo': 0}
 luzShedule_funcionando = False
+luzWebsocket_funcionando = {}
 sheet_manager = None
 valores_mep = {
     'AL30': {'compra': None, 'venta': None},
@@ -313,7 +314,8 @@ def loginExtAutomatico():
                                             pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
                                             repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
                                             SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)
-                                     
+                                            actualiza_luz_web_socket(ws_url,accountCuenta,user_id,True)
+                                         
                                             if repuesta_operacion:
                                                 pass
                                 else:
@@ -321,6 +323,8 @@ def loginExtAutomatico():
                                         conexionShedule(app,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
                                         pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
                                         accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                        actualiza_luz_web_socket(ws_url,accountCuenta,user_id,True)
+                                         
                                         refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
                                         ConexionesBroker[accountCuenta]['identificador'] = True
                                         resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
@@ -481,6 +485,9 @@ def loginExtCuentaSeleccionadaBroker():
                                     
                                         if ContenidoSheet_list:
                                             SuscripcionDeSheet(app,ConexionesBroker[elemento]['pyRofex'],ConexionesBroker[elemento]['cuenta'],user_id,selector)
+                                            # Actualiza el diccionario con los valores correspondientes
+                                            actualiza_luz_web_socket(ws_url,ConexionesBroker[elemento]['cuenta'],user_id,True)
+                                           
                                         conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id,selector)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
@@ -617,9 +624,37 @@ def creaJsonParaConextarseSheetGoogle():
     print(f'Se ha creado el archivo JSON en "{ruta_archivo_json}"')
 
 
-  
+def actualiza_luz_web_socket(broker=None, accountCuenta=None, user_id=None, estado=None):
+    # Obtén la hora actual
+    now = datetime.now()
+    hora_actual = now.hour
+    minuto_actual = now.minute
+    segundo_actual = now.second
 
-#  reporte_de_ordenes.append(message)
+    # Crea una clave única para la cuenta
+    clave = accountCuenta
+
+    # Verifica si la cuenta ya existe en el diccionario
+    if clave in luzWebsocket_funcionando:
+        # Si existe, actualiza el estado y la hora
+        luzWebsocket_funcionando[clave].update({
+            'luz': estado,  
+            'hora': hora_actual,
+            'minuto': minuto_actual,
+            'segundo': segundo_actual,
+            'user_id': user_id,
+            'broker': broker
+        })
+    else:
+        # Si no existe, crea una nueva entrada
+        luzWebsocket_funcionando[clave] = {
+            'luz': estado,
+            'hora': hora_actual,
+            'minuto': minuto_actual,
+            'segundo': segundo_actual,
+            'user_id': user_id,
+            'broker': broker
+        }
 
    
 def error_handler(message):

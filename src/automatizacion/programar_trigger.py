@@ -30,27 +30,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 programar_trigger = Blueprint('programar_trigger', __name__)
 
-# Crear la tabla cuenta si no existe
-def crea_tabla_triggerEstrategia():
-    hora_inicio = datetime(year=2023, month=7, day=3, hour=15, minute=0)
-    hora_fin = datetime(year=2023, month=7, day=3, hour=17, minute=0)
-    triggerEstrategia = TriggerEstrategia(    
-        id=1,
-        user_id = "1",
-        userCuenta="mauriciodioli6603",
-        passwordCuenta="zbwitW5#",
-        accountCuenta="REM6603",  
-        horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
-        horaFin=hora_fin,  # Ejemplo de hora de fin (17:00) 
-        ManualAutomatico = "MANUAL",  
-        nombreEstrategia = "sheet"     
-    )
-    triggerEstrategia.crear_tabla_triggerEstrategia()
-    print("Tabla creada!")
-
-
-
-
 @programar_trigger.route('/trigger/')
 def trigger():
     

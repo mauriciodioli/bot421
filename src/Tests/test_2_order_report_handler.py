@@ -103,6 +103,7 @@ test_cases = [
     simulate_order_report(1010, 'MERV - XMEV - MELI - 24hs', 'FILLED', '2024-07-18T12:05:00Z', 'Stock 50'),
     simulate_order_report(1011, 'MERV - XMEV - NVDA - 24hs', 'FILLED', '2024-07-18T12:06:00Z', 'Stock 60'),
     simulate_order_report(1012, 'MERV - XMEV - WMT - 24hs', 'FILLED', '2024-07-18T12:07:00Z', 'Stock 70'),
+    simulate_order_report(1013, 'MERV - XMEV - AGRO - 24hs', 'FILLED', '2024-07-18T12:00:00Z', 'Stock 5'),
     #simulate_order_report(109, 'AAPL', 'PENDING_CANCEL', '2024-07-18T12:08:00Z', 'Stock 80'),
    # simulate_order_report(201, 'GOOG', 'FILLED', '2024-07-18T12:09:00Z', 'Stock 90'),
    # simulate_order_report(301, 'MSFT', 'ANTERIOR', '2024-07-18T12:10:00Z', 'Stock 100'),
@@ -119,7 +120,7 @@ test_cases = [
 
 
 operaciones_a_simular = [
-    {'symbol': 'MERV - XMEV - AGRO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 13, 'senial': 'closed.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - AGRO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 10, 'senial': 'closed.', 'status': '0'},
     {'symbol': 'MERV - XMEV - ADBE - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
     {'symbol': 'MERV - XMEV - AMD - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
     {'symbol': 'MERV - XMEV - AVGO - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 5, 'senial': 'OPEN.', 'status': '0'},
@@ -130,7 +131,8 @@ operaciones_a_simular = [
     {'symbol': 'MERV - XMEV - GILD - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
     {'symbol': 'MERV - XMEV - MELI - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 1, 'senial': 'OPEN.', 'status': '0'},
     {'symbol': 'MERV - XMEV - NVDA - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 4, 'senial': 'OPEN.', 'status': '0'},
-    {'symbol': 'MERV - XMEV - WMT - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 5, 'senial': 'OPEN.', 'status': '0'}
+    {'symbol': 'MERV - XMEV - WMT - 24hs', 'tipo_de_activo': 'CEDEAR', 'tradeEnCurso': 'LONG_', 'ut': 5, 'senial': 'OPEN.', 'status': '0'},
+    {'symbol': 'MERV - XMEV - AGRO - 24hs', 'tipo_de_activo': 'ARG', 'tradeEnCurso': 'SHORT', 'ut': 5, 'senial': 'closed.', 'status': '0'},
 ]
 
 # Diccionario para registrar cuántas veces se actualiza cada operación
@@ -275,12 +277,17 @@ def procesar_estado_final(symbol, clOrdId):
         if operacionGlobal['symbol'] == symbol:
             if operacionGlobal['ut'] == 0:
                 # Verifica si todas las operaciones relacionadas están terminadas
-                all_enviadas_terminadas = all(
+                all_enviadas_validas = all(
                     operacion['status'] == 'TERMINADA'
                     for operacion in diccionario_operaciones_enviadas.values()
                     if operacion["Symbol"] == symbol
                 )
-                if all_enviadas_terminadas:
+                any_enviada_anterior = any(
+                    operacion['status'] == 'ANTERIOR'
+                    for operacion in diccionario_operaciones_enviadas.values()
+                     if operacion["Symbol"] == symbol
+                )
+                if all_enviadas_validas and not any_enviada_anterior:
                     operacionGlobal['status'] = '1'
                     endingGlobal = True
                 else:

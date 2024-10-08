@@ -768,7 +768,16 @@
   }, 30000);  // Intervalo de 30 segundos
 
 
+// Supongamos que resumenCuenta es una variable de tu lógica JS
+var resumenCuenta = {{ resumenCuenta }};
 
+// Si resumenCuenta es 0, almacena 'False', de lo contrario, almacena 'True'
+
+if (resumenCuenta === 0) {
+    localStorage.setItem('luzWebsocket_control', 'False');
+} else {
+    localStorage.setItem('luzWebsocket_control', 'True');
+}
 
 
 
