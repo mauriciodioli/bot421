@@ -509,7 +509,7 @@ function actualizarTarjeta(postId) {
     }
 
     //Aquí podrías enviar el nuevo estado al servidor si es necesario
-    $.post('/media-publicaciones-camiar-estado', { id: id, nuevoEstado: nuevoEstado });
+    $.post('/media-publicaciones-cambiar-estado', { id: id, nuevoEstado: nuevoEstado });
 }
   
 

@@ -99,11 +99,14 @@ def estrategiaSheetWS_001():
                return render_template('usuarios/logOutSystem.html')
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
+                get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
                 return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
+            get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
         except:
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -212,7 +215,7 @@ def botonPanico():
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
             
             pyRofexInicializada.close_websocket_connection(environment=account)
-            get.actualiza_luz_web_socket('',account,'',True)
+            get.actualiza_luz_web_socket('',account,'',False)
             return render_template("utils/bottonPanic.html" ) 
       except:
            print("no pudo leer los datos de local storage")         
@@ -860,6 +863,7 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
     
     except Exception as e:
         print(f"Error: {e}")  # Imprimir error en caso de excepción
+        get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
         return 'error'  # Retorna 'error' si ocurre una excepción
 
 
