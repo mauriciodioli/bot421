@@ -1055,7 +1055,7 @@ def estrategiaSheetWS_verificar_estado():
         
         else:
             # Verifica el tiempo de lectura
-            if control_tiempo_lectura_verifiar_estado(30000, get.marca_de_tiempo_para_verificar_estado):
+            if control_tiempo_lectura_verifiar_estado(300000, get.marca_de_tiempo_para_verificar_estado):
                   # Inicializar la conexión pyRofex y eliminar el websocket handler
                 pyRofexInicializada = get.ConexionesBroker[account]['pyRofex'] 
                 try:

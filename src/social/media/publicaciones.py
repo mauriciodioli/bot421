@@ -362,6 +362,7 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
     size = size  # Obtener tamaño del archivo usando el índice  
     file_path = os.path.join('static', 'uploads', filename)
+    file_path = file_path.replace('\\', '/')
     file.save(file_path)
    
     nombre_archivo = filename
@@ -399,6 +400,7 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
 def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0, index=None, size=0):   
     color_texto = request.form.get('color_texto')   
     file_path = os.path.join('static', 'uploads', filename)
+    file_path = file_path.replace('\\', '/')
     size = size  # Obtener tamaño del archivo usando el índice
     file.save(file_path)
 
@@ -610,10 +612,11 @@ def  eliminar_desde_archivo(title,user_id):
         
         #ruta_base_datos = title.replace('/', '\\')
         file_path = os.path.join('static', 'uploads', title)
-      
+        file_path = file_path.replace('\\', '/')
         # Agregar "static" al inicio de la ruta
         #ruta_base_datos = os.path.normpath('static\\' + file_path)
         ruta_ = os.path.join(file_path)
+        ruta_ = ruta_.replace('\\', '/')
         os.remove(ruta_)
         return True
     except OSError as e:
