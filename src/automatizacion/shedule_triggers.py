@@ -179,6 +179,7 @@ def terminar_hilos(app,account):
     pyRofexInicializada = get.ConexionesBroker.get(account)
     if pyRofexInicializada:
        pyRofexInicializada['pyRofex'].close_websocket_connection(environment=account)
+       get.actualiza_luz_web_socket('',account, '', '',False)
     
     print('_______________________________________')
     print('_______________________________________')

@@ -10,7 +10,6 @@ import csv
 import json
 import random
 import routes.api_externa_conexion.get_login as get
-import strategies.opera_estrategias as op  
 import routes.api_externa_conexion.cuenta as cuenta
 import routes.api_externa_conexion.operaciones as operaciones
 from strategies.estrategias import estrategias_usuario_nadmin_desde_endingOperacionBot
@@ -100,11 +99,14 @@ def estrategiaSheetWS_001():
                return render_template('usuarios/logOutSystem.html')
         except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
+                get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
                 return redirect(url_for('autenticacion.index'))
         except jwt.InvalidTokenError:
             print("El token es inválido")
+            get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
         except:
            print("no pudo conectar el websocket en estrategiaSheetWS.py ")
+           get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
     return render_template('notificaciones/estrategiaOperando.html')
      
        
@@ -213,6 +215,7 @@ def botonPanico():
             pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
             
             pyRofexInicializada.close_websocket_connection(environment=account)
+            get.actualiza_luz_web_socket('',account,'',False)
             return render_template("utils/bottonPanic.html" ) 
       except:
            print("no pudo leer los datos de local storage")         
@@ -283,7 +286,6 @@ def estrategiaSheetNuevaWS(message, banderaLecturaSheet):# **11
                                 Liquidez_ahora_cedear = obtener_liquidez_actual(message, "BI")                            
                           
                             cantidad_a_usar = min(Liquidez_ahora_cedear, diccionario_global_operaciones[Symbol]['ut'])
-                            #op.OperacionWs(pyRofexInicializada, diccionario_global_operaciones, diccionario_operaciones_enviadas, Symbol, tipo_de_activo, cantidad_a_usar, senial, message)
                             estrategia = OperacionEstrategia(
                                                                 pyRofexInicializada=pyRofexInicializada,
                                                                 diccionario_global_operaciones=diccionario_global_operaciones,
@@ -861,6 +863,7 @@ def CargOperacionAnterioDiccionarioEnviadas(app,pyRofexInicializada=None, accoun
     
     except Exception as e:
         print(f"Error: {e}")  # Imprimir error en caso de excepción
+        get.actualiza_luz_web_socket('', get.accountLocalStorage,'',False)
         return 'error'  # Retorna 'error' si ocurre una excepción
 
 
