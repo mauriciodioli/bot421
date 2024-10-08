@@ -75,21 +75,48 @@ def websocketConexionShedule(app,pyRofexInicializada=None,Cuenta=None,account=No
               return True
       return True
 
-def wsocketConexion(app,pyRofexInicializada,accountCuenta, user_id,selector):
-   
-   # get.pyRofexInicializada.order_report_subscription()
-  # get.pyRofexInicializada.add_websocket_market_data_handler(market_data_handler_arbitraje_001)
-   
-   pyRofexInicializada.init_websocket_connection(market_data_handler=market_data_handler_0,order_report_handler=order_report_handler_0,error_handler=error_handler,exception_handler=exception_handler,environment=accountCuenta)
-   
-   if not get.ContenidoSheet_list:
-      get.ContenidoSheet_list = SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)  # <<-- aca se suscribe al mkt data
- 
-   
-   if accountCuenta != get.CUENTA_ACTUALIZAR_SHEET:
-      pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0,environment=accountCuenta)
- 
-   pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0,environment=accountCuenta)
+def wsocketConexion(app, pyRofexInicializada, accountCuenta, user_id, selector):
+    try:
+        # Iniciar la conexión WebSocket
+        pyRofexInicializada.init_websocket_connection(
+            market_data_handler=market_data_handler_0,
+            order_report_handler=order_report_handler_0,
+            error_handler=error_handler,
+            exception_handler=exception_handler,
+            environment=accountCuenta
+        )
+        
+        # Actualizar luz del WebSocket
+        get.actualiza_luz_web_socket('ws_url', accountCuenta, user_id, True)
+        
+        # Verificar suscripciones de datos de mercado
+        if not get.ContenidoSheet_list:
+            get.ContenidoSheet_list = SuscripcionDeSheet(app, pyRofexInicializada, accountCuenta, user_id, selector)
+
+        # Remover manejadores de WebSocket si es necesario
+        if accountCuenta != get.CUENTA_ACTUALIZAR_SHEET:
+            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0, environment=accountCuenta)
+        
+        pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0, environment=accountCuenta)
+    
+    except ConnectionError as conn_err:
+        # Manejo de errores de conexión
+        print(f"Error de conexión: {conn_err}")
+        get.actualiza_luz_web_socket('ws_url', accountCuenta, user_id, False)
+
+    except ValueError as val_err:
+        # Manejo de errores de valores inválidos
+        print(f"Error de valor: {val_err}")
+
+    except Exception as e:
+        # Manejo de cualquier otra excepción
+        print(f"Ocurrió un error inesperado: {e}")
+        get.actualiza_luz_web_socket('ws_url', accountCuenta, user_id, False)
+
+    finally:
+        # Este bloque se ejecutará siempre, sin importar si hubo una excepción o no
+        print("Finalizando el proceso de conexión WebSocket")
+
    
 
 def market_data_handler_0(message):

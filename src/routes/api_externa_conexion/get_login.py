@@ -486,8 +486,7 @@ def loginExtCuentaSeleccionadaBroker():
                                         if ContenidoSheet_list:
                                             SuscripcionDeSheet(app,ConexionesBroker[elemento]['pyRofex'],ConexionesBroker[elemento]['cuenta'],user_id,selector)
                                             # Actualiza el diccionario con los valores correspondientes
-                                            actualiza_luz_web_socket(ws_url,ConexionesBroker[elemento]['cuenta'],user_id,True)
-                                           
+                                            
                                         conexion(app,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'],user_id,selector)
                         
                                         refrescoValorActualCuentaFichas(user_id,ConexionesBroker[elemento]['pyRofex'], ConexionesBroker[elemento]['cuenta'])
