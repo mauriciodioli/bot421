@@ -85,8 +85,7 @@ def logOutSystem():
                     else:    
                         pyRofexInicializada.close_websocket_connection(environment=account)
                         del get.ConexionesBroker[account]
-                    
-                    get.actualiza_luz_web_socket('',account, user_id, '',False)
+                    get.actualiza_luz_web_socket('',account, '',False)
                     return render_template('usuarios/logOutSystem.html')
             else:
                 # pyRofexInicializada es None, lo que significa que no se encontró en el diccionario
