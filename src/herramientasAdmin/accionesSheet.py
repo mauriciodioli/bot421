@@ -73,9 +73,9 @@ def herramientasSheet_accionesSheet_actualizaLuz_thread():
     # Obtener los valores de hora, minuto y segundo del diccionario
     hora = get.luzThred_funcionando['hora']
     minuto = get.luzThred_funcionando['minuto']
-    segundo = get.luzThred_funcionando['segundo']
-   
-   
+    segundo = get.luzThred_funcionando['segundo']   
+    
+    luzWebsocket_control = get.luzWebsocket_funcionando['luz']
     # Imprimir para verificar en la consola
     print(hora, minuto, segundo)
     
@@ -83,8 +83,38 @@ def herramientasSheet_accionesSheet_actualizaLuz_thread():
     return jsonify({
         'luzMDH_control': luzMDH,
         'luzThread_control': luz,
+        'luzWebsocket_control': luzWebsocket_control,
         'hora': hora,
         'minuto': minuto,
         'segundo': segundo
     })
     
+@accionesSheet.route('/herramientasSheet_accionesSheet_actualizaLuz_websocket')
+def herramientasSheet_accionesSheet_actualizaLuz_websocket():
+    account_param = request.args.get('account')  # Captura el parámetro de la URL
+   
+    # Inicializa broker y otros valores a None
+    broker = None  
+    luzWebsocket_control = None
+    hora = 0
+    minuto = 0
+    segundo = 0
+
+    # Verifica si la cuenta está en el diccionario
+    if account_param in get.luzWebsocket_funcionando:
+        data = get.luzWebsocket_funcionando[account_param]
+        luzWebsocket_control = data['luz']
+        broker = data['broker']
+        hora = data['hora']
+        minuto = data['minuto']
+        segundo = data['segundo']
+
+    # Devolver como respuesta un JSON que incluye el estado de 'luz' y la hora actual
+    return jsonify({
+        'accountCuenta': account_param,
+        'luzWebsocket_control': luzWebsocket_control,
+        'broker': broker,
+        'hora': hora,
+        'minuto': minuto,
+        'segundo': segundo
+    })

@@ -636,7 +636,8 @@ def logOutAccount():
        
                 pyRofexInicializada.close_websocket_connection(environment=account)
                 del get.ConexionesBroker[account]
-                get.actualiza_luz_web_socket('',account, user_id, '',False)
+                get.actualiza_luz_web_socket('',account, user_id,False)
+                
 
                 return render_template('cuentas/logOutAccount.html')
         except KeyError:
