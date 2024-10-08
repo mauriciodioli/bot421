@@ -191,6 +191,7 @@ def terminaConexionParaActualizarSheet(account):
     try:
         pyRofexInicializada = get.ConexionesBroker[account]['pyRofex']
         pyRofexInicializada.close_websocket_connection(environment=account)
+        
         # Eliminar la conexión del diccionario solo si existe
         del get.ConexionesBroker[account]
     except KeyError:
