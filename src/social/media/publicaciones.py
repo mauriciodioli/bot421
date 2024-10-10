@@ -302,7 +302,7 @@ def social_imagenes_crear_publicacion():
                 file_ext = filename.rsplit('.', 1)[-1].lower()
                 if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
                     # Llama a la función de carga de imagen
-                    file_path = cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
+                    file_path = cargarImagen_crearPublicacion(app,request, file, filename, id_publicacion, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
                     app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
                 elif file_ext in {'mp4', 'avi', 'mov'}:
                     # Llama a la función de carga de video
@@ -357,12 +357,17 @@ def upload_to_s3(file, bucket_name, filename):
    #     print("Credenciales no disponibles")
    #     return None
 
-def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, userid=0, index=None, size=0):   
+def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, userid=0, index=None, size=0):   
     color_texto = request.form.get('color_texto')   
     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
     size = size  # Obtener tamaño del archivo usando el índice  
+ 
+     # Construir la ruta del archivo de manera multiplataforma
     file_path = os.path.join('static', 'uploads', filename)
-    file_path = file_path.replace("\\", "/")
+    app.logger.info(f'Se cargó direccion imagen: {filename}, path: {file_path}')
+    # Asegurarse de que funcione tanto en Windows como en Linux
+  
+    #file_path = file_path.replace('\\', '/')
     file.save(file_path)
     
    
@@ -399,9 +404,12 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
 
 
 def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0, index=None, size=0):   
+    print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
     color_texto = request.form.get('color_texto')   
     file_path = os.path.join('static', 'uploads', filename)
-    file_path = file_path.replace("\\", "/")
+    
+    #file_path = file_path.replace('\\', '/')
+   
     size = size  # Obtener tamaño del archivo usando el índice
     file.save(file_path)
 
@@ -409,18 +417,22 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
     description_video = 'ambitoSocial'
     randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
 
+    print(f"Authorization header: {request.headers.get('Authorization')}")
 
     authorization_header = request.headers.get('Authorization')
     if not authorization_header:
+        print("Authorization header is empty")
         return jsonify({'error': 'Token de acceso no proporcionado'}), 401
     parts = authorization_header.split()
     if len(parts) != 2 or parts[0].lower() != 'bearer':
+        print("Invalid authorization header format")
         return jsonify({'error': 'Formato de token de acceso no válido'}), 401
 
     access_token = parts[1]
     app = current_app._get_current_object()
     userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
     
+    print(f"Decoded user ID: {userid}")
     
     # Sube el video a S3
     #file_path_s3 = upload_to_s3(file, BUCKET_NAME, f"videos/{filename}")
@@ -428,10 +440,12 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
     video_existente = db.session.query(Video).filter_by(filepath=file_path,size=size).first()
 
     if video_existente:
+        print("Video already exists, saving relation to publicacion_media")
         # Si la imagen ya existe, solo guarda la relación en publicacion_media
         cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
         return file_path
     else:
+        print("Creating new video")
         nuevo_video = Image(
             user_id=userid,
             title=nombre_archivo,
@@ -443,6 +457,7 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
         )
         db.session.add(nuevo_video)
         db.session.commit()
+        print("Saving relation to publicacion_media")
         cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
     return file_path
 
@@ -613,11 +628,12 @@ def  eliminar_desde_archivo(title,user_id):
         
         #ruta_base_datos = title.replace('/', '\\')
         file_path = os.path.join('static', 'uploads', title)
-        file_path = file_path.replace("\\", "/")
+      
+        #file_path = file_path.replace('\\', '/')
         # Agregar "static" al inicio de la ruta
         #ruta_base_datos = os.path.normpath('static\\' + file_path)
         ruta_ = os.path.join(file_path)
-        ruta_ = ruta_.replace("\\", "/")
+        ruta_ = ruta_.replace('\\', '/')
         os.remove(ruta_)
         return True
     except OSError as e:
