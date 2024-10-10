@@ -75,7 +75,10 @@ def herramientasSheet_accionesSheet_actualizaLuz_thread():
     minuto = get.luzThred_funcionando['minuto']
     segundo = get.luzThred_funcionando['segundo']   
     
-    luzWebsocket_control = get.luzWebsocket_funcionando['luz']
+    if 'luz' in get.luzWebsocket_funcionando:
+        luzWebsocket_control = get.luzWebsocket_funcionando['luz']
+    else:
+        luzWebsocket_control = False
     # Imprimir para verificar en la consola
     print(hora, minuto, segundo)
     
