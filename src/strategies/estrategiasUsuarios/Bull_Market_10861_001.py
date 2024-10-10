@@ -173,7 +173,7 @@ def market_data_handler_estrategia(message):
                 else:
                     
                     #tiempoAhora = datetime.now()
-                    #print('"FUN market_data_handler_estrategia')
+                    print('"FUN market_data_handler_estrategia')
                     #pass
                     estrategiaSheetNuevaWS(message, banderaLecturaSheet)
                     

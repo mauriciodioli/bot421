@@ -79,7 +79,6 @@ def herramientasSheet_accionesSheet_actualizaLuz_thread():
         luzWebsocket_control = get.luzWebsocket_funcionando['luz']
     else:
         luzWebsocket_control = False
-    # Imprimir para verificar en la consola
     print(hora, minuto, segundo)
     
     # Devolver como respuesta un JSON que incluye el estado de 'luz' y la hora actual
@@ -105,7 +104,7 @@ def herramientasSheet_accionesSheet_actualizaLuz_websocket():
 
     # Verifica si la cuenta está en el diccionario
     if account_param in get.luzWebsocket_funcionando:
-        data = get.luzWebsocket_funcionando[account_param]
+        data = geget.zWebsocket_funcionando[account_param]
         luzWebsocket_control = data['luz']
         broker = data['broker']
         hora = data['hora']
