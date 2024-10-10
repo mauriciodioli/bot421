@@ -104,7 +104,7 @@ def herramientasSheet_accionesSheet_actualizaLuz_websocket():
 
     # Verifica si la cuenta está en el diccionario
     if account_param in get.luzWebsocket_funcionando:
-        data = geget.zWebsocket_funcionando[account_param]
+        data = get.luzWebsocket_funcionando[account_param]
         luzWebsocket_control = data['luz']
         broker = data['broker']
         hora = data['hora']
