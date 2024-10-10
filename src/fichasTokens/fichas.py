@@ -295,7 +295,7 @@ def crear_ficha():
             print(total_para_fichas)
         
            # fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
-            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == userid).all()
+            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == userid, estado='PENDIENTE').all()
             try:
                 for ficha in fichas_usuario:
                     print(ficha.token)
@@ -369,8 +369,9 @@ def fichasToken_fichas_generar():
             #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
             total_cuenta = available_to_collateral + portfolio
             total_para_fichas =  total_cuenta * 0.6
-            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-      
+            fichas_usuario = db.session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
+            datos_fichas = []  # Lista para almacenar los datos de cada ficha
+
            
             try:
                 for ficha in fichas_usuario:
@@ -396,14 +397,35 @@ def fichasToken_fichas_generar():
                     # Agregamos random_number a la ficha
                     ficha.random_number = random_number
                     ficha.interes = interes
+                     # Agregar los datos de la ficha a la lista
+                    datos_fichas.append({
+                        "id": ficha.id,
+                        "user_id": ficha.user_id,
+                        "broker_id": ficha.broker_id,
+                        "cuenta_broker_id": ficha.cuenta_broker_id,
+                        "activo": ficha.activo,
+                        "token": ficha.token,
+                        "llave": ficha.llave.hex(),  # Convertir a hexadecimal
+                        "monto_efectivo": ficha.monto_efectivo,
+                        "porcentaje_creacion": ficha.porcentaje_creacion,
+                        "valor_cuenta_creacion": ficha.valor_cuenta_creacion,
+                        "valor_cuenta_actual": ficha.valor_cuenta_actual,
+                        "estado": ficha.estado,
+                        "fecha_generacion": ficha.fecha_generacion,
+                        "interes": ficha.interes,
+                        "random_number": ficha.random_number
+                    })
                     db.session.commit()
             except Exception as e:
                 db.session.rollback()   
             
         
-            print(total_para_fichas)    
+            # print(total_para_fichas)    
             db.session.close()
-            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+            print("Datos de las fichas antes de enviar:")
+            for ficha in datos_fichas:
+                print(ficha)
+            return render_template("fichas/fichasGenerar.html", datos=datos_fichas,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         else:
              flash('token vencido') 
              return render_template('usuarios/logOutSystem.html')  
@@ -425,10 +447,8 @@ def fichasToken_fichas_listar():
         access_token = request.form['access_token_form_ListarFicha'] 
         layouts = request.form['layoutOrigen']
         account = request.form['accounCuenta_form_ListarFicha']
-        repuesta_cuenta = get.ConexionesBroker.get_account_report(account=account,environment=account)
-        reporte = repuesta_cuenta['accountData']
-        available_to_collateral = reporte['availableToCollateral']
-        portfolio = reporte['portfolio']
+       
+       
        # print("detalle  ",available_to_collateral)
        # print("detalle ",portfolio)
         #layouts = 'layout'
@@ -438,6 +458,12 @@ def fichasToken_fichas_listar():
             fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
             traza_fichas = db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
             try:
+                pyRofexInicializada = get.ConexionesBroker.get(account)
+                if pyRofexInicializada:       
+                    repuesta_cuenta =  pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
+                    reporte = repuesta_cuenta['accountData']
+                    available_to_collateral = reporte['availableToCollateral']
+                    portfolio = reporte['portfolio']
                 for ficha in fichas_usuario:
                     #print(ficha.monto_efectivo)
                 
