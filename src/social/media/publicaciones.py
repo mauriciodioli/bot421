@@ -362,6 +362,7 @@ def cargarImagen_crearPublicacion(request, file, filename, id_publicacion, useri
     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
     size = size  # Obtener tamaño del archivo usando el índice  
     file_path = os.path.join('static', 'uploads', filename)
+    print(file_path)
     file_path = file_path.replace('\\', '/')
     file.save(file_path)
     
