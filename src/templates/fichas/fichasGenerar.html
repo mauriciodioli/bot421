@@ -1,29 +1,28 @@
-{% with messages = get_flashed_messages()%}
-{% if messages %}
-{% for message in messages%}  
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{message}}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-{% endfor %}
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
 {% endif %}
+
+{% block content %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}  
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
 {% endwith %}
- 
-{% if layout == 'layout'%}
-{% extends 'layouts/layout.html' %}
+
+{% if datos %}
+    <p>Datos cargados correctamente</p>
+{% else %}
+    <p>No se cargaron datos</p>
 {% endif %}
-
-{% if layout == 'layout_fichas'%}
-{% extends 'layouts/layout_fichas.html' %}
-{% endif %}
-
-{% if layout == 'layoutConexBroker' %}
-{% extends 'layouts/layoutConexBroker.html' %}    
-{% endif %}
-
-
-{% block content%}
-
  <body> 
     
     
@@ -144,22 +143,23 @@
                 <tbody>
                     {% for fichas in datos %}
                         <tr>
-                            <th scope="row">{{fichas.id}}</th>
+                            <th scope="row">{{ fichas }}</th>
                             <td>{{ fichas.fecha_generacion }}</td>       
                             <td>{{ fichas.monto_efectivo }}</td>
                             <td>{{ fichas.interes }}%</td>
-                            <td>{{fichas.estado }}</td>                                                       
+                            <td>{{ fichas.estado }}</td>                                                       
                             <td class="d-flex"> 
-                   
-                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}" onclick="setFichaData( this.getAttribute('data-ficha-id'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>Eliminar</button>
-                                <button type="button" class="btn btn-success  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.random_number }}"  data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}><srtrong>TOKEN</strong></button>
+                                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal" data-ficha-id="{{ fichas.id }}" onclick="setFichaData(this.getAttribute('data-ficha-id'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>Eliminar</button>
+                                <button type="button" class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" data-ficha-llave="{{ fichas.random_number }}" data-ficha-monto="{{ fichas.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>TOKEN</button>
                             </td>
                         </tr>
                     {% endfor %}
                 </tbody>
+                
             </table>
         </div>    
     </div>
+    
 </div>
 
  
@@ -330,7 +330,10 @@
 
                     xhr.onload = function() {
                         if (xhr.status === 200) {
-                          
+                           // Aquí se puede procesar la respuesta del servidor
+                            var response = JSON.parse(xhr.responseText);  // Convierte la respuesta a un objeto JavaScript
+                            // Llamar a una función para actualizar la tabla con los nuevos datos
+                            actualizarTabla(response);
                         } else {
                             alert('Hubo un problema con la solicitud.');
                         }
@@ -361,7 +364,39 @@
             
         });
         
-      
+        function actualizarTabla(datos) {
+            var tabla = document.getElementById('tablaDatos').getElementsByTagName('tbody')[0];  // Obtiene el cuerpo de la tabla
+        
+            // Limpiar la tabla si es necesario, o simplemente agregar nuevas filas
+            tabla.innerHTML = ''; // Esto vacía el contenido actual de la tabla, opcional si deseas actualizar todo
+        
+            // Iterar sobre los datos recibidos y crear nuevas filas
+            datos.forEach(function(ficha) {
+                var nuevaFila = tabla.insertRow();  // Crear una nueva fila
+        
+                // Crear las celdas correspondientes para cada columna
+                var celdaFicha = nuevaFila.insertCell(0);
+                var celdaFecha = nuevaFila.insertCell(1);
+                var celdaInicial = nuevaFila.insertCell(2);
+                var celdaCapitalizacion = nuevaFila.insertCell(3);
+                var celdaEstado = nuevaFila.insertCell(4);
+                var celdaOperaciones = nuevaFila.insertCell(5);
+        
+                // Asignar el contenido a las celdas
+                celdaFicha.innerHTML = ficha.id;
+                celdaFecha.innerHTML = ficha.fecha_generacion;
+                celdaInicial.innerHTML = ficha.monto_efectivo;
+                celdaCapitalizacion.innerHTML = ficha.interes + "%";
+                celdaEstado.innerHTML = ficha.estado;
+        
+                // Agregar botones en la celda de operaciones
+                celdaOperaciones.innerHTML = `
+                    <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal" data-ficha-id="${ficha.id}" onclick="setFichaData(this.getAttribute('data-ficha-id'))" ${ficha.estado === 'ACEPTADO' ? 'disabled' : ''}>Eliminar</button>
+                    <button type="button" class="btn btn-success mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal" data-ficha-llave="${ficha.random_number}" data-ficha-monto="${ficha.monto_efectivo}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" ${ficha.estado === 'ACEPTADO' ? 'disabled' : ''}><strong>TOKEN</strong></button>
+                `;
+            });
+        }
+        
     </script>
     
  </body>          
