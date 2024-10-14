@@ -143,7 +143,7 @@
                 <tbody>
                     {% for fichas in datos %}
                         <tr>
-                            <th scope="row">{{ fichas }}</th>
+                            <th scope="row">{{ fichas.id }}</th>
                             <td>{{ fichas.fecha_generacion }}</td>       
                             <td>{{ fichas.monto_efectivo }}</td>
                             <td>{{ fichas.interes }}%</td>
@@ -193,19 +193,19 @@
             <h5 class="modal-title" id="eliminarFichaModal">Eliminar Ficha</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="eliminarFichaForm" action="/eliminar-ficha" method="POST">
-            <div class="modal-body">
-                <input type="hidden" id="access_token" name="access_token">
-                <input type="hidden" id="eliminarFichaId" name="eliminarFichaId">
-                <input type="hidden" id="eliminarFichaCuenta" name="eliminarFichaCuenta">
-                <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
-                                
-                <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta ficha?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-danger">Eliminar</button>
-            </div>
+            <form id="eliminarFichaForm">
+                <div class="modal-body">
+                    <input type="hidden" id="access_token" name="access_token">
+                    <input type="hidden" id="eliminarFichaId" name="eliminarFichaId">
+                    <input type="hidden" id="eliminarFichaCuenta" name="eliminarFichaCuenta">
+                    <input type="hidden" name="layoutOrigen" id="layoutOrigen" class="form-control" value='layout_fichas'> 
+
+                    <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea eliminar esta ficha?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
             </form>
             
         </div>
@@ -215,7 +215,8 @@
 
 
 {% include 'layouts/layout_footer.html' %}   
-
+<script src="/static/js/fichas/fichasGenerar.js"></script>
+    
       <script>
       
           function setFichaData(fichaId) {
@@ -333,7 +334,7 @@
                            // Aquí se puede procesar la respuesta del servidor
                             var response = JSON.parse(xhr.responseText);  // Convierte la respuesta a un objeto JavaScript
                             // Llamar a una función para actualizar la tabla con los nuevos datos
-                            actualizarTabla(response);
+                            actualizarTabla(response.fichas);  // Accede a "fichas" dentro de "response"
                         } else {
                             alert('Hubo un problema con la solicitud.');
                         }
@@ -365,13 +366,14 @@
         });
         
         function actualizarTabla(datos) {
+            debugger;
             var tabla = document.getElementById('tablaDatos').getElementsByTagName('tbody')[0];  // Obtiene el cuerpo de la tabla
         
             // Limpiar la tabla si es necesario, o simplemente agregar nuevas filas
             tabla.innerHTML = ''; // Esto vacía el contenido actual de la tabla, opcional si deseas actualizar todo
         
             // Iterar sobre los datos recibidos y crear nuevas filas
-            datos.forEach(function(ficha) {
+            datos.forEach(function(ficha) {  // "datos" es ahora el array que contiene las fichas
                 var nuevaFila = tabla.insertRow();  // Crear una nueva fila
         
                 // Crear las celdas correspondientes para cada columna
