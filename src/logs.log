@@ -8,18 +8,33 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
-Error de conexión a la base de datos: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '44.220.157.212' ([Errno 111] Connection refused)")
-(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+madioli26@hotmail.com
+dpuntillo@gmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
+=======
+LEE EL SHEET POR LLAMADA DE FUNCION
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+>>>>>>> ef24bb99689c9c879c17702eea47d097760b5cf4
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 mauriciodioli@gmail.com
@@ -33,15 +48,96 @@ ____INTENTO ENTRAR____
 127.0.0.1
 None
 dpuntillo@gmail.com
+=======
+LEE EL SHEET POR LLAMADA DE FUNCION
+rciriaci@yahoo.com.ar
+____INTENTO ENTRAR____
+127.0.0.1
+None
+rciriaci@yahoo.com.ar
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+dpuntillo@gmail.com
+MODIFICO EL SHEET CORRECTAMENTE
+rciriaci@yahoo.com.ar
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+>>>>>>> ef24bb99689c9c879c17702eea47d097760b5cf4
 LEE EL SHEET POR LLAMADA DE FUNCION
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
+=======
+LEE EL SHEET POR LLAMADA DE FUNCION
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+MODIFICO EL SHEET CORRECTAMENTE
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+MODIFICO EL SHEET CORRECTAMENTE
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+rciriaci@yahoo.com.ar
+>>>>>>> ef24bb99689c9c879c17702eea47d097760b5cf4
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+<<<<<<< HEAD
 dpuntillo@gmail.com
+=======
+>>>>>>> ef24bb99689c9c879c17702eea47d097760b5cf4
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
