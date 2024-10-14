@@ -294,8 +294,8 @@ def crear_ficha():
             total_para_fichas =  total_cuenta * 0.6
             print(total_para_fichas)
         
-           # fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
-            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == userid, estado='PENDIENTE').all()
+            fichas_usuario = Ficha.query.filter_by(user_id=userid, estado='PENDIENTE').all()
+            fichas_json = []
             try:
                 for ficha in fichas_usuario:
                     print(ficha.token)
@@ -312,30 +312,33 @@ def crear_ficha():
                     # Agregamos random_number a la ficha
                     ficha.random_number = random_number
                     
-                    
+                    # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
+                    fecha_generacion = ficha.fecha_generacion
+
+                    # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
+                    fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
                     # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
-                    fichas_json = [
-                        {
-                            'id': ficha.id,
-                            'user_id': ficha.user_id,
-                            'monto_efectivo': ficha.monto_efectivo,
-                            'interes': ficha.interes,
-                            'estado': ficha.estado,
-                            'random_number': ficha.random_number
-                            # Agrega más campos si es necesario
-                        }
-                        for ficha in fichas_usuario
-                    ]
+                    # Añadir la ficha a la lista
+                    fichas_json.append({
+                        'id': ficha.id,
+                        'fecha_generacion': fecha_formateada,
+                        'user_id': ficha.user_id,
+                        'monto_efectivo': ficha.monto_efectivo,
+                        'interes': ficha.interes,
+                        'estado': ficha.estado,
+                        'random_number': ficha.random_number
+                    })
                 db.session.commit()
                 db.session.close()
             except Exception as e:
                db.session.rollback() 
-            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+            return jsonify({
+                                "fichas": fichas_json, 
+                                "total_para_fichas": total_para_fichas, 
+                                "total_cuenta": total_cuenta, 
+                                "layout": layouts
+                            })
 
-            #return jsonify({'fichas_usuario': fichas_json})
-        return render_template('notificaciones/tokenVencidos.html',layout = 'layout')       
-          
-        
           
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -521,9 +524,8 @@ def fichasToken_fichas_listar_sin_cuenta():
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Consulta todas las fichas del usuario dado
-                #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-                fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-                
+                fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.estado != 'STATIC').all()
+
                 try:
                     for ficha in fichas_usuario:
                         #print(ficha.monto_efectivo)
@@ -669,8 +671,7 @@ def eliminar_ficha():
         user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                
         # Buscar y eliminar la ficha
-        ficha = db.session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()
-
+        ficha = db.session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()          
         
         if ficha:
           if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
@@ -684,7 +685,7 @@ def eliminar_ficha():
             mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
         fichas_usuario = []  # o asigna la lista que corresponda
 
-        fichas_usuario = db.session.query(Ficha).filter_by(user_id=user_id).all()
+        fichas_usuario = db.session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
         db.session.close()
         pyRofexInicializada = get.ConexionesBroker.get(account)
         if pyRofexInicializada:
@@ -695,7 +696,8 @@ def eliminar_ficha():
             
             total_cuenta = available_to_collateral + portfolio
             total_para_fichas =  total_cuenta * 0.6
-            
+            fichas_json = []
+
             for ficha in fichas_usuario:
             # print(ficha.token)
                 llave_bytes = ficha.llave
@@ -710,13 +712,33 @@ def eliminar_ficha():
                 random_number = decoded_token.get('random_number')
                 # Agregamos random_number a la ficha
                 ficha.random_number = random_number
-                
+                # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
+                fecha_generacion = ficha.fecha_generacion
+
+                # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
+                fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
+                # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
+                # Añadir la ficha a la lista
+                fichas_json.append({
+                    'id': ficha.id,
+                    'fecha_generacion': fecha_formateada,
+                    'user_id': ficha.user_id,
+                    'monto_efectivo': ficha.monto_efectivo,
+                    'interes': ficha.interes,
+                    'estado': ficha.estado,
+                    'random_number': ficha.random_number
+                })
         
             if not fichas_usuario:
                 fichas_usuario = []
         
 
-            return render_template("fichas/fichasGenerar.html", datos=fichas_usuario, total_para_fichas=total_para_fichas, total_cuenta=total_cuenta, layout=layouts)
+            return jsonify({
+                            "fichas": fichas_json, 
+                            "total_para_fichas": total_para_fichas, 
+                            "total_cuenta": total_cuenta, 
+                            "layout": layouts
+                        })
         else:
             return render_template('notificaciones/noPoseeDatos.html')
         
