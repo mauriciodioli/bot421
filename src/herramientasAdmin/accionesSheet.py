@@ -79,7 +79,6 @@ def herramientasSheet_accionesSheet_actualizaLuz_thread():
         luzWebsocket_control = get.luzWebsocket_funcionando['luz']
     else:
         luzWebsocket_control = False
-    # Imprimir para verificar en la consola
     print(hora, minuto, segundo)
     
     # Devolver como respuesta un JSON que incluye el estado de 'luz' y la hora actual
