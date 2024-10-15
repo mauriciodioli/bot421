@@ -358,7 +358,11 @@ def fichasToken_fichas_generar():
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             #cuentas.indiceCuentas()            
-            reporte = cuentas.obtenerSaldoCuenta(account=cuenta)
+            if cuenta=='':
+                accountCuenta = obtenerCuentaDb(user_id=user_id)
+            else:
+                accountCuenta = cuenta
+            reporte = cuentas.obtenerSaldoCuenta(account=accountCuenta)
           
             if reporte!=None:
                 available_to_collateral = reporte['availableToCollateral']
@@ -896,3 +900,8 @@ def recibir_ficha():
         return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
     flash('token vencido') 
     return render_template('usuarios/logOutSystem.html')  
+
+
+def obtenerCuentaDb(user_id=None):
+    cuenta = db.session.query(Cuenta).filter_by(user_id=user_id).first()
+    return cuenta.accountCuenta
