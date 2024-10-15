@@ -204,28 +204,36 @@ def reporteCuenta():
                     porcien= diferencia*100
                     interes = round(porcien/available_to_collateral,0)
                     interes = int(interes)
-                    ficha.interes = interes
-                    interes_ganado = round(ficha.valor_cuenta_creacion * (interes / 100),2)
-                    total_mas_interes = round(ficha.valor_cuenta_creacion + interes_ganado, 2)
+                    if ficha != None:
+                        ficha.interes = interes                    
+                        
+                        interes_ganado = round(ficha.valor_cuenta_creacion * (interes / 100),2)
+                        total_mas_interes = round(ficha.valor_cuenta_creacion + interes_ganado, 2)
 
-                   
-                    
-                # print(interes)  
-                    llave_bytes = ficha.llave
-                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+                        llave_bytes = ficha.llave
+                        llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-                    # Luego, si necesitas obtener la llave original como bytes nuevamente
-                    llave_original_bytes = bytes.fromhex(llave_hex)
-                    #obtenemos el valor
-                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                        # Luego, si necesitas obtener la llave original como bytes nuevamente
+                        llave_original_bytes = bytes.fromhex(llave_hex)
+                        #obtenemos el valor
+                        decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                        
+                        #obtenemos el numero
+                        random_number = decoded_token.get('random_number')
+                        # Agregamos random_number a la ficha
+                        ficha.random_number = random_number
                     
-                    #obtenemos el numero
-                    random_number = decoded_token.get('random_number')
-                    # Agregamos random_number a la ficha
-                    ficha.random_number = random_number
-                    ficha.interes = interes
-                    db.session.commit()
-                    db.session.close()
+                        db.session.commit()
+                        db.session.close()
+                    else:
+                        interes_ganado = 0
+                        total_mas_interes = 0
+                        total_operaciones = 0
+                        porcentaje_ganadores = 0
+                        porcentaje_perdedores = 0
+                        suma_ganadores = 0
+                        suma_perdedores = 0
+                        
             except Exception as e:
                 db.session.rollback() 
              
@@ -279,11 +287,19 @@ def reporteCuenta():
              return render_template("usuarios/logOutSystem.html")   
    except:  
         print("no llama correctamente")  
-        flash('no hay fichas creadas aún')   
+        flash('no hay fichas creadas aun')   
         if total_cuenta < 1:
-              return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
-   return render_template("cuentas/cuentaReporte.html", datos=[], total_cuenta=total_cuenta, total_mas_interes=total_mas_interes, interes_ganado=interes_ganado,layout=layouts)
-        
+            return render_template("notificaciones/noPoseeDatosFichas.html",layout = layouts)  
+   return render_template("cuentas/cuentaReporte.html", interes=interes,
+                                       total_cuenta=total_cuenta,
+                                       total_mas_interes=total_mas_interes,
+                                       interes_ganado=interes_ganado,
+                                       suma_ganadores=suma_ganadores, 
+                                       suma_perdedores=suma_perdedores, 
+                                       porcentaje_ganadores = porcentaje_ganadores, 
+                                       porcentaje_perdedores = porcentaje_perdedores,
+                                       total_operaciones = round(total_operaciones,2), 
+                                       layout = layouts)
           
    
 @cuenta.route("/registrar_cuenta_broker", methods = ['POST'])
