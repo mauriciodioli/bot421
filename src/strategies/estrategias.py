@@ -179,17 +179,36 @@ def estrategias_usuario():
        print('no hay estrategias') 
     return  render_template("/notificaciones/errorEstrategiaVacia.html")
 
+def listar_archivos_en_directorio(directorio):
+    try:
+        # Verifica si el directorio existe
+        if os.path.exists(directorio):
+            # Lista los archivos en el directorio
+            archivos = os.listdir(directorio)
+            print(f"Archivos en el directorio {directorio}:")
+            for archivo in archivos:
+                print(archivo)
+        else:
+            print(f"El directorio {directorio} no existe.")
+    except Exception as e:
+        print(f"Error al listar los archivos en el directorio: {e}")
+        
 def eliminarArhivoEstrategia(nombreEstrategia):    
        # Construye la ruta al archivo
-    ruta_archivo = os.path.join("src", "strategies/estrategiasUsuarios", nombreEstrategia + ".py")
-    
+    #ruta_archivo = os.path.join("src", "strategies/estrategiasUsuarios", nombreEstrategia + ".py")
+    #listar_archivos_en_directorio("/workspaces/bot421/src/strategies/estrategiasUsuarios")
+    ruta_archivo = os.path.abspath(os.path.join("", "strategies", "estrategiasUsuarios", nombreEstrategia + ".py"))
+
     try:
-        # Intenta eliminar el archivo
-        os.remove(ruta_archivo)
-        print(f"Archivo {nombreEstrategia}.py eliminado correctamente.")
+        if os.path.exists(ruta_archivo):
+            # Intenta eliminar el archivo
+            os.remove(ruta_archivo)
+            print(f"Archivo {nombreEstrategia}.py eliminado correctamente.")
+            return True
     except FileNotFoundError:
         # Si el archivo no existe, muestra un mensaje de error
         print(f"El archivo {nombreEstrategia}.py no existe.")
+        return False
     except Exception as e:
         # Si ocurre un error inesperado, muestra el mensaje de error
         print(f"Error al intentar eliminar el archivo {nombreEstrategia}.py: {e}")
@@ -225,13 +244,12 @@ def eliminar_trigger():
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
         Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
         utABM.eliminarUT(IdTrigger)
-        eliminarArhivoEstrategia(Trigger.nombreEstrategia)
-        
-        db.session.delete(Trigger)
-        db.session.commit()
-        
-        
-        flash('Trigger eliminado correctamente.')
+        if eliminarArhivoEstrategia(Trigger.nombreEstrategia):        
+            db.session.delete(Trigger)
+            db.session.commit()
+            
+            
+            flash('Trigger eliminado correctamente.')
         estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
       
         db.session.close()   
@@ -428,6 +446,18 @@ def generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
        # Reemplazar la cadena "estrategia-002" con el contenido de nombreEstrategia
         nombreEstrategiaNuevo = nombreEstrategia.replace("_", "-")
         contenido_modificado = contenido_modificado.replace(ruta_estrategia, nombreEstrategiaNuevo)
+     
+        #modifica la estrategia de estrategiaSheetWS_verificar_estado
+        nombre_funcion = 'estrategiaSheetWS_verificar_estado'
+        contenido_modificado = contenido_modificado.replace("def " + nombre_funcion + "():", f"def {nuevo_nombre_funcion}_verificar_estado():")
+       
+      # Reemplazo de la ruta en el decorador
+        ruta_antigua = '/'+nombre_funcion+'/'
+        nueva_ruta = '/'+nombreEstrategia+'_verificar_estado/'
+        contenido_modificado = contenido_modificado.replace(ruta_antigua, nueva_ruta)
+
+       
+       
        
        # Arma la nueva direccion a donde guardar
         nuevo_path_estrategia_modelo = path_estrategia_modelo.replace(archivoEstrategia+'.py', "estrategiasUsuarios")
