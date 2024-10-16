@@ -50,7 +50,9 @@
           
           <span class="planes-sub-titulo" style="color: white; font-size: 18px;"> Efectividad estrategia:     </span>
             
-          <h4 class="planes-titulo" style="color: {{ 'green' if total_operaciones > 0 else 'red' }}; font-size: 24px;">
+        <!--  <h4 class="planes-titulo" style="color: {{ 'green' if total_operaciones > 0 else 'red' }}; font-size: 24px;"> --> 
+          <h4 class="planes-titulo" style="color: {{ 'green' if total_operaciones|default(0) > 0 else 'red' }}; font-size: 24px;">
+
                 <span style="color: white;">(</span>
                 {% if total_operaciones > 0 %}
                      <strong style="color: green;">{{ porcentaje_ganadores }}</strong>
