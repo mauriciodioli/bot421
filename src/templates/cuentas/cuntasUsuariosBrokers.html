@@ -103,7 +103,7 @@
             <input type="hidden" id="editarCuentaId" name="id">
             <div class="form-group">
               <label for="editarCuentaEmail">Email:</label>
-              <input type="email" class="form-control" id="editarCuentaEmail" name="email" required>
+              <input type="email" class="form-control" id="editarCuentaEmail"  autocomplete="email" name="email" required>
             </div>
             <div class="form-group">
               <label for="editarCuentaRol">Rol:</label>
@@ -173,7 +173,7 @@
 <script >
   $(document).ready(function() {
     // Validación del nombre
-    var nombre = document.getElementById("correo_electronico");
+    var nombre = document.getElementById("userSistema");
     function validateNombre(event) {
       if (nombre.value.indexOf(' ') >= 0) {
         nombre.setCustomValidity("El correo_electronico no debe contener espacios en blanco");
@@ -183,21 +183,11 @@
       }
     }
   
-    // Validación de la confirmación de contraseña
-    var password = document.getElementById("password");
-    var confirm_password = document.getElementById("confirm_password");
-  
-    function validatePassword() {
-      if (password.value != confirm_password.value) {
-        confirm_password.setCustomValidity("Las contraseñas no coinciden");
-      } else {
-        confirm_password.setCustomValidity("");
-      }
-    }
+    
   
     nombre.onchange = validateNombre;
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
+   
+   
   });
 
   const editButtons = document.querySelectorAll('[data-bs-target="#editarCuentaModal"]');

@@ -18,8 +18,9 @@
 {% block content %}
 <div class="container my-5">
     <div id="chat-container"></div> <!-- Container for all chat popups -->
-      <!-- Widget del Chat -->
-      <div class="chat-icon" id="openChat">
+    
+    <!-- Widget del Chat -->
+    <div class="chat-icon" id="openChat">
         💬 <!-- Aquí puedes usar un ícono de chat o una imagen -->
     </div>
 
@@ -28,15 +29,21 @@
             <span>DPI inversiones</span>
             <button id="closeChat">×</button>
         </div>
+
         <div class="chat-body" id="chatBody">
             <!-- Aquí se mostrarán los mensajes -->
         </div>
+
         <div class="chat-footer">
-            <input type="text" id="chatMessage" placeholder="Escribe tu mensaje..." />
-            <button id="sendMessage">Enviar</button>
+            <form id="chatForm">
+                <!-- Input corregido, tiene tanto id como name -->
+                <input type="text" name="chatMessage" id="chatMessage" placeholder="Escribe tu mensaje..." />
+
+                <!-- Botón de envío -->
+                <button type="submit" id="sendMessage">Enviar</button>
+            </form>
         </div>
     </div>
-    
 </div>
 
 {% include 'layouts/layout_footer.html' %}

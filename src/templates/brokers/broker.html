@@ -151,31 +151,20 @@
 <script >
   $(document).ready(function() {
     // Validación del nombre
-    var nombre = document.getElementById("correo_electronico");
+    var nombre = document.getElementById("api_url");
     function validateNombre(event) {
       if (nombre.value.indexOf(' ') >= 0) {
-        nombre.setCustomValidity("El correo_electronico no debe contener espacios en blanco");
+        nombre.setCustomValidity("El api_url no debe contener espacios en blanco");
         event.preventDefault();
       } else {
         nombre.setCustomValidity("");
       }
     }
   
-    // Validación de la confirmación de contraseña
-    var password = document.getElementById("password");
-    var confirm_password = document.getElementById("confirm_password");
-  
-    function validatePassword() {
-      if (password.value != confirm_password.value) {
-        confirm_password.setCustomValidity("Las contraseñas no coinciden");
-      } else {
-        confirm_password.setCustomValidity("");
-      }
-    }
+    
   
     nombre.onchange = validateNombre;
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
+   
   });
 
   const editButtons = document.querySelectorAll('[data-bs-target="#editarEndPointModal"]');
@@ -203,44 +192,6 @@
 
 
  
-    function seleccionarUsuario(usuarioId, usuarioNombre) {
-      document.getElementById('userSistema').value = usuarioNombre;
-      // Puedes almacenar el ID del usuario seleccionado en un campo oculto para enviarlo junto con el formulario de registro
-      document.getElementById('usuarioIdSeleccionado').value = usuarioId;
-      // Cierra el modal de selección de usuario
-      const modal = document.getElementById('seleccionarUsuarioModal');
-      const bootstrapModal = bootstrap.Modal.getInstance(modal);
-      bootstrapModal.hide();
-    }
-
-    ////cuando se abre el modal se llama la funcion para cargar los usuarios
-    document.getElementById('seleccionarUsuarioModal').addEventListener('shown.bs.modal', function () {
-      cargarUsuarios();
-    });
-    function cargarUsuarios() {
-      fetch('/usuariosModal/')
-        .then(response => response.json())
-        .then(data => {
-          const usuarios = data.usuarios;  // Suponiendo que la respuesta JSON contiene una propiedad "usuarios" con los datos de los usuarios
-          const ul = document.querySelector('.modal-body ul');
-          ul.innerHTML = '';  // Limpia la lista existente
-    
-          usuarios.forEach(usuario => {
-            const li = document.createElement('li');
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'btn btn-primary';
-            button.innerText = usuario.nombre;
-            button.addEventListener('click', () => {
-              seleccionarUsuario(usuario.id, usuario.nombre);
-            });
-    
-            li.appendChild(button);
-            ul.appendChild(li);
-          });
-        })
-        .catch(error => console.error(error));
-    }
     
 </script>
 {% endblock %}
