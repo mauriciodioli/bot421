@@ -657,3 +657,29 @@ ____INTENTO ENTRAR____
 127.0.0.1
 None
 rciriaci@yahoo.com.ar
+mauriciodioli@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '44.220.157.212' ([Errno 111] Connection refused)")
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+mauriciodioli@gmail.com
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '44.220.157.212' ([Errno 111] Connection refused)")
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error de conexión a la base de datos: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '44.220.157.212' (timed out)")
+(Background on this error at: https://sqlalche.me/e/14/e3q8)

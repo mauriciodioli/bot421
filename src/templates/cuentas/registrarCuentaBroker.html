@@ -23,15 +23,14 @@
     <div class="container" id="cardIndex">                
       <div class="card-body cardIndexCuentaBroker">
           <div class="row">
-              <div class="col text-start">
-                  <label for="lanzar" style="color: rgb(252, 252, 252);">Agregar Broker</label>
+              <div class="col text-start">                  
+                  <h5 style="color: rgb(252, 252, 252);">Agregar Broker</h5>
               </div>
           </div>
          
           <div class="row mt-3">
               <div class="col text-center">
-                  <label for="lanzar" style="color: rgb(255, 255, 255);">Press Enter to add broker.</label>
-                  
+                  <h5 style="color: rgb(252, 252, 252);">Press Enter to add broker.</h5>
                   <button id="btnagregarCuentaBroker" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
                           onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
                           data-bs-toggle="modal" data-bs-target="#agregarCuentaBroker">Agregar Broker</button>
@@ -48,14 +47,14 @@
     <div class="container" id="cardCuentaBroker">                
       <div class="card-body cardIndexCuentaBroker">
           <div class="row">
-              <div class="col text-start">
-                  <label for="lanzar" style="color: #f8f8f8;">Cuentas de Brokers Registradas</label>
+              <div class="col text-start">                  
+                  <h5 style="color: rgb(252, 252, 252);">Cuentas de Brokers Registradas</h5>
               </div>
           </div>
          
           <div class="row mt-3">
               <div class="col text-center">
-                  <label for="lanzar" style="color: rgb(255, 255, 255);">Press Enter to lock the account for operation.</label>
+                <h6 style="color: rgb(252, 252, 252);">Press Enter to lock the account for operation.</h6>                  
                   <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
                     <input type="hidden" name="access_token" id="access_token">
                     <div class="col">                            
@@ -79,14 +78,13 @@
       <div class="card-body cardIndexCuentaBroker">
           <div class="row">
               <div class="col text-start">
-                  <label for="lanzar" style="color: rgb(252, 252, 252);">Signals</label>
+                     <h5 style="color: rgb(252, 252, 252);">Signals</h5>
               </div>
           </div>
          
           <div class="row mt-3">
               <div class="col text-center">
-                  <label for="lanzar" style="color: rgb(251, 251, 249);">Press Enter to lock the signal for operation.</label>
-                  
+                  <h5 style="color: rgb(252, 252, 252);">Press Enter to lock the signal for operation.</h5>
                   <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
                           onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
                           data-bs-toggle="modal" data-bs-target="#modalSeleccionPais">Signals</button>
@@ -103,7 +101,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="agregarCuentaBrokerLabel">Registrar Cuenta</h5>
+        <h5 class="modal-title" id="agregarCuentaBrokerLabel" style="color: black;">Registrar Cuenta</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
