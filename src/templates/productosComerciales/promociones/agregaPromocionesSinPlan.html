@@ -135,7 +135,7 @@
                                         <input type="text" class="form-control" id="promotionReason1" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="promotionStatusn1">Estado</label>
+                                        <label for="promotionStatus1">Estado</label>
                                         <input type="text" class="form-control" id="promotionStatus1" required>
                                     </div>                            
                                     <div class="form-group">
@@ -220,5 +220,5 @@
         </div>
         
 {% include 'layouts/layout_footer.html' %}
-
+<script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script>
 {% endblock %}

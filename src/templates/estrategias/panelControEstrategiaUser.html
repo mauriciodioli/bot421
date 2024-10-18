@@ -769,7 +769,8 @@
 
 
 // Supongamos que resumenCuenta es una variable de tu lógica JS
-var resumenCuenta = {{ resumenCuenta }};
+var resumenCuenta = {{ resumenCuenta | tojson }};
+
 
 // Si resumenCuenta es 0, almacena 'False', de lo contrario, almacena 'True'
 
