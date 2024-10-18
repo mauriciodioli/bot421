@@ -559,7 +559,9 @@ def fichasToken_fichas_listar_sin_cuenta():
                     db.session.rollback()   
                 traza_fichas_con_fichas = []  # o asigna la lista que corresponda
                 # Obtener todas las TrazaFichas con sus Fichas relacionadas
-                traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+                #traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+               # Filtramos las TrazaFichas por el user_id_traspaso
+                traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).filter(TrazaFicha.user_id_traspaso == user_id).options(joinedload(TrazaFicha.ficha)).all()
 
                 for traza_ficha in traza_fichas_con_fichas:
                     ficha_relacionada = traza_ficha.ficha
