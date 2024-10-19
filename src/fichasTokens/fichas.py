@@ -46,10 +46,9 @@ def refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta):
                 reporte = repuesta_cuenta['accountData']
                 available_to_collateral = reporte['availableToCollateral']
                 fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-
-                for ficha in fichas_usuario:
-                    ficha.valor_cuenta_actual = available_to_collateral
-                    db.session.commit()
+                
+                calculoInteres(fichas_usuario,available_to_collateral)
+                
                     
             else:
                 # Aquí puedes agregar código adicional si deseas realizar alguna acción específica cuando no hay datos.
@@ -381,6 +380,7 @@ def fichasToken_fichas_generar():
 
            
             try:
+               
                 for ficha in fichas_usuario:
                     #print(ficha.monto_efectivo)
                     total_para_fichas=total_para_fichas - ficha.monto_efectivo
@@ -819,18 +819,18 @@ def reportar_ficha():
      
 
             # Imprimir todos los campos de Ficha
-            print("Campos de Ficha:")
-            print(f"  ID: {ficha_relacionada.id}")
-            print(f"  User ID: {ficha_relacionada.user_id}")
-            print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
-            print(f"  Activo: {ficha_relacionada.activo}")
-            print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
-            print(f" interes: {ficha_relacionada.interes}")
-            print(f"  estado: {ficha_relacionada.estado}")
-            print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
+            #print("Campos de Ficha:")
+            #print(f"  ID: {ficha_relacionada.id}")
+            #print(f"  User ID: {ficha_relacionada.user_id}")
+            #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+            #print(f"  Activo: {ficha_relacionada.activo}")
+            #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+            #print(f" interes: {ficha_relacionada.interes}")
+            #print(f"  estado: {ficha_relacionada.estado}")
+            #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
             # ... Agrega más campos según sea necesario
 
-            print("\n")  
+            #print("\n")  
           
                 
             
@@ -883,18 +883,18 @@ def recibir_ficha():
      
 
             # Imprimir todos los campos de Ficha
-            print("Campos de Ficha:")
-            print(f"  ID: {ficha_relacionada.id}")
-            print(f"  User ID: {ficha_relacionada.user_id}")
-            print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
-            print(f"  Activo: {ficha_relacionada.activo}")
-            print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
-            print(f" interes: {ficha_relacionada.interes}")
-            print(f"  estado: {ficha_relacionada.estado}")
-            print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
+            #print("Campos de Ficha:")
+            #print(f"  ID: {ficha_relacionada.id}")
+            #print(f"  User ID: {ficha_relacionada.user_id}")
+            #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+            #print(f"  Activo: {ficha_relacionada.activo}")
+            #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+            #print(f" interes: {ficha_relacionada.interes}")
+            #print(f"  estado: {ficha_relacionada.estado}")
+            #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
             # ... Agrega más campos según sea necesario
 
-            print("\n")  
+            #print("\n")  
           
                 
             
@@ -907,3 +907,14 @@ def recibir_ficha():
 def obtenerCuentaDb(user_id=None):
     cuenta = db.session.query(Cuenta).filter_by(user_id=user_id).first()
     return cuenta.accountCuenta
+
+def calculoInteres(fichas_usuario,available_to_collateral):
+    for ficha in fichas_usuario:
+        diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+        porcien= diferencia*100
+        interes = porcien/ficha.valor_cuenta_actual
+        interes = int(interes)
+        ficha.interes = interes
+        ficha.valor_cuenta_actual = available_to_collateral
+        db.session.commit()
+    return interes
