@@ -131,8 +131,7 @@
         <div class="table-responsive">  
             <table class="table table-dark table-striped"  id="tablaDatos">
                 <thead>           
-                    <tr>
-                       
+                    <tr>                     
                         <th scope="col">Fecha</th>
                         <th scope="col">Inicial</th>
                         <th scope="col">Capitalizacion</th>
@@ -377,15 +376,14 @@
                 var nuevaFila = tabla.insertRow();  // Crear una nueva fila
         
                 // Crear las celdas correspondientes para cada columna
-                var celdaFicha = nuevaFila.insertCell(0);
-                var celdaFecha = nuevaFila.insertCell(1);
-                var celdaInicial = nuevaFila.insertCell(2);
-                var celdaCapitalizacion = nuevaFila.insertCell(3);
-                var celdaEstado = nuevaFila.insertCell(4);
-                var celdaOperaciones = nuevaFila.insertCell(5);
+             
+                var celdaFecha = nuevaFila.insertCell(0);
+                var celdaInicial = nuevaFila.insertCell(1);
+                var celdaCapitalizacion = nuevaFila.insertCell(2);
+                var celdaEstado = nuevaFila.insertCell(3);
+                var celdaOperaciones = nuevaFila.insertCell(4);
         
-                // Asignar el contenido a las celdas
-                celdaFicha.innerHTML = ficha.id;
+               
                 celdaFecha.innerHTML = ficha.fecha_generacion;
                 celdaInicial.innerHTML = ficha.monto_efectivo;
                 celdaCapitalizacion.innerHTML = ficha.interes + "%";

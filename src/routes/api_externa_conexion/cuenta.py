@@ -15,6 +15,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.brokers import Broker
 from models.ficha import Ficha
+from datetime import datetime
 
 
 
@@ -209,7 +210,7 @@ def reporteCuenta():
                         
                         interes_ganado = round(ficha.valor_cuenta_creacion * (interes / 100),2)
                         total_mas_interes = round(ficha.valor_cuenta_creacion + interes_ganado, 2)
-
+                        dias = calcular_dias_desde_traspaso(ficha.fecha_generacion)
                         llave_bytes = ficha.llave
                         llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
@@ -273,6 +274,7 @@ def reporteCuenta():
                
                 return render_template("cuentas/cuentaReporte.html",    
                                        interes=interes,
+                                       dias=dias,
                                        total_cuenta=total_cuenta,
                                        total_mas_interes=total_mas_interes,
                                        interes_ganado=interes_ganado,
@@ -705,3 +707,7 @@ def get_pass_cuenta_de_broker(user_id,account):
             
    
 
+def calcular_dias_desde_traspaso(fecha_generacion):
+    fecha_actual = datetime.now()
+    diferencia = fecha_actual - fecha_generacion
+    return diferencia.days 
