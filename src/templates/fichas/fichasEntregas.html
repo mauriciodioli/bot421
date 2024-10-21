@@ -48,7 +48,7 @@
                             <td>{{ ficha.estado }}</td>
                         <td class="d-flex">
                             <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#reportarFichaModal" data-ficha-id="{{ ficha.id }}" data-ficha-idFicha="{{ ficha.idFicha }}" onclick="setFichaDataReportar(this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))">Reportar</button>
-                            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#pagarFichaModal" data-ficha-id="{{ ficha.id }}" data-ficha-idFicha="{{ ficha.idFicha }}" onclick="setFichaData(this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))" {% if ficha.estado == 'ACEPTADO' %}disabled{% endif %}>Entregar</button>
+                            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#pagarFichaModal" data-ficha-id="{{ ficha.id }}" data-ficha-idFicha="{{ ficha.idFicha }}" onclick="setFichaData(this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))" {% if ficha.estado == 'ACEPTADO' %}disabled{% endif %}>Pagar</button>
                         </td>
                     </tr>
                     {% endif %}

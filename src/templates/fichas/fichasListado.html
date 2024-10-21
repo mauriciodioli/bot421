@@ -54,7 +54,7 @@
                             
                                     <button type="button" class="btn btn-primary  mx-2" data-bs-toggle="modal" data-bs-target="#tokenFichaModal"  data-ficha-llave="{{ fichas.ficha.random_number }}"  data-ficha-monto="{{ fichas.ficha.monto_efectivo }}" onclick="setFichaDataToken(this.getAttribute('data-ficha-llave'),this.getAttribute('data-ficha-monto'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}><srtrong>Asignar</strong></button>
                                     <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#reportarFichaModal"  data-ficha-id="{{ fichas.id }}" data-ficha-idFicha="{{ fichas.idFicha }}" onclick="setFichaDataReportar( this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))">Reportar</button>
-                                    <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarFichaModal"  data-ficha-id="{{ fichas.id }}"  data-ficha-idFicha="{{ fichas.idFicha }}"  onclick="setFichaData( this.getAttribute('data-ficha-id') , this.getAttribute('data-ficha-idFicha'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>Recibido</button>
+                                    <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#recibirFichaModal"  data-ficha-id="{{ fichas.id }}"  data-ficha-idFicha="{{ fichas.idFicha }}"  onclick="setFichaData( this.getAttribute('data-ficha-id') , this.getAttribute('data-ficha-idFicha'))" {% if fichas.estado == 'ACEPTADO' %}disabled{% endif %}>Recibido</button>
                                 </td>
                         </tr>
                     {% endif %}    
@@ -142,14 +142,14 @@
 
 
 
- <div class="modal fade" id="eliminarFichaModal" tabindex="-1" aria-labelledby="eliminarFichaModal" aria-hidden="true">
+ <div class="modal fade" id="recibirFichaModal" tabindex="-1" aria-labelledby="recibirFichaModal" aria-hidden="true">
   <div class="modal-dialog">
   <div class="modal-content">
       <div class="modal-header">
       <h5 class="modal-title" id="eliminarFichaModal">Ricibe Ficha</h5>
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="eliminarFichaForm" action="/recibir-ficha" method="POST">
+      <form id="recibirFichaForm" action="/recibir-ficha" method="POST">
         <div class="modal-body">
             <input type="hidden" id="recibir_access_token" name="recibir_access_token">
             <input type="hidden" id="recibirFichaId" name="recibirFichaId">
