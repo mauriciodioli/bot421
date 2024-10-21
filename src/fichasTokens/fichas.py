@@ -472,7 +472,10 @@ def fichasToken_fichas_pagar():
                 mensaje = "La ficha ha sido pagada correctamente."
         else:
             mensaje = "No se encontró la ficha o no tienes permisos para acpetarla."
-        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.estado != 'STATIC').all()
+        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id,
+                                                        Ficha.estado != 'STATIC',
+                                                        Ficha.estado != 'PAGADO',
+                                                        Ficha.estado != 'ACEPTADO').all()
 
         db.session.close()
        
@@ -621,7 +624,10 @@ def fichasToken_fichas_entregar():
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             
             # Consulta todas las fichas del usuario dado
-            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.estado != 'STATIC').all()
+            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, 
+                                                            Ficha.estado != 'STATIC',
+                                                            Ficha.estado != 'ACEPTADO',
+                                                            Ficha.estado != 'PAGADO').all()
 
             for ficha in fichas_usuario:
                 diferencia = ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
