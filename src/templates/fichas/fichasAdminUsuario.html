@@ -1,0 +1,219 @@
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+{% if layout == 'layout'%}
+    {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+
+
+{% block content%}
+
+<div class = 'container p-4'>
+    
+    <h3>Fichas</h3>
+    <div class="table-responsive">                  
+        <table class="table table-dark table-striped"  id="tablaDatos">
+            <thead>           
+                <tr>
+                    <th scope="col">ID</th>   
+                                
+                    <th scope="col">Monto Efectivo</th>               
+                    <th scope="col">Interés</th>
+                    <th scope="col">Valor Cuenta Actual</th>                     
+                    <th scope="col">Estado</th>
+                </tr>            
+            </thead>
+            <tbody>
+                {% for ficha in fichas %}
+                    {% if fichas.user_id != usuario_id %}
+                            <tr>
+                                <td>{{ ficha.id }}</td>
+                                <td>{{ ficha.monto_efectivo }}</td>
+                                <td>{{ ficha.interes }}%</td>
+                                <td>{{ ficha.valor_cuenta_actual }}</td>
+                                <td>{{ ficha.estado }}</td>
+                            </tr>
+                    {% endif %}    
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>   
+</div>
+
+
+
+
+
+<!-- Tabla de Traza Fichas -->
+<h3>Traza</h3>
+
+<div class="table-responsive">                  
+    <table class="table table-dark table-striped"  id="tablaDatos">
+        <thead>           
+            <tr>
+                <th scope="col">ID Traza</th>  
+                <th scope="col">ID Ficha</th>               
+                <th scope="col">Fecha Traspaso</th>
+                <th scope="col">Estado Traza</th>                     
+               
+            </tr>            
+        </thead>
+        <tbody>
+            {% for traza in traza_fichas %}
+                {% if traza.user_id != usuario_id %}
+                        <tr>
+                            <td>{{ traza.id }}</td>
+                            <td>{{ traza.idFicha }}</td>
+                            <td>{{ traza.fecha_traspaso }}</td>
+                            <td>{{ traza.estado_traza }}</td>
+                        </tr>
+                {% endif %}    
+            {% endfor %}
+        </tbody>
+    </table>
+</div>   
+
+
+
+
+
+
+    <div class="modal fade" id="IngresaValorFicha" tabindex="-1" aria-labelledby="IngresaValorFichaModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content border shadow">
+                <div class="modal-header">
+                </div>
+                
+                <form id="tomarFicha" action="/fichas-tomar" method="POST">
+                    <div class="modal-body">
+                        <h6 style="color: blue; margin-bottom: 10px;">INGRESAR TOKEN</h6>
+                        <input type="text" id="tokenInput" class="form-control" name="tokenInput" placeholder="Ingresa tu token">
+                        <input type="hidden" id="access_token_forma" name="access_token_forma" >
+                        <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
+                        <h2 class="modal-title text-center" id="valorllave" style="color: green;  100px; text-align: center;"></h2>
+                    
+                   
+                    </div>
+                    <div class="modal-footer">                  
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  id="aceptarBtn">Aceptar</button>
+                    </div>
+                </form>    
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="reportarFichaModal" tabindex="-1" aria-labelledby="reportarFichaModal" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="reportarFichaModal">Reportar Ficha</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="reportarFichaForm" action="/reportar-ficha" method="POST">
+            <div class="modal-body">
+                <input type="hidden" id="access_token" name="access_token">
+                <input type="hidden" id="reportarFichaId" name="reportarFichaId">
+                <input type="hidden" id="reportaridFicha" name="reportaridFicha">
+                <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
+                                
+                <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea reportar esta ficha?</p>
+                <p class="fw-bold text-dark" style="color: black;">Si reporta esta ficha se bloqueara la cuenta del emisor</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Reportar</button>
+            </div>
+            </form>
+            
+        </div>
+        </div>
+   </div>
+
+
+   <div class="modal fade" id="tokenFichaModal" tabindex="-1" aria-labelledby="tokenFichaModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <span id="montoEtiqueta" style="color: black; font-weight: bold; font-size: 1rem; display: block; text-align: left;">Valor</span>
+                    <span id="montoFicha" name="montoFicha" style="color: blue; font-weight: bold; font-size: 1rem; display: block; text-align: left;"></span>
+                </div>
+            </div>
+            <div class="modal-body">               
+                <div>
+                    <span id="llaveFicha" name="llaveFicha" style="color: black; font-weight: bold; font-size: 3rem; display: block; text-align: center;"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+ </div>
+
+
+
+ <div class="modal fade" id="eliminarFichaModal" tabindex="-1" aria-labelledby="eliminarFichaModal" aria-hidden="true">
+  <div class="modal-dialog">
+  <div class="modal-content">
+      <div class="modal-header">
+      <h5 class="modal-title" id="eliminarFichaModal">Ricibe Ficha</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="eliminarFichaForm" action="/recibir-ficha" method="POST">
+        <div class="modal-body">
+            <input type="hidden" id="recibir_access_token" name="recibir_access_token">
+            <input type="hidden" id="recibirFichaId" name="recibirFichaId">
+            <input type="hidden" id="recibiridFicha" name="recibiridFicha">
+            
+            <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
+                            
+            <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea recibir esta ficha?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Recibir</button>
+        </div>
+      </form>
+      
+  </div>
+  </div>
+</div>
+
+
+
+
+{% include 'layouts/layout_footer.html' %}   
+
+    <script>
+
+
+
+
+
+    </script>
+        
+
+</div>
+{%endblock%}
+ 
