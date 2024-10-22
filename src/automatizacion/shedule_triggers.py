@@ -129,6 +129,16 @@ def ArrancaShedule():
             selector = data['selector']  
             clienteTimezone = data['clienteTimezone']
             
+              # Acceder a la cookie 'horaGuardada' y 'diferenciaHoraria'
+            hora_guardada = request.cookies.get('horaGuardada')
+            hora_diferencia = request.cookies.get('diferenciaHoraria')
+            # Si necesitas hacer algo con las horas almacenadas
+            if hora_diferencia:
+                print(f'Hora de diferencia almacenada: {hora_diferencia}')
+            else:
+                print('No se encontró la hora de diferencia en las cookies.')
+
+            
             fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone,fechaActual)
             fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone,fechaActual)
             global detener_proceso_automatico_triggers
