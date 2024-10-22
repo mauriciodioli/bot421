@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,current_app ,session,request, redirect, url_for, flash,jsonify
+from flask import Blueprint, render_template,current_app ,session,request, make_response,redirect, url_for, flash,jsonify
 from utils.common import Marshmallow, db, get
 import routes.instrumentosGet as instrumentosGet
 import routes.api_externa_conexion.validaInstrumentos as val
@@ -21,6 +21,36 @@ import os
 import copy
 
 accionesTriggers = Blueprint('accionesTriggers',__name__)
+
+
+@accionesTriggers.route("/herramAdmin_accionesTrigger_actualizaHorario/")
+def herramAdmin_accionesTrigger_actualizaHorario(): 
+    return render_template('automatizacion/actualizaHorarioShedule.html', layout='layout')
+
+@accionesTriggers.route('/actualizaHorario', methods=['GET', 'POST'])
+def actualiza_horario():
+    mensaje_confirmacion = None
+    if request.method == 'POST':
+        hora_seleccionada = request.form.get('hora')
+        response = make_response(render_template('automatizacion/actualizaHorarioShedule.html', hora=hora_seleccionada, layout='layout', mensaje='Hora almacenada correctamente'))
+        
+        # Almacenar la cookie
+        response.set_cookie('horaGuardada', 'true', max_age=5*24*60*60)  # 5 días
+        response.set_cookie('diferenciaHoraria', hora_seleccionada, max_age=7*24*60*60)  # 7 días
+        
+        return response
+    
+    return render_template('automatizacion/actualizaHorarioShedule.html', layout='layout')
+
+
+@accionesTriggers.route('/get_server_time')
+def get_server_time():
+    from datetime import datetime
+    # Obtener la hora actual del servidor
+    hora_actual = datetime.now().strftime('%H:%M')
+    return {'hora': hora_actual}
+
+
 
 
 
