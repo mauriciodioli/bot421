@@ -1,0 +1,73 @@
+{% if layout == 'layout'%} 
+    {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %} 
+    {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+{% if layout == 'layout_detalle_productos' %} 
+    {% extends 'layouts/layout_detalle_productos.html' %}    
+{% endif %}
+
+{% if layout == 'layout_signal' %} 
+    {% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block content %}
+
+<div class="jumbotron">
+    <h1 class="display-4">Cambia Hora de Shedule!</h1>  
+
+    <form method="POST" action="{{ url_for('accionesTriggers.actualiza_horario') }}" class="form-inline">
+        <div class="form-group mb-2">
+            <label for="hora" class="mr-2">Selecciona una hora:</label>
+            <select id="hora" name="hora" class="form-control mr-2">
+                {% for i in range(24) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Guardar Hora</button>
+    </form>
+
+    <h1 id="horaAlmacenada" style="color: blue;">Hora Almacenada: </h1>
+    <p id="horaServidor" style="color: blue;">Hora del Servidor: </p>
+
+    <script>
+        // Función para obtener la hora del servidor
+        function obtenerHoraServidor() {
+            fetch('{{ url_for("accionesTriggers.get_server_time") }}')
+                .then(response => response.json())
+                .then(data => {
+                    // Mostrar la hora del servidor en el párrafo correspondiente
+                    document.getElementById('horaServidor').textContent += data.hora;
+
+                    // Almacenar la hora del servidor en una cookie
+                    document.cookie = "horaServidor=" + data.hora + "; max-age=" + (7*24*60*60);
+                });
+        }
+
+        // Llamar a la función al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            obtenerHoraServidor();
+
+            // Mostrar el alert si hay un mensaje de confirmación
+            {% if mensaje %}
+                alert('{{ mensaje }}');
+            {% endif %}
+
+            // Verificar si la cookie 'horaGuardada' existe
+            if (document.cookie.split('; ').find(row => row.startsWith('horaGuardada'))) {
+                const horaGuardada = document.cookie.split('; ').find(row => row.startsWith('diferenciaHoraria')).split('=')[1];
+                document.getElementById('horaAlmacenada').textContent += horaGuardada ;
+            }
+        });
+    </script>
+</div>
+{% include 'layouts/layout_footer.html' %}
+{% endblock %}

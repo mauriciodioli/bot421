@@ -19,13 +19,15 @@ class TriggerEstrategia(db.Model):
     horaFin = db.Column(db.Time)  # Nuevo atributo de tiempo
     ManualAutomatico = db.Column(db.String(500), nullable=False)
     nombreEstrategia = db.Column(db.String(500), nullable=False)
+    diferenciaHoraria = db.Column(db.String(500))
+    
     
     
     usuarios = relationship("Usuario", back_populates="triggerEstrategia")   
   
     
  # constructor
-    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,horaInicio,horaFin,ManualAutomatico,nombreEstrategia):
+    def __init__(self, id,user_id,userCuenta,passwordCuenta,accountCuenta,horaInicio,horaFin,ManualAutomatico,nombreEstrategia,diferenciaHoraria):
         self.id = id
         self.user_id = user_id
         self.userCuenta = userCuenta
@@ -35,6 +37,7 @@ class TriggerEstrategia(db.Model):
         self.horaFin = horaFin
         self.ManualAutomatico = ManualAutomatico
         self.nombreEstrategia = nombreEstrategia
+        self.diferenciaHoraria = diferenciaHoraria
    
 
     @classmethod
@@ -47,7 +50,7 @@ class TriggerEstrategia(db.Model):
         
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta","horaInicio","horaFin" ,"ManualAutomatico","nombreEstrategia")
+        fields = ("id", "user_id" ,"userCuenta","passwordCuenta","accountCuenta","horaInicio","horaFin" ,"ManualAutomatico","nombreEstrategia","diferenciaHoraria")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
