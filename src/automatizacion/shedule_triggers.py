@@ -72,10 +72,17 @@ def calculaHoraActual(hora_diferencia,tiempo, clienteTimezone,fechaActual):
 
     # Paso 3: Calcular la diferencia de tiempo entre el servidor y el cliente de manera precisa
     time_difference = client_time_en_servidor - hora_actual_servidor 
-    time_difference = time_difference + hora_diferencia
-    print("Diferencia de tiempo entre servidor y cliente:", time_difference)
+    
+     # Asegurarse de que hora_diferencia sea un objeto timedelta
+    hora_diferencia_timedelta = timedelta(hours=hora_diferencia)
+
+    # Sumar la diferencia de tiempo y la hora_diferencia
+    total_time_difference = time_difference + hora_diferencia_timedelta
+
+   
+    print("Diferencia de tiempo entre servidor y cliente:", total_time_difference)
         # Obtener la diferencia de horas, minutos y segundos por separado
-    hours_difference = time_difference.seconds // 3600  # Convertir segundos a horas
+    hours_difference = total_time_difference.seconds // 3600  # Convertir segundos a horas
 
     # Paso 4: Ajustar la hora del servidor según la diferencia de horas
     tiempo_dt = datetime.strptime(tiempo, '%H:%M')    
