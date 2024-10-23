@@ -23,6 +23,7 @@ from models.modelMedia.video import Video
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
+from models.servidores.servidorAws import ServidorAws
 from datetime import datetime
 from flask import Blueprint,flash
 
@@ -54,6 +55,7 @@ def crea_tablas_DB():
     Publicacion.crear_tabla_publicacion()
     Public_imagen_video.crear_tabla_Public_imagen_video()
     Estado_publi_usu.crear_tabla_estado_publi_usu()
+    ServidorAws.crear_tabla_servidor_aws()
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     

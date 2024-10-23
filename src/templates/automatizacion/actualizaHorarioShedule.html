@@ -22,23 +22,46 @@
 
 <div class="jumbotron">
     <h1 class="display-4">Cambia Hora de Shedule!</h1>  
-
     <form method="POST" action="{{ url_for('accionesTriggers.actualiza_horario') }}" class="form-inline">
         <div class="form-group mb-2">
             <label for="hora" class="mr-2">Selecciona una hora:</label>
             <select id="hora" name="hora" class="form-control mr-2">
-                {% for i in range(24) %}
+                {% for i in range(-12, 13) %}  {# Ajusta el rango de -12 a 12 #}
                     <option value="{{ i }}">{{ i }}</option>
                 {% endfor %}
             </select>
         </div>
+        
+        <div class="form-group mb-2">
+            <label for="nombre_servidor_contenedor" class="mr-2">Nombre del Servidor:</label>
+            <input type="text" id="nombre_servidor_contenedor" name="nombre_servidor_contenedor" class="form-control mr-2" value="aws_202404" onfocus="if(this.value === 'aws_202404') this.value = '';" onblur="if(this.value === '') this.value = 'aws_202404';">
+
+        </div>
+    
+        <input type="hidden" id="fecha_generacion" name="fecha_generacion">
+        <input type="hidden" id="hora_generacion" name="hora_generacion">
+        <input type="hidden" id="hora_servidor" name="hora_servidor">
+    
+        <div class="form-group mb-2">
+            <label for="estado" class="mr-2">Estado:</label>
+            <input type="text" id="estado" name="estado" class="form-control mr-2" oninput="this.value = this.value.toUpperCase();">
+        </div>
+        <div class="form-group mb-2">
+            <label for="descripcion" class="mr-2">Descripción:</label>
+            <input type="text" id="descripcion" name="descripcion" class="form-control mr-2">
+        </div>
+    
         <button type="submit" class="btn btn-primary mb-2">Guardar Hora</button>
     </form>
+    
+    
 
     <h1 id="horaAlmacenada" style="color: blue;">Hora Almacenada: </h1>
     <p id="horaServidor" style="color: blue;">Hora del Servidor: </p>
 
     <script>
+
+
         // Función para obtener la hora del servidor
         function obtenerHoraServidor() {
             fetch('{{ url_for("accionesTriggers.get_server_time") }}')
@@ -46,16 +69,27 @@
                 .then(data => {
                     // Mostrar la hora del servidor en el párrafo correspondiente
                     document.getElementById('horaServidor').textContent += data.hora;
-
+                   
                     // Almacenar la hora del servidor en una cookie
                     document.cookie = "horaServidor=" + data.hora + "; max-age=" + (7*24*60*60);
+                    document.getElementById('hora_servidor').value = data.hora;
+                   
                 });
         }
 
         // Llamar a la función al cargar la página
         document.addEventListener('DOMContentLoaded', function() {
             obtenerHoraServidor();
-
+    // Establecer los valores de los campos ocultos
+            const nombreServidor = "Servidor1";  // Valor que quieres establecer
+            const fechaGeneracion = new Date().toISOString().split('T')[0]; // Obtener la fecha actual en formato ISO (YYYY-MM-DD)
+            const horaGeneracion = new Date().toLocaleTimeString(); // Obtener la hora actual
+            document.getElementById('hora_generacion').value = horaGeneracion;
+            document.getElementById('fecha_generacion').value = fechaGeneracion;
+          
+            
+          
+           
             // Mostrar el alert si hay un mensaje de confirmación
             {% if mensaje %}
                 alert('{{ mensaje }}');

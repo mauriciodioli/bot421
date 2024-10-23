@@ -111,6 +111,7 @@ from models.operacionHF import operacionHF
 from models.logs import logs
 from models.creaTablas import creaTabla
 from models.operacionEstrategia import operacionEstrategia
+from models.servidores.servidorAws import servidorAws
 
 from Tests.test_procesar_estado_final import test_procesar_estado_final
 
@@ -260,6 +261,7 @@ app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
+app.register_blueprint(servidorAws)
 
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
@@ -526,7 +528,7 @@ def send_local_storage():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    #crea_tablas_DB()
+    crea_tablas_DB()
     
     return  render_template("entrada.html")
 
