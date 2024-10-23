@@ -51,6 +51,7 @@ def actualiza_horario():
             if servidor:
                 db.session.add(servidor)  # Agrega la instancia a la sesión
                 db.session.commit()  # Comitea los cambios
+                db.session.close()  # Cierro la sesión
             print(f'Hora de diferencia almacenada: {hora_seleccionada}')
         
 
@@ -114,8 +115,7 @@ def cargarDatosServidor(request, hora_diferencia):
         if servidor:
             # Actualiza la diferencia horaria si es necesario
             if servidor.diferencia_horaria != hora_diferencia:
-                servidor.diferencia_horaria = hora_diferencia
-                db.session.commit()
+                servidor.diferencia_horaria = hora_diferencia                
                 print(f"Diferencia horaria actualizada a: {hora_diferencia} para el servidor: {servidor.nombre}")
             return servidor  # Retorna la instancia actualizada
         else:
@@ -176,7 +176,7 @@ def cargarDatosServidor(request, hora_diferencia):
                         memory_usage=None, 
                         last_status_check=None, 
                         fecha_generacion=None, 
-                        diferencia_horaria=None, 
+                        diferencia_horaria=hora_diferencia, 
                         estado=None)
 
             # Configuración de otros atributos
