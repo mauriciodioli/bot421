@@ -104,39 +104,45 @@ def control_tiempo_lectura_verifiar_estado(tiempo_espera_ms, tiempo_inicial_ms):
         
         # Retornar True u otra indicación según sea necesario
         return True
+from datetime import datetime
+
 def cargarDatosServidor(request, hora_diferencia):
-    # Crear instancias de ServidorAws
     try:
-        # Consulta para obtener el servidor existente
+        # Comprobación si el servidor ya existe
         servidor = db.session.query(ServidorAws).filter_by(nombre=request.form.get('nombre_servidor_contenedor')).first()
 
         if servidor:
-            # Si el servidor ya existe, actualizamos la diferencia horaria
+            # Actualiza la diferencia horaria si es necesario
             if servidor.diferencia_horaria != hora_diferencia:
-                servidor.diferencia_horaria = hora_diferencia  # Actualiza solo si es diferente
-                db.session.commit()  # Guardar cambios en la base de datos
+                servidor.diferencia_horaria = hora_diferencia
+                db.session.commit()
                 print(f"Diferencia horaria actualizada a: {hora_diferencia} para el servidor: {servidor.nombre}")
-            else:
-                print(f"La diferencia horaria no ha cambiado para el servidor: {servidor.nombre}")
             return servidor  # Retorna la instancia actualizada
         else:
-            # Si el servidor no existe, creamos uno nuevo
-            url = 'http://127.0.0.1:5001/index'  # Obtén el valor del diccionario 'datos'
+            # Si el servidor no existe, crea uno nuevo
+            url = 'http://127.0.0.1:5001/index'
             ws_url = 'ssh -i .\bot421dbversion2.pem ubuntu@18.207.114.83'
             nombre = request.form.get('nombre_servidor_contenedor')
             descripcion = request.form.get('descripcion')
+            instance_id = request.form.get('instance_id')  # Obtén el valor del formulario
 
-            # Obtener otros valores del diccionario 'datos'
+            if not instance_id:
+                print("Error: instance_id es requerido y no puede ser None.")
+                return None  # O maneja el error de otra manera
+
+            # Obtén fecha y hora
             fecha_generacion = request.form.get('fecha_generacion')
             hora_generacion = request.form.get('hora_generacion')
-            diferencia_horaria = hora_diferencia  # Usamos la hora de diferencia de las cookies
-           
-            # Convertir la fecha y la hora a objetos datetime
+
+            # Convertir fecha y hora a objetos datetime
             if fecha_generacion:
                 fecha_generacion = datetime.strptime(fecha_generacion, '%Y-%m-%d').date()  # Convertir a objeto date
-
             if hora_generacion:
                 hora_generacion = datetime.strptime(hora_generacion, '%H:%M:%S').time()  # Convertir a objeto time
+
+            # Combina fecha y hora en un objeto datetime
+            if fecha_generacion and hora_generacion:
+                hora_generacion = datetime.combine(fecha_generacion, hora_generacion)  # Combina ambos en un datetime
 
             hora_clientes = datetime.now()  # Considerar zona horaria si es necesario
             hora_servidor = request.form.get('hora_servidor')
@@ -148,31 +154,40 @@ def cargarDatosServidor(request, hora_diferencia):
             hora_invierno = datetime.now()  # Considerar zona horaria si es necesario
             hora_verano = datetime.now()  # Considerar zona horaria si es necesario
             estado = request.form.get('estado')
+
             # Crea una instancia de ServidorAws con todos los atributos
             servidor = ServidorAws(
-                        url="http://example.com",
-                        ws_url="http://ws.example.com",
-                        nombre="Servidor1",
-                        descripcion=descripcion,
-                    )
-            
-            # Usar métodos para configurar los atributos adicionales
-            servidor.set_hora_generacion(hora_generacion)
-            servidor.set_fecha_generacion(fecha_generacion)
+                        url=url,
+                        ws_url=ws_url,
+                        nombre=nombre,
+                        descripcion=descripcion,                    
+                        ip_address=None,
+                        region=None, 
+                        instance_type=None,
+                        operating_system=None, 
+                        instance_state=None, 
+                        instance_id= request.form.get('instancia_id'),
+                        uptime=None, 
+                        cpu_usage=None,
+                        memory_usage=None, 
+                        last_status_check=None, 
+                        fecha_generacion=None, 
+                        diferencia_horaria=None, 
+                        estado=None)
+
+            # Configuración de otros atributos
             servidor.set_hora_clientes(hora_clientes)
             servidor.set_hora_servidor(hora_servidor)
             servidor.set_hora_invierno(hora_invierno)
             servidor.set_hora_verano(hora_verano)
             servidor.set_estado(estado)
-            servidor.diferencia_horaria = diferencia_horaria  # Esto puede seguir asignándose directamente
 
-            
-
-            db.session.add(servidor)  # Añadir el nuevo servidor a la sesión
-            db.session.commit()  # Guardar cambios en la base de datos
+            db.session.add(servidor)
+            db.session.commit()
             return servidor  # Retorna la instancia creada
     except SQLAlchemyError as e:
         print(f"Error al crear o actualizar instancias de ServidorAws: {e}")
         db.session.rollback()  # Rollback en caso de error
-        return None  # Retorna None en caso de error
-   
+        return None
+
+  
