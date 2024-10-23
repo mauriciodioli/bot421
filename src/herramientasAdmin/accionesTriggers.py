@@ -124,7 +124,7 @@ def cargarDatosServidor(request, hora_diferencia):
             ws_url = 'ssh -i .\bot421dbversion2.pem ubuntu@18.207.114.83'
             nombre = request.form.get('nombre_servidor_contenedor')
             descripcion = request.form.get('descripcion')
-            instance_id = request.form.get('instance_id')  # Obtén el valor del formulario
+            instance_id = request.form.get('instancia_id')  # Obtén el valor del formulario
 
             if not instance_id:
                 print("Error: instance_id es requerido y no puede ser None.")
@@ -145,11 +145,15 @@ def cargarDatosServidor(request, hora_diferencia):
                 hora_generacion = datetime.combine(fecha_generacion, hora_generacion)  # Combina ambos en un datetime
 
             hora_clientes = datetime.now()  # Considerar zona horaria si es necesario
-            hora_servidor = request.form.get('hora_servidor')
+            hora_servidor_str = request.form.get('hora_servidor')
 
             # Supongamos que quieres convertir hora_servidor también
-            if hora_servidor:
-                hora_servidor = datetime.strptime(hora_servidor, '%H:%M').time()  # Convertir a objeto time
+            if hora_servidor_str:
+                # Convertir a un objeto datetime. Usamos la fecha actual como base para la hora.
+                hora_actual = datetime.now()
+                hora_servidor = datetime.combine(hora_actual.date(), datetime.strptime(hora_servidor_str, '%H:%M').time())
+            else:
+                hora_servidor = None  # o un valor por defecto que tenga sentido para tu lógica
 
             hora_invierno = datetime.now()  # Considerar zona horaria si es necesario
             hora_verano = datetime.now()  # Considerar zona horaria si es necesario

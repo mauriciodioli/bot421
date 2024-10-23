@@ -40,9 +40,12 @@ class ServidorAws(db.Model):
     estado = db.Column(db.String(500), nullable=True)
 
     # Constructor actualizado
-    def __init__(self, url, ws_url, nombre, descripcion, ip_address=None, region=None, instance_type=None,
-                 operating_system=None, instance_state=None, instance_id=None, uptime=None, cpu_usage=None,
-                 memory_usage=None, last_status_check=None, fecha_generacion=None, diferencia_horaria=None, estado=None):
+    def __init__(self, url, ws_url, nombre, descripcion, instance_id, ip_address=None, 
+             region=None, instance_type=None, operating_system=None, 
+             instance_state=None, uptime=None, cpu_usage=None, 
+             memory_usage=None, last_status_check=None, 
+             fecha_generacion=None, diferencia_horaria=None, estado=None):
+
         self.url = url
         self.ws_url = ws_url
         self.nombre = nombre
