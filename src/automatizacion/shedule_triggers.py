@@ -12,7 +12,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.triggerEstrategia import TriggerEstrategia
+from models.servidores.servidorAws import ServidorAws
 from datetime import datetime, timedelta, time
+from sqlalchemy.exc import SQLAlchemyError  # Importar para el manejo de errores
 
 import smtplib
 import schedule
@@ -40,7 +42,7 @@ shedule_triggers = Blueprint('shedule_triggers', __name__)
 
 detener_proceso_automatico_triggers = False
    
-def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
+def calculaHoraActual(hora_diferencia,tiempo, clienteTimezone,fechaActual):
    
      # Parsear la fecha actual (en formato ISO 8601) a un objeto datetime
     fecha = datetime.strptime(fechaActual, '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -69,7 +71,8 @@ def calculaHoraActual(tiempo, clienteTimezone,fechaActual):
     client_time_en_servidor = client_time.astimezone(zona_horaria_servidor)
 
     # Paso 3: Calcular la diferencia de tiempo entre el servidor y el cliente de manera precisa
-    time_difference = client_time_en_servidor- hora_actual_servidor 
+    time_difference = client_time_en_servidor - hora_actual_servidor 
+    time_difference = time_difference + hora_diferencia
     print("Diferencia de tiempo entre servidor y cliente:", time_difference)
         # Obtener la diferencia de horas, minutos y segundos por separado
     hours_difference = time_difference.seconds // 3600  # Convertir segundos a horas
@@ -99,7 +102,12 @@ def muestraTriggers():
          layouts = request.form.get('Shedule_layoutOrigen')
          if access_token and Token.validar_expiracion_token(access_token=access_token): 
             # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
-            triggers_automaticos = db.session.query(TriggerEstrategia).filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()
+            try:
+                triggers_automaticos = db.session.query(TriggerEstrategia).filter_by(ManualAutomatico="AUTOMATICO",accountCuenta=account).all()
+            except:
+                db.session.close()
+                return render_template("notificaciones/errorLogueo.html" )
+            
             db.session.close()
             total_triggers = len(triggers_automaticos)  # Obtener el total de instancias de TriggerEstrategia
            
@@ -107,7 +115,7 @@ def muestraTriggers():
             return render_template("automatizacion/trigger.html", num_triggers=total_triggers)
          return render_template('usuarios/logOutSystem.html')  
     except:        
-        return render_template("errorLogueo.html" )
+        return render_template("notificaciones/errorLogueo.html" )
    
 @shedule_triggers.route("/ArrancaShedule/", methods=['POST'])
 def ArrancaShedule():
@@ -129,18 +137,22 @@ def ArrancaShedule():
             selector = data['selector']  
             clienteTimezone = data['clienteTimezone']
             
-              # Acceder a la cookie 'horaGuardada' y 'diferenciaHoraria'
-            hora_guardada = request.cookies.get('horaGuardada')
-            hora_diferencia = request.cookies.get('diferenciaHoraria')
-            # Si necesitas hacer algo con las horas almacenadas
-            if hora_diferencia:
-                print(f'Hora de diferencia almacenada: {hora_diferencia}')
+           
+            servidor = db.session.query(ServidorAws).filter_by(nombre='aws_202404').first()
+            
+            if servidor:
+                hora_diferencia = servidor.diferencia_horaria
+                print(f'Hora de diferencia recuperada: {hora_diferencia}')
             else:
-                print('No se encontró la hora de diferencia en las cookies.')
+                hora_diferencia = request.cookies.get('diferenciaHoraria')
+                # Si necesitas hacer algo con las horas almacenadas                    
+                if not hora_diferencia:
+                    hora_diferencia=0
+                    print('No se encontró la hora de diferencia en la base de datos ServidorAws.')
 
             
-            fecha_inicio_shedule = calculaHoraActual(fecha_inicio_shedule,clienteTimezone,fechaActual)
-            fecha_fin_shedule = calculaHoraActual(fecha_fin_shedule,clienteTimezone,fechaActual)
+            fecha_inicio_shedule = calculaHoraActual(hora_diferencia,fecha_inicio_shedule,clienteTimezone,fechaActual)
+            fecha_fin_shedule = calculaHoraActual(hora_diferencia,fecha_fin_shedule,clienteTimezone,fechaActual)
             global detener_proceso_automatico_triggers
             detener_proceso_automatico_triggers = False
             # Hacer lo que necesites con los valores obtenidos
@@ -440,4 +452,3 @@ def tarea_fin():
     else:
         print("Error al detener WS")
          
-    
