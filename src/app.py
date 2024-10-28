@@ -40,8 +40,10 @@ from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
 
 
 
+
 from social.telegram.telegram import telegram
 from social.chats.chat import chat
+from social.buckets.bucketGoog import bucketGoog
 
 from herramientasAdmin.accionesSheet import accionesSheet
 from herramientasAdmin.runScript import runScript
@@ -266,7 +268,7 @@ app.register_blueprint(servidorAws)
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
 app.register_blueprint(test_ejecutarHiloPanelControl)
-
+app.register_blueprint(bucketGoog)
 
 
 
