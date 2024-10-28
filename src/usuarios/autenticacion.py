@@ -294,68 +294,47 @@ def loginUsuario():
     if request.method == 'POST':
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
-        # Buscar el usuario en la base de datos
-        #crea_tabla_usuario()
-        ##usuario = Usuario.query.filter_by(correo_electronico=correo_electronico).first()
-        # Registra la función para el evento 'connect'
-       
+
+        # Consolidar la consulta dentro de un solo contexto de sesión
         with session_scope() as session:
             usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
-            session.close()
-        usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
+            
+            # Validar usuario y contraseña
+            if usuario is None or not bcrypt.checkpw(password.encode('utf-8'), usuario.password):
+                flash('Correo electrónico o contraseña incorrectos', 'danger')
+                return redirect(url_for('autenticacion.index'))
 
-       # print("Valor de password: ", password," usuario.password ",usuario.password)
-        if usuario is None or not bcrypt.checkpw(password if isinstance(password, bytes) else password.encode('utf-8'), usuario.password):
-            flash('Correo electrónico o contraseña incorrectos', 'danger')
-           
-            return redirect(url_for('autenticacion.index'))
-        # Iniciar sesión de usuario
-       
-        login_user(usuario)
-        # Generar el token de acceso
-        expiry_timestamp = timedelta(minutes=TOKEN_DURATION)
-        access_token = create_access_token(identity=usuario.id, expires_delta=expiry_timestamp)
-        refresh_token = create_refresh_token(identity=usuario.id, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
-        # Almacenar el refresh token en la base de datos
-        usuario.refresh_token = refresh_token       
-        db.session.add(usuario)
-        db.session.commit()
-        
-        #if access_token:
-        #    app = current_app._get_current_object()
-        # Configurar las cookies de JWT
-        if access_token:
-            app = current_app._get_current_object()
-            
-            try:
-              
-                cuenta = ''
-                selector = 'vacio'
-                user = ''               
-            # resp = make_response(render_template('home.html', cuenta=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,usuario,selector]))
-                resp = make_response(render_template('home.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll,cuenta,selector,user,usuario.id]))
-                #resp = make_response(render_template('login.html', tokens=[access_token,refresh_token,usuario.correo_electronico,expiry_timestamp,usuario.roll]))
-            # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            # user = Usuario.query.get(user_id)
-            # print("user ___________", user.correo_electronico)
-            # print("userid ________________", user_id)
-            # print("userCuenta ________________", user.cuentas[0].userCuenta)
-            # print("Cuenta ________________", user.cuentas[0].accountCuenta)
-            # resp = make_response(jsonify({'redirect': 'home', 'cuenta': user.cuentas[0].accountCuenta, 'userCuenta': usuario.cuentas[0].userCuenta, 'selector': '1'}))
-            # resp.headers['Content-Type'] = 'application/json'
-            
-                set_access_cookies(resp, access_token)
-                set_refresh_cookies(resp, refresh_token)
-                # Guardar tokens en localStorage
-                db.session.close()
-            
-                return resp
-    
-     
-            except:               
-                db.session.rollback()  # Hacer rollback de la sesión
-                db.session.close()
-                print("No se pudo registrar la cuenta, la cuenta ya tiene usuario asignado.")
+            # Iniciar sesión de usuario
+            login_user(usuario)
+
+            # Generar tokens de acceso y refresco
+            expiry_timestamp = timedelta(minutes=TOKEN_DURATION)
+            access_token = create_access_token(identity=usuario.id, expires_delta=expiry_timestamp)
+            refresh_token = create_refresh_token(identity=usuario.id, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
+
+            # Almacenar el refresh token en la base de datos
+            usuario.refresh_token = refresh_token
+            session.add(usuario)  # Usa `session.add` en lugar de `db.session.add`
+            session.commit()      # Usa `session.commit` en lugar de `db.session.commit`
+
+            # Configurar las cookies de JWT y respuesta
+            if access_token:
+                app = current_app._get_current_object()
+                try:
+                    cuenta = ''
+                    selector = 'vacio'
+                    user = ''
+                    
+                    resp = make_response(render_template('home.html', tokens=[access_token, refresh_token, usuario.correo_electronico, expiry_timestamp, usuario.roll, cuenta, selector, user, usuario.id]))
+                    set_access_cookies(resp, access_token)
+                    set_refresh_cookies(resp, refresh_token)
+                    return resp
+
+                except Exception as e:
+                    session.rollback()  # Hacer rollback de la sesión en caso de error
+                    print("Error al generar la respuesta:", str(e))
+                    flash('Ocurrió un error, intenta nuevamente', 'danger')
+                    return redirect(url_for('autenticacion.index'))
 
 @autenticacion.route('/loginBroker', methods=['POST'])
 def loginBroker():
