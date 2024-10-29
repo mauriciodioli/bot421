@@ -4,10 +4,15 @@
 # Ignore pruebasheetpython.json
 /pruebasheetpython.json
 
-src/Test/test_euler.py
+# Ignore gcp_credentials.json in the src directory
+/src/gcp_credentials.json
 
-#Ignore pycache files
+# Ignore specific test files
+/src/Test/test_euler.py
+
+# Ignore __pycache__ folders and .pyc files
+__pycache__/
 *.pyc
 
-#Ignore workspace file
+# Ignore workspace file
 bot421.code-workspace
