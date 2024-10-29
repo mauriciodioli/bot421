@@ -4,9 +4,6 @@
 # Ignore pruebasheetpython.json
 /pruebasheetpython.json
 
-# Ignore gcp_credentials.json in the src directory
-/src/gcp_credentials.json
-
 # Ignore specific test files
 /src/Test/test_euler.py
 
