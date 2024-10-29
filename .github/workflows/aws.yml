@@ -132,6 +132,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           docker cp /home/ubuntu/bot421dbversion2.pem 202404:/src
+          docker cp /home/ubuntu/gcp_credentials.json 202404:/src
           
           # Detener el contenedor
           docker stop ${{ env.DEPLOYMENT_VERSION }} || true
