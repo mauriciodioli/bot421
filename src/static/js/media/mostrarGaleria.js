@@ -94,14 +94,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                         //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
                         var firstImageUrl =  post.imagenes[0].filepath;
-                        console.log(firstImageUrl); // Verifica la respuesta del servidor
+                       // console.log(firstImageUrl); // Verifica la respuesta del servidor
                         mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
     
                         var modalImagesHtml = '';
                         post.imagenes.forEach(function(image) {
                             //var imageUrl = baseUrl + '/' + image.filepath;
                             var imageUrl = image.filepath;
-                            console.log(imageUrl); // Verifica la respuesta del servidor
+                            //console.log(imageUrl); // Verifica la respuesta del servidor
                     
                             modalImagesHtml += `
                                 <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
