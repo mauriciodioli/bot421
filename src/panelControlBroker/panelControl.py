@@ -234,7 +234,7 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                
 
                 # Preguntar si son las 11:00 y pasar la lectura
-                if (now.hour >= 14 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
+                if (now.hour >= 11 and now.hour < 17) or (now.hour == 17 and now.minute <= 5):
                 #if (now.hour >= 9 and now.hour < 20) or (now.hour == 20 and now.minute <= 5):
                     enviar_leer_sheet(app, pais, user_id,accountCuenta, 'hilo', selector)
               
@@ -244,7 +244,7 @@ def ejecutar_en_hilo(app, pais, user_id,accountCuenta,selector):
                 # Preguntar si son las 20:00 y apagar el ws y limpiar precios_data
              #   if (now.hour == 12 and now.minute <= termina_hilo) and get.luzMDH_funcionando:
                 
-                if (now.hour == 20 and now.minute >= 6 and now.minute <= 59) and get.luzMDH_funcionando:
+                if (now.hour == 17 and now.minute >= 6 and now.minute <= 59) and get.luzMDH_funcionando:
                     terminaConexionParaActualizarSheet(get.CUENTA_ACTUALIZAR_SHEET)
                     get.symbols_sheet_valores.clear()
                     get.sheet_manager = None
