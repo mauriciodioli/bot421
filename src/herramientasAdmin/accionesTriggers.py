@@ -121,7 +121,7 @@ def cargarDatosServidor(request, hora_diferencia):
         else:
             # Si el servidor no existe, crea uno nuevo
             url = 'http://127.0.0.1:5001/index'
-            ws_url = 'ssh -i .\bot421dbversion2.pem ubuntu@18.207.114.83'
+            ws_url = 'ssh -i .\bot421dbversion2.pem ubuntu@44.223.20.210'
             nombre = request.form.get('nombre_servidor_contenedor')
             descripcion = request.form.get('descripcion')
             instance_id = request.form.get('instancia_id')  # Obtén el valor del formulario
