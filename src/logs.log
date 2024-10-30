@@ -438,15 +438,52 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
-dpuntillo@gmail.com
 ____INTENTO ENTRAR____
 127.0.0.1
-None
-dpuntillo@gmail.com
+rciriaci@yahoo.com.ar
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+mauriciodioli@gmail.com
 LEE EL SHEET POR LLAMADA DE FUNCION
 FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
-__inicio 16:00 ___fin 17:00
-__inicio 16:00 ___fin 17:00 __hora_actual 14:51:16
+__inicio 20:00 ___fin 22:00
+__inicio 20:00 ___fin 22:00 __hora_actual 14:41:31
+__inicio 20:00 ___fin 22:00
+__inicio 20:00 ___fin 22:00 __hora_actual 14:42:41
+__inicio 20:00 ___fin 22:00
+__inicio 20:00 ___fin 22:00 __hora_actual 14:43:53
+FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 11:00 ___fin 13:00
+__inicio 11:00 ___fin 13:00 __hora_actual 14:44:02
+__inicio 20:00 ___fin 22:00
+__inicio 20:00 ___fin 22:00 __hora_actual 14:44:53
+__inicio 11:00 ___fin 13:00
+__inicio 11:00 ___fin 13:00 __hora_actual 14:45:02
+FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 14:00 ___fin 16:00
+__inicio 14:00 ___fin 16:00 __hora_actual 14:45:11
+__inicio 20:00 ___fin 22:00
+__inicio 20:00 ___fin 22:00 __hora_actual 14:45:53
+__inicio 11:00 ___fin 13:00
+__inicio 11:00 ___fin 13:00 __hora_actual 14:46:02
+__inicio 14:00 ___fin 16:00
+__inicio 14:00 ___fin 16:00 __hora_actual 14:46:12
+__inicio 20:00 ___fin 22:00
+__inicio 20:00 ___fin 22:00 __hora_actual 14:46:54
+__inicio 11:00 ___fin 13:00
+__inicio 11:00 ___fin 13:00 __hora_actual 14:47:02
+__inicio 14:00 ___fin 16:00
+__inicio 14:00 ___fin 16:00 __hora_actual 14:47:12
+__inicio 20:00 ___fin 22:00
+__inicio 20:00 ___fin 22:00 __hora_actual 14:47:54
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
@@ -457,12 +494,170 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
-dpuntillo@gmail.com
+madioli26@hotmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+FUNC_ ejecutar_schedule___ EJECUTANDO PLANIFICADOR
+__inicio 15:00 ___fin 17:00
+__inicio 15:00 ___fin 17:00 __hora_actual 14:53:31
+__inicio 15:00 ___fin 17:00
+__inicio 15:00 ___fin 17:00 __hora_actual 14:54:31
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
 ____INTENTO ENTRAR____
 127.0.0.1
-None
-mauriciodioli@gmail.com
-mauriciodioli@gmail.com
+madioli26@hotmail.com
+____INTENTO ENTRAR____
+127.0.0.1
+madioli26@hotmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+____INTENTO ENTRAR____
+127.0.0.1
+madioli26@hotmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+____INTENTO ENTRAR____
+127.0.0.1
+madioli26@hotmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+madioli26@hotmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+madioli26@hotmail.com
+Se cargó direccion imagen: IMG-20150906-WA0030.jpg, path: static\uploads\IMG-20150906-WA0030.jpg
+Se cargó direccion imagen: IMG-20150906-WA0029.jpg, path: static\uploads\IMG-20150906-WA0029.jpg
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: IMG-20150903-WA0040.jpg, path: static\uploads\IMG-20150903-WA0040.jpg
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: IMG-20150903-WA0040.jpg, path: static\uploads\IMG-20150903-WA0040.jpg
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: IMG-20150903-WA0040.jpg, path: static\uploads\IMG-20150903-WA0040.jpg
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: IMG-20150903-WA0040.jpg, path: static\uploads\IMG-20150903-WA0040.jpg
+Se cargó una imagen: IMG-20150903-WA0040.jpg, índice: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
 LEE EL SHEET POR LLAMADA DE FUNCION
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
@@ -479,10 +674,77 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
 ____INTENTO ENTRAR____
 127.0.0.1
 mauriciodioli@gmail.com
 mauriciodioli@gmail.com
-LEE EL SHEET POR LLAMADA DE FUNCION
-MODIFICO EL SHEET CORRECTAMENTE
-MODIFICO EL SHEET CORRECTAMENTE
+Se cargó direccion imagen: franquicia.png, path: static/uploads/franquicia.png
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: franquicia2.png, path: static/uploads/franquicia2.png
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+mauriciodioli@gmail.com
+Se cargó direccion imagen: franquicia2.png, path: static/uploads/franquicia2.png
+Se cargó direccion imagen: franquicia1.png, path: static/uploads/franquicia1.png
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: images.jpg, path: static/uploads/images.jpg
+Se cargó una imagen: images.jpg, índice: 0
+Se cargó direccion imagen: inversion.png, path: static/uploads/inversion.png
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: deporte.png, path: static/uploads/deporte.png
+Se cargó una imagen: deporte.png, índice: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: deporte.png, path: static/uploads/deporte.png
+Se cargó una imagen: deporte.png, índice: 0
+Se cargó direccion imagen: deporte.png, path: static/uploads/deporte.png
+Se cargó una imagen: deporte.png, índice: 0
+Se cargó direccion imagen: images.jpg, path: static/uploads/images.jpg
+Se cargó una imagen: images.jpg, índice: 1
+Se cargó direccion imagen: images.jpg, path: static/uploads/images.jpg
+Se cargó una imagen: images.jpg, índice: 0
+Se cargó direccion imagen: deporte.png, path: static/uploads/deporte.png
+Se cargó una imagen: deporte.png, índice: 1
