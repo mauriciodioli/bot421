@@ -24,6 +24,8 @@ from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
+from social.buckets.bucketGoog import mostrar_from_gcs
+
 
 muestraPublicacionesEnHome = Blueprint('muestraPublicacionesEnHome',__name__)
 
@@ -65,13 +67,15 @@ def obtener_publicacion_por_id(publicacion_id):
                     if imagen:
                         # Quitar 'static/' del inicio del filepath si existe
                         filepath = imagen.filepath
+                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
+                        imagen_url = mostrar_from_gcs(imagen_url)                      
                         if filepath.startswith('static'):
                             filepath = filepath[len('static/'):]
                         imagenes.append({
                             'id': imagen.id,
                             'title': imagen.title,
                             'description': imagen.description,
-                            'filepath': filepath,
+                            'filepath': imagen_url,
                             'randomNumber': imagen.randomNumber,
                             'colorDescription': imagen.colorDescription,
                             'size': imagen.size                      
@@ -81,15 +85,16 @@ def obtener_publicacion_por_id(publicacion_id):
                 if iv.video_id:
                     video = db.session.query(Video).filter_by(id=iv.video_id).first()
                     if video:
-                        # Quitar 'static/' del inicio del filepath si existe
                         filepath = video.filepath
+                        video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
+                        video_url = mostrar_from_gcs(video_url)
                         if filepath.startswith('static/'):
                             filepath = filepath[len('static/'):]
                         videos.append({
                             'id': video.id,
                             'title': video.title,
                             'description': video.description,
-                            'filepath': filepath,
+                            'filepath': video_url,
                             'randomNumber': video.randomNumber,
                             'colorDescription': video.colorDescription,
                             'size': video.size

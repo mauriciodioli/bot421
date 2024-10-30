@@ -24,40 +24,45 @@
         <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}"/>
        
         {% if post.videos %}
-        <!-- Mostrar el primer video si está disponible -->
-        <video controls id="main-video" style="cursor: pointer;"                   
-        onclick="cargarDatosPublicacion()">
-            <source src="{{ url_for('static', filename=post.videos[0].filepath) }}" type="video/mp4">
-            Tu navegador no soporta el formato de video.
-        </video>
-    {% elif post.imagenes %}
-        <!-- Mostrar la primera imagen si no hay videos -->
-        <img id="main-image" style="cursor: pointer;"                 
-        onclick="cargarDatosPublicacion()"
-        src="{{ url_for('static', filename=post.imagenes[0].filepath) }}" alt="{{ post.imagenes[0].title }}" />
-    {% else %}
-        <p>No hay imágenes ni videos disponibles.</p>
-    {% endif %}
+            <!-- Mostrar el primer video si está disponible -->
+            <video controls id="main-video" style="cursor: pointer;" onclick="cargarDatosPublicacion()">
+                {% if 'http' in post.videos[0].filepath %}
+                    <source src="{{ post.videos[0].filepath }}" type="video/mp4">
+                {% else %}
+                    <source src="{{ url_for('static', filename=post.videos[0].filepath) }}" type="video/mp4">
+                {% endif %}
+                Tu navegador no soporta el formato de video.
+            </video>
+        {% elif post.imagenes %}
+            <!-- Mostrar la primera imagen si no hay videos -->
+            <img id="main-image" style="cursor: pointer;" onclick="cargarDatosPublicacion()"
+                src="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}" 
+                alt="{{ post.imagenes[0].title }}" />
+        {% else %}
+            <p>No hay imágenes ni videos disponibles.</p>
+        {% endif %}
     </div>
 
     <div class="imagenes-videos-muestra-despliegue-publicacion-home">
-
         {% if post.imagenes %}
             <div class="imagenes-muestra-despliegue-publicacion-home">
                 {% for imagen in post.imagenes %}
                     <div class="imagen-muestra-despliegue-publicacion-home">
-                        <img src="{{ url_for('static', filename=imagen.filepath) }}" alt="{{ imagen.title }}" onclick="replaceMainMedia(this.src, 'image')" />
+                        <img src="{% if 'http' in imagen.filepath %}{{ imagen.filepath }}{% else %}{{ url_for('static', filename=imagen.filepath) }}{% endif %}" 
+                             alt="{{ imagen.title }}" 
+                             onclick="replaceMainMedia(this.src, 'image')" />
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
+        
         {% if post.videos %}
             <h2>Videos:</h2>
             <div class="videos-muestra-despliegue-publicacion-home">
                 {% for video in post.videos %}
                     <div class="video-muestra-despliegue-publicacion-home">
-                        <video onclick="replaceMainMedia('{{ url_for('static', filename=video.filepath) }}', 'video')" controls>
-                            <source src="{{ url_for('static', filename=video.filepath) }}" type="video/mp4">
+                        <video onclick="replaceMainMedia('{% if 'http' in video.filepath %}{{ video.filepath }}{% else %}{{ url_for('static', filename=video.filepath) }}{% endif %}', 'video')" controls>
+                            <source src="{% if 'http' in video.filepath %}{{ video.filepath }}{% else %}{{ url_for('static', filename=video.filepath) }}{% endif %}" type="video/mp4">
                             Tu navegador no soporta el formato de video.
                         </video>
                         <p>{{ video.title }}</p>
@@ -67,24 +72,25 @@
             </div>
         {% endif %}
     </div>
+    
     <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
     <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
     <p class="texto-publicacion-despliegue-home">{{ post.texto }}</p>
 </div>
 {% include 'layouts/layout_footer.html' %}
- <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
 
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
 
 <script>
-
     // Almacenar los valores en variables globales
     var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
     var userId = '{{ post.user_id }}';
     var ambito = '{{ post.ambito }}';
+
     function replaceMainMedia(src, type) {
         var container = document.getElementById('principal-media');
-       
         if (type === 'image') {
             container.innerHTML = '<img id="main-image" style="cursor: pointer;" onclick="cargarDatosPublicacion()" src="' + src + '" alt="Imagen seleccionada" />';
         } else if (type === 'video') {
@@ -94,23 +100,14 @@
         container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-
     function cargarDatosPublicacion() {
-       
-      
-       
-       // Redirigir a la URL construida con los parámetros
+        // Redirigir a la URL construida con los parámetros
         window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}`;
-       
     }
-        
 
-
-function abrirPublicacionEnAmbitos(publicacionId, userId, ambito) {
-    mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);
-}
+    function abrirPublicacionEnAmbitos(publicacionId, userId, ambito) {
+        mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);
+    }
 </script>
-
-
 
 {% endblock %}
