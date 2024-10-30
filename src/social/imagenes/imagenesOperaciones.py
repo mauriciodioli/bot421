@@ -8,8 +8,9 @@ import tokens.token as Token
 
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
-
 from models.usuario import Usuario
+from social.buckets.bucketGoog import upload_to_gcs
+
 import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError
@@ -79,7 +80,7 @@ def cargarVideo():
         # Guardar el video en la carpeta src/static/uploads
         new_path = os.path.join('static', 'uploads', video.filename)
         video.save(new_path)
-
+        upload_to_gcs(new_path, video.filename)
         if access_token:
             app = current_app._get_current_object()                    
             userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
@@ -153,6 +154,7 @@ def cargarImagen():
        # Guardar la imagen en la carpeta src/static/uploads
        # print(f"Ruta completa del archivo: {new_path}")
         imagen.save(new_path)
+        upload_to_gcs(new_path, imagen.filename)
         # Resto de tu lógica para manejar la imagen, el nombre del archivo y el access_token
         # Aquí puedes acceder a 'imagen' (objeto FileStorage), 'nombre_archivo' y 'access_token'
         #aqui carga la los datos en la base de datos
