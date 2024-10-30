@@ -2,7 +2,9 @@
 /venv/
 
 # Ignore pruebasheetpython.json
-/pruebasheetpython.json
+src/strategies/pruebasheetpython.json
+
+src/upload_to_gcs.json
 
 # Ignore specific test files
 /src/Test/test_euler.py

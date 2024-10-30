@@ -1,6 +1,4 @@
-from flask import Blueprint, render_template,session, current_app,request, redirect, url_for, flash,jsonify,g
-#from utils.db import db
-
+from flask import Blueprint, render_template, session, current_app, request, redirect, url_for, flash, jsonify, g
 import random
 from datetime import datetime
 from google.cloud import storage
@@ -9,18 +7,19 @@ from dotenv import load_dotenv
 
 # Cargar las variables del archivo .env
 load_dotenv()
-bucketGoog = Blueprint('bucketGoog',__name__)
-
+bucketGoog = Blueprint('bucketGoog', __name__)
 
 # Ruta a las credenciales de Google Cloud (archivo JSON descargado)
+if 'EC2' in os.uname().nodename:  # o cualquier otro chequeo que prefieras
+    BUCKET_GOOGLE_CREDENTIAL = os.environ.get('BUCKET_GOOGLE_CREDENTIAL_AWS')
+else:
+    BUCKET_GOOGLE_CREDENTIAL = os.environ.get('BUCKET_GOOGLE_CREDENTIAL')
 
-
-BUCKET_GOOGLE_CREDENTIAL = os.environ.get('BUCKET_GOOGLE_CREDENTIAL')
 # Establecer la variable de entorno para las credenciales
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.getenv('BUCKET_GOOGLE_CREDENTIAL')
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BUCKET_GOOGLE_CREDENTIAL
 
 # Nombre del bucket
-BUCKET_NAME = 'bucket_202404'  # Asegúrate de que este nombre coincide con tu bucket
+BUCKET_NAME = os.environ.get('BUCKET_NAME')  # Asegúrate de que este nombre coincide con tu bucket
 
 def upload_to_gcs(file_path_local, blob_name_gcs):
     # Inicializar cliente de Google Cloud Storage
@@ -36,7 +35,7 @@ def upload_to_gcs(file_path_local, blob_name_gcs):
         raise
     else:
         print(f"Archivo {file_path_local} subido a {blob_name_gcs} exitosamente.")
-        
+
         
 def delete_from_gcs(blob_name):
     # Inicializar cliente de Google Cloud Storage
@@ -51,10 +50,11 @@ def delete_from_gcs(blob_name):
     except Exception as e:
         print(f"No se pudo eliminar el archivo {blob_name} del bucket. Error: {e}")
 
+        
 def mostrar_from_gcs(blob_name):
     # Inicializar cliente de Google Cloud Storage
     client = storage.Client()
-    bucket = client.bucket(BUCKET_NAME)
+    bucket = client.get_bucket(BUCKET_NAME)
     blob = bucket.blob(blob_name)
 
     try:

@@ -29,6 +29,8 @@ from social.buckets.bucketGoog import mostrar_from_gcs
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from sqlalchemy import func
+from sqlalchemy.orm.exc import StaleDataError
+
 
 
 #import boto3
@@ -299,7 +301,6 @@ def armar_publicacion(publicaciones):
 
     return publicaciones_data
 
-
 @publicaciones.route('/media-publicaciones-cambiar-estado', methods=['POST'])
 def media_publicaciones_cambiar_estado():
     data = request.form
@@ -315,13 +316,20 @@ def media_publicaciones_cambiar_estado():
     if not publicacion:
         return jsonify({'error': 'Publicación no encontrada'}), 404
     
+    # Refrescar para asegurar que la instancia esté actualizada
+    db.session.refresh(publicacion)
+    
     # Actualizar el estado de la publicación
     publicacion.estado = nuevo_estado
-    db.session.commit()
-    db.session.close()
-
-    return jsonify({'success': True, 'nuevoEstado': nuevo_estado}), 200
+    try:
+        db.session.commit()
+    except sqlalchemy.orm.exc.StaleDataError:
+        db.session.rollback()  # Revertir en caso de error
+        return jsonify({'error': 'No se pudo actualizar el estado, verifique si los datos cambiaron'}), 409
+    finally:
+        db.session.close()
     
+    return jsonify({'success': True, 'nuevoEstado': nuevo_estado}), 200
 
 
 
@@ -449,7 +457,8 @@ def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, 
     file.save(file_path)    
      # Subir el archivo a GCS
     try:
-        upload_to_gcs(file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
+        absolute_file_path = os.path.abspath(file_path)  # Obtener la ruta absoluta 
+        upload_to_gcs(absolute_file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
         eliminar_desde_archivo(filename, None)
     except Exception as e:
         print(f"No se pudo subir el archivo {filename} a GCS. Error: {e}")
@@ -499,7 +508,8 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
     file.save(file_path)
     # Subir el archivo a GCS
     try:
-        upload_to_gcs(file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
+        absolute_file_path = os.path.abspath(file_path)  # Obtener la ruta absoluta 
+        upload_to_gcs(absolute_file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
         eliminar_desde_archivo(filename, None)
     except Exception as e:
         print(f"No se pudo subir el archivo {filename} a GCS. Error: {e}")
@@ -728,7 +738,8 @@ def  eliminar_desde_archivo(title,user_id):
         #ruta_base_datos = os.path.normpath('static\\' + file_path)
         ruta_ = os.path.join(file_path)
         ruta_ = ruta_.replace('\\', '/')
-        os.remove(ruta_)
+        absolute_file_path = os.path.abspath(ruta_)  # Obtener la ruta absoluta 
+        os.remove(absolute_file_path)
         return True
     except OSError as e:
         print(f"Error al eliminar el archivo: {e}")

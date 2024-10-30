@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Agregar publicaciones al acordeón correspondiente
                 publicaciones.forEach(function(post) {
                     var mediaHtml = '';
-                    var baseUrl = window.location.origin;
+                    //var baseUrl = window.location.origin;
     
                     if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                         //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;

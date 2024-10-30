@@ -24,11 +24,12 @@ $.ajax({
             response.forEach(function(post) {
                 if (post.imagenes.length > 0 || post.videos.length > 0) {
                     var mediaHtml = '';
-                    var baseUrl = window.location.origin;
+                    //var baseUrl = window.location.origin;
 
                     if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                         // Mostrar solo la primera imagen
-                        var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                        //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                        var firstImageUrl = post.imagenes[0].filepath;
                         mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
 
                         // Guardar las demás imágenes para mostrarlas en el modal
