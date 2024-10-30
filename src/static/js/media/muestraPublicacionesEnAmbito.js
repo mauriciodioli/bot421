@@ -38,16 +38,18 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
                 response.forEach(function(post) {
                     if (post.imagenes.length > 0 || post.videos.length > 0) {
                         var mediaHtml = '';
-                        var baseUrl = window.location.origin;
+                        //var baseUrl = window.location.origin;
                         
                         if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                            var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                            //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                            var firstImageUrl =  post.imagenes[0].filepath;
                             mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
 
                             var modalImagesHtml = '';
                             post.imagenes.forEach(function(image, index) {
                                 if (index > 0) {
-                                    var imageUrl = baseUrl + '/' + image.filepath;
+                                   // var imageUrl = baseUrl + '/' + image.filepath;
+                                    var imageUrl = image.filepath;
                                     modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-publicacion-en-ambito">`;
                                 }
                             });
