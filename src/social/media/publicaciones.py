@@ -22,6 +22,10 @@ from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
+from social.buckets.bucketGoog import upload_to_gcs
+from social.buckets.bucketGoog import delete_from_gcs
+from social.buckets.bucketGoog import mostrar_from_gcs
+
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from sqlalchemy import func
@@ -65,7 +69,7 @@ def media_publicaciones_mostrar():
             publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id).all()
            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion(publicaciones_user)
+            publicaciones_data = armar_publicacion_bucket(publicaciones_user)
             db.session.close()
             #print(publicaciones_data)
             return jsonify(publicaciones_data)
@@ -127,7 +131,7 @@ def media_publicaciones_mostrar_home():
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
                 publicaciones = db.session.query(Publicacion).filter_by(estado='activo').all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion(publicaciones)
+            publicaciones_data = armar_publicacion_bucket(publicaciones)
             db.session.close()
             return jsonify(publicaciones_data)
 
@@ -139,6 +143,90 @@ def media_publicaciones_mostrar_home():
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
 # Definir la función para armar las publicaciones con imágenes y videos
+
+
+
+import logging
+
+def armar_publicacion_bucket(publicaciones):
+    publicaciones_data = []
+
+    for publicacion in publicaciones:
+        # Obtener todas las imágenes y videos asociados a esta publicación
+        imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
+
+        imagenes = []
+        videos = []
+
+        for iv in imagenes_videos:
+            # Obtener la información de las imágenes
+            if iv.imagen_id:
+                try:
+                    imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
+                    
+                    if imagen:
+                        # Generar la URL pública desde GCS
+                        filepath = imagen.filepath
+                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
+                        imagen_url = mostrar_from_gcs(imagen_url)
+                        if imagen_url:                         
+                            imagenes.append({
+                                'id': imagen.id,
+                                'title': imagen.title,
+                                'description': imagen.description,
+                                'filepath': imagen_url,  # Usar la URL de GCS
+                                'randomNumber': imagen.randomNumber,
+                                'size': imagen.size
+                            })
+                except Exception as e:
+                    logging.error(f"Error al obtener información de la imagen {iv.imagen_id}: {e}")
+
+            # Obtener la información de los videos
+            if iv.video_id:
+                try:
+                    video = db.session.query(Video).filter_by(id=iv.video_id).first()
+                    if video:
+                        filepath = video.filepath
+                        video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
+                        video_url = mostrar_from_gcs(video_url)
+                        if video_url:
+                            videos.append({
+                                'id': video.id,
+                                'title': video.title,
+                                'description': video.description,
+                                'filepath': video_url,
+                                'size': video.size
+                            })
+                except Exception as e:
+                    logging.error(f"Error al obtener información del video {iv.video_id}: {e}")
+
+        # Agregar la publicación con sus imágenes y videos al diccionario
+        publicaciones_data.append({
+            'publicacion_id': publicacion.id,
+            'user_id': publicacion.user_id,
+            'titulo': publicacion.titulo,
+            'texto': publicacion.texto,
+            'ambito': publicacion.ambito,
+            'correo_electronico': publicacion.correo_electronico,
+            'descripcion': publicacion.descripcion,
+            'color_texto': publicacion.color_texto,
+            'color_titulo': publicacion.color_titulo,
+            'fecha_creacion': publicacion.fecha_creacion,
+            'estado': publicacion.estado,
+            'imagenes': imagenes,
+            'videos': videos
+        })
+
+    return publicaciones_data
+
+
+
+
+
+
+
+
+
 def armar_publicacion(publicaciones):
     publicaciones_data = []
     
@@ -188,6 +276,7 @@ def armar_publicacion(publicaciones):
         path_separator = '/'
         for imagen in imagenes:
             imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
+        
         for video in videos:
             video['filepath'] = video['filepath'].replace('\\', path_separator)
 
@@ -346,17 +435,6 @@ def social_imagenes_crear_publicacion():
         return jsonify({'error': str(e)}), 500
         
 
-def upload_to_s3(file, bucket_name, filename):
-    try:
-        s3.upload_fileobj(file, bucket_name, filename, ExtraArgs={"ACL": "public-read"})
-        return f"https://{bucket_name}.s3.amazonaws.com/{filename}"
-    except FileNotFoundError:
-        print("El archivo no fue encontrado")
-        return None
-   # except NoCredentialsError:
-   #     print("Credenciales no disponibles")
-   #     return None
-
 def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, userid=0, index=None, size=0):   
     color_texto = request.form.get('color_texto')   
     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
@@ -368,9 +446,17 @@ def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, 
     # Asegurarse de que funcione tanto en Windows como en Linux
   
     #file_path = file_path.replace('\\', '/')
-    file.save(file_path)
+    file.save(file_path)    
+     # Subir el archivo a GCS
+    try:
+        absolute_file_path = os.path.abspath(file_path)  # Obtener la ruta absoluta 
+        upload_to_gcs(absolute_file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
+        eliminar_desde_archivo(filename, None)
+    except Exception as e:
+        print(f"No se pudo subir el archivo {filename} a GCS. Error: {e}")
+    else:
+        print(f"Archivo {filename} subido a GCS con éxito.")
     
-   
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
@@ -412,7 +498,15 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0,
    
     size = size  # Obtener tamaño del archivo usando el índice
     file.save(file_path)
-
+    # Subir el archivo a GCS
+    try:
+        absolute_file_path = os.path.abspath(file_path)  # Obtener la ruta absoluta 
+        upload_to_gcs(absolute_file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
+        eliminar_desde_archivo(filename, None)
+    except Exception as e:
+        print(f"No se pudo subir el archivo {filename} a GCS. Error: {e}")
+    else:
+        print(f"Archivo {filename} subido a GCS con éxito.")
     nombre_archivo = filename
     description_video = 'ambitoSocial'
     randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
@@ -594,7 +688,8 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
                     imagen = db.session.query(Image).filter_by(id=p.imagen_id, user_id=user_id, size=float(p.size)).first()
                     if imagen:
                         db.session.delete(imagen)
-                        eliminar_desde_archivo(imagen.title, user_id)
+                      #  eliminar_desde_archivo(imagen.title, user_id)
+                        delete_from_gcs(imagen.title)
                 
                 # Verificar si el video está asociado a más de una publicación
                 video_en_multiples_publicaciones = (
@@ -607,7 +702,8 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
                     video = db.session.query(Video).filter_by(id=p.video_id, user_id=user_id, size=float(p.size)).first()
                     if video:
                         db.session.delete(video)
-                        eliminar_desde_archivo(video.title, user_id)
+                        #eliminar_desde_archivo(video.title, user_id)
+                        delete_from_gcs(video.title)
                     
                 # Eliminar el registro de la tabla intermedia
                 db.session.delete(p)
@@ -634,7 +730,8 @@ def  eliminar_desde_archivo(title,user_id):
         #ruta_base_datos = os.path.normpath('static\\' + file_path)
         ruta_ = os.path.join(file_path)
         ruta_ = ruta_.replace('\\', '/')
-        os.remove(ruta_)
+        absolute_file_path = os.path.abspath(ruta_)  # Obtener la ruta absoluta 
+        os.remove(absolute_file_path)
         return True
     except OSError as e:
         print(f"Error al eliminar el archivo: {e}")
@@ -827,13 +924,16 @@ def eliminar_desde_db_imagen_video(data, user_id):
             imagen = db.session.query(Image).filter_by(id=multimedia_id, user_id=user_id, size=float(size_imagen)).first()
             if imagen:
                 db.session.delete(imagen)
-                eliminar_desde_archivo(imagen.title, user_id)
+                #eliminar_desde_archivo(imagen.title, user_id)
+                delete_from_gcs(imagen.title)
+                
         
             # Eliminar el video asociado, si no está en otras publicaciones
             video = db.session.query(Video).filter_by(id=multimedia_id, user_id=user_id, size=float(imagen.size)).first()
             if video:
                 db.session.delete(video)
-                eliminar_desde_archivo(video.title, user_id)
+                #eliminar_desde_archivo(video.title, user_id)
+                delete_from_gcs(video.title)
         
         # Eliminar el registro de la tabla intermedia
         for item in publicacion_imagen_video:
