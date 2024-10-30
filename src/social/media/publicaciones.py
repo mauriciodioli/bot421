@@ -29,6 +29,8 @@ from social.buckets.bucketGoog import mostrar_from_gcs
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from sqlalchemy import func
+from sqlalchemy.orm.exc import StaleDataError
+
 
 
 #import boto3
@@ -299,7 +301,6 @@ def armar_publicacion(publicaciones):
 
     return publicaciones_data
 
-
 @publicaciones.route('/media-publicaciones-cambiar-estado', methods=['POST'])
 def media_publicaciones_cambiar_estado():
     data = request.form
@@ -315,13 +316,20 @@ def media_publicaciones_cambiar_estado():
     if not publicacion:
         return jsonify({'error': 'Publicación no encontrada'}), 404
     
+    # Refrescar para asegurar que la instancia esté actualizada
+    db.session.refresh(publicacion)
+    
     # Actualizar el estado de la publicación
     publicacion.estado = nuevo_estado
-    db.session.commit()
-    db.session.close()
-
-    return jsonify({'success': True, 'nuevoEstado': nuevo_estado}), 200
+    try:
+        db.session.commit()
+    except sqlalchemy.orm.exc.StaleDataError:
+        db.session.rollback()  # Revertir en caso de error
+        return jsonify({'error': 'No se pudo actualizar el estado, verifique si los datos cambiaron'}), 409
+    finally:
+        db.session.close()
     
+    return jsonify({'success': True, 'nuevoEstado': nuevo_estado}), 200
 
 
 
