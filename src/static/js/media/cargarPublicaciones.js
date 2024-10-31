@@ -345,7 +345,7 @@
       // Limpiar storedFiles después de enviar
       storedFiles = [];
   
-  
+      setTimeout(function() {
         $.ajax({
           // Configuración de la solicitud AJAX
           url: '/social_imagenes_crear_publicacion',
@@ -452,6 +452,8 @@
             alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
           }
         });
+      }, 100); // 100 ms de pausa antes de hacer la petición
+    
     });
   
     function dataURLToFile(dataURL, filename) {

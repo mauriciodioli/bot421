@@ -132,11 +132,6 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           set -e  # Detener el script si hay un error en cualquier comando
-<<<<<<< HEAD
-
-          # Copiar el archivo al contenedor
-=======
->>>>>>> e9da4fd118dddd41e32793bd4c79babb76a1feb5
           docker cp /home/ubuntu/bot421dbversion2.pem 202404:/src
           docker cp /home/ubuntu/upload_to_gcs.json 202404:/src
           
