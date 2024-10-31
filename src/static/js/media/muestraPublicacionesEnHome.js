@@ -36,7 +36,8 @@ $.ajax({
                         var modalImagesHtml = '';
                         post.imagenes.forEach(function(image, index) {
                             if (index > 0) { // Saltar la primera imagen
-                                var imageUrl = baseUrl + '/' + image.filepath;
+                                //var imageUrl = baseUrl + '/' + image.filepath;
+                                var imageUrl = image.filepath;
                                 modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-en-ambito-publicacion">`;
                             }
                         });
