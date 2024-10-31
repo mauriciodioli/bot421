@@ -816,3 +816,31 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+mauriciodioli@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó direccion imagen: images.jpg, path: static/uploads/images.jpg
+Se cargó una imagen: images.jpg, índice: 0
+Se cargó direccion imagen: inversion.png, path: static/uploads/inversion.png
+Se cargó una imagen: inversion.png, índice: 1
+Se cargó direccion imagen: inversion1.png, path: static/uploads/inversion1.png
+Se cargó una imagen: inversion1.png, índice: 2
+Se cargó direccion imagen: Crowdfunding.jpg, path: static/uploads/Crowdfunding.jpg
+Se cargó una imagen: Crowdfunding.jpg, índice: 0
+Se cargó direccion imagen: crowdfunding-featured5.jpg, path: static/uploads/crowdfunding-featured5.jpg
+Se cargó una imagen: crowdfunding-featured5.jpg, índice: 1
+Se cargó direccion imagen: crownfunding.png, path: static/uploads/crownfunding.png
+Se cargó una imagen: crownfunding.png, índice: 2
