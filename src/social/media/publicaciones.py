@@ -33,6 +33,7 @@ from sqlalchemy.orm.exc import StaleDataError
 
 
 
+
 #import boto3
 #from botocore.exceptions import NoCredentialsError
 
@@ -323,7 +324,7 @@ def media_publicaciones_cambiar_estado():
     publicacion.estado = nuevo_estado
     try:
         db.session.commit()
-    except sqlalchemy.orm.exc.StaleDataError:
+    except StaleDataError:
         db.session.rollback()  # Revertir en caso de error
         return jsonify({'error': 'No se pudo actualizar el estado, verifique si los datos cambiaron'}), 409
     finally:
