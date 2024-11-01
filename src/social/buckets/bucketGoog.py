@@ -10,10 +10,10 @@ load_dotenv()
 bucketGoog = Blueprint('bucketGoog', __name__)
 
 # Ruta a las credenciales de Google Cloud (archivo JSON descargado)
-if 'EC2' in os.uname().nodename:  # o cualquier otro chequeo que prefieras
-    BUCKET_GOOGLE_CREDENTIAL = os.environ.get('BUCKET_GOOGLE_CREDENTIAL_AWS')
-else:
-    BUCKET_GOOGLE_CREDENTIAL = os.environ.get('BUCKET_GOOGLE_CREDENTIAL')
+#if 'EC2' in os.uname().nodename:  # o cualquier otro chequeo que prefieras
+#    BUCKET_GOOGLE_CREDENTIAL = os.environ.get('BUCKET_GOOGLE_CREDENTIAL_AWS')
+#else:
+BUCKET_GOOGLE_CREDENTIAL = os.environ.get('BUCKET_GOOGLE_CREDENTIAL')
 
 # Establecer la variable de entorno para las credenciales
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BUCKET_GOOGLE_CREDENTIAL

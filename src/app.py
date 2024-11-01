@@ -39,8 +39,6 @@ from Tests.test_2_order_report_handler import test_2_order_report_handler
 from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
 
 
-
-
 from social.telegram.telegram import telegram
 from social.chats.chat import chat
 from social.buckets.bucketGoog import bucketGoog
@@ -48,6 +46,7 @@ from social.buckets.bucketGoog import bucketGoog
 from herramientasAdmin.accionesSheet import accionesSheet
 from herramientasAdmin.runScript import runScript
 from herramientasAdmin.accionesTriggers import accionesTriggers
+
 
 from strategies.estrategias import estrategias
 from strategies.estrategiaSheetWS import estrategiaSheetWS

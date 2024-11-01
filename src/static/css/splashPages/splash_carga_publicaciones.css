@@ -1,0 +1,76 @@
+/* Estilos generales del modal */
+.modal-content-carga_publicaciones {
+    background-color: #ffffff; /* Fondo blanco */
+    border-radius: 10px; /* Bordes redondeados */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    padding: 30px; /* Espaciado interno */
+    animation: fadeIn 0.5s; /* Efecto de aparición */
+}
+
+/* Estilos para el encabezado del modal */
+.modal-header-carga_publicaciones {
+    border-bottom: none; /* Sin borde en la parte inferior */
+    justify-content: center; /* Centrar el contenido */
+}
+
+/* Estilos para el título del modal */
+.modal-title-carga_publicaciones {
+    font-size: 24px; /* Tamaño de fuente */
+    font-weight: bold; /* Negrita */
+    color: #333; /* Color del texto */
+    text-align: center; /* Centrar el texto */
+}
+
+/* Estilos para el cuerpo del modal */
+.modal-body-carga_publicaciones {
+    display: flex;
+    flex-direction: column; /* Disposición vertical */
+    align-items: center; /* Centrar elementos */
+    justify-content: center; /* Centrar verticalmente */
+}
+
+/* Loader */
+.loader-modal-carga_publicaciones {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centrar elementos */
+}
+
+/* Estilos para las animaciones del loader */
+.load-inner-modal-carga_publicaciones {
+    width: 60px;
+    height: 6px;
+    margin: 4px;
+    background-color: #3498db; /* Color del loader */
+    border-radius: 5px; /* Bordes redondeados */
+    animation: loading 0.8s infinite alternate; /* Animación del loader */
+}
+
+/* Animación del loader */
+@keyframes loading {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.5);
+    }
+}
+
+/* Efecto de transición para el texto del loader */
+.text-modal-carga_publicaciones {
+    margin-top: 15px;
+    font-size: 18px; /* Tamaño del texto */
+    color: #555; /* Color del texto */
+    text-align: center; /* Centrar el texto */
+    animation: fadeIn 0.5s; /* Efecto de aparición */
+}
+
+/* Animación de texto */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

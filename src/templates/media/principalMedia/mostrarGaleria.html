@@ -277,7 +277,28 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="splash_carga_publicaciones" tabindex="-1" role="dialog" aria-labelledby="splashCargaPublicacionesModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content-carga_publicaciones">
+          <div class="modal-header-carga_publicaciones">
+              <h5 class="modal-title-carga_publicaciones" id="splashCargaPublicacionesModalLabel">Cargando...</h5>
+          </div>
+          <div class="modal-body-carga_publicaciones">
+              <div class="loader-modal-carga_publicaciones" id="loader-modal-carga_publicaciones">
+                  <div class="load-inner-modal-carga_publicaciones load-one-modal-carga_publicaciones"></div>
+                  <div class="load-inner-modal-carga_publicaciones load-two-modal-carga_publicaciones"></div>
+                  <div class="load-inner-modal-carga_publicaciones load-three-modal-carga_publicaciones"></div>
+                  <span class="text-modal-carga_publicaciones">Cargando...</span>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
 
+
+      
+</div>
 <!-- ... Tu código HTML ... -->
 {% include 'layouts/layout_footer.html' %}
 <script src="{{ url_for('static', filename='js/media/mostrarGaleria.js') }}"></script>

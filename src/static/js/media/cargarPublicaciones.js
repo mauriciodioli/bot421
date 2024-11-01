@@ -271,7 +271,28 @@
 
   $(document).ready(function() {
     var storedFiles = []; // Array para almacenar todos los archivos seleccionados
-  // Definir y inicializar mediaContainer
+  
+  
+   // Cargar splashPage_espere.html en el modal
+   function showSplashPage() {
+    $('#splash_carga_publicaciones').modal('show');
+}
+
+
+    // Ocultar el modal del splash page
+    function hideSplashPage() {
+      $('#splash_carga_publicaciones').modal('hide');
+    }
+
+  
+  
+  
+  
+  
+  
+  
+  
+    // Definir y inicializar mediaContainer
     var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
 
     // Evento cuando se seleccionan archivos
@@ -302,6 +323,12 @@
   
     $("#createPostForm_creaPublicacion").on("submit", function(event) {
       event.preventDefault(); // Prevent the default form submission
+     
+     // Mostrar el splash page
+     showSplashPage();
+     
+     
+     
       document.getElementById('loader-modal-crear-publicacion').style.display = 'block';
     
       var formData = new FormData(this);
@@ -358,6 +385,8 @@
           },
           success: function(response) {
             if (Array.isArray(response)) {
+                hideSplashPage();  // Ocultar el splash page al finalizar
+               
                 var postDisplayContainer = $('#postDisplayContainer');
                 postDisplayContainer.empty();
                 $('#createPostModal_creaPublicacion').hide();
@@ -449,6 +478,8 @@
             }
         },      
           error: function(xhr, status, error) {
+            hideSplashPage();  // Ocultar el splash page al finalizar
+               
             alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
           }
         });
