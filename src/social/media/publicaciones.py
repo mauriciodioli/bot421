@@ -583,6 +583,7 @@ def guardarPublicacion(request, user_id):
     try:
         post_title = request.form.get('postTitle_creaPublicacion')
         post_text = request.form.get('postText_creaPublicacion')   
+        post_descripcion = request.form.get('postDescription_creaPublicacion')
         ambito = request.form.get('postAmbito_creaPublicacion')
         correo_electronico = request.form.get('correo_electronico')
         color_texto = request.form.get('color_texto')
@@ -603,7 +604,7 @@ def guardarPublicacion(request, user_id):
             texto=post_text,
             ambito=ambito,
             correo_electronico=correo_electronico,
-            descripcion=post_text,
+            descripcion=post_descripcion,
             color_texto=color_texto,
             color_titulo=color_titulo,
             fecha_creacion=datetime.now(),
