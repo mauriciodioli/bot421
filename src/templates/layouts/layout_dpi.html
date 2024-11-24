@@ -31,7 +31,14 @@
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/splashPages/splash.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/index.css')}}>
     <link rel =  "stylesheet" href = {{ url_for('static',filename='css/dpis/dpi.css')}}>
+   
+    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
+    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
+    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/modales/modalGaleriaPublicacionesMostradas.css') }}">
+    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/modificarPublicaciones.css') }}">
+    <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraDesplieguePublicacionHome.css') }}">     
   
+
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     <script src="{{ url_for('static', filename='js/notificacionAlertOperacion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js')}}"></script> 
@@ -80,8 +87,31 @@
                         <li class="nav-item">
                             <a class="nav-link" href="#planes">Signals</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#sobre-nosotros">Domains</a>
+                        <li class="nav-item dropdown" id='AdministrarDominiosLayout'>
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Domains</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" id='Social' href="/subirImagen/">Social</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" id='Educational' href="/mostrarGaleria/">Educational</a></li>
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Work' href="/mostrarGaleria/">Work</a></li>                          
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Business' href="/mostrarGaleria/">Business</a></li>                          
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Sports' href="/mostrarGaleria/">Sports</a></li>                          
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Family' href="/mostrarGaleria/">Family</a></li>                          
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" id='Friendship' href="/mostrarGaleria/">Friendship</a></li>                          
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Personal' href="/mostrarGaleria/">Personal</a></li>                          
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Health' href="/mostrarGaleria/">Health</a></li>                          
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Philanthropy' href="/mostrarGaleria/">Philanthropy</a></li>                          
+                                <li><hr class="dropdown-divider"></li> 
+                                <li><a class="dropdown-item" id='Nature' href="/mostrarGaleria/">Nature</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#ingreso">Login</a>
@@ -95,14 +125,7 @@
         </nav>
         
         
-<div class="mobile-banner double-height"style="background-color: #007bff; height: 40px; width: 100%; position: absolute; top: 56px; left: 0; z-index: 999; display: flex; justify-content: center; align-items: center;">
-    <span class="desktop-text" style="color: white; font-size: 16px; font-weight: bold;">
-        If you're interested in the advisory section -
-    </span>
-    <span class="mobile-text" style="color: white; font-size: 16px; font-weight: bold;">
-        <a href="/llamada/index-contacto" style="color: white; text-decoration: underline;">  If you're interested in the advisory section -Learn more →</a>
-    </span>
-</div>      
+     
 <!-- Banda azul brillante pegada al layout con texto centrado -->
 <div class="mobile-banner" style="background-color: #007bff; height: 40px; width: 100%; position: absolute; top: 56px; left: 0; z-index: 999; display: flex; justify-content: center; align-items: center;">
     <span class="desktop-text" style="color: white; font-size: 16px; font-weight: bold;">
@@ -113,6 +136,14 @@
     </span>
 </div>
 
+<div class="mobile-banner double-height"style="background-color: #007bff; height: 40px; width: 100%; position: absolute; top: 56px; left: 0; z-index: 999; display: flex; justify-content: center; align-items: center;">
+    <span class="desktop-text" style="color: white; font-size: 16px; font-weight: bold;">
+        If you're interested in the advisory section -
+    </span>
+    <span class="mobile-text" style="color: white; font-size: 16px; font-weight: bold;">
+        <a href="/llamada/index-contacto" style="color: white; text-decoration: underline;">  -Learn more →</a>
+    </span>
+</div> 
 
     <!-- <div class = 'container p-4'> -->
         
@@ -137,5 +168,6 @@
         // Cerrar el menú desplegable al ser seleccionado
         cerrarMenuSeleccionado();
     </script>
+    <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
 </body>
 </html>
