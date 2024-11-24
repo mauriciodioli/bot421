@@ -56,7 +56,8 @@ def panel_control_sin_cuenta():
         respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,usuario_id,account,selector)
         
         datos_desempaquetados = procesar_datos(app,pais, account,usuario_id,selector)
-        
+        if layout == 'layout_dpi':
+           return render_template("/paneles/panelSheetCompletoSinCuenta.html", datos = datos_desempaquetados)
         if layout == 'layout_signal':
             return render_template("/paneles/panelSheetCompleto.html", datos = datos_desempaquetados)
         if layout == 'layout': 

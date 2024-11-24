@@ -85,7 +85,7 @@
                             <a class="nav-link active" href="/">Content</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#planes">Signals</a>
+                            <a class="nav-link" id="openModalSignals">Signals</a>
                         </li>
                         <li class="nav-item dropdown" id='AdministrarDominiosLayout'>
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Domains</a>
@@ -145,6 +145,37 @@
     </span>
 </div> 
 
+
+
+
+
+<!-- Modal para seleccionar el país -->
+<div class="modal fade" id="modalSeleccionPais" tabindex="-1" aria-labelledby="modalSeleccionPais" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <!-- Encabezado del modal -->
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalVacioLabel" style="color: black;">Signals by Country</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <!-- Cuerpo del modal (puedes dejarlo vacío o agregar contenido) -->
+         <!-- Cuerpo del modal (agrega un select para elegir entre Argentina y USA) -->
+         <div class="modal-body">
+          <p>Please, select Country:</p>
+          <select class="form-select mb-3" id="seleccionarPais">
+            <option value="" selected disabled>Select a Country</option> <!-- Opción sin valor por defecto -->
+            <option value="usa">USA</option>
+            <option value="argentina">Argentina</option>            
+          </select>
+        </div>
+        <!-- Pie del modal (puedes dejarlo vacío o agregar botones) -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button onclick="mostrarSplash()" type="button" class="btn btn-primary" id="guardarPais">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <!-- <div class = 'container p-4'> -->
         
       {%block content%}
@@ -168,6 +199,8 @@
         // Cerrar el menú desplegable al ser seleccionado
         cerrarMenuSeleccionado();
     </script>
-    <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dpis/dpi.js') }}"></script>
+  <!--<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
+-->  
 </body>
 </html>
