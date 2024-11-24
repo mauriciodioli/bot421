@@ -1,0 +1,73 @@
+/* Ajustar padding del body para navbar fijo */
+body {
+    padding-top: 70px; /* Altura del navbar */
+}
+
+/* Estilo para el navbar */
+.navbar {
+    height: 55px; /* Altura del navbar */
+    display: flex;
+    align-items: center; /* Centrar verticalmente el contenido */
+    justify-content: space-between; /* Separar logo y menú */
+    padding: 0 300px; /* Espaciado horizontal del navbar */
+}
+
+
+/* Estilo para el logo */
+.LogoDpi {
+    height: 55px;
+    width: 55px; /* Ajustar al tamaño del logo */
+    background: url('/static/leon.png') no-repeat center;
+    background-size: contain;
+    margin-right: 20px; /* Espacio entre el logo y el menú */
+}
+
+@media (max-width: 767px) {
+    .LogoDpi {
+        height: 40px; /* Reducir tamaño para dispositivos móviles */
+        width: 40px;
+        margin-right: 10px; /* Ajusta espaciado según sea necesario */
+    }
+}
+
+.LogoDpi {
+    margin-right: 15px; /* Da espacio suficiente del botón */
+}
+.navbar-toggler {
+    margin-left: auto; /* Empuja el botón al lado opuesto del logo */
+}
+
+/* Ajuste del desplazamiento para anclas */
+section[id] {
+    scroll-margin-top: 70px;
+}
+
+
+
+
+
+.navbar-nav .nav-link {
+    position: relative;
+    color: white; /* Color del texto normal */
+    transition: color 0.3s ease; /* Transición suave para el color */
+}
+
+.navbar-nav .nav-link:hover {
+    color: #007bff; /* Cambia el color del texto al pasar el mouse (opcional) */
+}
+
+.navbar-nav .nav-link::after {
+    content: ''; /* Genera un pseudo-elemento para la línea */
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px; /* Grosor de la línea */
+    background-color: blue; /* Color de la línea */
+    transform: scaleX(0); /* Escala inicial: oculta la línea */
+    transition: transform 0.3s ease; /* Animación suave */
+}
+
+.navbar-nav .nav-link:hover::after {
+    transform: scaleX(1); /* Escala completa: línea visible */
+}

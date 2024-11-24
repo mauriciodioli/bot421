@@ -1,0 +1,219 @@
+{% extends 'layouts/layout_dpi.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+   <!-- Banda azul brillante arriba -->
+    
+ 
+            <div class="horizontal-padding vertical-padding" style="margin-top: 200px;" >
+              <div class="horizontal-padding vertical-padding">
+                <section class="sobre-nosotros" id="sobre-nosotros">
+                  <div class="container" id="container-sobre-nosotros">
+                    
+                    <div class="flex-container">
+                      <div class="image-container-sobre-nosotros">
+                        <h1 class="sobre-nosotros" style="color: rgb(224, 224, 223); font-size: 52px; font-family: 'Montserrat', sans-serif; margin-bottom: 20px; font-weight: 700;">
+                          Learn to invest, work, and enjoy everything in one place.
+                        </h1>
+                        
+                        <h4 class="sobre-nosotros-descripcion" style="color: rgb(201, 197, 197); font-size: 20px; line-height: 1.8; margin-top: 30px;">
+                          Learn to invest in your projects, in the market, with partners. Get help with tutorials and generate additional income with our courses focused on leveraging new technologies to buy, sell, or use for your own projects.
+                        </h4>
+                        <form action="/" method="GET">
+                          <button class="card-button long-button" style="margin-top: 20px;" type="submit">Go to content</button>
+                        </form>
+                      </div>
+                    
+                      <!-- Contenedor de imagen -->
+                      <div class="text-container-sobre-nosotros" style="text-align: left; margin-left: 70px;">
+                        <img src="/static/dpi.jpg" alt="Descripción de la imagen" style="width: 200%; height: auto;">
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              
+           
+              <div class="horizontal-padding vertical-padding py-4">
+                <section class="contacto" id="contacto">
+                  <div class="contactos-info">
+                    <h1 class="contactos-titulo"  style="color: gold;"> CONTACTO </h1>
+                    <h3 class="contactos-titulo" style="color:white">  TE ASESORAMOS</h3>
+                    <form action="/llamada/index-contacto" method="GET">
+                      <button class="card-button long-button" style="margin-top: 20px;" type="submit">Conversar</button>
+                    </form>
+                  </div>
+                </section> 
+              </div>
+           
+              <div class="horizontal-padding vertical-padding py-4">
+                <section class="ingreso" id="ingreso">
+                    <div class="ingreso-info">              
+                        <h1 class="ingreso-titulo" style="color: gold;">Login</h1>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class="flashes">
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endwith %}
+            
+                        <div class="form-container">
+                            <div class="row">
+                                {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                        <div class="alert alert-danger">
+                                            {% for message in messages %}
+                                                <p>{{ message }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endwith %}
+            
+                                <form method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
+                                    <div class="form-group">
+                                        <!--<label for="correo_electronico" class="text-white">Correo electrónico:</label>-->
+                                        <input type="email" class="form-control mb-3" id="correo_electronico" name="correo_electronico" autocomplete="email" placeholder="Correo electrónico" required>
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <!--<label for="password" class="text-white">Contraseña:</label>-->
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                        <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+                                    </div>                            
+            
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-6 mb-4">
+                                            <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                                        </div>
+                                        <div class="col-md-6 mb-2">
+                                            <a href="/registrar_usuario">
+                                                <button type="button" class="btn btn-secondary">Registrarse</button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+            
+                                <form action="/login/google" method="get" class="mt-4 bts">
+                                    <a class="gplogin social"><i class="fa fa-google-plus"></i><span>Iniciar sesión con Google</span></a>
+                                    <!--<button type="submit" class="btn btn-primary btn-block my-2">Iniciar sesión con Google</button>-->
+                                </form>
+                                
+                                <!-- Enlace para recuperación de contraseña -->
+                                <div class="row justify-content-center mt-3">
+                                    <div class="col-md-12 text-center">
+                                        <a href="/usuarios_recuperar_contrasena_usuario_sistema" class="btn btn-link text-white">¿Olvidaste tu contraseña?</a>
+                                    </div>
+                                </div>
+            
+                            </div>
+                        </div>
+                    </div>
+                </section> 
+            </div>
+            
+
+
+            </div> <!-- aqui va todo ubicado en el centro es el fin de la etiqueta que contiene al centro--> 
+            
+       
+       
+      </div>
+    </div>
+  </div>  
+
+  {% include 'layouts/layout_footer.html' %}
+
+ 
+  
+  <!-- Aquí se agrega el script -->  
+  <script>
+   
+    function showError(message) {
+      // muestra un mensaje de error al usuario
+      alert(message);
+      // o agrega un elemento HTML con el mensaje de error a la página
+      // por ejemplo, con jQuery:
+      // $('body').append('<div class="alert alert-danger">' + message + '</div>');
+    }
+  
+     
+      // Obtener el token del localStorage
+      var token = localStorage.getItem('access_token');
+      var refresh_token = localStorage.getItem('refresh_token');
+      var selectorEnvironment = localStorage.getItem('selector');
+      account =  localStorage.getItem('cuenta');
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const tokenExpirationDate = new Date(payload.exp * 1000);
+        const currentDateTime = new Date();
+        vencimiento_access_token = currentDateTime.getTime() > tokenExpirationDate.getTime();
+      } else {
+      // En caso de que no haya un token
+      //  console.log("No hay token disponible");
+      }  
+      //console.log("tokenExpirationDate: ",tokenExpirationDate," currentDateTime: ",currentDateTime," vencimiento: ",vencimiento_access_token)
+      
+      if (token) { // Verificar si el token existe en el localStorage
+        // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
+        $.ajax({
+          type: "POST",
+          url: "{{ url_for('autenticacion.loginIndex') }}",
+          contentType: "application/json",
+          data: JSON.stringify({'token': token,'refresh_token':refresh_token,'selectorEnvironment':selectorEnvironment,'account':account}),
+          success: function(response) {
+            if (response.redirect) {
+              window.location.href = response.redirect;
+            } else {
+              // handle error
+              if (vencimiento_access_token){
+                localStorage.removeItem('access_token')
+              }
+              showError("No se pudo redirigir al usuario se puede haber vencido el token loguee nuevamente");
+            }
+          },
+          error: function(error) {
+            // handle error
+            showError("Hubo un error en la solicitud AJAX");
+          }
+        });
+      }
+   
+
+
+
+
+
+
+      
+  function togglePasswordVisibility(id) {
+    var passwordField = document.getElementById(id);
+    var icon = passwordField.nextElementSibling;
+
+    if (passwordField.type === "password") {
+      passwordField.type = "text";
+      icon.textContent = "🙈";
+    } else {
+      passwordField.type = "password";
+      icon.textContent = "👁️";
+    }
+  }
+
+
+  </script>
+{% endblock %}
