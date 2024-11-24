@@ -89,6 +89,7 @@ from social.media_e_mail import media_e_mail
 from social.media.publicaciones import publicaciones
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
+from social.dpis.dpi import dpi
 
 from comunicacion.contacto import contacto
 from comunicacion.newsLetter import newsLetter
@@ -264,6 +265,7 @@ app.register_blueprint(publicaciones)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(servidorAws)
+app.register_blueprint(dpi)
 
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
@@ -530,7 +532,7 @@ def send_local_storage():
 def entrada():  
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    crea_tablas_DB()
+    #crea_tablas_DB()
     
     return  render_template("entrada.html")
 
