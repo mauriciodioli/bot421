@@ -107,26 +107,75 @@ section[id] {
 
 
 
-/* Tipografía para el título (h1) */
+
+/* Estilos para la sección sobre-nosotros */
 .sobre-nosotros {
-    font-family: 'Poppins', sans-serif; /* Fuente para h1 */
+    font-family: 'Poppins', sans-serif;
     font-size: 52px;
     font-weight: 700;
     color: rgb(224, 224, 223);
     margin-bottom: 20px;
-    text-transform: uppercase; /* Opción moderna para títulos */
-    letter-spacing: 1px; /* Espaciado para hacerlo más elegante */
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-/* Tipografía para la descripción (h4) */
-.sobre-nosotros-descripcion {
-    font-family: 'Roboto', sans-serif; /* Fuente para h4 */
-    font-size: 20px;
-    font-weight: 400;
-    line-height: 1.8;
-    color: rgb(201, 197, 197);
-    margin-top: 30px;
+/* Estilos de la imagen */
+.text-container-sobre-nosotros img {
+    width: 100%; /* Asegura que la imagen ocupe todo el espacio disponible */
+    height: auto;
 }
+
+/* Contenedor con flexbox para alinear el texto e imagen */
+.flex-container {
+    display: flex;
+    align-items: center; /* Alinea verticalmente el contenido */
+    justify-content: space-between; /* Asegura que el texto y la imagen estén separados */
+    flex-wrap: wrap; /* Permite que los elementos se ajusten cuando haya poco espacio */
+}
+
+/* Media queries para pantallas pequeñas */
+@media (max-width: 768px) {
+    .flex-container {
+        flex-direction: column; /* Cambia la dirección a columna en pantallas pequeñas */
+        text-align: center; /* Centra el texto */
+    }
+
+    .image-container-sobre-nosotros {
+        order: 1; /* Asegura que el texto quede arriba */
+    }
+
+    .text-container-sobre-nosotros {
+        order: 2; /* Asegura que la imagen quede abajo */
+        margin-top: 20px; /* Añade un espacio entre el texto y la imagen */
+    }
+
+    .sobre-nosotros {
+        font-size: 36px; /* Reduce el tamaño del texto en pantallas pequeñas */
+    }
+
+    .sobre-nosotros-descripcion {
+        font-size: 16px; /* Reduce el tamaño de la descripción */
+        margin-top: 20px; /* Añade un espacio entre el título y la descripción */
+    }
+
+    /* Asegura que el botón ocupe el 100% del espacio disponible */
+    .card-button {
+        width: 100%;
+    }
+}
+
+/* Media queries para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    .sobre-nosotros {
+        font-size: 28px; /* Aún más pequeño para pantallas muy pequeñas */
+    }
+    
+    .sobre-nosotros-descripcion {
+        font-size: 14px; /* Ajuste adicional para pantallas muy pequeñas */
+    }
+}
+
+
 
 
 
