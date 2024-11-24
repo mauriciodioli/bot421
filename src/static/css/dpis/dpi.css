@@ -15,6 +15,34 @@ body {
     padding: 0 300px; /* Padding horizontal solo en pantallas grandes */
 }
 
+/* Ajuste para aumentar el espacio entre los items del menú */
+.navbar-nav {
+    display: flex; /* Asegura que los items del menú se alineen en fila */
+    margin-left: 25px; /* Ajusta la distancia entre el logo y los items del menú */
+    gap: 20px; /* Espacio entre los items del menú */
+}
+
+/* Para mover un item específico, por ejemplo el segundo item */
+.navbar-nav .nav-item:nth-child(2) {
+    margin-left: 0px; /* Mueve el segundo item 30px a la derecha */
+}
+
+/* Si deseas ajustar más el espacio dentro de los items */
+.navbar-nav .content{
+    padding-left: 0px; /* Ajusta el padding para cada item */
+    padding-right: 15px; /* Ajusta el padding para cada item */
+}
+
+/* Estilo para el contenedor de navegación */
+.navbar-nav {
+    display: flex; /* Asegura que los items del menú se alineen en fila */
+    margin-left: 50px; /* Ajusta la distancia entre el logo y los items del menú */
+    flex-wrap: nowrap; /* Asegura que los items no se ajusten en pantallas grandes */
+    justify-content: flex-start; /* Alinea los items del menú a la izquierda */
+}
+
+
+
 /* Estilo para el contenedor de navegación */
 .navbar-nav {
     display: flex; /* Asegura que los items del menú se alineen en fila */
