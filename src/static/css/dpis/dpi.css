@@ -3,36 +3,37 @@ body {
     padding-top: 70px; /* Altura del navbar */
 }
 
-/* Estilo para el navbar */
-.navbar {
-    height: 55px; /* Altura del navbar */
-    display: flex;
-    align-items: center; /* Centrar verticalmente el contenido */
-    justify-content: space-between; /* Separar logo y menú */
-    padding: 0 300px; /* Espaciado horizontal del navbar */
-}
-
-
 /* Estilo para el logo */
 .LogoDpi {
-    height: 55px;
-    width: 55px; /* Ajustar al tamaño del logo */
+    height: 45px;
+    width: 70px; /* Ajustar al tamaño del logo */
     background: url('/static/leon.png') no-repeat center;
     background-size: contain;
+    display: flex;
+    align-items: left;
     margin-right: 20px; /* Espacio entre el logo y el menú */
+    padding: 0 300px; /* Padding horizontal solo en pantallas grandes */
 }
 
+/* Estilo para el contenedor de navegación */
+.navbar-nav {
+    display: flex; /* Asegura que los items del menú se alineen en fila */
+    margin-left: 50px; /* Ajusta la distancia entre el logo y los items del menú */
+    flex-wrap: nowrap; /* Asegura que los items no se ajusten en pantallas grandes */
+    justify-content: flex-start; /* Alinea los items del menú a la izquierda */
+}
+
+
+/* Estilo responsive para dispositivos con pantallas pequeñas */
 @media (max-width: 767px) {
     .LogoDpi {
-        height: 40px; /* Reducir tamaño para dispositivos móviles */
-        width: 40px;
-        margin-right: 10px; /* Ajusta espaciado según sea necesario */
+        padding-left: 10px; /* Ajusta según sea necesario para dispositivos móviles */
+        padding-right: 10px; /* Asegura que el padding derecho también sea pequeño */
+        margin-right: 0; /* Elimina el margen derecho para que el logo esté completamente a la izquierda */
     }
 }
 
-.LogoDpi {
-    margin-right: 15px; /* Da espacio suficiente del botón */
-}
+/* Estilo para el botón de la navbar */
 .navbar-toggler {
     margin-left: auto; /* Empuja el botón al lado opuesto del logo */
 }
@@ -41,6 +42,10 @@ body {
 section[id] {
     scroll-margin-top: 70px;
 }
+
+
+
+
 
 
 
@@ -71,3 +76,79 @@ section[id] {
 .navbar-nav .nav-link:hover::after {
     transform: scaleX(1); /* Escala completa: línea visible */
 }
+
+
+
+/* Tipografía para el título (h1) */
+.sobre-nosotros {
+    font-family: 'Poppins', sans-serif; /* Fuente para h1 */
+    font-size: 52px;
+    font-weight: 700;
+    color: rgb(224, 224, 223);
+    margin-bottom: 20px;
+    text-transform: uppercase; /* Opción moderna para títulos */
+    letter-spacing: 1px; /* Espaciado para hacerlo más elegante */
+}
+
+/* Tipografía para la descripción (h4) */
+.sobre-nosotros-descripcion {
+    font-family: 'Roboto', sans-serif; /* Fuente para h4 */
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.8;
+    color: rgb(201, 197, 197);
+    margin-top: 30px;
+}
+
+
+
+
+
+
+/* Ocultar la barra por defecto */
+.mobile-banner {
+    display: none;
+}
+
+/* Mostrar la barra en pantallas pequeñas (móviles) */
+@media (max-width: 768px) {
+    .mobile-banner {
+        display: flex;
+        position: fixed; /* Cambiado de absolute a fixed */
+        top: 0; /* Ajustar a la parte superior */
+        left: 0;
+        z-index: 999;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        height: 80px; /* Ajusta esta altura según sea necesario */
+    }
+
+    /* Duplicar la altura de la barra (doble de la altura original) */
+    .mobile-banner.double-height {
+        height: 160px; /* Esto es el doble de la altura */
+    }
+
+    /* Ocultar el texto de escritorio en pantallas pequeñas */
+    .desktop-text {
+        display: none;
+    }
+
+    /* Mostrar el texto móvil en pantallas pequeñas */
+    .mobile-text {
+        display: block;
+    }
+}
+
+/* Estilos adicionales si necesitas que el contenido de .mobile-banner se vea bien en pantallas pequeñas */
+.mobile-banner span {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.mobile-banner a {
+    color: white;
+    text-decoration: underline;
+}
+
