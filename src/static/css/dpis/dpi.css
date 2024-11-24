@@ -182,50 +182,123 @@ section[id] {
 
 
 
-/* Ocultar la barra por defecto */
-.mobile-banner {
-    display: none;
-}
 
-/* Mostrar la barra en pantallas pequeñas (móviles) */
-@media (max-width: 768px) {
-    .mobile-banner {
-        display: flex;
-        position: fixed; /* Cambiado de absolute a fixed */
-        top: 0; /* Ajustar a la parte superior */
-        left: 0;
-        z-index: 999;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        height: 80px; /* Ajusta esta altura según sea necesario */
-    }
-
-    /* Duplicar la altura de la barra (doble de la altura original) */
-    .mobile-banner.double-height {
-        height: 160px; /* Esto es el doble de la altura */
-    }
-
-    /* Ocultar el texto de escritorio en pantallas pequeñas */
-    .desktop-text {
-        display: none;
-    }
-
-    /* Mostrar el texto móvil en pantallas pequeñas */
-    .mobile-text {
-        display: block;
-    }
-}
-
-/* Estilos adicionales si necesitas que el contenido de .mobile-banner se vea bien en pantallas pequeñas */
-.mobile-banner span {
-    color: white;
-    font-size: 16px;
+/* Contenedor de las tarjetas */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  /* Estilos para cada tarjeta */
+  .card {
+    width: 268px;  /* Ancho inicial para pantallas grandes */
+    height: 106px;
+    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
+    border-radius: 12px; /* Bordes redondeados */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 -4px 8px rgba(255, 255, 255, 0.2); /* Sombra para efecto convexo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease; /* Efecto de hover y transición suave */
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+    flex-grow: 0; /* Para evitar que crezca más allá del tamaño especificado */
+  }
+  
+  /* Efecto al pasar el cursor sobre la tarjeta */
+  .card:hover {
+    transform: translateY(-5px); /* Eleva la tarjeta un poco al hacer hover */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 -6px 12px rgba(255, 255, 255, 0.3); /* Sombra más pronunciada para resaltar el relieve */
+  }
+  
+  /* Estilos para el contenido de la tarjeta */
+  .card-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Título de la tarjeta */
+  .card-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    color: white; /* Texto blanco */
+    margin: 0; /* Elimina el margen para evitar que se desplace */
+  }
+  
+  /* Número en la tarjeta */
+  .card-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    color: white; /* Texto blanco */
     font-weight: bold;
+    margin: 0; /* Elimina el margen para evitar que se desplace */
+  }
+  
+  /* Clases específicas para cada tarjeta (si necesitas personalización) */
+  .numRequeris-card1 {
+    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
+  }
+  
+  .numRequeris-card2 {
+    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
+  }
+  
+  .numRequeris-card3 {
+    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
+  }
+  
+  .numRequeris-card4 {
+    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
+  }
+  
+  /* Media Queries para pantallas más pequeñas (responsive) */
+  @media (max-width: 768px) {
+    .card {
+      width: calc(50% - 8px); /* Ajustar las tarjetas al 50% del contenedor para pantallas medianas */
+      height: 106px; /* Mantener la altura */
+    }
+  
+    .card-container {
+      gap: 8px; /* Reducir el espacio entre las tarjetas */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .card {
+      width: 100%; /* En pantallas pequeñas, que cada tarjeta ocupe todo el ancho */
+      height: 106px; /* Mantener la altura */
+    }
+  
+    .card-container {
+      gap: 8px; /* Reducir el espacio entre las tarjetas */
+    }
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+   /* Desplegar el menú al pasar el mouse sobre el elemento */
+   #AdministrarDominiosLayout:hover .dropdown-menu {
+    display: block;
 }
 
-.mobile-banner a {
-    color: white;
-    text-decoration: underline;
+/* Opcional: agregar una transición para suavizar el efecto */
+.dropdown-menu {
+    display: none;
+    transition: all 0.3s ease;
 }
-
