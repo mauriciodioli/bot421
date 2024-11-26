@@ -5,6 +5,9 @@
   <h1 class="display-4">Signals!</h1>
   <p class="lead">To operate you can go to Login</p>
   <hr class="my-4">
+  <div style="display: flex; justify-content: center; align-items: center;">
+    <button class="btn btn-success btn-lg" onclick="seleccionarPais()">Summary</button>
+  </div>
 </div>
 <div class="container p-4">   
   <div class="table-responsive">  
@@ -45,6 +48,26 @@
 {% include 'layouts/layout_footer.html' %}
 <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
 <script>
+
+  function seleccionarPais() {
+    
+    pais = localStorage.getItem('paisSeleccionado')          
+    var usuario_id = 'anonimo';
+    access_token = 'access_dpi_token_usuario_anonimo';
+    var selector = 'simulado';
+   
+    var layoutOrigen = 'layout_dpi';
+    var url = '/panel_control?country=' + pais + '&layoutOrigen=' + layoutOrigen+'&usuario_id='+usuario_id+'&access_token='+access_token+'&selector='+selector;
+    window.location.href = url;
+}
+
+
+
+
+
+
+
+
   $(document).ready(function() {
     // Iterar sobre las filas de la tabla
     $('#signalTable tbody tr').each(function() {

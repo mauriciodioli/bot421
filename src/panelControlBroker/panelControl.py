@@ -80,12 +80,16 @@ def panel_control():
      if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
         try:  
-                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            
+                if access_token != 'access_dpi_token_usuario_anonimo':
+                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                else:
+                    user_id = usuario_id
                 respuesta =  llenar_diccionario_cada_15_segundos_sheet(app,pais,user_id,accountCuenta,selector)
                 
                 datos_desempaquetados = procesar_datos(app,pais, accountCuenta,usuario_id,selector)
                 
+                if layout == 'layout_dpi':
+                     return render_template("/paneles/panelSignalSinCuentaDpi.html", datos = datos_desempaquetados)
                 if layout == 'layout_signal':
                     return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
                 if layout == 'layout' or layout == 'layoutConexBroker':      
