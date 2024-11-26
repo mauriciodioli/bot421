@@ -3,16 +3,32 @@ body {
     padding-top: 70px; /* Altura del navbar */
 }
 
+
+.NdpiLogo {
+  height: 60px;
+  width: 70px;
+  position: fixed;
+  top: 0;
+  left: 500px; /* Mueve el elemento 100px hacia la derecha */
+  background: url('/static/leon.png') no-repeat center left;
+  background-size: contain;
+  display: flex;
+  align-items: center;
+  padding-left: 80px; /* Ajusta según sea necesario */
+}
+
+
+
+
 /* Estilo para el logo */
 .LogoDpi {
     height: 45px;
     width: 70px; /* Ajustar al tamaño del logo */
-    background: url('/static/leon.png') no-repeat center;
     background-size: contain;
     display: flex;
     align-items: left;
-    margin-right: 20px; /* Espacio entre el logo y el menú */
-    padding: 0 300px; /* Padding horizontal solo en pantallas grandes */
+    margin-right: 500px; /* Espacio entre el logo y el menú */
+    padding: 0 50px; /* Padding horizontal solo en pantallas grandes */
 }
 
 /* Ajuste para aumentar el espacio entre los items del menú */
@@ -58,6 +74,9 @@ body {
         padding-left: 10px; /* Ajusta según sea necesario para dispositivos móviles */
         padding-right: 10px; /* Asegura que el padding derecho también sea pequeño */
         margin-right: 0; /* Elimina el margen derecho para que el logo esté completamente a la izquierda */
+    }
+    .NdpiLogo {
+      left: 0; /* Cambia a 0 en pantallas más pequeñas */
     }
 }
 

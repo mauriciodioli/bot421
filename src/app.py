@@ -567,15 +567,7 @@ if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5001, debug=False)
    
 
-    # Ciclo para ejecutar las tareas programadas
-  
-   # while True:
-   #     schedule.run_pending()
-   #     print('__________________________________________________')
-   #     print('entra en el planificador')
-   #     time.sleep(3)
-   
-   
+ 
    
    
    
