@@ -186,11 +186,11 @@ section[id] {
 /* Media queries para pantallas muy pequeñas */
 @media (max-width: 480px) {
     .sobre-nosotros {
-        font-size: 28px; /* Aún más pequeño para pantallas muy pequeñas */
+        font-size: 24px; /* Aún más pequeño para pantallas muy pequeñas */
     }
     
     .sobre-nosotros-descripcion {
-        font-size: 14px; /* Ajuste adicional para pantallas muy pequeñas */
+        font-size: 12px; /* Ajuste adicional para pantallas muy pequeñas */
     }
 }
 

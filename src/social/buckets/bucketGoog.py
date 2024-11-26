@@ -36,6 +36,7 @@ def upload_to_gcs(file_path_local, blob_name_gcs):
     else:
         print(f"Archivo {file_path_local} subido a {blob_name_gcs} exitosamente.")
 
+
         
 def delete_from_gcs(blob_name):
     # Inicializar cliente de Google Cloud Storage
