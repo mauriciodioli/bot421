@@ -46,14 +46,15 @@ def media_publicaciones_detalle_dpi(publicacion_id):
 
 
 
-@muestraPublicacionesEnHome.route('/media-muestraPublicacionesEnHome-mostrar/<int:publicacion_id>', methods=['GET'])
-def media_publicaciones_detalle(publicacion_id):
+@muestraPublicacionesEnHome.route('/media-muestraPublicacionesEnHome-mostrar/<int:publicacion_id>/<string:layout>', methods=['GET'])
+def media_publicaciones_detalle(publicacion_id, layout):
     # Obtener los detalles de la publicación desde la base de datos
     # Aquí deberías hacer una consulta para obtener las imágenes y videos
     post = obtener_publicacion_por_id(publicacion_id)  # Reemplaza con tu lógica de obtención
     if post:
-        return render_template('media/publicaciones/muestraPublicacionesEnHome.html', post=post, layout='layout')
+        return render_template('media/publicaciones/muestraPublicacionesEnHome.html', post=post, layout=layout)
     else:
+        
         return jsonify({'error': 'Publicación no encontrada'}), 404
     
 def obtener_publicacion_por_id(publicacion_id):
