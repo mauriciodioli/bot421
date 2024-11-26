@@ -1,9 +1,6 @@
-{% extends 'layouts/layout_dpi.html' %}
+{% extends 'layouts/layout_index.html' %}
 
 {% block content %}
-<div class="splash-container" id="splash" style="display:none">
-  {% include 'notificaciones/splashPage.html' %}
-</div>
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -17,100 +14,386 @@
             {% endfor %}
           {% endif %}
         {% endwith %}
-   <!-- Banda azul brillante arriba -->
-    
+   
  
-            <div class="horizontal-padding vertical-padding" style="margin-top: 200px;" >
+            <div class="horizontal-padding vertical-padding">
+              <section class="planes mt-4" id="planes">
+                <div class="planes-info d-flex align-items-center justify-content-center flex-column text-center">
+                  <h4 class="planes-titulo" style="color:gold; font-size: 24px;">DPI</h4> 
+                  <h1 class="planes-descripcion" style="color:white; font-size: 32px;">Invierte En Tu Futuro <br> HOY!</h1>
+                  <h6 class="planes-descripcion" style="color:white; font-size: 14px; line-height: 1.5;">
+                    Nuestras Estrategias te enseñan a invertir, podes invertir desde <br>
+                    100 USD o menos y sin limite! <br>
+                    Sistema manual y automático!!! <br>
+                    ¡No te pierdas la oportunidad de aprender!
+                  </h6>
+                <div class="container-fluid" id="cardIndex">
+                  <div class="container py-4">
+                      <div class="row justify-content-center">
+                          
+                          <div class="col-md-6 p-4 card card-body cardIndexPlanes">
+                              <h2>Bot automático</h2>
+                              <h4 class="planes-titulo" style="color:gold; font-size: 24px;">Desde $ 1000</h4>
+                              <h4 class="planes-titulo" style="color: white; font-size: 24px;">2% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                              <hr class="separator">
+                              <p style="margin-bottom: 5px;">Beneficios por mes</p>
+                              <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                              <p style="margin-bottom: 5px;">Total 24 % + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Capital</span></p>
+                              <div class="card-corner-band">
+                                  <div class="card-corner-text">NUEVO</div>
+                              </div>
+                              <form action="/detalle/bot-automatico/layout_detalle_productos" method="GET">
+                                  <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                              </form>
+                          </div>
+
+
+                          <div class="col-md-6 p-4 card card-body cardIndexPlanes">
+                            <h2>Sistema de operaciones</h2>
+                            <h4 class="planes-titulo" style="color:gold; font-size: 24px;">Desde $ 1000 </h4>
+                            <h4 class="planes-titulo" style="color: white; font-size: 24px;">Maximo 2% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                            <hr class="separator">
+                            <p style="margin-bottom: 5px;">Beneficios por mes</p>
+                            <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                            <p style="margin-bottom: 5px;">Total 240 % + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Capital</span></p>
+                            <div class="card-corner-band">
+                                <div class="card-corner-text">NUEVO</div>
+                            </div>
+                            <form action="/detalle/sistema-operaciones/layout_detalle_productos" method="GET">
+                                <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                            </form>
+                        </div>
+                      </div>
+
+
+                      <div class="row justify-content-center">
+                        <div class="col-md-6 card card-body cardIndexPlanes">
+                          <h2>Cursos</h2>
+                          <h4 class="planes-titulo" style="color:gold; font-size: 24px;">Trading y Otros</h4> 
+                          <h4 class="planes-titulo" style="color: white; font-size: 24px;">$ 15 <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                          <hr class="separator">
+                          <p style="margin-bottom: 5px;">Online</p>
+                          <p style="margin-bottom: 5px;">Material de estudio: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                          <p style="margin-bottom: 5px;">Ver listado de cursos <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Online</span></p>
+                            <div class="card-corner-band">
+                              <div class="card-corner-text">NUEVO</div>
+                          </div>                 
+                            <form action="/detalle/index-cursos/layout_detalle_productos" method="GET">
+                              <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                            </form>
+                        </div>
+                      
+                        
+                          <div class="col-md-6 p-4 card card-body cardIndexPlanes">
+                              <h2>Copy Trading</h2>
+                              <h4 class="planes-titulo" style="color:gold; font-size: 24px;">Desde $ 1000 </h4> 
+                              <h4 class="planes-titulo" style="color: white; font-size: 24px;">Maximo 2% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4> 
+                              <hr class="separator">
+                              <p style="margin-bottom: 5px;">Permite subir tus estrategias</p>
+                              <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                              <p style="margin-bottom: 5px;">Total 240 % + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Capital</span></p>
+                              <div class="card-corner-band">
+                                  <div class="card-corner-text">NUEVO</div>
+                              </div>  
+                              <form action="/detalle/copy-trader/layout_detalle_productos" method="GET">
+                                  <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                              </form>    
+                          </div>
+                        
+                      </div>
+                      <div class="row justify-content-center">  
+                        <div class="col-md-6 card card-body cardIndexPlanes">
+                          <h2>Panel de Señales</h2>
+                          <h4 class="planes-titulo" style="color:gold; font-size: 24px;">$ 1000 - Sin limite</h4> 
+                          <h4 class="planes-titulo" style="color: white; font-size: 24px;">% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                          <hr class="separator">
+                          <p style="margin-bottom: 5px;">Beneficios por mes</p>
+                          <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">No</span></p>
+                          <p style="margin-bottom: 5px;">Total 240%</p>
+                          <div class="card-corner-band">
+                              <div class="card-corner-text">NUEVO</div>
+                          </div>                               
+                            <form action="/detalle/panel-manual/layout_detalle_productos" method="GET">
+                              <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                            </form>   
+                        </div>
+                    
+                        <div class="col-md-6 card card-body cardIndexPlanes">
+                          <h2>Sistema de Fichas</h2>
+                          <h4 class="planes-titulo" style="color:gold; font-size: 24px;">$ 0.65 %</h4> 
+                          <h4 class="planes-titulo" style="color: white; font-size: 24px;">0.65% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Por ficha</span></h4>
+                          <hr class="separator">
+                          <p style="margin-bottom: 5px;">Comparte tus fichas</p>
+                          <p style="margin-bottom: 5px;">Seguimiento %: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                          <p style="margin-bottom: 5px;">Total 60 % <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Capital Max.</span></p>
+                          <div class="card-corner-band">
+                              <div class="card-corner-text">NUEVO</div>
+                          </div>                 
+                            <form action="/detalle/fichas-tokens/layout_detalle_productos" method="GET">
+                              <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                            </form>
+                        </div>
+                        <div class="row justify-content-center">  
+                          <div class="col-md-6 card card-body cardIndexPlanes">
+                            <h2>CF fintech</h2>
+                            <h4 class="planes-titulo" style="color:gold; font-size: 24px;">Tu propia empresa</h4> 
+                            <h4 class="planes-titulo" style="color: white; font-size: 24px;">Comparte tu negocio <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                            <hr class="separator">
+                            <p style="margin-bottom: 5px;">Beneficios por mes</p>
+                            <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                            <p style="margin-bottom: 5px;">Costo $15 + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">% Capital</span></p>
+                            <div class="card-corner-band">
+                                <div class="card-corner-text">NUEVO</div>
+                            </div>    
+                            <form action="/detalle/index-fintech/layout_detalle_productos" method="GET">
+                              <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                            </form>
+                          </div>
+                      
+                        
+
+                          <div class="col-md-6 p-4 card card-body cardIndexPlanes">
+                            <h2>Motor De Operaciones</h2>
+                            <h4 class="planes-titulo" style="color: gold; font-size: 24px;">Estrategias propias </h4>
+                            <h4 class="planes-titulo" style="color: white; font-size: 24px;">2.5% <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                            <hr class="separator">
+                            <p style="margin-bottom: 5px;">Beneficios por año</p>
+                            <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                            <p style="margin-bottom: 5px;">Total 300 % + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Capital</span></p>
+                            <div class="card-corner-band">
+                                <div class="card-corner-text">NUEVO</div>
+                            </div>
+                            <form action="/detalle/motor-de-operaciones/layout_detalle_productos" method="GET">
+                                <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                            </form>
+                        </div>
+
+
+                      <div class="row justify-content-center">  
+                          <div class="col-md-6 card card-body cardIndexPlanes">
+                            <h2>Monedas Virtuales</h2>
+                            <h4 class="planes-titulo" style="color:gold; font-size: 24px;">Invierte en virtual coin</h4> 
+                            <h4 class="planes-titulo" style="color: white; font-size: 24px;">Ganale a la infación <span class="planes-sub-titulo" style="color: white; font-size: 18px;">Mensual</span></h4>
+                            <hr class="separator">
+                            <p style="margin-bottom: 5px;">Beneficios por mes</p>
+                            <p style="margin-bottom: 5px;">Retorno de capital: <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Yes</span></p>
+                            <p style="margin-bottom: 5px;">Costo $ 0 + <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">% Capital</span></p>
+                            <div class="card-corner-band">
+                                <div class="card-corner-text">NUEVO</div>
+                            </div>    
+                            <form action="/detalle/index-monedas-virtuales/layout_detalle_productos" method="GET">
+                              <button class="card-button long-button" style="margin-top: 20px;" type="submit">Ver más</button>
+                            </form>
+                          </div>
+                          
+                          </div>
+                      </div>
+            
+              </section>
+
+
+                  
+                 
+              
+
+
+                 
+                
+             
+              
               <div class="horizontal-padding vertical-padding">
                 <section class="sobre-nosotros" id="sobre-nosotros">
                   <div class="container" id="container-sobre-nosotros">
+                    <h4 class="sobre-nosotros" style="color: gold; font-size: 24px;">SOBRE NOSOTROS</h4>
+                    <h1 class="sobre-nosotros-descripcion" style="color: white; font-size: 32px;">
+                     
+                    </h1>
                     <div class="flex-container">
                       <div class="image-container-sobre-nosotros">
-                       <h1 class="sobre-nosotros" style="color: rgb(224, 224, 223); font-size: 52px; font-family: 'Montserrat', sans-serif; margin-bottom: 20px; font-weight: 700;">
-                           Learn to invest, work, and enjoy everything in one place.
-                        </h1>
-                        <h4 class="sobre-nosotros-descripcion" style="color: rgb(201, 197, 197); font-size: 20px; line-height: 1.8; margin-top: 30px;">
-                          Learn to invest in your projects, in the market, with partners. Get help with tutorials and generate additional income with our courses focused on leveraging new technologies to buy, sell, or use for your own projects.
-                        </h4>
-                        <form action="/" method="GET">
-                          <button class="card-button long-button" style="margin-top: 20px;" type="submit">Go to content</button>
+                        <img src="/static/bitCoinSobreNosotros.jpg" alt="Descripción de la imagen" style="width: 200%; height: auto;">
+                      </div>
+                      <div class="text-container-sobre-nosotros" style="text-align: left;">
+                        <form action="detalle/sobreNosotros/layout_detalle_productos" method="GET">
+                          <button class="card-button long-button" style="margin-top: 20px;" type="submit">Leer más</button>
                         </form>
-                      </div>
-                
-                      <div class="text-container-sobre-nosotros">
-                        <img src="/static/dpi.jpg" alt="Descripción de la imagen">
-                      </div>
+                    </div>
                     </div>
                   </div>
                 </section>
-                
               </div>
               
               <div class="horizontal-padding vertical-padding">
-                <section class="domains" id="domains">
-                  
-
-                  <div class="card-container">
-                    <div class="numRequeris-card1 card">
-                      <div class="card-content">
-                        <p class="card-title">Domains</p>
-                        <p class="card-number">11</p>
-                      </div>
+                <section class="faq " id="faq">
+                    <div class="faq-info">
+                      <h1 class="faq-titulo"  style="color: gold;"> FAQ </h1>
                     </div>
-                    <div class="numRequeris-card2 card">
-                      <div class="card-content">
-                        <p class="card-title">Signal</p>
-                        <p class="card-number">89</p>
-                      </div>
+                    <div class="card card-menu cardIndexSobreN" id="sobreNcardId">              
+                      <div class="accordion bg-black" id="accordionSobreN">
+                        <div class="accordion-item" id="accordionSobreN-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button" id="idBotonAcordSN" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                              Que es DPI Inversiones
+                            </button>
+                          </h2>
+                          <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionSobreN">
+                            <div class="accordion-body">                      
+                              <strong>
+                                Emprendimiento de alta tecnologia aplicada al mercado.
+                              </strong> 
+                              <p>Nuestra empresa, fundada hace 4 años, se dedica a revolucionar el mercado financiero a través de la automatización de estrategias de trading. Con un equipo de expertos en tecnología y finanzas, nos especializamos en desarrollar sistemas avanzados que permiten a los inversores maximizar sus rendimientos y gestionar sus portafolios de manera eficiente.</p>
+                              <p>Desde nuestra creación, hemos estado comprometidos con la innovación y la excelencia, ofreciendo soluciones personalizadas que se adaptan a las necesidades cambiantes del mercado. Nuestros productos abarcan desde bots automáticos de trading hasta sistemas semiautomáticos que facilitan la toma de decisiones informadas, todo diseñado para operar tanto en mercados locales como internacionales.</p>
+                              <p>Una de nuestras principales áreas de enfoque es el Quant Trading, que implica el uso de modelos matemáticos y estadísticos para identificar y aprovechar oportunidades de trading. Nuestro equipo de quants trabaja incansablemente para desarrollar algoritmos sofisticados que analizan grandes volúmenes de datos en tiempo real, lo que nos permite implementar estrategias precisas y altamente efectivas.</p>
+                              <p>Nuestro objetivo es empoderar a nuestros clientes con herramientas de última generación que simplifican el proceso de inversión y optimizan el rendimiento. Con una atención constante a la calidad y al servicio al cliente, nos esforzamos por ser líderes en la industria de la tecnología financiera.</p>
+                              <code>DPI inversiones</code>, a travez de la inteligencia artificial hacia el futuro.
+                            </div>
+                          </div>
+                        </div>
+                      </div>              
                     </div>
-                    <div class="numRequeris-card3 card">
-                      <div class="card-content">
-                        <p class="card-title">Post</p>
-                        <p class="card-number">34</p>
-                      </div>
+                    
+                    <div class="card card-menu cardIndexSobreN" id="sobreNcardId">              
+                      <div class="accordion bg-black" id="accordionSobreN">
+                        <div class="accordion-item" id="accordionSobreN-item">
+                          <h2 class="accordion-header">
+                            <button class="accordion-button" id="idBotonAcordSN" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDos" aria-expanded="true" aria-controls="collapseDos">
+                              ¿Como Inicio?
+                            </button>
+                          </h2>
+                          <div id="collapseDos" class="accordion-collapse collapse " data-bs-parent="#accordionSobreN">
+                            <div class="accordion-body">                      
+                              <strong>Inicio tecnológico.</strong>
+                              <p>Nuestra empresa, fundada hace 4 años por dos ingenieros visionarios, se dedica a revolucionar el mercado financiero a través de la automatización de estrategias de trading. Los fundadores, ambos con especialización en inteligencia artificial, sistemas operativos en tiempo real, electrónica y sistemas heterogéneos de computación, unieron sus fuerzas y conocimientos para crear soluciones tecnológicas avanzadas en el mundo financiero.</p>
+                              <p>Motivados por la creciente necesidad de sistemas eficientes y automatizados en el mercado de capitales, nuestros fundadores utilizaron su amplia experiencia en tecnología para desarrollar plataformas que integran inteligencia artificial y análisis de datos en tiempo real. Desde el principio, su objetivo fue proporcionar herramientas que no solo simplifiquen el proceso de inversión, sino que también optimicen el rendimiento y reduzcan los riesgos.</p>
+                              <p>Desde nuestra creación, hemos estado comprometidos con la innovación y la excelencia, ofreciendo soluciones personalizadas que se adaptan a las necesidades cambiantes del mercado. Nuestros productos abarcan desde bots automáticos de trading hasta sistemas semiautomáticos que facilitan la toma de decisiones informadas, todo diseñado para operar tanto en mercados locales como internacionales.</p>
+                              <p>Una de nuestras principales áreas de enfoque es el Quant Trading, que implica el uso de modelos matemáticos y estadísticos para identificar y aprovechar oportunidades de trading. Nuestro equipo de quants trabaja incansablemente para desarrollar algoritmos sofisticados que analizan grandes volúmenes de datos en tiempo real, lo que nos permite implementar estrategias precisas y altamente efectivas.</p>
+                              <p>Nuestro objetivo es empoderar a nuestros clientes con herramientas de última generación que simplifican el proceso de inversión y optimizan el rendimiento. Con una atención constante a la calidad y al servicio al cliente, nos esforzamos por ser líderes en la industria de la tecnología financiera.</p>
+                              <code>DPI inveriones</code>, tecnologia actuál.
+                            </div>
+                          </div>
+                        </div>
+                      </div>              
                     </div>
-                    <div class="numRequeris-card4 card">
-                      <div class="card-content">
-                        <p class="card-title">Curses</p>
-                        <p class="card-number">5</p>
+                    
+                    <div class="card card-menu cardIndexSobreN" id="sobreNcardId">
+                      <div class="accordion bg-black" id="accordionSobreN">
+                          <div class="accordion-item" id="accordionSobreN-item">
+                              <h2 class="accordion-header">
+                                  <button class="accordion-button" id="idBotonAcordSN" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTres" aria-expanded="true" aria-controls="collapseTres">
+                                      ¿Qué puedes encontrar aquí?
+                                  </button>
+                              </h2>
+                              <div id="collapseTres" class="accordion-collapse collapse" data-bs-parent="#accordionSobreN">
+                                  <div class="accordion-body">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">Motor de Operaciones</h3>
+                                          <p>Implementa estrategias propias con un retorno mensual del 2.5%. Este servicio permite obtener beneficios anuales significativos, con un retorno de capital garantizado y un total de 300% + capital.</p>
+                                          <a href="/detalle/motor-de-operaciones/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                      <hr class="separator">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">Bot Automático</h3>
+                                          <p>Este bot automatizado opera tanto en mercados locales como internacionales, con un retorno mensual del 2%. Ideal para aquellos que buscan beneficios mensuales constantes con un total de 24% + capital.</p>
+                                          <a href="/detalle/bot-automatico/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                      <hr class="separator">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">Sistema de Operaciones</h3>
+                                          <p>Un sistema que permite a los usuarios operar de manera semiautomática, facilitando la toma de decisiones informadas con un máximo retorno mensual del 2%. Obtén un total de 240% + capital anual.</p>
+                                          <a href="/detalle/sistema-operaciones/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                      <hr class="separator">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">Copy Trading</h3>
+                                          <p>Permite a los usuarios copiar estrategias de trading exitosas y subir sus propias estrategias, con un máximo retorno mensual del 2% y un total de 240% + capital anual.</p>
+                                          <a href="/detalle/copy-trader/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                      <hr class="separator">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">Panel de Señales</h3>
+                                          <p>Proporciona señales diarias para operar, ayudando a los usuarios a identificar oportunidades en el mercado. Aunque no garantiza el retorno de capital, ofrece un total de 240% anual.</p>
+                                          <a href="/detalle/panel-manual/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                      <hr class="separator">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">Sistema de Fichas</h3>
+                                          <p>Comparte tus fichas y sigue tus inversiones con un retorno del 0.65% por ficha. Este sistema facilita el seguimiento y la optimización de tus activos.</p>
+                                          <a href="/detalle/fichas-tokens/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                      <hr class="separator">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">Cursos</h3>
+                                          <p>Ofrecemos una variedad de cursos online sobre trading y otros temas relevantes, con materiales de estudio y un costo mensual accesible. Ideal para mejorar tus habilidades y conocimientos.</p>
+                                          <a href="/detalle/index-cursos/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                      <hr class="separator">
+                                      <div class="service-item">
+                                          <h3 style="color: yellow;">CF Fintech</h3>
+                                          <p>Una oportunidad para compartir tu negocio y recibir beneficios mensuales, con un costo inicial y un porcentaje de capital. Ideal para emprendedores en el sector financiero.</p>
+                                          <a href="/detalle/index-fintech/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
                       </div>
-                    </div>
                   </div>
                   
-                </section>
-                
-                  <section class="domains" id="domains">
-                    <div class="jumbotron">
-                      <div class="dpi-muestra-publicaciones-centrales">
-                        <!-- Aquí se insertará la galería -->
-                      </div>
-                    </div>
-                  </section>
-
                   
-               
-              </div>
-
-         
-          </section>
+                  <div class="card card-menu cardIndexSobreN" id="sobreNcardId">
+                    <div class="accordion bg-black" id="accordionSobreN">
+                        <div class="accordion-item" id="accordionSobreN-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" id="idBotonAcordSN" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCuatro" aria-expanded="true" aria-controls="collapseCuatro">
+                                    ¿Cómo te ayudamos?
+                                </button>
+                            </h2>
+                            <div id="collapseCuatro" class="accordion-collapse collapse" data-bs-parent="#accordionSobreN">
+                                <div class="accordion-body">
+                                    <div class="help-item">
+                                        <h3 style="color: yellow;">Automatización de Estrategias</h3>
+                                        <p>Nuestros sistemas automatizados permiten a los inversores implementar estrategias complejas sin necesidad de intervención manual, lo que ahorra tiempo y reduce errores. Esto incluye desde bots automáticos hasta sistemas de operaciones y copy trading, todos diseñados para maximizar el retorno de inversión.</p>
+                                    </div>
+                                    <hr class="separator">
+                                    <div class="help-item">
+                                        <h3 style="color: yellow;">Acceso a Oportunidades Globales</h3>
+                                        <p>Facilitamos el acceso a mercados tanto locales como internacionales, permitiendo a los usuarios diversificar su cartera y aprovechar oportunidades globales. Nuestro sistema de operaciones se activa automáticamente, operando en mercados de Argentina y Estados Unidos a la misma hora todos los días.</p>
+                                    </div>
+                                    <hr class="separator">
+                                    <div class="help-item">
+                                        <h3 style="color: yellow;">Educación y Formación</h3>
+                                        <p>Ofrecemos cursos en línea sobre trading y otros temas relevantes, proporcionando material de estudio y acceso a expertos. Esto ayuda a nuestros usuarios a mejorar sus habilidades y conocimientos, permitiéndoles tomar decisiones más informadas.</p>
+                                    </div>
+                                    <hr class="separator">
+                                    <div class="help-item">
+                                        <h3 style="color: yellow;">Seguimiento y Monitoreo</h3>
+                                        <p>Nuestros sistemas proporcionan herramientas de seguimiento y monitoreo en tiempo real, ayudando a los usuarios a mantenerse al tanto de las oportunidades diarias de operaciones y el rendimiento de sus inversiones.</p>
+                                    </div>
+                                    <hr class="separator">
+                                    <div class="help-item">
+                                        <h3 style="color: yellow;">Acceso a Herramientas Avanzadas</h3>
+                                        <p>Proporcionamos acceso a paneles de señales y sistemas de fichas, facilitando la toma de decisiones informadas y la gestión eficiente de los activos. Estas herramientas avanzadas están diseñadas para maximizar el rendimiento y minimizar los riesgos.</p>
+                                    </div>
+                                    <hr class="separator">
+                                    <div class="help-item">
+                                        <h3 style="color: yellow;">Soporte y Comunidad</h3>
+                                        <p>Ofrecemos soporte continuo a nuestros usuarios y fomentamos una comunidad activa donde los inversores pueden compartir estrategias, aprender unos de otros y crecer juntos. Nuestra plataforma está diseñada para ser un entorno colaborativo y de apoyo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
                 
-        </div>
-
-
-      
-        
-
-
-
-
+              
+                </section> 
+              </div> 
 
               <div class="horizontal-padding vertical-padding py-4">
                 <section class="contacto" id="contacto">
                   <div class="contactos-info">
-                    <h1 class="contactos-titulo"  style="color: gold;"> CONTACTO </h1>
-                    <h3 class="contactos-titulo" style="color:white">  TE ASESORAMOS</h3>
+                    <h1 class="contactos-titulo"  style="color: gold;"> CONTACT </h1>
+                    <h3 class="contactos-titulo" style="color:white">  WE ADVISE YOU</h3>
                     <form action="/llamada/index-contacto" method="GET">
-                      <button class="card-button long-button" style="margin-top: 20px;" type="submit">Conversar</button>
+                      <button class="card-button long-button" style="margin-top: 20px;" type="submit">talk to us</button>
                     </form>
                   </div>
                 </section> 
@@ -194,14 +477,6 @@
     </div>
   </div>  
 
-
-
-
-
-
-
-
-  
   {% include 'layouts/layout_footer.html' %}
 
  
@@ -281,8 +556,4 @@
 
 
   </script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpiTruncateTexto.css') }}">
-  <script src="{{ url_for('static', filename='js/dpis/dpi.js') }}"></script>
-
-
 {% endblock %}
