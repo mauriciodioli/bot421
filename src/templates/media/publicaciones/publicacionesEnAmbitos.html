@@ -6,6 +6,10 @@
 {% extends 'layouts/layout_fichas.html' %}
 {% endif %}
 
+{% if layout == 'layout_dpi' %}
+{% extends 'layouts/layout_dpi.html' %}
+{% endif %}
+
 {% if layout == 'layoutConexBroker' %}
 {% extends 'layouts/layoutConexBroker.html' %}    
 {% endif %}
@@ -29,8 +33,9 @@
     var publicacionId = '{{ publicacion_id }}';
     var userId = '{{ user_id }}'; 
     var ambito = '{{ ambito }}'; 
+    var layout = '{{ layout }}'; 
    
-mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);   
+mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito,layout);   
  
 </script>
 

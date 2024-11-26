@@ -90,27 +90,27 @@
                         <li class="nav-item dropdown" id='AdministrarDominiosLayout'>
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Domains</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" id='Social' href="/subirImagen/">Social</a></li>
+                                <li><a class="dropdown-item" id='social' href="/subirImagen/">Social</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" id='Educational' href="/mostrarGaleria/">Educational</a></li>
+                                <li><a class="dropdown-item" id='educativo' href="/mostrarGaleria/">Educational</a></li>
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Work' href="/mostrarGaleria/">Work</a></li>                          
+                                <li><a class="dropdown-item" id='laboral' href="/mostrarGaleria/">Work</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Business' href="/mostrarGaleria/">Business</a></li>                          
+                                <li><a class="dropdown-item" id='Negocio' href="/mostrarGaleria/">Business</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Sports' href="/mostrarGaleria/">Sports</a></li>                          
+                                <li><a class="dropdown-item" id='Deporte' href="/mostrarGaleria/">Sports</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Family' href="/mostrarGaleria/">Family</a></li>                          
+                                <li><a class="dropdown-item" id='Familia' href="/mostrarGaleria/">Family</a></li>                          
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" id='Friendship' href="/mostrarGaleria/">Friendship</a></li>                          
+                                <li><a class="dropdown-item" id='Amistad' href="/mostrarGaleria/">Friendship</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
                                 <li><a class="dropdown-item" id='Personal' href="/mostrarGaleria/">Personal</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Health' href="/mostrarGaleria/">Health</a></li>                          
+                                <li><a class="dropdown-item" id='Salud' href="/mostrarGaleria/">Health</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Philanthropy' href="/mostrarGaleria/">Philanthropy</a></li>                          
+                                <li><a class="dropdown-item" id='Filantropia' href="/mostrarGaleria/">Philanthropy</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Nature' href="/mostrarGaleria/">Nature</a></li>
+                                <li><a class="dropdown-item" id='Naturaleza' href="/mostrarGaleria/">Nature</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -177,7 +177,12 @@
     </div>
   </div>
     <!-- <div class = 'container p-4'> -->
-        
+    
+<!-- este input es para cargar el domain al inicio y luego con cada clic en la barra de herramientas -->      
+<input type="hidden" class="text" id="domain" name="domain" value="laboral">
+                                 
+
+
       {%block content%}
       {% endblock%}
   
@@ -199,8 +204,6 @@
         // Cerrar el menú desplegable al ser seleccionado
         cerrarMenuSeleccionado();
     </script>
-    <script src="{{ url_for('static', filename='js/dpis/dpi.js') }}"></script>
-  <!--<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
--->  
+   
 </body>
 </html>

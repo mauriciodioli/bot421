@@ -1,0 +1,113 @@
+.dpi-muestra-publicaciones-centrales {
+    display: flex;
+    flex-wrap: wrap; /* Permite que las tarjetas se envuelvan en múltiples filas */
+    justify-content: center; /* Centra las tarjetas horizontalmente */
+    gap: 20px; /* Espacio entre las tarjetas (opcional) */
+    padding: 20px; /* Espacio alrededor del contenedor (opcional) */
+}
+
+
+.card-publicacion-admin img {
+    display: block; /* Elimina el margen inferior causado por el espacio reservado para el texto en línea */
+    width: 100%; /* La imagen ocupa todo el ancho de la tarjeta */
+    height: auto; /* Mantiene la proporción original de la imagen */
+    border: none; /* Elimina cualquier borde por defecto */
+}
+
+.card-media-grid-publicacion-admin {
+    margin-bottom: 0; /* Espacio entre la imagen y el resto del contenido */
+}
+
+
+a.btn-close-publicacion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: none;
+    color: white; /* Color de la X */
+    text-decoration: none; /* Elimina el subrayado */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el enlace */
+    font-size: 24px; /* Tamaño de la X */
+    padding: 0; /* Quita el espaciado interno */
+    margin: 0; /* Quita el margen si es necesario */
+    top: 10px; /* Ajusta esto según sea necesario */
+    right: 10px; /* Ajusta esto según sea necesario */
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+a.btn-close-publicacion:hover {
+    color: rgba(255, 255, 255, 0.7); /* Color de la X al pasar el mouse */
+}
+
+.btn-close-publicacion {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    position: absolute;
+    top: 10px; /* Ajusta esto según sea necesario */
+    right: 10px; /* Ajusta esto según sea necesario */
+    cursor: pointer;
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+}
+
+.btn-close-publicacion:hover {
+    color: #ddd; /* Color al pasar el cursor sobre el botón */
+}
+.card-publicacion-admin {
+    position: relative; /* Necesario para posicionar elementos hijos */
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto blanco para contraste con el fondo negro */
+    padding: 0; /* Eliminar el padding si lo hay */
+    border-radius: 8px; /* Bordes redondeados opcionalmente */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para darle un efecto de profundidad */
+    overflow: hidden; /* Asegura que la imagen no se desborde */
+}
+
+.text-truncated {
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Número de líneas que se muestran antes de truncar */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-expanded {
+    display: block;
+}
+
+/* Estilo del botón */
+.btn-ver-mas {
+    background-color: transparent; /* Fondo transparente */
+    border: 1px solid transparent; /* Borde transparente */
+    color: rgb(139, 139, 139); /* Color del texto */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    text-decoration: underline; /* Subrayado del texto */
+    padding: 5px 10px; /* Espaciado interno */
+    transition: color 0.3s ease; /* Transición suave para el cambio de color */
+}
+
+/* Estilo del botón cuando se pasa el mouse sobre él */
+.btn-ver-mas:hover {
+    color: rgb(85, 85, 85); /* Color del texto al pasar el mouse */
+}
+
+/* Estilo del botón cuando está enfocado (clic o tabulación) */
+.btn-ver-mas:focus {
+    outline: none; /* Eliminar el contorno por defecto del navegador */
+    color: rgb(85, 85, 85); /* Color del texto al enfocar el botón */
+}
+
+/* Estilo del botón cuando se hace clic */
+.btn-ver-mas:active {
+    color: rgb(85, 85, 85); /* Color del texto al hacer clic */
+}
+
+/* Ocultar el botón con la clase 'hidden' */
+.btn-ver-mas.hidden {
+    display: none;
+}
+
+
+

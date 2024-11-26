@@ -36,11 +36,12 @@ def media_muestraPublicacionesEnAmbitos():
     publicacion_id = request.args.get('publicacion_id')
     user_id = request.args.get('user_id')
     ambito = request.args.get('ambito')
+    layoutIn = request.args.get('layout')
 
      # Aquí manejas los datos recibidos y haces la lógica correspondiente
     # Podrías devolver una página renderizada con los datos correspondientes.
     # Ejemplo de cómo podrías usar los datos:
-    return render_template('media/publicaciones/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito, layout='layout')
+    return render_template('media/publicaciones/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito, layout=layoutIn)
 
 
 @muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar', methods=['POST'])
@@ -50,9 +51,10 @@ def mostrar_publicaciones_en_ambitos():
     publicacion_id = data.get('publicacion_id')
     user_id = data.get('user_id')
     ambito = data.get('ambito')
-    
+    layout = data.get('layout')
+   
     # Ahora puedes usar publicacion_id, user_id, y ambito en tu lógica
-    post = obtener_publicaciones_por_usuario_y_ambito(user_id,ambito)  # Reemplaza con tu lógica de obtención
+    post = armar_publicacion_bucket_para_dpi(user_id,ambito)  # Reemplaza con tu lógica de obtención
     
     if post:
         # Aquí puedes usar los parámetros adicionales si es necesario
@@ -60,6 +62,103 @@ def mostrar_publicaciones_en_ambitos():
 
     else:
         return jsonify({'error': 'Publicación no encontrada'}), 404
+
+def armar_publicacion_bucket_para_dpi(user_id, ambito):
+    try:  
+        # Obtener todas las publicaciones que coincidan con user_id y ambito
+        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
+
+        resultados = []
+
+        for publicacion in publicaciones:
+            # Obtener solo la primera imagen asociada a la publicación
+            imagen_video = (
+                db.session.query(Public_imagen_video)
+                .filter_by(publicacion_id=publicacion.id)
+                .order_by(Public_imagen_video.id.asc())  # Ordena para obtener el primero
+                .first()
+            )
+
+            # Inicializar listas para imágenes y videos
+            imagenes = []
+            videos = []
+
+            if imagen_video:
+                # Si tiene una imagen asociada
+                if imagen_video.imagen_id:
+                    imagen = db.session.query(Image).filter_by(id=imagen_video.imagen_id).first()
+                    if imagen:
+                        # Ajustar la ruta del archivo
+                        filepath = imagen.filepath
+                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
+                        imagen_url = mostrar_from_gcs(imagen_url)                      
+
+                        imagenes.append({
+                            'id': imagen.id,
+                            'title': imagen.title,
+                            'description': imagen.description,
+                            'filepath': imagen_url,
+                            'randomNumber': imagen.randomNumber,
+                            'colorDescription': imagen.colorDescription,
+                            'size': imagen.size                      
+                        })
+
+                # Si tiene un video asociado
+                if imagen_video.video_id:
+                    video = db.session.query(Video).filter_by(id=imagen_video.video_id).first()
+                    if video:
+                        # Ajustar la ruta del archivo
+                        filepath = video.filepath
+                        video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
+                        video_url = mostrar_from_gcs(video_url)
+
+                        videos.append({
+                            'id': video.id,
+                            'title': video.title,
+                            'description': video.description,
+                            'filepath': video_url,
+                            'randomNumber': video.randomNumber,
+                            'colorDescription': video.colorDescription,
+                            'size': video.size
+                        })
+
+            # Ajustar las rutas de archivos según el sistema operativo
+            path_separator = '/'
+            for imagen in imagenes:
+                imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
+            for video in videos:
+                video['filepath'] = video['filepath'].replace('\\', path_separator)
+
+            # Agregar la publicación con su imagen y video a la lista de resultados
+            resultados.append({
+                'publicacion_id': publicacion.id,
+                'user_id': publicacion.user_id,
+                'titulo': publicacion.titulo,
+                'texto': publicacion.texto,
+                'ambito': publicacion.ambito,
+                'correo_electronico': publicacion.correo_electronico,
+                'descripcion': publicacion.descripcion,
+                'color_texto': publicacion.color_texto,
+                'color_titulo': publicacion.color_titulo,
+                'fecha_creacion': publicacion.fecha_creacion,
+                'estado': publicacion.estado,           
+                'imagenes': imagenes,
+                'videos': videos
+            })
+
+        db.session.close()
+        return resultados
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return None
+
+
+
+
+
+
+
 def obtener_publicaciones_por_usuario_y_ambito(user_id, ambito):
     try:
         # Obtener todas las publicaciones que coincidan con user_id y ambito
