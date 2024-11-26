@@ -135,7 +135,7 @@ def media_publicaciones_mostrar_home():
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
                 publicaciones = db.session.query(Publicacion).filter_by(estado='activo').all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket(publicaciones)
+            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones)
             db.session.close()
             return jsonify(publicaciones_data)
 
