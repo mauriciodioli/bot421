@@ -18,6 +18,7 @@ function mostrarSplash() {
     document.getElementById('splash').style.display = 'block';
    
     var selectedCountry = document.getElementById('seleccionarPais').value;
+    localStorage.setItem('paisSeleccionado',selectedCountry)
     var usuario_id ='demo';
     access_token = 'access_dpi_token_usuario_anonimo';
     refresh_token = 'access_dpi_refresh_token';

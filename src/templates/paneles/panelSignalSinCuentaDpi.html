@@ -1,0 +1,873 @@
+{% extends "layouts/layout_dpi.html" %}
+
+{% block content %}
+
+<body> 
+    
+<style>
+  .verde {
+    color: green;
+}
+</style>
+
+  <div class = 'container p-4'id="contenido" style="display:none">  
+    <div class="jumbotron">
+      <p class="lead">To operate you can press the button with the corresponding color</p>
+      <form id="sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html" method="POST" action="/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html">
+          <input type="hidden" id="access_token_btn_donacion" name="access_token_btn_donacion" >
+          <input type="hidden" id="correo_electronico_btn_donacion" name="correo_electronico_btn_donacion"> 
+          <input type="hidden" id="productoComercial" name="productoComercial" value='donacion'> 
+          <input type="hidden" id="cluster_btn_donacion" name="cluster_btn_donacion" value='1'>        
+          <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout_signal">
+          <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Ayudanos a mejorar</button>
+      </form>
+
+    
+      <hr class="my-4">  
+    </div>
+     
+    <div class="jumbotron">
+      <h1 class="display-4">Select Broker!</h1>
+      <h3 id="ut_usuario">Unidad de Tradeo: 0</h3>
+      <div class="form-group">
+          
+          <select class="form-control" id="brokerSelect" onchange="redirectBroker()">
+              <option value="" selected disabled>Select a broker</option>
+              <option value="https://micuenta.invertironline.com/ingresar?_gl=1*xhtvr6*_ga*MTc1MzIxMjkzNi4xNjc2MDUwNzY4*_ga_3ZJ55WFL39*MTcxNjk4NzM2My4xMjMuMS4xNzE2OTg3MzcwLjUzLjAuMA..">IOL</option>
+              <option value="https://www.bullmarketbrokers.com/Security/SignIn">Bull Market</option>
+              <option value="https://app.cocos.capital/login?_gl=1*288e0k*_ga*MTU1OTU4NjAzMi4xNzE2OTg3NTAz*_ga_GD4EVY0S82*MTcxNjk4NzUwMi4xLjAuMTcxNjk4NzUwMi42MC4wLjA.">Coco Capitales</option>
+              <option value="https://cuentas.vetacapital.com.ar/">Veta Capital</option>
+          </select>
+      </div>
+      <hr class="my-4">
+    </div>
+
+    <script>
+      function redirectBroker() {
+          var select = document.getElementById('brokerSelect');
+          var selectedValue = select.value;
+          if (selectedValue) {
+            window.open(selectedValue, '_blank');
+          }
+      }
+    </script>
+ 
+   <!-- <audio id="Campana" src = {{ url_for('static',filename='sonidos/Bell.wav')}} ></audio>-->
+   <div class="table-responsive"> 
+    <table class="table table-dark table-striped"  id="signalTable">
+      <thead>           
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>         
+          <th></th>
+          <th></th>  
+        </tr>         
+      </thead>
+      <tbody>
+        
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>             
+                <td>CARGANDO DATOS, ESPERE</td>
+                <td></td>   
+              </tr>
+           
+      </tbody>
+    </table>
+  </div>
+        <div class="modal-content" style="color: black;">
+          <form id="registro-usuario-form" action="/operaciones_desde_seniales_sin_cuenta" method="POST">
+            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirm Operation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>                                    
+                    <div class="modal-body">
+                      Are you sure you want to perform this operation?
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="access_token" name="access_token">
+                      </div>
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="symbol" name="symbol">
+                      </div>
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="ut" name="ut">
+                      </div>    
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="senial" name="senial">
+                      </div>  
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="correo_electronico" name="correo_electronico">
+                      </div>  
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="paisSeleccionado" name="paisSeleccionado">
+                      </div> 
+                      <div class="form-group">
+                        <input type="hidden" class="form-control" id="selector" name="selector">
+                      </div>                                  
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>                    
+                    <button type="submit" id="confirmBtn" class="btn btn-primary my-2" >Confirmar</button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+      </div> 
+  </div> 
+
+  <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var filasTablaDatos = [];
+  document.getElementById('splash').style.display = 'block';
+  //{% if cuenta is defined %}
+  // Acceder a los tokens desde el diccionario de contexto de Flask
+  var cuenta = "{{ cuenta[0] }}";
+  var usuario = "{{ cuenta[1] }}";
+  var selector = "{{ cuenta[2] }}";
+ 
+  console.log("probanodo",cuenta)
+  console.log(usuario)
+  console.log(selector)
+  // Almacenar los tokens en el localStorage
+  localStorage.setItem("cuenta", cuenta);
+  localStorage.setItem("usuario", usuario);
+  localStorage.setItem("selector", selector);
+  //{% endif %}
+
+  //alamcen datos para enviar al boton donacion 
+  var access_token_btn_donacion = localStorage.getItem('access_token');
+  var correo_electronico_btn_donacion = localStorage.getItem('correo_electronico');
+  document.getElementById('access_token_btn_donacion').value = access_token_btn_donacion;
+  document.getElementById('correo_electronico_btn_donacion').value = correo_electronico_btn_donacion;
+
+
+
+  document.addEventListener('click', function(event) {
+    if (event.target && event.target.id == "boton-despues-carga-tabla") {
+        document.getElementById('splash').style.display = 'block';
+        access_token = localStorage.getItem('access_token');
+        var cuentaEnvioAjax = localStorage.getItem('correo_electronico');
+        var symbol = event.target.dataset.symbol;
+        var senial = event.target.dataset.senial;      
+        var ut = event.target.dataset.ut;
+        var paisS = localStorage.getItem('paisSeleccionado');
+        var selector =  localStorage.getItem('selector');
+        
+        // Llenar los campos ocultos en el formulario del modal
+        document.getElementById('symbol').value = symbol;
+        document.getElementById('senial').value = senial;     
+        document.getElementById('ut').value = ut;
+        document.getElementById('access_token').value = access_token;
+        document.getElementById('correo_electronico').value = cuentaEnvioAjax;
+        document.getElementById('paisSeleccionado').value = paisS;
+        document.getElementById('selector').value = selector;
+        // Cerrar el modal
+        $('#confirmModal').modal('hide');
+    }
+  });
+
+  // Llama a la función de actualización inicial
+  window.addEventListener('load', function() {
+    updateTable();
+    
+  });
+
+
+  function enviarNotificacionesTelegram() {
+    var notificacionTelegram = localStorage.getItem('notificacionTelegram');
+
+    // Verificar si notificacionTelegram es 'True'
+    if (notificacionTelegram == 'True') {
+        var paisSeleccionado = localStorage.getItem('paisSeleccionado');
+        var access_token = localStorage.getItem('access_token');
+        var selector = localStorage.getItem('selector');
+        var idtelegram = localStorage.getItem('idtelegram');
+        // Iterar sobre las filas de datos y enviar cada fila por AJAX
+        filasTablaDatos.forEach(function(fila) {
+            var formData = {
+                access_token: access_token,
+                symbol: fila[1], // Ajusta el índice según la posición de symbol en tu fila
+                ut: fila[5], // Ajusta el índice según la posición de ut en tu fila
+                senial: fila[3], // Ajusta el índice según la posición de senial en tu fila
+                correo_electronico: document.getElementById('correo_electronico').value,
+                paisSeleccionado: paisSeleccionado,
+                idtelegram: idtelegram,
+                selector: selector
+            };
+
+            $.ajax({
+                type: "POST",
+                url: '/envio_notificacion_tlegram_desde_seniales_sin_cuenta/',
+                contentType: 'application/json', // Asegúrate de que el tipo de contenido sea JSON
+                data: JSON.stringify(formData), // Convertir formData a JSON
+                success: function(response) {
+                    // Manejar la respuesta del servidor si es necesario
+                    console.log("Respuesta del servidor:", response);
+                    // Aquí puedes agregar lógica adicional según la respuesta del servidor
+                },
+                error: function(error) {
+                    console.error("Error al enviar datos por AJAX:", error);
+                    // Manejar errores si es necesario
+                }
+            });
+        });
+    } else {
+        // Manejar el caso cuando notificacionTelegram no es 'True'
+        console.log("La notificación no está activada.");
+        // Puedes mostrar un mensaje al usuario u otra acción adecuada
+    }
+}
+
+  
+
+
+function leerFilasTabla(tableBody) {
+  var rows = tableBody.getElementsByTagName('tr');
+  filasTablaDatos = []; // Limpiar la variable global antes de llenarla de nuevo
+
+  for (var i = 1; i < rows.length; i++) { // Empieza en 1 para saltar el encabezado
+      var cells = rows[i].getElementsByTagName('td');
+      var datosFila = [];
+      for (var j = 0; j < cells.length; j++) {
+          datosFila.push(cells[j].innerText);
+      }
+      filasTablaDatos.push(datosFila);
+  }
+  
+  // Obtener la hora actual
+  var ahora = new Date();
+  var hora = ahora.getHours();
+
+  // Verificar si la hora actual está entre las 14:00 y las 20:00
+  if (hora >= 14  && hora < 20) {
+      enviarNotificacionesTelegram();
+  }
+
+  // console.log('Datos de la tabla cargados:', filasTablaDatos);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+function actualizarUnidadTradeo(){
+    // Obtener el valor de 'ut_usuario' desde localStorage
+    var ut_usuario = localStorage.getItem('ut_usuario');
+        
+    // Obtener el elemento <h3>
+    var h3Element = $('#ut_usuario');
+
+    // Verificar si 'ut_usuario' tiene un valor
+    if (ut_usuario) {
+        // Actualizar el contenido y aplicar la clase verde
+        h3Element.text('Unidad de Tradeo: ' + ut_usuario);
+        h3Element.addClass('verde');
+    } else {
+        // Si no hay valor, restablecer el contenido y eliminar la clase verde
+        h3Element.text('Unidad de Tradeo: No disponible');
+        h3Element.removeClass('verde');
+    }
+
+}
+
+
+  function updateTable() {
+    // Guarda los elementos visibles antes de la actualización
+    // var elementosAntes = obtenerElementos();
+
+  // var cambiosAntes = compararCambios();
+    // Realizar una solicitud AJAX para obtener los nuevos datos
+   
+    actualizarUnidadTradeo();
+    var paisSeleccionado = localStorage.getItem('paisSeleccionado');
+    var usuario_id = localStorage.getItem('usuario_id');
+    var access_token = localStorage.getItem('access_token');
+    var selector = localStorage.getItem('selector');
+    var account = 'vacio'
+    var xhr = new XMLHttpRequest();
+    
+    var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/'+selector+'/';
+    
+    xhr.open('GET', url, true);
+    //  encabezado Content-Type
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function() {
+      if (xhr.status >= 200 && xhr.status < 400) {
+        // La solicitud fue exitosa, actualiza la tabla  
+       
+        var response = JSON.parse(xhr.responseText);
+      
+        var tableBody = document.getElementById('signalTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = ''; // Limpiar el contenido actual de la tabla
+
+        
+      //  var filasCambiadas = comparaFilas(elementosAntes, response);
+        //console.log(filasCambiadas);
+
+        // Crea una fila de encabezado
+        
+        var headerRow = document.createElement('tr');
+        // Agrega encabezados a cada columna
+        headerRow.innerHTML = `
+        <thead>           
+          <tr>
+            <th>Orden</th>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th>Signal</th>
+            <th>In Progress</th>
+            <th>Ut</th>
+            <th>Price</th>
+            <th>Sugerido</th>
+            <th>Operated</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>           
+          
+        `;
+        // Agrega la fila de encabezado a la tabla
+        tableBody.appendChild(headerRow);
+        for (var i = 0; i < response.datos.length; i++) {
+         
+          var dato = response.datos[i];
+        
+         
+          //console.log('dato[0] ',dato[0],'dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
+         
+          if (
+              (dato[1] == 'ARG' || dato[1] == 'CEDEAR') &&
+              (dato[2] == 'LONG_' || (dato[2] != 'SHORT'))
+             ) {
+                    if (dato[4] === 'OPEN.'  && dato[8] === null){
+                      if (Number(dato[3]) > 0) {                                          
+                      //if (dato[4] !== dato[8]) {
+                        //if (dato[7] !== null) {
+                          // var campana = document.getElementById('Campana');
+                          // campana.play();
+                       //       mostrarNotificacion(dato);
+                       //   }
+                          var row = document.createElement('tr');
+                          var numeroDeOrden = i + 1; // Empieza desde 1
+                          var filaId = 'fila-' + i;
+                          row.setAttribute('id', filaId);
+                          const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                          const valor2 = parseCurrency(dato[7]);
+                          // Realizar la multiplicación                       
+                          const totalFormateado = valor1 * valor2;
+                          // Formatear el total con puntos como separadores de miles
+                          const total = formatearConMiles(totalFormateado);          
+                          row.innerHTML = `
+                            <td>${numeroDeOrden}</td>
+                            <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                            <td>${dato[1]}</td>
+                            <td>${dato[4]}</td>
+                            <td>${dato[2]}</td>
+                            <td>${dato[3]}</td>
+                            <td>$ ${dato[7]}</td>
+                            <td>$ ${total}</td> <!-- Mostrar el total con dos decimales -->
+                            <td>${dato[9]}</td>
+                            <td>${dato[8]}</td>
+                            <td>
+                              <div class="form-group">
+                                <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                              </div>
+                              <div class="form-group">
+                                <input type="hidden" name="senial" value="{{ senial }}">
+                                <input type="hidden" name="ut" value="{{ ut }}">
+                                <input type="hidden" id="datoValor" class="form-control">
+                                ${
+                                  dato[4] == 'OPEN.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                                ${
+                                  dato[4] == 'closed.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                              </div>
+                            </td>
+                          `;
+                          tableBody.appendChild(row);
+                      }
+
+                    }
+
+
+                    
+                 if (dato[4] === 'closed.' && dato[9] !== null) {    
+                                                            
+                      if (dato[4] !== dato[9]) {
+                        if (Number(dato[3]) > 0) {
+                        //if (dato[7] !== null) {
+                          // var campana = document.getElementById('Campana');
+                          // campana.play();
+                        //      mostrarNotificacion(dato);
+                       //   }
+                          var row = document.createElement('tr');
+                          var numeroDeOrden = i + 1; // Empieza desde 1
+                          var filaId = 'fila-' + i;
+                          row.setAttribute('id', filaId);
+                          const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                          const valor2 = parseCurrency(dato[7]);
+                          // Realizar la multiplicación                       
+                          const totalFormateado = valor1 * valor2;
+                          // Formatear el total con puntos como separadores de miles
+                          const total = formatearConMiles(totalFormateado);                       
+                          row.innerHTML = `
+                            <td>${numeroDeOrden}</td>
+                            <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                            <td>${dato[1]}</td>
+                            <td>${dato[4]}</td>
+                            <td>${dato[2]}</td>
+                            <td>${dato[3]}</td>
+                            <td>$ ${dato[7]}</td>
+                            <td>$ ${total}</td> <!-- Mostrar el total con dos decimales -->
+                            <td>${dato[9]}</td>
+                            <td>${dato[8]}</td>
+                            <td>
+                              <div class="form-group">
+                                <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                              </div>
+                              <div class="form-group">
+                                <input type="hidden" name="senial" value="{{ senial }}">
+                                <input type="hidden" name="ut" value="{{ ut }}">
+                                <input type="hidden" id="datoValor" class="form-control">
+                                ${
+                                  dato[4] == 'OPEN.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                                ${
+                                  dato[4] == 'closed.'
+                                    ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                    : ''
+                                }
+                              </div>
+                            </td>
+                          `;
+                          tableBody.appendChild(row);
+                      }
+                     }
+                    }
+
+                
+                  
+                }
+          
+                if (
+                  (dato[1] === 'USA') &&
+                  (dato[2] === 'LONG_' || (dato[2] === 'SHORT'))
+                 ) {
+                        if (dato[4] === 'OPEN.'  && dato[9] === null){
+                                                                      
+                          //if (dato[4] !== dato[8]) {
+                          //  if (dato[7] !== null) {
+                              // var campana = document.getElementById('Campana');
+                              // campana.play();
+                          //        mostrarNotificacion(dato);
+                          //    }
+                              var row = document.createElement('tr');
+                              var numeroDeOrden = i + 1; // Empieza desde 1
+                              var filaId = 'fila-' + i;
+                              row.setAttribute('id', filaId);
+                              const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                              const valor2 = parseCurrency(dato[7]);
+                              // Realizar la multiplicación                       
+                              const totalFormateado = valor1 * valor2;
+                              // Formatear el total con puntos como separadores de miles
+                              const total = formatearConMiles(totalFormateado);
+                              row.innerHTML = `
+                                <td>${numeroDeOrden}</td>
+                                <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                                <td>${dato[1]}</td>
+                                <td>${dato[4]}</td>
+                                <td>${dato[2]}</td>
+                                <td>${dato[3]}</td>
+                                <td>$ ${dato[7]}</td>
+                                <td>$ ${total}</td> <!-- Mostrar el total con dos decimales -->  
+                                <td>${dato[9]}</td>
+                                <td>${dato[8]}</td>
+                                <td>
+                                  <div class="form-group">
+                                    <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                                  </div>
+                                  <div class="form-group">
+                                    <input type="hidden" name="senial" value="{{ senial }}">
+                                    <input type="hidden" name="ut" value="{{ ut }}">
+                                    <input type="hidden" id="datoValor" class="form-control">
+                                    ${
+                                      dato[4] == 'OPEN.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                    ${
+                                      dato[4] == 'closed.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                  </div>
+                                </td>
+                              `;
+                              tableBody.appendChild(row);
+                          }
+    
+                       // }
+    
+    
+                        
+                     if (dato[4] === 'closed.' && dato[9] !== null) {    
+                                                                
+                          if (dato[4] !== dato[9]) {
+                           // if (dato[7] !== null) {
+                              // var campana = document.getElementById('Campana');
+                              // campana.play();
+                                 // mostrarNotificacion(dato);
+                           //   }
+                              var row = document.createElement('tr');
+                              var numeroDeOrden = i + 1; // Empieza desde 1
+                              var filaId = 'fila-' + i;
+                              row.setAttribute('id', filaId);                            
+                              const valor1 = parseFloat(dato[3]); // Suponiendo que dato[3] ya está en formato numérico o se requiere convertir
+                              const valor2 = parseCurrency(dato[7]);
+                              // Realizar la multiplicación                       
+                              const totalFormateado = valor1 * valor2;
+                              // Formatear el total con puntos como separadores de miles
+                              const total = formatearConMiles(totalFormateado);
+                              row.innerHTML = `
+                                <td>${numeroDeOrden}</td>
+                                <td>${dato[0].replace('MERV - XMEV -', '')}</td>
+                                <td>${dato[1]}</td>
+                                <td>${dato[4]}</td>
+                                <td>${dato[2]}</td>
+                                <td>${dato[3]}</td>
+                                <td>$ ${dato[7]}</td>
+                                <td>$ ${total}</td> <!-- Mostrar el total con dos decimales -->
+                                <td>${dato[9]}</td>
+                                <td>${dato[8]}</td>
+                                <td>
+                                  <div class="form-group">
+                                    <input type="hidden" name="symbol" placeholder="escribe simbolo" value="${dato[0]}" class="form-control">
+                                  </div>
+                                  <div class="form-group">
+                                    <input type="hidden" name="senial" value="{{ senial }}">
+                                    <input type="hidden" name="ut" value="{{ ut }}">
+                                    <input type="hidden" id="datoValor" class="form-control">
+                                    ${
+                                      dato[4] == 'OPEN.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-success btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                    ${
+                                      dato[4] == 'closed.'
+                                        ? `<button id="boton-despues-carga-tabla" type="button" class="btn btn-danger btn-sm btn-block form-control" data-bs-toggle="modal" data-bs-target="#confirmModal" data-senial="${dato[4]}" data-symbol="${dato[0]}" data-ut="${dato[3]}">Submit</button>`
+                                        : ''
+                                    }
+                                  </div>
+                                </td>
+                              `;
+                              tableBody.appendChild(row);
+                          }
+                         
+                        }
+    
+                    
+                      
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          $(document).ready(function () {
+            // Iterar sobre las filas de la tabla
+            $('#signalTable tbody tr').each(function () {
+              // Obtener el texto de la columna Signal
+              var signalText = $(this).find('td:nth-child(4)').text().trim();
+              var typeText = $(this).find('td:nth-child(3)').text().trim();
+              var inProgres = $(this).find('td:nth-child(5)').text().trim();
+              // Verificar si es OPEN o Closed y aplicar el color correspondiente
+              if (signalText === 'OPEN.') {
+                $(this).find('td:nth-child(4)').css('color', 'green');
+              } else if (signalText === 'closed.') {
+                $(this).find('td:nth-child(4)').css('color', 'red');
+              }
+          
+              if (typeText === 'CEDEAR') {
+                $(this).find('td:nth-child(3)').css('color', 'brown ');
+              } else if (typeText === 'ARG') {
+                $(this).find('td:nth-child(3)').css('color', 'cyan');
+              }
+          
+              if (inProgres === 'SHORT') {
+                $(this).find('td:nth-child(5)').css('color', 'pink');
+              } else if (inProgres === 'LONG_') {
+                $(this).find('td:nth-child(5)').css('color', 'cyan');
+              }
+                   
+            });
+          });
+          
+
+        
+        }
+      // Después de actualizar la tabla, puedes comparar los cambios nuevamente
+      document.getElementById('splash').style.display = 'none';
+      document.getElementById('contenido').style.display = 'block';
+      //var cambiosDespues = compararCambios();
+
+      //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
+      //   var closedChanged = cambiosDespues.closedBefore - cambiosAntes.closedBefore;
+
+      // console.log('Cambios en estado OPEN:', openChanged);
+      //  console.log('Cambios en estado closed:', closedChanged);
+      // Oculta las filas que no cambiaron
+      leerFilasTabla(tableBody);
+      //actualizarNumeracionFilas(tableBody); // Llamar a la función para numerar todas las filas
+
+
+
+
+    
+          // Obtener el elemento <h3>
+      var h3Element = $('#ut_usuario');
+
+      // Verificar si 'ut_usuario' tiene un valor
+      if ( response.unidadTrader) {
+          // Actualizar el contenido y aplicar la clase verde
+          h3Element.text('Unidad de Tradeo: ' +  response.unidadTrader);
+          h3Element.addClass('verde');
+          document.getElementById('ut_usuario').style.color = 'green';
+
+
+
+
+      } else {
+        /*****SI LA UNIDAD DE TRADEO ES IGUAL A CERO SE ABRE EL MODAL*********/
+      
+          // Muestra el mensaje de alerta
+            alert('Tiene que cargar un valor de UT para poder ver las señales.');
+            // Abre el modal si el valor es 0
+            $('#UtUsuarioModal').modal('show');
+       
+
+          h3Element.removeClass('verde');
+      }
+
+
+
+
+      } else {
+        // Hubo un error en la solicitud
+        showError('Error al obtener los datos: ' + xhr.statusText);
+      }
+    };
+
+      xhr.onerror = function() {
+      showError('Error de red al intentar obtener los datos');
+    };
+    //console.log('XHR:', xhr);
+    //console.log('URL:', xhr.url);
+    xhr.send();
+  
+  }
+
+  // Llama a la función de actualización inicial/
+  //updateTable();
+
+
+ 
+  
+
+
+
+
+
+
+
+
+
+  // Establece un intervalo para actualizar la tabla cada 5 minutos
+  //setInterval(updateTable, 300000); // 300000 milisegundos = 5 minutos
+  setInterval(updateTable, 90000); // 90000 milisegundos = 1 minuto 30 segundos
+  //setInterval(updateTable, 240000); // 4 minutos
+
+  // Definir la función showError
+  function showError(message) {
+    console.error('message');
+    // Aquí puedes agregar el código para mostrar el error al usuario, como una alerta o una notificación en la página.
+  }
+
+  function compararCambios() {
+    var openBefore = contarElementosOpen();
+    var closedBefore = contarElementosClosed();
+
+
+    return {
+      openBefore: openBefore,
+      closedBefore: closedBefore
+    };
+  }
+
+  function contarElementosOpen() {
+    var openCount = 0;
+    var allTds = document.querySelectorAll('td:nth-child(4)');
+    
+    allTds.forEach(function(td) {
+      if (td.textContent.includes("OPEN.")) {
+        openCount++;
+      }
+    });
+
+    return openCount;
+  }
+  function contarElementosClosed() {
+    var closedCount = 0;
+    var allTds = document.querySelectorAll('td:nth-child(4)');
+    
+    allTds.forEach(function(td) {
+      if (td.textContent.includes("closed.")) {
+        closedCount++;
+      }
+    });
+
+    return closedCount;
+  }
+
+  function obtenerElementos() {
+    var elementosVisibles = [];
+    var filas = document.getElementById('signalTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    
+    for (var i = 0; i < filas.length; i++) {
+      if (filas[i].style.display !== 'none') {
+        elementosVisibles.push(filas[i]);
+      }
+    }
+    console.log('Elementos visibles:', elementosVisibles);
+    return elementosVisibles;
+  }
+
+  function comparaFilas(elementosAntes, response) {
+    var filasCambiadas = [];
+    
+    // Itera sobre los elementos antes de la actualización
+    elementosAntes.forEach(function(filaAntes) {
+      var datoAntes = obtenerDatoDesdeFila(filaAntes);    
+      var idAntes = datoAntes[0]; // Supongo que el primer elemento es un identificador único
+      
+      //console.log("idAntes:", idAntes);
+        // Busca el mismo dato en la respuesta
+        var datoDespues = response.datos.find(function(dato) {
+          //console.log("dato[0]:", dato[0]);
+          return dato[1] === idAntes;
+        });
+
+      // Si el dato ha cambiado, añádelo a la lista de filas cambiadas
+      if (datoDespues && datoDespues[4] !== datoAntes[3]) {
+        filasCambiadas.push(datoDespues);
+        console.log("El dato ha cambiado:", datoDespues);
+      }
+    });
+
+    return filasCambiadas;
+  }
+
+
+  function ocultarFilasNoCambiadas(elementosAntes) {
+    var filas = document.getElementById('signalTable').getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (var i = 0; i < filas.length; i++) {
+      // Obtener el dato[3] de la fila actual
+      var dato = obtenerDatoDesdeFila(filas[i]);
+
+      // Verificar si el dato[3] ha cambiado
+      if (!elementosAntes.includes(filas[i]) && dato[3] === '0') {
+        filas[i].style.display = 'none';
+      }
+    }
+  }
+
+
+  function obtenerDatoDesdeFila(fila) {
+    // Obtener los valores de cada celda de la fila
+    
+    var celdas = fila.getElementsByTagName('td');
+    
+    // Crear un array para almacenar los valores
+    var dato = [];
+    for (var j = 0; j < celdas.length; j++) {    
+      dato.push(celdas[j].textContent.trim());    
+    }
+
+    return dato;
+  }
+});
+
+
+
+// Función para limpiar y convertir a float
+function parseCurrency(value) {
+  return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+}
+// Función para formatear un número con punto como separador de miles
+function formatearConMiles(num) {
+  // Convertir el número a una cadena con dos decimales
+  let [entero, decimal] = num.toFixed(2).split('.');
+
+  // Agregar los puntos como separadores de miles
+  entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  return `${entero},${decimal}`;
+}
+
+//function actualizarNumeracionFilas(tableBody) {
+//    const rows = tableBody.querySelectorAll("tr"); // Selecciona todas las filas
+ 
+//  rows.forEach((row, index) => {
+//    const numeroDeOrden = index + 1; // Numerar desde 1 hasta n
+//    debugger;
+//    row.querySelector("td").innerText = numeroDeOrden; // Actualiza el primer <td> con el número de orden
+//  });
+//}
+</script>
+<body> 
+{% endblock%}
