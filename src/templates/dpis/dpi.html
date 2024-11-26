@@ -54,7 +54,7 @@
                     <div class="numRequeris-card1 card">
                       <div class="card-content">
                         <p class="card-title">Domains</p>
-                        <p class="card-number">20</p>
+                        <p class="card-number">11</p>
                       </div>
                     </div>
                     <div class="numRequeris-card2 card">
@@ -79,22 +79,26 @@
                   
                 </section>
                 
+                  <section class="domains" id="domains">
+                    <div class="jumbotron">
+                      <div class="dpi-muestra-publicaciones-centrales">
+                        <!-- Aquí se insertará la galería -->
+                      </div>
+                    </div>
+                  </section>
+
+                  
+               
               </div>
 
-          <div class="horizontal-padding vertical-padding">
-            <section class="domains" id="domains">             
-              <div class="jumbotron">  
-                <div class="home-muestra-publicaciones-centrales">
-                 <!-- Aquí se incrustará la galería de imágenes -->
-                </div>
-            </div>
-
+         
           </section>
                 
         </div>
 
 
-
+      
+        
 
 
 
@@ -277,4 +281,8 @@
 
 
   </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpiTruncateTexto.css') }}">
+  <script src="{{ url_for('static', filename='js/dpis/dpi.js') }}"></script>
+
+
 {% endblock %}

@@ -100,7 +100,8 @@ def media_publicaciones_mostrar_home():
         # Obtener el token de acceso
         access_token = parts[1]
         if Token.validar_expiracion_token(access_token=access_token):  
-            app = current_app._get_current_object()                    
+            app = current_app._get_current_object() 
+                               
             decoded_token = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             user_id = decoded_token.get("sub")
 
@@ -145,11 +146,174 @@ def media_publicaciones_mostrar_home():
     # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
+
+
+@publicaciones.route('/media-publicaciones-mostrar-dpi', methods=['POST'])
+def media_publicaciones_mostrar_dpi():
+    try:
+        # Obtener el encabezado Authorization
+        authorization_header = request.headers.get('Authorization')
+         # Obtener el valor de 'ambitos' enviado en el cuerpo de la solicitud
+        ambitos = request.form.get('ambitos')  # Si el contenido es application/x-www-form-urlencoded
+     
+        if not authorization_header:
+            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+        
+        # Verificar formato del encabezado Authorization
+        parts = authorization_header.split()
+        if len(parts) != 2 or parts[0].lower() != 'bearer':
+            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+        
+        # Obtener el token de acceso
+        access_token = parts[1]
+        if Token.validar_expiracion_token(access_token=access_token):  
+            app = current_app._get_current_object() 
+
+            # Inicializar la lista de publicaciones
+            publicaciones = []
+
+           # Obtener todas las publicaciones del usuario
+            publicacion_estados = db.session.query(Estado_publi_usu).all()
+
+            if publicacion_estados:
+                # Iterar sobre cada estado de publicación
+                for estado_publicacion in publicacion_estados:
+                    # Comparar la fecha de hoy con la fecha de eliminación
+                    fecha_eliminado = estado_publicacion.fecha_eliminado
+                    if fecha_eliminado:
+                        dias_diferencia = (datetime.today().date() - fecha_eliminado).days
+                        if dias_diferencia > 30:
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos).first()
+                            if publicacion:
+                                # Agrega la publicación a la lista de publicaciones
+                                publicaciones.append(publicacion)
+                    
+                    # Si el estado no es "eliminado", obtén la publicación correspondiente
+                    if estado_publicacion.estado != 'eliminado':
+                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos).first()
+                        if publicacion:
+                            # Agrega la publicación a la lista de publicaciones
+                            publicaciones.append(publicacion)
+
+            else:
+                # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos).all()
+            # Armar el diccionario con todas las publicaciones, imágenes y videos
+            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones)
+            db.session.close()
+            return jsonify(publicaciones_data)
+
+    except Exception as e:
+        # Manejo genérico de excepciones, devolver un mensaje de error
+        return jsonify({'error': str(e)}), 500
+
+    # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
+    return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Definir la función para armar las publicaciones con imágenes y videos
 
 
 
 import logging
+
+
+def armar_publicacion_bucket_para_dpi(publicaciones):
+    publicaciones_data = []
+
+    for publicacion in publicaciones:
+        # Obtener solo la primera imagen o video asociado a la publicación
+        imagen_video = (
+            db.session.query(Public_imagen_video)
+            .filter_by(publicacion_id=publicacion.id)
+            .order_by(Public_imagen_video.id.asc())  # Ordena para obtener el primero
+            .first()
+        )
+
+        # Inicializar listas para imágenes y videos
+        imagenes = []
+        videos = []
+
+        if imagen_video:
+            # Si hay una imagen asociada
+            if imagen_video.imagen_id:
+                try:
+                    imagen = db.session.query(Image).filter_by(id=imagen_video.imagen_id).first()
+                    if imagen:
+                        filepath = imagen.filepath
+                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
+                        imagen_url = mostrar_from_gcs(imagen_url)
+                        if imagen_url:
+                            imagenes.append({
+                                'id': imagen.id,
+                                'title': imagen.title,
+                                'description': imagen.description,
+                                'filepath': imagen_url,  # Usar la URL de GCS
+                                'randomNumber': imagen.randomNumber,
+                                'size': imagen.size
+                            })
+                except Exception as e:
+                    logging.error(f"Error al obtener información de la imagen {imagen_video.imagen_id}: {e}")
+
+            # Si hay un video asociado
+            if imagen_video.video_id:
+                try:
+                    video = db.session.query(Video).filter_by(id=imagen_video.video_id).first()
+                    if video:
+                        filepath = video.filepath
+                        video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')
+                        video_url = mostrar_from_gcs(video_url)
+                        if video_url:
+                            videos.append({
+                                'id': video.id,
+                                'title': video.title,
+                                'description': video.description,
+                                'filepath': video_url,
+                                'size': video.size
+                            })
+                except Exception as e:
+                    logging.error(f"Error al obtener información del video {imagen_video.video_id}: {e}")
+
+        # Agregar la publicación con la primera imagen o video encontrado
+        publicaciones_data.append({
+            'publicacion_id': publicacion.id,
+            'user_id': publicacion.user_id,
+            'titulo': publicacion.titulo,
+            'texto': publicacion.texto,
+            'ambito': publicacion.ambito,
+            'correo_electronico': publicacion.correo_electronico,
+            'descripcion': publicacion.descripcion,
+            'color_texto': publicacion.color_texto,
+            'color_titulo': publicacion.color_titulo,
+            'fecha_creacion': publicacion.fecha_creacion,
+            'estado': publicacion.estado,
+            'imagenes': imagenes,  # Solo una imagen
+            'videos': videos  # Solo un video
+        })
+
+    return publicaciones_data
+
+
+
+
+
 
 def armar_publicacion_bucket(publicaciones):
     publicaciones_data = []

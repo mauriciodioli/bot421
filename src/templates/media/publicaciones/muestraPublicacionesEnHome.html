@@ -6,6 +6,10 @@
 {% extends 'layouts/layout_fichas.html' %}
 {% endif %}
 
+{% if layout == 'layout_dpi'%}
+{% extends 'layouts/layout_dpi.html' %}
+{% endif %}
+
 {% if layout == 'layoutConexBroker' %}
 {% extends 'layouts/layoutConexBroker.html' %}    
 {% endif %}
@@ -88,6 +92,7 @@
     var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
     var userId = '{{ post.user_id }}';
     var ambito = '{{ post.ambito }}';
+    var layout = '{{layout}}'
 
     function replaceMainMedia(src, type) {
         var container = document.getElementById('principal-media');
@@ -102,11 +107,11 @@
 
     function cargarDatosPublicacion() {
         // Redirigir a la URL construida con los parámetros
-        window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}`;
+        window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}`;
     }
 
-    function abrirPublicacionEnAmbitos(publicacionId, userId, ambito) {
-        mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito);
+    function abrirPublicacionEnAmbitos(publicacionId, userId, ambito,layout) {
+        mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito,layout);
     }
 </script>
 

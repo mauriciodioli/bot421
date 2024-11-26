@@ -12,8 +12,7 @@ function formatDate(dateString) {
 
 
 
-// Ruta al archivo con la galería de imágenes
-function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
+function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
     var galeriaURL1 = '/media-muestraPublicacionesEnAmbitos-mostrar';
     var access_token = localStorage.getItem('access_token');
     
@@ -23,14 +22,14 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
         data: JSON.stringify({
             publicacion_id: publicacionId,
             user_id: userId,
-            ambito: ambito
+            ambito: ambito,
+            layout: layout
         }),
         contentType: 'application/json', // Indica que se envía un JSON al backend
         dataType: 'json', // Asegúrate de que el backend devuelva un JSON
         headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
 
         success: function (response) {
-          //  window.location.href = '/media/publicaciones/publicacionesEnAmbitos.html';
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
                 postDisplayContainer.empty();
@@ -38,17 +37,14 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
                 response.forEach(function(post) {
                     if (post.imagenes.length > 0 || post.videos.length > 0) {
                         var mediaHtml = '';
-                        //var baseUrl = window.location.origin;
-                        
+
                         if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                            //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                            var firstImageUrl =  post.imagenes[0].filepath;
-                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
+                            var firstImageUrl = post.imagenes[0].filepath;
+                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;" class="first-image">`;
 
                             var modalImagesHtml = '';
                             post.imagenes.forEach(function(image, index) {
                                 if (index > 0) {
-                                   // var imageUrl = baseUrl + '/' + image.filepath;
                                     var imageUrl = image.filepath;
                                     modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-publicacion-en-ambito">`;
                                 }
@@ -64,14 +60,12 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
                                     </div>
                                 </div>
                             `;
-
                             postDisplayContainer.append(modalHtml);
                         }
 
                         var cardHtml = `
                             <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}">
                                 <div class="card-body-en-ambitos-personales">
-                                   
                                     <h5 class="card-title-en-ambitos-personales">${post.titulo}</h5>
                                     <div class="card-media-grid-publicacion-en-ambitos-personales">
                                         ${mediaHtml}
@@ -82,9 +76,13 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
                                 </div>
                             </div>
                         `;
-
-
+                        
                         postDisplayContainer.append(cardHtml);
+
+                        // Desplazar la tarjeta hacia abajo si se ha mostrado una imagen
+                        if (post.imagenes.length > 0) {
+                            $('#card-' + post.publicacion_id).css('margin-top', '100px');
+                        }
                     } else {
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }
@@ -98,7 +96,6 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito) {
         }
     });
 }
-
 
 
 
