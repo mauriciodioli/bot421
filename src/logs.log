@@ -1,0 +1,120 @@
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+____INTENTO ENTRAR____
+127.0.0.1
+None
+mauriciodioli@gmail.com
+Se cargó direccion imagen: weibull.png, path: static/uploads/weibull.png
+Se cargó una imagen: weibull.png, índice: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+Se cargó direccion imagen: weibull.png, path: static/uploads/weibull.png
+Se cargó una imagen: weibull.png, índice: 0
+mauriciodioli@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Error al comprimir o cargar la imagen: name 'image' is not defined
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Error al comprimir o cargar la imagen: type object 'Image' has no attribute 'open'
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó imagen comprimida: alineador_laser.jpg, path: /workspaces/bot421/src/static/uploads/compressed_alineador_laser.jpg
+Se cargó una imagen: alineador_laser.jpg, índice: 0
+Se cargó imagen comprimida: image.jpg, path: /workspaces/bot421/src/static/uploads/compressed_image.jpg
+Se cargó imagen comprimida: alineador_laser.jpg, path: /workspaces/bot421/src/static/uploads/compressed_alineador_laser.jpg
+Se cargó una imagen: alineador_laser.jpg, índice: 0
+Se cargó imagen comprimida: pendulo_invertido.jpg, path: /workspaces/bot421/src/static/uploads/compressed_pendulo_invertido.jpg
+Se cargó una imagen: pendulo_invertido.jpg, índice: 1
+Se cargó imagen comprimida: sistema_gestion_landry.jpg, path: /workspaces/bot421/src/static/uploads/compressed_sistema_gestion_landry.jpg
+Se cargó una imagen: sistema_gestion_landry.jpg, índice: 2
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.31.31.jpeg, path: /workspaces/bot421/src/static/uploads/compressed_WhatsApp_Image_2024-11-19_at_15.31.31.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.31.31.jpeg, índice: 3
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.31.40.jpeg, path: /workspaces/bot421/src/static/uploads/compressed_WhatsApp_Image_2024-11-19_at_15.31.40.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.31.40.jpeg, índice: 4
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.31.49.jpeg, path: /workspaces/bot421/src/static/uploads/compressed_WhatsApp_Image_2024-11-19_at_15.31.49.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.31.49.jpeg, índice: 5
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.32.29.jpeg, path: /workspaces/bot421/src/static/uploads/compressed_WhatsApp_Image_2024-11-19_at_15.32.29.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.32.29.jpeg, índice: 6
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.33.08.jpeg, path: /workspaces/bot421/src/static/uploads/compressed_WhatsApp_Image_2024-11-19_at_15.33.08.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.33.08.jpeg, índice: 7
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó imagen comprimida: alineador_laser.jpg, path: /workspaces/bot421/src/static/uploads/alineador_laser.jpg
+Se cargó una imagen: alineador_laser.jpg, índice: 0
+Se cargó imagen comprimida: IMG-20150702-WA0019.jpg, path: /workspaces/bot421/src/static/uploads/IMG-20150702-WA0019.jpg
+Se cargó una imagen: IMG-20150702-WA0019.jpg, índice: 1
+Se cargó imagen comprimida: pendulo_invertido.jpg, path: /workspaces/bot421/src/static/uploads/pendulo_invertido.jpg
+Se cargó una imagen: pendulo_invertido.jpg, índice: 2
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.31.40.jpeg, path: /workspaces/bot421/src/static/uploads/WhatsApp_Image_2024-11-19_at_15.31.40.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.31.40.jpeg, índice: 3
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.31.49.jpeg, path: /workspaces/bot421/src/static/uploads/WhatsApp_Image_2024-11-19_at_15.31.49.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.31.49.jpeg, índice: 4
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.32.29.jpeg, path: /workspaces/bot421/src/static/uploads/WhatsApp_Image_2024-11-19_at_15.32.29.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.32.29.jpeg, índice: 5
+Se cargó imagen comprimida: WhatsApp_Image_2024-11-19_at_15.33.08.jpeg, path: /workspaces/bot421/src/static/uploads/WhatsApp_Image_2024-11-19_at_15.33.08.jpeg
+Se cargó una imagen: WhatsApp_Image_2024-11-19_at_15.33.08.jpeg, índice: 6
+Se cargó imagen comprimida: sistemaEmbebidoIndustrial.png, path: /workspaces/bot421/src/static/uploads/sistemaEmbebidoIndustrial.png
+Se cargó una imagen: sistemaEmbebidoIndustrial.png, índice: 0
+Se cargó imagen comprimida: sistemaEmbebidoIndustrial1.png, path: /workspaces/bot421/src/static/uploads/sistemaEmbebidoIndustrial1.png
+Se cargó una imagen: sistemaEmbebidoIndustrial1.png, índice: 1
+Se cargó imagen comprimida: sistemaEmbebidoIndustrial2.png, path: /workspaces/bot421/src/static/uploads/sistemaEmbebidoIndustrial2.png
+Se cargó una imagen: sistemaEmbebidoIndustrial2.png, índice: 2
+Se cargó imagen comprimida: sistemaEmbebidoIndustrial3.png, path: /workspaces/bot421/src/static/uploads/sistemaEmbebidoIndustrial3.png
+Se cargó una imagen: sistemaEmbebidoIndustrial3.png, índice: 3
+Se cargó imagen comprimida: sistemaEmbebidoIndustrial4.png, path: /workspaces/bot421/src/static/uploads/sistemaEmbebidoIndustrial4.png
+Se cargó una imagen: sistemaEmbebidoIndustrial4.png, índice: 4
+Se cargó imagen comprimida: robotica.png, path: /workspaces/bot421/src/static/uploads/robotica.png
+Se cargó una imagen: robotica.png, índice: 0
+Se cargó imagen comprimida: robotica1.png, path: /workspaces/bot421/src/static/uploads/robotica1.png
+Se cargó una imagen: robotica1.png, índice: 1
+Se cargó imagen comprimida: robotica2.png, path: /workspaces/bot421/src/static/uploads/robotica2.png
+Se cargó una imagen: robotica2.png, índice: 2
+Se cargó imagen comprimida: robotica3.png, path: /workspaces/bot421/src/static/uploads/robotica3.png
+Se cargó una imagen: robotica3.png, índice: 3
+Se cargó imagen comprimida: sistemsGestion.png, path: /workspaces/bot421/src/static/uploads/sistemsGestion.png
+Se cargó una imagen: sistemsGestion.png, índice: 0
+Se cargó imagen comprimida: sistemsGestion1png.png, path: /workspaces/bot421/src/static/uploads/sistemsGestion1png.png
+Se cargó una imagen: sistemsGestion1png.png, índice: 1
+Se cargó imagen comprimida: colegas.png, path: /workspaces/bot421/src/static/uploads/colegas.png
+Se cargó una imagen: colegas.png, índice: 0

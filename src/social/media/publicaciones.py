@@ -1,20 +1,22 @@
-# Creating  Routes
-from pipes import Template
-from unittest import result
-from flask import current_app
-
-import requests
-import json
-import random  # Importar el módulo random
-from werkzeug.utils import secure_filename
-from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
-from models.instrumento import Instrumento
-from utils.db import db
-import routes.api_externa_conexion.get_login as get
-import tokens.token as Token
-import jwt
-import asyncio
+# Librerías estándar
 import os
+import random
+import json
+from datetime import datetime
+
+# Librerías externas
+import requests
+import jwt
+from PIL import Image as PILImage  # Renombrar la clase Image de Pillow
+from flask import (
+    Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
+)
+from werkzeug.utils import secure_filename
+from sqlalchemy import func
+from sqlalchemy.orm.exc import StaleDataError
+
+# Importaciones del proyecto
+from models.instrumento import Instrumento
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
@@ -22,17 +24,13 @@ from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
-from social.buckets.bucketGoog import upload_to_gcs
-from social.buckets.bucketGoog import delete_from_gcs
-from social.buckets.bucketGoog import mostrar_from_gcs
-
-from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
-from sqlalchemy import func
-from sqlalchemy.orm.exc import StaleDataError
-
-
-
+from utils.db import db
+import routes.api_externa_conexion.get_login as get
+import tokens.token as Token
+from social.buckets.bucketGoog import (
+    upload_to_gcs, delete_from_gcs, mostrar_from_gcs
+)
 
 #import boto3
 #from botocore.exceptions import NoCredentialsError
@@ -608,58 +606,60 @@ def social_imagenes_crear_publicacion():
         return jsonify({'error': str(e)}), 500
         
 
-def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, userid=0, index=None, size=0):   
-    color_texto = request.form.get('color_texto')   
+def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, userid=0, index=None, size=0):
+    color_texto = request.form.get('color_texto')
     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-    size = size  # Obtener tamaño del archivo usando el índice  
- 
-     # Construir la ruta del archivo de manera multiplataforma
-    file_path = os.path.join('static', 'uploads', filename)
-    app.logger.info(f'Se cargó direccion imagen: {filename}, path: {file_path}')
-    # Asegurarse de que funcione tanto en Windows como en Linux
-  
-    #file_path = file_path.replace('\\', '/')
-    file.save(file_path)    
-     # Subir el archivo a GCS
-    try:
-        absolute_file_path = os.path.abspath(file_path)  # Obtener la ruta absoluta 
-        upload_to_gcs(absolute_file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
-        eliminar_desde_archivo(filename, None)
-    except Exception as e:
-        print(f"No se pudo subir el archivo {filename} a GCS. Error: {e}")
-    else:
-        print(f"Archivo {filename} subido a GCS con éxito.")
+    size = size  # Tamaño original del archivo
     
+    # Ruta para guardar la imagen comprimida temporalmente
+    temp_file_path = os.path.join('static', 'uploads', f"{filename}")
+    
+    try:
+        # Comprimir o redimensionar la imagen usando Pillow
+        with PILImage.open(file) as img:
+            img = img.convert("RGB")  # Asegurar que esté en formato RGB
+            img.thumbnail((800, 800))  # Redimensionar (por ejemplo, máximo 800x800 px)
+            img.save(temp_file_path, format="JPEG", quality=85)  # Guardar comprimida al 85% de calidad
+        
+        # Obtener la nueva ruta absoluta del archivo comprimido
+        absolute_file_path = os.path.abspath(temp_file_path)
+        
+        # Subir la imagen comprimida a GCS
+        upload_to_gcs(absolute_file_path, filename)
+        
+        # Eliminar el archivo temporal después de subirlo
+        os.remove(temp_file_path)
+        
+        app.logger.info(f'Se cargó imagen comprimida: {filename}, path: {absolute_file_path}')
+        
+    except Exception as e:
+        app.logger.error(f"Error al comprimir o cargar la imagen: {e}")
+        raise
+    
+    # Guardar información en la base de datos
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
-    randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
-  # Sube la imagen a S3
-    #file_path_s3 = upload_to_s3(file, BUCKET_NAME, f"imagenes/{filename}")
+    randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
 
-    #if file_path_s3:
-# Verificar si la imagen ya existe
-    imagen_existente = db.session.query(Image).filter_by(filepath=file_path).first()
-
+    imagen_existente = db.session.query(Image).filter_by(filepath=temp_file_path).first()
     if imagen_existente:
-        # Si la imagen ya existe, solo guarda la relación en publicacion_media
-        cargar_id_publicacion_id_imagen_video(id_publicacion,imagen_existente.id,0,'imagen',size=size)
-        return file_path
+        cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
+        return temp_file_path
     else:
-  
         nueva_imagen = Image(
             user_id=userid,
             title=nombre_archivo,
             description=descriptionImagen,
             colorDescription=color_texto,
-            filepath=file_path,
+            filepath=temp_file_path,
             randomNumber=randomNumber_,
             size=float(size)
         )
         db.session.add(nueva_imagen)
         db.session.commit()
-        cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen.id,0,'imagen',size=size)
+        cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
         db.session.close()
-        return file_path
+        return temp_file_path
 
 
 def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0, index=None, size=0):   
@@ -950,6 +950,8 @@ def social_media_publicaciones_borrado_logico_publicaciones():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
 def borrado_logicopublicacion(publicacion_id, user_id, estado):
     try:
         # Inicializa una lista vacía para almacenar las publicaciones
