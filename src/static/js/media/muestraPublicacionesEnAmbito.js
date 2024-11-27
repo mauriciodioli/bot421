@@ -40,7 +40,8 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
 
                         if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                             var firstImageUrl = post.imagenes[0].filepath;
-                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${layout}')" style="cursor: pointer;" class="first-image">`;
+                            debugger;
+                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;" class="first-image">`;
 
                             var modalImagesHtml = '';
                             post.imagenes.forEach(function(image, index) {
@@ -118,6 +119,7 @@ function toggleTexto(postId) {
 
 function abrirPublicacionHome(publicacionId, layout) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
+    debugger;
     window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
 }
 

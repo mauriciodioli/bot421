@@ -111,8 +111,9 @@ def panel_control_atomatico(pais,usuario_id,access_token,account,selector):
     
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
         app = current_app._get_current_object()
-        usuario_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            
+        if access_token != 'access_dpi_token_usuario_anonimo':
+            usuario_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+          
         ContenidoSheet = procesar_datos(app,pais, account,usuario_id,selector)
         datos_desempaquetados,unidadTrader = forma_datos_para_envio_paneles(app,ContenidoSheet,usuario_id,accountCuenta=account)
         if datos_desempaquetados:
