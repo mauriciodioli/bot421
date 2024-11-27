@@ -11,20 +11,7 @@
 </style>
 
   <div class = 'container p-4'id="contenido" style="display:none">  
-    <div class="jumbotron">
-      <p class="lead">To operate you can press the button with the corresponding color</p>
-      <form id="sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html" method="POST" action="/sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html">
-          <input type="hidden" id="access_token_btn_donacion" name="access_token_btn_donacion" >
-          <input type="hidden" id="correo_electronico_btn_donacion" name="correo_electronico_btn_donacion"> 
-          <input type="hidden" id="productoComercial" name="productoComercial" value='donacion'> 
-          <input type="hidden" id="cluster_btn_donacion" name="cluster_btn_donacion" value='1'>        
-          <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout_signal">
-          <button class="card-button btn-success long-button" style="margin-top: 20px;" type="submit">Ayudanos a mejorar</button>
-      </form>
-
-    
-      <hr class="my-4">  
-    </div>
+   
      
     <div class="jumbotron">
       <h1 class="display-4">Select Broker!</h1>
@@ -122,11 +109,11 @@
       </div> 
   </div> 
 
-  <script src="{{url_for('static',filename='js/sistemaDePagos/createPlanes.js')}}"></script>
-<script>
+  <script>
 document.addEventListener('DOMContentLoaded', function() {
   var filasTablaDatos = [];
-  document.getElementById('splash').style.display = 'block';
+  
+  //document.getElementById('splash').style.display = 'block';
   //{% if cuenta is defined %}
   // Acceder a los tokens desde el diccionario de contexto de Flask
   var cuenta = "{{ cuenta[0] }}";
@@ -136,19 +123,12 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log("probanodo",cuenta)
   console.log(usuario)
   console.log(selector)
+  debugger;
   // Almacenar los tokens en el localStorage
   localStorage.setItem("cuenta", cuenta);
   localStorage.setItem("usuario", usuario);
   localStorage.setItem("selector", selector);
   //{% endif %}
-
-  //alamcen datos para enviar al boton donacion 
-  var access_token_btn_donacion = localStorage.getItem('access_token');
-  var correo_electronico_btn_donacion = localStorage.getItem('correo_electronico');
-  document.getElementById('access_token_btn_donacion').value = access_token_btn_donacion;
-  document.getElementById('correo_electronico_btn_donacion').value = correo_electronico_btn_donacion;
-
-
 
   document.addEventListener('click', function(event) {
     if (event.target && event.target.id == "boton-despues-carga-tabla") {
@@ -181,51 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 
-  function enviarNotificacionesTelegram() {
-    var notificacionTelegram = localStorage.getItem('notificacionTelegram');
-
-    // Verificar si notificacionTelegram es 'True'
-    if (notificacionTelegram == 'True') {
-        var paisSeleccionado = localStorage.getItem('paisSeleccionado');
-        var access_token = localStorage.getItem('access_token');
-        var selector = localStorage.getItem('selector');
-        var idtelegram = localStorage.getItem('idtelegram');
-        // Iterar sobre las filas de datos y enviar cada fila por AJAX
-        filasTablaDatos.forEach(function(fila) {
-            var formData = {
-                access_token: access_token,
-                symbol: fila[1], // Ajusta el índice según la posición de symbol en tu fila
-                ut: fila[5], // Ajusta el índice según la posición de ut en tu fila
-                senial: fila[3], // Ajusta el índice según la posición de senial en tu fila
-                correo_electronico: document.getElementById('correo_electronico').value,
-                paisSeleccionado: paisSeleccionado,
-                idtelegram: idtelegram,
-                selector: selector
-            };
-
-            $.ajax({
-                type: "POST",
-                url: '/envio_notificacion_tlegram_desde_seniales_sin_cuenta/',
-                contentType: 'application/json', // Asegúrate de que el tipo de contenido sea JSON
-                data: JSON.stringify(formData), // Convertir formData a JSON
-                success: function(response) {
-                    // Manejar la respuesta del servidor si es necesario
-                    console.log("Respuesta del servidor:", response);
-                    // Aquí puedes agregar lógica adicional según la respuesta del servidor
-                },
-                error: function(error) {
-                    console.error("Error al enviar datos por AJAX:", error);
-                    // Manejar errores si es necesario
-                }
-            });
-        });
-    } else {
-        // Manejar el caso cuando notificacionTelegram no es 'True'
-        console.log("La notificación no está activada.");
-        // Puedes mostrar un mensaje al usuario u otra acción adecuada
-    }
-}
-
+ 
   
 
 
@@ -246,10 +182,7 @@ function leerFilasTabla(tableBody) {
   var ahora = new Date();
   var hora = ahora.getHours();
 
-  // Verificar si la hora actual está entre las 14:00 y las 20:00
-  if (hora >= 14  && hora < 20) {
-      enviarNotificacionesTelegram();
-  }
+  
 
   // console.log('Datos de la tabla cargados:', filasTablaDatos);
 }
@@ -266,25 +199,6 @@ function leerFilasTabla(tableBody) {
 
 
 
-function actualizarUnidadTradeo(){
-    // Obtener el valor de 'ut_usuario' desde localStorage
-    var ut_usuario = localStorage.getItem('ut_usuario');
-        
-    // Obtener el elemento <h3>
-    var h3Element = $('#ut_usuario');
-
-    // Verificar si 'ut_usuario' tiene un valor
-    if (ut_usuario) {
-        // Actualizar el contenido y aplicar la clase verde
-        h3Element.text('Unidad de Tradeo: ' + ut_usuario);
-        h3Element.addClass('verde');
-    } else {
-        // Si no hay valor, restablecer el contenido y eliminar la clase verde
-        h3Element.text('Unidad de Tradeo: No disponible');
-        h3Element.removeClass('verde');
-    }
-
-}
 
 
   function updateTable() {
@@ -294,14 +208,14 @@ function actualizarUnidadTradeo(){
   // var cambiosAntes = compararCambios();
     // Realizar una solicitud AJAX para obtener los nuevos datos
    
-    actualizarUnidadTradeo();
+    debugger;
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
-    var usuario_id = localStorage.getItem('usuario_id');
-    var access_token = localStorage.getItem('access_token');
-    var selector = localStorage.getItem('selector');
+    var usuario_id = 'anonimo'
+    var access_token = 'access_dpi_token_usuario_anonimo'
+    var selector = 'simulado'
     var account = 'vacio'
     var xhr = new XMLHttpRequest();
-    
+   
     var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/'+selector+'/';
     
     xhr.open('GET', url, true);
@@ -313,7 +227,7 @@ function actualizarUnidadTradeo(){
         // La solicitud fue exitosa, actualiza la tabla  
        
         var response = JSON.parse(xhr.responseText);
-      
+        debugger;
         var tableBody = document.getElementById('signalTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Limpiar el contenido actual de la tabla
 
@@ -651,8 +565,9 @@ function actualizarUnidadTradeo(){
         
         }
       // Después de actualizar la tabla, puedes comparar los cambios nuevamente
-      document.getElementById('splash').style.display = 'none';
+     // document.getElementById('splash').style.display = 'none';
       document.getElementById('contenido').style.display = 'block';
+      debugger;
       //var cambiosDespues = compararCambios();
 
       //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
@@ -672,9 +587,10 @@ function actualizarUnidadTradeo(){
       var h3Element = $('#ut_usuario');
 
       // Verificar si 'ut_usuario' tiene un valor
-      if ( response.unidadTrader) {
+      debugger;
+      if ( response.unidadTrader === 0) {
           // Actualizar el contenido y aplicar la clase verde
-          h3Element.text('Unidad de Tradeo: ' +  response.unidadTrader);
+          h3Element.text('Unidad de Tradeo: ' +  50000);
           h3Element.addClass('verde');
           document.getElementById('ut_usuario').style.color = 'green';
 

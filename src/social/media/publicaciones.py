@@ -70,7 +70,7 @@ def media_publicaciones_mostrar():
             publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id).all()
            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket(publicaciones_user)
+            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
             db.session.close()
             #print(publicaciones_data)
             return jsonify(publicaciones_data)
@@ -85,6 +85,9 @@ def media_publicaciones_mostrar():
 @publicaciones.route('/media-publicaciones-mostrar-home', methods=['POST'])
 def media_publicaciones_mostrar_home():
     try:
+        
+        layout = request.form.get('layout')
+        
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
@@ -133,7 +136,7 @@ def media_publicaciones_mostrar_home():
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
                 publicaciones = db.session.query(Publicacion).filter_by(estado='activo').all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones)
+            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()
             return jsonify(publicaciones_data)
 
@@ -153,7 +156,7 @@ def media_publicaciones_mostrar_dpi():
         authorization_header = request.headers.get('Authorization')
          # Obtener el valor de 'ambitos' enviado en el cuerpo de la solicitud
         ambitos = request.form.get('ambitos')  # Si el contenido es application/x-www-form-urlencoded
-     
+        layout = 'layout_dpi'
         if not authorization_header:
             return jsonify({'error': 'Token de acceso no proporcionado'}), 401
         
@@ -197,7 +200,7 @@ def media_publicaciones_mostrar_dpi():
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
                 publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos).all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones)
+            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()
             return jsonify(publicaciones_data)
 
@@ -233,7 +236,7 @@ def media_publicaciones_mostrar_dpi():
 import logging
 
 
-def armar_publicacion_bucket_para_dpi(publicaciones):
+def armar_publicacion_bucket_para_dpi(publicaciones,layout):
     publicaciones_data = []
 
     for publicacion in publicaciones:
@@ -303,7 +306,8 @@ def armar_publicacion_bucket_para_dpi(publicaciones):
             'fecha_creacion': publicacion.fecha_creacion,
             'estado': publicacion.estado,
             'imagenes': imagenes,  # Solo una imagen
-            'videos': videos  # Solo un video
+            'videos': videos,  # Solo un video
+            'layout': layout
         })
 
     return publicaciones_data

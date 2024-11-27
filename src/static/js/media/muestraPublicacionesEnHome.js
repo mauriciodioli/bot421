@@ -10,12 +10,15 @@ function formatDate(dateString) {
 var galeriaURL = '/MostrarImages/';
 var galeriaURL1 = '/media-publicaciones-mostrar-home';
 var access_token = localStorage.getItem('access_token');
-
+var layout = 'layout'
 $.ajax({
     type: 'POST',
     url: galeriaURL1,
     dataType: 'json', // Asegúrate de que el backend devuelva un JSON
     headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
+    data:{
+        layout:layout
+    },
     success: function (response) {
         if (Array.isArray(response)) {
             var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
@@ -30,7 +33,9 @@ $.ajax({
                         // Mostrar solo la primera imagen
                         //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
                         var firstImageUrl = post.imagenes[0].filepath;
-                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
+                        console.log(': ',post)
+                        debugger;
+                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
 
                         // Guardar las demás imágenes para mostrarlas en el modal
                         var modalImagesHtml = '';
@@ -147,8 +152,9 @@ function toggleTexto(postId) {
 }
 
 
-function abrirPublicacionHome(publicacionId) {
+function abrirPublicacionHome(publicacionId, layout) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
-    window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}`;
+    debugger;
+    window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
 }
 
