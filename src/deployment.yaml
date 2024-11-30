@@ -1,0 +1,19 @@
+# apiVersion: apps/v1  # Versión de la API para el Deployment
+# kind: Deployment  # Tipo de recurso, en este caso, un Deployment
+# metadata:
+#   name: bot421-deployment  # Nombre del deployment
+# spec:
+#   replicas: 3  # Número de réplicas de los pods
+#   selector:
+#     matchLabels:
+#       app: bot421  # Selecciona los pods con la etiqueta 'app: bot421'
+#   template:
+#     metadata:
+#       labels:
+#         app: bot421  # Etiqueta de los pods
+#     spec:
+#       containers:
+#       - name: bot421  # Nombre del contenedor
+#         image: <your_image_name>  # Imagen a utilizar para el contenedor
+#         ports:
+#         - containerPort: 5000  # Puerto en el contenedor

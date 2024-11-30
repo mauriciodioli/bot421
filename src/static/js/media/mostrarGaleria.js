@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var formData = new FormData();
     formData.append('roll', roll);
     formData.append('correo_electronico', correo_electronico);
-    formData('layout','layout')
+    formData.append('layout','layout')
     $.ajax({
       url: '/media-publicaciones-mostrar',
       type: 'POST',

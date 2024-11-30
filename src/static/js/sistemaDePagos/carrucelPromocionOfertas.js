@@ -97,36 +97,23 @@ $(document).ready(function(){
         event.preventDefault(); // Prevent the default form submission
 
         // Get the form data
-        var formData = {
-            costo_base: parseFloat($(this).find('input[name="costo_base"]').val()), // Convert to number
-            porcentaje_retorno: $(this).find('input[name="discount"]').val(),
-            titulo: $(this).find('input[name="reason"]').val(),
-            currency_id: $(this).find('input[name="currency_id"]').val()
-        };
+        var costo_base = parseFloat($(this).find('input[name="costo_base"]').val()) || 0; // Convert to number or default to 0
+        var porcentaje_retorno = parseFloat($(this).find('input[name="discount"]').val()) || 0; // Ensure it's a number
+        var titulo = $(this).find('input[name="reason"]').val() || '';
+        var currency_id = $(this).find('input[name="currency_id"]').val() || 'USD'; // Default to USD if empty
+
         // Calculate the final price after applying the discount
-        var final_price = formData.costo_base - (formData.costo_base * formData.porcentaje_retorno / 100);
+        var final_price = costo_base - (costo_base * porcentaje_retorno / 100);
 
         // Create the preference data
         var preference_data = {
-            items: [
-                {
-                    title: formData.titulo,
-                    quantity: 1,
-                    porcentaje_retorno: formData.porcentaje_retorno,
-                    currency_id: formData.currency_id,
-                    final_price:final_price,
-                    unit_price: formData.costo_base
-                }
-            ],
-            back_urls: {
-                success: "https://89ae-190-225-182-66.ngrok-free.app/success",
-                failure: "https://89ae-190-225-182-66.ngrok-free.app/failure",
-                pending: "https://89ae-190-225-182-66.ngrok-free.app/pending"
-            },
-            notification_url: "https://89ae-190-225-182-66.ngrok-free.app/webhook",
-            auto_return: "approved"
+            title: titulo,
+            porcentaje_retorno:porcentaje_retorno,
+            quantity: 1,
+            currency_id: currency_id,
+            unit_price: costo_base, // Original cost
+            final_price: final_price // Calculated final price
         };
-
         // Send the AJAX request
         $.ajax({
             url: '/create_order/',

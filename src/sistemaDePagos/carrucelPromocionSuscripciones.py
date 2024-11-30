@@ -9,6 +9,7 @@ from models.payment_page.Promotion import Promotion
 
 carrucelPromocionSuscripciones = Blueprint('carrucelPromocionSuscripciones',__name__)
 
+
 @carrucelPromocionSuscripciones.route('/sistemaDePagos_get_ofertas_suscripciones/',methods=['POST'])
 def sistemaDePagos_get_ofertas_suscripciones():
     try:
