@@ -24,7 +24,7 @@ Antes de ejecutar el proyecto, realiza las siguientes modificaciones en los arch
   app.run(host='0.0.0.0', port=5001, debug=False)
 #### En aws.yml
 Configuración de Host de AWS:
-
+# ssh -i "bot421dbversion2.pem" ubuntu@ec2-44-223-20-210.compute-1.amazonaws.com
 Comenta la primera línea de host de prueba y descomenta la línea de host de producción.
 # Comentar la línea de host de prueba
 EC2_HOST: ec2-18-207-114-83.compute-1.amazonaws.com # IMAGEN TEST

@@ -48,14 +48,17 @@ def create_order():
     try:
         # Obtén los datos de la solicitud
         data = request.get_json()
+ # Accede a los datos JSON enviados
+        data = request.json
 
-        # Extrae los valores necesarios
-        costo_base = data.get("items")[0].get("unit_price")
-        porcentaje_retorno = data.get("items")[0].get("porcentaje_retorno")
-        currency_id =  data.get("items")[0].get("currency_id")
-        quantity =  data.get("items")[0].get("quantity")
-        final_price = data.get("items")[0].get("final_price")
-        title =  data.get("items")[0].get("title")
+        # Extrae los campos del JSON
+        title = data.get('title')  # Ejemplo: "Donation"
+        quantity = data.get('quantity')  # Ejemplo: 1
+        currency_id = data.get('currency_id')  # Ejemplo: "USD"
+        costo_base = data.get('unit_price')  # Ejemplo: 100.0
+        final_price = data.get('final_price')  # Ejemplo: 90.0 (con descuento)
+        porcentaje_retorno = data.get("porcentaje_retorno")
+        
         costo_base = float(costo_base)
         porcentaje_retorno = float(porcentaje_retorno)
        

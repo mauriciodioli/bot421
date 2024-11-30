@@ -26,7 +26,7 @@
     <!-- Contenedor para la imagen o video principal -->
     <div id="principal-media" class="imagen-principal-muestra-despliegue-publicacion-home">
         <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}"/>
-       
+        <p style="margin-bottom: 5px; color: #7fff7f;">Discover more projects by clicking on the image ↴</p>
         {% if post.videos %}
             <!-- Mostrar el primer video si está disponible -->
             <video controls id="main-video" style="cursor: pointer;" onclick="cargarDatosPublicacion()">

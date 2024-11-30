@@ -10,7 +10,7 @@ body {
   width: 70px;
   position: fixed;
   top: 0;
-  left: 500px; /* Mueve el elemento 100px hacia la derecha */
+  left: 150px; /* Mueve el elemento 100px hacia la derecha */
   background: url('/static/leon.png') no-repeat center left;
   background-size: contain;
   display: flex;
@@ -28,7 +28,7 @@ body {
     background-size: contain;
     display: flex;
     align-items: left;
-    margin-right: 500px; /* Espacio entre el logo y el menú */
+    margin-right: 150px; /* Espacio entre el logo y el menú */
     padding: 0 50px; /* Padding horizontal solo en pantallas grandes */
 }
 

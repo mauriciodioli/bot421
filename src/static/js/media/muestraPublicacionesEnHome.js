@@ -43,7 +43,7 @@ $.ajax({
                             if (index > 0) { // Saltar la primera imagen
                                 //var imageUrl = baseUrl + '/' + image.filepath;
                                 var imageUrl = image.filepath;
-                                modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-en-ambito-publicacion">`;
+                                modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-en-ambito-publicacion"> `;
                             }
                         });
 
@@ -79,8 +79,7 @@ $.ajax({
                                     <p class="card-date">${formatDate(post.fecha_creacion)}</p>
                                     <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
                                     <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
-
-                                    
+            
                                 </div>
                             </div>
                         `;

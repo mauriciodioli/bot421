@@ -1,0 +1,13 @@
+# apiVersion: v1  # Versión de la API que se está utilizando
+# kind: Service  # Tipo de recurso, en este caso, un servicio
+# metadata:
+#   name: bot421-service  # Nombre del servicio
+# spec:
+#   selector:
+#     app: bot421  # Selecciona los pods con la etiqueta 'app: bot421'
+#   ports:
+#   - protocol: TCP  # El protocolo de red
+#     port: 80  # Puerto externo expuesto
+#     targetPort: 5000  # Puerto dentro del contenedor al que se redirige el tráfico
+#   type: LoadBalancer  # Tipo de servicio que crea un balanceador de carga
+

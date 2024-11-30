@@ -42,6 +42,7 @@ from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
 
 
 from social.telegram.telegram import telegram
+from social.videosYtube.videosYtube import videosYtube
 from social.chats.chat import chat
 from social.buckets.bucketGoog import bucketGoog
 
@@ -266,6 +267,7 @@ app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
+app.register_blueprint(videosYtube)
 
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)

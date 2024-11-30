@@ -49,6 +49,8 @@ BUCKET_NAME = 'nombre-de-tu-bucket'
 @publicaciones.route('/media-publicaciones-mostrar', methods=['POST'])
 def media_publicaciones_mostrar():
     try:
+        
+        layout = request.form.get('layout') 
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
