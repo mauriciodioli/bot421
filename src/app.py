@@ -119,7 +119,6 @@ from models.servidores.servidorAws import servidorAws
 
 from Tests.test_procesar_estado_final import test_procesar_estado_final
 
-
 from flask_login import LoginManager
 from flask_oauthlib.client import OAuth
 from flask_cors import CORS
@@ -507,18 +506,29 @@ def send_local_storage():
         simuladoOproduccion = data.get('simuladoOproduccion')
         client_ip = request.remote_addr  # Obtiene la IP del cliente
         data['client_ip'] = client_ip
-
-        if access_token and Token.validar_expiracion_token(access_token=access_token):
-            if correo_electronico:
-              #  app.logger.info(client_ip)
-                app.logger.info(correo_electronico)  
-                redirect_route = 'home'
-            else:
-                app.logger.info('____INTENTO ENTRAR____')  
-                app.logger.info(client_ip)
-                app.logger.info(correo_electronico)  
-                redirect_route = 'index'    
-        else:
+        if access_token:
+            if Token.validar_expiracion_token(access_token=access_token):                        
+                if correo_electronico:
+                #  app.logger.info(client_ip)
+                    app.logger.info(correo_electronico)  
+                    redirect_route = 'home'
+                else:
+                    app.logger.info('____INTENTO ENTRAR____')  
+                    app.logger.info(client_ip)
+                    app.logger.info(correo_electronico)  
+                    redirect_route = 'index'  
+            else:   
+                 # Si el access_token no es válido, verifica el refresh_token
+                if refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
+                    # Generar nuevo access_token usando el refresh_token
+                    nuevo_access_token = create_access_token(identity=correo_electronico)
+                    app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
+                    return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
+                else:
+                    # Si no hay refresh_token válido, redirigir al inicio de sesión
+                    app.logger.warning("El token ha expirado y no hay refresh_token válido")
+                    return jsonify(success=False, ruta='index', message="Requiere autenticación nuevamente")
+        else:            
             app.logger.info('____INTENTO ENTRAR____') 
             app.logger.info(client_ip) 
             app.logger.info(correo_electronico)  
