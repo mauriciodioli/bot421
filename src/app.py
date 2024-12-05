@@ -1,5 +1,5 @@
-from flask import (Flask,Blueprint,Response,make_response,render_template,request,redirect,url_for,flash,jsonify)
-from flask_jwt_extended import (JWTManager, jwt_required, create_access_token,get_jwt_identity)
+from flask import (Flask,Blueprint,current_app,Response,make_response,render_template,request,redirect,url_for,flash,jsonify)
+from flask_jwt_extended import (JWTManager,decode_token, jwt_required, create_access_token,get_jwt_identity)
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
@@ -7,6 +7,7 @@ from sqlalchemy.exc import OperationalError
 # Importar create_engine y NullPool
 import logging
 import os
+from datetime import timedelta
 from log.logRegister import generate_logs
 
 from sqlalchemy import create_engine, event
@@ -126,6 +127,7 @@ from flask_dance.contrib.google import make_google_blueprint, google
 import schedule
 import time
 from sqlalchemy.pool import Pool
+from tokens.token import generar_nuevo_token_acceso_vencido
 
 from routes.api_externa_conexion.get_login import CUSTOM_LEVEL
 
@@ -507,7 +509,7 @@ def send_local_storage():
         client_ip = request.remote_addr  # Obtiene la IP del cliente
         data['client_ip'] = client_ip
         if access_token:
-            if Token.validar_expiracion_token(access_token=access_token):                        
+            if Token.validar_expiracion_token(access_token=access_token):                     
                 if correo_electronico:
                 #  app.logger.info(client_ip)
                     app.logger.info(correo_electronico)  
@@ -520,8 +522,11 @@ def send_local_storage():
             else:   
                  # Si el access_token no es válido, verifica el refresh_token
                 if refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
-                    # Generar nuevo access_token usando el refresh_token
-                    nuevo_access_token = create_access_token(identity=correo_electronico)
+                    
+                    decoded_token = decode_token(refresh_token)
+                    user_id = decoded_token.get("sub")  # "sub" contiene la identidad del usuario en JWT
+
+                    nuevo_access_token = generar_nuevo_token_acceso_vencido(user_id)
                     app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
                     return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
                 else:

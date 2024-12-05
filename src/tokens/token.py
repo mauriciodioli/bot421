@@ -18,7 +18,7 @@ token = Blueprint('token',__name__)
 
 SECRET_KEY = 'supersecreto'
 # Duración de los tokens
-TOKEN_DURATION = 1  # minutos
+TOKEN_DURATION = 3  # minutos
 REFRESH_TOKEN_DURATION = 5  # minutos
 
 def generar_token(user_id, valor, cuenta):
@@ -169,8 +169,11 @@ def validar_expiracion_token(access_token):
 
 def generar_nuevo_token_acceso(correo_electronico,numero_de_cuenta,tipo_de_acceso):
     return create_access_token(identity=correo_electronico, numero_de_cuenta=numero_de_cuenta, acceso=tipo_de_acceso, expires_delta=timedelta(minutes=TOKEN_DURATION))
-   
 
+def generar_nuevo_token_acceso_vencido(user_id):
+      expiry_timestamp = timedelta(minutes=TOKEN_DURATION)
+      return  create_access_token(identity=user_id, expires_delta=expiry_timestamp)
+    
 def decode_token(token):
     try:
         # Decodificar el token con la clave secreta
