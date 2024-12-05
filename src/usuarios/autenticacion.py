@@ -371,32 +371,3 @@ def generate_refresh_token(username):
     token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
     return token
 
-def procesar_login(access_token, refresh_token, selector, account):
-    app = current_app._get_current_object()
-    try:
-        # Decodificar el token y obtener el id del usuario
-        user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-        user = Usuario.query.get(user_id)
-        
-        if len(user.cuentas) > 0:
-            user_cuenta = user.cuentas[0].userCuenta
-        else:
-            user_cuenta = 'null'
-
-        # Si el usuario existe, crear una respuesta con redirección
-        if user:
-            resp = make_response(jsonify({
-                'redirect': 'home',
-                'cuenta': account,
-                'userCuenta': user_cuenta,
-                'selector': selector
-            }))
-            set_access_cookies(resp, access_token)
-            set_refresh_cookies(resp, refresh_token)
-            return resp
-    except jwt.ExpiredSignatureError:
-        print("El token ha expirado")
-        return redirect(url_for('autenticacion.index'))
-    except jwt.InvalidTokenError:
-        print("El token es inválido")
-    return render_template('error.html', error_message="Error de autenticación")
