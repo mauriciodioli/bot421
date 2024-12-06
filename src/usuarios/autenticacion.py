@@ -46,8 +46,8 @@ autenticacion = Blueprint("autenticacion", __name__)
 SECRET_KEY = 'supersecreto'
 
 # Duración de los tokens
-TOKEN_DURATION =   3 #  24 hs en minutos
-#TOKEN_DURATION =   1440 #  24 hs en minutos
+#TOKEN_DURATION =   3 #  24 hs en minutos
+TOKEN_DURATION =   1440 #  24 hs en minutos
 
 #REFRESH_TOKEN_DURATION = 16  # minutos
 REFRESH_TOKEN_DURATION = 43200  # minutos
