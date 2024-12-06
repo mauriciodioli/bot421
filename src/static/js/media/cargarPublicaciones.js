@@ -353,6 +353,7 @@
           data: formData,
           processData: false,
           contentType: false,
+          timeout: 30000,  // 30 segundos
           headers: {
             'Authorization': 'Bearer ' + access_token
           },

@@ -185,6 +185,8 @@ app.config['JWT_TOKEN_LOCATION'] = ['cookies']
 app.config['JWT_ACCESS_COOKIE_PATH'] = '/api/'
 app.config['JWT_REFRESH_COOKIE_PATH'] = '/refresh/'
 app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+app.config['MAX_CONTENT_LENGTH'] =  100 * 1024 * 1024  # 100 MB
+
 jwt = JWTManager(app)
 
 
