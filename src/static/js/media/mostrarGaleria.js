@@ -44,7 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
       contentType: false,
       headers: {
         'Authorization': 'Bearer ' + access_token
-      },success: function(response) {
+      },
+      success: function(response) {
         if (Array.isArray(response)) {
             var postAccordion = $('#postAccordion');
             postAccordion.empty();
