@@ -506,8 +506,8 @@ def media_publicaciones_cambiar_estado():
 
 
 
-@publicaciones.route('/social_imagenes_crear_publicacion', methods=['POST'])
-def social_imagenes_crear_publicacion():
+@publicaciones.route('/social_publicaciones_crear_publicacion', methods=['POST'])
+def social_publicaciones_crear_publicacion():
     try:
           # Obtener el encabezado Authorization
           # Obtener el encabezado Authorization
@@ -538,10 +538,11 @@ def social_imagenes_crear_publicacion():
             correo_electronico = request.form.get('correo_electronico')
             color_texto = request.form.get('color_texto')
             color_titulo = request.form.get('color_titulo')
+            layout = request.form.get('layout')
             
-            print("Título de la publicación:", post_title)
-            print("Texto de la publicación:", post_text)        
-            print("Finalizando social_imagenes_crear_publicacion")
+          #  print("Título de la publicación:", post_title)
+          #  print("Texto de la publicación:", post_text)        
+          #  print("Finalizando social_publicaciones_crear_publicacion")
             id_publicacion = guardarPublicacion(request, user_id)
             # Procesar archivos multimedia
        # Inicializa una lista para almacenar los datos de los archivos
@@ -589,24 +590,14 @@ def social_imagenes_crear_publicacion():
                     }
                     media_files.append(file_data)
 
-            # Crear un diccionario para la publicación
-            post_data = {
-                'publicacion_id': 1,  # Aquí deberías asignar un ID real de la publicación
-                'imagenes': [{'filepath': data['filepath']} for data in media_files if data['filepath'].endswith(('jpg', 'jpeg', 'png', 'gif'))],  # Filtra solo imágenes
-                'videos': [{'filepath': data['filepath']} for data in media_files if data['filepath'].endswith(('mp4', 'mov', 'avi'))],  # Filtra solo videos
-                'titulo': post_title,
-                'texto': post_text,
-                'descripcion': post_description,
-                'ambito': post_ambito,
-                'estado': post_estado,
-                'correo_electronico': correo_electronico,
-                'fecha_creacion': '2024-08-21',  # Aquí deberías usar la fecha de creación real
-                'color_texto': color_texto,
-                'color_titulo': color_titulo
-            }
-
-            # Devuelve los datos de la publicación dentro de un array
-            return jsonify([post_data]), 200
+              # Obtener todas las publicaciones del usuario
+            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id).all()
+           
+            # Armar el diccionario con todas las publicaciones, imágenes y videos
+            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
+            db.session.close()
+            #print(publicaciones_data)
+            return jsonify(publicaciones_data)
     except Exception as e:
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
