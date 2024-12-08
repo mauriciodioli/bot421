@@ -97,45 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         var firstImageUrl =  post.imagenes[0].filepath;
                        // console.log(firstImageUrl); // Verifica la respuesta del servidor
                         mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-    
-                        var modalImagesHtml = '';
-                        post.imagenes.forEach(function(image) {
-                            //var imageUrl = baseUrl + '/' + image.filepath;
-                            var imageUrl = image.filepath;
-                            //console.log(imageUrl); // Verifica la respuesta del servidor
-                    
-                            modalImagesHtml += `
-                                <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
-                                    <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
-                                    <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">X</button>
-                                </div>
-                                  <!-- Container to display selected images and videos -->
-                                  <input type="file" id="imagen-media_imagenes" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple onchange="previewSelectedMedia()">
-                                  <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
-                                   
-
-                            `;
-                        });
-    
-                        var modalHtml = `
-                            <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                                <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                    <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                    <div class="modal-image-grid">
-                                        ${modalImagesHtml}
-                                    </div>
-                                    <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                        <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
-                                            <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="agregarImagen(${post.publicacion_id})">
-                                            <i class="fas fa-folder"></i> Agregar Imagen o viedeo
-                                        </label>
-                                       <button class="btn-guardar-nueva-imagen-video" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-    
-                        accordionContent.append(modalHtml);
+          
                     }
     
                     var cardHtml = `
@@ -174,13 +136,101 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+//////////////////////////////////////////////////////////////////////////////////////////
+///////////////AQUI CARGA LAS IMAGENES EN EL MODAL DE LA PUBLICACIN POR ID////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+  function cargarPublicacion(id) {
+    const url = '/imagenesOperaciones-cargar-imagen-video-bucket';
+    const access_token = localStorage.getItem('access_token');
+    const layout = 'layout';
+
+    const formData = new FormData();
+    formData.append('id_publicacion', id);
+    formData.append('layout', layout);
+
+    const accessToken = 'Bearer ' + access_token;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': accessToken
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al obtener datos de la publicación');
+        }
+        return response.json();
+    })
+    .then(data => {
+      if (data && Array.isArray(data)) {
+          data.forEach(function(post) {
+              // Crear contenido dinámico para las imágenes del modal
+              let modalImagesHtml = '';
+  
+              if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                  post.imagenes.forEach(image => {
+                      const imageUrl = image.filepath;
+                      modalImagesHtml += `
+                          <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
+                              <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
+                              <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id})">X</button>
+                          </div>`;
+                  });
+              } else {
+                  modalImagesHtml = '<p>No hay imágenes disponibles para esta publicación.</p>';
+              }
+  
+              // Crear o actualizar el contenido del modal
+              const modalHtml = `
+                              <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                                  <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                                      <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                                      <div class="modal-image-grid">
+                                          ${modalImagesHtml}
+                                      </div>
+                                      
+                                      <div id="mediaContainer_creaPublicacion-${post.publicacion_id}" class="media-container_creaPublicacion"></div>
+                                      <div class="d-flex justify-content-between align-items-center mt-3">
+                                          <label for="imagen-media_imagenes-${post.publicacion_id}" class="btn btn-success me-2">
+                                              Agregar Imagen o Video
+                                              <input type="file" id="imagen-media_imagenes-${post.publicacion_id}" accept="image/*,video/*" multiple onchange="agregarImagen(${post.publicacion_id})" style="display:none;">
+                                           </label>
+                                          <button class="btn btn-primary" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
+                                      </div>
+                                  </div>
+                              </div>`;
+
+  
+              // Verificar si el modal ya existe
+              const existingModal = document.getElementById(`modal-${post.publicacion_id}`);
+              if (!existingModal) {
+                  // Agregar nuevo modal
+                  document.body.insertAdjacentHTML('beforeend', modalHtml);
+              } else {
+                  // Actualizar solo el contenido de las imágenes
+                  existingModal.querySelector('.modal-image-grid').innerHTML = modalImagesHtml;
+              }
+  
+              // Mostrar el modal correspondiente
+              document.getElementById(`modal-${post.publicacion_id}`).style.display = 'block';
+          });
+      } else {
+          console.error('Respuesta inesperada del servidor:', data);
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+}
 
 
 
   function previewSelectedMedia() {
     var fileInput = document.getElementById('imagen-media_imagenes');
     var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
-    mediaContainer.innerHTML = ''; // Limpiar contenido previo
+    //mediaContainer.innerHTML = ''; // Limpiar contenido previo
   
     var files = fileInput.files;
   
@@ -254,23 +304,51 @@ function cerrarModalImagenGrande() {
 
 
 function guardarNuevaImagenVideo(publicacion_id) {
+  var container = document.getElementById(`mediaContainer_creaPublicacion-${publicacion_id}`);
+  var images = container.querySelectorAll('img');  // O usa video si es el caso
   var formData = new FormData();
-  var fileInput = document.getElementById('imagen-media_imagenes');
-  formData.append('media', fileInput.files[0]); // Asegurarse de que solo envíes un archivo
 
-  $.ajax({
-      url: `/guardar_media/${publicacion_id}`, // Ruta de la API para guardar la imagen/video
-      type: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function(response) {
-          alert('Imagen o video guardado exitosamente.');
-          // Aquí puedes actualizar el contenido de la página o cerrar el modal
+  console.log("Archivos encontrados en el contenedor:", images);
+  
+  if (images.length === 0) {
+      alert('No hay imágenes o videos seleccionados.');
+      return;
+  }
+
+  // Enviar cada imagen como base64
+  images.forEach((image, index) => {
+    console.log(`Archivo ${index + 1}:`, image.src); // Para imágenes, mostramos el base64
+    // Si las imágenes son base64, las enviamos así
+    formData.append('imagenes', image.src);  // Este es un ejemplo, puedes agregar más lógica si es necesario
+  });
+
+  formData.append('layout', 'layout');
+  formData.append('selectedColor', 'red');
+  formData.append('publicacion_id', publicacion_id);
+
+  var access_token = localStorage.getItem('access_token');
+
+  fetch('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion', {
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${access_token}`
       },
-      error: function(xhr, status, error) {
-          alert('Error al guardar la imagen o video.');
+      body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      if (data.success) {
+          alert('¡Archivos cargados exitosamente!');
+          // Cerrar el modal
+          var modal = document.getElementById(`modal-${publicacion_id}`);
+          modal.style.display = 'none'; // Cerrar el modal
+      } else {
+          alert('Error al cargar los archivos: ' + (data.message || 'inténtalo de nuevo.'));
       }
+  })
+  .catch(error => {
+      console.error('Error en la carga:', error);
+      alert('Ocurrió un error al intentar cargar los archivos.');
   });
 }
 
@@ -422,7 +500,8 @@ function actualizarTarjeta(postId) {
  
   
   function abrirModal(id) {
-    $('#modal-' + id).show();
+    cargarPublicacion(id);
+   
   }
   
   function cerrarModal(id) {
@@ -576,53 +655,79 @@ function eliminarPublicacion(id) {
 /*********************************************************************/
 /*********************************************************************/
 function agregarImagen(postId) { 
-    // Obtener los elementos con IDs específicos de la publicación
-    var fileInput = document.getElementById('imagen-media_imagenes-' + postId);
-    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion-' + postId);
-    var uploadButton = document.getElementById('open-popup-media_imagenes-' + postId);
+  var fileInput = document.getElementById('imagen-media_imagenes-' + postId);
+  var mediaContainer = document.getElementById('mediaContainer_creaPublicacion-' + postId);
+  var files = fileInput.files;
 
-    var files = fileInput.files;
+  // Limpiar contenido previo en el contenedor
+  mediaContainer.innerHTML = '';
 
-    // Limpiar contenido previo en el contenedor
-    mediaContainer.innerHTML = '';
+  for (var i = 0; i < files.length; i++) {
+      var file = files[i];
+      var reader = new FileReader();
 
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        var reader = new FileReader();
+      reader.onload = (function(file) {
+          return function(e) {
+              // Crear un contenedor para la imagen y el botón
+              var imageContainer = document.createElement('div');
+              imageContainer.classList.add('image-wrapper');
+              imageContainer.style.position = 'relative';
+              imageContainer.style.display = 'inline-block';
+              imageContainer.style.margin = '10px';
 
-        reader.onload = (function(file) {
-            return function(e) {
-                var mediaElement;
+              var closeButton = document.createElement('button');
+              closeButton.classList.add('btn-close-image');
+              closeButton.textContent = 'X';
+              closeButton.style.position = 'absolute';
+              closeButton.style.top = '5px';
+              closeButton.style.rigt = '5px';
+              closeButton.style.backgroundColor = 'grey';
+              closeButton.style.color = 'white';
+              closeButton.style.border = 'none';
+              closeButton.style.borderRadius = '50%';
+              closeButton.style.padding = '5px';
+              closeButton.style.cursor = 'pointer';
+              closeButton.style.width = '30px';   // Ancho del botón
+              closeButton.style.height = '30px'; // Alto del botón
+              closeButton.style.display = 'flex'; // Para centrar el texto dentro del botón
+              closeButton.style.alignItems = 'center';
+              closeButton.style.justifyContent = 'center';
+              closeButton.onclick = function() {
+                  mediaContainer.removeChild(imageContainer);
+              };
 
-                if (file.type.startsWith('image/')) {
-                    // Si el archivo es una imagen
-                    mediaElement = document.createElement('img');
-                    mediaElement.src = e.target.result;
-                    mediaElement.style.maxWidth = '100%'; // Ajustar el tamaño si es necesario
-                } else if (file.type.startsWith('video/')) {
-                    // Si el archivo es un video
-                    mediaElement = document.createElement('video');
-                    mediaElement.src = e.target.result;
-                    mediaElement.controls = true;
-                    mediaElement.style.maxWidth = '100%'; // Ajustar el tamaño si es necesario
-                }
+              var mediaElement;
 
-                if (mediaElement) {
-                    mediaContainer.appendChild(mediaElement);
-                }
-            };
-        })(file);
+              if (file.type.startsWith('image/')) {
+                mediaElement = document.createElement('img');
+                mediaElement.src = e.target.result;
+                mediaElement.classList.add('img-fluid'); // Clase de Bootstrap para imágenes fluidas
+                mediaElement.style.maxHeight = '300px'; // Restringir la altura en línea si prefieres
+            
+            
+              } else if (file.type.startsWith('video/')) {
+                  mediaElement = document.createElement('video');
+                  mediaElement.src = e.target.result;
+                  mediaElement.controls = true;
+                  mediaElement.style.maxWidth = '100%';
+                  mediaElement.style.borderRadius = '5px';
+              }
 
-        reader.readAsDataURL(file);
-    }
+              if (mediaElement) {
+                  imageContainer.appendChild(mediaElement);
+                  imageContainer.appendChild(closeButton);
+                  mediaContainer.appendChild(imageContainer);
+              }
+          };
+      })(file);
 
-    // Control de estado del botón de subir
-    uploadButton.disabled = files.length === 0;
+      reader.readAsDataURL(file);
+  }
 
-    // Mostrar/ocultar el botón de cerrar previsualización
-    var closeButton = document.querySelector('.close-button-carga_publicaciones-' + postId);
-    closeButton.style.display = files.length > 0 ? 'block' : 'none';
+  // Restablecer el valor del campo para permitir volver a cargar el mismo archivo
+  fileInput.value = ''; 
 }
+
 
 
 
