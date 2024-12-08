@@ -482,6 +482,7 @@ body {
 
 
 
+
   .card-publicacion-admin {
     border: 5px solid transparent; /* Borde transparente por defecto */
     transition: border-color 0.3s;
@@ -755,3 +756,48 @@ body {
   justify-content: center;
 }
 
+
+
+
+
+
+.image-wrapper img {
+  max-width: 100%;  /* Ajusta la imagen al ancho del contenedor */
+  max-height: 300px; /* Restringe la altura máxima */
+  object-fit: contain; /* Asegura que la imagen no se recorte */
+  border-radius: 5px; /* Opcional: Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+}
+.media-container_creaPublicacion {
+  max-width: 100%; /* Ajusta el tamaño del contenedor */
+  max-height: 400px; /* Altura máxima permitida */
+  overflow-y: auto; /* Habilita el desplazamiento si es necesario */
+  display: flex; /* Opcional: para alinear las imágenes */
+  flex-wrap: wrap; /* Opcional: permite múltiples filas */
+  gap: 10px; /* Espaciado entre elementos */
+}
+
+
+.media-container_creaPublicacion {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.media-item {
+  position: relative;
+  width: 100px; /* Ancho fijo */
+  height: 100px; /* Altura fija */
+  overflow: hidden; /* Oculta el contenido que se salga del contenedor */
+  border-radius: 5px; /* Opcional: redondear bordes */
+}
+
+.media-item img,
+.media-item video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centrar la imagen */
+  width: auto;
+  height: 100%; /* Llenar el alto de la celda */
+}
