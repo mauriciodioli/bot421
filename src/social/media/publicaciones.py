@@ -569,11 +569,26 @@ def social_publicaciones_crear_publicacion():
                 file_ext = filename.rsplit('.', 1)[-1].lower()
                 if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
                     # Llama a la función de carga de imagen
-                    file_path = cargarImagen_crearPublicacion(app,request, file, filename, id_publicacion, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
+                    color_texto = request.form.get('color_texto')
+                    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
+                    file_path = cargarImagen_crearPublicacion(
+                                                    app, 
+                                                    request, 
+                                                    file, 
+                                                    filename, 
+                                                    id_publicacion, 
+                                                    color_texto, 
+                                                    titulo_publicacion, 
+                                                    userid=user_id, 
+                                                    index=index,
+                                                    size=request.form.get(f'mediaFileSize_{index}'))
+
+
                     app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
                 elif file_ext in {'mp4', 'avi', 'mov'}:
                     # Llama a la función de carga de video
-                    file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
+                    color_texto = request.form.get('color_texto')   
+                    file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion,color_texto, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
 
                 if file_path:
                     # Crea el diccionario del archivo solo si la carga fue exitosa
@@ -603,10 +618,8 @@ def social_publicaciones_crear_publicacion():
         return jsonify({'error': str(e)}), 500
         
 
-def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, userid=0, index=None, size=0):
-    color_texto = request.form.get('color_texto')
-    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-    size = size  # Tamaño original del archivo
+def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, userid=0, index=None, size=0):
+    size = size
     
     # Ruta para guardar la imagen comprimida temporalmente
     temp_file_path = os.path.join('static', 'uploads', f"{filename}")
@@ -631,37 +644,44 @@ def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, 
         
     except Exception as e:
         app.logger.error(f"Error al comprimir o cargar la imagen: {e}")
-        raise
+        raise  # Propagar el error
     
     # Guardar información en la base de datos
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
+    
+    try:
+        imagen_existente = db.session.query(Image).filter_by(filepath=temp_file_path).first()
+        if imagen_existente:
+            cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
+            return temp_file_path
+        else:
+            nueva_imagen = Image(
+                user_id=userid,
+                title=nombre_archivo,
+                description=descriptionImagen,
+                colorDescription=color_texto,
+                filepath=temp_file_path,
+                randomNumber=randomNumber_,
+                size=float(size)
+            )
+            db.session.add(nueva_imagen)
+            db.session.commit()
+            cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
+            return temp_file_path
+    except Exception as db_error:
+        app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
+        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.close()  # Asegurarse de cerrar la sesión incluso si ocurre un error
 
-    imagen_existente = db.session.query(Image).filter_by(filepath=temp_file_path).first()
-    if imagen_existente:
-        cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
-        return temp_file_path
-    else:
-        nueva_imagen = Image(
-            user_id=userid,
-            title=nombre_archivo,
-            description=descriptionImagen,
-            colorDescription=color_texto,
-            filepath=temp_file_path,
-            randomNumber=randomNumber_,
-            size=float(size)
-        )
-        db.session.add(nueva_imagen)
-        db.session.commit()
-        cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
-        db.session.close()
-        return temp_file_path
+        raise  # Propagar el error para que pueda ser manejado por capas superiores
+      
 
 
-def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,userid=0, index=None, size=0):   
+def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,color_texto,userid=0, index=None, size=0):   
     print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
-    color_texto = request.form.get('color_texto')   
+   
     file_path = os.path.join('static', 'uploads', filename)
     
     #file_path = file_path.replace('\\', '/')
@@ -1087,7 +1107,19 @@ def eliminar_desde_db_imagen_video(data, user_id):
     try:
         publicacion_id = data.get('publicacion_id')
         multimedia_id = data.get('id_imagen')
-        size_imagen = data.get('size_imagen')
+         
+        imagen = db.session.query(Image).filter_by(id=multimedia_id, user_id=user_id).first()
+        if imagen is None:
+             video = db.session.query(Video).filter_by(id=multimedia_id, user_id=user_id).first()
+        else:
+            video = None
+       
+        if video is None:
+            size_imagen = imagen.size
+        else:
+            size_imagen = video.size
+        
+       
 
         # Obtener los registros de medios relacionados en la tabla intermedia
         publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id, imagen_id=multimedia_id, size=float(size_imagen)).all()
