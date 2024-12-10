@@ -303,54 +303,9 @@ function cerrarModalImagenGrande() {
 }
 
 
-function guardarNuevaImagenVideo(publicacion_id) {
-  var container = document.getElementById(`mediaContainer_creaPublicacion-${publicacion_id}`);
-  var images = container.querySelectorAll('img');  // O usa video si es el caso
-  var formData = new FormData();
 
-  console.log("Archivos encontrados en el contenedor:", images);
-  
-  if (images.length === 0) {
-      alert('No hay imágenes o videos seleccionados.');
-      return;
-  }
 
-  // Enviar cada imagen como base64
-  images.forEach((image, index) => {
-    console.log(`Archivo ${index + 1}:`, image.src); // Para imágenes, mostramos el base64
-    // Si las imágenes son base64, las enviamos así
-    formData.append('imagenes', image.src);  // Este es un ejemplo, puedes agregar más lógica si es necesario
-  });
 
-  formData.append('layout', 'layout');
-  formData.append('selectedColor', 'red');
-  formData.append('publicacion_id', publicacion_id);
-
-  var access_token = localStorage.getItem('access_token');
-
-  fetch('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion', {
-      method: 'POST',
-      headers: {
-          'Authorization': `Bearer ${access_token}`
-      },
-      body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-      if (data.success) {
-          alert('¡Archivos cargados exitosamente!');
-          // Cerrar el modal
-          var modal = document.getElementById(`modal-${publicacion_id}`);
-          modal.style.display = 'none'; // Cerrar el modal
-      } else {
-          alert('Error al cargar los archivos: ' + (data.message || 'inténtalo de nuevo.'));
-      }
-  })
-  .catch(error => {
-      console.error('Error en la carga:', error);
-      alert('Ocurrió un error al intentar cargar los archivos.');
-  });
-}
 
 
 
@@ -654,80 +609,168 @@ function eliminarPublicacion(id) {
 /********************Agrega imagen o video****************************/
 /*********************************************************************/
 /*********************************************************************/
+const archivosPublicacion = new Map(); // Clave: publicacion_id, Valor: Array de archivos
+
 function agregarImagen(postId) { 
-  var fileInput = document.getElementById('imagen-media_imagenes-' + postId);
-  var mediaContainer = document.getElementById('mediaContainer_creaPublicacion-' + postId);
-  var files = fileInput.files;
+    const fileInput = document.getElementById('imagen-media_imagenes-' + postId);
+    const mediaContainer = document.getElementById('mediaContainer_creaPublicacion-' + postId);
+    const files = Array.from(fileInput.files);
 
-  // Limpiar contenido previo en el contenedor
-  mediaContainer.innerHTML = '';
+    // Obtener archivos ya almacenados para esta publicación
+    const storedFiles = archivosPublicacion.get(postId) || [];
 
-  for (var i = 0; i < files.length; i++) {
-      var file = files[i];
-      var reader = new FileReader();
+    // Crear un mapa de archivos basados en el nombre para evitar duplicados
+    const fileMap = {};
+    storedFiles.forEach(file => fileMap[file.name] = file);
+    files.forEach(file => fileMap[file.name] = file);
 
-      reader.onload = (function(file) {
-          return function(e) {
-              // Crear un contenedor para la imagen y el botón
-              var imageContainer = document.createElement('div');
-              imageContainer.classList.add('image-wrapper');
-              imageContainer.style.position = 'relative';
-              imageContainer.style.display = 'inline-block';
-              imageContainer.style.margin = '10px';
+    // Actualizar el array de archivos
+    const updatedFiles = Object.values(fileMap);
+    archivosPublicacion.set(postId, updatedFiles);
 
-              var closeButton = document.createElement('button');
-              closeButton.classList.add('btn-close-image');
-              closeButton.textContent = 'X';
-              closeButton.style.position = 'absolute';
-              closeButton.style.top = '5px';
-              closeButton.style.rigt = '5px';
-              closeButton.style.backgroundColor = 'grey';
-              closeButton.style.color = 'white';
-              closeButton.style.border = 'none';
-              closeButton.style.borderRadius = '50%';
-              closeButton.style.padding = '5px';
-              closeButton.style.cursor = 'pointer';
-              closeButton.style.width = '30px';   // Ancho del botón
-              closeButton.style.height = '30px'; // Alto del botón
-              closeButton.style.display = 'flex'; // Para centrar el texto dentro del botón
-              closeButton.style.alignItems = 'center';
-              closeButton.style.justifyContent = 'center';
-              closeButton.onclick = function() {
-                  mediaContainer.removeChild(imageContainer);
-              };
+    // Mostrar vista previa de los archivos
+    updatedFiles.forEach(file => {
+        // Evitar duplicar vistas previas ya existentes
+        if (mediaContainer.querySelector(`[data-filename="${file.name}"]`)) return;
 
-              var mediaElement;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-wrapper');
+            imageContainer.setAttribute('data-filename', file.name);
+            imageContainer.style.position = 'relative';
+            imageContainer.style.display = 'inline-block';
+            imageContainer.style.margin = '10px';
 
-              if (file.type.startsWith('image/')) {
+            const closeButton = document.createElement('button');
+            closeButton.classList.add('btn-close-image');
+            closeButton.textContent = 'X';
+            closeButton.style.position = 'absolute';
+            closeButton.style.top = '5px';
+            closeButton.style.right = '5px';
+            closeButton.style.backgroundColor = 'grey';
+            closeButton.style.color = 'white';
+            closeButton.style.border = 'none';
+            closeButton.style.borderRadius = '50%';
+            closeButton.style.padding = '5px';
+            closeButton.style.cursor = 'pointer';
+            closeButton.onclick = function() {
+                mediaContainer.removeChild(imageContainer);
+                const filteredFiles = archivosPublicacion.get(postId).filter(f => f.name !== file.name);
+                archivosPublicacion.set(postId, filteredFiles);
+            };
+
+            let mediaElement;
+            if (file.type.startsWith('image/')) {
                 mediaElement = document.createElement('img');
                 mediaElement.src = e.target.result;
-                mediaElement.classList.add('img-fluid'); // Clase de Bootstrap para imágenes fluidas
-                mediaElement.style.maxHeight = '300px'; // Restringir la altura en línea si prefieres
-            
-            
-              } else if (file.type.startsWith('video/')) {
-                  mediaElement = document.createElement('video');
-                  mediaElement.src = e.target.result;
-                  mediaElement.controls = true;
-                  mediaElement.style.maxWidth = '100%';
-                  mediaElement.style.borderRadius = '5px';
-              }
+                mediaElement.classList.add('img-fluid');
+                mediaElement.style.maxHeight = '300px';
+            } else if (file.type.startsWith('video/')) {
+                mediaElement = document.createElement('video');
+                mediaElement.src = e.target.result;
+                mediaElement.controls = true;
+                mediaElement.style.maxWidth = '100%';
+                mediaElement.style.borderRadius = '5px';
+            }
 
-              if (mediaElement) {
-                  imageContainer.appendChild(mediaElement);
-                  imageContainer.appendChild(closeButton);
-                  mediaContainer.appendChild(imageContainer);
-              }
-          };
-      })(file);
+            if (mediaElement) {
+                imageContainer.appendChild(mediaElement);
+                imageContainer.appendChild(closeButton);
+                mediaContainer.appendChild(imageContainer);
+            }
+        };
+        reader.readAsDataURL(file);
+    });
 
-      reader.readAsDataURL(file);
-  }
-
-  // Restablecer el valor del campo para permitir volver a cargar el mismo archivo
-  fileInput.value = ''; 
+    // Restablecer el valor del campo para permitir volver a cargar el mismo archivo
+    fileInput.value = '';
 }
 
+
+
+
+
+function guardarNuevaImagenVideo(publicacion_id) {
+  // Mostrar el splash de espera
+  var splash = document.getElementById('splashCarga');
+  if (splash) {
+      splash.style.display = 'block'; // Mostrar el splash
+  }
+
+  // Accede al Map para obtener los archivos asociados al publicacion_id
+  var archivos = archivosPublicacion.get(publicacion_id);
+
+  if (!archivos || archivos.length === 0) {
+      alert('No hay imágenes o videos seleccionados.');
+      return;
+  }
+
+  // Crea el objeto FormData para enviar los datos
+  var formData = new FormData();
+
+  // Agrega cada archivo al FormData
+  archivos.forEach((file, index) => {
+      console.log(`Archivo ${index + 1}:`, file.name); // Mostrar el nombre del archivo
+      formData.append(`mediaFile_${index}`, file);
+      formData.append(`mediaFileSize_${index}`, file.size);
+      formData.append(`mediaFileIndex_${index}`, index);
+      formData.append(`mediaFileName_${index}`, file.name);
+      formData.append(`mediaFileType_${index}`, file.type);
+      formData.append(`mediaFileLastModified_${index}`, file.lastModified);
+      formData.append(`mediaFileLastModifiedDate_${index}`, file.lastModifiedDate ? file.lastModifiedDate.toISOString() : 'No disponible');
+      formData.append(`mediaFileWebkitRelativePath_${index}`, file.webkitRelativePath || 'No disponible');
+  });
+
+  // Agrega los datos adicionales
+  formData.append('layout', 'layout');
+  formData.append('selectedColor', 'red');
+  formData.append('publicacion_id', publicacion_id);
+
+  // Obtén el token de acceso desde localStorage
+  var access_token = localStorage.getItem('access_token');
+
+  // Envía la solicitud AJAX con Fetch API
+  fetch('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion', {
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${access_token}`
+      },
+      body: formData
+  })  
+  .then(response => response.json())
+  .then(data => {
+      splash.style.display = 'none'; // Ocultar el splash al terminar
+      if (data.success) {
+          alert('¡Archivos cargados exitosamente!');
+          // Cerrar el modal
+          var modal = document.getElementById(`modal-${publicacion_id}`);
+          if (modal) {
+              var mediaContainer = modal.querySelector(`#mediaContainer_creaPublicacion-${publicacion_id}`);
+              if (mediaContainer) {
+                  mediaContainer.innerHTML = ''; // Limpiar el contenedor de imágenes/videos
+              }
+              modal.style.display = 'none'; // Cerrar el modal
+          }
+
+          // Limpiar los archivos almacenados en archivosPublicacion
+          archivosPublicacion.set(publicacion_id, []); // Limpiar el array de archivos para esta publicación
+      } else {
+          alert('Error al cargar los archivos: ' + (data.message || 'inténtalo de nuevo.'));
+      }
+  })
+  .catch(error => {
+      splash.style.display = 'none'; // Ocultar el splash al terminar
+      console.error('Error en la carga:', error);
+      alert('Ocurrió un error al intentar cargar los archivos.');
+  })
+  .finally(() => {
+      // Ocultar el splash de espera cuando la carga termine
+      if (splash) {
+          splash.style.display = 'none'; // Ocultar el splash
+      }
+  });
+}
 
 
 

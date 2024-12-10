@@ -9,10 +9,15 @@ import tokens.token as Token
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.usuario import Usuario
+from social.media.publicaciones import cargarImagen_crearPublicacion
+from social.media.publicaciones import cargarVideo_crearPublicacion
+
+
 from social.buckets.bucketGoog import upload_to_gcs
 from social.buckets.bucketGoog import (
     upload_to_gcs, delete_from_gcs, mostrar_from_gcs
 )
+from werkzeug.utils import secure_filename
 
 
 import logging
@@ -476,98 +481,82 @@ def armar_publicacion_bucket_para_modal(publicacion, layout):
 
 
 
-
-
 @imagenesOperaciones.route('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion', methods=['POST'])
 def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
     try:
-        if 'selectedColor' not in request.form:
-            return jsonify({'error': 'No se proporcionó el campo de selectedColor'}), 400
+        # Obtén los campos adicionales del formulario
+        selected_color = request.form.get('selectedColor')
+        publicacion_id = request.form.get('publicacion_id')
 
-        selectedColor = request.form['selectedColor']
-        
-        # Verificar si se proporcionaron imágenes
-        imagenes = request.form.getlist('imagenes')  # Esto debería traer las imágenes en base64
-        if imagenes:
-            for image_data in imagenes:
-                # Decodificar el base64
-                header, encoded = image_data.split(",", 1)
-                image_bytes = base64.b64decode(encoded)
+        # Verifica que los campos requeridos existan
+        if not selected_color or not publicacion_id:
+            return jsonify({'error': 'selectedColor o publicacion_id faltantes'}), 400
 
-                # Crear un archivo a partir de los bytes
-                imagen = BytesIO(image_bytes)
-                filename = secure_filename("image_from_base64.png")
-                new_path = os.path.join('static', 'uploads', filename)
-                with open(new_path, 'wb') as f:
-                    f.write(image_bytes)
-
-                # Subir el archivo a Google Cloud Storage
-                upload_to_gcs(new_path, filename)
-
-        # Verificar si los archivos 'imagen' o 'video' están en request.files
-        archivo = None
-        archivo_type = None
-        if 'imagen' in request.files:
-            archivo = request.files['imagen']
-            archivo_type = 'imagen'
-        elif 'video' in request.files:
-            archivo = request.files['video']
-            archivo_type = 'video'
-
-        if archivo:
-            # Lógica para manejar el archivo 'imagen' o 'video'
-            if archivo.filename == '':
-                return jsonify({'error': 'No se seleccionó ningún archivo'}), 400
-            
-            # Verificar si el archivo tiene un tipo aceptable
-            if archivo_type == 'imagen' and not allowed_image_file(archivo.filename):
-                return jsonify({'error': 'Formato de imagen no permitido'}), 400
-            if archivo_type == 'video' and not allowed_video_file(archivo.filename):
-                return jsonify({'error': 'Formato de video no permitido'}), 400
-
-            # Guardar archivo en la carpeta 'uploads'
-            archivo.save(os.path.join('static', 'uploads', archivo.filename))
-            # Subir a GCS
-            upload_to_gcs(os.path.join('static', 'uploads', archivo.filename), archivo.filename)
-
-        # Verificar y guardar en la base de datos
-        if 'nombreArchivo' not in request.form or 'descriptionImagen' not in request.form:
-            return jsonify({'error': 'Campos necesarios no proporcionados'}), 400
-        
-        nombre_archivo = request.form['nombreArchivo']
-        descriptionImagen = request.form['descriptionImagen']
-        randomNumber_ = request.form['randomNumber']
-        numeroAleatoreo = int(randomNumber_)
-
-        # Verificar si el token de acceso está presente
-        if 'Authorization' not in request.headers:
+        # Obtén el token del encabezado de autorización
+        authorization_header = request.headers.get('Authorization')
+        if not authorization_header:
             return jsonify({'error': 'Token de acceso no proporcionado'}), 401
 
-        authorization_header = request.headers['Authorization']
+        # Valida el token (agrega tu lógica aquí)
         parts = authorization_header.split()
         if len(parts) != 2 or parts[0].lower() != 'bearer':
             return jsonify({'error': 'Formato de token de acceso no válido'}), 401
 
         access_token = parts[1]
-        app = current_app._get_current_object()
-        userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        # Validar y decodificar el token
+        access_token = parts[1]
+        if Token.validar_expiracion_token(access_token=access_token):  
+            app = current_app._get_current_object()
+            decoded_token = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+            user_id = decoded_token.get("sub")
 
-        nueva_imagen = Image(
-            user_id=userid,
-            title=nombre_archivo,
-            description=descriptionImagen,
-            colorDescription=selectedColor,
-            filepath=new_path,
-            randomNumber=numeroAleatoreo,
-            size=archivo.content_length
-        )
-        db.session.add(nueva_imagen)
-        db.session.commit()
+            # Buscar la publicación específica
+            publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
+            id_publicacion = publicacion.id
+            titulo_publicacion = publicacion.titulo
+            if not publicacion:
+                return jsonify({'error': 'Publicación no encontrada'}), 404
 
-        return jsonify({'mensaje': 'Archivo cargado con éxito', 'nombreArchivo': nombre_archivo})
+
+          
+            
+            for key, file in request.files.items():
+            
+                # Asegúrate de que el archivo tenga un nombre seguro
+                filename = secure_filename(file.filename)
+                # Obtén el índice del archivo del formulario
+                index = request.form.get(f'mediaFileIndex_{key.split("_")[-1]}')
+                size=request.form.get(f'mediaFileSize_{index}')
+                # Decide si el archivo es una imagen o un video
+                
+                file_ext = filename.rsplit('.', 1)[-1].lower()
+                if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
+                    # Llama a la función de carga de imagen
+                    color_texto = request.form.get('selectedColor')
+                   
+                    file_path = cargarImagen_crearPublicacion(app,request, file, filename, id_publicacion,color_texto, titulo_publicacion, userid=user_id,index=index,size=size)
+                                                
+                    app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
+                elif file_ext in {'mp4', 'avi', 'mov'}:
+                    # Llama a la función de carga de video
+                    color_texto = request.form.get('color_texto')   
+                    file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, color_texto, userid=user_id, index=index,size=size)
+
+              
+            db.session.close()
+                #print(publicaciones_data)
+               
+            # Responde con éxito y devuelve la información de los archivos procesados
+      
+        return jsonify({'success': True, 'message': 'Archivos cargados exitosamente'}), 200
 
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # Manejo de errores
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+
+
 
 # Función para verificar si el archivo es una imagen
 def allowed_image_file(filename):

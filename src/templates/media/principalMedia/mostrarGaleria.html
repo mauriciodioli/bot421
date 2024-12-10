@@ -17,6 +17,30 @@
 {% block title %}Galeria imagenes{% endblock %}
 {% block content %}
 <div>
+
+ <!-- Splash -->
+    <div id="splashCarga" style="display: none;">
+        <div class="splash-contenido">
+            <div class="spinner"></div>
+            <div class="splash-texto">Loading, please wait...</div>
+        </div>
+    </div>
+
+    <div id="splashBaja" style="display: none;">
+      <div class="splash-contenido">
+          <div class="spinner"></div>
+          <div class="splash-texto">Deleting, please wait...</div>
+      </div>
+  </div>
+
+  <div id="splashModifica" style="display: none;">
+    <div class="splash-contenido">
+        <div class="spinner"></div>
+        <div class="splash-texto">Updating, please wait...</div>
+    </div>
+</div>
+
+
    <div class="container_galeria_imagenes">
         <div class="post-card">
             <div class="post-header">
@@ -68,119 +92,120 @@
   
 
 
-<!-- Modal for creating a post -->
-<div id="createPostModal_creaPublicacion" class="modal_creaPublicacion">
-  <div class="modal-content_creaPublicacion">
-    <span class="close_creaPublicacion text-black">&times;</span>
-    <h2 class="modal-title_creaPublicacion text-black">Crear Publicación</h2>
-    <form id="createPostForm_creaPublicacion" enctype="multipart/form-data">
-      
-      <!-- Input for the title of the publication -->
-      <div class="form-group_creaPublicacion">
-        <label for="postTitle_creaPublicacion" class="text-black">Título:</label>
-        <input type="text" id="postTitle_creaPublicacion" name="postTitle_creaPublicacion" placeholder="Escribe el título de la publicación" class="form-control" required>
-      </div>
-      
-      <!-- Textarea for the body of the post -->
-      <div class="form-group_creaPublicacion">
-        <label for="body" class="text-black">Texto:</label>
-        <textarea id="body" name="postText_creaPublicacion" placeholder="Escribe tu publicación" class="form-control" required></textarea>
-      </div>
-
-      <!-- Textarea for the description of the post -->
-      <div class="form-group_creaPublicacion">
-        <label for="description" class="text-black">Descripción:</label>
-        <textarea id="description" name="postDescription_creaPublicacion" placeholder="Escribe una descripción" class="form-control" required></textarea>
-      </div>
-
-      <!-- Combobox for estado -->
-      <div class="form-group_creaPublicacion">
-        <label for="postEstado_creaPublicacion" class="text-black">Estado:</label>
-        <select id="postEstado_creaPublicacion" name="postEstado_creaPublicacion" class="form-control" required>
-          <option value="" disabled selected>Selecciona un estado</option>
-          <option value="activo">Activo</option>
-          <option value="inactivo">Inactivo</option>
-          <option value="pendiente">Pendiente</option>
-        </select>
-      </div>
-
-      <!-- Combobox for ambitos -->
-      <div class="form-group_creaPublicacion">
-        <label for="postAmbito_creaPublicacion" class="text-black">Ámbito:</label>
-        <select id="postAmbito_creaPublicacion" name="postAmbito_creaPublicacion" class="form-control" required>
-          <option value="" disabled selected>Selecciona un ámbito</option>
-          <option value="social">Social</option>
-          <option value="educativo">Educativo</option>
-          <option value="laboral">Laboral</option>
-          <option value="Negocio">Negocio</option>
-          <option value="Deporte">Deporte</option>
-          <option value="Familia">Familia</option>
-          <option value="Amistad">Amistad</option>
-          <option value="Personal">Personal</option>
-          <option value="Salud">Salud</option>
-          <option value="Filantropia">Filantropia</option>
-          <option value="Naturaleza">Naturaleza</option>
-        </select>
-      </div>
-
-      <div class="input-group_creaPublicacion">
-        <!-- Hidden file input -->
-        <button class="close-button-media-principal-media-subir-imagenes-mostrarGaleria" onclick="closePreview()" style="display: none;">X</button>
-                    
-        <input type="file" id="fileInput_creaPublicacion" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple style="display: none;">
+  <!-- Modal for creating a post -->
+  <div id="createPostModal_creaPublicacion" class="modal_creaPublicacion">
+    <div class="modal-content_creaPublicacion">
+      <span class="close_creaPublicacion text-black">&times;</span>
+      <h2 class="modal-title_creaPublicacion text-black">Crear Publicación</h2>
+      <form id="createPostForm_creaPublicacion" enctype="multipart/form-data">
         
-        <!-- Button with media icon to trigger file input -->
-        <label for="fileInput_creaPublicacion" class="media-icon-button_creaPublicacion">
-          <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
-          <span class="text-black">Seleccionar archivo</span>
-        </label>
+        <!-- Input for the title of the publication -->
+        <div class="form-group_creaPublicacion">
+          <label for="postTitle_creaPublicacion" class="text-black">Título:</label>
+          <input type="text" id="postTitle_creaPublicacion" name="postTitle_creaPublicacion" placeholder="Escribe el título de la publicación" class="form-control" required>
+        </div>
+        
+        <!-- Textarea for the body of the post -->
+        <div class="form-group_creaPublicacion">
+          <label for="body" class="text-black">Texto:</label>
+          <textarea id="body" name="postText_creaPublicacion" placeholder="Escribe tu publicación" class="form-control" required></textarea>
+        </div>
 
-        <!-- Emoticon button -->
-        <button type="button" id="emoticonButton" data-bs-toggle="modal" data-bs-target="#emoticonModal" class="text-black">
-          <!-- Emoticon icon here -->
-        </button>
-      </div>
+        <!-- Textarea for the description of the post -->
+        <div class="form-group_creaPublicacion">
+          <label for="description" class="text-black">Descripción:</label>
+          <textarea id="description" name="postDescription_creaPublicacion" placeholder="Escribe una descripción" class="form-control" required></textarea>
+        </div>
 
-      <!-- Container to display selected images and videos -->
-      <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
-      
-      <button type="submit" class="btn btn-primary text-black">Enviar</button>
-    </form>
+        <!-- Combobox for estado -->
+        <div class="form-group_creaPublicacion">
+          <label for="postEstado_creaPublicacion" class="text-black">Estado:</label>
+          <select id="postEstado_creaPublicacion" name="postEstado_creaPublicacion" class="form-control" required>
+            <option value="" disabled selected>Selecciona un estado</option>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+            <option value="pendiente">Pendiente</option>
+          </select>
+        </div>
+
+        <!-- Combobox for ambitos -->
+        <div class="form-group_creaPublicacion">
+          <label for="postAmbito_creaPublicacion" class="text-black">Ámbito:</label>
+          <select id="postAmbito_creaPublicacion" name="postAmbito_creaPublicacion" class="form-control" required>
+            <option value="" disabled selected>Selecciona un ámbito</option>
+            <option value="social">Social</option>
+            <option value="educativo">Educativo</option>
+            <option value="laboral">Laboral</option>
+            <option value="Negocio">Negocio</option>
+            <option value="Deporte">Deporte</option>
+            <option value="Familia">Familia</option>
+            <option value="Amistad">Amistad</option>
+            <option value="Personal">Personal</option>
+            <option value="Salud">Salud</option>
+            <option value="Filantropia">Filantropia</option>
+            <option value="Naturaleza">Naturaleza</option>
+          </select>
+        </div>
+
+        <div class="input-group_creaPublicacion">
+          <!-- Hidden file input -->
+          <button class="close-button-media-principal-media-subir-imagenes-mostrarGaleria" onclick="closePreview()" style="display: none;">X</button>
+                      
+          <input type="file" id="fileInput_creaPublicacion" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple style="display: none;">
+          
+          <!-- Button with media icon to trigger file input -->
+          <label for="fileInput_creaPublicacion" class="media-icon-button_creaPublicacion">
+            <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+            <span class="text-black">Seleccionar archivo</span>
+          </label>
+
+          <!-- Emoticon button -->
+          <button type="button" id="emoticonButton" data-bs-toggle="modal" data-bs-target="#emoticonModal" class="text-black">
+            <!-- Emoticon icon here -->
+          </button>
+        </div>
+
+        <!-- Container to display selected images and videos -->
+        <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
+        
+        <button type="submit" class="btn btn-primary text-black">Enviar</button>
+      </form>
+    </div>
   </div>
-</div>
 
 
 
 
 
 
-<!-- Modal for viewing and editing an image -->
-<div id="imageModal_creaPublicacion" class="image-modal_creaPublicacion">
-  <div class="image-modal-content_creaPublicacion">
-    <span class="close-image_creaPublicacion">&times;</span>
-    <div class="cropper-container">
-      <img id="modalImage_creaPublicacion" src="" alt="Selected Image">
-    </div>    
-    <button id="saveCroppedImage">Guardar Imagen</button>
+  <!-- Modal for viewing and editing an image -->
+  <div id="imageModal_creaPublicacion" class="image-modal_creaPublicacion">
+    <div class="image-modal-content_creaPublicacion">
+      <span class="close-image_creaPublicacion">&times;</span>
+      <div class="cropper-container">
+        <img id="modalImage_creaPublicacion" src="" alt="Selected Image">
+      </div>    
+      <button id="saveCroppedImage">Guardar Imagen</button>
+    </div>
   </div>
-</div>
 
 
 
 
-<!-- Modal for selecting emoticons -->
-<div class="modal fade" id="emoticonModal" tabindex="-1" aria-labelledby="emoticonModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content-selected-emoticon" id="emoticonModal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" id="emoticonModalLabel">Selecciona un Emoticón</h5>
-              <button type="button" class="btn-close" id="custom-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" id="emoticonEmoticons">
-              <!-- Emoticons will be loaded here -->
-          </div>
-      </div>
-  </div>
+  <!-- Modal for selecting emoticons -->
+  <div class="modal fade" id="emoticonModal" tabindex="-1" aria-labelledby="emoticonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content-selected-emoticon" id="emoticonModal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emoticonModalLabel">Selecciona un Emoticón</h5>
+                <button type="button" class="btn-close" id="custom-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="emoticonEmoticons">
+                <!-- Emoticons will be loaded here -->
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -277,6 +302,7 @@
   </div>
 </div>
 
+ 
 
 <!-- ... Tu código HTML ... -->
 {% include 'layouts/layout_footer.html' %}
