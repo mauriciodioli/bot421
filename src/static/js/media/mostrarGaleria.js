@@ -23,6 +23,14 @@ document.addEventListener('DOMContentLoaded', function() {
    * 'Authorization'.
    */
   function muestraGaleriadePublicaciones() {
+
+    // Mostrar el splash de espera
+    var splash = document.querySelector('.splashCarga');
+
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
+
     var correo_electronico = localStorage.getItem('correo_electronico');
     var roll = localStorage.getItem('roll');
     var access_token = localStorage.getItem('access_token');
@@ -46,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'Authorization': 'Bearer ' + access_token
       },
       success: function(response) {
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+        
         if (Array.isArray(response)) {
             var postAccordion = $('#postAccordion');
             postAccordion.empty();
@@ -125,12 +135,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         } else {
-            console.log('Respuesta no válida');
+          splash.style.display = 'none'; // Ocultar el splash al terminar
+          console.log('Respuesta no válida');
         }
     },
     
     
       error: function(xhr, status, error) {
+        splash.style.display = 'none'; // Ocultar el splash al terminar        
         alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
       }
     });
@@ -140,6 +152,12 @@ document.addEventListener('DOMContentLoaded', function() {
 ///////////////AQUI CARGA LAS IMAGENES EN EL MODAL DE LA PUBLICACIN POR ID////////////////
 /////////////////////////////////////////////////////////////////////////////////////////
   function cargarPublicacion(id) {
+     // Mostrar el splash de espera
+    var splash = document.querySelector('.splashCarga');
+
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
     const url = '/imagenesOperaciones-cargar-imagen-video-bucket';
     const access_token = localStorage.getItem('access_token');
     const layout = 'layout';
@@ -166,6 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
       if (data && Array.isArray(data)) {
           data.forEach(function(post) {
+              splash.style.display = 'none'; // Ocultar el splash al terminar
+     
               // Crear contenido dinámico para las imágenes del modal
               let modalImagesHtml = '';
   
@@ -217,11 +237,13 @@ document.addEventListener('DOMContentLoaded', function() {
               document.getElementById(`modal-${post.publicacion_id}`).style.display = 'block';
           });
       } else {
+          splash.style.display = 'none'; // Ocultar el splash al terminar     
           console.error('Respuesta inesperada del servidor:', data);
       }
   })
   .catch(error => {
-      console.error('Error:', error);
+     splash.style.display = 'none'; // Ocultar el splash al terminar     
+     console.error('Error:', error);
   });
 }
 
@@ -561,6 +583,13 @@ function eliminarPublicacion(id) {
 }
 
 function eliminarPublicacion(id) {
+    // Mostrar el splash de espera
+    var splash = document.querySelector('.splashEliminar');
+
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
+    
     var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta publicación?');
     if (!confirmDelete) return;
 
@@ -587,6 +616,7 @@ function eliminarPublicacion(id) {
         },
         success: function(response) {
             if (response.success) {
+                splash.style.display = 'none'; // Ocultar el splash al terminar
                 alert('Publicación eliminada exitosamente.');
                 $('#card-' + id).remove(); // Eliminar la tarjeta de la interfaz
             } else {
@@ -594,6 +624,7 @@ function eliminarPublicacion(id) {
             }
         },
         error: function(xhr, status, error) {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
             alert("Error al eliminar la publicación. Inténtalo de nuevo.");
         }
     });
@@ -693,7 +724,8 @@ function agregarImagen(postId) {
 
 function guardarNuevaImagenVideo(publicacion_id) {
   // Mostrar el splash de espera
-  var splash = document.getElementById('splashCarga');
+  var splash = document.querySelector('.splashCarga');
+
   if (splash) {
       splash.style.display = 'block'; // Mostrar el splash
   }
@@ -959,6 +991,13 @@ function createPost() {
    * @param {string} filepath - Ruta de la imagen en el servidor.
    */
   function removeImageFromModal(id, index_imagen, title, size, filepath) {
+    // Mostrar el splash de espera
+    var splash = document.querySelector('.splashEliminar');
+
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
+    
     // Preguntar al usuario si está seguro de eliminar la imagen
     var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta imagen?');
     if (!confirmDelete) return;
@@ -993,6 +1032,8 @@ function createPost() {
         'Authorization': 'Bearer ' + access_token
       },
       success: function(response) {
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+    
         // Verificar si la eliminación fue exitosa
         if (response.success) {              
           // Eliminar la tarjeta de la interfaz
@@ -1003,7 +1044,8 @@ function createPost() {
         }
       },
       error: function(xhr, status, error) {
-        // Mostrar un mensaje de error
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+          // Mostrar un mensaje de error
         alert("Error al eliminar la imagen. Inténtalo de nuevo.");
       }
     });

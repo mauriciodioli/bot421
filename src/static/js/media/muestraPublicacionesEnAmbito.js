@@ -13,6 +13,15 @@ function formatDate(dateString) {
 
 
 function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
+     // Mostrar el splash de espera
+    var splash = document.querySelector('.splashCarga');
+
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
+
+    
+    
     var galeriaURL1 = '/media-muestraPublicacionesEnAmbitos-mostrar';
     var access_token = localStorage.getItem('access_token');
     
@@ -30,6 +39,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
         headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
 
         success: function (response) {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
                 postDisplayContainer.empty();
@@ -85,14 +95,17 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
                             $('#card-' + post.publicacion_id).css('margin-top', '100px');
                         }
                     } else {
+                        splash.style.display = 'none'; // Ocultar el splash al terminar
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }
                 });
             } else {
+                splash.style.display = 'none'; // Ocultar el splash al terminar
                 console.error("La respuesta no es un array. Recibido:", response);
             }
         },
         error: function () {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
             console.error('Error al cargar la galería de imágenes.');
         }
     });
