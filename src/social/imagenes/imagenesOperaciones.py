@@ -47,9 +47,6 @@ def subirVideo():
     publicacion_id = request.files('publicacion_id', default='publicacion_id', type=str)
     return render_template("media/principalMedia/subirVideo.html", publicacion_id=publicacion_id ,layout=layout)
 
-@imagenesOperaciones.route('/mostrarGaleria/')
-def mostrarGaleria():
-    return render_template("media/principalMedia/mostrarGaleria.html", layout = 'layout')
 
 @imagenesOperaciones.route('/cargarVideo', methods=['POST'])
 def cargarVideo():

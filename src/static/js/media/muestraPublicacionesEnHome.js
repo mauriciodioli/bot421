@@ -11,6 +11,15 @@ var galeriaURL = '/MostrarImages/';
 var galeriaURL1 = '/media-publicaciones-mostrar-home';
 var access_token = localStorage.getItem('access_token');
 var layout = 'layout'
+
+  // Mostrar el splash de espera
+  var splash = document.querySelector('.splashCarga');
+
+  if (splash) {
+      splash.style.display = 'block'; // Mostrar el splash
+  }
+
+
 $.ajax({
     type: 'POST',
     url: galeriaURL1,
@@ -20,6 +29,8 @@ $.ajax({
         layout:layout
     },
     success: function (response) {
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+         
         if (Array.isArray(response)) {
             var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
             postDisplayContainer.empty();
@@ -87,14 +98,20 @@ $.ajax({
 
                     postDisplayContainer.append(cardHtml);
                 } else {
+                    splash.style.display = 'none'; // Ocultar el splash al terminar
+         
                     console.log('Publicación sin contenido:', post.publicacion_id);
                 }
             });
         } else {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
+         
             console.error("La respuesta no es un array. Recibido:", response);
         }
     },
     error: function () {
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+         
         console.error('Error al cargar la galería de imágenes.');
     }
 });
@@ -152,8 +169,16 @@ function toggleTexto(postId) {
 
 
 function abrirPublicacionHome(publicacionId, layout) {
-    // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
-    debugger;
-    window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
+    // Mostrar el splash de espera
+    var splash = document.querySelector('.splashCarga');
+    
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
+
+    // Redirigir al usuario después de un pequeño retraso
+    setTimeout(() => {
+        window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
+    }, 500); // 500 ms de retraso para mostrar el splash
 }
 

@@ -347,6 +347,15 @@
       // Limpiar storedFiles después de enviar
       storedFiles = [];
   
+
+      // Mostrar el splash de espera
+      var splash = document.querySelector('.splashCarga');
+
+      if (splash) {
+          splash.style.display = 'block'; // Mostrar el splash
+      }
+
+
       setTimeout(function() { 
         $.ajax({
           // Configuración de la solicitud AJAX
@@ -360,6 +369,8 @@
             'Authorization': 'Bearer ' + access_token
           },
           success: function(response) {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
+            modal.style.display = "none";
             if (Array.isArray(response)) {
                 var postAccordion = $('#postAccordion');
                 postAccordion.empty();
@@ -477,10 +488,12 @@
                     });
                 });
             } else {
+                splash.style.display = 'none'; // Ocultar el splash al terminar
                 console.log('Respuesta no válida');
             }
         },     
           error: function(xhr, status, error) {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
             alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
           }
         });
