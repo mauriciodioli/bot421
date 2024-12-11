@@ -1102,53 +1102,45 @@ def social_imagenes_eliminar_Imagenes_Publicaciones():
     
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-def eliminar_desde_db_imagen_video(data, user_id):    
+def eliminar_desde_db_imagen_video(data, user_id):
     try:
         publicacion_id = data.get('publicacion_id')
-        multimedia_id = data.get('id_imagen')
-         
-        imagen = db.session.query(Image).filter_by(id=multimedia_id, user_id=user_id).first()
-        if imagen is None:
-             video = db.session.query(Video).filter_by(id=multimedia_id, user_id=user_id).first()
-        else:
-            video = None
-       
-        if video is None:
-            size_imagen = imagen.size
-        else:
-            size_imagen = video.size
-        
-       
+        id_imagen = data.get('id_imagen')
 
-        # Obtener los registros de medios relacionados en la tabla intermedia
-        publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id, imagen_id=multimedia_id, size=float(size_imagen)).all()
-        
-        if len(publicacion_imagen_video) < 2:    
-            # Eliminar la imagen asociada, si no está en otras publicaciones
-            imagen = db.session.query(Image).filter_by(id=multimedia_id, user_id=user_id, size=float(size_imagen)).first()
-            if imagen:
-                db.session.delete(imagen)
-                #eliminar_desde_archivo(imagen.title, user_id)
-                delete_from_gcs(imagen.title)
-                
-        
-            # Eliminar el video asociado, si no está en otras publicaciones
-            video = db.session.query(Video).filter_by(id=multimedia_id, user_id=user_id, size=float(imagen.size)).first()
-            if video:
-                db.session.delete(video)
-                #eliminar_desde_archivo(video.title, user_id)
-                delete_from_gcs(video.title)
-        
-        # Eliminar el registro de la tabla intermedia
+        if not publicacion_id or not id_imagen:
+            raise ValueError("publicacion_id o id_imagen no proporcionados.")
+
+        publicacion_id = int(publicacion_id)
+        multimedia_id = int(id_imagen) if str(id_imagen).isdigit() else id_imagen
+
+        # Buscar imagen o video
+        multimedia = (
+            db.session.query(Image).filter_by(id=multimedia_id, user_id=user_id).first()
+            or db.session.query(Video).filter_by(id=multimedia_id, user_id=user_id).first()
+        )
+
+        if not multimedia:
+            raise ValueError(f"Multimedia con ID {multimedia_id} no encontrado.")
+
+        # Obtener los registros de la tabla intermedia
+        publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(
+            publicacion_id=publicacion_id, imagen_id=multimedia_id
+        ).all()
+
+        if len(publicacion_imagen_video) < 2:
+            # Eliminar el registro multimedia si no está asociado a otras publicaciones
+            db.session.delete(multimedia)
+            delete_from_gcs(multimedia.title)
+
+        # Eliminar los registros de la tabla intermedia
         for item in publicacion_imagen_video:
             db.session.delete(item)
-        
-        # Commit de todas las eliminaciones en una sola transacción
+
         db.session.commit()
-        db.session.close()
         return True
 
     except Exception as e:
         db.session.rollback()
+        # Log del error para depuración
+        print(f"Error eliminando multimedia: {e}")
         raise e
