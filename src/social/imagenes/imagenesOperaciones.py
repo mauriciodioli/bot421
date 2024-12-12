@@ -30,6 +30,9 @@ import sys
 imagenesOperaciones = Blueprint("imagenesOperaciones", __name__)
 
 
+@imagenesOperaciones.route('/mostrarGaleria/')
+def mostrarGaleria():
+    return render_template("media/principalMedia/mostrarGaleria.html", layout = 'layout')
 
 @imagenesOperaciones.route('/subirImagen/', methods=['POST'])
 def subirImagen():

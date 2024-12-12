@@ -19,10 +19,6 @@ from models.modelMedia.TelegramNotifier import TelegramNotifier
 mostrarGaleria = Blueprint('mostrarGaleria',__name__)
 
 
-@imagenesOperaciones.route('/mostrarGaleria/')
-def mostrarGaleria():
-    return render_template("media/principalMedia/mostrarGaleria.html", layout = 'layout')
-
 
 @mostrarGaleria.route('/media_mostrargaleria_guardar_publicacon', methods=['POST'])
 def media_mostrargaleria_guardar_publicacon():
