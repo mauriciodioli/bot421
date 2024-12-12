@@ -173,6 +173,13 @@ function enviarDominioAJAX(domain) {
 var galeriaURL = '/MostrarImages/';
 var galeriaURL1 = '/media-publicaciones-mostrar-dpi';
 var access_token = 'access_dpi_token_usuario_anonimo';
+debugger;
+if ( !localStorage.getItem('dominio')) {
+    localStorage.setItem('dominio', domain);
+}
+if ( domain !== localStorage.getItem('dominio')) {
+    localStorage.setItem('dominio', domain);
+}
 
 $.ajax({
   type: 'POST',

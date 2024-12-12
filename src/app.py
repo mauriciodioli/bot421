@@ -516,11 +516,14 @@ def send_local_storage():
                 #  app.logger.info(client_ip)
                     app.logger.info(correo_electronico)  
                     redirect_route = 'home'
+                    return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
                 else:
                     app.logger.info('____INTENTO ENTRAR____')  
                     app.logger.info(client_ip)
                     app.logger.info(correo_electronico)  
                     redirect_route = 'index'  
+                     # Devuelve una respuesta JSON con la ruta
+                    return jsonify(success=True, ruta=redirect_route)
             else:   
                  # Si el access_token no es válido, verifica el refresh_token
                 if refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
@@ -539,21 +542,34 @@ def send_local_storage():
             app.logger.info('____INTENTO ENTRAR____') 
             app.logger.info(client_ip) 
             app.logger.info(correo_electronico)  
-            redirect_route = 'index'
-        
-        # Devuelve una respuesta JSON con la ruta
-        return jsonify(success=True, ruta=redirect_route)
+            redirect_route = 'index'        
+            # Devuelve una respuesta JSON con la ruta
+            return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
     else:
         return jsonify(success=False, message="No data received")
 
+@app.route("/index/<string:dominio>")
+def index(dominio):
+    return render_template('index.html', dominio=dominio)
+
+@app.route("/home/<string:dominio>")
+def home(dominio):
+    return render_template('home.html', dominio=dominio)
 
 @app.route("/")
-def entrada():  
+@app.route("/<string:pagina>/")
+@app.route("/<string:pagina>/<string:dominio>")
+def entrada(dominio=None, pagina=None):
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
     #crea_tablas_DB()
+    if not dominio:
+        dominio = "laboral"
+    if not pagina:
+        pagina = "index"
     
-    return  render_template("entrada.html")
+    return  render_template("entrada.html", dominio=dominio, pagina=pagina)
+
 
 @login_manager.user_loader
 def load_user(user_id):
