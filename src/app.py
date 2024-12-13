@@ -564,7 +564,7 @@ def entrada(dominio=None, pagina=None):
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
     #crea_tablas_DB()
     if not dominio:
-        dominio = "laboral"
+        dominio = "inicialDominio"
     if not pagina:
         pagina = "index"
     
