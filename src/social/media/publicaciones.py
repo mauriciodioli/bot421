@@ -158,6 +158,10 @@ def media_publicaciones_mostrar_dpi():
         authorization_header = request.headers.get('Authorization')
          # Obtener el valor de 'ambitos' enviado en el cuerpo de la solicitud
         ambitos = request.form.get('ambitos')  # Si el contenido es application/x-www-form-urlencoded
+        
+        if ambitos == 'inicialDominio':
+            ambitos = 'laboral'
+        
         layout = 'layout_dpi'
         if not authorization_header:
             return jsonify({'error': 'Token de acceso no proporcionado'}), 401

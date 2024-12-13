@@ -152,8 +152,18 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
 // Realizar la solicitud AJAX al cargar la página
 $(document).ready(function () {
   // Obtener el valor por defecto del input hidden cuando carga la página
-    var domain = document.getElementById('domain').value;
-
+    var storedDomain = localStorage.getItem('dominio');
+    let domain
+    if (storedDomain && storedDomain !== 'null') {
+        domain = storedDomain;
+    } else {
+        debugger;
+        let currentURL = window.location.href;
+        let partAfterIndex = currentURL.split("index/")[1];
+        console.log(partAfterIndex); // Mostrará "personal"
+        domain = partAfterIndex;
+        localStorage.setItem('dominio', domain); // Guarda 'personal' en el almacenamiento local con la clave 'dominio'
+    }
     enviarDominioAJAX(domain);
 });
 
@@ -173,13 +183,19 @@ function enviarDominioAJAX(domain) {
 var galeriaURL = '/MostrarImages/';
 var galeriaURL1 = '/media-publicaciones-mostrar-dpi';
 var access_token = 'access_dpi_token_usuario_anonimo';
-debugger;
+
 if ( !localStorage.getItem('dominio')) {
+    debugger;
     localStorage.setItem('dominio', domain);
 }
-if ( domain !== localStorage.getItem('dominio')) {
+
+if ( domain !=='inicialDominio') {
+    debugger
     localStorage.setItem('dominio', domain);
 }
+
+
+domain = localStorage.getItem('dominio');
 
 $.ajax({
   type: 'POST',
