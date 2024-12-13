@@ -152,6 +152,7 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
 // Realizar la solicitud AJAX al cargar la página
 $(document).ready(function () {
   // Obtener el valor por defecto del input hidden cuando carga la página
+    debugger;
     var storedDomain = localStorage.getItem('dominio');
     let domain
     if (storedDomain && storedDomain !== 'null') {
@@ -160,6 +161,10 @@ $(document).ready(function () {
         debugger;
         let currentURL = window.location.href;
         let partAfterIndex = currentURL.split("index/")[1];
+        // Si la parte después de "index/" es undefined o vacía, asigna 'laboral'
+        if (typeof partAfterIndex === 'undefined' || partAfterIndex === '') {
+            partAfterIndex = 'laboral';
+        }
         console.log(partAfterIndex); // Mostrará "personal"
         domain = partAfterIndex;
         localStorage.setItem('dominio', domain); // Guarda 'personal' en el almacenamiento local con la clave 'dominio'
@@ -228,7 +233,7 @@ function enviarDominioAJAX(domain) {
 var galeriaURL = '/MostrarImages/';
 var galeriaURL1 = '/media-publicaciones-mostrar-dpi';
 var access_token = 'access_dpi_token_usuario_anonimo';
-
+debugger;
 if ( !localStorage.getItem('dominio')) {
     
     localStorage.setItem('dominio', domain);
