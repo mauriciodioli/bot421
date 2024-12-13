@@ -176,8 +176,53 @@ function formatDate(dateString) {
   return date.toLocaleDateString(undefined, options);
 }
 
-function enviarDominioAJAX(domain) {
 
+
+// Función para verificar si la sección es visible en la ventana
+function isSectionVisible(section) {
+    const sectionRect = section.getBoundingClientRect();
+    return (
+        sectionRect.top < (window.innerHeight || document.documentElement.clientHeight) &&
+        sectionRect.bottom > 0
+    );
+}
+
+// Función para mostrar/ocultar el splash
+function toggleSplash(section, splashElement) {
+    const splashHeight = 80;  // Altura fija del splash en píxeles
+
+    if (isSectionVisible(section)) {
+        splashElement.style.display = "flex"; // Mostrar el splash
+        splashElement.style.position = "relative"; // Usamos relative para que se acomode sin afectar el flujo
+        splashElement.style.height = `${splashHeight}px`; // Fijar la altura del splash
+        splashElement.style.top = "0";  // Colocar el splash al principio de la sección
+        splashElement.style.left = "0"; // Asegurarse de que ocupe todo el ancho de la sección
+        splashElement.style.width = "100%"; // Asegurarse de que solo ocupe el ancho de la sección
+        splashElement.style.backgroundColor = "transparent"; // Fondo transparente
+
+        // Asegurarse de que el splash ocupe un espacio adecuado en la página
+        section.style.paddingTop = `${splashHeight + 20}px`;  // Dejar espacio suficiente arriba de la sección
+        section.style.paddingBottom = "20px";  // Añadir un pequeño espacio debajo si lo necesitas
+    } else {
+        splashElement.style.display = "none"; // Ocultar el splash
+        // Restablecer el padding de la sección cuando el splash no esté visible
+        section.style.paddingTop = "0";
+        section.style.paddingBottom = "0";
+    }
+}
+
+function enviarDominioAJAX(domain) {
+    // Elementos relevantes
+    const splash = document.querySelector('.splashCarga');
+    const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
+
+    if (!splash || !targetSection) {
+        console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
+        return;
+    }
+
+    // Mostrar/ocultar splash según la visibilidad de la sección
+    toggleSplash(targetSection, splash);
 
 // Ruta al archivo con la galería de imágenes
 var galeriaURL = '/MostrarImages/';
@@ -185,12 +230,12 @@ var galeriaURL1 = '/media-publicaciones-mostrar-dpi';
 var access_token = 'access_dpi_token_usuario_anonimo';
 
 if ( !localStorage.getItem('dominio')) {
-    debugger;
+    
     localStorage.setItem('dominio', domain);
 }
 
 if ( domain !=='inicialDominio') {
-    debugger
+    
     localStorage.setItem('dominio', domain);
 }
 
@@ -204,6 +249,8 @@ $.ajax({
   headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
   data: { ambitos: domain }, // Enviar el dominio como parte de los datos
   success: function (response) {
+    debugger;
+    splash.style.display = 'none'; // Ocultar el splash al terminar
     if (Array.isArray(response)) {
         var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
         postDisplayContainer.empty();
@@ -270,14 +317,17 @@ $.ajax({
 
                 postDisplayContainer.append(cardHtml);
             } else {
+                splash.style.display = 'none'; // Ocultar el splash al terminar
                 console.log('Publicación sin contenido:', post.publicacion_id);
             }
         });
     } else {
+        splash.style.display = 'none'; // Ocultar el splash al terminar
         console.error("La respuesta no es un array. Recibido:", response);
     }
 },
 error: function () {
+    splash.style.display = 'none'; // Ocultar el splash al terminar
     console.error('Error al cargar la galería de imágenes.');
 }
 });
