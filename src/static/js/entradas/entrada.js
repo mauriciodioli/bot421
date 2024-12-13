@@ -51,9 +51,21 @@ $(document).ready(function() {
             success: function(data) {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
                 if (data.success) {
-                    console.log('data.ruta',data.ruta)
+                 //   console.log('Ruta y dominio antes de redirigir:', `${data.ruta}/${data.dominio}`); // Muestra la ruta antes de redirigir
+
+                    let currentURL = window.location.href; // Obtén la URL actual
+                    let rutaDeLogeo = `${data.ruta}/${data.dominio}`;
                    
-                    window.location.href = `${data.ruta}/${data.dominio}`;  // Redirige a `index/personal`
+                    // Verificar si la URL actual ya contiene '/index', si es así, quitar el 'index/' de la rutaDeLogeo
+                    if (currentURL.includes('/index/')) {
+                        // Si la URL actual ya tiene 'index/', eliminarlo de la rutaDeLogeo                      
+                        window.location.href = `${window.location.origin}/${rutaDeLogeo}`;  // Redirección
+                    }else{
+                        window.location.href = rutaDeLogeo;  // Redirección                
+                    }
+                
+                 
+                   
                 } else {
                     splash.style.display = 'none'; // Ocultar el splash al terminar
                     console.error("Error enviando los datos de localStorage");
