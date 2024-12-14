@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    
     <!-- El contenido principal va aquí... -->
 
     <!-- Layout en la parte inferior -->
@@ -18,9 +19,37 @@
         <button id="closeLayout" class="btn btn-sm">
              <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">           
         </button>
-        <button class="btn  btn-sm close-layout-btn">
-            <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
-        </button>
+        <div class="dropdown-menu-container">
+            <button class="btn btn-sm close-layout-btn">
+                <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" id='social' href="#">Social</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" id='educativo' href="#">Educational</a></li>
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='laboral' href="#">Work</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Negocio' href="#">Business</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Artes' href="#">Creations</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Deporte' href="#">Sports</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Familia' href="#">Family</a></li>                          
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" id='Amistad' href="#">Friendship</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Personal' href="#">Personal</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Salud' href="#">Health</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Filantropia' href="#">Philanthropy</a></li>                          
+                <li><hr class="dropdown-divider"></li> 
+                <li><a class="dropdown-item" id='Naturaleza' href="#">Nature</a></li>
+            </ul>
+            
+        </div>
         <button class="btn  btn-sm close-layout-btn">
             <img src="{{ url_for('static', filename='icons/edit-icon-png-3598.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
         </button>           
@@ -44,27 +73,22 @@
 </div>
     <!-- Scripts al final del body -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='js/static/js/layout_bajo.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            // No necesitamos mostrarlo después de 1 segundo porque ya está visible
+        $(document).ready(function () {
+            // Manejador de eventos para cada item del menú
+            $('.dropdown-item').on('click', function (e) {
+                // Evitar el comportamiento por defecto del enlace
+                e.preventDefault();
         
-            // Función para cerrar el layout al hacer clic en el botón de cerrar
-            $('#closeLayout').on('click', function() {
-                $('#bottomLayout').addClass('hidden');
-            });
-        
-            // Función para reabrir el layout al hacer scroll
-            $(window).on('scroll', function() {
-                var scrollPos = $(window).scrollTop();
-                if (scrollPos > 100) {  // Si haces scroll más de 100px, el layout permanece visible
-                    $('#bottomLayout').removeClass('hidden');
-                } else {
-                    $('#bottomLayout').addClass('hidden');
-                }
+                // Obtener el id del ítem seleccionado
+                var selectedItem = $(this).attr('id');
+                localStorage.setItem('dominio', selectedItem);
+                // Llamar a la función cargarPublicaciones y pasar el valor seleccionado
+                cargarPublicaciones(selectedItem, 'layout');
             });
         });
-        
-        
     </script>
     
 </body>

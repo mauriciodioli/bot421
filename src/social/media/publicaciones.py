@@ -89,6 +89,7 @@ def media_publicaciones_mostrar_home():
     try:
         
         layout = request.form.get('layout')
+        ambito = request.form.get('ambito')
         
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
@@ -136,7 +137,7 @@ def media_publicaciones_mostrar_home():
 
             else:
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                publicaciones = db.session.query(Publicacion).filter_by(estado='activo').all()
+                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito).all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()
