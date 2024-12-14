@@ -19,11 +19,11 @@
         <button id="closeLayout" class="btn btn-sm">
              <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">           
         </button>
-        <div class="dropdown-menu-container">
+        <div class="custom-dropdown-menu-container">
             <button class="btn btn-sm close-layout-btn">
                 <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
             </button>
-            <ul class="dropdown-menu">
+            <ul class="custom-dropdown-menu">
                 <li><a class="dropdown-item" id='social' href="#">Social</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item" id='educativo' href="#">Educational</a></li>
@@ -78,17 +78,26 @@
     <script>
         $(document).ready(function () {
             // Manejador de eventos para cada item del menú
-            $('.dropdown-item').on('click', function (e) {
+            $('.custom-dropdown-menu .dropdown-item').on('click', function (e) {
                 // Evitar el comportamiento por defecto del enlace
                 e.preventDefault();
         
                 // Obtener el id del ítem seleccionado
                 var selectedItem = $(this).attr('id');
+                
+                // Guardar el valor del ítem seleccionado en localStorage (opcional)
                 localStorage.setItem('dominio', selectedItem);
+                
                 // Llamar a la función cargarPublicaciones y pasar el valor seleccionado
                 cargarPublicaciones(selectedItem, 'layout');
             });
+        
+            // Mostrar el menú al hacer clic en el botón
+            $('.close-layout-btn').on('click', function () {
+                $('.custom-dropdown-menu').toggle(); // Mostrar u ocultar el menú
+            });
         });
+        
     </script>
     
 </body>
