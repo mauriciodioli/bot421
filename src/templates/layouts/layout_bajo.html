@@ -73,32 +73,9 @@
 </div>
     <!-- Scripts al final del body -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ url_for('static', filename='js/static/js/layout_bajo.js') }}"></script>
     <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
-    <script>
-        $(document).ready(function () {
-            // Manejador de eventos para cada item del menú
-            $('.custom-dropdown-menu .dropdown-item').on('click', function (e) {
-                // Evitar el comportamiento por defecto del enlace
-                e.preventDefault();
-        
-                // Obtener el id del ítem seleccionado
-                var selectedItem = $(this).attr('id');
-                
-                // Guardar el valor del ítem seleccionado en localStorage (opcional)
-                localStorage.setItem('dominio', selectedItem);
-                
-                // Llamar a la función cargarPublicaciones y pasar el valor seleccionado
-                cargarPublicaciones(selectedItem, 'layout');
-            });
-        
-            // Mostrar el menú al hacer clic en el botón
-            $('.close-layout-btn').on('click', function () {
-                $('.custom-dropdown-menu').toggle(); // Mostrar u ocultar el menú
-            });
-        });
-        
-    </script>
+    <script src="{{ url_for('static', filename='js/layouts/layout_bajo.js') }}"></script>   
+    
     
 </body>
 </html>
