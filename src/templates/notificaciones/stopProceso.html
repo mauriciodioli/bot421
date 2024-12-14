@@ -7,7 +7,10 @@
 {% endif %}
 
 {% if layout == 'layoutConexBroker' %}
-   {% extends 'layouts/layoutConexBroker.html' %}    
+   {% extends 'layouts/layoutConexBroker.html' %}   
+   
+{% elif layout == 'layout_administracion' %}
+   {% extends 'layouts/layout_administracion.html' %}
 {% endif %}
 {% block content %}
 

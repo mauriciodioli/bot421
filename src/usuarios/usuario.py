@@ -35,7 +35,7 @@ def usuarios():
       if request.method == 'GET': 
            usuarios = db.session.query(Usuario).all()
            db.session.close()
-           return render_template("/usuarios/usuarios.html",datos = usuarios)
+           return render_template("/usuarios/usuarios.html",datos = usuarios, layout = 'layout_administracion')
    except:
        print('no hay usuarios') 
    return 'problemas con la base de datos'

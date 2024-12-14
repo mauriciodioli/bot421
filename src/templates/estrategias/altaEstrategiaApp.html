@@ -8,7 +8,12 @@
 {% endfor %}
 {% endif %}
 {% endwith %}
-{% extends 'layouts/layout.html'%}
+{% if layout == 'layout_administracion' %} 
+    {% extends 'layouts/layout_administracion.html' %}    
+{% endif %}
+{% if layout == 'layout' %} 
+    {% extends 'layouts/layout.html' %}    
+{% endif %}
 {% block content%}
 
   

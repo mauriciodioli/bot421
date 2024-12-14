@@ -37,7 +37,7 @@ def abm_estrategias_mostrar():
          total = len(todas_estrategias)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          
-         return render_template("estrategias/ABMestrategias.html", datos=todas_estrategias)
+         return render_template("estrategias/ABMestrategias.html", datos=todas_estrategias,layout="layout_administracion")
     except:        
         return render_template("notificaciones/noPoseeDatos.html" )
     
@@ -52,7 +52,7 @@ def abm_estrategias_mostrar_procesos():
          total = len(todas_estrategias)  # Obtener el total de instancias de TriggerEstrategia
          db.session.close()
          
-         return render_template("estrategias/altaEstrategiaApp.html", datos=todas_estrategias)
+         return render_template("estrategias/altaEstrategiaApp.html", datos=todas_estrategias, layout="layout_administracion")
     except:        
         return render_template("notificaciones/noPoseeDatos.html" )     
 

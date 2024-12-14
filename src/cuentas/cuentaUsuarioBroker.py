@@ -68,7 +68,7 @@ def cuentas_Usuario_Broker():
       if request.method == 'GET': 
            cuentasBroker = db.session.query(Cuenta).all()
            db.session.close()
-           return render_template("/cuentas/cuntasUsuariosBrokers.html", layout = 'layout', datos = cuentasBroker)
+           return render_template("/cuentas/cuntasUsuariosBrokers.html", layout = 'layout_administracion', datos = cuentasBroker)
    except:
        print('no hay usuarios') 
    return 'problemas con la base de datos'

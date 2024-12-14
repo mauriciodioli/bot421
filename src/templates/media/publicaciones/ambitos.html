@@ -1,0 +1,46 @@
+{% extends "layouts/layout.html" %}
+{% block content %}
+
+    <h1>Gestión de Ambitos</h1>
+
+    <!-- Formulario para crear o actualizar ambitos -->
+    <form id="ambito-form">
+        <input type="hidden" id="ambito-id" value="">
+
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required><br>
+
+        <label for="descripcion">Descripción:</label>
+        <input type="text" id="descripcion"><br>
+
+        <label for="idioma">Idioma:</label>
+        <input type="text" id="idioma"><br>
+
+        <label for="valor">Valor:</label>
+        <input type="text" id="valor"><br>
+
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado"><br>
+
+        <label for="user_id">User ID:</label>
+        <input type="text" id="user_id" required><br>
+
+        <button type="button" onclick="crearAmbito()">Crear Ambito</button>
+        <button type="button" onclick="actualizarAmbito()">Actualizar Ambito</button>
+    </form>
+
+    <h2>Lista de Ambitos</h2>
+    <ul id="ambitos-list"></ul>
+    {% include 'layouts/layout_footer.html' %}
+    <!-- Incluye el archivo JavaScript --> 
+    <script src="{{ url_for('static', filename='js/media/publicaciones/ambitos.js') }}"></script>
+    <script>
+        var publicacionId = '{{ publicacion_id }}';
+        var userId = '{{ user_id }}'; 
+        var ambito = '{{ ambito }}'; 
+        var layout = '{{ layout }}'; 
+        accionAmbito(accion);
+     
+    </script>
+    
+    {% endblock %}

@@ -17,6 +17,9 @@
 {% elif layout == 'layout_signal' %}
     {% extends 'layouts/layout_signal.html' %}
 {% endif %}
+{% if layout == 'layout_administracion' %}
+    {% extends 'layouts/layout_administracion.html' %}    
+{% endif %}
 
 {% block content%}
 
