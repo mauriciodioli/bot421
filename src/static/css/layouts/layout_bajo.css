@@ -122,17 +122,12 @@
 
 
 
-
-
-
-
-
-/* Contenedor del menú */
-.dropdown-menu-container {
+/* Contenedor del menú personalizado */
+.custom-dropdown-menu-container {
     position: relative;
     display: inline-block;
     justify-content: center; /* Centra horizontalmente */
-    align-items: center; /* Centra verticalmente, si es necesario */    
+    align-items: center; /* Centra verticalmente, si es necesario */
 }
 
 /* Botón */
@@ -145,8 +140,8 @@
     z-index: 1;
 }
 
-/* Menú desplegable */
-.dropdown-menu {
+/* Menú desplegable personalizado */
+.custom-dropdown-menu {
     position: absolute;
     bottom: 40px; /* Ajusta según el tamaño del botón */
     left: 0;
@@ -165,47 +160,46 @@
     width: 220px; /* Ancho fijo para evitar desbordes */
 }
 
-/* Elementos del menú */
-.dropdown-menu li {
+/* Elementos del menú personalizado */
+.custom-dropdown-menu li {
     padding: 6px 12px;
     text-align: left;
 }
 
-.dropdown-menu li a {
+.custom-dropdown-menu li a {
     text-decoration: none;
     color: #333;
     font-size: 14px;
     display: block;
 }
 
-.dropdown-menu li:hover {
+.custom-dropdown-menu li:hover {
     background-color: #e6e6e6;
 }
 
-/* Línea divisoria */
-.dropdown-divider {
+/* Línea divisoria personalizada */
+.custom-dropdown-divider {
     margin: 5px 0;
     border-color: #ddd;
 }
 
 /* Mostrar el menú al pasar el mouse */
-.dropdown-menu-container:hover .dropdown-menu {
+.custom-dropdown-menu-container:hover .custom-dropdown-menu {
     display: flex; /* Muestra el menú */
 }
 
 /* Evitar que el menú se oculte al mover el mouse hacia los submenús */
-.dropdown-menu {
+.custom-dropdown-menu {
     pointer-events: auto; /* Permite interactuar con el menú */
 }
 
-.dropdown-menu-container:hover .close-layout-btn {
+.custom-dropdown-menu-container:hover .close-layout-btn {
     z-index: 1001; /* Asegura que el botón no se superponga */
 }
 
-
 /* Ajustes generales */
-.dropdown-menu {
+.custom-dropdown-menu {
     max-height: 300px;
     overflow-y: auto;
     width: 220px; /* Ancho fijo para pantallas más grandes */
-}
+}  
