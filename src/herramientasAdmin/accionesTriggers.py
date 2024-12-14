@@ -27,7 +27,7 @@ accionesTriggers = Blueprint('accionesTriggers',__name__)
 
 @accionesTriggers.route("/herramAdmin_accionesTrigger_actualizaHorario/")
 def herramAdmin_accionesTrigger_actualizaHorario(): 
-    return render_template('automatizacion/actualizaHorarioShedule.html', layout='layout')
+    return render_template('automatizacion/actualizaHorarioShedule.html', layout='layout_administracion')
 
 @accionesTriggers.route('/actualizaHorario', methods=['GET', 'POST'])
 def actualiza_horario():
@@ -58,7 +58,7 @@ def actualiza_horario():
         
         return response
     
-    return render_template('automatizacion/actualizaHorarioShedule.html', layout='layout')
+    return render_template('automatizacion/actualizaHorarioShedule.html', layout='layout_administracion')
 
 
 @accionesTriggers.route('/get_server_time')

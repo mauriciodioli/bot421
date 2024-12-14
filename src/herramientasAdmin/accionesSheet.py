@@ -37,7 +37,7 @@ def herramientasSheet_accionesSheet_detener():
     get.precios_data.clear()
     
     get.autenticado_sheet = False
-    return render_template('notificaciones/stopProceso.html', layout='layout')
+    return render_template('notificaciones/stopProceso.html', layout='layout_administracion')
 
 @accionesSheet.route('/herramientasSheet_accionesSheet_iniciar')
 def herramientasSheet_accionesSheet_iniciar():
@@ -51,12 +51,12 @@ def herramientasSheet_accionesSheet_iniciar():
           #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRUEBA,'valores','argentina')
     except KeyError:
         print(f"No se pudo terminar la conexión para la cuenta {get.CUENTA_ACTUALIZAR_SHEET}.")
-        return render_template('notificaciones/noPoseeDatos.html',layout = 'layout')
-    return render_template('notificaciones/procesoIniciado.html', layout = 'layout')
+        return render_template('notificaciones/noPoseeDatos.html',layout = 'layout_administracion')
+    return render_template('notificaciones/procesoIniciado.html', layout = 'layout_administracion')
 
 @accionesSheet.route('/herramientasSheet_accionesSheet_controlMDH')
 def herramientasSheet_accionesSheet_controlMDH():
-    return render_template('notificaciones/controlMdh.html', layout = 'layout')
+    return render_template('notificaciones/controlMdh.html', layout = 'layout_administracion')
 
 @accionesSheet.route('/herramientasSheet_accionesSheet_actualizaLuz')
 def herramientasSheet_accionesSheet_actualizaLuz():

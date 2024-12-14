@@ -67,8 +67,8 @@
    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/media/telegramEnviaMensaje.css')}}"> 
    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/media/newsLetter.css')}}"> 
 
-
-    
+   <script src="{{ url_for('static', filename='js/layouts/layout.js') }}"></script>
+   
   
 
   </head>
@@ -93,6 +93,10 @@
             </button>
             <div class="collapse navbar-collapse " id="navbarNav" >
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a id="admin-link" class="nav-link" href="#" onclick="handleAdminClick(event)">Administracion</a>
+                    </li>
+
                     <li class="nav-item dropdown">                      
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Administracion</a>
                         <ul class="dropdown-menu">   
@@ -159,6 +163,24 @@
 
                                 </ul>
                             </li>  
+                            <li><hr class="dropdown-divider"></li>
+                            <li class="dropdown-submenu">
+                                <a class="dropdown-item dropdown-toggle" href="#">Publicaciones</a>
+                                <ul class="dropdown-menu">
+                                    <!-- Acción de Alta -->
+                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('alta')">Ambitos alta</a></li> 
+                            
+                                    <!-- Acción de Baja -->
+                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('baja')">Ambitos baja</a></li>
+                            
+                                    <!-- Acción de Modificación -->
+                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('modificacion')">Ambitos Modificación</a></li>
+                            
+                                    <!-- Acción de Consulta -->
+                                    <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('consulta')">Ambitos Consulta</a></li>
+                                </ul>
+                            </li>
+                            
                                                                         
                         </ul>                        
                     </li>

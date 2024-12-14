@@ -1,0 +1,20 @@
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_administracion' %}
+    {% extends 'layouts/layout_administracion.html' %}
+{% endif %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+       
+    </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+<script src="{{ url_for('static', filename='js/herramientasAdmin/controlMDH.js') }}"></script>
+{% endblock %}
