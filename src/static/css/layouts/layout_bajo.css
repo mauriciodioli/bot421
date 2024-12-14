@@ -114,3 +114,98 @@
         margin: 0 10px; /* Menor espacio entre los botones en pantallas pequeñas */
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Contenedor del menú */
+.dropdown-menu-container {
+    position: relative;
+    display: inline-block;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente, si es necesario */    
+}
+
+/* Botón */
+.close-layout-btn {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* Menú desplegable */
+.dropdown-menu {
+    position: absolute;
+    bottom: 40px; /* Ajusta según el tamaño del botón */
+    left: 0;
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    list-style: none;
+    margin: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 300px; /* Altura máxima del menú */
+    overflow-y: auto; /* Scroll si hay demasiados elementos */
+    width: 220px; /* Ancho fijo para evitar desbordes */
+}
+
+/* Elementos del menú */
+.dropdown-menu li {
+    padding: 6px 12px;
+    text-align: left;
+}
+
+.dropdown-menu li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    display: block;
+}
+
+.dropdown-menu li:hover {
+    background-color: #e6e6e6;
+}
+
+/* Línea divisoria */
+.dropdown-divider {
+    margin: 5px 0;
+    border-color: #ddd;
+}
+
+/* Mostrar el menú al pasar el mouse */
+.dropdown-menu-container:hover .dropdown-menu {
+    display: flex; /* Muestra el menú */
+}
+
+/* Evitar que el menú se oculte al mover el mouse hacia los submenús */
+.dropdown-menu {
+    pointer-events: auto; /* Permite interactuar con el menú */
+}
+
+.dropdown-menu-container:hover .close-layout-btn {
+    z-index: 1001; /* Asegura que el botón no se superponga */
+}
+
+
+/* Ajustes generales */
+.dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 220px; /* Ancho fijo para pantallas más grandes */
+}
