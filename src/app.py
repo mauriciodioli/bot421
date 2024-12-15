@@ -92,6 +92,8 @@ from social.media_e_mail import media_e_mail
 from social.media.publicaciones import publicaciones
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
+from social.media.ambitos import ambito
+
 from social.dpis.dpi import dpi
 
 from comunicacion.contacto import contacto
@@ -119,6 +121,7 @@ from models.creaTablas import creaTabla
 from models.operacionEstrategia import operacionEstrategia
 from models.servidores.servidorAws import servidorAws
 from models.publicaciones.ambitos import ambitos
+from social.media.ambitos.ambito import ambito
 
 from Tests.test_procesar_estado_final import test_procesar_estado_final
 
@@ -270,6 +273,7 @@ app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
 app.register_blueprint(ambitos)
+app.register_blueprint(ambito)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(servidorAws)

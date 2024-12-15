@@ -67,12 +67,22 @@
    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/media/telegramEnviaMensaje.css')}}"> 
    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/media/newsLetter.css')}}"> 
 
-   <script src="{{ url_for('static', filename='js/layouts/layout.js') }}"></script>
+ 
    
   
 
   </head>
-
+  <style>
+    /* Mostrar submenú cuando el mouse pasa por encima */
+    .nav-item.dropdown:hover .dropdown-menu {
+        display: block;
+    }
+    
+    /* Mantener el submenú visible */
+    .nav-item.dropdown .dropdown-menu {
+        display: none;
+    }
+</style>
 <body>
     <!-- As a heading -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -137,7 +147,7 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Sistema Pagos</a>
                         <ul class="dropdown-menu">  
                             <li><hr class="dropdown-divider"></li>     
-                            <li><a class="dropdown-item" href="/create_preapproval_html?layout=layout">Crear planes</a></li>
+                            <li><a class="dropdown-item" href="/create_preapproval_html?layout=layout_administracion">Crear planes</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/productosComerciales_planes_muestra">Consulta</a></li>
                             <li><hr class="dropdown-divider"></li>     
@@ -148,7 +158,7 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Suscripciones Pagos</a>
                         <ul class="dropdown-menu">  
                             <li><hr class="dropdown-divider"></li>     
-                            <li><a class="dropdown-item"  href="/productosComerciales_suscripciones_muestra?layout=layout">Consulta</a></li>
+                            <li><a class="dropdown-item"  href="/productosComerciales_suscripciones_muestra?layout=layout_administracion">Consulta</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>                                                                                             
                         </ul>                        
@@ -157,11 +167,11 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Promociones</a>
                         <ul class="dropdown-menu">  
                             <li><hr class="dropdown-divider"></li>     
-                            <li><a class="dropdown-item" href="/productosComerciales_promociones_get_promociones?layout=layout">Crear promocion</a></li>
+                            <li><a class="dropdown-item" href="/productosComerciales_promociones_get_promociones?layout=layout_administracion">Crear promocion</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/sistemaDePagos_get_planes_promociones?layout=layout">Crear promocion desde plan</a></li>
+                            <li><a class="dropdown-item" href="/sistemaDePagos_get_planes_promociones?layout=layout_administracion">Crear promocion desde plan</a></li>
                             <li><hr class="dropdown-divider"></li>     
-                            <li><a class="dropdown-item"  href="/productosComerciales_promociones_consulta_promociones?layout=layout">Consulta</a></li>
+                            <li><a class="dropdown-item"  href="/productosComerciales_promociones_consulta_promociones?layout=layout_administracion">Consulta</a></li>
                             <li><hr class="dropdown-divider"></li>     
                             <li><a class="dropdown-item" href="/abm-estrategias-mostrar-procesos/">Informe</a></li>                                                                
                          </ul>                        
@@ -180,25 +190,9 @@
                          </ul>                        
                     </li>
 
-                    <li class="nav-item dropdown">                      
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Publicaciones</a>
-                        <ul class="dropdown-menu">  
-                            <li><hr class="dropdown-divider"></li>     
-                            <!-- Acción de Alta -->
-                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('alta')">Ambitos alta</a></li> 
-                            
-                            <li><hr class="dropdown-divider"></li>
-                           <!-- Acción de Baja -->
-                           <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('baja')">Ambitos baja</a></li>
-                            
-                            <li><hr class="dropdown-divider"></li>     
-                             <!-- Acción de Modificación -->
-                             <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('modificacion')">Ambitos Modificación</a></li>
-                            
-                            <li><hr class="dropdown-divider"></li>     
-                            <!-- Acción de Consulta -->
-                            <li><a class="dropdown-item" href="javascript:void(0);" onclick="accionAmbito('consulta')">Ambitos Consulta</a></li>
-                         </ul>                        
+                    <li class="nav-item ">
+                        <a class="nav-link" aria-current="page" href="/social-media-ambitos-ambitos" >Ambitos</a>                       
+                    </li>                  
                     </li>
                    
                     
@@ -266,24 +260,10 @@
         let selector = localStorage.getItem("selector")
         let rol = localStorage.getItem('roll');
         var cuentaB = localStorage.getItem("cuenta");  
-        document.getElementById("access_token_form_GenerarFicha").value = access_token;
-        document.getElementById("access_token_form_ListarFicha").value = access_token;
-        document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaB;
-        document.getElementById("selector_form_GenerarFicha").value = selector;
-
-       //herramientas
-        document.getElementById('form_cuenta_accounCuenta').value = cuentaBroker;
-        document.getElementById('form_cuenta_access_token').value = access_token ;
-        document.getElementById('form_cuenta_refresh_token').value = refreshToken;
-
-        
-        //logOutSystem
-        document.getElementById('autenticacion_accounCuenta').value = cuentaBroker;
-        document.getElementById('autenticacion_access_token').value = access_token ;
-        document.getElementById('autenticacion_refresh_token').value = refreshToken;
+      
      //   console.log(access_token)
         var cuentaLink = document.querySelector('.nav-menu-generar');
-        cuentaLink.style.display = 'none'; 
+       
         if (localStorage.getItem("selector")) {
             let cuentaBroker = localStorage.getItem("cuenta");  
             let simulado = localStorage.getItem("selector"); 
@@ -321,7 +301,7 @@
                   
                      
                     try {
-                        cuentaLink.style.display = 'block';
+                       
                     } catch (error) {
                         console.error('Error al cambiar el estilo de cuentaLink:', error);
                         // Aquí puedes agregar más lógica para manejar el error si es necesario.
@@ -351,7 +331,29 @@
 
        // Cerrar el menú desplegable al ser seleccionado
        cerrarMenuSeleccionado();
+       $(document).ready(function() {
+        // Mantener el submenú abierto cuando se hace clic
+        $('.dropdown-menu').on('click', function (e) {
+            e.stopPropagation();
+        });
 
+        // Cerrar el submenú al hacer clic fuera de él
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.dropdown').length) {
+                $('.dropdown-menu').hide();
+            }
+        });
+
+        // Abrir el submenú cuando se pasa el mouse
+        $('.dropdown').hover(
+            function () {
+                $(this).children('.dropdown-menu').stop(true, true).slideDown(200);
+            }, 
+            function () {
+                $(this).children('.dropdown-menu').stop(true, true).slideUp(200);
+            }
+        );
+    });
     </script>
    
 </body>

@@ -25,7 +25,7 @@ planes = Blueprint('planes',__name__)
 
 @planes.route('/productosComerciales_planes_muestra/', methods=['GET'])
 def productosComerciales_planes_muestra():
-    return render_template('productosComerciales/planes.html', layout = 'layout')
+    return render_template('productosComerciales/planes.html', layout = 'layout_administracion')
     
 @planes.route('/productosComerciales_planes_muestra_planes/', methods=['GET'])
 def productosComerciales_planes_muestra_planes():

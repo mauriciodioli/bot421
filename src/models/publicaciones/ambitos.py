@@ -1,13 +1,14 @@
 from flask_marshmallow import Marshmallow
 from flask import Blueprint
 from utils.db import db
-from sqlalchemy import inspect, Column, Integer, String, ForeignKey
+from sqlalchemy import inspect
 from sqlalchemy.orm import relationship
 
 ma = Marshmallow()
 
 
 ambitos = Blueprint('ambitos', __name__)
+
 
 class Ambitos(db.Model):
     __tablename__ = 'ambitos'
