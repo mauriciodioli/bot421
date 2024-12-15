@@ -44,9 +44,6 @@ def estrategias_usuario_general():
         estrategias = db.session.query(TriggerEstrategia).all()
 
         # Crear un diccionario para almacenar las unidades filtradas por trigger_id
-        ut_por_trigger = {}
-
-       
         db.session.close()
         ut_por_trigger = {}
         

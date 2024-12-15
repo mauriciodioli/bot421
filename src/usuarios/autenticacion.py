@@ -101,11 +101,8 @@ def logOutSystem():
 
 # muestra todos los usuarios
 @autenticacion.route("/usuarios-listado")
-def usuarios_listado():
-    print("_______________lletaaaaaaaaaaaaaaaa______")
-    all_usr = Usuario.query.all()
-    print("all_mer", all_usr)
-    #return True
+def usuarios_listado():   
+    all_usr = Usuario.query.all()    
     return render_template("usuarios.html", datos=all_usr)
 
 

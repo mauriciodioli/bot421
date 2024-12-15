@@ -1,46 +1,189 @@
-{% extends "layouts/layout.html" %}
+{% if layout == 'layout_administracion' %}
+   {% extends 'layouts/layout_administracion.html' %}   
+{% endif %}
 {% block content %}
+<h2>Gestión de Ambitos</h2>
+<div class="table-responsive">
+    <table class="table table-dark table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Orden</th>
+                <th scope="col">Id</th>
+                <th scope="col">User ID</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Descripción</th>
+                <th scope="col">Idioma</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if datos %}
+            {% for ambito in datos %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ ambito.id }}</td>
+                <td>{{ ambito.user_id }}</td>
+                <td>{{ ambito.nombre }}</td>
+                <td>{{ ambito.descripcion }}</td>
+                <td>{{ ambito.idioma }}</td>
+                <td>{{ ambito.valor }}</td>
+                <td>{{ ambito.estado }}</td>
+                <td>
+                    <!-- Botón para editar -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#editarAmbitoModal" data-ambito-id="{{ ambito.id }}"
+                        data-nombre="{{ ambito.nombre }}" data-descripcion="{{ ambito.descripcion }}"
+                        data-idioma="{{ ambito.idioma }}" data-valor="{{ ambito.valor }}" data-estado="{{ ambito.estado }}"
+                        data-user_id="{{ ambito.user_id }}">Editar</button>
+                    <!-- Botón para eliminar -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        data-bs-target="#eliminarAmbitoModal" data-ambito-id="{{ ambito.id }}"
+                        data-nombre="{{ ambito.nombre }}">Eliminar</button>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center">No hay datos disponibles</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
 
-    <h1>Gestión de Ambitos</h1>
+<!-- Formulario de creación -->
+<form id="ambito-form">
+    <input type="hidden" id="ambito-id" value="">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" required class="form-control"><br>
 
-    <!-- Formulario para crear o actualizar ambitos -->
-    <form id="ambito-form">
-        <input type="hidden" id="ambito-id" value="">
+    <label for="descripcion">Descripción:</label>
+    <input type="text" id="descripcion" class="form-control"><br>
 
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" required><br>
+    <label for="idioma">Idioma:</label>
+    <input type="text" id="idioma" class="form-control"><br>
 
-        <label for="descripcion">Descripción:</label>
-        <input type="text" id="descripcion"><br>
+    <label for="valor">Valor:</label>
+    <input type="text" id="valor" class="form-control"><br>
 
-        <label for="idioma">Idioma:</label>
-        <input type="text" id="idioma"><br>
+    <label for="estado">Estado:</label>
+    <input type="text" id="estado" class="form-control"><br>
 
-        <label for="valor">Valor:</label>
-        <input type="text" id="valor"><br>
+    <label for="user_id">User ID:</label>
+    <input type="text" id="user_id" required class="form-control"><br>
 
-        <label for="estado">Estado:</label>
-        <input type="text" id="estado"><br>
+    <button type="button" class="btn btn-success" onclick="crearAmbito()">Crear Ambito</button>
+</form>
 
-        <label for="user_id">User ID:</label>
-        <input type="text" id="user_id" required><br>
+<!-- Modal de edición -->
+<div class="modal fade" id="editarAmbitoModal" tabindex="-1" aria-labelledby="editarAmbitoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editarAmbitoModalLabel">Editar Ámbito</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editarAmbitoForm">
+          <input type="hidden" id="ambito-id-editar">
+          <label for="nombre-editar">Nombre:</label>
+          <input type="text" id="nombre-editar" class="form-control" required><br>
 
-        <button type="button" onclick="crearAmbito()">Crear Ambito</button>
-        <button type="button" onclick="actualizarAmbito()">Actualizar Ambito</button>
-    </form>
+          <label for="descripcion-editar">Descripción:</label>
+          <input type="text" id="descripcion-editar" class="form-control"><br>
 
-    <h2>Lista de Ambitos</h2>
-    <ul id="ambitos-list"></ul>
-    {% include 'layouts/layout_footer.html' %}
-    <!-- Incluye el archivo JavaScript --> 
-    <script src="{{ url_for('static', filename='js/media/publicaciones/ambitos.js') }}"></script>
-    <script>
-        var publicacionId = '{{ publicacion_id }}';
-        var userId = '{{ user_id }}'; 
-        var ambito = '{{ ambito }}'; 
-        var layout = '{{ layout }}'; 
-        accionAmbito(accion);
-     
-    </script>
-    
-    {% endblock %}
+          <label for="idioma-editar">Idioma:</label>
+          <input type="text" id="idioma-editar" class="form-control"><br>
+
+          <label for="valor-editar">Valor:</label>
+          <input type="text" id="valor-editar" class="form-control"><br>
+
+          <label for="estado-editar">Estado:</label>
+          <input type="text" id="estado-editar" class="form-control"><br>
+
+          <label for="user_id-editar">User ID:</label>
+          <input type="text" id="user_id-editar" class="form-control" required><br>
+
+          <button type="button" class="btn btn-primary" onclick="actualizarAmbito()">Actualizar Ambito</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal fade" id="eliminarAmbitoModal" tabindex="-1" aria-labelledby="eliminarAmbitoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eliminarAmbitoModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro de que desea eliminar el ámbito <strong id="ambito-nombre-eliminar"></strong>?</p>
+        <button type="button" class="btn btn-danger" onclick="eliminarAmbito()">Eliminar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+<script>
+// Cargar los datos del ámbito en el modal de edición
+$('#editarAmbitoModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); 
+    var ambitoId = button.data('ambito-id');
+    var nombre = button.data('nombre');
+    var descripcion = button.data('descripcion');
+    var idioma = button.data('idioma');
+    var valor = button.data('valor');
+    var estado = button.data('estado');
+    var userId = button.data('user_id');
+
+    var modal = $(this);
+    modal.find('#ambito-id-editar').val(ambitoId);
+    modal.find('#nombre-editar').val(nombre);
+    modal.find('#descripcion-editar').val(descripcion);
+    modal.find('#idioma-editar').val(idioma);
+    modal.find('#valor-editar').val(valor);
+    modal.find('#estado-editar').val(estado);
+    modal.find('#user_id-editar').val(userId);
+});
+
+// Cargar el nombre del ámbito en el modal de confirmación de eliminación
+$('#eliminarAmbitoModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var ambitoId = button.data('ambito-id');
+    var nombre = button.data('nombre');
+
+    var modal = $(this);
+    modal.find('#ambito-nombre-eliminar').text(nombre);
+    modal.find('.btn-danger').attr('onclick', 'eliminarAmbito(' + ambitoId + ')');
+});
+
+// Función para eliminar el ámbito
+function eliminarAmbito(ambitoId) {
+    // Lógica para eliminar el ámbito (llamar a un endpoint Flask para eliminar el ámbito)
+    console.log('Eliminando el ámbito con ID:', ambitoId);
+    // Aquí agregarías el código para hacer una petición a tu servidor para eliminar el ámbito
+}
+
+// Función para actualizar el ámbito
+function actualizarAmbito() {
+    var ambitoId = $('#ambito-id-editar').val();
+    var nombre = $('#nombre-editar').val();
+    var descripcion = $('#descripcion-editar').val();
+    var idioma = $('#idioma-editar').val();
+    var valor = $('#valor-editar').val();
+    var estado = $('#estado-editar').val();
+    var userId = $('#user_id-editar').val();
+
+    // Lógica para actualizar el ámbito (llamar a un endpoint Flask para actualizar los datos)
+    console.log('Actualizando el ámbito:', ambitoId, nombre, descripcion, idioma, valor, estado, userId);
+    // Aquí agregarías el código para hacer una petición a tu servidor para actualizar el ámbito
+}
+</script>

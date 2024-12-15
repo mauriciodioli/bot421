@@ -4,11 +4,10 @@ from utils.db import db
 from sqlalchemy import inspect
 from sqlalchemy.orm import relationship
 
-
 ma = Marshmallow()
 
-usuario = Blueprint('usuario',__name__) 
 
+usuario = Blueprint('usuario',__name__) 
 
 
 class Usuario(db.Model):
