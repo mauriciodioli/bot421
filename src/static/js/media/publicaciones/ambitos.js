@@ -9,7 +9,7 @@ function crearAmbito() {
 
 // Función para crear un nuevo ámbito
 function confirmarCrearAmbito() {
-    
+    debugger;
     const nombre = document.getElementById('nombre').value;
     const descripcion = document.getElementById('descripcion').value;
     const idioma = document.getElementById('idioma').value;
@@ -31,10 +31,10 @@ function confirmarCrearAmbito() {
         estado: estado,
         user_id: userId
     };
-
+    debugger;
 
     // Realizar la solicitud al servidor para crear el ámbito
-    fetch('/social-media-publicaciones-ambitos', {
+    fetch('/social-media-publicaciones-ambitos-crear', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -43,6 +43,7 @@ function confirmarCrearAmbito() {
     })
     .then(response => response.json())
     .then(data => {
+        debugger;
         $('#confirmacionCrearAmbitoModal').modal('hide'); // Cerrar el modal
         alert('Ámbito creado con éxito');
         obtenerAmbitos();  // Actualizar la lista de ámbitos
@@ -115,8 +116,8 @@ function obtenerAmbitos() {
 }
 
 // Función para obtener un ambito por ID
-function obtenerAmbito(id) {
-    fetch(`/social-media-publicaciones-ambitos/${id}`)
+function obtenerAmbito_por_id(id) {
+    fetch(`/social-media-publicaciones-ambitos-obtener-por-id/${id}`)
         .then(response => response.json())
         .then(data => {
             document.getElementById('nombre').value = data.nombre;
@@ -153,7 +154,7 @@ function actualizarAmbito() {
         user_id: userId
     };
     
-    fetch(`/social-media-publicaciones-ambitos/${id}`, {
+    fetch(`/social-media-publicaciones-ambitos-actualizar/${id}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -161,7 +162,7 @@ function actualizarAmbito() {
         body: JSON.stringify(data)
     })
     .then(response => response.json())
-    .then(data => {
+    .then(data => {       
         alert('Ambito actualizado con éxito');
         $('#editarAmbitoModal').modal('hide'); // Cerrar el modal
         obtenerAmbitos();  // Actualizar la lista de ambitos
@@ -174,23 +175,24 @@ function actualizarAmbito() {
 // Función para eliminar un ambito por ID
 function eliminarAmbito(id) {
     debugger;
-    fetch(`/social-media-publicaciones-ambitos/${id}`, {
+    fetch(`/social-media-publicaciones-ambitos-delete/${id}`, {
         method: 'DELETE'
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) { // Verifica si la respuesta indica éxito
-            alert('Ambito eliminado con éxito');
+        if (data.message) { // Verifica si hay un mensaje de éxito
+            alert('Ámbito eliminado con éxito');
             $('#eliminarAmbitoModal').modal('hide'); // Cerrar el modal
             obtenerAmbitos(); // Actualizar la lista de ámbitos
         } else {
-            alert('Error al eliminar el ámbito: ' + (data.message || 'Respuesta inesperada'));
+            alert('Error al eliminar el ámbito: ' + (data.error || 'Respuesta inesperada'));
         }
     })
     .catch(error => {
         alert('Error al eliminar el ámbito: ' + error);
     });
 }
+
 
 
 
