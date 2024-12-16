@@ -8,7 +8,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
+from models.usuario import Usuario
 from models.publicaciones.ambitos import Ambitos
+from models.publicaciones.ambito_usuario import Ambito_usuario
 
 
 ambito = Blueprint('ambito', __name__)
@@ -38,50 +40,77 @@ def crear_ambito():
     try:
         # Obtener los datos del cuerpo de la solicitud
         data = request.get_json()
-        
-        # Extraer datos necesarios para crear un nuevo ambito
+
+        # Extraer datos necesarios para crear un nuevo ámbito
         nombre = data.get('nombre')
         descripcion = data.get('descripcion')
         idioma = data.get('idioma', None)
         valor = data.get('valor', None)
         estado = data.get('estado', None)
-        user_id = data.get('user_id')  # ID del usuario
+        user_id = data.get('user_id')        
+        user_id = int(user_id)
+        # Validar campos obligatorios
+        if not nombre or not descripcion or not user_id:
+            return jsonify({"error": "Los campos 'nombre', 'descripcion' y 'user_id' son obligatorios"}), 400
 
-        # Validar que los campos obligatorios estén presentes
-        if not nombre or not user_id:
-            return jsonify({"error": "El nombre y el user_id son obligatorios"}), 400
-        
-        # Crear el nuevo ambito
+        # Validar que el user_id exista
+        user = db.session.query(Usuario).filter_by(id=user_id).first()
+        if not user:
+            return jsonify({"error": "El user_id proporcionado no existe"}), 400
+
+        # Crear el nuevo ámbito
         nuevo_ambito = Ambitos(
             nombre=nombre,
             descripcion=descripcion,
             idioma=idioma,
             valor=valor,
-            estado=estado,
-            user_id=user_id
+            estado=estado
         )
-        
-        # Añadir el nuevo ambito a la base de datos
         db.session.add(nuevo_ambito)
-        db.session.commit()
+        db.session.commit()  # Se requiere para obtener el ID asignado automáticamente
 
-        # Serializar y devolver el nuevo ambito
-        return jsonify(ambitos_schema.dump(nuevo_ambito)), 201
+        # Crear la relación en Ambito_usuario
+        ambito_usuario = Ambito_usuario(
+            ambito_id=int(nuevo_ambito.id),  # Usamos el ID generado
+            publicacion_id=None,
+            user_id=user_id,  # Usamos el ID proporcionado en la solicitud user_id,
+            estado=1
+        )
+        db.session.add(ambito_usuario)
+        db.session.commit()
+        db.session.close()
+        # Serializar y devolver el nuevo ámbito
+        return jsonify(ambito_schema.dump(nuevo_ambito)), 201
+
     except Exception as e:
-        db.session.rollback()
+        db.session.rollback()  # Deshacer cualquier cambio en caso de error
         return jsonify({"error": str(e)}), 500
+
 
 # Obtener todos los ambitos
-@ambito.route('/social-media-publicaciones-ambitos', methods=['GET'])
+@ambito.route('/social-media-publicaciones-obtener-ambitos', methods=['GET'])
 def obtener_ambitos():
     try:
-        # Obtener todos los ambitos de la base de datos
-        ambitos = Ambitos.query.all()
-
-        # Serializar los ambitos
-        return jsonify(ambitos_schemas.dump(ambitos)), 200
+        ambitos = db.session.query(Ambitos).all()
+        # Convertir los objetos a dicts serializables
+        resultado = [
+            {
+                "id": ambito.id,
+                "user_id": 'none',
+                "nombre": ambito.nombre,
+                "descripcion": ambito.descripcion,
+                "idioma": ambito.idioma,
+                "valor": ambito.valor,
+                "estado": ambito.estado,
+            }
+            for ambito in ambitos
+        ]
+        db.session.close()
+        return jsonify(resultado), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 
 # Obtener un ambito por su ID
 @ambito.route('/social-media-publicaciones-ambitos/<int:id>', methods=['GET'])
@@ -143,6 +172,7 @@ def eliminar_ambito(id):
         # Eliminar el ambito de la base de datos
         db.session.delete(ambito)
         db.session.commit()
+        db.session.close()
 
         return jsonify({"message": "Ambito eliminado exitosamente"}), 200
     except Exception as e:

@@ -1,40 +1,28 @@
-// Función para manejar la acción dependiendo del tipo
-function accionAmbito(accion) {
-    switch (accion) {
-        case 'alta':
-            // Llamar la función para crear un nuevo ambito
-            crearAmbito();
-            break;
-        case 'baja':
-            // Llamar la función para eliminar un ambito
-            const idBaja = prompt("Ingrese el ID del ambito a eliminar:");
-            eliminarAmbito(idBaja);
-            break;
-        case 'modificacion':
-            // Llamar la función para modificar un ambito
-            const idMod = prompt("Ingrese el ID del ambito a modificar:");
-            obtenerAmbito(idMod);  // Obtiene los detalles del ambito para editarlo
-            break;
-        case 'consulta':
-            // Llamar la función para consultar un ambito
-            const idConsulta = prompt("Ingrese el ID del ambito a consultar:");
-            obtenerAmbito(idConsulta);  // Obtiene los detalles del ambito para verlos
-            break;
-        default:
-            alert("Acción no válida");
-            break;
-    }
+// Función para mostrar el modal de confirmación
+function crearAmbito() {
+    
+    // Primero muestra el modal de confirmación
+    $('#confirmacionCrearAmbitoModal').modal('show');
 }
 
-// Función para crear un nuevo ambito
-function crearAmbito() {
+
+
+// Función para crear un nuevo ámbito
+function confirmarCrearAmbito() {
+    
     const nombre = document.getElementById('nombre').value;
     const descripcion = document.getElementById('descripcion').value;
     const idioma = document.getElementById('idioma').value;
     const valor = document.getElementById('valor').value;
     const estado = document.getElementById('estado').value;
-    const userId = document.getElementById('user_id').value;
+    const userId = localStorage.getItem('usuario_id');
 
+    // Validar los campos obligatorios
+    if (!nombre || !descripcion || !userId) {
+        alert('Por favor, completa los campos requeridos.');
+        return;
+    }
+  
     const data = {
         nombre: nombre,
         descripcion: descripcion,
@@ -44,6 +32,8 @@ function crearAmbito() {
         user_id: userId
     };
 
+
+    // Realizar la solicitud al servidor para crear el ámbito
     fetch('/social-media-publicaciones-ambitos', {
         method: 'POST',
         headers: {
@@ -53,31 +43,74 @@ function crearAmbito() {
     })
     .then(response => response.json())
     .then(data => {
-        alert('Ambito creado con éxito');
-        obtenerAmbitos();  // Actualizar la lista de ambitos
+        $('#confirmacionCrearAmbitoModal').modal('hide'); // Cerrar el modal
+        alert('Ámbito creado con éxito');
+        obtenerAmbitos();  // Actualizar la lista de ámbitos
+       
     })
     .catch(error => {
-        alert('Error al crear el ambito: ' + error);
+        alert('Error al crear el ámbito: ' + error);
+        modal.style.display = "none";  // Ocultar el modal en caso de error
     });
-}
 
+}
 // Función para obtener todos los ambitos
 function obtenerAmbitos() {
-    fetch('/social-media-publicaciones-ambitos')
-        .then(response => response.json())
+    debugger;
+    fetch('/social-media-publicaciones-obtener-ambitos')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error del servidor: ${response.statusText}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            const ambitosList = document.getElementById('ambitos-list');
-            ambitosList.innerHTML = '';  // Limpiar lista antes de agregar
-            data.forEach(ambito => {
-                const li = document.createElement('li');
-                li.textContent = `${ambito.nombre} - ${ambito.descripcion}`;
-                li.setAttribute('data-id', ambito.id);
-                li.addEventListener('click', () => obtenerAmbito(ambito.id));  // Ver detalles
-                ambitosList.appendChild(li);
+            debugger;   
+            const tablaCuerpo = document.querySelector('table tbody');
+
+            // Limpiar filas existentes (incluidas las renderizadas por Jinja)
+            tablaCuerpo.innerHTML = '';
+
+            if (data.length === 0) {
+                // Si no hay datos, mostrar mensaje en la tabla
+                tablaCuerpo.innerHTML = '<tr><td colspan="9" class="text-center">No hay datos disponibles</td></tr>';
+                return;
+            }
+
+            data.forEach((ambito, index) => {
+                const tr = document.createElement('tr');
+
+                // Crear las celdas dinámicamente
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${ambito.id}</td>
+                    <td>${ambito.user_id}</td>
+                    <td>${ambito.nombre}</td>
+                    <td>${ambito.descripcion}</td>
+                    <td>${ambito.idioma}</td>
+                    <td>${ambito.valor}</td>
+                    <td>${ambito.estado}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#editarAmbitoModal"
+                            data-ambito-id="${ambito.id}"
+                            data-nombre="${ambito.nombre}"
+                            data-descripcion="${ambito.descripcion}"
+                            data-idioma="${ambito.idioma}"
+                            data-valor="${ambito.valor}"
+                            data-estado="${ambito.estado}"
+                            data-user_id="${ambito.user_id}">Editar</button>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#eliminarAmbitoModal"
+                            data-ambito-id="${ambito.id}"
+                            data-nombre="${ambito.nombre}">Eliminar</button>
+                    </td>
+                `;
+                tablaCuerpo.appendChild(tr);
             });
         })
         .catch(error => {
-            alert('Error al obtener los ambitos: ' + error);
+            alert('Error al obtener los ámbitos: ' + error.message);
         });
 }
 
@@ -101,13 +134,15 @@ function obtenerAmbito(id) {
 
 // Función para actualizar un ambito
 function actualizarAmbito() {
-    const id = document.getElementById('ambito-id').value;
-    const nombre = document.getElementById('nombre').value;
-    const descripcion = document.getElementById('descripcion').value;
-    const idioma = document.getElementById('idioma').value;
-    const valor = document.getElementById('valor').value;
-    const estado = document.getElementById('estado').value;
-    const userId = document.getElementById('user_id').value;
+   
+    const id = document.getElementById('ambito-id-editar').value;
+    const nombre = document.getElementById('nombre-editar').value;
+    const descripcion = document.getElementById('descripcion-editar').value;
+    const idioma = document.getElementById('idioma-editar').value;
+    const valor = document.getElementById('valor-editar').value;
+    const estado = document.getElementById('estado-editar').value;
+    const userId = document.getElementById('user_id-editar').value;
+
 
     const data = {
         nombre: nombre,
@@ -117,7 +152,7 @@ function actualizarAmbito() {
         estado: estado,
         user_id: userId
     };
-
+    
     fetch(`/social-media-publicaciones-ambitos/${id}`, {
         method: 'PUT',
         headers: {
@@ -128,6 +163,7 @@ function actualizarAmbito() {
     .then(response => response.json())
     .then(data => {
         alert('Ambito actualizado con éxito');
+        $('#editarAmbitoModal').modal('hide'); // Cerrar el modal
         obtenerAmbitos();  // Actualizar la lista de ambitos
     })
     .catch(error => {
@@ -137,20 +173,24 @@ function actualizarAmbito() {
 
 // Función para eliminar un ambito por ID
 function eliminarAmbito(id) {
+    debugger;
     fetch(`/social-media-publicaciones-ambitos/${id}`, {
         method: 'DELETE'
     })
     .then(response => response.json())
     .then(data => {
-        alert('Ambito eliminado con éxito');
-        obtenerAmbitos();  // Actualizar la lista de ambitos
+        if (data.success) { // Verifica si la respuesta indica éxito
+            alert('Ambito eliminado con éxito');
+            $('#eliminarAmbitoModal').modal('hide'); // Cerrar el modal
+            obtenerAmbitos(); // Actualizar la lista de ámbitos
+        } else {
+            alert('Error al eliminar el ámbito: ' + (data.message || 'Respuesta inesperada'));
+        }
     })
     .catch(error => {
-        alert('Error al eliminar el ambito: ' + error);
+        alert('Error al eliminar el ámbito: ' + error);
     });
 }
 
-// Ejecutar al cargar la página
-window.onload = function() {
-    obtenerAmbitos();
-};
+
+
