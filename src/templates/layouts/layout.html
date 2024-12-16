@@ -94,7 +94,7 @@
             <div class="collapse navbar-collapse " id="navbarNav" >
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a id="admin-link" class="nav-link" href="#" onclick="handleAdminClick(event)">Administracion</a>
+                        <a id="admin-link" class="nav-link dropdown-toggle" href="#" onclick="handleAdminClick(event)">Administracion</a>
                     </li>
                     
                     <li class="nav-item">
@@ -192,6 +192,8 @@
                             <li><a class="dropdown-item" href="/llamada/index-contacto">Contacto</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/registrar_usuario">Registrarse</a></li>
+                            <li><hr class="dropdown-divider"></li>                            
+                            <li><a class="dropdown-item" id="consultas-link" href="#">Consultas</a></li>
                         </ul>
                     </li>
                     
@@ -227,10 +229,15 @@
         document.addEventListener("DOMContentLoaded", function() {
             const userId = localStorage.getItem("usuario_id");
             if (userId) {
-              const link = document.getElementById("consultas-link");
-              link.href = `/comunicacion_contacto_consultas/layout/${userId}`;
+                const link = document.getElementById("consultas-link");
+                if (link) { // Verificar si el elemento existe
+                    link.href = `/comunicacion_contacto_consultas/layout/${userId}`;
+                } else {
+                    console.error("El elemento #consultas-link no se encontró en el DOM.");
+                }
             }
-          });
+        });
+        
   // Custom JavaScript to handle submenu toggle
   $(document).ready(function() {
     $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {
@@ -327,7 +334,7 @@
                   }
 
                 // Verificar si el rol es "administrador"
-        if (rol != 'ADMINISTRADOR') {
+        if (rol != 'ADMINISTRADOR') {          
             // Ocultar el enlace del menú de administración
             var adminLink = document.querySelector('.nav-link.dropdown-toggle');
             adminLink.style.display = 'none';
