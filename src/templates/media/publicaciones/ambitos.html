@@ -83,27 +83,24 @@
 
 </form>
 
-
 <!-- Modal de confirmación -->
 <div class="modal fade" id="confirmacionCrearAmbitoModal" tabindex="-1" aria-labelledby="confirmacionCrearAmbitoModalLabel" aria-hidden="true">
   <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmacionCrearAmbitoModalLabel" style="color: black;">Confirmar Creación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="confirmacionCrearAmbitoModalLabel" style="color: black;">Confirmar Creación</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="color: black;">
+              ¿Estás seguro de que deseas crear este nuevo ámbito con los datos ingresados?
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-success" id="confirmarCrearAmbito" onclick="confirmarCrearAmbito()">Confirmar</button>
+          </div>
       </div>
-      <div class="modal-body" style="color: black;">
-        ¿Estás seguro de que deseas crear este nuevo ámbito con los datos ingresados?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-success" id="confirmarCrearAmbito" onclick="confirmarCrearAmbito()">Confirmar</button>
-      </div>
-    </div>
   </div>
 </div>
-
-
 
 <!-- Modal de edición -->
 <div class="modal fade" id="editarAmbitoModal" tabindex="-1" aria-labelledby="editarAmbitoModalLabel" aria-hidden="true">
@@ -141,10 +138,6 @@
   </div>
 </div>
 
-
-  
-
-
 <!-- Modal de confirmación de eliminación -->
 <div class="modal fade" id="eliminarAmbitoModal" tabindex="-1" aria-labelledby="eliminarAmbitoModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -155,27 +148,22 @@
       </div>
       <div class="modal-body">
         <p style="color: black;">¿Está seguro de que desea eliminar el ámbito?</p>       
-        <input type="hidden"  id="ambito-nombre-eliminar" class="form-control"><br>
+        <input type="hidden" id="ambito-nombre-eliminar" class="form-control"><br>
       </div>
       <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" onclick="eliminarAmbito()">Eliminar</button>
+        <button type="button" class="btn btn-danger">Eliminar</button>
       </div>      
     </div>
   </div>
 </div>
-
-
 {% include 'layouts/layout_footer.html' %}   
 <script src="{{ url_for('static', filename='js/media/publicaciones/ambitos.js') }}"></script>
 <script>
-    
-// Cuando el modal de edición se abre, cargamos los datos
-
 $(document).ready(function() {
+    // Cargar los datos en el modal de edición
     $('#editarAmbitoModal').on('show.bs.modal', function (event) {
-      
-        var button = $(event.relatedTarget); // El botón que disparó el modal
+        var button = $(event.relatedTarget); // El botón que activó el modal
         var ambitoId = button.data('ambito-id');
         var nombre = button.data('nombre');
         var descripcion = button.data('descripcion');
@@ -194,32 +182,46 @@ $(document).ready(function() {
         modal.find('#user_id-editar').val(userId);
     });
 
+    // Cargar el nombre del ámbito en el modal de confirmación de eliminación
+    $('#eliminarAmbitoModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var id = button.data('ambito-id');
+        var nombre = button.data('nombre');
+
+        var modal = $(this);
+        modal.find('#ambito-nombre-eliminar').text(nombre);
+        modal.find('.btn-danger').off('click').on('click', function() {
+            eliminarAmbito(id); // Llamar a eliminarAmbito con el ID
+        });
+    });
+});
 
 
 
-// Cargar el nombre del ámbito en el modal de confirmación de eliminación
-$('#eliminarAmbitoModal').on('show.bs.modal', function (event) {
-   
-    var button = $(event.relatedTarget); // El botón que activó el modal
-    var id = button.data('ambito-id'); // Obtener el ID desde los atributos del botón
-    var nombre = button.data('nombre'); // Opcionalmente, obtener el nombre para mostrarlo en el modal
 
+
+$(document).ready(function() {
+  // Al abrir el modal de confirmación
+  $('#confirmacionCrearAmbitoModal').on('show.bs.modal', function () {
     var modal = $(this);
-    modal.find('#ambito-nombre-eliminar').text(nombre); // Mostrar el nombre en el modal
-    modal.find('.btn-danger').attr('onclick', `eliminarAmbito(${id})`); // Pasar el ID a la función eliminarAmbito
+    // Establecer aria-hidden="false" cuando el modal se abre
+    modal.attr('aria-hidden', 'false');
+    modal.removeAttr('inert');  // Asegúrate de que el modal no esté bloqueado por 'inert'
+    
+    // Asegúrate de que el foco se ponga en el botón de "Confirmar"
+    modal.find('.btn-success').focus();  
+  });
+
+  // Al cerrar el modal de confirmación
+  $('#confirmacionCrearAmbitoModal').on('hidden.bs.modal', function () {
+    var modal = $(this);
+    // Volver a ocultar el modal correctamente para accesibilidad
+    modal.attr('aria-hidden', 'true');
+    modal.attr('inert', '');  // Reaplicar inert cuando el modal se cierre para bloquear interacción
+  });
 });
-
-
-
-
-
-});
-
-
-
-
-
 
 </script>
+
 
 {% endblock %}

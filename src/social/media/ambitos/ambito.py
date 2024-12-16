@@ -35,7 +35,7 @@ def social_media_ambitos_ambitos():
 
 
 # Crear un nuevo Ambito
-@ambito.route('/social-media-publicaciones-ambitos', methods=['POST'])
+@ambito.route('/social-media-publicaciones-ambitos-crear', methods=['POST'])
 def crear_ambito():
     try:
         # Obtener los datos del cuerpo de la solicitud
@@ -79,8 +79,9 @@ def crear_ambito():
         db.session.add(ambito_usuario)
         db.session.commit()
         db.session.close()
+        resultado = serializar_ambito(ambito)
         # Serializar y devolver el nuevo ámbito
-        return jsonify(ambito_schema.dump(nuevo_ambito)), 201
+        return jsonify(resultado), 201
 
     except Exception as e:
         db.session.rollback()  # Deshacer cualquier cambio en caso de error
@@ -117,22 +118,24 @@ def obtener_ambitos():
 def obtener_ambito(id):
     try:
         # Buscar el ambito por su ID
-        ambito = Ambitos.query.get(id)
+        ambito = db.session.query(Ambitos).filter_by(id=id).first()
+        resultado = serializar_ambito(ambito)
+        db.session.close()
 
         # Verificar si el ambito existe
         if ambito:
-            return jsonify(ambitos_schema.dump(ambito)), 200
+            return jsonify(resultado), 200
         else:
             return jsonify({"error": "Ambito no encontrado"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 # Actualizar un ambito por su ID
-@ambito.route('/social-media-publicaciones-ambitos/<int:id>', methods=['PUT'])
+@ambito.route('/social-media-publicaciones-ambitos-actualizar/<int:id>', methods=['PUT'])
 def actualizar_ambito(id):
     try:
         # Obtener el ambito existente
-        ambito = Ambitos.query.get(id)
+        ambito = db.session.query(Ambitos).filter_by(id=id).first() 
 
         # Verificar si el ambito existe
         if not ambito:
@@ -147,34 +150,59 @@ def actualizar_ambito(id):
         ambito.idioma = data.get('idioma', ambito.idioma)
         ambito.valor = data.get('valor', ambito.valor)
         ambito.estado = data.get('estado', ambito.estado)
-        ambito.user_id = data.get('user_id', ambito.user_id)
-
+      
         # Guardar los cambios en la base de datos
         db.session.commit()
-
-        # Serializar y devolver el ambito actualizado
-        return jsonify(ambitos_schema.dump(ambito)), 200
+       
+        # Verificar si el ambito existe
+        resultado = serializar_ambito(ambito)
+        db.session.close()
+            # Devolver el resultado como JSON
+        return jsonify(resultado), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
 
 # Eliminar un ambito por su ID
-@ambito.route('/social-media-publicaciones-ambitos/<int:id>', methods=['DELETE'])
+@ambito.route('/social-media-publicaciones-ambitos-delete/<int:id>', methods=['DELETE'])
 def eliminar_ambito(id):
     try:
-        # Buscar el ambito por su ID
-        ambito = Ambitos.query.get(id)
+        # Buscar el ámbito por su ID
+        ambito = db.session.query(Ambitos).filter_by(id=id).first()
 
-        # Verificar si el ambito existe
+        # Verificar si el ámbito existe
         if not ambito:
-            return jsonify({"error": "Ambito no encontrado"}), 404
+            return jsonify({"error": "Ámbito no encontrado"}), 404
 
-        # Eliminar el ambito de la base de datos
+        # Buscar todos los registros en la tabla Ambito_usuario asociados al ámbito
+        ambito_usuarios = db.session.query(Ambito_usuario).filter_by(ambito_id=id).all()
+
+        # Eliminar los registros de Ambito_usuario asociados
+        for ambito_usuario in ambito_usuarios:
+            db.session.delete(ambito_usuario)
+
+        # Eliminar el ámbito
         db.session.delete(ambito)
+
+        # Confirmar los cambios en la base de datos
         db.session.commit()
         db.session.close()
 
-        return jsonify({"message": "Ambito eliminado exitosamente"}), 200
+        return jsonify({"message": "Ámbito y usuarios asociados eliminados exitosamente"}), 200
     except Exception as e:
+        # Si ocurre un error, revertir los cambios pendientes
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
+
+
+def serializar_ambito(ambito):
+    return {
+        "id": ambito.id,
+        "user_id": 'none',  # Asumiendo que no necesitas información de usuario en este caso
+        "nombre": ambito.nombre,
+        "descripcion": ambito.descripcion,
+        "idioma": ambito.idioma,
+        "valor": ambito.valor,
+        "estado": ambito.estado,
+    }
