@@ -10,7 +10,28 @@ document.addEventListener('DOMContentLoaded', function() {
    enviarDatosFormulario();
  });
 
-   
+
+
+
+ // Agregar el evento de clic en los botones del menú desplegable para cerrarlo
+ $(document).ready(function() {
+  // Agregar el evento de clic en los ítems del menú
+  $('.custom-dropdown-menu .dropdown-item').on('click', function(e) {
+      e.preventDefault(); // Prevenir el comportamiento predeterminado del enlace
+
+      // Obtener el valor del atributo data-val del ítem clickeado
+      var itemValue = $(this).data('val');
+      
+      // Guardar el valor en localStorage
+      localStorage.setItem('dominio', itemValue);
+
+      // Llamar a la función muestraGaleriadePublicaciones
+      muestraGaleriadePublicaciones();
+  });
+});
+
+
+
   });
   
   
@@ -22,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
    * Se envía el token de acceso en el encabezado
    * 'Authorization'.
    */
+  
   function muestraGaleriadePublicaciones() {
 
     // Mostrar el splash de espera
@@ -33,7 +55,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var correo_electronico = localStorage.getItem('correo_electronico');
     var roll = localStorage.getItem('roll');
-    var access_token = localStorage.getItem('access_token');
+    var access_token = localStorage.getItem('access_token');    
+    var ambito = localStorage.getItem('dominio');
   
     if (!access_token) {
       alert("No se ha encontrado el token de acceso.");
@@ -43,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var formData = new FormData();
     formData.append('roll', roll);
     formData.append('correo_electronico', correo_electronico);
-    formData.append('layout','layout')
+    formData.append('layout','layout');
+    formData.append('ambito', ambito);
     $.ajax({
       url: '/media-publicaciones-mostrar',
       type: 'POST',
@@ -74,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.keys(postsByAmbito).forEach(function(ambito, index) {
                 var ambitoId = 'ambito-' + index; // ID único para cada ámbito
                 var publicaciones = postsByAmbito[ambito];
-    
+                
                 var accordionItemHtml = `
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-${ambitoId}">

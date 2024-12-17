@@ -33,16 +33,23 @@ def productosComerciales_suscripciones_muestra_suscripciones():
     try:
         layout = request.args.get('layout', 'layout')
         access_token = request.args.get('access_token')
-        if access_token and Token.validar_expiracion_token(access_token=access_token):
-            app = current_app._get_current_object()            
+
+        # Validación del token
+        if not access_token:
+            return jsonify({'error': 'Access token is required'}), 401
+        
+        # Validación de expiración del token
+        if Token.validar_expiracion_token(access_token=access_token):
+            app = current_app._get_current_object()
             user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             usuario = db.session.query(Usuario).filter_by(id=user_id).first()
-            if usuario.roll=='ADMINISTRADOR':
-               suscripciones = db.session.query(SuscripcionPlanUsuario).all()
+
+            # Recuperar las suscripciones
+            if usuario.roll == 'ADMINISTRADOR':
+                suscripciones = db.session.query(SuscripcionPlanUsuario).all()
             else:
-               suscripciones = db.session.query(SuscripcionPlanUsuario).filter_by(user_id=user_id).all()
-                
-            
+                suscripciones = db.session.query(SuscripcionPlanUsuario).filter_by(user_id=user_id).all()
+
             db.session.close()
 
             # Serializar los planes
@@ -59,10 +66,15 @@ def productosComerciales_suscripciones_muestra_suscripciones():
                     'payment_method_id': suscripcion.payment_method_id,
                     'billing_day': suscripcion.billing_day,
                     'preapproval_plan_id': suscripcion.preapproval_plan_id
-                } for suscripcion in suscripciones
+                }
+                for suscripcion in suscripciones
             ]
 
             return jsonify({'suscripciones': suscripciones_serializados, 'layout': layout})
+
+        # Token inválido o expirado
+        return jsonify({'error': 'Invalid or expired access token'}), 403
+
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500

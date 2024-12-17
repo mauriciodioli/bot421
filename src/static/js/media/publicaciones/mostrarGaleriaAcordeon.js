@@ -72,7 +72,8 @@ document.addEventListener('show.bs.collapse', function (event) {
                 `;
                 accordionContent.insertAdjacentHTML('beforeend', cardHtml);
             });
-
+           // user_id = response.user_id
+            //obtenerAmbitos(id)
             if (splash) splash.style.display = 'none'; // Ocultar el splash después de cargar
         },
         error: function (error) {
@@ -81,3 +82,89 @@ document.addEventListener('show.bs.collapse', function (event) {
         }
     });
 });
+
+
+
+
+
+function obtenerAmbitos(id) {
+    // Mostrar el splash (asumo que existe una variable splash definida)
+    var splash = document.querySelector('.splashCarga');
+    if (splash) {
+        splash.style.display = 'block';
+    }
+
+    // Realizar la solicitud fetch
+    fetch('/social-media-publicaciones-obtener-ambitos')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error del servidor: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Ocultar el splash después de recibir la respuesta
+            if (splash) {
+                splash.style.display = 'none';
+            }
+
+            if (Array.isArray(data)) {
+                var postAccordion = $('#postAccordion');
+                postAccordion.empty();
+
+                // Organizar publicaciones por ámbito
+                var postsByAmbito = {};
+                data.forEach(function(post) {
+                    if (!postsByAmbito[post.ambito]) {
+                        postsByAmbito[post.ambito] = [];
+                    }
+                    postsByAmbito[post.ambito].push(post);
+                });
+
+                // Crear secciones del acordeón
+                Object.keys(postsByAmbito).forEach(function(ambito, index) {
+                    var ambitoId = 'ambito-' + index; // ID único para cada ámbito
+                    var publicaciones = postsByAmbito[ambito];
+
+                    // HTML del acordeón
+                    var accordionItemHtml = `
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-${ambitoId}">
+                                <button class="accordion-button" type="button" 
+                                    data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" 
+                                    aria-expanded="true" aria-controls="collapse-${ambitoId}">
+                                    ${ambito}
+                                </button>
+                            </h2>
+                            <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" 
+                                aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                                <div class="accordion-body">
+                                    <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                        <div class="card-grid-publicaciones">
+                                            ${publicaciones.map(post => `
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">${post.titulo || 'Sin título'}</h5>
+                                                        <p class="card-text">${post.descripcion || 'Sin descripción'}</p>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    postAccordion.append(accordionItemHtml);
+                });
+            }
+        })
+        .catch(error => {
+            if (splash) {
+                splash.style.display = 'none';
+            }
+            alert('Error al obtener los ámbitos: ' + error.message);
+            console.error(error);
+        });
+}
