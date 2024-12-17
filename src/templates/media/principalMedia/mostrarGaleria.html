@@ -18,6 +18,7 @@
 {% block content %}
 <div>
 
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/social/publicaciones/menuAmbitosGaleriaImagenes.css') }}">
  <!-- Splash -->
     <div class="splashCarga" id="splashNotificaciones" style="display: none;">
         <div class="splash-contenido">
@@ -58,10 +59,38 @@
                 </form>
                 
                 </div>
-                <div class="option">
-                  <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
-                    <span>Contribuye con tu experiencia</span>
-                </div>
+                <div class="custom-dropdown-menu-container">
+                  <button class="btn btn-sm close-layout-btn">
+                      <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+                  </button>
+                  <ul class="custom-dropdown-menu">
+                    <li><a class="dropdown-item" id='social' href="#" data-val="social">Social</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='educativo' href="#" data-val="educativo">Educational</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='laboral' href="#" data-val="laboral">Work</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Negocio' href="#" data-val="negocio">Business</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Artes' href="#" data-val="artes">Creations</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Deporte' href="#" data-val="deporte">Sports</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Familia' href="#" data-val="familia">Family</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Amistad' href="#" data-val="amistad">Friendship</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Personal' href="#" data-val="personal">Personal</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Salud' href="#" data-val="salud">Health</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Filantropia' href="#" data-val="filantropia">Philanthropy</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" id='Naturaleza' href="#" data-val="naturaleza">Nature</a></li>
+                    
+                  </ul>
+                  
+              </div>
                 <div class="option">
                   <img src="{{ url_for('static', filename='icons/edit-icon-png-3598.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
                   <span>Escribir artículo</span>
@@ -309,6 +338,7 @@
 {% include 'layouts/layout_footer.html' %}
 <script src="{{ url_for('static', filename='js/media/mostrarGaleria.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/cargarPublicaciones.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/publicaciones/mostrarGaleriaAcordeon.js') }}"></script>
 
 <script>
 

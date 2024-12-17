@@ -254,8 +254,7 @@
 });
 
 
-        let correo_electronico = localStorage.getItem("correo_electronico");  
-        
+        let correo_electronico = localStorage.getItem("correo_electronico") || "";        
         let access_token = localStorage.getItem("access_token")
         let refreshToken = localStorage.getItem("refresh_token")
         let cuentaBroker = localStorage.getItem("cuenta")

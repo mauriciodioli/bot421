@@ -82,6 +82,21 @@
     .nav-item.dropdown .dropdown-menu {
         display: none;
     }
+    
+/* Opcional: Estilo para scrollbar */
+.nav-item.dropdown .dropdown-menu::-webkit-scrollbar {
+    height: 8px;                /* Altura del scrollbar */
+    background: #f1f1f1;        /* Fondo del scrollbar */
+}
+
+.nav-item.dropdown .dropdown-menu::-webkit-scrollbar-thumb {
+    background: #888;           /* Color del scrollbar */
+    border-radius: 4px;         /* Bordes redondeados */
+}
+
+.nav-item.dropdown .dropdown-menu::-webkit-scrollbar-thumb:hover {
+    background: #555;           /* Color al pasar el mouse por el scrollbar */
+}
 </style>
 <body>
     <!-- As a heading -->

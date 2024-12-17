@@ -50,7 +50,8 @@ BUCKET_NAME = 'nombre-de-tu-bucket'
 def media_publicaciones_mostrar():
     try:
         
-        layout = request.form.get('layout') 
+        layout = request.form.get('layout')
+        ambito = request.form.get('ambito')
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
@@ -69,7 +70,7 @@ def media_publicaciones_mostrar():
             user_id = decoded_token.get("sub")
 
             # Obtener todas las publicaciones del usuario
-            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id).all()
+            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
