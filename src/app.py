@@ -93,6 +93,7 @@ from social.media.publicaciones import publicaciones
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
 from social.media.ambitos.ambito import ambito
+from social.media.turing.testTuring import testTuring
 
 from social.dpis.dpi import dpi
 
@@ -281,6 +282,9 @@ app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)
+
+
+app.register_blueprint(testTuring)
 
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)

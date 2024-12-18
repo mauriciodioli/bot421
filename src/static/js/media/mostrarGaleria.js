@@ -406,6 +406,7 @@ function cerrarModalImagenGrande() {
       var id_publicacion = id;
       var titulo = postCard.querySelector('.card-title').textContent;
       var texto = postCard.querySelector('.card-text').textContent;
+      debugger;
       var descripcion = postCard.querySelector('.card-text-descripcion').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
       var ambito = postCard.querySelector('.card-text-ambito').textContent;
@@ -413,7 +414,11 @@ function cerrarModalImagenGrande() {
       // Cargar los datos en el modal
       document.getElementById('postId_modificaPublicacion').value = id_publicacion;
       document.getElementById('postTitle_modificaPublicacion').value = titulo;
-      document.getElementById('postText_modificaPublicacion').value = texto;
+     // document.getElementById('postText_modificaPublicacion').value = texto;
+      // Cargar solo el texto
+      // Cargar contenido en Quill
+      
+      quill.root.innerHTML = texto;   
       document.getElementById('postDescription_modificaPublicacion').value = descripcion;
       document.getElementById('postEstado_modificaPublicacion').value = estado;
       document.getElementById('postAmbito_modificaPublicacion').value = ambito;
@@ -440,10 +445,13 @@ function cerrarModalImagenGrande() {
     alert("No se ha encontrado el token de acceso.");
     return;
   }
-
+  const postContent = quill.root.innerHTML; // Obtener el contenido de Quill
   var formData = new FormData(document.getElementById('modificarPostForm_modificaPublicacion'));
   var postId = document.getElementById('postId_modificaPublicacion').value;
   formData.append('postId_modificaPublicacion', postId);
+    // Agregar el contenido de Quill al FormData
+  formData.append('postText_modificaPublicacion', postContent);
+
 
   $.ajax({
     url: '/social_media_publicaciones_modificar_publicaciones', // Cambia esta URL a la ruta correcta en tu servidor
@@ -1081,3 +1089,4 @@ function createPost() {
 
 
 
+   

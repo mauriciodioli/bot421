@@ -17,6 +17,9 @@
 {% block title %}Galeria imagenes{% endblock %}
 {% block content %}
 <div>
+<!-- Enlace CSS de Quill -->
+<link href="https://cdn.quilljs.com/2.0.0-dev.3/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/2.0.0-dev.3/quill.min.js"></script>
 
   <link rel="stylesheet" href="{{ url_for('static',filename='css/social/publicaciones/menuAmbitosGaleriaImagenes.css') }}">
  <!-- Splash -->
@@ -265,13 +268,15 @@
       <div class="form-group_modificaPublicacion">
         <label for="postTitle_modificaPublicacion" class="text-black">Título:</label>
         <input type="text" id="postTitle_modificaPublicacion" name="postTitle_modificaPublicacion" placeholder="Escribe el título de la publicación" class="form-control" required>
-      </div>
+      </div>    
+
+    <!-- Editor de Quill -->
+<div class="form-group_modificaPublicacion">
+  <label for="body" class="text-black">Texto:</label>
+  <div id="postText_modificaPublicacion" class="form-control" placeholder="Escribe tu publicación" required></div>
+</div>
+
       
-      <!-- Textarea for the body of the post -->
-      <div class="form-group_modificaPublicacion">
-        <label for="body" class="text-black">Texto:</label>
-        <textarea id="postText_modificaPublicacion" name="postText_modificaPublicacion" placeholder="Escribe tu publicación" class="form-control" required></textarea>
-      </div>
 
       <!-- Textarea for the description of the post -->
       <div class="form-group_modificaPublicacion">
@@ -336,14 +341,71 @@
 
 <!-- ... Tu código HTML ... -->
 {% include 'layouts/layout_footer.html' %}
+<script>
+  // Inicializa Quill
+  const quill = new Quill('#postText_modificaPublicacion', {
+    theme: 'snow',
+    placeholder: 'Escribe tu publicación...',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, false] }], // Encabezados
+            ['bold', 'italic', 'underline'], // Negrita, cursiva, subrayado
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }], // Listas ordenadas/desordenadas
+            ['link', 'image'], // Enlaces e imágenes
+            [{ 'font': [] }], // Fuente
+            [{ 'size': ['small', 'medium', 'large', 'huge'] }] // Tamaño de texto
+        ]
+    }
+});
+
+
+
+
+// Cambiar la fuente
+function changeFont(font) {
+  const range = quill.getSelection();
+  if (range) {
+      quill.format('font', font);
+  }
+}
+
+// Cambiar el tamaño
+function changeSize(size) {
+  const range = quill.getSelection();
+  if (range) {
+      quill.format('size', size);
+  }
+}
+
+// Aplicar negrita
+function toggleBold() {
+  const range = quill.getSelection();
+  if (range) {
+      quill.format('bold', true);
+  }
+}
+
+// Aplicar cursiva
+function toggleItalic() {
+  const range = quill.getSelection();
+  if (range) {
+      quill.format('italic', true);
+  }
+}
+
+// Aplicar subrayado
+function toggleUnderline() {
+  const range = quill.getSelection();
+  if (range) {
+      quill.format('underline', true);
+  }
+}
+</script>
 <script src="{{ url_for('static', filename='js/media/mostrarGaleria.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/cargarPublicaciones.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/publicaciones/mostrarGaleriaAcordeon.js') }}"></script>
 
-<script>
 
-
-</script>
 
 <!-- ... Más código HTML ... -->
 

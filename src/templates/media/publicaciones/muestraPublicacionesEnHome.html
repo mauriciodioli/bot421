@@ -79,7 +79,8 @@
     
     <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
     <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
-    <p class="texto-publicacion-despliegue-home">{{ post.texto }}</p>
+    <p class="texto-publicacion-despliegue-home">{{ post.texto | safe }}</p>
+
 
 
 

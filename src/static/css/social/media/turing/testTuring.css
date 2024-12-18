@@ -1,0 +1,61 @@
+/* Botones de acciones (verde y rojo) */
+.botones-acciones {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.boton {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.boton.verde {
+    background-color: #28a745;
+    color: white;
+}
+.boton.rojo {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Flechas para navegación */
+.flechas {
+    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.boton.flecha {
+    background-color: #17a2b8;
+    color: white;
+    font-size: 20px;
+    width: 50px;
+    height: 50px;
+}
+
+/* Botones en el panel superior */
+.botones-superior {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+.boton.superior {
+    background-color: #ffc107;
+    color: black;
+    font-size: 14px;
+}
+
+
+body {
+    padding-top: 40px;
+}
+
+
+
+.margin-arriba {
+    margin-top: 30px;
+}

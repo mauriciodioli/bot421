@@ -39,6 +39,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
         headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
 
         success: function (response) {
+           
             splash.style.display = 'none'; // Ocultar el splash al terminar
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
@@ -50,7 +51,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
 
                         if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                             var firstImageUrl = post.imagenes[0].filepath;
-                            debugger;
+                           
                             mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;" class="first-image">`;
 
                             var modalImagesHtml = '';
