@@ -324,13 +324,15 @@
       var color_texto = 'black';
       var color_titulo = 'black';
       var layout = 'layout'
+      var ambito = localStorage.getItem('dominio');
      
   
       // Añadir los datos al FormData
       formData.append('correo_electronico', correo_electronico);
       formData.append('color_texto', color_texto);
       formData.append('color_titulo', color_titulo);
-      formData.append('layout',layout)
+      formData.append('layout',layout);
+      formData.append('ambito', ambito);
   
       // Añadir todos los archivos almacenados en storedFiles al FormData
       storedFiles.forEach((file, index) => {

@@ -1,5 +1,8 @@
 // Escuchar el evento de apertura del acordeón
-document.addEventListener('show.bs.collapse', function (event) {
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+///////////////////no funciona nada de esto//////////////// le puse 1 para que no tome esto
+document.addEventListener('show.bs.collapse1', function (event) {
     // Obtener el elemento del acordeón que se está abriendo
     var accordionItem = event.target;
     var ambitoId = accordionItem.getAttribute('id').replace('collapse-', ''); // Extraer el ID del ámbito

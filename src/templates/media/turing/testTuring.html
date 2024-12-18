@@ -1,0 +1,287 @@
+{% extends 'layouts/layout_dpi.html' %}
+
+{% block content %}
+<div class="splash-container" id="splash" style="display:none">
+  {% include 'notificaciones/splashPage.html' %}
+</div>
+<div class="container margin-arriba">
+  <div class="row"></div>
+  <div class="container mt-5" style="margin-top: 80px;"></div>
+  <div class="row">
+    <div class="col-md-12">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+ 
+     
+  <!-- Grilla Principal -->
+  <div class="row gx-4 gy-4">
+    <!-- Panel de Preguntas -->
+   
+    <div class="col-md-4">
+        <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Preguntas</h3>
+
+            <div class="panel-preguntas border p-3 shadow"  style="max-height: 460px; overflow-y: auto;">
+                <h3 class="text-center mb-3">Preguntas</h3>
+                <ul id="preguntas-lista" class="list-group">
+                <li class="list-group-item">¿Cuál es tu mayor logro hasta ahora?</li>
+                <li class="list-group-item">¿Cuál es el río más largo del mundo?</li>
+                <li class="list-group-item">¿Quién escribió "Don Quijote de la Mancha"?</li>
+                <li class="list-group-item">¿Cuál es el animal terrestre más rápido?</li>
+                <li class="list-group-item">¿En qué año se inventó el teléfono?</li>
+                <li class="list-group-item">¿Cuál es tu mayor logro hasta ahora?</li>
+                <li class="list-group-item">¿Cuál es el río más largo del mundo?</li>
+                <li class="list-group-item">¿Quién escribió "Don Quijote de la Mancha"?</li>
+                <li class="list-group-item">¿Cuál es el animal terrestre más rápido?</li>
+                <li class="list-group-item">¿En qué año se inventó el teléfono?</li>
+                <li class="list-group-item">¿Cuál es tu mayor logro hasta ahora?</li>
+                <li class="list-group-item">¿Cuál es el río más largo del mundo?</li>
+                <li class="list-group-item">¿Quién escribió "Don Quijote de la Mancha"?</li>
+                <li class="list-group-item">¿Cuál es el animal terrestre más rápido?</li>
+                <li class="list-group-item">¿En qué año se inventó el teléfono?</li>
+                <li class="list-group-item">¿Cuál es tu mayor logro hasta ahora?</li>
+                <li class="list-group-item">¿Cuál es el río más largo del mundo?</li>
+                <li class="list-group-item">¿Quién escribió "Don Quijote de la Mancha"?</li>
+                <li class="list-group-item">¿Cuál es el animal terrestre más rápido?</li>
+                <li class="list-group-item">¿En qué año se inventó el teléfono?</li>
+                <li class="list-group-item">¿Quién escribió "Don Quijote de la Mancha"?</li>
+                <li class="list-group-item">¿Cuál es el animal terrestre más rápido?</li>
+                <li class="list-group-item">¿En qué año se inventó el teléfono?</li>
+                <li class="list-group-item">¿Cuál es tu mayor logro hasta ahora?</li>
+                <li class="list-group-item">¿Cuál es el río más largo del mundo?</li>
+                <li class="list-group-item">¿Quién escribió "Don Quijote de la Mancha"?</li>
+                <li class="list-group-item">¿Cuál es el animal terrestre más rápido?</li>
+                <li class="list-group-item">¿En qué año se inventó el teléfono?</li>
+                </ul>
+            </div>
+            <!-- Panel Respuesta con margen superior -->
+            <h3 class="text-center mb-3" id="respuestaUltimaPregunta" 
+                style="position: sticky; top: 10px; background-color: gold; color: black; border: 2px solid white; z-index: 1; margin-top: 10px; cursor: pointer;">
+                Responder a Última Pregunta
+            </h3>
+    </div>
+
+    <!-- Panel de Respuesta y Acción dividido en 3 filas -->
+    <div class="col-md-4">
+        <div class="row mb-3">
+            <div class="col">
+              <div class="panel-superior border p-3 shadow position-relative" style="background-color: black; border: 2px solid white; color: white;">
+                 <!-- Botón abajo a la izquierda -->
+                 <button class="btn position-absolute" 
+                    style="top: 10px; left: 10px; background-color: #9a9a98; border: 2px solid #FFD700;"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#informacionModal">
+                    Info
+                </button>
+         
+                
+                
+                
+                <!-- Botón arriba a la derecha -->
+                <button class="btn position-absolute" id="btnAbrirModalLastAnswer" style="top: 10px; right: 10px; background-color: #FFD700; border: 2px solid #FFD700;">Last answer</button>
+                
+                <h4 class="fw-bold text-center">Total: <span style="color: #90EE90;">70%</span></h4>
+
+
+                <p class="text-center" style="position: relative; right: 10px;">
+                    ← para hacer preguntas
+                  </p>
+                  
+                
+                <!-- Botón abajo a la izquierda -->
+                <button class="btn position-absolute" 
+                style="bottom: 10px; left: 10px; background-color: #FFD700; border: 2px solid #FFD700;"
+                data-bs-toggle="modal" 
+                data-bs-target="#preguntaModal">
+                Ask
+                </button>
+
+              </div>
+            </div>
+          </div>
+          
+
+          <div class="row mb-3">
+            <div class="col">
+              <div class="panel-respuesta  p-3 text-center">
+                <!-- Flechas para navegación -->
+                <div class="flechas mb-3 d-flex justify-content-between">
+                  <p class="text-center" style="position: relative; right: 10px;">
+                    ← pregunta ahora
+                  </p>
+                  <p class="text-center" style="position: relative; right: 10px;">
+                    quien pregunta →
+                  </p>                  
+                  
+                
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+          
+          
+
+      <div class="row mb-3">
+        <div class="col">
+          <div class="panel-respuesta border p-3 shadow text-center">
+            <div id="respuesta-estado" class="mb-3">
+              <span id="respuesta-texto" class="fw-bold">La última respuesta fue:</span>
+              <div id="respuesta-icono"></div>
+              <h4 class="fw-bold"> <span style="color: #90EE90;">El sentido de la vida es algo muy personal y subjetivo, que cada individuo define a su manera.</span></h4>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="panel-inferior border p-3 shadow text-center" style="background-color: black; border: 2px solid white; color: white;">
+            <h4 class="fw-bold">Apuntar</h4>
+            <p>con los botones responde quien reponondio</p>
+            <!-- Botones rojo y verde -->
+            <div class="botones-inferior mt-3">
+              <button class="btn btn-danger me-3">Maquina</button>
+              <button class="btn btn-success">Humano</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Panel de Chat -->
+    <div class="col-md-4">
+        <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Chat</h3>
+
+        <div class="panel-chat border p-3 shadow" style="max-height: 460px; overflow-y: auto;">
+          <h3 class="text-center mb-3">Chat</h3>
+          <ul id="chat-lista" class="list-group">
+            <li class="list-group-item d-flex align-items-center">
+              <img src="avatar.png" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+              <div>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+                <span><strong>YuYo:</strong> ¿Cuál es la capital de Canadá?</span><br>
+              </div>
+            </li>
+          </ul>
+        </div>
+            <!-- Panel Respuesta con margen superior -->
+            <h3 class="text-center mb-3" id="preguntar" 
+                style="position: sticky; top: 10px; background-color: gold; color: black; border: 2px solid white; z-index: 1; margin-top: 10px; cursor: pointer;">
+                Hacer una Pregunta
+            </h3>
+      </div>
+      
+
+ <!-- Modal -->
+<div class="modal fade" id="preguntaModal" tabindex="-1" aria-labelledby="preguntaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="preguntaModalLabel" style="color: black;">Pregunta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="preguntaInput" class="form-control" placeholder="Escribe tu pregunta..." style="color: black;">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" id="enviarPreguntaBtn">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="LasAnswersModal" tabindex="-1" aria-labelledby="LasAnswersLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="LasAnswersLabel" style="color: black;">Análisis de Inteligencia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="mensajeModal" style="color: black;">
+          <!-- El mensaje se actualizará dinámicamente -->
+           <div class="modal-body">
+                <input type="text" id="preguntaInput" class="form-control" placeholder="Escribe tu respuesta..." style="color: black;">
+           </div>
+        </div>
+        <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="enviaAnswersBtn">Enviar</button>
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalrespuestaUltimaPregunta" tabindex="-1" aria-labelledby="modalrespuestaUltimaPreguntaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalrespuestaUltimaPreguntaLabel" style="color: black;">Última Pregunta - Respuesta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                <label for="respuestaInput" class="form-label">Pregunta</label>
+                <!-- Aquí se mostrará la pregunta -->
+                <div id="preguntaText" style="margin-bottom: 20px; font-weight: bold;"></div>
+                
+                <form id="respuestaForm">
+                    <div class="mb-3">
+                        <label for="respuestaInput" class="form-label">Tu Respuesta</label>
+                        <input type="text" class="form-control" id="respuestaInput" placeholder="Escribe tu respuesta aquí" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="enviarRespuestaBtn">Enviar Respuesta</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'layouts/layout_footer.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/media/turing/testTuring.css') }}">
+<script src="{{ url_for('static', filename='js/media/turing/testTuring.js') }}"></script>
+{% endblock %}

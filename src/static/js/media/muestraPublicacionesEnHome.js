@@ -11,6 +11,7 @@ function formatDate(dateString) {
 
 
 function cargarPublicaciones(ambitoParam,layout) {
+    
     var access_token = localStorage.getItem('access_token');   
     var ambito = ambitoParam || localStorage.getItem('dominio'); // Usa el parámetro o toma del localStorage
     var galeriaURL = '/media-publicaciones-mostrar-home';
@@ -30,6 +31,7 @@ function cargarPublicaciones(ambitoParam,layout) {
             ambito: ambito
         },
         success: function (response) {
+           
             if (splash) {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
             }
@@ -96,12 +98,24 @@ function cargarPublicaciones(ambitoParam,layout) {
                 console.error("La respuesta no es un array. Recibido:", response);
             }
         },
-        error: function () {
-            if (splash) {
-                splash.style.display = 'none'; // Ocultar el splash al terminar
+        error: function (xhr, status, error) {
+            console.error("Error en la solicitud:", xhr.responseText || error);
+        
+            // Manejo específico para 401 (Token expirado)
+            if (xhr.status === 401) {
+                alert("Acceso no autorizado o token expirado. Por favor, inicia sesión nuevamente.");
+                // Opcional: redirigir al usuario a la página de inicio de sesión
+                // Eliminar el token del localStorage
+                localStorage.removeItem('access_token');
+                window.location.href = '/'; // Cambia '/login' por tu ruta de inicio de sesión
             }
-            console.error('Error al cargar la galería de imágenes.');
-        }
+            
+            // Ocultar el splash al terminar
+            if (splash) {
+                splash.style.display = 'none';
+            }
+        }   
+        
     });
 }
 

@@ -143,6 +143,8 @@ def media_publicaciones_mostrar_home():
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()
             return jsonify(publicaciones_data)
+        else:
+            return jsonify({'error': 'Token de acceso expirado'}), 401
 
     except Exception as e:
         # Manejo genérico de excepciones, devolver un mensaje de error
@@ -545,7 +547,12 @@ def social_publicaciones_crear_publicacion():
             color_texto = request.form.get('color_texto')
             color_titulo = request.form.get('color_titulo')
             layout = request.form.get('layout')
+            ambito = request.form.get('ambito')
             
+            total_publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id).count()
+            if total_publicaciones >= 10:
+                return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
+            #  print("Inicio social_publicaciones_crear_publicacion")
           #  print("Título de la publicación:", post_title)
           #  print("Texto de la publicación:", post_text)        
           #  print("Finalizando social_publicaciones_crear_publicacion")
@@ -612,7 +619,7 @@ def social_publicaciones_crear_publicacion():
                     media_files.append(file_data)
 
               # Obtener todas las publicaciones del usuario
-            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id).all()
+            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id,ambito=ambito).all()
            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)

@@ -11,7 +11,7 @@ import random
 import secrets
 from utils.db import db
 from models.usuario import Usuario
-import jwt
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError, DecodeError
 
 
 token = Blueprint('token',__name__)
@@ -114,58 +114,49 @@ def validar_token(token=None, tipo=None, correo_electronico=None, numero_de_cuen
         return False
 
 
+
+
+
+
+
+import jwt
+from jwt.exceptions import ExpiredSignatureError, InvalidTokenError, DecodeError
+import datetime
+
 def validar_expiracion_token(access_token):
     try:
-        
+        # Validar si el token es especial (por ejemplo, para usuarios anónimos)
         if access_token == 'access_dpi_token_usuario_anonimo':
-            return True
-        # Decodificar el token para obtener la información del usuario ('sub')
-        token_info = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
-        username = token_info['sub']
+            print("Token de usuario anónimo válido.")
+            return True, None  # El segundo valor puede ser None ya que no hay datos asociados
 
-        # Obtener la fecha de expiración del token
+        # Decodificar el token
+        token_info = jwt.decode(
+            access_token,
+            current_app.config['JWT_SECRET_KEY'],
+            algorithms=['HS256']
+        )
+
+        # Validar la expiración (ya manejada automáticamente por jwt.decode)
         exp_timestamp = token_info.get('exp')
-        
-        # Verificar si existe una fecha de expiración
-        if exp_timestamp is None:
-            print("No se encontró la fecha de expiración en el token.")
-            return False
+        if exp_timestamp:
+            current_time = datetime.datetime.utcnow().timestamp()
+            if current_time > exp_timestamp:
+                print("El token ha expirado.")
+                return False, None
 
-        # Convertir el tiempo de expiración a formato datetime
-        exp_date = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
+        print("El token es válido y está bien formado.")
+        return True, token_info  # Devolver la información del token para comprobaciones posteriores
 
-        # Obtener el tiempo de creación del token (opcional)
-        iat_timestamp = token_info.get('iat')
-        if iat_timestamp is not None:
-            iat_date = datetime.fromtimestamp(iat_timestamp, tz=timezone.utc)
-            #print("Tiempo de creación del token:", iat_date)
-
-       
-
-        # Verificar si el token ha expirado
-        current_time = datetime.now(timezone.utc)
-        #print("Tiempo actual:", current_time)
-        
-        # Calcular la diferencia de tiempo hasta la expiración del token
-        tiempo_restante = exp_date - current_time
-        
-        if current_time < exp_date:
-            # El token no ha expirado
-            #print("Tiempo restante para la expiración del token:", tiempo_restante)
-            return True
-        else:
-            # El token ha expirado
-            print("El token ha expirado.")
-            return False
-
-    except jwt.ExpiredSignatureError:
-        # Error si el token ha expirado
-        print("El token ha expirado.")
+    except ExpiredSignatureError:
+        print("Error: El token ha expirado.")
         return False
-    except jwt.InvalidTokenError:
-        # Error si el token no es válido
-        print("El token no es válido.")
-        return False
+    except DecodeError:
+        print("Error: El token tiene un formato inválido.")
+        return False, None
+    except InvalidTokenError:
+        print("Error: El token no es válido.")
+        return False, None
 
 def generar_nuevo_token_acceso(correo_electronico,numero_de_cuenta,tipo_de_acceso):
     return create_access_token(identity=correo_electronico, numero_de_cuenta=numero_de_cuenta, acceso=tipo_de_acceso, expires_delta=timedelta(minutes=TOKEN_DURATION))
