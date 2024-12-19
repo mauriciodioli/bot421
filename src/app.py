@@ -93,7 +93,9 @@ from social.media.publicaciones import publicaciones
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
 from social.media.ambitos.ambito import ambito
-from social.media.turing.testTuring import testTuring
+from turing.testTuring import testTuring
+from turing.turingUser import turingUser
+from turing.turingRespuestas import turingRespuestas
 
 from social.dpis.dpi import dpi
 
@@ -123,6 +125,14 @@ from models.operacionEstrategia import operacionEstrategia
 from models.servidores.servidorAws import servidorAws
 from models.publicaciones.ambitos import ambitos
 from models.publicaciones.ambito_usuario import ambito_usuario
+from models.turing.preguntaUsuario import preguntaUsuario
+from models.turing.preguntas import preguntas
+from models.turing.respuesta import respuesta
+from models.turing.respuestaUsuario import respuestaUsuario
+from models.turing.trivia import trivia
+from models.turing.testTuringUser import testTuringUser
+
+
 
 
 from Tests.test_procesar_estado_final import test_procesar_estado_final
@@ -284,7 +294,18 @@ app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)
 
 
+app.register_blueprint(testTuringUser)
 app.register_blueprint(testTuring)
+app.register_blueprint(preguntas)
+app.register_blueprint(preguntaUsuario)
+app.register_blueprint(respuesta)
+app.register_blueprint(respuestaUsuario)
+app.register_blueprint(trivia)
+app.register_blueprint(turingUser)
+app.register_blueprint(turingRespuestas)
+
+
+
 
 app.register_blueprint(test_order_report_handler)
 app.register_blueprint(test_2_order_report_handler)
