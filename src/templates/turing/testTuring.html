@@ -29,9 +29,8 @@
    
     <div class="col-md-4">
         <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Preguntas</h3>
-
-            <div class="panel-preguntas border p-3 shadow"  style="max-height: 460px; overflow-y: auto;">
-                <h3 class="text-center mb-3">Preguntas</h3>
+        <div class="panel-preguntas border p-3 shadow" style="max-height: 460px; overflow-y: scroll;" id="panel-preguntas">
+         <h3 class="text-center mb-3">Preguntas</h3>
                 <ul id="preguntas-lista" class="list-group">
                 <li class="list-group-item">¿Cuál es tu mayor logro hasta ahora?</li>
                 <li class="list-group-item">¿Cuál es el río más largo del mundo?</li>
@@ -164,10 +163,9 @@
     <!-- Panel de Chat -->
     <div class="col-md-4">
         <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Chat</h3>
-
-        <div class="panel-chat border p-3 shadow" style="max-height: 460px; overflow-y: auto;">
+        <div class="panel-chat border p-3 shadow" style="max-height: 460px; overflow-y: auto;" id="panel-chat">
           <h3 class="text-center mb-3">Chat</h3>
-          <ul id="chat-lista" class="list-group">
+          <ul id="chat-lista" class="list-group">        
             <li class="list-group-item d-flex align-items-center">
               <img src="avatar.png" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;">
               <div>
@@ -199,6 +197,25 @@
             </h3>
       </div>
       
+
+
+
+
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+
+
+
 
  <!-- Modal -->
 <div class="modal fade" id="preguntaModal" tabindex="-1" aria-labelledby="preguntaModalLabel" aria-hidden="true">
@@ -254,31 +271,39 @@
 
 <!-- Modal -->
 <div class="modal fade" id="modalrespuestaUltimaPregunta" tabindex="-1" aria-labelledby="modalrespuestaUltimaPreguntaLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalrespuestaUltimaPreguntaLabel" style="color: black;">Última Pregunta - Respuesta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalrespuestaUltimaPreguntaLabel" style="color: black;">Última Pregunta - Respuesta</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="color: black; position: relative;">
+            <!-- Temporizador en la esquina superior derecha -->
+            <div id="timer" style="position: absolute; top: 10px; right: 10px; font-size: 18px; color: blue; font-weight: bold;">
+                02:00
             </div>
-            <div class="modal-body" style="color: black;">
-                <label for="respuestaInput" class="form-label">Pregunta</label>
-                <!-- Aquí se mostrará la pregunta -->
-                <div id="preguntaText" style="margin-bottom: 20px; font-weight: bold;"></div>
-                
-                <form id="respuestaForm">
-                    <div class="mb-3">
-                        <label for="respuestaInput" class="form-label">Tu Respuesta</label>
-                        <input type="text" class="form-control" id="respuestaInput" placeholder="Escribe tu respuesta aquí" required>
-                    </div>
-                    <button type="button" class="btn btn-primary" id="enviarRespuestaBtn">Enviar Respuesta</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
+            
+            <label for="respuestaInput" class="form-label">Pregunta</label>
+            <h4 id="modalDescripcion" class="form-label"></h4>
+            
+            <input type="hidden" id="modalPreguntaId" class="form-control">
+            <div id="preguntaText" style="margin-bottom: 20px; font-weight: bold;"></div>
+            
+            <form id="respuestaForm">
+                <div class="mb-3">
+                    <label for="respuestaInput" class="form-label">Tu Respuesta</label>
+                    <input type="text" class="form-control" id="respuestaInput" placeholder="Escribe tu respuesta aquí" required>
+                </div>
+                <button type="button" class="btn btn-primary" id="enviarRespuestaBtn">Enviar Respuesta</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
+  </div>
 </div>
+
 
 
 {% include 'layouts/layout_footer.html' %}
