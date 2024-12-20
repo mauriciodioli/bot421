@@ -27,7 +27,7 @@ function enviarRespuesta(respuesta) {
     const pregunta_respuesta_id = preguntaSeleccionada.getAttribute('data-id');
     const usuarioId = preguntaSeleccionada.getAttribute('data-usuario-id');
     const fechaCreacion = preguntaSeleccionada.getAttribute('data-fecha-creacion');
-    debugger;
+    
     // Validar que todos los datos estén presentes
     if (!pregunta_respuesta_id || !usuarioId || !fechaCreacion) {
       console.error('Faltan datos de la pregunta seleccionada.');
@@ -63,7 +63,7 @@ function enviarRespuesta(respuesta) {
         return response.json(); // Convertir la respuesta a JSON
       })
       .then((data) => {
-        console.log('Respuesta del servidor:', data);
+       
         const resutaldo_devolver = data.resutaldo_devolver; // Acceder al resultado devuelto por el servidor
         agregarResultadoTrivia(resutaldo_devolver);
         // Aquí puedes manejar el resultado devuelto por el servidor, como actualizar la UI

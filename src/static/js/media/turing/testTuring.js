@@ -408,18 +408,24 @@ function cargarPreguntaEnModalRespuesta() {
   // Obtener la lista de preguntas
   const listaPreguntas = document.getElementById("preguntas-lista"); // Suponiendo que este es el ID de la lista de preguntas
 
+  // Verificar si hay al menos 9 preguntas
+  if (listaPreguntas.children.length < 9) {
+    console.error("No hay suficientes preguntas");
+    return; // Si no hay suficientes preguntas, salir de la función
+  }
+
   // Calcular la posición 9 desde abajo
   const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 9];
 
   // Verificar si la pregunta existe en esa posición
   if (preguntaSeleccionada) {
       // Obtener la descripción de la pregunta
-      const descripcion = preguntaSeleccionada.querySelector(".descripcion").textContent; // Suponiendo que hay una clase "descripcion"
-      const preguntaId = preguntaSeleccionada.querySelector(".data-id").textContent; // Asegúrate de que la clase del ID es "data-id"
+      const descripcion = preguntaSeleccionada.querySelector(".descripcion")?.textContent || 'Descripción no disponible'; // Asegúrate de que exista la clase
+      const preguntaId = preguntaSeleccionada.querySelector(".data-id")?.textContent || 'ID no disponible'; // Asegúrate de que exista la clase
 
       // Cargar los datos en el modal
-      document.getElementById("modalDescripcion").textContent =descripcion // "descrigsdgsdpcion";
-      document.getElementById("modalPreguntaId").value =preguntaId // "7";  // Usamos `value` para un input
+      document.getElementById("modalDescripcion").textContent = descripcion; // "descripcion";
+      document.getElementById("modalPreguntaId").value = preguntaId; // "7";  // Usamos `value` para un input
   }
 }
 
