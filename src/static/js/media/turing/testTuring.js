@@ -121,11 +121,9 @@ function obtenerRespuesta() {
     // Verificar que la lista tenga suficientes elementos
     if (listaPreguntas && listaPreguntas.children.length >= 9) {
         // Calcular la posición 9 desde abajo
-        console.log("entra");
-
+      
         const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 9];
-        console.log(preguntaSeleccionada);
-
+       
         // Verificar si el elemento en esa posición tiene la estructura esperada
         if (preguntaSeleccionada) {
         
@@ -158,14 +156,15 @@ function obtenerRespuesta() {
                  
                     const nombre = data.nombre;
                     const respuesta = data.respuesta_ia;
-                    const pregunta_id = data.id;
+                    const respuesta_id = data.id;
                     const usuario_id = data.usuario_id;
                     const fechaCreacion = new Date().toLocaleString();              
+                    
                     // Suponiendo que la respuesta contiene los datos necesarios
                     agregarRespuestaAPanel(
                         nombre, 
                         respuesta, 
-                        pregunta_id, 
+                        respuesta_id, 
                         usuario_id, 
                         fechaCreacion
                     );
@@ -224,7 +223,10 @@ document.getElementById("respuestaUltimaPregunta").addEventListener("click", fun
 
 document.getElementById("enviarRespuestaBtn").addEventListener("click", function() {
   // Obtener la respuesta del input
- 
+  if (splash) {
+    splash.style.display = 'block'; // Mostrar el splash
+}
+
 
   // Llamamos a obtenerIp con un callback para procesar el formulario después de obtener la IP
   obtenerIp(function(ipCliente) {
@@ -254,6 +256,10 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
       })
       .then(response => response.json())
       .then(data => {
+           // Ocultar el splash al terminar
+           if (splash) {
+            splash.style.display = 'none';
+        }
           // Cerrar el modal una vez que la petición sea exitosa
           $('#modalrespuestaUltimaPregunta').modal('hide');  // Usando Bootstrap para cerrar el modal
           const nombre = data.nombre;
@@ -266,6 +272,10 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
           agregarRespuestaAPanel( nombre,respuesta,pregunta_id,usuario_id,fechaCreacion);
       })
       .catch(error => {
+           // Ocultar el splash al terminar
+           if (splash) {
+            splash.style.display = 'none';
+        }
           console.error('Error:', error);
       });
   });
@@ -273,16 +283,18 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
 
 
 
-function agregarRespuestaAPanel(nombre, respuesta, pregunta_id, usuario_id, fechaCreacion) {
+function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacion) {
   
   // Obtener el contenedor principal donde se cargará la respuesta
   const panelPrincipalRespuesta = $('#respuesta-panel-principal');
   const panelNombrePrincipal = $('#nombre-panel-principal-superior'); // Contenedor para el nombre
-
-  // Validar si la respuesta tiene signos de interrogación al principio y al final
+  
+  respuesta = respuesta || ''; // Asigna una cadena vacía si respuesta es null o undefined
   if (respuesta.startsWith('¿') && respuesta.endsWith('?')) {
       respuesta = respuesta.slice(1, -1); // Eliminar los signos
   }
+  
+
 
 
 
@@ -302,7 +314,7 @@ function agregarRespuestaAPanel(nombre, respuesta, pregunta_id, usuario_id, fech
 
   // Agregar atributos `data-*` para almacenar valores ocultos
   nuevaRespuesta
-      .attr('data-id', pregunta_id)
+      .attr('data-id', _id)
       .attr('data-usuario-id', usuario_id)
       .attr('data-fecha-creacion', fechaCreacion);
 
@@ -434,6 +446,12 @@ document.getElementById("preguntar").addEventListener("click", function() {
 });
  // Cuando se hace clic en el botón "Enviar"
  document.getElementById('enviarPreguntaBtn').onclick = function() {
+
+  var splash = document.querySelector('.splashCarga');
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
+
   // Llamamos a obtenerIp con un callback para procesar el formulario después de obtener la IP
   obtenerIp(function(ipCliente) {
     // Crear un objeto con los datos del formulario
@@ -445,7 +463,7 @@ document.getElementById("preguntar").addEventListener("click", function() {
       dificultad: 'facil',
       categoria: 'general',
       ip_cliente: ipCliente,  // IP pública obtenida
-      respuesta_ia: null,
+      respuesta_ia: 'no respondido',
       fecha: new Date().toISOString()  // Fecha actual en formato ISO
     };
 
@@ -459,7 +477,10 @@ document.getElementById("preguntar").addEventListener("click", function() {
     })
     .then(response => response.json())
     .then(data => {
-        debugger;
+        
+          if (splash) {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
+        }
         // Cerrar el modal una vez que la petición sea exitosa
         $('#preguntaModal').modal('hide');  // Usando Bootstrap para cerrar el modal
         const nombre = data.nombre;
@@ -471,6 +492,9 @@ document.getElementById("preguntar").addEventListener("click", function() {
         
     })
     .catch(error => {
+      if (splash) {
+        splash.style.display = 'none';
+    }
       console.error('Error:', error);
     });
   });
