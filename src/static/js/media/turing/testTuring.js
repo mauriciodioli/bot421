@@ -211,18 +211,17 @@ setInterval(function () {
 // Evento para mostrar el modal cuando se hace clic en el encabezado
 document.getElementById("respuestaUltimaPregunta").addEventListener("click", function() { 
   cargarPreguntaEnModalRespuesta();
-
-
   // Abre el modal cuando se hace clic en el encabezado
   new bootstrap.Modal(document.getElementById("modalrespuestaUltimaPregunta")).show();
+  abrirModalConTemporizador();
 });
-
-
 
 
 
 document.getElementById("enviarRespuestaBtn").addEventListener("click", function() {
   // Obtener la respuesta del input
+  
+  debugger;
   if (splash) {
     splash.style.display = 'block'; // Mostrar el splash
 }
@@ -260,6 +259,7 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
            if (splash) {
             splash.style.display = 'none';
         }
+        document.getElementById("respuestaInput").value='';
           // Cerrar el modal una vez que la petición sea exitosa
           $('#modalrespuestaUltimaPregunta').modal('hide');  // Usando Bootstrap para cerrar el modal
           const nombre = data.nombre;
@@ -333,72 +333,98 @@ function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacio
 
 
 
-// Obtener el botón que abre el modal
-document.getElementById('btnAbrirModalLastAnswer').addEventListener('click', function() {
-    // Mostrar el modal LasAnswersModal usando Bootstrap JS
-    var LasAnswersModal = new bootstrap.Modal(document.getElementById('LasAnswersModal'));
-    LasAnswersModal.show();
+
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
+//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
+//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
+//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
+
+/**
+ * Función para abrir el modal con un temporizador y mostrar la pregunta y respuesta
+ * correspondientes cada 10 segundos. El temporizador dura 2 minutos.
+ */
+function abrirModalConTemporizador() {
+  // Variables locales
+  const DURACION_MODAL = 120; // Duración en segundos (2 minutos)
+  let tiempoRestante = DURACION_MODAL;
+  let temporizador; // ID del intervalo del temporizador
+  let intervaloPreguntas; // ID del intervalo de preguntas
+
+  // Mostrar el modal
+  const modal = new bootstrap.Modal(document.getElementById('modalrespuestaUltimaPregunta'));
+  modal.show();
+
+  // Elemento del temporizador en el modal
+  const timerElement = document.getElementById('timer');
+
+  // Función para actualizar el temporizador
+  function actualizarTemporizador() {
+      const minutos = Math.floor(tiempoRestante / 60);
+      const segundos = tiempoRestante % 60;
+
+      // Formatear el tiempo a "mm:ss"
+      const tiempoFormateado = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+      timerElement.textContent = tiempoFormateado;
+
+      if (tiempoRestante > 0) {
+          tiempoRestante--;
+      } else {
+          // Detener el temporizador y cerrar el modal cuando el tiempo llegue a cero
+          clearInterval(temporizador);
+          clearInterval(intervaloPreguntas);
+          cerrarModal();
+      }
+  }
+
+  // Función para cerrar el modal
+  function cerrarModal() {
+      modal.hide();
+
+      // Asegurarse de eliminar cualquier fondo oscuro sobrante
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(backdrop => backdrop.remove());
+
+      // Restaurar el enfoque a la página principal
+      document.body.classList.remove('modal-open'); // Quitar la clase que deshabilita el scroll
+      document.body.style.overflow = ''; // Restaurar el scroll si fue deshabilitado
+      document.body.focus();
+
+      // Detener intervalos en caso de que no hayan sido limpiados
+      clearInterval(temporizador);
+      clearInterval(intervaloPreguntas);
+  }
+
+  // Iniciar el temporizador (se ejecuta cada segundo)
+  temporizador = setInterval(actualizarTemporizador, 1000);
+
+  // Iniciar el intervalo para obtener preguntas y respuestas
+  intervaloPreguntas = setInterval(() => {
+      const id = Math.floor(Math.random() * 100); // Generar ID aleatorio
+      obtenerPregunta(id);
+      obtenerRespuesta(id);
+  }, 10000); // Cada 10 segundos
+
+  // Al cerrar el modal manualmente, detener ambos intervalos y limpiar el fondo
+  document.getElementById('modalrespuestaUltimaPregunta').addEventListener('hidden.bs.modal', () => {
+      cerrarModal();
   });
-  
- 
- 
- 
- 
- 
- 
-
-
-//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
-//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
-//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
-//<!------------------------------------------TAREAS MODAL ENVIAR RESPUESTA-------------------------------------------------->
-// Función para reiniciar el temporizador
-let tiempoRestante = 17;  // 2 minutos en segundos 120
-let timerElement = document.getElementById("timer");
-// Iniciar el temporizador cada segundo
-
-  /**
-   * Reinicia el temporizador para que vuelva a contar desde 2 minutos.
-   * Se utiliza para restablecer el temporizador después de enviar una respuesta.
-   */
-function reiniciarTemporizador() {
-
-  // Resetear el tiempo y actualizar la visualización
-  tiempoRestante = 17;
- // actualizarTemporizador(tiempoRestante,timerElement);
-}
-
-// Función para actualizar el temporizador
-function actualizarTemporizador(tiempoRestante,timerElement) {
-    let minutos = Math.floor(tiempoRestante / 60);
-    let segundos = tiempoRestante % 60;
-
-    // Formatear el tiempo a "mm:ss"
-    let tiempoFormateado = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-    timerElement.textContent = tiempoFormateado;
-
-    // Decrementar el tiempo
-    if (tiempoRestante > 0) {
-        tiempoRestante--;
-    } else {
-        // Cerrar el modal cuando el tiempo llegue a cero
-        $('#modalrespuestaUltimaPregunta').modal('hide');
-        
-        // Asegurarse de que el fondo oscuro desaparezca
-        $('.modal-backdrop').remove();  // Eliminar el fondo oscuro manualmente
-        
-        // Restaurar el enfoque a la página principal
-        document.body.focus();
-    }
 }
 
 
 
-// Función que se activa cuando el modal es abierto
-document.getElementById("respuestaUltimaPregunta").addEventListener("click", function() {
-    // Mostrar el modal
-    new bootstrap.Modal(document.getElementById("modalrespuestaUltimaPregunta")).show();
-});
+
+
+
+
+
 
 
 
@@ -416,16 +442,19 @@ function cargarPreguntaEnModalRespuesta() {
 
   // Calcular la posición 9 desde abajo
   const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 9];
+  console.log(preguntaSeleccionada);
 
   // Verificar si la pregunta existe en esa posición
   if (preguntaSeleccionada) {
-      // Obtener la descripción de la pregunta
-      const descripcion = preguntaSeleccionada.querySelector(".descripcion")?.textContent || 'Descripción no disponible'; // Asegúrate de que exista la clase
-      const preguntaId = preguntaSeleccionada.querySelector(".data-id")?.textContent || 'ID no disponible'; // Asegúrate de que exista la clase
+      // Obtener la descripción de la pregunta directamente del texto del <li>
+      const descripcion = preguntaSeleccionada.textContent.trim(); // Eliminar espacios innecesarios
+
+      // Obtener el ID desde el atributo data-id
+      const preguntaId = preguntaSeleccionada.getAttribute("data-id");
 
       // Cargar los datos en el modal
-      document.getElementById("modalDescripcion").textContent = descripcion; // "descripcion";
-      document.getElementById("modalPreguntaId").value = preguntaId; // "7";  // Usamos `value` para un input
+      document.getElementById("modalDescripcion").textContent = descripcion; // Establecer la descripción en el modal
+      document.getElementById("modalPreguntaId").value = preguntaId; // Establecer el ID en el input
   }
 }
 
@@ -487,6 +516,8 @@ document.getElementById("preguntar").addEventListener("click", function() {
           if (splash) {
             splash.style.display = 'none'; // Ocultar el splash al terminar
         }
+        // Limpiar el contenido del input antes de cerrar el modal
+        document.getElementById('preguntaInput').value = '';  // Limpiar el input
         // Cerrar el modal una vez que la petición sea exitosa
         $('#preguntaModal').modal('hide');  // Usando Bootstrap para cerrar el modal
         const nombre = data.nombre;
