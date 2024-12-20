@@ -1,52 +1,92 @@
-
-
-let respuestaSeleccionada = ''; // Variable para almacenar la respuesta seleccionada
-
 // Evento para el botón "Maquina"
 document.getElementById('btnMaquina').addEventListener('click', function() {
-  respuestaSeleccionada = 'Maquina'; // Almacenar la respuesta seleccionada
-  // Mostrar el modal de confirmación
-  var confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-  confirmModal.show();
+  enviarRespuesta('Maquina'); // Llamar a la función con la respuesta "Maquina"
 });
 
 // Evento para el botón "Humano"
 document.getElementById('btnHumano').addEventListener('click', function() {
-  respuestaSeleccionada = 'Humano'; // Almacenar la respuesta seleccionada
-  // Mostrar el modal de confirmación
-  var confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-  confirmModal.show();
+  enviarRespuesta('Humano'); // Llamar a la función con la respuesta "Humano"
 });
-
-// Evento para confirmar la respuesta
-document.getElementById('confirmarRespuesta').addEventListener('click', function() {
-  // Llamar a la función AJAX para enviar la respuesta seleccionada
-  enviarRespuesta(respuestaSeleccionada);
-
-  // Cerrar el modal después de confirmar
-  var confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
-  confirmModal.hide();
-});
-
-// Función para enviar la respuesta por AJAX
+// Función para enviar la respuesta al servidor
 function enviarRespuesta(respuesta) {
-  // Realizar la llamada AJAX para enviar la respuesta al servidor
-  console.log('Enviando respuesta: ' + respuesta);
+  
+  var splash = document.querySelector('.splashCarga');
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
+    // Seleccionar el elemento <h4> dentro del contenedor
+    const preguntaSeleccionada = document.querySelector('#respuesta-panel');
 
-  // Aquí puedes agregar tu código AJAX (con fetch, XMLHttpRequest, o cualquier librería de tu preferencia)
-  // Ejemplo básico de una solicitud AJAX con fetch:
-  fetch('/ruta/a/tu/servidor', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ respuesta: respuesta })
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Respuesta del servidor:', data);
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
+    // Validar que se haya encontrado el elemento
+    if (!preguntaSeleccionada) {
+      console.error('No se encontró la pregunta seleccionada.');
+      return;
+    }
+
+    // Obtener los atributos del elemento <h4>
+    const pregunta_respuesta_id = preguntaSeleccionada.getAttribute('data-id');
+    const usuarioId = preguntaSeleccionada.getAttribute('data-usuario-id');
+    const fechaCreacion = preguntaSeleccionada.getAttribute('data-fecha-creacion');
+    debugger;
+    // Validar que todos los datos estén presentes
+    if (!pregunta_respuesta_id || !usuarioId || !fechaCreacion) {
+      console.error('Faltan datos de la pregunta seleccionada.');
+        if (splash) {
+          splash.style.display = 'none'; // Ocultar el splash al terminar
+      }
+      return;
+    }
+
+    // Crear el objeto de datos para enviar al servidor
+    const datos = {
+      pregunta_respuesta_id: pregunta_respuesta_id,
+      usuario_id: usuarioId,
+      fecha_creacion: fechaCreacion,
+      respuesta: respuesta,
+    };
+
+    // Realizar la llamada AJAX con fetch
+    fetch('/turing-triviaTuring-crear', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(datos), // Convertimos los datos a JSON
+    })
+      .then((response) => {
+        if (splash) {
+          splash.style.display = 'none'; // Ocultar el splash al terminar
+      }
+        if (!response.ok) {
+          throw new Error('Error en la respuesta del servidor');
+        }
+        return response.json(); // Convertir la respuesta a JSON
+      })
+      .then((data) => {
+        console.log('Respuesta del servidor:', data);
+        const resutaldo_devolver = data.resutaldo_devolver; // Acceder al resultado devuelto por el servidor
+        agregarResultadoTrivia(resutaldo_devolver);
+        // Aquí puedes manejar el resultado devuelto por el servidor, como actualizar la UI
+      })
+      .catch((error) => {
+        if (splash) {
+          splash.style.display = 'none'; // Ocultar el splash al terminar
+      }
+        console.error('Error:', error);
+      });
+}
+
+
+
+
+function agregarResultadoTrivia(resutaldo_devolver) {
+  // Seleccionar el elemento del DOM por su ID
+  const valor = document.getElementById('resutaldo_triva');
+  
+  if (valor) {
+    // Actualizar el contenido del elemento con el resultado devuelto por el servidor
+    valor.textContent = `${resutaldo_devolver}%`; // Agregar el porcentaje si corresponde
+  } else {
+    console.error('El elemento con ID "resutaldo_triva" no se encontró en el DOM.');
+  }
 }
