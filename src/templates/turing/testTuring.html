@@ -1,4 +1,4 @@
-{% extends 'layouts/layout_dpi.html' %}
+{% extends 'layouts/layout_turing.html' %}
 
 {% block content %}
 <div class="splash-container" id="splash" style="display:none">
@@ -78,7 +78,7 @@
                  <button class="btn position-absolute" 
                     style="top: 10px; left: 10px; background-color: #9a9a98; border: 2px solid #FFD700;"
                     data-bs-toggle="modal" 
-                    data-bs-target="#informacionModal">
+                    data-bs-target="#infoModal">
                     Info
                 </button>
          
@@ -109,40 +109,61 @@
           </div>
           
 
-          <div class="row mb-3">
+          <div class="row ">
             <div class="col">
-              <div class="panel-respuesta  p-3 text-center">
+              <div class="panel-flechas  text-center">
                 <!-- Flechas para navegación -->
-                <div class="flechas mb-3 d-flex justify-content-between">
-                  <p class="text-center" style="position: relative; right: 10px;">
+                <div class="flechas d-flex justify-content-between">
+                  <p class="text-center" style=" right: 10px;">
                     ← pregunta ahora
                   </p>
-                  <p class="text-center" style="position: relative; right: 10px;">
+                  <p class="text-center" style=" right: 10px;">
                     quien pregunta →
                   </p>                  
-                  
+                 
                 
                 </div>
               </div>
             </div>
           </div>
-          
 
           
           
-
-      <div class="row mb-3">
-        <div class="col">
-          <div class="panel-respuesta border p-3 shadow text-center">
-            <div id="respuesta-estado" class="mb-3">
-              <span id="respuesta-texto" class="fw-bold">La última respuesta fue:</span>
-              <div id="respuesta-icono"></div>
-              <h4 class="fw-bold"> <span style="color: #90EE90;">El sentido de la vida es algo muy personal y subjetivo, que cada individuo define a su manera.</span></h4>
+          <div class="row ">
+            <div class="col">
+                <div class="panel-respuesta text-center  p-3 shadow text-center">
+                  
+                    <div class="User">
+                        <p class="text-center" style="margin: 0; font-size: 1.2em;">
+                            USER
+                        </p>                   
+                        <div id="nombre-panel-principal-superior">
+                            <!-- Aquí se cargarán el nombre -->
+                            
+                        </div>
+                    </div>
+                </div>
             </div>
-
-          </div>
         </div>
+        
+        
+
+          
+          
+
+        <div class="row mb-3">
+          <div class="col">
+              <div class="panel-respuesta border p-3 shadow text-center">
+                  <div id="respuesta-estado" class="mb-3">
+                      <span id="respuesta-texto" class="fw-bold">La última respuesta fue:</span>
+                      <div id="respuesta-panel-principal">
+                          <!-- Aquí se cargarán las respuestas dinámicamente -->
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div>
+        
 
       <div class="row">
         <div class="col">
@@ -215,6 +236,25 @@
 <!------------------------------------------MODALES-------------------------------------------------->
 
 
+<!-- Modal -->
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="infoModalLabel" style="color: black;">Información sobre el testTuring</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p style="color: black;">El testTuring es una herramienta que te ayudará a mejorar tus habilidades de comunicación y comprensión de lenguaje natural. En este test, te pediremos preguntas y te proporcionaremos respuestas para que puedas practicar tu comprensión de lenguaje natural y mejorar tus habilidades de comunicación.</p>
+        <p style="color: black;">Si el porcentaje se acerca al 100%, tu nivel de comprensión de lenguaje natural es excelente.</p>
+        <p style="color: black;">Si es inferior, no sabrás distinguir entre un humano y una máquina.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
  <!-- Modal -->
