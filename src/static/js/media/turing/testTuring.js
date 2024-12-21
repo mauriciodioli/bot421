@@ -11,6 +11,20 @@
   } else {
       console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('pregunta_id_bucle'));
   }
+  
+
+  if (typeof localStorage.getItem('usuario_id_chat') === 'undefined' || localStorage.getItem('usuario_id_chat') === null) {
+    // Si no está configurado o es indefinido, lo inicializa con el valor 1
+    localStorage.setItem('usuario_id_chat', '1');
+    console.log('Pregunta ID inicializada con valor 1');
+} else {
+    console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('usuario_id_chat'));
+}
+
+
+  
+
+
 })();
 
 
@@ -207,6 +221,7 @@ function obtenerRespuesta() {
 setInterval(function () {
   // Puedes cambiar el id según lo necesites
   const id = Math.floor(Math.random() * 100); // ID de ejemplo
+  obtenerChatUsuariosPregunta();
   obtenerPregunta(id);
   obtenerRespuesta(id);
 }, 10000);
