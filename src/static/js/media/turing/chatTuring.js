@@ -19,26 +19,33 @@ function obtenerChatUsuariosPregunta() {
             // Limpiar el contenido del input antes de cerrar el modal
             document.getElementById('preguntaInput').value = ''; // Limpiar el input
             // Cerrar el modal una vez que la petición sea exitosa
-            $('#preguntaModal').modal('hide'); // Usando Bootstrap para cerrar el modal
+            //$('#preguntaModal').modal('hide'); // Usando Bootstrap para cerrar el modal
         
             // Verificar si no se encontraron datos
             if (data.not_found) {
                 // Incrementar el valor almacenado en localStorage
                 const usuarioIdChat = localStorage.getItem('usuario_id_chat') || 0; // Si no existe, inicia en 0
                 const Incrementar = parseInt(usuarioIdChat) + 1;
-                localStorage.setItem('usuario_id_chat', Incrementar); // Sumar 1
+                if (data.max_id < Incrementar) {
+                    localStorage.setItem('usuario_id_chat', 2);
+                }else{                  
+                  localStorage.setItem('usuario_id_chat', Incrementar); // Sumar 1
+                }
             } else {
                 // Procesar los datos normalmente si se encontraron
                 const nombre = data.nombre;
                 const descripcion = data.descripcion;
                 const fechaCreacion = new Date().toLocaleString(); // Si no tienes la fecha, usa la fecha actual
-                
-                
+                                
                  // Incrementar el valor almacenado en localStorage
                  const usuarioIdChat = localStorage.getItem('usuario_id_chat') || 0; // Si no existe, inicia en 0
                  const Incrementar = parseInt(usuarioIdChat) + 1;
-                 localStorage.setItem('usuario_id_chat', Incrementar); // Sumar 1
-                //localStorage.setItem('usuario_id_chat', data.id);
+                 if (data.max_id < Incrementar) {
+                     localStorage.setItem('usuario_id_chat', 2);
+                 }else{                  
+                   localStorage.setItem('usuario_id_chat', Incrementar); // Sumar 1
+                 }
+                 //localStorage.setItem('usuario_id_chat', data.id);
                 // Llamar a la función para agregar la pregunta a la lista
               
                 agregarPreguntaUsuarioListaDePreguntas(nombre, descripcion, fechaCreacion);

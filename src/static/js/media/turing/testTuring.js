@@ -69,9 +69,11 @@
 
 
 
+
 function agregarPreguntaListaDePreguntas(id, descripcion, fechaCreacion) {
    // Obtener la lista de preguntas
-  const lista = $('#preguntas-lista');
+   
+   const lista = $('#preguntas-lista');
   const panelPreguntas = document.getElementById('panel-preguntas');  // Selecciona el contenedor con el scroll
   
   // Verificar si la descripción tiene los signos ¿? al principio y al final

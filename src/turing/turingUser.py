@@ -58,7 +58,8 @@ def obtener_pregunta_usuario(id):
     try:
         # Obtener el ID máximo de la tabla Pregunta
         max_id = db.session.query(db.func.max(TestTuringUser.id)).scalar()
-        
+        if max_id < id:
+            id = 1
         # Determinar el siguiente ID, bucle para encontrar el próximo válido
         siguiente_id = id + 1 if id + 1 <= max_id else 1
         usuario = None
@@ -77,9 +78,9 @@ def obtener_pregunta_usuario(id):
         # Asegúrate de que el resultado no sea None antes de acceder a sus atributos
         if pregunta_usuario_filtrado:
             pregunta_a_enviar = db.session.query(Pregunta).filter_by(id=pregunta_usuario_filtrado.pregunta_id).first()
-            return jsonify(serialize(pregunta_a_enviar, usuario))  # Enviar los datos serializados
+            return jsonify(serialize(pregunta_a_enviar, usuario, max_id))  # Enviar los datos serializados
         else:
-            return jsonify({'not_found': True})  # Indicar que no se encontraron datos
+              return jsonify({'not_found': True, 'max_id': max_id})  # Indicar que no se encontraron datos
        
     except Exception as e:
         # Loguear el error para depuración (puedes usar una herramienta de logging aquí)
@@ -92,7 +93,7 @@ def obtener_pregunta_usuario(id):
 
 
 
-def serialize(pregunta, usuario): 
+def serialize(pregunta, usuario,max_id): 
     if pregunta is None:
         return {'error': 'Pregunta no encontrada'}, 404
 
@@ -105,7 +106,8 @@ def serialize(pregunta, usuario):
         'estado': pregunta.estado,
         'dificultad': pregunta.dificultad,
         'categoria': pregunta.categoria,
-        'respuesta_ia': pregunta.respuesta_ia
+        'respuesta_ia': pregunta.respuesta_ia,
+        'max_id': max_id
     }
 
     # Si el usuario está presente, incluir el nombre del usuario
