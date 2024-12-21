@@ -114,6 +114,21 @@ function cambiarFondoPregunta() {
 //<!------------------------------------------OBTENER RESPUESTA DESDE DB AUTOMATICA IA-------------------------------------------------->
 //<!------------------------------------------OBTENER RESPUESTA DESDE DB AUTOMATICA IA-------------------------------------------------->
 
+/**
+ * Verifica si la bandera de activación de la IA está desactivada.
+ * @returns {boolean} `true` si la bandera está desactivada, `false` en caso contrario.
+ */function obtenerBanderaActivado() {
+  
+  // Verificar si existe la clave 'bandera_activado' en localStorage
+  if (localStorage.getItem('model_activado')) {
+    // Si existe, devolver su valor
+    return localStorage.getItem('model_activado');
+  } else {
+    // Si no existe, devolver false
+    return false;
+  }
+}
+
 function obtenerRespuesta() {
   // Obtener la lista de preguntas
   const listaPreguntas = document.getElementById("preguntas-lista"); // Asegúrate de que este ID sea correcto
@@ -139,7 +154,8 @@ function obtenerRespuesta() {
                 const data = {
                     pregunta_id: preguntaId,
                     ip_cliente: ipCliente,  // IP pública obtenida
-                    descripcion: descripcion
+                    descripcion: descripcion,
+                    boton_modelo_activado: obtenerBanderaActivado()
                 };
 
                 // Realizar la solicitud con fetch
@@ -616,6 +632,81 @@ function obtenerIp(callback) {
           callback('0.0.0.0');  // Valor por defecto si hay un error
       });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const conectarButton = document.getElementById('conectar');
+
+  if (conectarButton) {
+    // Verificar si ya existe el valor en localStorage
+    let modelActivado = localStorage.getItem('model_activado');
+
+    // Si no existe, activarlo por defecto
+    if (modelActivado === null) {
+      modelActivado = true; // Se establece como activado
+      localStorage.setItem('model_activado', modelActivado);
+    } else {
+      // Convertir el valor a booleano
+      modelActivado = JSON.parse(modelActivado);
+    }
+
+    // Función para alternar el estado
+    function toggleModelState() {
+      // Alternar el estado
+      modelActivado = !modelActivado;
+
+      // Guardar el nuevo estado en localStorage
+      localStorage.setItem('model_activado', modelActivado);
+
+      // Cambiar el texto del botón dependiendo del estado
+      if (modelActivado) {
+        conectarButton.textContent = 'true'; // Puedes cambiar el texto según tu preferencia
+      } else {
+        conectarButton.textContent = 'false'; // Puedes cambiar el texto según tu preferencia
+      }
+
+      // Verificar que se guardó correctamente (opcional)
+      console.log('model_activado:', localStorage.getItem('model_activado'));
+    }
+
+    // Configurar el evento de clic para alternar el estado
+    conectarButton.addEventListener('click', toggleModelState);
+  }
+});
+
+
 
 
 

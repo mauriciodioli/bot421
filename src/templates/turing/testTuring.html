@@ -68,6 +68,7 @@
                 <button class="btn position-absolute" id="btnAbrirModalSucribe" style="top: 10px; right: 10px; background-color: #FFD700; border: 2px solid #FFD700;">Subscribe</button>
                 
                 <h4 class="fw-bold text-center">Total: <span id= "resutaldo_triva" style="color: #90EE90;">70%</span></h4>
+                <span id="resultado_texto" style="font-size: 28px; margin-left: 10px; float: right;"></span> <!-- Aquí se muestra "Correcto" o "Incorrecto", alineado a la derecha -->
 
 
                 <p class="text-center" style="position: relative; right: 10px;">
@@ -77,11 +78,12 @@
                 
                 <!-- Botón abajo a la izquierda -->
                 <button class="btn position-absolute" 
-                style="bottom: 10px; left: 10px; background-color: #FFD700; border: 2px solid #FFD700;"
-                data-bs-toggle="" 
-                data-bs-target="#">
+                style="bottom: 10px; left: 10px; background-color: #FFD700; border: 2px solid #FFD700;" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modelModal">
                 Model
-                </button>
+            </button>
+            
 
               </div>
             </div>
@@ -198,6 +200,32 @@
 <!------------------------------------------MODALES-------------------------------------------------->
 <!------------------------------------------MODALES-------------------------------------------------->
 <!------------------------------------------MODALES-------------------------------------------------->
+
+
+<!-- Modal para seleccionar el modelo -->
+<div class="modal fade" id="modelModal" tabindex="-1" aria-labelledby="modelModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="color: black;" id="modelModalLabel">Select a Model</h5>
+
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <ul class="list-group">
+                  <li class="list-group-item" data-bs-dismiss="modal" id="gpt2Model">GPT-2</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="bertModel">BERT</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="distilbertModel">DistilBERT</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="conectar">Connect</li>
+
+              </ul>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
 
 
 <!-- Modal -->
