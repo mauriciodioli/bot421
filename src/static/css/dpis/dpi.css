@@ -66,7 +66,10 @@ body {
     margin-left: 50px; /* Ajusta la distancia entre el logo y los items del menú */
     flex-wrap: nowrap; /* Asegura que los items no se ajusten en pantallas grandes */
     justify-content: flex-start; /* Alinea los items del menú a la izquierda */
-}
+
+  }
+
+
 
 
 /* Estilo responsive para dispositivos con pantallas pequeñas */
@@ -321,4 +324,7 @@ section[id] {
 .dropdown-menu {
     display: none;
     transition: all 0.3s ease;
+    max-height: 50vh; /* Altura máxima para los menús desplegables */
+    overflow-y: auto;
+    scrollbar-width: thin;
 }

@@ -79,14 +79,35 @@ function enviarRespuesta(respuesta) {
 
 
 
-function agregarResultadoTrivia(resutaldo_devolver) {
+function agregarResultadoTrivia(resultado_devolver) {
   // Seleccionar el elemento del DOM por su ID
   const valor = document.getElementById('resutaldo_triva');
+  const resultadoTexto = document.getElementById('resultado_texto'); // Elemento para mostrar el texto "Correcto" o "Incorrecto"
   
-  if (valor) {
-    // Actualizar el contenido del elemento con el resultado devuelto por el servidor
-    valor.textContent = `${resutaldo_devolver}%`; // Agregar el porcentaje si corresponde
+  if (valor && resultadoTexto) {
+    // Actualizar el contenido con el porcentaje
+    valor.textContent = `${resultado_devolver}%`;
+    
+    // Verificar si el resultado es correcto o incorrecto
+    if (resultado_devolver > 80) {
+      // Si el resultado es 100%, es correcto, mostrar en verde
+      resultadoTexto.textContent = "Correcto";
+      resultadoTexto.style.color = "green";
+    } else {
+      // Si el resultado no es 100%, es incorrecto, mostrar en rojo
+      resultadoTexto.textContent = "Incorrecto";
+      resultadoTexto.style.color = "red";
+    }
+    if (resultado_devolver < 80) {
+      // Si el resultado es 100%, es correcto, mostrar en verde
+      resultadoTexto.textContent = "Correcto";
+      resultadoTexto.style.color = "green";
+    } else {
+      // Si el resultado no es 100%, es incorrecto, mostrar en rojo
+      resultadoTexto.textContent = "Incorrecto";
+      resultadoTexto.style.color = "red";
+    }
   } else {
-    console.error('El elemento con ID "resutaldo_triva" no se encontró en el DOM.');
+    console.error('Los elementos con los IDs "resutaldo_triva" y "resultado_texto" no se encontraron en el DOM.');
   }
 }
