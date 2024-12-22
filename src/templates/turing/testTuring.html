@@ -67,7 +67,7 @@
                 <!-- Botón arriba a la derecha -->
                 <button class="btn position-absolute" id="btnAbrirModalSucribe" style="top: 10px; right: 10px; background-color: #FFD700; border: 2px solid #FFD700;">Subscribe</button>
                 
-                <h4 class="fw-bold text-center">Total: <span id= "resutaldo_triva" style="color: #90EE90;">70%</span></h4>
+                <h4 class="fw-bold text-center">AI Level  <span id= "resutaldo_triva" style="color: #90EE90;">70%</span></h4>
                 <span id="resultado_texto" style="font-size: 28px; margin-left: 10px; float: right;"></span> <!-- Aquí se muestra "Correcto" o "Incorrecto", alineado a la derecha -->
 
 
@@ -278,6 +278,14 @@
 
               <!-- Input de respuesta (oculto por defecto) -->
               <input type="text" id="respuestaInputForUserChat" class="form-control mt-3" placeholder="Escribe tu respuesta..." style="color: black; display: none;">
+
+              <!-- Checkbox para seleccionar idioma -->
+              <div class="form-check mt-3">
+                  <input class="form-check-input" type="checkbox" id="seleccionarIdiomaCheckbox">
+                  <label class="form-check-label" for="seleccionarIdiomaCheckbox" style="color: black;">
+                      Usar idioma español
+                  </label>
+              </div>
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

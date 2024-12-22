@@ -65,3 +65,10 @@ body {
 .fondo-verde-claro {
     background-color: #04fa25; /* Verde claro */
 }
+
+
+ /* Estilo opcional para botón activo */
+ #conectar.active {
+    background-color: #28a745;
+    color: white;
+  }

@@ -33,6 +33,7 @@ def turing_triviaTuring_crear():
         usuario_id = datos.get('usuario_id')
         fecha_creacion = datos.get('fecha_creacion')
         respuesta_trivia = datos.get('respuesta')
+        quienResponde = datos.get('quienResponde')
 
         # Validar que se hayan recibido los datos necesarios
         if not (pregunta_respuesta_id and usuario_id and fecha_creacion and respuesta_trivia):
@@ -40,14 +41,18 @@ def turing_triviaTuring_crear():
 
         acierto = 0
         if respuesta_trivia == 'Maquina':
-            pregunta = db.session.query(Pregunta).filter_by(id=pregunta_respuesta_id).first()
-            if pregunta:
+            if quienResponde == 'respondidoPorIA':
                 acierto = 1
+            if quienResponde == 'respondidoPorUsuario':
+                acierto = 0    
+                
+                
 
         elif respuesta_trivia == 'humano':
-            respuesta = db.session.query(Respuesta).filter_by(id=pregunta_respuesta_id, usuario_id=usuario_id).first()
-            if respuesta:
-                acierto = 1
+            if quienResponde == 'respondidoPorIA':
+                acierto = 0
+            if quienResponde == 'respondidoPorUsuario':
+                acierto = 1    
 
         # Buscar o crear una nueva trivia para el usuario
         trivia = db.session.query(Trivia).filter_by(user_id=usuario_id, fecha=datetime.now().date()).first()
@@ -69,8 +74,9 @@ def turing_triviaTuring_crear():
 
         # Responder al cliente con éxito
         return jsonify({
-            'resutaldo_devolver': resutaldo_devolver
-        }), 200
+            'resutaldo_devolver': resutaldo_devolver,
+            'acierto': acierto
+            }), 200
 
     except Exception as e:
         # Manejo de errores
