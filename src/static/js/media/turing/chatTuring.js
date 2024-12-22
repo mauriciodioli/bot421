@@ -50,7 +50,7 @@ function obtenerChatUsuariosPregunta() {
                // console.log(data);
                 if (data.nombre&&data.descripcion) {
                     const fechaCreacion = new Date().toLocaleString(); // Si no tienes la fecha, usa la fecha actual
-                    debugger;
+                   
                     if (data.fechaCreacion) {
                         fechaCreacion = data.fechaCreacion;
                     }
@@ -83,7 +83,7 @@ function agregarPreguntaUsuarioListaDePreguntas(nombre, descripcion, idioma, fec
     // Extraer la parte antes del guion bajo del nombre (números)
     const avatarText = nombre.split('_')[0];  // Obtiene la primera parte del nombre antes del guion bajo
     localStorage.setItem('avatarText', avatarText);
-    debugger;
+    
     const nombre_post = nombre.slice(0, 7);  // Truncamos el nombre a los primeros 7 caracteres
     if(idioma=='es'){        
     

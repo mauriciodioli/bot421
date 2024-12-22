@@ -88,7 +88,7 @@ def crear_pregunta():
         db.session.commit()
         
         # Serializa la nueva pregunta
-        respuesta_serializada = serialize(nueva_pregunta,usuario)
+        respuesta_serializada = serialize(nueva_pregunta,usuario,'respondidoPorUsuario')
         
         return jsonify(respuesta_serializada), 201
 

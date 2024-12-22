@@ -22,6 +22,15 @@
 }
 
 
+if (typeof localStorage.getItem('selectedModel') === 'undefined' || localStorage.getItem('selectedModel') === null) {
+  // Si no está configurado o es indefinido, lo inicializa con el valor 1
+  localStorage.setItem('selectedModel', 'gpt2Model');
+  console.log('Pregunta ID inicializada con valor 1');
+} else {
+  console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('selectedModel'));
+}
+
+
   
 
 
@@ -186,7 +195,8 @@ function obtenerRespuesta() {
                     pregunta_id: preguntaId,
                     ip_cliente: ipCliente,  // IP pública obtenida
                     descripcion: descripcion,
-                    boton_modelo_activado: obtenerBanderaActivado()
+                    boton_modelo_activado: obtenerBanderaActivado(),
+                    seselectedModel: localStorage.getItem('selectedModel')
                 };
 
                 // Realizar la solicitud con fetch
@@ -271,7 +281,7 @@ document.getElementById("respuestaUltimaPregunta").addEventListener("click", fun
 document.getElementById("enviarRespuestaBtn").addEventListener("click", function() {
   // Obtener la respuesta del input
   
-  debugger;
+  
   if (splash) {
     splash.style.display = 'block'; // Mostrar el splash
 }
@@ -563,11 +573,29 @@ document.getElementById('enviarPreguntaBtn').onclick = function() {
     // Obtener los valores del formulario
     const pregunta = document.getElementById('preguntaInput').value;
     const respuesta = document.getElementById('respuestaInputForUserChat').value;
+    const seleccionarIdiomaCheckbox = document.getElementById("seleccionarIdiomaCheckbox");
+    var idioma = 'in';
+
+    // Detectar cambio de idioma
+    seleccionarIdiomaCheckbox.addEventListener("change", function () {
+      if (this.checked) {
+          console.log("Idioma español seleccionado");
+          idioma = 'es';
+      } else {
+          console.log("Idioma español desmarcado");
+      }
+    });
+
+
+
+
+
+
 
     // Crear un objeto con los datos del formulario
     const formData = {
       descripcion: pregunta,
-      idioma: 'es',
+      idioma: idioma,
       valor: pregunta,  // Usamos el valor de la pregunta para el campo 'valor'
       estado: 'activo',
       dificultad: 'facil',
@@ -602,6 +630,7 @@ document.getElementById('enviarPreguntaBtn').onclick = function() {
         const fechaCreacion = new Date().toLocaleString();  // Si no tienes la fecha, usa la fecha actual
         localStorage.setItem('pregunta_id',data.id);
         // Llamar a la función para agregar la pregunta a la lista
+       
         agregarPreguntaLista(nombre, descripcion, idioma, fechaCreacion);
         
     })
@@ -630,7 +659,7 @@ function agregarPreguntaLista(nombre, descripcion,idioma, fechaCreacion) {
   localStorage.setItem('avatarText', avatarText);
   
   const nombre_post = nombre.slice(0, 7);  // Truncamos el nombre a los primeros 7 caracteres
-  debugger;
+  
         if(idioma=='es'){        
           
             // Verificar si la descripción tiene los signos ¿? al principio y al final
@@ -742,7 +771,61 @@ function obtenerIp(callback) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Elementos de los modelos
   const conectarButton = document.getElementById('conectar');
+  const gpt2Model = document.getElementById('gpt2Model');
+  const bertModel = document.getElementById('bertModel');
+  const distilbertModel = document.getElementById('distilbertModel');
+
+  // Obtener modelo seleccionado desde localStorage
+  let selectedModel = localStorage.getItem('selectedModel') || 'gpt2Model'; // Modelo por defecto
+
+  // Actualizar selección al cargar
+  function updateSelectedModelUI() {
+    if (selectedModel === 'gpt2Model') {
+      gpt2Model.classList.add('active');
+    } else if (selectedModel === 'bertModel') {
+      bertModel.classList.add('active');
+    } else if (selectedModel === 'distilbertModel') {
+      distilbertModel.classList.add('active');
+    }
+  }
+
+  // Guardar modelo seleccionado
+  function saveSelectedModel(model) {
+    selectedModel = model;
+    localStorage.setItem('selectedModel', model);
+
+    // Resetear clases activas
+    gpt2Model.classList.remove('active');
+    bertModel.classList.remove('active');
+    distilbertModel.classList.remove('active');
+
+    // Activar modelo seleccionado
+    updateSelectedModelUI();
+  }
+
+  // Configurar eventos para cada modelo
+  if (gpt2Model) {
+    gpt2Model.addEventListener('click', () => saveSelectedModel('gpt2Model'));
+  }
+  if (bertModel) {
+    bertModel.addEventListener('click', () => saveSelectedModel('bertModel'));
+  }
+  if (distilbertModel) {
+    distilbertModel.addEventListener('click', () => saveSelectedModel('distilbertModel'));
+  }
+
+  // Inicializar UI
+  updateSelectedModelUI();
+
+
+  
+
+
+
+
+
 
   if (conectarButton) {
     // Verificar si ya existe el valor en localStorage

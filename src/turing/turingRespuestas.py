@@ -19,9 +19,9 @@ import os
 
 ACCESS_TOKEN_IA = os.getenv("HUGGINGFACE_API_TOKEN")
 API_URLS = {
-    "gpt2": os.getenv("API_URL_GPT2"),
-    "bert": os.getenv("API_URL_BERT"),
-    "distilbert": os.getenv("API_URL_DISTILBERT"),
+    "gpt2Model": os.getenv("API_URL_GPT2"),
+    "bertModel": os.getenv("API_URL_BERT"),
+    "distilbertModel": os.getenv("API_URL_DISTILBERT"),
 }
 # Verificar que las URLs estén configuradas correctamente
 for model, url in API_URLS.items():
@@ -105,7 +105,8 @@ def turing_testTuring_obtener_respuestas_id():
         # Buscar la pregunta en la base de datos por el ID proporcionado
         pregunta = db.session.query(Pregunta).filter_by(id=pregunta_id).first()
         if model_activado == 'true':
-          respuesta_ia =respuestaIa(pregunta)
+          selectedModel = data.get('seselectedModel')         
+          respuesta_ia =respuestaIa(pregunta,selectedModel)
 
             
         if not pregunta:
@@ -150,66 +151,88 @@ def turing_testTuring_obtener_respuestas_id():
 
 
 
-
-def respuestaIa(pregunta):
+def respuestaIa(pregunta, selectedModel):
     try:
-        # Define los headers y payload para la solicitud de respuesta completa
-        headers = {"Authorization": f"Bearer {ACCESS_TOKEN_IA}"}
-        payload_respuesta = {
-            "inputs": pregunta.descripcion,
-            "parameters": {
-                "max_length": 150,           # Limitar la longitud máxima a 50 palabras
-                "num_return_sequences": 1,  # Solo una respuesta
-                "temperature": 0.7,         # Reducir aleatoriedad
-                "top_p": 0.8,               # Reducir la diversidad
-                "top_k": 40,                # Limitar las opciones posibles
-                "repetition_penalty": 1.2   # Evitar respuestas repetitivas
-            }
-        }
+        # Verificar que el modelo seleccionado es válido
+        if selectedModel not in API_URLS:
+            return {"error": f"Modelo '{selectedModel}' no soportado."}, 400
 
-        # Realizar la solicitud para la respuesta completa
-        response = requests.post(API_URLS["gpt2"], headers=headers, json=payload_respuesta)
-        print(response.status_code, response.text)  # Depuración: muestra el código de estado
+        # Definir los headers y payload para la generación de respuesta
+        headers = {"Authorization": f"Bearer {ACCESS_TOKEN_IA}"}
+        
+        # Configurar los parámetros dependiendo del modelo
+        if selectedModel == 'distilbertModel':
+            payload_respuesta = {
+                        "inputs": pregunta.descripcion,
+                        "parameters": {
+                            "max_length": 150,  # Mantén los otros parámetros si son necesarios
+                            "temperature": 0.7, 
+                            "top_p": 0.8,
+                            "top_k": 40,
+                            "repetition_penalty": 1.2
+                        }
+                    }
+             # Elimina num_return_sequences
+            payload_respuesta["parameters"].pop("num_return_sequences", None)
+        
+        if selectedModel == 'bertModel':  # BERT no usa 'temperature'
+              # Asegurar que el texto contiene [MASK]
+            pregunta.descripcion = agregar_mask(pregunta.descripcion)
+            payload_respuesta = {"inputs": pregunta.descripcion}
+        else:  # Para GPT-2 y otros modelos que soporten temperature
+            payload_respuesta = {
+                "inputs": pregunta.descripcion,
+                "parameters": {
+                    "max_length": 150,
+                    "num_return_sequences": 1,
+                    "temperature": 0.7,
+                    "top_p": 0.8,
+                    "top_k": 40,
+                    "repetition_penalty": 1.2
+                }
+            }
+
+        # Realizar la solicitud al modelo seleccionado para generar la respuesta
+        response = requests.post(API_URLS[selectedModel], headers=headers, json=payload_respuesta)
+        print(response.status_code, response.text)  # Depuración
 
         if response.status_code == 200:
             try:
                 response_json = response.json()
                 generated_text = response_json[0].get('generated_text', None)
+
                 if generated_text:
-                    # Ahora que tenemos la respuesta completa, pedimos el resumen
+                    # Preparar el payload para el resumen usando el mismo modelo seleccionado
                     payload_resumen = {
-                        "inputs": generated_text,  # Usar la respuesta completa para resumir
+                        "inputs": generated_text,
                         "parameters": {
-                            "max_length": 10,  # Limitar el resumen a 10 palabras
+                            "max_length": 10,  # Resumen limitado a 10 palabras
                             "num_return_sequences": 1,
                             "temperature": 0.7,
                             "top_p": 0.8,
                             "top_k": 40,
-                            "repetition_penalty": 1.2  # Mantener la misma penalización de repetición
+                            "repetition_penalty": 1.2
                         }
                     }
 
-                    # Realizar la solicitud para el resumen
-                    response_resumen = requests.post(API_URLS["gpt2"], headers=headers, json=payload_resumen)
+                    # Realizar la solicitud para el resumen usando el modelo seleccionado
+                    response_resumen = requests.post(API_URLS[selectedModel], headers=headers, json=payload_resumen)
                     print(response_resumen.status_code, response_resumen.text)  # Depuración
 
                     if response_resumen.status_code == 200:
-                        try:
-                            response_json_resumen = response_resumen.json()
-                            resumen = response_json_resumen[0].get('generated_text', None)
-                            if resumen:
-                                return resumen  # Devuelve el resumen generado
-                            else:
-                                return "Resumen no disponible"
-                        except Exception as e:
-                            return {"error": f"Error al procesar el resumen: {str(e)}"}, 500
+                        response_json_resumen = response_resumen.json()
+                        resumen = response_json_resumen[0].get('generated_text', None)
+                        return resumen if resumen else "Resumen no disponible"
                     else:
-                        return {"error": f"Error al llamar a la API para el resumen: {response_resumen.text}"}, response_resumen.status_code
+                        return {
+                            "error": f"Error al llamar a la API para el resumen: {response_resumen.text}"
+                        }, response_resumen.status_code
 
                 else:
                     return "Texto generado no disponible"
             except Exception as e:
                 return {"error": f"Error al procesar la respuesta JSON: {str(e)}"}, 500
+
         elif response.status_code == 503:
             return {"error": "El servidor no está disponible en este momento."}, 503
         else:
@@ -217,6 +240,7 @@ def respuestaIa(pregunta):
 
     except requests.exceptions.RequestException as e:
         return {"error": f"Error en la solicitud HTTP: {str(e)}"}, 500
+
 
 
       
@@ -272,3 +296,12 @@ def serialize_pregunta(pregunta, usuario, respuesta_ia=None, quienResponde=None)
     return result
 
 
+def agregar_mask(pregunta, placeholder="__"):
+    """
+    Reemplaza un marcador de posición con [MASK] en una pregunta.
+    Si no encuentra el marcador, agrega [MASK] al final.
+    """
+    if placeholder in pregunta:
+        return pregunta.replace(placeholder, "[MASK]")
+    else:
+        return pregunta.strip() + " [MASK]"
