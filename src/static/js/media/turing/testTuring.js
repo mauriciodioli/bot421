@@ -57,7 +57,7 @@
         success: function (data) {
        
           localStorage.setItem('pregunta_id_bucle',data.id);
-          agregarPreguntaListaDePreguntas(data.id,data.descripcion, data.fechaCreacion);
+          agregarPreguntaListaDePreguntas(data.id,data.descripcion, data.idioma,data.fechaCreacion);
           // Llama a la función cuando sea necesario (por ejemplo, después de agregar una nueva pregunta)
           cambiarFondoPregunta();
         },
@@ -70,20 +70,35 @@
 
 
 
-function agregarPreguntaListaDePreguntas(id, descripcion, fechaCreacion) {
+function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion) {
    // Obtener la lista de preguntas
    
    const lista = $('#preguntas-lista');
   const panelPreguntas = document.getElementById('panel-preguntas');  // Selecciona el contenedor con el scroll
   
-  // Verificar si la descripción tiene los signos ¿? al principio y al final
-  if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
-    // Eliminar los signos ¿? al principio y al final
-    descripcion = descripcion.slice(1, -1);
+  if(idioma=='es'){        
+          
+      // Verificar si la descripción tiene los signos ¿? al principio y al final
+      if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
+      // Eliminar los signos ¿? al principio y al final
+      descripcion = descripcion.slice(1, -1);
+      }
+
+      // Agregar los signos ¿? al principio y al final
+      descripcion = '¿' + descripcion + '?';
+  }else{
+
+        // Verificar si la descripción tiene los signos ¿? al principio y al final
+
+        if ( descripcion.endsWith('?')) {
+        // Eliminar los signos ¿? al principio y al final
+        descripcion = descripcion.slice(0, -1);
+        }
+
+        // Agregar los signos ¿? al al final
+        descripcion = descripcion + '?';
   }
 
-  // Agregar los signos ¿? al principio y al final
-  descripcion = '¿' + descripcion + '?';
             
 
   // Crear un nuevo elemento de lista con la nueva pregunta
@@ -152,7 +167,7 @@ function obtenerRespuesta() {
     // Verificar que la lista tenga suficientes elementos
     if (listaPreguntas && listaPreguntas.children.length >= 9) {
         // Calcular la posición 9 desde abajo
-      
+        
         const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 9];
        
         // Verificar si el elemento en esa posición tiene la estructura esperada
@@ -190,7 +205,8 @@ function obtenerRespuesta() {
                     const respuesta = data.respuesta_ia;
                     const respuesta_id = data.id;
                     const usuario_id = data.usuario_id;
-                    const fechaCreacion = new Date().toLocaleString();              
+                    const fechaCreacion = new Date().toLocaleString();  
+                    const quienResponde = data.quienResponde;            
                     
                     // Suponiendo que la respuesta contiene los datos necesarios
                     agregarRespuestaAPanel(
@@ -198,7 +214,8 @@ function obtenerRespuesta() {
                         respuesta, 
                         respuesta_id, 
                         usuario_id, 
-                        fechaCreacion
+                        fechaCreacion,
+                        quienResponde
                     );
                 })
                 .catch(error => {
@@ -302,7 +319,7 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
           const fechaCreacion = new Date().toLocaleString();  // Si no tienes la fecha, usa la fecha actual
           localStorage.setItem('pregunta_id', data.id);  // Guardamos el ID de la pregunta en localStorage
           // Llamar a la función para agregar la pregunta a la lista
-          agregarRespuestaAPanel( nombre,respuesta,pregunta_id,usuario_id,fechaCreacion);
+          agregarRespuestaAPanel( nombre,respuesta,pregunta_id,usuario_id,fechaCreacion,'respondidoPorUsuario');
       })
       .catch(error => {
            // Ocultar el splash al terminar
@@ -316,7 +333,7 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
 
 
 
-function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacion) {
+function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacion,quienResponde) {
   
   // Obtener el contenedor principal donde se cargará la respuesta
   const panelPrincipalRespuesta = $('#respuesta-panel-principal');
@@ -349,7 +366,8 @@ function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacio
   nuevaRespuesta
       .attr('data-id', _id)
       .attr('data-usuario-id', usuario_id)
-      .attr('data-fecha-creacion', fechaCreacion);
+      .attr('data-fecha-creacion', fechaCreacion)
+      .attr('data-quien-responde',quienResponde);
 
   // Vaciar el contenedor y agregar la nueva respuesta
   panelPrincipalRespuesta.empty().append(nuevaRespuesta);
@@ -507,31 +525,55 @@ function cargarPreguntaEnModalRespuesta() {
 //<!------------------------------------------PREGUNTAR DESDE USUARIO PANEL DERECHO-------------------------------------------------->
 //<!------------------------------------------PREGUNTAR DESDE USUARIO PANEL DERECHO-------------------------------------------------->
 //<!------------------------------------------PREGUNTAR DESDE USUARIO PANEL DERECHO-------------------------------------------------->
-
-document.getElementById("preguntar").addEventListener("click", function() {
+document.getElementById("preguntar").addEventListener("click", function () {
   // Abre el modal cuando se hace clic en el encabezado
   new bootstrap.Modal(document.getElementById("preguntaModal")).show();
-});
- // Cuando se hace clic en el botón "Enviar"
- document.getElementById('enviarPreguntaBtn').onclick = function() {
 
+  // Seleccionar elementos
+  const checkbox = document.getElementById('mostrarRespuestaCheckbox');
+  const respuestaInput = document.getElementById('respuestaInputForUserChat');
+
+  // Verificar que los elementos existen
+  if (checkbox && respuestaInput) {
+      // Remover cualquier listener previo para evitar duplicados
+      checkbox.removeEventListener('change', toggleRespuestaInput);
+
+      // Agregar evento al checkbox
+      checkbox.addEventListener('change', toggleRespuestaInput);
+
+      // Función para manejar el cambio del checkbox
+      function toggleRespuestaInput() {
+          if (this.checked) {
+              respuestaInput.style.display = 'block'; // Mostrar el input
+          } else {
+              respuestaInput.style.display = 'none'; // Ocultar el input
+          }
+      }
+  }
+});
+// Cuando se hace clic en el botón "Enviar"
+document.getElementById('enviarPreguntaBtn').onclick = function() {
   var splash = document.querySelector('.splashCarga');
-    if (splash) {
-        splash.style.display = 'block'; // Mostrar el splash
-    }
+  if (splash) {
+    splash.style.display = 'block'; // Mostrar el splash
+  }
 
   // Llamamos a obtenerIp con un callback para procesar el formulario después de obtener la IP
   obtenerIp(function(ipCliente) {
+    // Obtener los valores del formulario
+    const pregunta = document.getElementById('preguntaInput').value;
+    const respuesta = document.getElementById('respuestaInputForUserChat').value;
+
     // Crear un objeto con los datos del formulario
     const formData = {
-      descripcion: document.getElementById('preguntaInput').value,
+      descripcion: pregunta,
       idioma: 'es',
-      valor: document.getElementById('preguntaInput').value,  // Usamos el valor de la pregunta para el campo 'valor'
+      valor: pregunta,  // Usamos el valor de la pregunta para el campo 'valor'
       estado: 'activo',
       dificultad: 'facil',
       categoria: 'general',
       ip_cliente: ipCliente,  // IP pública obtenida
-      respuesta_ia: 'no respondido',
+      respuesta_ia: respuesta.trim() !== '' ? respuesta : 'no respondido', // Verifica si la respuesta está vacía
       fecha: new Date().toISOString()  // Fecha actual en formato ISO
     };
 
@@ -551,14 +593,16 @@ document.getElementById("preguntar").addEventListener("click", function() {
         }
         // Limpiar el contenido del input antes de cerrar el modal
         document.getElementById('preguntaInput').value = '';  // Limpiar el input
+        document.getElementById('respuestaInputForUserChat').value='';
         // Cerrar el modal una vez que la petición sea exitosa
         $('#preguntaModal').modal('hide');  // Usando Bootstrap para cerrar el modal
         const nombre = data.nombre;
+        const idioma = data.idioma;
         const descripcion = data.descripcion;
         const fechaCreacion = new Date().toLocaleString();  // Si no tienes la fecha, usa la fecha actual
         localStorage.setItem('pregunta_id',data.id);
         // Llamar a la función para agregar la pregunta a la lista
-        agregarPreguntaLista(nombre, descripcion, fechaCreacion);
+        agregarPreguntaLista(nombre, descripcion, idioma, fechaCreacion);
         
     })
     .catch(error => {
@@ -573,7 +617,7 @@ document.getElementById("preguntar").addEventListener("click", function() {
 
 
 // Función para agregar la pregunta a la lista
-function agregarPreguntaLista(nombre, descripcion, fechaCreacion) {
+function agregarPreguntaLista(nombre, descripcion,idioma, fechaCreacion) {
   const lista = document.getElementById('chat-lista');
   const panelChat = document.getElementById('panel-chat');  // Selecciona el contenedor con el scroll
   
@@ -586,15 +630,29 @@ function agregarPreguntaLista(nombre, descripcion, fechaCreacion) {
   localStorage.setItem('avatarText', avatarText);
   
   const nombre_post = nombre.slice(0, 7);  // Truncamos el nombre a los primeros 7 caracteres
+  debugger;
+        if(idioma=='es'){        
+          
+            // Verificar si la descripción tiene los signos ¿? al principio y al final
+            if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
+            // Eliminar los signos ¿? al principio y al final
+            descripcion = descripcion.slice(1, -1);
+            }
 
-  // Verificar si la descripción tiene los signos ¿? al principio y al final
-  if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
-    // Eliminar los signos ¿? al principio y al final
-    descripcion = descripcion.slice(1, -1);
-  }
+            // Agregar los signos ¿? al principio y al final
+            descripcion = '¿' + descripcion + '?';
+        }else{
 
-  // Agregar los signos ¿? al principio y al final
-  descripcion = '¿' + descripcion + '?';
+              // Verificar si la descripción tiene los signos ¿? al principio y al final
+
+              if ( descripcion.endsWith('?')) {
+              // Eliminar los signos ¿? al principio y al final
+              descripcion = descripcion.slice(0, -1);
+              }
+
+              // Agregar los signos ¿? al al final
+              descripcion = descripcion + '?';
+        }
 
 
   // Crear el contenido del nuevo elemento

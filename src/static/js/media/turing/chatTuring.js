@@ -17,7 +17,7 @@ function obtenerChatUsuariosPregunta() {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
             }
             // Limpiar el contenido del input antes de cerrar el modal
-            document.getElementById('preguntaInput').value = ''; // Limpiar el input
+            //document.getElementById('preguntaInput').value = ''; // Limpiar el input
             // Cerrar el modal una vez que la petición sea exitosa
             //$('#preguntaModal').modal('hide'); // Usando Bootstrap para cerrar el modal
         
@@ -47,8 +47,19 @@ function obtenerChatUsuariosPregunta() {
                  }
                  //localStorage.setItem('usuario_id_chat', data.id);
                 // Llamar a la función para agregar la pregunta a la lista
-              
-                agregarPreguntaUsuarioListaDePreguntas(nombre, descripcion, fechaCreacion);
+               // console.log(data);
+                if (data.nombre&&data.descripcion) {
+                    const fechaCreacion = new Date().toLocaleString(); // Si no tienes la fecha, usa la fecha actual
+                    debugger;
+                    if (data.fechaCreacion) {
+                        fechaCreacion = data.fechaCreacion;
+                    }
+
+                    agregarPreguntaUsuarioListaDePreguntas(data.nombre, data.descripcion, data.idioma, fechaCreacion);
+                } else {
+                    
+                    console.error('en chatTuring js No se recibió respuesta:', data);
+                }
             }
         },
         error: function () {
@@ -60,30 +71,42 @@ function obtenerChatUsuariosPregunta() {
 
 
 // Función para agregar la pregunta a la lista
-function agregarPreguntaUsuarioListaDePreguntas(nombre, descripcion, fechaCreacion) {
-    debugger;
+function agregarPreguntaUsuarioListaDePreguntas(nombre, descripcion, idioma, fechaCreacion) {
+   
     const lista = document.getElementById('chat-lista');
     const panelChat = document.getElementById('panel-chat');  // Selecciona el contenedor con el scroll
     
     // Crear un nuevo elemento de lista
     const nuevoItem = document.createElement('li');
     nuevoItem.classList.add('list-group-item', 'd-flex', 'align-items-center');
-    
+   
     // Extraer la parte antes del guion bajo del nombre (números)
     const avatarText = nombre.split('_')[0];  // Obtiene la primera parte del nombre antes del guion bajo
     localStorage.setItem('avatarText', avatarText);
-    
+    debugger;
     const nombre_post = nombre.slice(0, 7);  // Truncamos el nombre a los primeros 7 caracteres
-  
-    // Verificar si la descripción tiene los signos ¿? al principio y al final
-    if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
-      // Eliminar los signos ¿? al principio y al final
-      descripcion = descripcion.slice(1, -1);
+    if(idioma=='es'){        
+    
+                // Verificar si la descripción tiene los signos ¿? al principio y al final
+                if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
+                // Eliminar los signos ¿? al principio y al final
+                descripcion = descripcion.slice(1, -1);
+                }
+    
+        // Agregar los signos ¿? al principio y al final
+        descripcion = '¿' + descripcion + '?';
+    }else{
+
+        // Verificar si la descripción tiene los signos ¿? al principio y al final
+    
+        if ( descripcion.endsWith('?')) {
+            // Eliminar los signos ¿? al principio y al final
+            descripcion = descripcion.slice(0, -1);
+        }
+    
+        // Agregar los signos ¿? al al final
+        descripcion = descripcion + '?';
     }
-  
-    // Agregar los signos ¿? al principio y al final
-    descripcion = '¿' + descripcion + '?';
-  
   
     // Crear el contenido del nuevo elemento
     const contenido = `

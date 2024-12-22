@@ -129,7 +129,7 @@ def obtener_pregunta(id):
         if not pregunta:  # Si no se encontró ninguna pregunta válida
             return {'error': 'Pregunta no encontrada'}, 404
 
-        return jsonify(serialize(pregunta,None))
+        return jsonify(serialize(pregunta,None,'respondidoPorIA'))
     
     except Exception as e:
         # Loguear el error para depuración (puedes usar una herramienta de logging aquí)
@@ -228,7 +228,7 @@ def eliminar_pregunta_usuario(id):
     return jsonify({'message': 'PreguntaUsuario eliminada exitosamente'}), 200
 
 
-def serialize(pregunta, usuario): 
+def serialize(pregunta, usuario,quienResponde): 
     if pregunta is None:
         return {'error': 'Pregunta no encontrada'}, 404
 
@@ -241,7 +241,8 @@ def serialize(pregunta, usuario):
         'estado': pregunta.estado,
         'dificultad': pregunta.dificultad,
         'categoria': pregunta.categoria,
-        'respuesta_ia': pregunta.respuesta_ia
+        'respuesta_ia': pregunta.respuesta_ia,
+        'quienResponde':quienResponde
     }
 
     # Si el usuario está presente, incluir el nombre del usuario
