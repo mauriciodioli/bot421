@@ -74,7 +74,7 @@ def social_media_turing_turingRespuestas_crear():
         db.session.commit()
         
         # Serializar la nueva respuesta para enviarla como respuesta
-        nueva_respuesta = serialize(nueva_respuesta, usuario)
+        nueva_respuesta = serialize(nueva_respuesta, usuario,'respondidoPorUsuario')
         return jsonify(nueva_respuesta), 201
 
     except Exception as e:
@@ -118,17 +118,31 @@ def turing_testTuring_obtener_respuestas_id():
         # Serializar y devolver la pregunta encontrada
        # Verifica si la bandera 'boton_modelo_activado' está presente y es True
        
-        if model_activado == 'true':
-            return jsonify(serialize_pregunta(pregunta, usuario, respuesta_ia))
-        else:
-            return jsonify(serialize_pregunta(pregunta, usuario, None))
+         # Obtener la respuesta del usuario
+        respuesta_usuario = None  # Inicializar la variable
+        pregunta_usuario = db.session.query(PreguntaUsuario).filter_by(id=pregunta_id).first()
+        if pregunta_usuario and pregunta.id == pregunta_usuario.pregunta_id:
+            respuesta_usuario = pregunta.respuesta_ia  # Ajuste para obtener la respuesta del usuario
 
-    
+        # Seleccionar aleatoriamente entre 'respuesta_ia' y 'respuesta_usuario'
+        valores = ['respuesta_ia', 'respuesta_usuario']
+        valor_aleatorio = random.choice(valores)
+
+        # Verificar si es respuesta_ia o respuesta_usuario
+        if valor_aleatorio == 'respuesta_ia':
+            if model_activado == 'true':
+                return jsonify(serialize_pregunta(pregunta, usuario, respuesta_ia, 'respondidoPorIA'))
+            else:
+                return jsonify(serialize_pregunta(pregunta, usuario, None, 'respondidoPorIA'))
+
+        elif valor_aleatorio == 'respuesta_usuario':
+            return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, 'respondidoPorUsuario'))
+
     except Exception as e:
         # Loguear el error para depuración
         print(f"Error al obtener la pregunta: {str(e)}")
         return {'error': 'Ocurrió un error al procesar la solicitud.'}, 500
-    
+
     finally:
         # Cerrar la sesión de la base de datos para liberar recursos
         db.session.close()
@@ -207,7 +221,7 @@ def respuestaIa(pregunta):
 
       
   
-def serialize(respuesta, usuario): 
+def serialize(respuesta, usuario,quienResponde): 
     if respuesta is None:
         return {'error': 'respuesta no encontrada'}, 404
 
@@ -221,7 +235,8 @@ def serialize(respuesta, usuario):
         'estado': respuesta.estado,
         'dificultad': respuesta.dificultad,
         'categoria': respuesta.categoria,
-        'respuesta':respuesta.respuesta
+        'respuesta':respuesta.respuesta,
+        'quienResponde':quienResponde
     }
 
     # Si el usuario está presente, incluir el nombre del usuario
@@ -231,7 +246,8 @@ def serialize(respuesta, usuario):
     return result
 
 
-def serialize_pregunta(pregunta, usuario, respuesta_ia):
+def serialize_pregunta(pregunta, usuario, respuesta_ia=None, quienResponde=None):
+    # Validar si la pregunta no existe
     if pregunta is None:
         return {'error': 'Pregunta no encontrada'}, 404
 
@@ -244,17 +260,15 @@ def serialize_pregunta(pregunta, usuario, respuesta_ia):
         'estado': pregunta.estado,
         'dificultad': pregunta.dificultad,
         'categoria': pregunta.categoria,
-        'respuesta_ia': pregunta.respuesta_ia,
-        'usuario_id': usuario.id
+        'respuesta_ia': pregunta.respuesta_ia if respuesta_ia is None else respuesta_ia,  # Prioriza respuesta_ia
+        'usuario_id': usuario.id if usuario else None,  # Maneja usuario opcional
+        'quienResponde': quienResponde
     }
 
-    # Incluir el nombre del usuario si el usuario está presente
+    # Incluir el nombre del usuario si está presente
     if usuario:
         result['nombre'] = usuario.nombre
 
-    # Incluir la respuesta_ia si está presente
-    if respuesta_ia:
-        result['respuesta_ia'] = respuesta_ia  # Evitar la coma al final que convierte el valor en una tupla
-
     return result
+
 
