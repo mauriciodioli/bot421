@@ -7,7 +7,7 @@
   if (typeof localStorage.getItem('pregunta_id_bucle') === 'undefined' || localStorage.getItem('pregunta_id_bucle') === null) {
       // Si no está configurado o es indefinido, lo inicializa con el valor 1
       localStorage.setItem('pregunta_id_bucle', '1');
-      console.log('Pregunta ID inicializada con valor 1');
+   
   } else {
       console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('pregunta_id_bucle'));
   }
@@ -16,7 +16,7 @@
   if (typeof localStorage.getItem('usuario_id_chat') === 'undefined' || localStorage.getItem('usuario_id_chat') === null) {
     // Si no está configurado o es indefinido, lo inicializa con el valor 1
     localStorage.setItem('usuario_id_chat', '1');
-    console.log('Pregunta ID inicializada con valor 1');
+   
 } else {
     console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('usuario_id_chat'));
 }
@@ -25,13 +25,29 @@
 if (typeof localStorage.getItem('selectedModel') === 'undefined' || localStorage.getItem('selectedModel') === null) {
   // Si no está configurado o es indefinido, lo inicializa con el valor 1
   localStorage.setItem('selectedModel', 'gpt2Model');
-  console.log('Pregunta ID inicializada con valor 1');
+ 
 } else {
   console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('selectedModel'));
 }
 
 
-  
+if (typeof localStorage.getItem('activado_voz') === 'undefined' || localStorage.getItem('activado_voz') === null) {
+  // Si no está configurado o es indefinido, lo inicializa con el valor 1
+  localStorage.setItem('activado_voz', 'false');
+  console.log('activado_voz false');
+} else {
+  console.log('activado_voz:', localStorage.getItem('activado_voz'));
+}
+
+
+if (typeof localStorage.getItem('idioma_es') === 'undefined' || localStorage.getItem('idioma_es') === null) {
+  // Si no está configurado o es indefinido, lo inicializa con el valor 1
+  localStorage.setItem('idioma_es', 'false');
+  console.log('idioma_es false');
+} else {
+  console.log('idioma_es:', localStorage.getItem('idioma_es'));
+}
+
 
 
 })();
@@ -253,7 +269,7 @@ setInterval(function () {
   obtenerChatUsuariosPregunta();
   obtenerPregunta(id);
   obtenerRespuesta(id);
-}, 10000);
+}, 30000);
 
 
 
@@ -387,6 +403,23 @@ function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacio
 
   // Vaciar el contenedor del nombre y cargar el nuevo nombre
   panelNombrePrincipal.empty().append(nuevoNombre);
+
+  var activado_voz = localStorage.getItem('activado_voz');
+  var idioma_es = localStorage.getItem('idioma_es');
+
+    if (!window.speechSynthesis) {
+        console.error('La síntesis de voz no está soportada en este navegador.');
+        return;
+    }
+
+    if (activado_voz === 'true' && respuesta.trim() !== '') {
+        const speech = new SpeechSynthesisUtterance(respuesta);
+        speech.lang = idioma_es === 'true' ? 'es-ES' : 'en-US';
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(speech);
+    }
+
+  
 }
 
 
@@ -893,6 +926,46 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////BOTONES DE COLOR////////////////////////////
+////////////////////////////////////////////////////////////////
+// Referencias a los botones
+const btnGris = document.getElementById('btnGris');
+const btnVerde = document.getElementById('btnVerde');
+
+ // Evento para cambiar el color del botón gris
+btnGris.addEventListener('click', () => {
+  btnGris.classList.toggle('activo'); // Cambia entre gris y verde
+  const isActive = btnGris.classList.contains('activo');
+  localStorage.setItem('activado_voz', JSON.stringify(isActive)); // Guarda el estado como cadena JSON
+  alert(isActive ? 'Voz activada' : 'Voz desactivada');
+});
+
+// Evento para cambiar el color del botón verde
+btnVerde.addEventListener('click', () => {
+  btnVerde.classList.toggle('activo'); // Cambia entre verde y azul
+  const isActive = btnVerde.classList.contains('activo');
+  localStorage.setItem('idioma_es', JSON.stringify(isActive)); // Guarda el estado como cadena JSON
+  alert(isActive ? 'Spanish activado' : 'Spanish desactivado');
+});
 
 
 
