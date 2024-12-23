@@ -349,7 +349,10 @@ function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacio
   const panelPrincipalRespuesta = $('#respuesta-panel-principal');
   const panelNombrePrincipal = $('#nombre-panel-principal-superior'); // Contenedor para el nombre
   
+
+
   respuesta = respuesta || ''; // Asigna una cadena vacía si respuesta es null o undefined
+  respuesta = String(respuesta); // Asegúrate de que sea una cadena
   if (respuesta.startsWith('¿') && respuesta.endsWith('?')) {
       respuesta = respuesta.slice(1, -1); // Eliminar los signos
   }
@@ -560,6 +563,18 @@ document.getElementById("preguntar").addEventListener("click", function () {
           }
       }
   }
+
+  document.getElementById('mostrarCategoriasCheckbox').addEventListener('change', function () {
+    const categoriaSelect = document.getElementById('categoriaSelectForUserChat');
+    if (this.checked) {
+      categoriaSelect.style.display = 'block'; // Mostrar selección de categorías
+    } else {
+      categoriaSelect.style.display = 'none'; // Ocultar selección de categorías
+    }
+  });
+  
+
+
 });
 // Cuando se hace clic en el botón "Enviar"
 document.getElementById('enviarPreguntaBtn').onclick = function() {
@@ -573,24 +588,37 @@ document.getElementById('enviarPreguntaBtn').onclick = function() {
     // Obtener los valores del formulario
     const pregunta = document.getElementById('preguntaInput').value;
     const respuesta = document.getElementById('respuestaInputForUserChat').value;
+    // Obtener referencia al checkbox
     const seleccionarIdiomaCheckbox = document.getElementById("seleccionarIdiomaCheckbox");
-    var idioma = 'in';
 
-    // Detectar cambio de idioma
-    seleccionarIdiomaCheckbox.addEventListener("change", function () {
-      if (this.checked) {
-          console.log("Idioma español seleccionado");
-          idioma = 'es';
+    // Declarar la variable idioma
+    let idioma;
+    // Función para actualizar el valor de la variable según el estado del checkbox
+    function actualizarIdioma() {
+      if (seleccionarIdiomaCheckbox.checked) {
+        idioma = 'es';
+        console.log("Idioma español seleccionado");
       } else {
-          console.log("Idioma español desmarcado");
+        idioma = 'in';
+        console.log("Idioma español desmarcado");
       }
-    });
+      // Mostrar el valor actual de la variable
+      console.log("Idioma actual:", idioma);
+    }
+
+    // Detectar cambios en el checkbox
+    seleccionarIdiomaCheckbox.addEventListener("change", actualizarIdioma);
+
+    // Establecer el valor inicial al cargar la página
+    actualizarIdioma();
 
 
 
 
-
-
+    
+    // Detectar categoría
+    const categoriaSelect = document.getElementById('categoriaSelectForUserChat');
+    const categoriaSeleccionada = categoriaSelect.value || 'Libre'; // Si no hay selección, usa 'libre'
 
     // Crear un objeto con los datos del formulario
     const formData = {
@@ -599,7 +627,7 @@ document.getElementById('enviarPreguntaBtn').onclick = function() {
       valor: pregunta,  // Usamos el valor de la pregunta para el campo 'valor'
       estado: 'activo',
       dificultad: 'facil',
-      categoria: 'general',
+      categoria: categoriaSeleccionada,
       ip_cliente: ipCliente,  // IP pública obtenida
       respuesta_ia: respuesta.trim() !== '' ? respuesta : 'no respondido', // Verifica si la respuesta está vacía
       fecha: new Date().toISOString()  // Fecha actual en formato ISO

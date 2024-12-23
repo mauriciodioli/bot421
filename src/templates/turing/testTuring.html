@@ -31,8 +31,7 @@
 
   <!-- Grilla Principal -->
   <div class="row gx-4 gy-4">
-    <!-- Panel de Preguntas -->
-   
+    <!-- Panel de Preguntas -->   
     <div class="col-md-4">
         <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Preguntas</h3>
         <div class="panel-preguntas border p-3 shadow" style="max-height: 460px; overflow-y: scroll;" id="panel-preguntas">
@@ -228,7 +227,7 @@
 
 
 
-<!-- Modal -->
+<!-- Modal para información -->
 <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -286,6 +285,32 @@
                       Usar idioma español
                   </label>
               </div>
+
+
+             <!-- Checkbox para mostrar/ocultar categoriaSelectForUserChat -->
+            <div class="form-check mt-3">
+              <input class="form-check-input" type="checkbox" id="mostrarCategoriasCheckbox">
+              <label class="form-check-label" for="mostrarCategoriasCheckbox" style="color: black;">
+                Añadir Categoría
+              </label>
+            </div>
+
+            <!-- Selección de categoría (oculta por defecto) -->
+            <select id="categoriaSelectForUserChat" class="form-control mt-3" style="color: black; display: none;">
+              <option value="" disabled selected>Selecciona una categoría...</option>
+              <option value="presentacion">Presentación breve</option>
+              <option value="pregunta-sencilla">Sencilla inicia conversación</option>
+              <option value="pregunta-logica">Lógica evalua razonamiento</option>
+              <option value="pregunta-emocional">Emocional</option>
+              <option value="pregunta-Subjetiva">Subjetiva</option>
+              <option value="pregunta-Inesperada">Inesperada</option>
+              <option value="pregunta-creativa">Creativa</option>
+              <option value="pregunta-ambigua">Ambigua</option>
+              <option value="pregunta-Cultural">Cultural</option>
+              <option value="pregunta-Libre">Libre</option>
+            </select>
+
+
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -301,7 +326,7 @@
 
 
 
-<!-- Modal -->
+<!-- Modal para agregar respuesta por usuario con tiempo -->
 <div class="modal fade" id="modalrespuestaUltimaPregunta" tabindex="-1" aria-labelledby="modalrespuestaUltimaPreguntaLabel" aria-hidden="true">
   <div class="modal-dialog">
       <div class="modal-content">
