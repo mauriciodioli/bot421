@@ -159,7 +159,7 @@ function cambiarFondoPregunta() {
       preguntaAnterior.removeClass('fondo-verde-claro');
       
       // Selecciona el noveno elemento desde abajo
-      const novenaPregunta = preguntas.eq(-7);  // -7 para contar desde abajo hacia arriba
+      const novenaPregunta = preguntas.eq(-6);  // -6 para contar desde abajo hacia arriba
       
       // Le agrega la clase para cambiar el fondo
       novenaPregunta.addClass('fondo-verde-claro');
@@ -192,6 +192,7 @@ function obtenerRespuesta() {
   const listaPreguntas = document.getElementById("preguntas-lista"); // Asegúrate de que este ID sea correcto
   obtenerIp(function(ipCliente) {
     // Verificar que la lista tenga suficientes elementos
+
     if (listaPreguntas && listaPreguntas.children.length >= 6) {
         // Calcular la posición 9 desde abajo
         
@@ -252,8 +253,8 @@ function obtenerRespuesta() {
             } else {
                 console.error('No se pudo obtener la descripción o el ID de la pregunta.');
             }
-        } else {
-            console.error('No hay una pregunta válida en la posición 6 desde abajo.');
+          } else {
+             console.error('No hay una pregunta válida en la posición 6 desde abajo.');
         }
     } else {
         console.error('La lista de preguntas no contiene suficientes elementos.');
