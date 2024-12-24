@@ -133,7 +133,7 @@ def turing_testTuring_obtener_respuestas_id():
 
             elif valor_aleatorio == 'respuesta_usuario':
                 # Respuesta proporcionada por el usuario
-                respuesta_usuario = obtener_respuesta_usuario(pregunta,pregunta_id)
+                respuesta_usuario, estado_respuesta= obtener_respuesta_usuario(pregunta,pregunta_id)
                 return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, 'respondidoPorUsuario'))
         else:
            # Respuesta proporcionada por el usuario si el modelo no está activado

@@ -76,9 +76,24 @@ def obtener_pregunta_usuario(id):
         pregunta_usuario_filtrado = db.session.query(PreguntaUsuario).filter_by(user_id=usuario.id).first()
 
         # Asegúrate de que el resultado no sea None antes de acceder a sus atributos
+        
         if pregunta_usuario_filtrado:
             pregunta_a_enviar = db.session.query(Pregunta).filter_by(id=pregunta_usuario_filtrado.pregunta_id).first()
-            return jsonify(serialize(pregunta_a_enviar, usuario, max_id))  # Enviar los datos serializados
+
+            if not pregunta_a_enviar:  # Si no existe la pregunta con el ID especificado
+                # Buscar la siguiente pregunta con un ID mayor al actual
+                pregunta_a_enviar = (
+                    db.session.query(Pregunta)
+                    .filter(Pregunta.id > pregunta_usuario_filtrado.pregunta_id)  # IDs mayores
+                    .order_by(Pregunta.id.asc())  # Ordenar por ID ascendente
+                    .first()
+                )
+
+            if pregunta_a_enviar:
+                return jsonify(serialize(pregunta_a_enviar, usuario, max_id))  # Enviar los datos serializados
+            else:
+                return jsonify({'not_found': True, 'max_id': max_id})  
+                
         else:
               return jsonify({'not_found': True, 'max_id': max_id})  # Indicar que no se encontraron datos
        

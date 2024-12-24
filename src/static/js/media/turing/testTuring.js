@@ -55,6 +55,8 @@ if (typeof localStorage.getItem('idioma_es') === 'undefined' || localStorage.get
 
 
 
+
+
 //<!------------------------------------------PANEL IZQUIERDO -------------------------------------------------->
 //<!------------------------------------------PANEL IZQUIERDO -------------------------------------------------->
 //<!------------------------------------------PANEL IZQUIERDO -------------------------------------------------->
@@ -150,14 +152,14 @@ function cambiarFondoPregunta() {
   const listaPreguntas = $('#preguntas-lista');
   const preguntas = listaPreguntas.children();  // Obtiene todos los elementos <li>
   
-  // Verifica si hay al menos 9 preguntas
-  if (preguntas.length >= 9) {
+  // Verifica si hay al menos 6 preguntas
+  if (preguntas.length >= 6) {
       // Eliminar la clase 'fondo-verde-claro' de la pregunta que la tenía previamente
       const preguntaAnterior = listaPreguntas.find('.fondo-verde-claro');
       preguntaAnterior.removeClass('fondo-verde-claro');
       
       // Selecciona el noveno elemento desde abajo
-      const novenaPregunta = preguntas.eq(-9);  // -9 para contar desde abajo hacia arriba
+      const novenaPregunta = preguntas.eq(-7);  // -7 para contar desde abajo hacia arriba
       
       // Le agrega la clase para cambiar el fondo
       novenaPregunta.addClass('fondo-verde-claro');
@@ -190,10 +192,10 @@ function obtenerRespuesta() {
   const listaPreguntas = document.getElementById("preguntas-lista"); // Asegúrate de que este ID sea correcto
   obtenerIp(function(ipCliente) {
     // Verificar que la lista tenga suficientes elementos
-    if (listaPreguntas && listaPreguntas.children.length >= 9) {
+    if (listaPreguntas && listaPreguntas.children.length >= 6) {
         // Calcular la posición 9 desde abajo
         
-        const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 9];
+        const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 6];
        
         // Verificar si el elemento en esa posición tiene la estructura esperada
         if (preguntaSeleccionada) {
@@ -251,7 +253,7 @@ function obtenerRespuesta() {
                 console.error('No se pudo obtener la descripción o el ID de la pregunta.');
             }
         } else {
-            console.error('No hay una pregunta válida en la posición 9 desde abajo.');
+            console.error('No hay una pregunta válida en la posición 6 desde abajo.');
         }
     } else {
         console.error('La lista de preguntas no contiene suficientes elementos.');
@@ -399,12 +401,12 @@ function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacio
       .attr('data-quien-responde',quienResponde);
 
       // Cargar los valores en el panel de respuestas
-  $('#nombre-respuesta').text(`ID: ${_id}`);
-  $('#respuesta-panel-principal').text(`Usuario ID: ${usuario_id}`);
-  $('#atributos-respuesta').html(`
-      <p>Fecha de Creación: ${fechaCreacion}</p>
-      <p>Quién Responde: ${quienResponde}</p>
-  `);
+  //$('#nombre-respuesta').text(`ID: ${_id}`);
+  //$('#respuesta-panel-principal').text(`Usuario ID: ${usuario_id}`);
+  //$('#atributos-respuesta').html(`
+  //    <p>Fecha de Creación: ${fechaCreacion}</p>
+  //    <p>Quién Responde: ${quienResponde}</p>
+  //`);
   // Vaciar el contenedor y agregar la nueva respuesta
   panelPrincipalRespuesta.empty().append(nuevaRespuesta);
 
@@ -538,14 +540,14 @@ function cargarPreguntaEnModalRespuesta() {
   // Obtener la lista de preguntas
   const listaPreguntas = document.getElementById("preguntas-lista"); // Suponiendo que este es el ID de la lista de preguntas
 
-  // Verificar si hay al menos 9 preguntas
-  if (listaPreguntas.children.length < 9) {
+  // Verificar si hay al menos 6 preguntas
+  if (listaPreguntas.children.length < 6) {
     console.error("No hay suficientes preguntas");
     return; // Si no hay suficientes preguntas, salir de la función
   }
 
-  // Calcular la posición 9 desde abajo
-  const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 9];
+  // Calcular la posición 7 desde abajo
+  const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 6];
   console.log(preguntaSeleccionada);
 
   // Verificar si la pregunta existe en esa posición
