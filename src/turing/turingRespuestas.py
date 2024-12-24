@@ -86,69 +86,64 @@ def social_media_turing_turingRespuestas_crear():
         db.session.close()
 
       
-
-
 @turingRespuestas.route('/turing-testTuring-obtener-respuestas-id', methods=['POST'])
 def turing_testTuring_obtener_respuestas_id():
     try:
-        # Obtener los datos enviados en el cuerpo de la solicitud
+        # Obtener los datos enviados en la solicitud
         data = request.get_json()
-        model_activado = data.get('boton_modelo_activado', 'false')
         if not data:
             return {'error': 'No se proporcionaron datos.'}, 400
-        
-        # Obtener parámetros del cliente
-        pregunta_id = int(data.get('pregunta_id'))  # Elimina 'default_value'; pregunta_id puede ser None si no existe
-        if not pregunta_id:
-            return {'error': 'El parámetro "pregunta_id" es obligatorio.'}, 400
-        
-        # Buscar la pregunta en la base de datos por el ID proporcionado
-        pregunta = db.session.query(Pregunta).filter_by(id=pregunta_id).first()
-        if model_activado == 'true':
-          selectedModel = data.get('seselectedModel')         
-          respuesta_ia =respuestaIa(pregunta,selectedModel)
 
-            
+        # Validar y obtener parámetros necesarios
+        pregunta_id = data.get('pregunta_id')
+        if not pregunta_id or not str(pregunta_id).isdigit():
+            return {'error': 'El parámetro "pregunta_id" es obligatorio y debe ser un número válido.'}, 400
+
+        pregunta_id = int(pregunta_id)
+        model_activado = data.get('boton_modelo_activado', 'false')
+        selected_model = data.get('selectedModel')
+        ip_cliente = data.get('ip_cliente', 'default_value')
+
+        # Buscar la pregunta en la base de datos
+        pregunta = db.session.query(Pregunta).filter_by(id=pregunta_id).first()
         if not pregunta:
             return {'error': f'No se encontró una pregunta con id {pregunta_id}.'}, 404
-          # Obtener datos del cliente
-        ip_cliente = data.get('ip_cliente', 'default_value')  # Proporciona un valor por defecto
-        
-        # Verificar si el usuario ya existe
-        usuario = turingUser_crear_user(ip_cliente)
-        # Serializar y devolver la pregunta encontrada
-       # Verifica si la bandera 'boton_modelo_activado' está presente y es True
-       
-         # Obtener la respuesta del usuario
-        respuesta_usuario = None  # Inicializar la variable
-        pregunta_usuario = db.session.query(PreguntaUsuario).filter_by(id=pregunta_id).first()
-        if pregunta_usuario and pregunta.id == pregunta_usuario.pregunta_id:
-            respuesta_usuario = pregunta.respuesta_ia  # Ajuste para obtener la respuesta del usuario
 
-        # Seleccionar aleatoriamente entre 'respuesta_ia' y 'respuesta_usuario'
+        # Verificar o crear usuario asociado a la IP del cliente
+        usuario = turingUser_crear_user(ip_cliente)
+
+        # Selección aleatoria entre IA y usuario
         valores = ['respuesta_ia', 'respuesta_usuario']
         valor_aleatorio = random.choice(valores)
+      
 
-        # Verificar si es respuesta_ia o respuesta_usuario
-        if valor_aleatorio == 'respuesta_ia':
-            if model_activado == 'true':
+        # Lógica de respuesta
+        if model_activado == 'true':
+            if valor_aleatorio == 'respuesta_ia':
+                # Respuesta generada por IA
+                if not selected_model:
+                    return {'error': 'El modelo seleccionado es obligatorio cuando el modelo está activado.'}, 400
+
+                respuesta_ia = respuestaIa(pregunta, selected_model)
                 return jsonify(serialize_pregunta(pregunta, usuario, respuesta_ia, 'respondidoPorIA'))
-            else:
-                return jsonify(serialize_pregunta(pregunta, usuario, None, 'respondidoPorIA'))
 
-        elif valor_aleatorio == 'respuesta_usuario':
+            elif valor_aleatorio == 'respuesta_usuario':
+                # Respuesta proporcionada por el usuario
+                respuesta_usuario = obtener_respuesta_usuario(pregunta,pregunta_id)
+                return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, 'respondidoPorUsuario'))
+        else:
+            # Respuesta proporcionada por el usuario si el modelo no está activado
+            respuesta_usuario = obtener_respuesta_usuario(pregunta,pregunta_id)
             return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, 'respondidoPorUsuario'))
 
     except Exception as e:
         # Loguear el error para depuración
-        print(f"Error al obtener la pregunta: {str(e)}")
+        print(f"Error al procesar la solicitud: {str(e)}")
         return {'error': 'Ocurrió un error al procesar la solicitud.'}, 500
 
     finally:
         # Cerrar la sesión de la base de datos para liberar recursos
         db.session.close()
-
-
 
 
 def respuestaIa(pregunta, selectedModel):
@@ -159,26 +154,27 @@ def respuestaIa(pregunta, selectedModel):
 
         # Definir los headers y payload para la generación de respuesta
         headers = {"Authorization": f"Bearer {ACCESS_TOKEN_IA}"}
-        
+
         # Configurar los parámetros dependiendo del modelo
         if selectedModel == 'distilbertModel':
             payload_respuesta = {
-                        "inputs": pregunta.descripcion,
-                        "parameters": {
-                            "max_length": 150,  # Mantén los otros parámetros si son necesarios
-                            "temperature": 0.7, 
-                            "top_p": 0.8,
-                            "top_k": 40,
-                            "repetition_penalty": 1.2
-                        }
-                    }
-             # Elimina num_return_sequences
+                "inputs": pregunta.descripcion,
+                "parameters": {
+                    "max_length": 150,
+                    "temperature": 0.7,
+                    "top_p": 0.8,
+                    "top_k": 40,
+                    "repetition_penalty": 1.2
+                }
+            }
+            # Elimina num_return_sequences si existe
             payload_respuesta["parameters"].pop("num_return_sequences", None)
-        
-        if selectedModel == 'bertModel':  # BERT no usa 'temperature'
-              # Asegurar que el texto contiene [MASK]
+
+        elif selectedModel == 'bertModel':  # BERT no usa 'temperature'
+            # Asegurar que el texto contiene [MASK]
             pregunta.descripcion = agregar_mask(pregunta.descripcion)
             payload_respuesta = {"inputs": pregunta.descripcion}
+
         else:  # Para GPT-2 y otros modelos que soporten temperature
             payload_respuesta = {
                 "inputs": pregunta.descripcion,
@@ -197,49 +193,27 @@ def respuestaIa(pregunta, selectedModel):
         print(response.status_code, response.text)  # Depuración
 
         if response.status_code == 200:
-            try:
-                response_json = response.json()
-                generated_text = response_json[0].get('generated_text', None)
+            response_json = response.json()
+            resumen = response_json[0].get('generated_text', None)
 
-                if generated_text:
-                    # Preparar el payload para el resumen usando el mismo modelo seleccionado
-                    payload_resumen = {
-                        "inputs": generated_text,
-                        "parameters": {
-                            "max_length": 10,  # Resumen limitado a 10 palabras
-                            "num_return_sequences": 1,
-                            "temperature": 0.7,
-                            "top_p": 0.8,
-                            "top_k": 40,
-                            "repetition_penalty": 1.2
-                        }
-                    }
-
-                    # Realizar la solicitud para el resumen usando el modelo seleccionado
-                    response_resumen = requests.post(API_URLS[selectedModel], headers=headers, json=payload_resumen)
-                    print(response_resumen.status_code, response_resumen.text)  # Depuración
-
-                    if response_resumen.status_code == 200:
-                        response_json_resumen = response_resumen.json()
-                        resumen = response_json_resumen[0].get('generated_text', None)
-                        return resumen if resumen else "Resumen no disponible"
-                    else:
-                        return {
-                            "error": f"Error al llamar a la API para el resumen: {response_resumen.text}"
-                        }, response_resumen.status_code
-
+            # Limitar al primer punto o 20 palabras
+            if resumen:
+                if '.' in resumen:
+                    respuesta_corta = resumen.split('.')[0] + '.'  # Tomar hasta el primer punto
                 else:
-                    return "Texto generado no disponible"
-            except Exception as e:
-                return {"error": f"Error al procesar la respuesta JSON: {str(e)}"}, 500
+                    respuesta_corta = ' '.join(resumen.split()[:20])  # Tomar las primeras 20 palabras
+                print("Resumen:", respuesta_corta)
+                return respuesta_corta
+            else:
+                return "Resumen no disponible"
 
-        elif response.status_code == 503:
-            return {"error": "El servidor no está disponible en este momento."}, 503
+       
         else:
             return {"error": f"Error al llamar a la API: {response.text}"}, response.status_code
 
     except requests.exceptions.RequestException as e:
         return {"error": f"Error en la solicitud HTTP: {str(e)}"}, 500
+
 
 
 
@@ -305,3 +279,10 @@ def agregar_mask(pregunta, placeholder="__"):
         return pregunta.replace(placeholder, "[MASK]")
     else:
         return pregunta.strip() + " [MASK]"
+    
+  # Función auxiliar para obtener respuesta de usuario
+def obtener_respuesta_usuario(pregunta,pregunta_id_):
+    pregunta_usuario = db.session.query(PreguntaUsuario).filter_by(pregunta_id=pregunta_id_).first()
+    if pregunta_usuario and pregunta.id == pregunta_usuario.pregunta_id:
+        return pregunta.respuesta_ia
+    return None
