@@ -207,13 +207,8 @@ def respuestaIa(pregunta, selectedModel):
             resumen = response_json[0].get('generated_text', None)
 
             # Limitar al primer punto o 20 palabras
-            if resumen:
-                if '.' in resumen:
-                    respuesta_corta = resumen.split('.')[0] + '.'  # Tomar hasta el primer punto
-                else:
-                    respuesta_corta = ' '.join(resumen.split()[:20])  # Tomar las primeras 20 palabras
-                print("Resumen:", respuesta_corta)
-                return respuesta_corta
+            if resumen:                
+                return truncar_resumen(resumen,pregunta.descripcion)
             else:
                 return "Resumen no disponible"
 
@@ -300,5 +295,21 @@ def obtener_respuesta_usuario(pregunta, pregunta_id_):
         return pregunta.respuesta_ia, 'respondidoPorUsuario'
     else:
         return pregunta.respuesta_ia, 'no_respondeUsuario_responde_ia'
-        
-     
+
+
+
+def truncar_resumen(resumen, pregunta):
+    # Verificar si la pregunta está en el resumen
+    if pregunta in resumen:
+        resumen = resumen.replace(pregunta, '').strip()  # Eliminar la pregunta del resumen
+    
+    if '.' in resumen:  # Si hay un punto en el resumen
+        # Tomar la primera proposición completa hasta el primer punto
+        respuesta_corta = resumen.split('.')[0] + '.'
+    else:  # Si no hay un punto, tomar las primeras 20 palabras
+        respuesta_corta = ' '.join(resumen.split()[:20])
+    
+    print("Resumen:", respuesta_corta)
+    return respuesta_corta
+
+
