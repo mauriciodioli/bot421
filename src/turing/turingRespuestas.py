@@ -103,11 +103,15 @@ def turing_testTuring_obtener_respuestas_id():
         model_activado = data.get('boton_modelo_activado', 'false')
         selected_model = data.get('selectedModel')
         ip_cliente = data.get('ip_cliente', 'default_value')
-
+        
+        
+        
         # Buscar la pregunta en la base de datos
         pregunta = db.session.query(Pregunta).filter_by(id=pregunta_id).first()
         if not pregunta:
             return {'error': f'No se encontró una pregunta con id {pregunta_id}.'}, 404
+
+
 
         # Verificar o crear usuario asociado a la IP del cliente
         usuario = turingUser_crear_user(ip_cliente)
@@ -132,9 +136,15 @@ def turing_testTuring_obtener_respuestas_id():
                 respuesta_usuario = obtener_respuesta_usuario(pregunta,pregunta_id)
                 return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, 'respondidoPorUsuario'))
         else:
-            # Respuesta proporcionada por el usuario si el modelo no está activado
-            respuesta_usuario = obtener_respuesta_usuario(pregunta,pregunta_id)
-            return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, 'respondidoPorUsuario'))
+           # Respuesta proporcionada por el usuario si el modelo no está activado
+            respuesta_usuario, estado_respuesta = obtener_respuesta_usuario(pregunta, pregunta_id)
+
+            # Verificar el estado de la respuesta
+            if estado_respuesta == 'respondidoPorUsuario':
+                return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, estado_respuesta))
+            else:
+                # Manejo de casos donde el usuario no respondió
+                return jsonify(serialize_pregunta(pregunta, usuario, respuesta_usuario, 'respondidoPorIA'))
 
     except Exception as e:
         # Loguear el error para depuración
@@ -281,8 +291,14 @@ def agregar_mask(pregunta, placeholder="__"):
         return pregunta.strip() + " [MASK]"
     
   # Función auxiliar para obtener respuesta de usuario
-def obtener_respuesta_usuario(pregunta,pregunta_id_):
+def obtener_respuesta_usuario(pregunta, pregunta_id_):
+    # Buscar la pregunta del usuario en la base de datos
     pregunta_usuario = db.session.query(PreguntaUsuario).filter_by(pregunta_id=pregunta_id_).first()
+
+    # Verificar si la pregunta existe y coincide con el ID
     if pregunta_usuario and pregunta.id == pregunta_usuario.pregunta_id:
-        return pregunta.respuesta_ia
-    return None
+        return pregunta.respuesta_ia, 'respondidoPorUsuario'
+    else:
+        return pregunta.respuesta_ia, 'no_respondeUsuario_responde_ia'
+        
+     
