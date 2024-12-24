@@ -20,7 +20,7 @@ function obtenerChatUsuariosPregunta() {
             //document.getElementById('preguntaInput').value = ''; // Limpiar el input
             // Cerrar el modal una vez que la petición sea exitosa
             //$('#preguntaModal').modal('hide'); // Usando Bootstrap para cerrar el modal
-        
+          
             // Verificar si no se encontraron datos
             if (data.not_found) {
                 // Incrementar el valor almacenado en localStorage

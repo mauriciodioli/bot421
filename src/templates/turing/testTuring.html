@@ -34,17 +34,19 @@
     <!-- Panel de Preguntas -->   
     <div class="col-md-4">
         <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Preguntas</h3>
+        
         <div class="panel-preguntas border p-3 shadow" style="max-height: 460px; overflow-y: scroll;" id="panel-preguntas">
          <h3 class="text-center mb-3">Preguntas</h3>
                 <ul id="preguntas-lista" class="list-group">
                
                 </ul>
-            </div>
-            <!-- Panel Respuesta con margen superior -->
-            <h3 class="text-center mb-3" id="respuestaUltimaPregunta" 
-                style="position: sticky; top: 10px; background-color: gold; color: black; border: 2px solid white; z-index: 1; margin-top: 10px; cursor: pointer;">
-                Responder a Última Pregunta
-            </h3>
+        </div>
+
+        <!-- Panel Respuesta con margen superior -->
+        <h3 class="text-center mb-3" id="respuestaUltimaPregunta" 
+            style="position: sticky; top: 10px; background-color: gold; color: black; border: 2px solid white; z-index: 1; margin-top: 10px; cursor: pointer;">
+            Responder a Última Pregunta
+        </h3>
     </div>
 
     <!-- Panel de Respuesta y Acción dividido en 3 filas -->
@@ -136,9 +138,10 @@
               <div class="panel-respuesta border p-3 shadow text-center">
                   <div id="respuesta-estado" class="mb-3">
                       <span id="respuesta-texto" class="fw-bold">La última respuesta fue:</span>
-                      <div id="atributos-respuesta">
-                        <!-- Aquí se mostrarán los valores de los atributos `data-*` -->
+                     <!-- <div id="atributos-respuesta">
+                       
                       </div>
+                    -->
                       <div id="respuesta-panel-principal">
                           <!-- Aquí se cargarán las respuestas dinámicamente -->
                       </div>
@@ -314,6 +317,7 @@
               <option value="pregunta-ambigua">Ambigua</option>
               <option value="pregunta-Cultural">Cultural</option>
               <option value="pregunta-Libre">Libre</option>
+              <option value="pregunta-Privada">Privada</option>
             </select>
 
 
