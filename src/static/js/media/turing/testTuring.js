@@ -212,7 +212,7 @@ function obtenerRespuesta() {
                     ip_cliente: ipCliente,  // IP pública obtenida
                     descripcion: descripcion,
                     boton_modelo_activado: obtenerBanderaActivado(),
-                    seselectedModel: localStorage.getItem('selectedModel')
+                    selectedModel: localStorage.getItem('selectedModel')
                 };
 
                 // Realizar la solicitud con fetch
@@ -398,6 +398,13 @@ function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacio
       .attr('data-fecha-creacion', fechaCreacion)
       .attr('data-quien-responde',quienResponde);
 
+      // Cargar los valores en el panel de respuestas
+  $('#nombre-respuesta').text(`ID: ${_id}`);
+  $('#respuesta-panel-principal').text(`Usuario ID: ${usuario_id}`);
+  $('#atributos-respuesta').html(`
+      <p>Fecha de Creación: ${fechaCreacion}</p>
+      <p>Quién Responde: ${quienResponde}</p>
+  `);
   // Vaciar el contenedor y agregar la nueva respuesta
   panelPrincipalRespuesta.empty().append(nuevaRespuesta);
 

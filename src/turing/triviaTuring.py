@@ -48,7 +48,7 @@ def turing_triviaTuring_crear():
                 
                 
 
-        elif respuesta_trivia == 'humano':
+        elif respuesta_trivia == 'Humano':
             if quienResponde == 'respondidoPorIA':
                 acierto = 0
             if quienResponde == 'respondidoPorUsuario':

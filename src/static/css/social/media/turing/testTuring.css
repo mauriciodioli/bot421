@@ -91,7 +91,7 @@ body {
 
 /* Botón gris (esquina inferior izquierda del panel) */
 .boton-esquina.gris {
-    background-color: grey;
+    background-color: rgb(79, 79, 79);
     bottom: 10px;
     left: 10px;
 }
