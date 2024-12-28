@@ -20,17 +20,20 @@
 {% block title %}Publicacion desplegada{% endblock %}
 {% block content %}
 <div class="publicacion-detalle">
-    <h1>{{ post.titulo }}</h1>
-    <p>{{ post.fecha_creacion }}</p>
-     <!-- Contenedor para el texto -->
-     <div class="texto-superior">
+    <!-- Fila 1: Título y fecha -->
+    <div class="fila titulo-fecha">
+        <h1>{{ post.titulo }}</h1>
+        <p>{{ post.fecha_creacion }}</p>
+    </div>
+
+    <!-- Fila 2: Texto superior -->
+    <div class="fila texto-superior">
         <p>Discover more projects by clicking on the image ↴</p>
     </div>
-    <!-- Contenedor para la imagen o video principal -->
-    <div id="principal-media" class="imagen-principal-muestra-despliegue-publicacion-home">
-       
-        <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}"/>
-       
+
+    <!-- Fila 3: Imagen o video principal -->
+    <div id="principal-media" class="fila imagen-principal-muestra-despliegue-publicacion-home">
+        <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
         {% if post.videos %}
             <!-- Mostrar el primer video si está disponible -->
             <video controls id="main-video" onclick="cargarDatosPublicacion()">
@@ -51,8 +54,8 @@
         {% endif %}
     </div>
 
-
-    <div class="imagenes-videos-muestra-despliegue-publicacion-home">
+    <!-- Fila 4: Galería de imágenes y videos -->
+    <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
         {% if post.imagenes %}
             <div class="imagenes-muestra-despliegue-publicacion-home">
                 {% for imagen in post.imagenes %}
@@ -81,18 +84,15 @@
             </div>
         {% endif %}
     </div>
-    
-    <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
-    <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
-    <p class="texto-publicacion-despliegue-home">{{ post.texto | safe }}</p>
 
-
-
-
-
-
-    
+    <!-- Fila 5: Información adicional -->
+    <div class="fila informacion-adicional">
+        <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
+        <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
+        <p class="texto-publicacion-despliegue-home">{{ post.texto | safe }}</p>
+    </div>
 </div>
+
 {% include 'layouts/layout_footer.html' %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">

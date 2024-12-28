@@ -154,50 +154,31 @@ a.btn-close-publicacion-ambitos:hover {
 
 /* Contenedor de texto centrado */
 .texto-superior {
-    display: flex;            /* Usa flexbox para el centrado */
-    justify-content: center;  /* Centrado horizontal */
-    align-items: center;      /* Centrado vertical */
-    position: absolute;       /* Asegura que se mantenga en la parte superior */
-    top: 160px;                /* Ajusta la distancia desde la parte superior */
-    left: 50%;                /* Para centrarlo horizontalmente */
-    transform: translateX(-50%); /* Compensa el desplazamiento para un centrado perfecto */
-    z-index: 10;              /* Asegura que el texto esté por encima de la imagen/video */
+  
+    text-align: center;       /* Centra el texto horizontalmente */
     color: #7fff7f;           /* Color verde claro */
     font-size: 16px;          /* Ajusta el tamaño de la fuente si es necesario */
 }
 
-/* Estilo para el párrafo dentro del contenedor */
-.texto-superior p {
-    margin: 0;                /* Elimina el margen predeterminado */
-    text-align: center;       /* Centrado de texto */
-    font-size: 16px;          /* Ajusta el tamaño de la fuente si es necesario */
-}
-
-
-
-
-
-
-
-
-
-
 
 #principal-media {
     width: 100%; /* Hace que el contenedor ocupe el 100% del ancho disponible */
-    max-width: 1300px; /* Limita el contenedor a un máximo de 1200px de ancho */
     display: flex;
     flex-direction: column; /* Alinea los elementos en columna */
     align-items: center; /* Centra horizontalmente todos los elementos dentro del contenedor */
-    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    height: auto;
+    padding: 0; /* Elimina cualquier padding */
     text-align: center; /* Centra el texto */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    max-height: 100vh; /* Limita la altura máxima al 80% del alto de la ventana */
+    box-sizing: border-box; /* Asegura que el padding y el border no afecten el tamaño del contenedor */
 }
 
 #principal-media img,
 #principal-media video {
     width: 100%; /* Hace que la imagen/video ocupe el 100% del ancho disponible */
    /* height: auto;*/ /* Mantiene la altura proporcional a la anchura */
-    max-width: 20%; /* Asegura que no se agrande más allá de su contenedor */
+    max-width: 100%; /* Asegura que no se agrande más allá de su contenedor */
     max-height: 80vh; /* Limita la altura máxima al 80% del alto de la ventana */
     object-fit: contain; /* Asegura que la imagen/video se ajuste manteniendo las proporciones */
     border-radius: 8px; /* Bordes redondeados opcionales */
@@ -211,7 +192,7 @@ a.btn-close-publicacion-ambitos:hover {
 
 @media (max-width: 768px) {
     #principal-media {
-        max-width: 90%; /* Ajusta el tamaño máximo del contenedor para pantallas pequeñas */
+        max-width: 100%; /* Ajusta el tamaño máximo del contenedor para pantallas pequeñas */
         padding: 10px;  /* Reduce el espaciado en pantallas más pequeñas */
     }
 
@@ -255,3 +236,7 @@ a.btn-close-publicacion-ambitos:hover {
     flex-wrap: wrap; /* Permite que las imágenes o videos se envuelvan en varias filas si es necesario */
     justify-content: center; /* Centra los elementos horizontalmente */
 }
+
+
+
+
