@@ -86,7 +86,7 @@ if (typeof localStorage.getItem('idioma_es') === 'undefined' || localStorage.get
           localStorage.setItem('pregunta_id_bucle',data.id);
           agregarPreguntaListaDePreguntas(data.id,data.descripcion, data.idioma,data.fechaCreacion);
           // Llama a la función cuando sea necesario (por ejemplo, después de agregar una nueva pregunta)
-          cambiarFondoPregunta();
+          cambiarFondoPregunta(data.descripcion);
         },
         error: function () {
             console.error('Error al obtener la pregunta');
@@ -144,11 +144,13 @@ function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion) 
  // setTimeout(() => {
     panelPreguntas.scrollTop = panelPreguntas.scrollHeight;
 //}, 100);  // Ajusta el tiempo si es necesario
+
+
 }
 
 
 
-function cambiarFondoPregunta() {
+function cambiarFondoPregunta(descripcion) {
   const listaPreguntas = $('#preguntas-lista');
   const preguntas = listaPreguntas.children();  // Obtiene todos los elementos <li>
   
@@ -160,10 +162,18 @@ function cambiarFondoPregunta() {
       
       // Selecciona el noveno elemento desde abajo
       const novenaPregunta = preguntas.eq(-6);  // -6 para contar desde abajo hacia arriba
-      
+//console.log(novenaPregunta);
       // Le agrega la clase para cambiar el fondo
       novenaPregunta.addClass('fondo-verde-claro');
-  }
+  
+      enviarRespuestaDeVoz(novenaPregunta.text());
+      setTimeout(() => {
+        // Código que deseas ejecutar después del delay
+        console.log("Ejecutando después del retraso");
+      }, 500); // Ajusta el tiempo del retraso (en milisegundos)
+  
+ }
+  
 }
 
 
@@ -414,29 +424,31 @@ function agregarRespuestaAPanel(nombre, respuesta, _id, usuario_id, fechaCreacio
   // Vaciar el contenedor del nombre y cargar el nuevo nombre
   panelNombrePrincipal.empty().append(nuevoNombre);
 
-  var activado_voz = localStorage.getItem('activado_voz');
-  var idioma_es = localStorage.getItem('idioma_es');
-
-    if (!window.speechSynthesis) {
-        console.error('La síntesis de voz no está soportada en este navegador.');
-        return;
-    }
-
-    if (activado_voz === 'true' && respuesta.trim() !== '') {
-        const speech = new SpeechSynthesisUtterance(respuesta);
-        speech.lang = idioma_es === 'true' ? 'es-ES' : 'en-US';
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(speech);
-    }
-
+  enviarRespuestaDeVoz(respuesta);
   
 }
 
 
 
+function enviarRespuestaDeVoz(respuesta) {
+  
 
+var activado_voz = localStorage.getItem('activado_voz');
+var idioma_es = localStorage.getItem('idioma_es');
 
+  if (!window.speechSynthesis) {
+      console.error('La síntesis de voz no está soportada en este navegador.');
+      return;
+  }
 
+  if (activado_voz === 'true' && respuesta.trim() !== '') {
+      const speech = new SpeechSynthesisUtterance(respuesta);
+      speech.lang = idioma_es === 'true' ? 'es-ES' : 'en-US';
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(speech);
+  }
+
+}
 
 
 

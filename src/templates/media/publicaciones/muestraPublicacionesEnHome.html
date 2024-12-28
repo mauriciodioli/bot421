@@ -22,14 +22,18 @@
 <div class="publicacion-detalle">
     <h1>{{ post.titulo }}</h1>
     <p>{{ post.fecha_creacion }}</p>
-    
+     <!-- Contenedor para el texto -->
+     <div class="texto-superior">
+        <p>Discover more projects by clicking on the image ↴</p>
+    </div>
     <!-- Contenedor para la imagen o video principal -->
     <div id="principal-media" class="imagen-principal-muestra-despliegue-publicacion-home">
+       
         <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}"/>
-        <p style="margin-bottom: 5px; color: #7fff7f;">Discover more projects by clicking on the image ↴</p>
+       
         {% if post.videos %}
             <!-- Mostrar el primer video si está disponible -->
-            <video controls id="main-video" style="cursor: pointer;" onclick="cargarDatosPublicacion()">
+            <video controls id="main-video" onclick="cargarDatosPublicacion()">
                 {% if 'http' in post.videos[0].filepath %}
                     <source src="{{ post.videos[0].filepath }}" type="video/mp4">
                 {% else %}
@@ -39,13 +43,14 @@
             </video>
         {% elif post.imagenes %}
             <!-- Mostrar la primera imagen si no hay videos -->
-            <img id="main-image" style="cursor: pointer;" onclick="cargarDatosPublicacion()"
+            <img id="main-image" onclick="cargarDatosPublicacion()"
                 src="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}" 
                 alt="{{ post.imagenes[0].title }}" />
         {% else %}
             <p>No hay imágenes ni videos disponibles.</p>
         {% endif %}
     </div>
+
 
     <div class="imagenes-videos-muestra-despliegue-publicacion-home">
         {% if post.imagenes %}
@@ -110,6 +115,12 @@
         }
         // Desplazar suavemente hacia el contenedor de la imagen principal
         container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+     
+            // Calcular la distancia adicional a desplazar para dejar espacio para el texto
+            var offset = container.getBoundingClientRect().top - 230; // Ajusta el valor -50 si es necesario para dejar espacio
+            window.scrollBy(0, offset);
+       
     }
 
     function cargarDatosPublicacion() {

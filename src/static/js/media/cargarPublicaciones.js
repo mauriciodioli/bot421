@@ -371,6 +371,7 @@
             'Authorization': 'Bearer ' + access_token
           },
           success: function(response) {
+            debugger;
             splash.style.display = 'none'; // Ocultar el splash al terminar
             modal.style.display = "none";
             if (Array.isArray(response)) {
@@ -491,12 +492,19 @@
                 });
             } else {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
+                modal.style.display = "none";
                 console.log('Respuesta no válida');
             }
         },     
           error: function(xhr, status, error) {
-            splash.style.display = 'none'; // Ocultar el splash al terminar
-            alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
+            //debugger;
+            //splash.style.display = 'none'; // Ocultar el splash al terminar
+           // modal.style.display = "none";
+            // En la consola del navegador
+            console.log(xhr.status); // Imprime el código de estado HTTP
+            //console.log(xhr.responseText); // Imprime el cuerpo de la respuesta
+           // console.log(error); // Imprime el mensaje de error
+           // alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
           }
         });
       }, 100); // 100 ms de pausa antes de hacer la petición  
