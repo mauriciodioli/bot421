@@ -52,7 +52,7 @@ if (typeof localStorage.getItem('idioma_es') === 'undefined' || localStorage.get
 if (typeof localStorage.getItem('seleccionCategoria') === 'undefined' || localStorage.getItem('seleccionCategoria') === null) {
   // Si no está configurado o es indefinido, lo inicializa con el valor 1
   localStorage.setItem('seleccionCategoria', 'general');
-  console.log('seleccionCategoria false');
+  console.log('seleccionCategoria general');
 } else {
   console.log('seleccionCategoria:', localStorage.getItem('seleccionCategoria'));
 }
@@ -83,10 +83,15 @@ if (typeof localStorage.getItem('seleccionCategoria') === 'undefined' || localSt
       // Si no está configurado o es indefinido, lo inicializa con el valor 1
       localStorage.setItem('pregunta_id_bucle', '1');
     }
+    if ( localStorage.getItem('seleccionCategoria') === 'undefined' || localStorage.getItem('seleccionCategoria') === null) {
+      // Si no está configurado o es indefinido, lo inicializa con el valor 1
+      localStorage.setItem('seleccionCategoria', 'general');
+    }
     
     id = localStorage.getItem('pregunta_id_bucle');
+    var categoria = localStorage.getItem('seleccionCategoria');
     $.ajax({
-        url: '/turing-testTuring-obtener-id/' + id,
+        url: '/turing-testTuring-obtener-id/' + id + '?categoria=' + categoria,  // Añades la categoría como parámetro
         method: 'GET',
         success: function (data) {
           
@@ -108,14 +113,14 @@ function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion, 
    // Obtener la lista de preguntas
   categoria_guardada=localStorage.getItem('seleccionCategoria');
 
-  
+  debugger;
     // Verificar si la categoría de la pregunta coincide con la seleccionada o si no es privada
-    if (categoria_guardada === 'pregunta-Privada' && categoria !== 'pregunta-privada') {
+    if (categoria_guardada === 'pregunta-Privada' && categoria !== 'pregunta-Privada') {
       // Si la categoría seleccionada es "Privada", no mostrar otras categorías.
       return;
   }
 
-  if (categoria_guardada !== 'pregunta-Privada' && categoria === 'pregunta-privada') {
+  if (categoria_guardada !== 'pregunta-Privada' && categoria === 'pregunta-Privada') {
       // Si la categoría seleccionada no es "Privada", no mostrar preguntas privadas.
       return;
   }

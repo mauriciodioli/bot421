@@ -113,6 +113,8 @@ def obtener_preguntas():
 @testTuring.route('/turing-testTuring-obtener-id/<int:id>', methods=['GET'])
 def obtener_pregunta(id):
     try:
+        # Obtener el valor de la categoría desde los parámetros de la URL
+        categoria = request.args.get('categoria')
         # Obtener el ID máximo de la tabla Pregunta
         max_id = db.session.query(db.func.max(Pregunta.id)).scalar()
         
@@ -121,7 +123,9 @@ def obtener_pregunta(id):
         pregunta = None
 
         while siguiente_id <= max_id:  # Buscar pregunta existente
-            pregunta = db.session.query(Pregunta).get(siguiente_id)
+            pregunta = db.session.query(Pregunta).filter(Pregunta.id == siguiente_id, Pregunta.categoria == categoria).first()
+
+
             if pregunta:  # Si existe, salir del bucle
                 break
             siguiente_id += 1  # Incrementar para buscar el siguiente ID válido
