@@ -49,6 +49,13 @@ if (typeof localStorage.getItem('idioma_es') === 'undefined' || localStorage.get
 }
 
 
+if (typeof localStorage.getItem('seleccionCategoria') === 'undefined' || localStorage.getItem('seleccionCategoria') === null) {
+  // Si no está configurado o es indefinido, lo inicializa con el valor 1
+  localStorage.setItem('seleccionCategoria', 'general');
+  console.log('seleccionCategoria false');
+} else {
+  console.log('seleccionCategoria:', localStorage.getItem('seleccionCategoria'));
+}
 
 })();
 
@@ -82,9 +89,9 @@ if (typeof localStorage.getItem('idioma_es') === 'undefined' || localStorage.get
         url: '/turing-testTuring-obtener-id/' + id,
         method: 'GET',
         success: function (data) {
-       
+          
           localStorage.setItem('pregunta_id_bucle',data.id);
-          agregarPreguntaListaDePreguntas(data.id,data.descripcion, data.idioma,data.fechaCreacion);
+          agregarPreguntaListaDePreguntas(data.id,data.descripcion, data.idioma,data.fechaCreacion,data.categoria);
           // Llama a la función cuando sea necesario (por ejemplo, después de agregar una nueva pregunta)
           cambiarFondoPregunta(data.descripcion);
         },
@@ -97,55 +104,87 @@ if (typeof localStorage.getItem('idioma_es') === 'undefined' || localStorage.get
 
 
 
-function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion) {
+function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion, categoria) {
    // Obtener la lista de preguntas
-   
-   const lista = $('#preguntas-lista');
-  const panelPreguntas = document.getElementById('panel-preguntas');  // Selecciona el contenedor con el scroll
+  categoria_guardada=localStorage.getItem('seleccionCategoria');
+
   
-  if(idioma=='es'){        
-          
-      // Verificar si la descripción tiene los signos ¿? al principio y al final
-      if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
-      // Eliminar los signos ¿? al principio y al final
-      descripcion = descripcion.slice(1, -1);
+    // Verificar si la categoría de la pregunta coincide con la seleccionada o si no es privada
+    if (categoria_guardada === 'pregunta-Privada' && categoria !== 'pregunta-privada') {
+      // Si la categoría seleccionada es "Privada", no mostrar otras categorías.
+      return;
+  }
+
+  if (categoria_guardada !== 'pregunta-Privada' && categoria === 'pregunta-privada') {
+      // Si la categoría seleccionada no es "Privada", no mostrar preguntas privadas.
+      return;
+  }
+    
+  
+      const lista = $('#preguntas-lista');
+      const panelPreguntas = document.getElementById('panel-preguntas');  // Selecciona el contenedor con el scroll
+      
+      if(idioma=='es'){        
+              
+          // Verificar si la descripción tiene los signos ¿? al principio y al final
+          if (descripcion.startsWith('¿') && descripcion.endsWith('?')) {
+          // Eliminar los signos ¿? al principio y al final
+          descripcion = descripcion.slice(1, -1);
+          }
+
+          // Agregar los signos ¿? al principio y al final
+          descripcion = '¿' + descripcion + '?';
+      }else{
+
+            // Verificar si la descripción tiene los signos ¿? al principio y al final
+
+            if ( descripcion.endsWith('?')) {
+            // Eliminar los signos ¿? al principio y al final
+            descripcion = descripcion.slice(0, -1);
+            }
+
+            // Agregar los signos ¿? al al final
+            descripcion = descripcion + '?';
       }
 
-      // Agregar los signos ¿? al principio y al final
-      descripcion = '¿' + descripcion + '?';
-  }else{
+                
 
-        // Verificar si la descripción tiene los signos ¿? al principio y al final
-
-        if ( descripcion.endsWith('?')) {
-        // Eliminar los signos ¿? al principio y al final
-        descripcion = descripcion.slice(0, -1);
-        }
-
-        // Agregar los signos ¿? al al final
-        descripcion = descripcion + '?';
-  }
-
-            
-
-  // Crear un nuevo elemento de lista con la nueva pregunta
-  const nuevaPregunta = $('<li id="descripcion" class="list-group-item"></li>')
-  .text(descripcion)
-  .attr('data-id', id); // Agregar un atributo data-id con el id
-  // Agregar la nueva pregunta al final de la lista
-  lista.append(nuevaPregunta);
-
-  // Si la lista tiene más de 50 elementos, eliminar el primero
-  if (lista.children().length > 50) {
-      lista.children().first().remove();
-  }
-
-  // Usar setTimeout para asegurar que el DOM esté actualizado antes de mover el scroll
- // setTimeout(() => {
-    panelPreguntas.scrollTop = panelPreguntas.scrollHeight;
-//}, 100);  // Ajusta el tiempo si es necesario
+      // Crear un nuevo elemento de lista con la nueva pregunta
+      const nuevaPregunta = $('<li id="descripcion" class="list-group-item"></li>')
+      .text(descripcion)
+      .addClass('list-group-item pregunta-item') // Clase 'pregunta-item' añadida
+      .attr('data-id', id); // Agregar un atributo data-id con el id
 
 
+
+
+       // Verificar si la función mostrarMenu está definida antes de asignar el evento
+        if (typeof mostrarMenu === 'function') {
+          nuevaPregunta.on('click', function () {
+              mostrarMenu({
+                  target: this // Pasar el elemento clicado como el target del evento
+              });
+          });
+      } else {
+          console.error('mostrarMenu no está definida.');
+      }
+
+
+
+      // Agregar la nueva pregunta al final de la lista
+      lista.append(nuevaPregunta);
+
+      // Si la lista tiene más de 50 elementos, eliminar el primero
+      if (lista.children().length > 50) {
+          lista.children().first().remove();
+      }
+
+      // Usar setTimeout para asegurar que el DOM esté actualizado antes de mover el scroll
+    // setTimeout(() => {
+        panelPreguntas.scrollTop = panelPreguntas.scrollHeight;
+    //}, 100);  // Ajusta el tiempo si es necesario
+
+  
 }
 
 
