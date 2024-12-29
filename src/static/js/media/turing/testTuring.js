@@ -75,39 +75,50 @@ if (typeof localStorage.getItem('seleccionCategoria') === 'undefined' || localSt
 //<!------------------------------------------OBTENER PREGUNTA DESDE DB PARA PANEL AUTOMATICO-------------------------------------------------->
 //<!------------------------------------------OBTENER PREGUNTA DESDE DB PARA PANEL AUTOMATICO-------------------------------------------------->
 
+// Función para hacer la solicitud AJAX y actualizar la lista
+function obtenerPregunta() {
+    // Verifica y establece valores predeterminados en localStorage
+    if (localStorage.getItem('pregunta_id_bucle') === null) {
+        localStorage.setItem('pregunta_id_bucle', '1');
+    }
+    if (localStorage.getItem('seleccionCategoria') === null) {
+        localStorage.setItem('seleccionCategoria', 'general');
+    }
 
-  // Función para hacer la solicitud AJAX y actualizar la lista
-  function obtenerPregunta() {
-  
-    if ( localStorage.getItem('pregunta_id_bucle') === 'undefined' || localStorage.getItem('pregunta_id_bucle') === null) {
-      // Si no está configurado o es indefinido, lo inicializa con el valor 1
-      localStorage.setItem('pregunta_id_bucle', '1');
-    }
-    if ( localStorage.getItem('seleccionCategoria') === 'undefined' || localStorage.getItem('seleccionCategoria') === null) {
-      // Si no está configurado o es indefinido, lo inicializa con el valor 1
-      localStorage.setItem('seleccionCategoria', 'general');
-    }
-    
-    id = localStorage.getItem('pregunta_id_bucle');
-    var categoria = localStorage.getItem('seleccionCategoria');
-    $.ajax({
-      url: '/turing-testTuring-obtener-id/', // No incluyas los datos en la URL
-      method: 'POST', // Cambia a POST
-      contentType: 'application/json', // Define el tipo de contenido como JSON
-      data: JSON.stringify({
-          id: id,
-          categoria: categoria
-      }), // Envía los datos en formato JSON
-        success: function (data) {
-          
-          localStorage.setItem('pregunta_id_bucle',data.id);
-          agregarPreguntaListaDePreguntas(data.id,data.descripcion, data.idioma,data.fechaCreacion,data.categoria);
-          // Llama a la función cuando sea necesario (por ejemplo, después de agregar una nueva pregunta)
-          cambiarFondoPregunta(data.descripcion);
+    // Obtiene los valores del localStorage
+    const id = localStorage.getItem('pregunta_id_bucle');
+    const categoria = localStorage.getItem('seleccionCategoria');
+
+    // Crea el objeto formData
+    const formData = {
+        id: id,
+        categoria: categoria
+    };
+
+    // Realizar la petición AJAX usando fetch
+    fetch('/turing-testTuring-obtener-id', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // Especificamos que enviamos JSON
         },
-        error: function () {
-            console.error('Error al obtener la pregunta');
+        body: JSON.stringify(formData) // Convertimos los datos del formulario a JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
         }
+        return response.json();
+    })
+    .then(data => {
+        // Actualiza localStorage con el nuevo ID de pregunta
+        localStorage.setItem('pregunta_id_bucle', data.id);
+
+        // Actualiza la interfaz con la nueva pregunta
+        agregarPreguntaListaDePreguntas(data.id, data.descripcion, data.idioma, data.fechaCreacion, data.categoria);
+        cambiarFondoPregunta(data.descripcion);
+    })
+    .catch(error => {
+        console.error('Error al obtener la pregunta:', error);
     });
 }
 

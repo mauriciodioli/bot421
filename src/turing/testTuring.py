@@ -111,13 +111,28 @@ def obtener_preguntas():
 
 
 # Leer una pregunta por ID
-@testTuring.route('/turing-testTuring-obtener-id/', methods=['POST'])
+@testTuring.route('/turing-testTuring-obtener-id', methods=['POST'])
 def obtener_pregunta():
     try:
+        # Asegúrate de que los datos se reciben como JSON
         data = request.get_json()
-        id = int(data.get('id'))      
-        # Obtener el valor de la categoría desde los parámetros de la URL
-        categoria = data.get('categoria')
+
+        # Verifica si 'data' existe y contiene los campos necesarios
+        if not data:
+            return jsonify({"error": "No se recibieron datos"}), 400
+
+        # Obtiene el valor de 'id' y lo convierte a entero, con manejo de excepciones
+        id = data.get('id')
+        if id is None:
+            return jsonify({"error": "El campo 'id' es obligatorio"}), 400
+
+        try:
+            id = int(id)
+        except ValueError:
+            return jsonify({"error": "El campo 'id' debe ser un número entero"}), 400
+
+        # Obtiene el valor de 'categoria', con un valor predeterminado si no está presente
+        categoria = data.get('categoria', 'general')  # Asigna 'general' como valor predeterminado si no se proporciona
 
         # Obtener el ID máximo de la tabla Pregunta
         max_id = db.session.query(db.func.max(Pregunta.id)).scalar()
