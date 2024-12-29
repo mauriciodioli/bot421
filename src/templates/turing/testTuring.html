@@ -208,6 +208,17 @@
 <!------------------------------------------MODALES-------------------------------------------------->
 <!------------------------------------------MODALES-------------------------------------------------->
 <!------------------------------------------MODALES-------------------------------------------------->
+<!-- Dropdown para categorías -->
+<div 
+    id="categoriaMenu" 
+    class="dropdown-menu" 
+    style="display: none; position: absolute; z-index: 2;">
+  <p class="text-center mb-2">Seleccione una categoría:</p>
+  <ul class="list-group">
+    <li class="list-group-item categoria-item" data-categoria="categoria-Todas">Todas</li>
+    <li class="list-group-item categoria-item" data-categoria="pregunta-Privada">Personal</li>
+  </ul>
+</div>
 
 
 <!-- Modal para seleccionar el modelo -->
@@ -378,4 +389,5 @@
 <script src="{{ url_for('static', filename='js/media/turing/testTuring.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/turing/chatTuring.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/turing/trivia.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/turing/testTuringMenuCategorias.js') }}"></script>
 {% endblock %}

@@ -118,6 +118,56 @@ body {
 
 
 
+/* Estilo base del menú */
+#categoriaMenu {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    width: 90%; /* Para ser responsivo */
+  }
+  
+  /* Estilo de los elementos de la lista */
+  #categoriaMenu .list-group-item {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  #categoriaMenu .list-group-item:hover {
+    background-color: #f0f0f0;
+  }
+  
+  /* Responsive para pantallas pequeñas */
+  @media (max-width: 576px) {
+    #categoriaMenu {
+      width: 95%; /* Ajusta el ancho al 95% del contenedor */
+      left: 2.5%; /* Centra horizontalmente */
+    }
+  }
+  
+  /* Responsive para pantallas medianas */
+  @media (min-width: 577px) and (max-width: 768px) {
+    #categoriaMenu {
+      max-width: 400px; /* Limita el ancho */
+      width: 80%;
+    }
+  }
+  
+  /* Estilo del texto */
+  #categoriaMenu p {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+
+
+
+
+
 
 
 
