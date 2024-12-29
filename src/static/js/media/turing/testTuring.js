@@ -91,8 +91,13 @@ if (typeof localStorage.getItem('seleccionCategoria') === 'undefined' || localSt
     id = localStorage.getItem('pregunta_id_bucle');
     var categoria = localStorage.getItem('seleccionCategoria');
     $.ajax({
-        url: '/turing-testTuring-obtener-id/' + id + '?categoria=' + categoria,  // Añades la categoría como parámetro
-        method: 'GET',
+      url: '/turing-testTuring-obtener-id/', // No incluyas los datos en la URL
+      method: 'POST', // Cambia a POST
+      contentType: 'application/json', // Define el tipo de contenido como JSON
+      data: JSON.stringify({
+          id: id,
+          categoria: categoria
+      }), // Envía los datos en formato JSON
         success: function (data) {
           
           localStorage.setItem('pregunta_id_bucle',data.id);

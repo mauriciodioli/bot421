@@ -109,12 +109,16 @@ def obtener_preguntas():
     preguntas = Pregunta.query.all()
     return preguntas_schema.jsonify(preguntas), 200
 
+
 # Leer una pregunta por ID
-@testTuring.route('/turing-testTuring-obtener-id/<int:id>', methods=['GET'])
-def obtener_pregunta(id):
+@testTuring.route('/turing-testTuring-obtener-id/', methods=['POST'])
+def obtener_pregunta():
     try:
+        data = request.get_json()
+        id = int(data.get('id'))      
         # Obtener el valor de la categoría desde los parámetros de la URL
-        categoria = request.args.get('categoria')
+        categoria = data.get('categoria')
+
         # Obtener el ID máximo de la tabla Pregunta
         max_id = db.session.query(db.func.max(Pregunta.id)).scalar()
         
