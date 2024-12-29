@@ -78,49 +78,35 @@ if (typeof localStorage.getItem('seleccionCategoria') === 'undefined' || localSt
 // Función para hacer la solicitud AJAX y actualizar la lista
 function obtenerPregunta() {
     // Verifica y establece valores predeterminados en localStorage
-    if (localStorage.getItem('pregunta_id_bucle') === null) {
-        localStorage.setItem('pregunta_id_bucle', '1');
-    }
-    if (localStorage.getItem('seleccionCategoria') === null) {
-        localStorage.setItem('seleccionCategoria', 'general');
-    }
+    if (!localStorage.getItem('pregunta_id_bucle')) {
+      localStorage.setItem('pregunta_id_bucle', '1');
+  }
+  if (!localStorage.getItem('seleccionCategoria')) {
+      localStorage.setItem('seleccionCategoria', 'general');
+  }
 
-    // Obtiene los valores del localStorage
-    const id = localStorage.getItem('pregunta_id_bucle');
-    const categoria = localStorage.getItem('seleccionCategoria');
+      // Obtiene los valores del localStorage con valores predeterminados
+      const id = localStorage.getItem('pregunta_id_bucle') || 1; // ID predeterminado en caso de que sea null
+      const categoria = localStorage.getItem('seleccionCategoria') || 'general'; // Categoría predeterminada
 
-    // Crea el objeto formData
-    const formData = {
-        id: id,
-        categoria: categoria
-    };
+      // Realiza la solicitud AJAX con jQuery
+      $.ajax({
+          url: '/turing-testTuring-obtener-id/' + id + '/categoria/' + categoria, // Endpoint con parámetros
+          method: 'GET', // Método HTTP
+      success: function (data) {
+          // Actualiza localStorage con el nuevo ID de pregunta
+          localStorage.setItem('pregunta_id_bucle', data.id);
 
-    // Realizar la petición AJAX usando fetch
-    fetch('/turing-testTuring-obtener-id', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json' // Especificamos que enviamos JSON
-        },
-        body: JSON.stringify(formData) // Convertimos los datos del formulario a JSON
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Error en la respuesta del servidor');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Actualiza localStorage con el nuevo ID de pregunta
-        localStorage.setItem('pregunta_id_bucle', data.id);
-
-        // Actualiza la interfaz con la nueva pregunta
-        agregarPreguntaListaDePreguntas(data.id, data.descripcion, data.idioma, data.fechaCreacion, data.categoria);
-        cambiarFondoPregunta(data.descripcion);
-    })
-    .catch(error => {
-        console.error('Error al obtener la pregunta:', error);
-    });
+          // Actualiza la interfaz con la nueva pregunta
+          agregarPreguntaListaDePreguntas(data.id, data.descripcion, data.idioma, data.fechaCreacion, data.categoria);
+          cambiarFondoPregunta(data.descripcion);
+      },
+      error: function (xhr, status, error) {
+          console.error('Error al obtener la pregunta:', error);
+      }
+  });
 }
+
 
 
 
@@ -129,7 +115,7 @@ function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion, 
    // Obtener la lista de preguntas
   categoria_guardada=localStorage.getItem('seleccionCategoria');
 
-  debugger;
+  
     // Verificar si la categoría de la pregunta coincide con la seleccionada o si no es privada
     if (categoria_guardada === 'pregunta-Privada' && categoria !== 'pregunta-Privada') {
       // Si la categoría seleccionada es "Privada", no mostrar otras categorías.
