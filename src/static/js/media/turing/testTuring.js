@@ -57,6 +57,15 @@ if (typeof localStorage.getItem('seleccionCategoria') === 'undefined' || localSt
   console.log('seleccionCategoria:', localStorage.getItem('seleccionCategoria'));
 }
 
+
+if (typeof localStorage.getItem('tiempoLecturaBuclePreguntas') === 'undefined' || localStorage.getItem('tiempoLecturaBuclePreguntas') === null) {
+  // Si no está configurado o es indefinido, lo inicializa con el valor 1
+  localStorage.setItem('tiempoLecturaBuclePreguntas', '40000');
+  console.log('tiempoLecturaBuclePreguntas 40000');
+} else {
+  console.log('tiempoLecturaBuclePreguntas:', localStorage.getItem('tiempoLecturaBuclePreguntas'));
+}
+
 })();
 
 
@@ -88,7 +97,6 @@ function obtenerPregunta() {
       // Obtiene los valores del localStorage con valores predeterminados
       const id = localStorage.getItem('pregunta_id_bucle') || 1; // ID predeterminado en caso de que sea null
       const categoria = localStorage.getItem('seleccionCategoria') || 'general'; // Categoría predeterminada
-
       // Realiza la solicitud AJAX con jQuery
       $.ajax({
           url: '/turing-testTuring-obtener-id/' + id + '/categoria/' + categoria, // Endpoint con parámetros
@@ -321,15 +329,87 @@ function obtenerRespuesta() {
 
 
 
-// Llamar la función cada 5 segundos con el id de la pregunta que quieres obtener
-setInterval(function () {
-  // Puedes cambiar el id según lo necesites
-  const id = Math.floor(Math.random() * 100); // ID de ejemplo
-  obtenerChatUsuariosPregunta();
-  obtenerPregunta(id);
-  obtenerRespuesta(id);
-}, 30000);
 
+
+
+// Declarar variables globales
+let tiempoLectura = parseInt(localStorage.getItem('tiempoLecturaBuclePreguntas')) || 40000; // Valor inicial
+let intervalo; // Guardará el ID del setInterval
+
+// Función para iniciar el bucle
+function iniciarIntervalo() {
+  if (intervalo) {
+    clearInterval(intervalo); // Detener cualquier intervalo previo
+  }
+
+  // Crear un nuevo intervalo con el tiempo actual
+  intervalo = setInterval(function () {
+    const id = Math.floor(Math.random() * 100); // Genera un ID aleatorio
+
+    // Llama a las funciones necesarias
+    obtenerChatUsuariosPregunta();
+    obtenerPregunta(id);
+    obtenerRespuesta(id);
+  }, tiempoLectura);
+
+  // Actualiza el valor mostrado
+  document.getElementById('tiempoLecturaActual').textContent = `Tiempo de lectura: ${tiempoLectura} ms`;
+}
+
+// Función para actualizar dinámicamente el tiempo de lectura
+function actualizarTiempoLectura(nuevoTiempo) {
+  tiempoLectura = nuevoTiempo; // Actualizar la variable
+  localStorage.setItem('tiempoLecturaBuclePreguntas', nuevoTiempo); // Guardar en localStorage
+  iniciarIntervalo(); // Reiniciar el intervalo con el nuevo tiempo
+}
+
+// Iniciar el intervalo por primera vez
+iniciarIntervalo();
+
+// Ejemplo: Incrementar el tiempo
+document.getElementById('incrementarTiempo').addEventListener('click', function () {
+  actualizarTiempoLectura(tiempoLectura + 5000); // Incrementar 5 segundos
+});
+
+// Ejemplo: Reducir el tiempo
+document.getElementById('decrementarTiempo').addEventListener('click', function () {
+  actualizarTiempoLectura(Math.max(tiempoLectura - 5000, 1000)); // Reducir 5 segundos, mínimo 1 segundo
+});
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Inicializa tiempoLectura desde localStorage o usa un valor por defecto
+  let tiempoLectura = parseInt(localStorage.getItem('tiempoLecturaBuclePreguntas'), 10) || 40000;
+
+  // Actualiza el valor mostrado en pantalla
+  const actualizarTextoTiempo = () => {
+    document.getElementById('tiempoLecturaActual').textContent = `Tiempo de lectura: ${tiempoLectura} ms`;
+  };
+
+  actualizarTextoTiempo(); // Muestra el valor inicial
+
+  // Incrementar tiempo
+  document.getElementById('incrementarTiempo').addEventListener('click', () => {
+    tiempoLectura += 1000; // Incrementa en 1000 ms
+    localStorage.setItem('tiempoLecturaBuclePreguntas', tiempoLectura); // Actualiza localStorage
+    actualizarTextoTiempo();
+  });
+
+  // Decrementar tiempo
+  document.getElementById('decrementarTiempo').addEventListener('click', () => {
+    if (tiempoLectura > 1000) { // Evita tiempos menores a 1000 ms
+      tiempoLectura -= 1000; // Decrementa en 1000 ms
+      localStorage.setItem('tiempoLecturaBuclePreguntas', tiempoLectura); // Actualiza localStorage
+      actualizarTextoTiempo();
+    }
+  });
+});
 
 
 
