@@ -303,9 +303,10 @@ def truncar_resumen(resumen, pregunta):
     if pregunta in resumen:
         resumen = resumen.replace(pregunta, '').strip()  # Eliminar la pregunta del resumen
     
+    
     if '.' in resumen:  # Si hay un punto en el resumen
         # Tomar la primera proposición completa hasta el primer punto
-        respuesta_corta = resumen.split('.')[0] + '.'
+        respuesta_corta = ' '.join(resumen.split()[:20])
     else:  # Si no hay un punto, tomar las primeras 20 palabras
         respuesta_corta = ' '.join(resumen.split()[:20])
     

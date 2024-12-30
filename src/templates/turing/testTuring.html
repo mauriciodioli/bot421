@@ -216,9 +216,17 @@
   <p class="text-center mb-2">Seleccione una categoría:</p>
   <ul class="list-group">
     <li class="list-group-item categoria-item" data-categoria="categoria-Todas">Todas</li>
-    <li class="list-group-item categoria-item" data-categoria="pregunta-Privada">Personal</li>
+    <li class="list-group-item categoria-item" data-categoria="pregunta-Privada">Personal</li>  
   </ul>
+
+  <!-- Control para modificar el tiempo de lectura -->
+  <div class="text-center mt-3">
+    <p id="tiempoLecturaActual" class="mb-1">Tiempo de lectura: 1000 ms</p> <!-- Este valor se actualiza dinámicamente -->
+    <button id="incrementarTiempo" class="btn btn-success btn-sm me-1">+</button>
+    <button id="decrementarTiempo" class="btn btn-danger btn-sm">-</button>
+  </div>
 </div>
+
 
 
 <!-- Modal para seleccionar el modelo -->

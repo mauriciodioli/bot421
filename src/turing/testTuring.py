@@ -129,11 +129,12 @@ def obtener_pregunta(id, categoria):
         pregunta = None
 
         while siguiente_id <= max_id:  # Buscar pregunta existente
-            pregunta = db.session.query(Pregunta).filter(Pregunta.id == siguiente_id, Pregunta.categoria == categoria).first()
-
+            pregunta = db.session.query(Pregunta).filter(Pregunta.id == siguiente_id).first()
 
             if pregunta:  # Si existe, salir del bucle
-                break
+                if pregunta.categoria == categoria:
+                    break
+               
             siguiente_id += 1  # Incrementar para buscar el siguiente ID válido
 
         if not pregunta:  # Si no se encontró ninguna pregunta válida
