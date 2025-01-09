@@ -333,6 +333,7 @@
       formData.append('color_titulo', color_titulo);
       formData.append('layout',layout);
       formData.append('ambito', ambito);
+     
   
       // Añadir todos los archivos almacenados en storedFiles al FormData
       storedFiles.forEach((file, index) => {

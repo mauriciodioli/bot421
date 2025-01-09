@@ -179,6 +179,15 @@
             <option value="Naturaleza">Naturaleza</option>
           </select>
         </div>
+         <!-- Combobox for boton pago -->
+         <div class="form-group_creaPublicacion">
+          <label for="postBotonCompra_creaPublicacion" class="text-black">Botón de Compra:</label>
+          <select id="postBotonCompra_creaPublicacion" name="postBotonCompra_creaPublicacion" class="form-control" required>
+            <option value="" disabled selected>Agrega botón de Compra</option>
+            <option value="True">Si</option>
+            <option value="False">No</option>            
+          </select>
+         </div>
 
         <div class="input-group_creaPublicacion">
           <!-- Hidden file input -->
@@ -296,7 +305,7 @@
       </div>
 
       <!-- Combobox for ambitos -->
-      <div class="form-group_modificaPublicacion">
+      <div class="form-group_modificaPublicacion">       
         <label for="postAmbito_modificaPublicacion" class="text-black">Ámbito:</label>
         <select id="postAmbito_modificaPublicacion" name="postAmbito_modificaPublicacion" class="form-control" required>
           <option value="" disabled selected>Selecciona un ámbito</option>
@@ -313,7 +322,15 @@
           <option value="Naturaleza">Naturaleza</option>
         </select>
       </div>
-
+      <!-- Combobox for boton pago -->
+      <div class="form-group_modificaPublicacion">
+        <label for="postBotonCompra_modificaPublicacion" class="text-black">Botón de Compra:</label>
+        <select id="postBotonCompra_modificaPublicacion" name="postBotonCompra_modificaPublicacion" class="form-control" required>
+          <option value="" disabled selected>Agrega botón de Compra</option>
+          <option value="True">Si</option>
+          <option value="False">No</option>            
+        </select>
+      </div>
       <div class="input-group_modificaPublicacion">
         <!-- Hidden file input -->
         <button class="close-button-media-principal-media-subir-imagenes-mostrarGaleria" onclick="closePreview()" style="display: none;">X</button>

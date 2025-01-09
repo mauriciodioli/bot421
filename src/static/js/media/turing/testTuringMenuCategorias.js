@@ -61,8 +61,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+// Función para manejar la selección y el envío de datos
+    // Seleccionamos el elemento con la clase "preguntaSeleccionada-item"
+    const preguntaSeleccionada = document.querySelector('.preguntaSeleccionada-item');
+
+    // Verificamos que el elemento exista
+    if (preguntaSeleccionada) {
+        // Agregamos un event listener al elemento para cuando sea clicado
+        preguntaSeleccionada.addEventListener('click', (event) => {
+            // Obtenemos los valores de los atributos data-preguntaSeleccionada y data-categoria
+            const preguntaId = preguntaSeleccionada.getAttribute('data-preguntaSeleccionada');
+            const categoriaId = preguntaSeleccionada.closest('.dropdown-menu')
+                ?.querySelector('.categoria-item[data-categoria]')
+                ?.getAttribute('data-categoria') || 'categoria-Todas'; // Predeterminamos "Todas" si no se seleccionó una categoría
+            seleccionarCategoria(event) 
+            // Construimos el objeto de datos a enviar
+            const data = {
+                preguntaId: preguntaId,
+                categoriaId: categoriaId,
+            };
+
+            // Llamamos a la función para enviar los datos
+           // enviarDatos('/turing-testTuring-obtener-respuestas-id', data);
+        });
+    } else {
+        console.warn('No se encontró el elemento .preguntaSeleccionada-item');
+    }
 
 
+
+
+// Función para enviar los datos mediante Fetch
+function enviarDatos(url, data) {
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // Especificamos que enviamos JSON
+        },
+        body: JSON.stringify(data) // Convertimos los datos a JSON
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Convertimos la respuesta a JSON
+            } else {
+                throw new Error('Error en la solicitud');
+            }
+        })
+        .then(data => {
+            console.log('Respuesta del servidor:', data);
+        })
+        .catch(error => {
+            console.error('Hubo un problema con la solicitud:', error);
+        });
+}
 
 
 

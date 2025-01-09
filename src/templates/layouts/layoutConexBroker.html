@@ -80,7 +80,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
                         <ul class="dropdown-menu">              
-                            <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar" method="post" class="btn-guardar_inst">
+                            <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar/" method="post" class="btn-guardar_inst">
                                 <div class="form-group"><input type="hidden" name="selector_form_GenerarFicha"  id="selector_form_GenerarFicha"  class="form-control"></div>  
                                 <div class="form-group"><input type="hidden" name="accounCuenta_form_GenerarFicha"  id="accounCuenta_form_GenerarFicha"  class="form-control"></div>  
                                 <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
@@ -137,7 +137,7 @@
                       <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Instrumentos</a>
                       <ul class="dropdown-menu">                        
                           <li>
-                              <form id="instrumentos_form" action="/instrumentos_detalles" method="post">
+                              <form id="instrumentos_form" action="/instrumentos_detalles/" method="post">
                                   <!-- Aquí puedes agregar los campos adicionales que desees -->
                                   <input type="hidden" name="instrumentos_account" id="instrumentos_account">
                                   <input type="hidden" id="page" name="page" value="{{ request.args.get('page', 1) }}">
