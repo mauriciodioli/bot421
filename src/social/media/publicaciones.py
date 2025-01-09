@@ -26,6 +26,7 @@ from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from utils.db import db
+import re
 import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
 from social.buckets.bucketGoog import (
@@ -783,6 +784,7 @@ def guardarPublicacion(request, user_id):
         color_texto = request.form.get('color_texto')
         color_titulo = request.form.get('color_titulo')
         estado = request.form.get('postEstado_creaPublicacion')
+        botonCompra = request.form.get('postBotonCompra_creaPublicacion')
         
         # Verificar si ya existe una publicación con el mismo título para el mismo usuario
         publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
@@ -802,7 +804,8 @@ def guardarPublicacion(request, user_id):
             color_texto=color_texto,
             color_titulo=color_titulo,
             fecha_creacion=datetime.now(),
-            estado=estado
+            estado=estado,
+            botonCompra=bool(botonCompra)
         )
         
         db.session.add(nueva_publicacion)
@@ -1029,6 +1032,7 @@ def publicaciones_modificar_publicaciones():
         descripcion = request.form.get('postDescription_modificaPublicacion')
         estado = request.form.get('postEstado_modificaPublicacion')
         ambito = request.form.get('postAmbito_modificaPublicacion')
+        botonCompra = request.form.get('postBotonCompra_modificaPublicacion')
 
         # Obtener archivos subidos si es necesario
         archivos = request.files.getlist('mediaFile_modificaPublicacion')
@@ -1059,14 +1063,20 @@ def publicaciones_modificar_publicaciones():
         if not publicacion:
             return jsonify({'error': 'Publicación no encontrada o no autorizada'}), 404
         
+        
+        # Eliminar todas las etiquetas HTML
+        texto_limpio = re.sub(r'<[^>]*>', '', texto) if texto else ''
+        
         # Actualizar la publicación
         publicacion.titulo = titulo
-        publicacion.texto = texto
+        publicacion.texto = texto_limpio
         publicacion.descripcion = descripcion
         publicacion.estado = estado
         publicacion.ambito = ambito
         publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
+        publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
 
+       
         db.session.commit()
         db.session.close()
         return jsonify({"mensaje": "Publicación modificada con éxito!"})

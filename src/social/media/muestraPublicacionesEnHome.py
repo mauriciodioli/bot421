@@ -137,7 +137,8 @@ def obtener_publicacion_por_id(publicacion_id):
                 'color_texto': publicacion.color_texto,
                 'color_titulo': publicacion.color_titulo,
                 'fecha_creacion': publicacion.fecha_creacion,
-                'estado': publicacion.estado,           
+                'estado': publicacion.estado,  
+                'botonCompra': publicacion.botonCompra,        
                 'imagenes': imagenes,
                 'videos': videos
             }
