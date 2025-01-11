@@ -38,16 +38,21 @@
     <div class="cart-summary">
         <p>Subtotal: $<span id="subtotal">0.00</span></p>
         <p>Total: $<span id="total">0.00</span></p>
+        <button id="return-button" style="margin-right: 200px;" onclick="goBack()">Volver</button>
+
         <button id="checkout-button">Finalizar la compra</button>
     </div>
+
+  
 </div>
 
 
   
 {% include 'layouts/layout_footer.html' %}  
 
-{% include 'layouts/layout_bajo.html' %}  
+{% include 'layouts/layout_carrito.html' %}  
 <!-- Enlaces a scripts de JavaScript -->
 <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/productos/carritoCompras.css')}}"> 
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
+<script src="{{ url_for('static', filename='js/productosComerciales/pedidos/pedido.js') }}"></script>
 {% endblock %}
