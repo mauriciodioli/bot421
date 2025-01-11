@@ -147,6 +147,78 @@ def productosComerciales_pedidos_mostrar_carrito():
    finally:
         db.session.close()  # Cerrar la sesión siempre
 
+
+
+
+################################################################################################
+#########################RETORNA DATOS PEDIDOS DESDE LAYOUT CARRITO SOLAMENTE##################
+###############################################################################################
+
+@pedidos.route('/productosComerciales_pedidos_mostrar_layout_carrito/', methods=['POST'])
+def productosComerciales_pedidos_mostrar_layout_carrito():
+    try:
+        data = request.form or request.json
+        access_token = data.get('access_token')
+        if not access_token:
+            return jsonify({'error': 'Token no proporcionado.'}), 401
+
+        if not Token.validar_expiracion_token(access_token=access_token):
+            return jsonify({'error': 'Token inválido o expirado.'}), 401
+
+        decoded_token = jwt.decode(
+            access_token,
+            current_app.config['JWT_SECRET_KEY'],
+            algorithms=['HS256']
+        )
+        user_id = decoded_token.get("sub")
+        if not user_id:
+            return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
+        
+        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
+        if not user:
+            return jsonify({'error': 'Usuario no encontrado.'}), 404
+
+        if not user.activo:
+            return jsonify({'error': 'El usuario no está activo.'}), 403
+
+        ambito = data.get('ambito_carrito')
+        pedidos = db.session.query(Pedido).filter(Pedido.user_id == user_id, Pedido.ambito == ambito).all()
+
+        pedidos_data = [
+            {
+                'id': pedido.id,
+                'user_id': pedido.user_id,
+                'nombre_producto': pedido.nombre_producto,
+                'fecha_pedido': pedido.fecha_pedido,
+                'precio_venta': pedido.precio_venta,
+                'estado': pedido.estado,
+                'imagen_url': pedido.imagen
+            }
+            for pedido in pedidos
+        ]
+        db.session.close()
+
+        # Enviar solo los datos del carrito como JSON
+        return jsonify({'pedidos_data': pedidos_data})
+
+    except Exception as e:
+        print("Error:", str(e))
+        db.session.rollback()
+        return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
+
+    finally:
+        db.session.close()
+
+
+
+
+
+
+
+
+
+
+
 @pedidos.route('/productosComerciales_pedidos_eliminar_carrito/', methods=['POST'])
 def productosComerciales_pedidos_eliminar_carrito():
     try:
@@ -181,7 +253,7 @@ def productosComerciales_pedidos_alta_carrito():
         # Obtener datos del request
         #print(request.form)
         data = request.form or request.json
-        access_token = data.get('access_token_btn_carrito')
+        access_token = data.get('access_token_btn_carrito1')
         if not access_token:
             return jsonify({'error': 'Token no proporcionado.'}), 401
 

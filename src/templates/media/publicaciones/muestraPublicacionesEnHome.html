@@ -58,37 +58,33 @@
     <!------------------------------------------------------------------------------->
     {% if post.botonCompra %}
 
-                    <div class="fila boton-compra">
-                        <form id="sistemaDePagos_get_ofertas_suscripciones" method="POST" action="/productosComerciales_pedidos_alta_carrito/" style="display: flex; align-items: center; gap: 10px;">
-                            <input type="hidden" id="ambito_btn_carrito" name="ambito_btn_carrito" value="{{ post.ambito }}">
-                            <input type="hidden" id="titulo_btn_carrito" name="titulo_btn_carrito" value="{{ post.titulo }}" >
-                            <input type="hidden" id="publicacion_id_btn_carrito" name="publicacion_id_btn_carrito" value="{{ post.publicacion_id }}" >
-                            <input type="hidden" id="texto_btn_carrito" name="texto_btn_carrito" value="{{post.texto}}" >
-                            <input type="hidden" id="access_token_btn_carrito" name="access_token_btn_carrito">
-                            <input type="hidden" id="correo_electronico_btn_carrito" name="correo_electronico_btn_carrito">   
-                            <input type="hidden" id="productoComercial_carrito" name="productoComercial_carrito" > 
-                            <input type="hidden" id="cluster_btn_carrito" name="cluster_btn_carrito" >
-                           
-                            <input type="hidden" id="precio_btn_carrito" name="precio_btn_carrito" >
-                    
-                          <!-- Campo para la URL de la primera imagen -->
-                            {% if post.imagenes and post.imagenes[0].filepath %}
-                            <input type="hidden" id="imagen_btn_carrito" name="imagen_btn_carrito" 
-                                value="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}">
-                            {% endif %}
-                           <!-- Combo para elegir cantidad -->
-                           <div style="display: flex; align-items: center; margin-top: 20px; gap: 10px;">
-                                <label for="cantidadCompra" class="label-combo" style="margin-right: 10px;">Cantidad:</label>
-                                <input type="number" id="cantidadCompra" name="cantidadCompra" value="1" min="1" step="1" 
-                                    style=" margin-top: 20px; width: 80px; height: 40px; text-align: center;">
-                                <button class="card-button btn-success long-button" 
-                                        style=" margin-top: 10px; height: 40px; width: auto; padding: 0 15px; text-align: center;" 
-                                        type="submit">Agregar compra</button>
-                            </div>
-                        
-
-                          </form>
+            <div class="fila boton-compra">
+                <form id="sistemaDePagos_get_ofertas_suscripciones" method="POST" action="/productosComerciales_pedidos_alta_carrito/" style="display: flex; align-items: center; gap: 10px;">
+                    <input type="hidden" id="ambito_btn_carrito" name="ambito_btn_carrito" value="{{ post.ambito }}">
+                    <input type="hidden" id="titulo_btn_carrito" name="titulo_btn_carrito" value="{{ post.titulo }}" >
+                    <input type="hidden" id="publicacion_id_btn_carrito" name="publicacion_id_btn_carrito" value="{{ post.publicacion_id }}" >
+                    <input type="hidden" id="texto_btn_carrito" name="texto_btn_carrito" value="{{post.texto}}" >
+                    <input type="hidden" id="access_token_btn_carrito1" name="access_token_btn_carrito1">
+                    <input type="hidden" id="correo_electronico_btn_carrito" name="correo_electronico_btn_carrito">   
+                
+                    <!-- Campo para la URL de la primera imagen -->
+                    {% if post.imagenes and post.imagenes[0].filepath %}
+                    <input type="hidden" id="imagen_btn_carrito" name="imagen_btn_carrito" 
+                        value="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}">
+                    {% endif %}
+                    <!-- Combo para elegir cantidad -->
+                    <div style="display: flex; align-items: center; margin-top: 20px; gap: 10px;">
+                        <label for="cantidadCompra" class="label-combo" style="margin-right: 10px;">Cantidad:</label>
+                        <input type="number" id="cantidadCompra" name="cantidadCompra" value="1" min="1" step="1" 
+                            style=" margin-top: 20px; width: 80px; height: 40px; text-align: center;">
+                        <button class="card-button btn-success long-button" 
+                                style=" margin-top: 10px; height: 40px; width: auto; padding: 0 15px; text-align: center;" 
+                                type="submit">Agregar compra</button>
                     </div>
+                
+
+                    </form>
+            </div>
           
 
     {% endif %}

@@ -47,26 +47,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('ventas-link').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevenir la acción predeterminada del enlace
+        
+        try {
+            const token = localStorage.getItem('access_token');
+            const dominio = localStorage.getItem('ambito');
 
-document.getElementById('ventas-link').addEventListener('click', function (event) {
-    event.preventDefault(); // Prevenir la acción predeterminada del enlace
-    
-    try {
-        const token = localStorage.getItem('access_token');
-        const dominio = localStorage.getItem('ambito');
+            if (!token || !dominio) {
+                throw new Error("Datos faltantes en localStorage.");
+            }
 
-        if (!token || !dominio) {
-            throw new Error("Datos faltantes en localStorage.");
+            // Asignar valores al formulario
+            document.getElementById('pedidos_ventas_accessToken').value = token;
+            document.getElementById('pedidos_ventas_dominio').value = dominio;
+
+            // Enviar el formulario
+            document.getElementById('ventas-form').submit();
+        } catch (error) {
+            console.error("Error al procesar el formulario:", error.message);
+            alert("No se pudo procesar la solicitud. Intente nuevamente.");
         }
-
-        // Asignar valores al formulario
-        document.getElementById('pedidos_ventas_accessToken').value = token;
-        document.getElementById('pedidos_ventas_dominio').value = dominio;
-
-        // Enviar el formulario
-        document.getElementById('ventas-form').submit();
-    } catch (error) {
-        console.error("Error al procesar el formulario:", error.message);
-        alert("No se pudo procesar la solicitud. Intente nuevamente.");
-    }
+    });
 });
