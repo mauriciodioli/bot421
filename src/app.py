@@ -33,6 +33,7 @@ from productosComerciales.descipcionProductos import descrpcionProductos
 from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
+from productosComerciales.pedidos.pedidos import pedidos
 
 
 from Tests.test_order_report_handler import test_order_report_handler
@@ -132,6 +133,7 @@ from models.turing.respuesta import respuesta
 from models.turing.respuestaUsuario import respuestaUsuario
 from models.turing.trivia import trivia
 from models.turing.testTuringUser import testTuringUser
+from models.pedidos.pedido import pedido
 
 
 
@@ -290,6 +292,8 @@ app.register_blueprint(ambito)
 app.register_blueprint(ambito_usuario)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
+app.register_blueprint(pedido)
+app.register_blueprint(pedidos)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)

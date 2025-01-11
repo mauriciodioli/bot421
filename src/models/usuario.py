@@ -27,8 +27,7 @@ class Usuario(db.Model):
     trazaFichas = relationship('TrazaFicha', back_populates='usuario')
     logs = relationship("Logs", back_populates="usuarios")   
     trades = relationship("Trade", back_populates="usuario")
-    
-  
+   
 
 
  

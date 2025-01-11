@@ -4,6 +4,7 @@ from utils.db import db
 from sqlalchemy import inspect, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 ma = Marshmallow()
 
 publicaciones = Blueprint('publicaciones', __name__)
