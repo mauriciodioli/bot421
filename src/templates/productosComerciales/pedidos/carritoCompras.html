@@ -1,0 +1,53 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% if layout == 'layout_administracion' %}
+   {% extends 'layouts/layout_administracion.html' %}    
+{% endif %}
+{% if layout == 'layout' %}
+{% extends 'layouts/layout.html'%}    
+{% endif %}
+
+{% block content%}
+
+<div class="cart-container"> 
+    <h1>Carrito de Compras</h1>
+    {% for pedido in data %}
+    <div class="cart-item" data-precio="{{ pedido.precio_venta }}" data-id="{{ pedido.id }}">
+        {% if pedido.imagen_url %}
+        <img src="{{ pedido.imagen_url }}" alt="Imagen del producto" class="product-image">
+        {% else %}
+        <img src="default.jpg" alt="Producto sin imagen" class="product-image">
+        {% endif %}
+        <div class="product-details">
+            <h2>{{ pedido.nombre_producto }}</h2>
+            <p class="price">Precio: $<span class="unit-price">{{ pedido.precio_venta }}</span></p>
+            <label for="quantity-{{ pedido.id }}">Cantidad:</label>
+            <input type="number" id="quantity-{{ pedido.id }}" name="quantity" class="quantity-input" value="1" min="1">
+            <button class="remove-button" data-pedido-id="{{ pedido.id }}">Eliminar</button>
+        </div>
+    </div>
+    {% endfor %}
+    <div class="cart-summary">
+        <p>Subtotal: $<span id="subtotal">0.00</span></p>
+        <p>Total: $<span id="total">0.00</span></p>
+        <button id="checkout-button">Finalizar la compra</button>
+    </div>
+</div>
+
+
+  
+{% include 'layouts/layout_footer.html' %}  
+
+{% include 'layouts/layout_bajo.html' %}  
+<!-- Enlaces a scripts de JavaScript -->
+<link rel =  "stylesheet" href = "{{ url_for('static',filename='css/productos/carritoCompras.css')}}"> 
+<script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
+{% endblock %}
