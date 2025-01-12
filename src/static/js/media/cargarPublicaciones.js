@@ -372,7 +372,7 @@
             'Authorization': 'Bearer ' + access_token
           },
           success: function(response) {
-            debugger;
+           
             splash.style.display = 'none'; // Ocultar el splash al terminar
             modal.style.display = "none";
             if (Array.isArray(response)) {
@@ -498,7 +498,7 @@
             }
         },     
           error: function(xhr, status, error) {
-            //debugger;
+            
             //splash.style.display = 'none'; // Ocultar el splash al terminar
            // modal.style.display = "none";
             // En la consola del navegador

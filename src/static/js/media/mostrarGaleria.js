@@ -406,7 +406,7 @@ function cerrarModalImagenGrande() {
       var id_publicacion = id;
       var titulo = postCard.querySelector('.card-title').textContent;
       var texto = postCard.querySelector('.card-text').textContent;
-      debugger;
+      
       var descripcion = postCard.querySelector('.card-text-descripcion').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
       var ambito = postCard.querySelector('.card-text-ambito').textContent;

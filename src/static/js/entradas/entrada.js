@@ -9,7 +9,7 @@
  // Guardar en localStorage
  console.log("Dominio desde Flask:", dominio); // Depuración
  console.log("Página desde Flask:", pagina);  // Depuración
- debugger; 
+
 
  if ( !localStorage.getItem('dominio')) {
     localStorage.setItem('dominio', dominio);

@@ -102,29 +102,29 @@
                         <li class="nav-item dropdown" id='AdministrarDominiosLayout'>
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Domains</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" id='social' href="/subirImagen/">Social</a></li>
+                                <li><a class="dropdown-item" id='social' href="#">Social</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" id='educativo' href="/mostrarGaleria/">Educational</a></li>
+                                <li><a class="dropdown-item" id='educativo' href="#">Educational</a></li>
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='laboral' href="/mostrarGaleria/">Work</a></li>                          
+                                <li><a class="dropdown-item" id='laboral' href="#">Work</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Negocio' href="/mostrarGaleria/">Business</a></li>                          
+                                <li><a class="dropdown-item" id='Negocio' href="#">Business</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Artes' href="/mostrarGaleria/">Creations</a></li>                          
+                                <li><a class="dropdown-item" id='Artes' href="#">Creations</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Deporte' href="/mostrarGaleria/">Sports</a></li>                          
+                                <li><a class="dropdown-item" id='Deporte' href="#">Sports</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Familia' href="/mostrarGaleria/">Family</a></li>                          
+                                <li><a class="dropdown-item" id='Familia' href="#">Family</a></li>                          
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" id='Amistad' href="/mostrarGaleria/">Friendship</a></li>                          
+                                <li><a class="dropdown-item" id='Amistad' href="#">Friendship</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Personal' href="/mostrarGaleria/">Personal</a></li>                          
+                                <li><a class="dropdown-item" id='Personal' href="#">Personal</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Salud' href="/mostrarGaleria/">Health</a></li>                          
+                                <li><a class="dropdown-item" id='Salud' href="#">Health</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Filantropia' href="/mostrarGaleria/">Philanthropy</a></li>                          
+                                <li><a class="dropdown-item" id='Filantropia' href="#">Philanthropy</a></li>                          
                                 <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Naturaleza' href="/mostrarGaleria/">Nature</a></li>
+                                <li><a class="dropdown-item" id='Naturaleza' href="#">Nature</a></li>
                                 <li><hr class="dropdown-divider"></li> 
                                 <li class="nav-item content">
                                     <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
@@ -139,6 +139,10 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/registrar_usuario">Register</a>
+                        </li>
+                       
+                        <li class="nav-item">
+                            <a class="nav-link" onclick=cambiarIdioma(); href="#" id="languageLink">ENG</a>
                         </li>
                        <!--
                         <li class="nav-item content">
@@ -226,6 +230,9 @@
   
 
     <script>
+        //esto cambia el idioma en localstorage y en cookies
+        cambiarIdioma();
+        
         // Solicitar permiso para mostrar notificaciones
         solicitarPermiso();
      

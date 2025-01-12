@@ -107,15 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener('DOMContentLoaded', function () {
 
-
-
-
-
-
-
-
-
-
     
     const dropdownMenu = document.querySelector('.custom-dropdown-menu');
 
