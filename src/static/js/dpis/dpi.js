@@ -1,3 +1,277 @@
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    
+    
+
+//eventos para la carga de los items de los dominios
+$(document).ready(function () {
+    // Manejador de eventos para cada ítem del menú
+  
+    
+
+    // Mostrar u ocultar el menú desplegable al hacer clic en el botón
+    $('.close-layout-btn').on('click', function () {
+        $('.dropdown-menu').toggle();
+    });
+
+    // Evitar que el menú se cierre cuando se haga clic dentro del contenedor
+    $('.dropdown-menu').on('click', function(e) {
+        e.stopPropagation(); // Evitar que se propague el clic y cierre el menú
+    });
+
+    // Cerrar el layout al hacer clic en el botón de cerrar
+    $('#closeLayout').on('click', function () {
+        $('#bottomLayout').addClass('hidden');
+    });
+
+    // Mantener la funcionalidad de mostrar/ocultar el layout con scroll
+    let lastScrollTop = 0; // Última posición del scroll
+    let scrolling = false; // Estado de scroll en curso
+
+    $(window).on('scroll', function () {
+        scrolling = true;
+
+        // Obtener la posición actual del scroll
+        const currentScrollTop = $(this).scrollTop();
+
+        if (currentScrollTop > lastScrollTop) {
+            // Scroll hacia abajo -> ocultar el layout
+            $('#bottomLayout').addClass('hidden');
+        } else {
+            // Scroll hacia arriba -> mostrar el layout
+            $('#bottomLayout').removeClass('hidden');
+        }
+
+        lastScrollTop = currentScrollTop; // Actualizar la última posición del scroll
+    });
+
+    // Comprobar si el usuario está en reposo (sin scroll) después de 2 segundos
+    setInterval(function () {
+        if (!scrolling) {
+            $('#bottomLayout').removeClass('hidden'); // Mostrar el layout si no hay scroll
+        }
+        scrolling = false; // Reiniciar el estado de scroll
+    }, 2000);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const dropdownButton = document.getElementById("dropdownButton");
+    const dropdownMenu = document.getElementById("dropdownMenu");
+    const dropdownContainer = document.getElementById("dropdownContainer");
+    
+    if (!dropdownButton || !dropdownMenu || !dropdownContainer) {
+        console.error("Uno o más elementos no existen en el DOM.");
+        return;
+    }
+
+    // Mostrar el menú al hacer clic en el botón
+    dropdownButton.addEventListener("click", (event) => {
+        event.stopPropagation(); // Evita que el clic cierre el menú
+        dropdownMenu.style.display =
+            dropdownMenu.style.display === "flex" ? "none" : "flex";
+    });
+
+    // Cerrar el menú cuando se haga clic fuera del contenedor
+    document.addEventListener("click", () => {
+        dropdownMenu.style.display = "none";
+    });
+
+    // Evitar que el menú se cierre al hacer clic dentro del contenedor
+    dropdownContainer.addEventListener("click", (event) => {
+        event.stopPropagation();
+    });
+
+    // Cerrar el menú al seleccionar un elemento
+    dropdownMenu.querySelectorAll("a").forEach((item) => {
+        item.addEventListener("click", () => {
+            dropdownMenu.style.display = "none"; // Cerrar menú después de seleccionar un ítem
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    const dropdownMenu = document.querySelector('.dropdown-menu');
+
+    // Función para cargar los ámbitos desde el servidor
+    // Función para cargar los ámbitos desde el servidor
+    window.cargarAmbitos = function ()  {
+        fetch('/social-media-publicaciones-obtener-ambitos', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los ámbitos.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const dropdownMenu = $('.dropdown-menu'); // Usa jQuery para seleccionar el menú
+
+                // Limpiar el menú existente
+                dropdownMenu.empty();
+
+                // Agregar los ámbitos dinámicamente al menú
+                data.forEach(ambito => {
+                    const listItem = `
+                        <li>
+                            <a href="#" class="dropdown-item" id="${ambito.valor}">
+                                ${ambito.nombre}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                    `;
+                    dropdownMenu.append(listItem);
+                });
+                
+                // Agregar el elemento "Turing test" al final del menú
+                const turingTestItem = `
+                <li class="nav-item content">
+                    <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
+                </li>
+                 <li><hr class="dropdown-divider"></li>
+                `;
+                dropdownMenu.append(turingTestItem);
+
+                
+                // Eliminar el último separador
+                dropdownMenu.children('li').last().remove();
+            })
+            .catch(error => {
+                console.error('Error al cargar los ámbitos:', error);
+            });
+    }
+
+    // Delegación de eventos para manejar clics en los ítems
+    $('.dropdown-menu').on('click', '.dropdown-item', function (e) {
+        e.preventDefault(); // Previene el comportamiento predeterminado
+
+        const selectedDomain = this.id; // ID del ítem clickeado
+
+        // Guardar el dominio en localStorage
+        localStorage.setItem('dominio', selectedDomain);
+
+        // Actualizar el input oculto
+        const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
+        if (hiddenInput.length) {
+            hiddenInput.val(selectedDomain);
+        }
+
+        // Mostrar en consola
+        console.log('Dominio seleccionado:', selectedDomain);
+        
+        // Llamar a la función para manejar el dominio seleccionado
+        enviarDominioAJAX(selectedDomain);
+
+        // Cerrar el menú (opcional)
+       // $(this).closest('.dropdown-menu').hide();
+    });
+
+    
+    // Llamar a la función para cargar los ámbitos al cargar la página
+    cargarAmbitos();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  // Obtener el enlace "Signals"
  document.getElementById('openModalSignals').addEventListener('click', function (e) {
     // Prevenir el comportamiento por defecto (enlace)
@@ -131,34 +405,20 @@ fetch('/cuenta-endpoint-all/', {
 
 //carga inicialmente un dominio y luego con el clic de la barra de herramientas
 
-// Añadir un evento click a cada ítem del menú dropdown
-document.querySelectorAll('.dropdown-item').forEach(item => {
-  item.addEventListener('click', function (event) {
-      event.preventDefault(); // Previene el comportamiento predeterminado del enlace
-      var selectedDomain = this.id; // Toma el ID del elemento clickeado como el dominio seleccionado
-      
-      // Actualizar el valor del input hidden
-      document.getElementById('domain').value = selectedDomain;
-      
-      console.log("Dominio seleccionado:", selectedDomain); // Mostrar el dominio seleccionado en la consola
 
-      // Hacer algo con el valor actualizado (por ejemplo, enviar una solicitud AJAX)
-      enviarDominioAJAX(selectedDomain);
-  });
-});
 
 
 
 // Realizar la solicitud AJAX al cargar la página
 $(document).ready(function () {
   // Obtener el valor por defecto del input hidden cuando carga la página
-    debugger;
+  
     var storedDomain = localStorage.getItem('dominio');
     let domain
     if (storedDomain && storedDomain !== 'null') {
         domain = storedDomain;
     } else {
-        debugger;
+      
         let currentURL = window.location.href;
         let partAfterIndex = currentURL.split("index/")[1];
         // Si la parte después de "index/" es undefined o vacía, asigna 'laboral'
@@ -229,112 +489,112 @@ function enviarDominioAJAX(domain) {
     // Mostrar/ocultar splash según la visibilidad de la sección
     toggleSplash(targetSection, splash);
 
-// Ruta al archivo con la galería de imágenes
-var galeriaURL = '/MostrarImages/';
-var galeriaURL1 = '/media-publicaciones-mostrar-dpi';
-var access_token = 'access_dpi_token_usuario_anonimo';
-debugger;
-if ( !localStorage.getItem('dominio')) {
-    
-    localStorage.setItem('dominio', domain);
-}
+    // Ruta al archivo con la galería de imágenes
+    var galeriaURL = '/MostrarImages/';
+    var galeriaURL1 = '/media-publicaciones-mostrar-dpi';
+    var access_token = 'access_dpi_token_usuario_anonimo';
 
-if ( domain !=='inicialDominio') {
-    
-    localStorage.setItem('dominio', domain);
-}
-
-
-domain = localStorage.getItem('dominio');
-
-$.ajax({
-  type: 'POST',
-  url: galeriaURL1,
-  dataType: 'json', // Asegúrate de que el backend devuelva un JSON
-  headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
-  data: { ambitos: domain }, // Enviar el dominio como parte de los datos
-  success: function (response) {
-    debugger;
-    splash.style.display = 'none'; // Ocultar el splash al terminar
-    if (Array.isArray(response)) {
-        var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
-        postDisplayContainer.empty();
-
-        response.forEach(function(post) {
-            if (post.imagenes.length > 0 || post.videos.length > 0) {
-                var mediaHtml = '';
-                //var baseUrl = window.location.origin;
-
-                if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                    // Mostrar solo la primera imagen
-                    //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                    var firstImageUrl = post.imagenes[0].filepath;
-                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
-
-                    // Guardar las demás imágenes para mostrarlas en el modal
-                    var modalImagesHtml = '';
-                    post.imagenes.forEach(function(image, index) {
-                        if (index > 0) { // Saltar la primera imagen
-                            //var imageUrl = baseUrl + '/' + image.filepath;
-                            var imageUrl = image.filepath;
-                            modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-en-ambito-publicacion">`;
-                        }
-                    });
-
-                    // Crear el HTML del modal con el sufijo muestra-crea-publicacion
-                    var modalHtml = `
-                        <div class="modal-muestra-crea-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                            <div class="modal-content-muestra-crea-publicacion">
-                                <span class="close-muestra-crea-publicacion" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                <div class="modal-image-grid-muestra-crea-publicacion">
-                                    ${modalImagesHtml}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-
-                    postDisplayContainer.append(modalHtml);
-                }
-
-                var estadoClass;
-                var estadoTextClass;
-             
-
-                var cardHtml = `
-                        <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
-                            <div class="card-body">
-                                <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
-                                    <span class="text-white">&times;</span>
-                                </a>
-                                <h5 class="card-title">${post.titulo}</h5>
-                                <div class="card-media-grid-publicacion-en-ambito">
-                                    ${mediaHtml}
-                                </div>
-                                <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
-                                <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
-
-                                
-                            </div>
-                        </div>
-                    `;
-
-
-                postDisplayContainer.append(cardHtml);
-            } else {
-                splash.style.display = 'none'; // Ocultar el splash al terminar
-                console.log('Publicación sin contenido:', post.publicacion_id);
-            }
-        });
-    } else {
-        splash.style.display = 'none'; // Ocultar el splash al terminar
-        console.error("La respuesta no es un array. Recibido:", response);
+    if ( !localStorage.getItem('dominio')) {
+        
+        localStorage.setItem('dominio', domain);
     }
-},
-error: function () {
-    splash.style.display = 'none'; // Ocultar el splash al terminar
-    console.error('Error al cargar la galería de imágenes.');
-}
+
+    if ( domain !=='inicialDominio') {
+        
+        localStorage.setItem('dominio', domain);
+    }
+
+
+    domain = localStorage.getItem('dominio');
+
+    $.ajax({
+    type: 'POST',
+    url: galeriaURL1,
+    dataType: 'json', // Asegúrate de que el backend devuelva un JSON
+    headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
+    data: { ambitos: domain }, // Enviar el dominio como parte de los datos
+    success: function (response) {
+    
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+        if (Array.isArray(response)) {
+            var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
+            postDisplayContainer.empty();
+
+            response.forEach(function(post) {
+                if (post.imagenes.length > 0 || post.videos.length > 0) {
+                    var mediaHtml = '';
+                    //var baseUrl = window.location.origin;
+
+                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                        // Mostrar solo la primera imagen
+                        //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                        var firstImageUrl = post.imagenes[0].filepath;
+                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
+
+                        // Guardar las demás imágenes para mostrarlas en el modal
+                        var modalImagesHtml = '';
+                        post.imagenes.forEach(function(image, index) {
+                            if (index > 0) { // Saltar la primera imagen
+                                //var imageUrl = baseUrl + '/' + image.filepath;
+                                var imageUrl = image.filepath;
+                                modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-en-ambito-publicacion">`;
+                            }
+                        });
+
+                        // Crear el HTML del modal con el sufijo muestra-crea-publicacion
+                        var modalHtml = `
+                            <div class="modal-muestra-crea-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                                <div class="modal-content-muestra-crea-publicacion">
+                                    <span class="close-muestra-crea-publicacion" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                                    <div class="modal-image-grid-muestra-crea-publicacion">
+                                        ${modalImagesHtml}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        postDisplayContainer.append(modalHtml);
+                    }
+
+                    var estadoClass;
+                    var estadoTextClass;
+                
+
+                    var cardHtml = `
+                            <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
+                                <div class="card-body">
+                                    <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                        <span class="text-white">&times;</span>
+                                    </a>
+                                    <h5 class="card-title">${post.titulo}</h5>
+                                    <div class="card-media-grid-publicacion-en-ambito">
+                                        ${mediaHtml}
+                                    </div>
+                                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                    <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
+                                    <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+
+                                    
+                                </div>
+                            </div>
+                        `;
+
+
+                    postDisplayContainer.append(cardHtml);
+                } else {
+                    splash.style.display = 'none'; // Ocultar el splash al terminar
+                    console.log('Publicación sin contenido:', post.publicacion_id);
+                }
+            });
+        } else {
+            splash.style.display = 'none'; // Ocultar el splash al terminar
+            console.error("La respuesta no es un array. Recibido:", response);
+        }
+    },
+    error: function () {
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+        console.error('Error al cargar la galería de imágenes.');
+    }
 });
 
 
@@ -400,3 +660,98 @@ function abrirPublicacionHome(publicacionId) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+// Función para obtener el valor de una cookie
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+    return null;
+}
+
+
+var currentLanguage = 'in';
+
+// Obtener el enlace para cambiar el idioma
+const languageLink = document.getElementById("languageLink");
+
+// Si no existe la cookie "language", se crea y se establece "in" como idioma
+if (!getCookie("language")) {
+    document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+    currentLanguage = "in";
+    localStorage.setItem("language", currentLanguage);
+    // Cambiar el texto del enlace según el idioma
+    languageLink.textContent = "ENG";  // Cambiar solo a "ENG"
+} else {
+    // Si ya existe la cookie, obtener el valor y poner el texto de acuerdo a ella
+    currentLanguage = getCookie("language");
+    localStorage.setItem("language", currentLanguage);
+    languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+}
+
+
+
+
+
+function cambiarIdioma() {
+    
+
+document.addEventListener("DOMContentLoaded", function () {
+    const languageLink = document.getElementById("languageLink");
+
+    // Función para obtener el valor de una cookie
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    // Función para actualizar el idioma y mostrarlo
+    function updateLanguage() {
+        // Leer el idioma desde localStorage o cookies
+        let currentLanguage = localStorage.getItem("language") || getCookie("language");
+
+        // Si no hay un idioma configurado, asignar "in" como valor inicial
+        if (!currentLanguage) {
+            currentLanguage = "in";
+        } else {
+            // Alternar entre "in" y "es"
+            currentLanguage = currentLanguage === "in" ? "es" : "in";
+        }
+
+        // Guardar el idioma actualizado en localStorage y cookies
+        localStorage.setItem("language", currentLanguage);
+        document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+
+        // Actualizar el texto del enlace
+        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+
+        alert(`Idioma actualizado: ${currentLanguage}`);
+    }
+
+    // Establecer el idioma inicial y el texto del enlace
+    (function setInitialLanguage() {
+        const currentLanguage = localStorage.getItem("language") || getCookie("language") || "in";
+        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+    })();
+
+    // Agregar el evento para alternar el idioma
+    languageLink.addEventListener("click", function (event) {
+        event.preventDefault(); // Evitar la recarga de la página
+        updateLanguage();
+       
+        cargarAmbitos();
+    });
+});
+
+}

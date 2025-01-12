@@ -133,7 +133,7 @@ function toggleTexto(postId) {
 
 function abrirPublicacionHome(publicacionId, layout) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
-    debugger;
+   
     window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
 }
 

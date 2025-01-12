@@ -18,7 +18,10 @@ ambito = Blueprint('ambito', __name__)
 @ambito.route('/social-media-ambitos-ambitos')
 def social_media_ambitos_ambitos():
     try:      
-        datos = db.session.query(Ambitos).all()
+          # Obtener el valor de la cookie "language"
+        idioma = request.cookies.get('language', 'in')  # Por defecto "in" si no se encuentra la cookie
+        datos = db.session.query(Ambitos).filter_by(idioma=idioma).all()
+       
         accion = 'crear'
         
         return render_template('media/publicaciones/ambitos.html', 
@@ -49,6 +52,7 @@ def crear_ambito():
         estado = data.get('estado', None)
         user_id = data.get('user_id')        
         user_id = int(user_id)
+
         # Validar campos obligatorios
         if not nombre or not descripcion or not user_id:
             return jsonify({"error": "Los campos 'nombre', 'descripcion' y 'user_id' son obligatorios"}), 400
@@ -58,33 +62,42 @@ def crear_ambito():
         if not user:
             return jsonify({"error": "El user_id proporcionado no existe"}), 400
 
-        # Crear el nuevo ámbito
-        nuevo_ambito = Ambitos(
-            nombre=nombre,
-            descripcion=descripcion,
-            idioma=idioma,
-            valor=valor,
-            estado=estado
-        )
-        db.session.add(nuevo_ambito)
-        db.session.commit()  # Se requiere para obtener el ID asignado automáticamente
+        # Comprobar si ya existe el ámbito con el mismo nombre y valor en el idioma especificado
+        existing_ambito = db.session.query(Ambitos).filter_by(nombre=nombre, valor=valor, idioma=idioma).first()
+        if not existing_ambito:
+            # Crear el nuevo ámbito
+            nuevo_ambito = Ambitos(
+                nombre=nombre,
+                descripcion=descripcion,
+                idioma=idioma,
+                valor=valor,
+                estado=estado
+            )
+            db.session.add(nuevo_ambito)
+            db.session.commit()  # Se requiere para obtener el ID asignado automáticamente
 
-        # Crear la relación en Ambito_usuario
-        ambito_usuario = Ambito_usuario(
-            ambito_id=int(nuevo_ambito.id),  # Usamos el ID generado
-            publicacion_id=None,
-            user_id=user_id,  # Usamos el ID proporcionado en la solicitud user_id,
-            estado=1
-        )
-        db.session.add(ambito_usuario)
-        db.session.commit()
-        db.session.close()
-        resultado = serializar_ambito(ambito)
-        # Serializar y devolver el nuevo ámbito
-        return jsonify(resultado), 201
+            # Crear la relación en Ambito_usuario
+            ambito_usuario = Ambito_usuario(
+                ambito_id=int(nuevo_ambito.id),  # Usamos el ID generado
+                publicacion_id=None,
+                user_id=user_id,  # Usamos el ID proporcionado en la solicitud user_id,
+                estado=1
+            )
+            db.session.add(ambito_usuario)
+            db.session.commit()
+
+            # Cerrar la sesión explícitamente
+            db.session.close()
+
+            # Serializar y devolver el nuevo ámbito
+            resultado = serializar_ambito(nuevo_ambito)
+            return jsonify(resultado), 201
+        else:
+            print(f"El ámbito con nombre '{nombre}' y valor '{valor}' ya existe en el idioma '{idioma}'.")
 
     except Exception as e:
         db.session.rollback()  # Deshacer cualquier cambio en caso de error
+        db.session.close()  # Asegurarse de cerrar la sesión en caso de error también
         return jsonify({"error": str(e)}), 500
 
 
@@ -92,7 +105,12 @@ def crear_ambito():
 @ambito.route('/social-media-publicaciones-obtener-ambitos', methods=['GET'])
 def obtener_ambitos():
     try:
-        ambitos = db.session.query(Ambitos).all()
+        # Obtener el valor de la cookie "language"
+        idioma = request.cookies.get('language', 'in')  # Por defecto "in" si no se encuentra la cookie
+
+        # Consultar los ambitos según el idioma
+        ambitos = db.session.query(Ambitos).filter_by(idioma=idioma).all()
+
         # Convertir los objetos a dicts serializables
         resultado = [
             {

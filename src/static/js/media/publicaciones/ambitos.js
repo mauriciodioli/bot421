@@ -9,7 +9,7 @@ function crearAmbito() {
 
 // Función para crear un nuevo ámbito
 function confirmarCrearAmbito() {
-    debugger;
+    
     const nombre = document.getElementById('nombre').value;
     const descripcion = document.getElementById('descripcion').value;
     const idioma = document.getElementById('idioma').value;
@@ -31,7 +31,7 @@ function confirmarCrearAmbito() {
         estado: estado,
         user_id: userId
     };
-    debugger;
+    
 
     // Realizar la solicitud al servidor para crear el ámbito
     fetch('/social-media-publicaciones-ambitos-crear', {
@@ -43,7 +43,7 @@ function confirmarCrearAmbito() {
     })
     .then(response => response.json())
     .then(data => {
-        debugger;
+        
         $('#confirmacionCrearAmbitoModal').modal('hide'); // Cerrar el modal
         alert('Ámbito creado con éxito');
         obtenerAmbitos();  // Actualizar la lista de ámbitos
@@ -57,7 +57,7 @@ function confirmarCrearAmbito() {
 }
 // Función para obtener todos los ambitos
 function obtenerAmbitos() {
-    debugger;
+    
     fetch('/social-media-publicaciones-obtener-ambitos')
         .then(response => {
             if (!response.ok) {
@@ -66,7 +66,7 @@ function obtenerAmbitos() {
             return response.json();
         })
         .then(data => {
-            debugger;   
+             
             const tablaCuerpo = document.querySelector('table tbody');
 
             // Limpiar filas existentes (incluidas las renderizadas por Jinja)
@@ -174,7 +174,7 @@ function actualizarAmbito() {
 
 // Función para eliminar un ambito por ID
 function eliminarAmbito(id) {
-    debugger;
+    
     fetch(`/social-media-publicaciones-ambitos-delete/${id}`, {
         method: 'DELETE'
     })

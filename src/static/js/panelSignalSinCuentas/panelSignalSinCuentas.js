@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var selector = localStorage.getItem('selector');
       var account = 'vacio'
       var xhr = new XMLHttpRequest();
-      debugger;
+     
       var url = '/panel_control_atomatico/'+paisSeleccionado+'/'+usuario_id+'/'+access_token+'/'+account+'/'+selector+'/';
       
       xhr.open('GET', url, true);
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
             var dato = response.datos[i];
           
-            debugger;
+          
             console.log('dato[1] ',dato[1],'dato[2] ',dato[2],'dato[3] ',dato[3],'dato[4] ',dato[4],'dato[5] ',dato[5],'dato[6] ',dato[6],'dato[7] ',dato[7],'dato[8] ,',dato[8],'dato[9] ',dato[9],'dato[1] ',dato[10])
            
             if (
