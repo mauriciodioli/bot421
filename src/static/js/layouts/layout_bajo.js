@@ -1,87 +1,103 @@
-$(document).ready(function () {
-    // Manejador de eventos para cada ítem del menú
-    $('.custom-dropdown-menu .dropdown-item').on('click', function (e) {
-        e.preventDefault();
-        const selectedItem = $(this).attr('id');
-        localStorage.setItem('dominio', selectedItem);
-        cargarPublicaciones(selectedItem, 'layout');
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    // Contenedor del menú desplegable
+    const dropdownMenuContainer = document.querySelector('.custom-dropdown-menu-container');
+    const dropdownMenu = document.querySelector('.custom-dropdown-menu');
 
-    // Mostrar u ocultar el menú desplegable al hacer clic en el botón
-    $('.close-layout-btn').on('click', function () {
-        $('.custom-dropdown-menu').toggle();
-    });
-
-    // Cerrar el layout al hacer clic en el botón de cerrar
-    $('#closeLayout').on('click', function () {
-        $('#bottomLayout').addClass('hidden');
-    });
-
-    // Mantener la funcionalidad de mostrar/ocultar el layout con scroll
-    let lastScrollTop = 0; // Última posición del scroll
-    let scrolling = false; // Estado de scroll en curso
-
-    $(window).on('scroll', function () {
-        scrolling = true;
-
-        // Obtener la posición actual del scroll
-        const currentScrollTop = $(this).scrollTop();
-
-        if (currentScrollTop > lastScrollTop) {
-            // Scroll hacia abajo -> ocultar el layout
-            $('#bottomLayout').addClass('hidden');
-        } else {
-            // Scroll hacia arriba -> mostrar el layout
-            $('#bottomLayout').removeClass('hidden');
-        }
-
-        lastScrollTop = currentScrollTop; // Actualizar la última posición del scroll
-    });
-
-    // Comprobar si el usuario está en reposo (sin scroll) después de 2 segundos
-    setInterval(function () {
-        if (!scrolling) {
-            $('#bottomLayout').removeClass('hidden'); // Mostrar el layout si no hay scroll
-        }
-        scrolling = false; // Reiniciar el estado de scroll
-    }, 2000);
-});
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    const dropdownButton = document.getElementById("dropdownButton");
-    const dropdownMenu = document.getElementById("dropdownMenu");
-    const dropdownContainer = document.getElementById("dropdownContainer");
-    
-    if (!dropdownButton || !dropdownMenu || !dropdownContainer) {
-        console.error("Uno o más elementos no existen en el DOM.");
+    if (!dropdownMenuContainer || !dropdownMenu) {
+        console.error("El contenedor o el menú desplegable no existe en el DOM.");
         return;
     }
 
-    // Mostrar el menú al hacer clic en el botón
-    dropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation(); // Evita que el clic cierre el menú
-        dropdownMenu.style.display =
-            dropdownMenu.style.display === "flex" ? "none" : "flex";
+    // Mostrar u ocultar el menú al hacer clic en el botón
+    const closeLayoutBtn = dropdownMenuContainer.querySelector('.close-layout-btn');
+    closeLayoutBtn.addEventListener('click', function () {
+        dropdownMenu.style.display = dropdownMenu.style.display === 'none' || dropdownMenu.style.display === '' 
+            ? 'flex' 
+            : 'none';
     });
 
-    // Cerrar el menú cuando se haga clic fuera del contenedor
-    document.addEventListener("click", () => {
-        dropdownMenu.style.display = "none";
+    // Delegación de eventos para manejar clics en los ítems del menú
+    dropdownMenu.addEventListener('click', function (event) {
+        const clickedElement = event.target;
+
+        // Verificar si el clic ocurrió en un elemento del menú
+        if (clickedElement.classList.contains('dropdown-item')) {
+            event.preventDefault();
+            debugger;
+            const selectedItem = clickedElement.id; // ID del elemento clicado
+            console.log(`Elemento seleccionado: ${selectedItem}`);
+
+            // Guardar el ámbito seleccionado en localStorage
+            localStorage.setItem('dominio', selectedItem);
+
+            // Llamar a la función cargarPublicaciones (asegúrate de definir esta función previamente)
+            //llamada desde js/media/muestraPublicacionesEnHome.js
+            cargarPublicaciones(selectedItem, 'layout');
+        }
     });
 
-    // Evitar que el menú se cierre al hacer clic dentro del contenedor
-    dropdownContainer.addEventListener("click", (event) => {
-        event.stopPropagation();
-    });
+    // Función para cargar dinámicamente los ítems del menú desde el servidor
+    window.cargarAmbitos = function ()  {
+        fetch('/social-media-publicaciones-obtener-ambitos', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los ámbitos.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const dropdownMenu = $('.custom-dropdown-menu'); // Usa jQuery para seleccionar el menú
 
-    // Cerrar el menú al seleccionar un elemento
-    dropdownMenu.querySelectorAll("a").forEach((item) => {
-        item.addEventListener("click", () => {
-            dropdownMenu.style.display = "none";
-        });
-    });
+                // Limpiar el menú existente
+                dropdownMenu.empty();
+
+                // Agregar los ámbitos dinámicamente al menú
+                data.forEach(ambito => {
+                    const listItem = `
+                        <li>
+                            <a href="#" class="dropdown-item" id="${ambito.valor}">
+                                ${ambito.nombre}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                    `;
+                    dropdownMenu.append(listItem);
+                });
+                
+                // Agregar el elemento "Turing test" al final del menú
+                const turingTestItem = `
+                <li class="nav-item content">
+                    <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
+                </li>
+                 <li><hr class="dropdown-divider"></li>
+                `;
+                dropdownMenu.append(turingTestItem);
+
+                
+                // Eliminar el último separador
+                dropdownMenu.children('li').last().remove();
+            })
+            .catch(error => {
+                console.error('Error al cargar los ámbitos:', error);
+            });
+    }
+
+    // Cargar los ámbitos al cargar la página
+    cargarAmbitos();
 });
+
+
+
+
+
+
+
+
+
+
+

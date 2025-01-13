@@ -149,7 +149,12 @@ if (!getCookie("language")) {
     // Si ya existe la cookie, obtener el valor y poner el texto de acuerdo a ella
     currentLanguage = getCookie("language");
     localStorage.setItem("language", currentLanguage);
-    languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+    if (languageLink) {
+        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+    } else {
+        console.error("Element with ID 'yourElementId' not found.");
+    }
+    
 }
 
 
@@ -186,9 +191,14 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("language", currentLanguage);
         document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
 
-        // Actualizar el texto del enlace
-        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+        if (languageLink) {
+              // Actualizar el texto del enlace
+             languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
 
+        } else {
+            console.error("Element with ID 'yourElementId' not found.");
+        }
+      
         alert(`Idioma actualizado: ${currentLanguage}`);
     }
 
