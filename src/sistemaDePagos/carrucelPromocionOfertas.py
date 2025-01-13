@@ -53,8 +53,10 @@ def sistemaDePagos_carrucelPromocionOfertas_get_carrucelPromociones_html():
             # Filtrar las promociones por el cluster especificado en los datos de la solicitud
             cluster_solicitado = int(cluster_btn_donacion)
             promociones_filtradas = promociones_por_cluster.get(cluster_solicitado, [])
-
-            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_filtradas, layout=layoutOrigen, productoComercial=productoComercial)
+            print(promociones_filtradas)
+            promociones_por_cluster =[{'id': '', 'description': 'producto por unica vez', 'price': 5000.0, 'reason': 'Donacion 1', 'discount': 5.0, 'image_url': '', 'state': 'activo', 'currency_id': 'ARS'}, {'id': '', 'description': 'por unica vez', 'price': 9994.0, 'reason': 'Donacion 2', 'discount': 10.5, 'image_url': '', 'state': 'activo', 'currency_id': 'ARS'}]
+        
+            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_por_cluster, layout=layoutOrigen, productoComercial=productoComercial)
         
         return jsonify({'error': 'Error de autenticación o datos incompletos'}), 401
       

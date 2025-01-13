@@ -192,6 +192,7 @@ def productosComerciales_pedidos_mostrar_layout_carrito():
                 'fecha_pedido': pedido.fecha_pedido,
                 'precio_venta': pedido.precio_venta,
                 'estado': pedido.estado,
+                'ambito': pedido.ambito,
                 'imagen_url': pedido.imagen
             }
             for pedido in pedidos
@@ -405,7 +406,7 @@ def guardarPedido(data, userId, precio):
 
         
     
-import re
+
 
 def obtenerPrecio(data):
     # Expresión regular para extraer el precio

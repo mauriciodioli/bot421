@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         </li>
                         <li><hr class="dropdown-divider"></li>
                     `;
+                  
                     dropdownMenu.append(listItem);
                 });
                 

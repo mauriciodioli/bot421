@@ -94,3 +94,38 @@ body {
 }
 
 
+
+
+
+
+
+
+
+
+.cart-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea todo el contenido a la derecha */
+    width: 100%;
+}
+
+.summary-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea el subtotal y el total a la derecha */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 20px;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+

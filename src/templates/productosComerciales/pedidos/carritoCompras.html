@@ -18,7 +18,7 @@
 {% block content%}
 
 <div class="cart-container"> 
-    <h1>Carrito de Compras</h1>
+    <h3 style="color:black;">Carrito de Compras</h3>
     {% for pedido in data %}
     <div class="cart-item" data-precio="{{ pedido.precio_venta }}" data-id="{{ pedido.id }}">
         {% if pedido.imagen_url %}
@@ -36,12 +36,31 @@
     </div>
     {% endfor %}
     <div class="cart-summary">
-        <p>Subtotal: $<span id="subtotal">0.00</span></p>
-        <p>Total: $<span id="total">0.00</span></p>
-        <button id="return-button" style="margin-right: 200px;" onclick="goBack()">Volver</button>
-
-        <button id="checkout-button">Finalizar la compra</button>
+        <div class="summary-details">
+            <p>Subtotal: $<span id="subtotal"></span></p>
+            <p>Total: $<span id="total"></span></p>
+        </div>
+    
+        <div class="buttons-container">
+            <button id="return-button" onclick="goBack()">Volver</button>
+    
+            <form id="sistemaDePagos_pagoPedidos" method="POST" action="/sistemaDePagos_pagoPedidos">
+                <input type="hidden" id="access_token_btn_finalizarPago" name="access_token_btn_finalizarPago">
+                <input type="hidden" id="correo_electronico_btn_finalizarPago" name="correo_electronico_btn_finalizarPago"> 
+                <input type="hidden" id="productoComercial" name="productoComercial" value='finalizarPago'> 
+                <input type="hidden" id="cluster_btn_finalizarPago" name="cluster_btn_finalizarPago" value='1'>        
+                <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
+    
+                <!-- Campo oculto para enviar el total -->
+                <input type="hidden" id="total_pago" name="total_pago" >
+    
+                <button class="card-button btn-success long-button" type="submit">Elegir pago</button>
+            </form>
+        </div>
     </div>
+    
+    
+
 
   
 </div>

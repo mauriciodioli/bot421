@@ -28,7 +28,9 @@ from sistemaDePagos.createSuscripcion import createSuscripcion
 from sistemaDePagos.tarjetaUsuario import tarjetaUsuario
 from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
 from sistemaDePagos.carrucelPromocionOfertas import carrucelPromocionOfertas
+from sistemaDePagos.pagoPedidos import pagoPedidos
 from sistemaDePagos.carrucelPromocionSuscripciones import carrucelPromocionSuscripciones
+
 from productosComerciales.descipcionProductos import descrpcionProductos
 from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
@@ -294,6 +296,7 @@ app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(pedido)
 app.register_blueprint(pedidos)
+app.register_blueprint(pagoPedidos)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)
