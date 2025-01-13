@@ -67,17 +67,17 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Función para asignar eventos a los elementos del menú
-    function agregarEventosClick() {
-        const menuItems = dropdownMenu.querySelectorAll('.dropdown-item');
-        menuItems.forEach(item => {
-            item.addEventListener('click', function (event) {
-                event.preventDefault();
-                const ambito = this.dataset.val; // Valor dinámico del ámbito seleccionado
-                console.log(`Seleccionaste: ${ambito}`);
-                // Lógica adicional aquí
+    // Función para asignar eventos a los elementos del menú
+        function agregarEventosClick() {
+            const menuItems = document.querySelectorAll('.dropdown-item');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const ambitoId = this.dataset.val; // Obtener el valor dinámico del ámbito seleccionado
+                    cargarPublicaciones(ambitoId); // Llamar a la función que maneja la lógica del acordeón
+                });
             });
-        });
-    }
+        }
 
     // Llamar a la función para cargar los ámbitos al cargar la página
     cargarAmbitos();
