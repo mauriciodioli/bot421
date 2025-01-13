@@ -67,33 +67,10 @@
                       <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
                   </button>
                   <ul class="custom-dropdown-menu">
-                    <li><a class="dropdown-item" id='social' href="#" data-val="social">Social</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='educativo' href="#" data-val="educativo">Educational</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='laboral' href="#" data-val="laboral">Work</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Negocio' href="#" data-val="negocio">Business</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Artes' href="#" data-val="artes">Creations</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Deporte' href="#" data-val="deporte">Sports</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Familia' href="#" data-val="familia">Family</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Amistad' href="#" data-val="amistad">Friendship</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Personal' href="#" data-val="personal">Personal</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Salud' href="#" data-val="salud">Health</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Filantropia' href="#" data-val="filantropia">Philanthropy</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" id='Naturaleza' href="#" data-val="naturaleza">Nature</a></li>
-                    
+                      <!-- Los elementos se generarán dinámicamente -->
                   </ul>
-                  
-              </div>
+                </div>
+              
                 <div class="option">
                   <img src="{{ url_for('static', filename='icons/edit-icon-png-3598.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
                   <span>Escribir artículo</span>
@@ -160,23 +137,12 @@
           </select>
         </div>
 
-        <!-- Combobox for ambitos -->
+        
+        <!-- Combobox for creating ámbitos -->
         <div class="form-group_creaPublicacion">
           <label for="postAmbito_creaPublicacion" class="text-black">Ámbito:</label>
           <select id="postAmbito_creaPublicacion" name="postAmbito_creaPublicacion" class="form-control" required>
-            <option value="" disabled selected>Selecciona un ámbito</option>
-            <option value="social">Social</option>
-            <option value="educativo">Educativo</option>
-            <option value="laboral">Laboral</option>
-            <option value="Negocio">Negocio</option>
-            <option value="Artes">Creations</option>            
-            <option value="Deporte">Deporte</option>
-            <option value="Familia">Familia</option>
-            <option value="Amistad">Amistad</option>
-            <option value="Personal">Personal</option>
-            <option value="Salud">Salud</option>
-            <option value="Filantropia">Filantropia</option>
-            <option value="Naturaleza">Naturaleza</option>
+              <option value="" disabled selected>Selecciona un ámbito</option>
           </select>
         </div>
          <!-- Combobox for boton pago -->
@@ -308,20 +274,9 @@
       <div class="form-group_modificaPublicacion">       
         <label for="postAmbito_modificaPublicacion" class="text-black">Ámbito:</label>
         <select id="postAmbito_modificaPublicacion" name="postAmbito_modificaPublicacion" class="form-control" required>
-          <option value="" disabled selected>Selecciona un ámbito</option>
-          <option value="social">Social</option>
-          <option value="educativo">Educativo</option>
-          <option value="laboral">Laboral</option>
-          <option value="Negocio">Negocio</option>
-          <option value="Deporte">Deporte</option>
-          <option value="Familia">Familia</option>
-          <option value="Amistad">Amistad</option>
-          <option value="Personal">Personal</option>
-          <option value="Salud">Salud</option>
-          <option value="Filantropia">Filantropia</option>
-          <option value="Naturaleza">Naturaleza</option>
+            <option value="" disabled selected>Selecciona un ámbito</option>
         </select>
-      </div>
+    </div>
       <!-- Combobox for boton pago -->
       <div class="form-group_modificaPublicacion">
         <label for="postBotonCompra_modificaPublicacion" class="text-black">Botón de Compra:</label>
@@ -421,7 +376,7 @@ function toggleUnderline() {
 <script src="{{ url_for('static', filename='js/media/mostrarGaleria.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/cargarPublicaciones.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/publicaciones/mostrarGaleriaAcordeon.js') }}"></script>
-
+<script src="{{ url_for('static', filename='js/media/cargarAmbitosEnComboMostrarGaleria.js') }}"></script>
 
 
 <!-- ... Más código HTML ... -->

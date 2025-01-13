@@ -111,52 +111,47 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropdownMenu = document.querySelector('.custom-dropdown-menu');
 
     // Función para cargar los ámbitos desde el servidor
-    function cargarAmbitos() {
+    window.cargarAmbitos = function ()  {
         fetch('/social-media-publicaciones-obtener-ambitos', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             }
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al obtener los ámbitos.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Limpiar el menú existente
-            dropdownMenu.innerHTML = '';
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los ámbitos.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const dropdownMenu = $('.custom-dropdown-menu'); // Usa jQuery para seleccionar el menú
 
-            // Agregar los ámbitos dinámicamente al menú
-            data.forEach(ambito => {
-                const listItem = document.createElement('li');
-                const anchor = document.createElement('a');
-                anchor.className = 'dropdown-item';
-                anchor.id = ambito.nombre.toLowerCase();
-                anchor.href = '#';
-                anchor.textContent = ambito.nombre;
+                // Limpiar el menú existente
+                dropdownMenu.empty();
 
-                listItem.appendChild(anchor);
-                dropdownMenu.appendChild(listItem);
-
-                // Agregar separadores si es necesario
-                const divider = document.createElement('li');
-                divider.innerHTML = '<hr class="dropdown-divider">';
-                dropdownMenu.appendChild(divider);
+                // Agregar los ámbitos dinámicamente al menú
+                data.forEach(ambito => {
+                    const listItem = `
+                        <li>
+                            <a href="#" class="dropdown-item" id="${ambito.valor}">
+                                ${ambito.nombre}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                    `;
+                    dropdownMenu.append(listItem);
+                });
+                
+                // Agregar el elemento "Turing test" al final del menú
+               
+                
+                // Eliminar el último separador
+                dropdownMenu.children('li').last().remove();
+            })
+            .catch(error => {
+                console.error('Error al cargar los ámbitos:', error);
             });
-
-            // Eliminar el último separador
-            if (dropdownMenu.lastChild) {
-                dropdownMenu.removeChild(dropdownMenu.lastChild);
-            }
-
-            // Agregar evento click a los elementos recién creados
-            agregarEventosClick();
-        })
-        .catch(error => {
-            console.error('Error al cargar los ámbitos:', error);
-        });
     }
 
     // Función para manejar clics en los elementos del menú

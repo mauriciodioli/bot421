@@ -11,7 +11,7 @@ function formatDate(dateString) {
 
 
 function cargarPublicaciones(ambitoParam,layout) {
-    
+   
     var access_token = localStorage.getItem('access_token');   
     var ambito = ambitoParam || localStorage.getItem('dominio'); // Usa el parámetro o toma del localStorage
     var galeriaURL = '/media-publicaciones-mostrar-home';
