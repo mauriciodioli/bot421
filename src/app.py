@@ -38,6 +38,7 @@ from productosComerciales.promociones.promociones import promociones
 from productosComerciales.pedidos.pedidos import pedidos
 
 
+
 from Tests.test_order_report_handler import test_order_report_handler
 from Tests.test_2_order_report_handler import test_2_order_report_handler
 from Tests.test_ejecutarHiloPanelControl import test_ejecutarHiloPanelControl
@@ -136,6 +137,7 @@ from models.turing.respuestaUsuario import respuestaUsuario
 from models.turing.trivia import trivia
 from models.turing.testTuringUser import testTuringUser
 from models.pedidos.pedido import pedido
+from models.pedidos.pedidoEntregaPago import pedidoEntregaPago
 
 
 
@@ -296,6 +298,7 @@ app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(pedido)
 app.register_blueprint(pedidos)
+app.register_blueprint(pedidoEntregaPago)
 app.register_blueprint(pagoPedidos)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
@@ -606,7 +609,7 @@ def home(dominio):
 def entrada(dominio=None, pagina=None):
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    #crea_tablas_DB()
+   # crea_tablas_DB()
     if not dominio:
         dominio = "inicialDominio"
     if not pagina:

@@ -1,8 +1,36 @@
- //alamcen datos para enviar al boton donacion 
- var access_token_btn_finalizarPago = localStorage.getItem('access_token');
- var correo_electronico_btn_finalizarPago = localStorage.getItem('correo_electronico');
- document.getElementById('access_token_btn_finalizarPago').value = access_token_btn_finalizarPago;
- document.getElementById('correo_electronico_btn_finalizarPago').value = correo_electronico_btn_finalizarPago;
+// Función para recopilar los datos del carrito y asignarlos al campo oculto
+function procesarPedidosParaEnvio() {
+    const pedidos = [];
+    const cartItems = document.querySelectorAll('.cart-item');
+    
+    cartItems.forEach(item => {
+        const id = item.getAttribute('data-id');
+        const precio = item.getAttribute('data-precio');
+        const cantidad = item.querySelector('.quantity-input').value;
+
+        pedidos.push({
+            id: id,
+            precio: parseFloat(precio),
+            cantidad: parseInt(cantidad)
+        });
+    });
+
+    // Asigna los pedidos como JSON en el campo oculto
+    const pedidoDataInput = document.getElementById('pedido_data');
+    pedidoDataInput.value = JSON.stringify(pedidos);
+}
+
+// Asigna el evento submit al formulario
+document.getElementById('sistemaDePagos_pagoPedidos').addEventListener('submit', function(event) {
+    // Evita el envío del formulario hasta procesar los datos
+    event.preventDefault();
+
+    // Llama a la función para procesar los pedidos
+    procesarPedidosParaEnvio();
+
+    // Envía el formulario
+    this.submit();
+});
 
 
 
@@ -11,6 +39,83 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Función para actualizar el campo oculto con el total
+function actualizarTotalEnHidden() {
+    const total = document.getElementById('total')?.textContent.trim(); // Obtener el valor del span
+    if (total) {
+        document.getElementById('total_pago').value = total; // Asignarlo al input hidden
+    }
+}
+
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function () {
+    // Actualizar el total cuando el DOM esté listo
+    actualizarTotalEnHidden();
+    
+    // Asegurarse de que el elemento total exista antes de crear el observer
+    const totalElement = document.getElementById('total');
+    if (totalElement) {
+        // Crear un observer para monitorear cambios en el contenido de 'total'
+        const observer = new MutationObserver(actualizarTotalEnHidden);
+
+        // Configurar el observer para detectar cambios en el texto de 'total'
+        observer.observe(totalElement, {
+            childList: true,  // Detecta cambios en los elementos hijos
+            subtree: true     // Detecta cambios en cualquier parte del DOM de 'total'
+        });
+    }
+
+    // Verificar que los elementos existen antes de asignar valores desde localStorage
+    var access_token_btn_finalizarPago = localStorage.getItem('access_token');
+    var correo_electronico_btn_finalizarPago = localStorage.getItem('correo_electronico');
+    var ambito_btn_finalizarPago = localStorage.getItem('dominio');
+
+    if (document.getElementById('access_token_btn_finalizarPago')) {
+        document.getElementById('access_token_btn_finalizarPago').value = access_token_btn_finalizarPago;
+    }
+    if (document.getElementById('correo_electronico_btn_finalizarPago')) {
+        document.getElementById('correo_electronico_btn_finalizarPago').value = correo_electronico_btn_finalizarPago;
+    }
+    if (document.getElementById('ambito_btn_finalizarPago')) {
+        document.getElementById('ambito_btn_finalizarPago').value = ambito_btn_finalizarPago;
+    }
+
+    // Verificar la existencia del formulario antes de agregar el event listener
+    const formCliente = document.getElementById('formClientePedidoJs');
+    if (formCliente) {
+        formCliente.addEventListener('submit', function (event) {
+            event.preventDefault();
+            
+            // Recopilar datos del cliente
+            const datosCliente = new FormData(document.getElementById('datosCliente'));
+
+            // Mostrar datos en consola (para depuración)
+            console.log('Enviando datos del cliente:', Object.fromEntries(datosCliente));
+
+            // Aquí puedes agregar la lógica para enviar los datos usando fetch o AJAX
+        });
+    } else {
+        console.log('Formulario no encontrado');
+    }
+});
 
 
 
