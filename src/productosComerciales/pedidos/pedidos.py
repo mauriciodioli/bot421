@@ -19,6 +19,8 @@ from models.usuario import Usuario
 from models.brokers import Broker
 from models.payment_page.plan import Plan
 from models.pedidos.pedido import Pedido
+
+
 from models.pedidos.pedidoEntregaPago import PedidoEntregaPago
 from models.publicaciones.publicaciones import Publicacion
 
@@ -360,9 +362,6 @@ def productosComerciales_pedidos_process_order():
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
         
-       
-        
-
         # Extraer y procesar datos del pedido
         imagen_url = data.get('imagen_btn_carrito', '')
         texto = data.get('texto_btn_carrito', '')
@@ -374,48 +373,29 @@ def productosComerciales_pedidos_process_order():
         except ValueError:
             return jsonify({'error': 'El precio proporcionado no es válido.'}), 400
         
-      
-       # Obtener datos iniciales
+        # Obtener datos iniciales
         pedidos_str = data.get('pedido_data_json')
         pedidos = json.loads(pedidos_str)
 
         # Valores comunes a todos los pedidos (no se alteran)
         tiempo = datetime.utcnow()  # Fecha y hora actual
         cantidad = 0
-        # Iterar sobre cada pedido y actualizarlo
+
+        # Iterar sobre cada pedido y actualizarlo usando la nueva función
         for pedido_data in pedidos:
             print("Procesando pedido:", pedido_data)
-            # Consultar el pedido en la base de datos
-            pedido_existente = db.session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+            cantidad_pedido = actualizar_pedido(pedido_data, data, tiempo)
+            if isinstance(cantidad_pedido, dict):  # Si hubo un error
+                return jsonify(cantidad_pedido), 404
+            cantidad += cantidad_pedido
 
-            if not pedido_existente:
-                return jsonify({'error': f'Pedido {pedido_data.get("id")} no encontrado'}), 404
+        cargar_entrega_pedido(data, user_id, tiempo, cantidad)
 
-            # Actualizar solo los campos necesarios
-            pedido_existente.estado = 'terminado'
-            pedido_existente.fecha_pedido = tiempo
-            pedido_existente.fecha_entrega = tiempo
-            pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
-            pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
-            pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
-            pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
-            pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
-            pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
-            pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
-            pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
-            # Guardar los cambios
-            db.session.commit()
-            cantidad += pedido_existente.cantidad
-
-        cargar_entrega_pedido(data, user_id, tiempo,cantidad)
-        
         # Devolver una respuesta exitosa sin detalles del pedido
         return jsonify({
             'message': 'Pedido cargado correctamente',
-            'success': True  # Indicador de éxito
-          #  'init_point': '/ruta_de_pago'
+            'success': True
         }), 200  # 200 es el código de éxito
-      
 
     except Exception as e:
         # Rollback en caso de error
@@ -424,6 +404,30 @@ def productosComerciales_pedidos_process_order():
     finally:
         db.session.close()  # Asegúrate de cerrar la sesión de la base de datos
 
+
+def actualizar_pedido(pedido_data, data, tiempo):
+    # Consultar el pedido en la base de datos
+    pedido_existente = db.session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+
+    if not pedido_existente:
+        return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
+
+    # Actualizar solo los campos necesarios
+    pedido_existente.estado = 'terminado'
+    pedido_existente.fecha_pedido = tiempo
+    pedido_existente.fecha_entrega = tiempo
+    pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
+    pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
+    pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
+    pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
+    pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
+    pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
+    pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
+    pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
+    
+    # Guardar los cambios
+    db.session.commit()
+    return pedido_existente.cantidad
 
     
 def cargar_entrega_pedido(data, user_id, tiempo,cantidad):

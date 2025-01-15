@@ -1,0 +1,79 @@
+/* Aseguramos que el contenedor ocupe toda la altura de la pantalla y tenga suficiente espacio para centrar el contenido */
+.container {
+    min-height: 100vh; /* Altura mínima para ocupar toda la pantalla */
+    display: flex; /* Usamos Flexbox */
+    flex-direction: column; /* Alineamos los elementos verticalmente */
+    justify-content: center; /* Centra el contenido verticalmente */
+    align-items: center; /* Centra el contenido horizontalmente */
+}
+
+/* Centrar la tarjeta dentro de la columna */
+.pagoPedidos {
+    display: flex; /* Usamos Flexbox para el contenido dentro de la tarjeta */
+    justify-content: center; /* Centra el contenido horizontalmente dentro de la tarjeta */
+    align-items: center; /* Centra el contenido verticalmente dentro de la tarjeta */
+    padding: 20px;
+    width: 100%;
+    max-width: 600px; /* Tamaño máximo para que no se estire demasiado */
+    margin: 10px;
+}
+
+/* Agregar estilos adicionales para el contenido de la tarjeta */
+.pagoPedidos .card-header {
+    background-color: #f8f9fa; /* Color de fondo claro */
+    font-weight: bold;
+}
+
+.pagoPedidos .card-body {
+    background-color: #ffffff; /* Color de fondo blanco */
+    padding: 20px;
+}
+
+.pagoPedidos .card-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Estilo para los botones dentro de los formularios */
+.pagoPedidos .btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.pagoPedidos .form-control {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Asegurar que el texto esté centrado */
+.pagoPedidos .text-center {
+    text-align: center;
+}
+
+/* Estilos para la fila y las columnas */
+.pagoPedidos .row {
+    display: flex;
+    justify-content: center;
+}
+
+.pagoPedidos .col-md-6 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagoPedidos .ahorro {
+    color: green;
+    font-weight: bold;
+}
+
+.pagoPedidos .shadow-tarj {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
