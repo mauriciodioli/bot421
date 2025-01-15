@@ -3,6 +3,7 @@ from flask import current_app,Blueprint, render_template, make_response,request,
 from utils.db import db
 import tokens.token as Token
 import jwt
+import random
 from models.payment_page.Promotion import Promotion
 
 
@@ -20,45 +21,47 @@ def sistemaDePagos_pagoPedidos():
         layoutOrigen = data.get('layoutOrigen')
         productoComercial = data.get('productoComercial')
         total = data.get('total_pago')
+        ambito = data.get('ambito_btn_finalizarPago')
+        # Captura y procesa el JSON de pedidos
+        pedido_data_json = data.get('pedido_data')  # JSON string enviado desde el formulario
+       
+
         if access_token and Token.validar_expiracion_token(access_token=access_token):
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             numero_de_cuenta = decoded_token.get("numero_de_cuenta")
             user_id = decoded_token.get("sub")
             
-            promociones_todas = db.session.query(Promotion).all()
+           #promociones_todas = db.session.query(Promotion).all()
             db.session.close()
 
            # Crear un diccionario vacío para agrupar las promociones por cluster
-            promociones_por_cluster = {}
+            #promociones_por_cluster = {}
 
-            for promocione in promociones_todas:
-                cluster = promocione.cluster
-                # Verificar si el cluster ya existe en el diccionario
-                if cluster not in promociones_por_cluster:
-                    promociones_por_cluster[cluster] = []
-                
+            #generar numero aletorio para el id de la promocion
+            random_number = random.randint(1, 1000000)
+            reason = 'Pedido'+str(random_number)
                 # Agregar la promoción al cluster correspondiente
-                promociones_por_cluster[cluster].append({
-                    'id': promocione.idPlan,
-                    'description': promocione.description,
-                    'price': float(total),
-                    'reason': promocione.reason,
-                    'discount': promocione.discount,
-                    'image_url': promocione.image_url,
-                    'state': promocione.state,
-                    'currency_id': promocione.currency_id
-                })
+            productos_comerciales =[{
+                'id': '',
+                'description': 'producto por unica vez',
+                'price': float(total),
+                'reason': reason,
+                'discount': 0.0,
+                'image_url':'',
+                'state': 'activo',
+                'currency_id':'ARS',
+                'correo_electronico': correo_electronico,                    
+                'ambito':ambito,
+                'cluster':random_number,
+                'pedido_data_json':pedido_data_json, 
+                                  
+            }]
 
-            # Filtrar las promociones por el cluster especificado en los datos de la solicitud
-            cluster_solicitado = int(cluster_btn_finalizarPago)
-            promociones_filtradas = promociones_por_cluster.get(cluster_solicitado, [])
-            
-            print(promociones_filtradas)
-            promociones_por_cluster =[{'id': '', 'description': 'producto por unica vez', 'price': 5000.0, 'reason': 'Donacion 1', 'discount': 5.0, 'image_url': '', 'state': 'activo', 'currency_id': 'ARS'}, {'id': '', 'description': 'por unica vez', 'price': 9994.0, 'reason': 'Donacion 2', 'discount': 10.5, 'image_url': '', 'state': 'activo', 'currency_id': 'ARS'}]
-        
-        
-            return render_template('productosComerciales/promociones/carrucelPromociones.html', promociones=promociones_por_cluster, layout=layoutOrigen, productoComercial='donacion')
-        
+               
+            print(productos_comerciales)
+            productoComercial = 'donacion'
+            return render_template('productosComerciales/pedidos/pagoPedidos.html', pedidos=productos_comerciales, layout=layoutOrigen, productoComercial=productoComercial)
+    
         return jsonify({'error': 'Error de autenticación o datos incompletos'}), 401
       
     

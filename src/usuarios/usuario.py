@@ -49,7 +49,7 @@ def eliminar_usuario():
     flash('Usuario eliminado correctamente.')
     usuarios = db.session.query(Usuario).all()
     db.session.close()
-    return render_template("/usuarios/usuarios.html",datos = usuarios)
+    return render_template("/usuarios/usuarios.html",datos = usuarios, layout = 'layout_administracion')
 
 @usuario.route("/editar-usuario",  methods=["POST"])
 def editar_usuario():
@@ -61,5 +61,5 @@ def editar_usuario():
     flash('Usuario editado correctamente.')
     usuarios = db.session.query(Usuario).all()
     db.session.close()
-    return render_template("/usuarios/usuarios.html",datos = usuarios)
+    return render_template("/usuarios/usuarios.html",datos = usuarios , layout = 'layout_administracion')
 

@@ -95,7 +95,7 @@ function actualizarCarrusel(promociones) {
 $(document).ready(function(){
     $(document).on('submit', '.donationForm', function(event){
         event.preventDefault(); // Prevent the default form submission
-
+        debugger;
         // Get the form data
         var costo_base = parseFloat($(this).find('input[name="costo_base"]').val()) || 0; // Convert to number or default to 0
         var porcentaje_retorno = parseFloat($(this).find('input[name="discount"]').val()) || 0; // Ensure it's a number

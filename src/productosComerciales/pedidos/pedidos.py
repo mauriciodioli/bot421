@@ -14,10 +14,12 @@ import tokens.token as Token
 from datetime import datetime, timedelta
 import jwt
 import re
+
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.payment_page.plan import Plan
 from models.pedidos.pedido import Pedido
+from models.pedidos.pedidoEntregaPago import PedidoEntregaPago
 from models.publicaciones.publicaciones import Publicacion
 
 
@@ -115,7 +117,7 @@ def productosComerciales_pedidos_mostrar_carrito():
 
         # Obtener pedidos
         ambito = data.get('ambito_btn_carrito')
-        pedidos = db.session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito).all()
+        pedidos = db.session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito, Pedido.estado == 'pendiente').all()
         
        
        # Procesar datos de los pedidos
@@ -294,7 +296,7 @@ def productosComerciales_pedidos_alta_carrito():
 
         # Obtener pedidos
         ambito = data.get('ambito_btn_carrito')
-        pedidos = db.session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito).all()
+        pedidos = db.session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito, Pedido.estado == 'pendiente').all()
         
     
        # Procesar datos de los pedidos
@@ -327,21 +329,142 @@ def productosComerciales_pedidos_alta_carrito():
         db.session.close()  # Cerrar la sesión siempre
 
 
-@pedidos.route('/productosComerciales_pedidos_process_order', methods=['POST'])
+@pedidos.route('/productosComerciales_pedidos_process_order/', methods=['POST'])
 def productosComerciales_pedidos_process_order():
-    data = request.get_json()
-    product = data.get('product')
-    quantity = data.get('quantity')
+    try:
+        # Obtener los datos del cuerpo de la solicitud (JSON)
+        data = request.get_json()
 
-    if not product or not quantity:
-        return jsonify({"message": "Datos incompletos."}), 400
+        # Obtener el token desde los encabezados
+        access_token = request.headers.get('Authorization')
+        
+        # Verificar si el token está presente
+        if not access_token or not access_token.startswith('Bearer '):
+            return jsonify({'error': 'Token de acceso no proporcionado o inválido.'}), 401
+        
+        token = access_token.split(' ')[1]
 
-    total_price = quantity * 299990
+        # Validar el token
+        try:
+            decoded_token = jwt.decode(
+                token,
+                current_app.config['JWT_SECRET_KEY'],
+                algorithms=['HS256']
+            )
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token ha expirado.'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Token inválido.'}), 401
 
-    return jsonify({
-        "message": f"Tu orden de {quantity} unidad(es) de {product} ha sido procesada. Total: ${total_price:,}"
-    })
+        user_id = decoded_token.get("sub")
+        if not user_id:
+            return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
+        
+       
+        
+
+        # Extraer y procesar datos del pedido
+        imagen_url = data.get('imagen_btn_carrito', '')
+        texto = data.get('texto_btn_carrito', '')
+        precio_str = data.get('precio_btn_carrito', '')
+
+        # Procesar el precio (si es válido)
+        try:
+            precio_venta = float(precio_str.strip('$').replace(',', '').replace('.', '')) if precio_str else None
+        except ValueError:
+            return jsonify({'error': 'El precio proporcionado no es válido.'}), 400
+        
+      
+       # Obtener datos iniciales
+        pedidos_str = data.get('pedido_data_json')
+        pedidos = json.loads(pedidos_str)
+
+        # Valores comunes a todos los pedidos (no se alteran)
+        tiempo = datetime.utcnow()  # Fecha y hora actual
+        cantidad = 0
+        # Iterar sobre cada pedido y actualizarlo
+        for pedido_data in pedidos:
+            print("Procesando pedido:", pedido_data)
+            # Consultar el pedido en la base de datos
+            pedido_existente = db.session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+
+            if not pedido_existente:
+                return jsonify({'error': f'Pedido {pedido_data.get("id")} no encontrado'}), 404
+
+            # Actualizar solo los campos necesarios
+            pedido_existente.estado = 'terminado'
+            pedido_existente.fecha_pedido = tiempo
+            pedido_existente.fecha_entrega = tiempo
+            pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
+            pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
+            pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
+            pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
+            pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
+            pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
+            pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
+            pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
+            # Guardar los cambios
+            db.session.commit()
+            cantidad += pedido_existente.cantidad
+
+        cargar_entrega_pedido(data, user_id, tiempo,cantidad)
+        
+        # Devolver una respuesta exitosa sin detalles del pedido
+        return jsonify({
+            'message': 'Pedido cargado correctamente',
+            'success': True  # Indicador de éxito
+          #  'init_point': '/ruta_de_pago'
+        }), 200  # 200 es el código de éxito
+      
+
+    except Exception as e:
+        # Rollback en caso de error
+        db.session.rollback()
+        return jsonify({'error': f'Ocurrió un error: {str(e)}'}), 500
+    finally:
+        db.session.close()  # Asegúrate de cerrar la sesión de la base de datos
+
+
     
+def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
+    try:
+        
+        nuevo_pedido_entrega_pago = PedidoEntregaPago(
+            user_id=user_id,
+            publicacion_id=1,
+            cliente_id=1,
+            ambito=data.get('ambito_pagoPedido'),
+            estado='pendiente',
+            fecha_pedido=tiempo,
+            fecha_entrega=tiempo,
+            lugar_entrega=data.get('direccionCliente', ''),
+            cantidad=cantidad,
+            precio_venta=float(data.get('final_price', '')),
+            consulta=tiempo,
+            asignado_a='',
+            talla='',
+            pais='arg',
+            provincia='',
+            region='',
+            sexo='',
+            nombreCliente=data.get('nombreCliente', ''),
+            apellidoCliente=data.get('apellidoCliente', ''),
+            emailCliente=data.get('emailCliente', ''),
+            telefonoCliente=data.get('telefonoCliente', ''),
+            comentarioCliente=data.get('comentariosCliente', ''),
+            cluster_id=int(data.get('cluster_pedido', '')),
+            pedido_data_json=data.get('pedido_data_json', '')
+        )
+        db.session.add(nuevo_pedido_entrega_pago)
+        # Antes de hacer commit, puedes imprimir la consulta SQL
+       # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
+        db.session.commit()
+        return nuevo_pedido_entrega_pago
+    except Exception as e:
+        # Rollback en caso de error
+        db.session.rollback()
+        return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500
+   
 
 def guardarPedido(data, userId, precio):
     try:
@@ -377,6 +500,11 @@ def guardarPedido(data, userId, precio):
             fecha_consulta=tiempo,
             fecha_baja=tiempo,
             lugar_entrega='',
+            nombreCliente ='',
+            apellidoCliente = '',
+            telefonoCliente = '',
+            comentarioCliente = '',
+            emailCliente = '',
             cantidad=data.get('cantidadCompra', 1),
             precio_costo=precio_venta,
             precio_venta=precio_venta,
