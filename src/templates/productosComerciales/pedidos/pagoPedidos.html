@@ -15,26 +15,26 @@
     <div class="text-center mensaje">
         <h5>Ingresa tus datos para recibir tu pedido!</h5>
     </div>
-    <div id="offersCarousel" class="carousel slide" data-ride="carousel">
-        <div class="carousel-inner carrucelpedidos">
-            {% set active = False %}
-            <div class="carousel-item carrucelPromociones {% if not active %}active{% set active = True %}{% endif %}">
+    <div class="row justify-content-center">
+        <!-- Columna izquierda vacía -->
+        <div class="col-md-3"></div>
+
+        <!-- Columna central con la tarjeta -->
+        <div class="col-md-6 d-flex justify-content-center align-items-center">
+            <div class="carousel-item  carrucelPromociones">
                 <div class="row justify-content-center">
                     {% for pedido in pedidos %}
-                        <div class="col-md-4 mb-4">
-                            <div class="card carrucelPromociones text-center shadow-tarj">
-                                <div class="card-header carrucelPromociones">
+                        <div class="col-md-12">
+                            <div class="card  carrucelPromociones text-center shadow-tarj">
+                                <div class="card-header  carrucelPromociones">
                                     Datos del pedido
                                 </div>
-                                <div class="card-body carrucelPromociones">
-                                    <!-- Información de la promoción -->
-                                    <h5 class="card-title carrucelPromociones">{{ pedido.reason }}</h5>
-                                    <p class="card-text carrucelPromociones">{{ pedido.price }} {{ pedido.currency_id }} c/u</p>
+                                <div class="card-body  carrucelPromociones">
+                                    <h5 class="card-title  carrucelPromociones">{{ pedido.reason }}</h5>
+                                    <p class="card-text  carrucelPromociones">{{ pedido.price }} {{ pedido.currency_id }} c/u</p>
                                     {% if pedido.discount > 0 %}
                                         <p class="card-text ahorro">Descuento: {{ pedido.discount }}%</p>
                                     {% endif %}
-
-                                   
                                     <div id="datosCliente">
                                         <input type="text" id="nombreCliente" name="nombreCliente" class="form-control" placeholder="Nombre" required>
                                         <input type="text" id="apellidoCliente" name="apellidoCliente" class="form-control" placeholder="Apellido" required>
@@ -43,22 +43,15 @@
                                         <input type="email" id="emailCliente" name="emailCliente" class="form-control" placeholder="Email" required>
                                         <textarea id="comentariosCliente" name="comentariosCliente" class="form-control" placeholder="Comentarios" rows="3"></textarea>
                                     </div>
-                                    <!-- Nuevo botón para enviar solo los datos del cliente -->
                                     <form class="formClientePedidoJs">
-                                         <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
-                                         <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
-                                         <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
-                                         <!-- Botón de envío para los datos del cliente -->
+                                        <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
+                                        <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
+                                        <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
                                         <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">
                                             Confirmar pedido
                                         </button>
                                     </form>
-
-
-
-
                                     <form class="pagoPedidoForm">
-                                        <!-- Campos ocultos de la promoción -->
                                         <input type="hidden" id="accessToken_pagoPedido" name="accessToken_pagoPedido" value="">
                                         <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
                                         <input type="hidden" id="reason" name="reason" value="{{ pedido.reason }}">
@@ -68,24 +61,26 @@
                                         <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
                                         <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
                                         <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
-                                        <!-- Botón de envío para seleccionar la promoción -->
                                         <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">
                                             Pagar online
                                         </button>
                                     </form>
                                 </div>
-                                
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
-      
+
+        <!-- Columna derecha vacía -->
+        <div class="col-md-3"></div>
     </div>
 </div>
 
+
 {% include 'layouts/layout_footer.html' %}
+
 <script src="{{url_for('static',filename='js/sistemaDePagos/pagoPedidos.js')}}"></script>
 <script src="{{url_for('static',filename='js/productosComerciales/pedidos/procesaPedido.js')}}"></script>
 {% endblock %}
