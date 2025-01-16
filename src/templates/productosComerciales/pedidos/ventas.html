@@ -47,9 +47,9 @@
                   Actual
                   <select id="filtroEstado" class="form-control form-control-sm" onchange="filtrarTabla()">
                       <option value="">Todos</option>
-                      <option value="Pendiente">Pendiente</option>
-                      <option value="Entregado">Entregado</option>
-                      <option value="Cancelado">Cancelado</option>
+                      <option value="pendiente">Pendiente</option>
+                      <option value="entregado">Entregado</option>
+                      <option value="cancelado">Cancelado</option>
                   </select>
               </th>
               
@@ -65,8 +65,8 @@
               <td>{{ pedido.nombreCliente }}</td>
               <td>{{ pedido.lugar_entrega }}</td>              
               <td>{{ pedido.estado }}</td>
-              <td>{{ pedido.precio_venta }}</td>
-               <td>
+              <td style="color: rgb(232, 232, 95); font-weight: bold;">$ {{ pedido.precio_venta }}</td>
+              <td>
                 <input type="checkbox" class="estado-checkbox" onchange="actualizarEstado({{ pedido.id }}, this)" 
                        {{ 'checked' if pedido.estado == 'entregado' else '' }}>
                </td>
@@ -104,9 +104,9 @@
                   <thead>
                       <tr>
                           <th>Nombre</th>
-                          <th>Cantidad</th>
-                          <th>Consulta</th>
+                          <th>Cantidad</th>                         
                           <th>Precio</th>
+                          <th>Sub Total</th>
                       </tr>
                   </thead>
                   <tbody id="detallePedidoBody">
@@ -114,6 +114,8 @@
                   </tbody>
               </table>
           </div>
+          <!-- Aquí se mostrarán el total y la consulta -->
+          <div id="detallePedidoExtras"></div>
           <div class="modal-footer border-top border-secondary">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
