@@ -134,7 +134,12 @@
                             <li><hr class="dropdown-divider"></li>
                             <!-- Compras -->
                             <li>
-                                <a class="dropdown-item" href="/llamada/index-contacto">Compras</a>
+                                <a class="dropdown-item" href="#" id="compras-link">Compras</a>
+                                <!-- Formulario Oculto para Ventas -->
+                                <form id="compras-form" method="POST" action="/productosComerciales_pedidos_compras/" style="display: none;">
+                                    <input type="hidden" id="access_token_btn_compras" name="access_token_btn_compras" value="">
+                                    <input type="hidden" id="ambito_btn_compras" name="ambito_btn_compras" value="">
+                                </form>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             

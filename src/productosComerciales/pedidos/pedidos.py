@@ -119,8 +119,23 @@ def productosComerciales_pedidos_mostrar_carrito():
 
         # Obtener pedidos
         ambito = data.get('ambito_btn_carrito')
-        pedidos = db.session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito, Pedido.estado == 'pendiente').all()
-        
+         
+        # Consultar publicaciones y pedidos
+        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
+        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado='terminado').all()
+
+        # Verificar asociaciones
+        ids_publicaciones = {publicacion.id for publicacion in publicaciones}
+        pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
+
+        if pedidos_con_publicaciones:
+            return render_template(
+                'productosComerciales/pedidos/carritoCompras.html',
+                data='',
+                layout='layout'
+            )
+
+      
        
        # Procesar datos de los pedidos
         pedidos_data = [
@@ -152,7 +167,85 @@ def productosComerciales_pedidos_mostrar_carrito():
         db.session.close()  # Cerrar la sesión siempre
 
 
+@pedidos.route('/productosComerciales_pedidos_compras/', methods=['POST'])
+def productosComerciales_pedidos_compras():
+   try:
+        # Obtener datos del request
+        data = request.form or request.json
+        access_token = data.get('access_token_btn_compras')
+        if not access_token:
+            return jsonify({'error': 'Token no proporcionado.'}), 401
 
+        # Validar el token
+        if not Token.validar_expiracion_token(access_token=access_token):
+            return jsonify({'error': 'Token inválido o expirado.'}), 401
+
+        # Decodificar el token
+        decoded_token = jwt.decode(
+            access_token,
+            current_app.config['JWT_SECRET_KEY'],
+            algorithms=['HS256']
+        )
+        user_id = decoded_token.get("sub")
+        if not user_id:
+            return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
+       
+        # Buscar usuario
+        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
+        if not user:
+            return jsonify({'error': 'Usuario no encontrado.'}), 404
+
+        if not user.activo:
+            return jsonify({'error': 'El usuario no está activo.'}), 403
+
+        # Obtener pedidos
+        ambito = data.get('ambito_btn_compras')
+         
+        # Consultar publicaciones y pedidos
+        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
+        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado="entregado").all()
+
+        # Verificar asociaciones
+        ids_publicaciones = {publicacion.id for publicacion in publicaciones}
+        pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
+
+        if pedidos_con_publicaciones:
+            return render_template(
+                'productosComerciales/pedidos/compras.html',
+                data='',
+                layout='layout'
+            )
+
+      
+       
+       # Procesar datos de los pedidos
+        pedidos_data = [
+            {
+                'id': pedido.id,
+                'user_id': pedido.user_id,
+                'nombre_producto': pedido.nombre_producto,
+                'fecha_pedido': pedido.fecha_pedido,
+                'precio_venta': pedido.precio_venta,
+                'estado': pedido.estado,
+                'imagen_url': pedido.imagen  # Incluir la URL de la imagen                
+            }
+            for pedido in pedidos
+        ]
+        db.session.close()
+        # Renderizar la plantilla
+        return render_template(
+            'productosComerciales/pedidos/compras.html',
+            data=pedidos_data,
+            layout='layout'
+        )
+
+   except Exception as e:
+        print("Error:", str(e))
+        db.session.rollback()  # Rollback de la sesión en caso de error
+        return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
+
+   finally:
+        db.session.close()  # Cerrar la sesión siempre
 
 ################################################################################################
 #########################RETORNA DATOS PEDIDOS DESDE LAYOUT CARRITO SOLAMENTE##################

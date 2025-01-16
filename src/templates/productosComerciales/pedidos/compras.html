@@ -1,0 +1,63 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% if layout == 'layout_administracion' %}
+   {% extends 'layouts/layout_administracion.html' %}    
+{% endif %}
+{% if layout == 'layout' %}
+{% extends 'layouts/layout.html'%}    
+{% endif %}
+
+{% block content%}
+
+<div class="cart-container"> 
+    <h3 style="color:black;">Compras</h3>
+    {% for pedido in data %}
+    <div class="cart-item" data-precio="{{ pedido.precio_venta }}" data-id="{{ pedido.id }}">
+        {% if pedido.imagen_url %}
+        <img src="{{ pedido.imagen_url }}" alt="Imagen del producto" class="product-image">
+        {% else %}
+        <img src="default.jpg" alt="Producto sin imagen" class="product-image">
+        {% endif %}
+        <div class="product-details">
+            <h2>{{ pedido.nombre_producto }}</h2>
+            <p class="price">Precio: $<span class="unit-price">{{ pedido.precio_venta }}</span></p>
+            <p class="fecha_entrega" style="color: black;>Fecha: <span style="color: black;">{{ pedido.fecha_pedido.strftime('%d/%m/%Y') }}</span></p>
+
+
+           
+        </div>
+    </div>
+    {% endfor %}
+    <div class="cart-summary">
+        
+    
+        <div class="buttons-container">
+            <button id="return-button" onclick="goBack()">Volver</button>
+    
+            
+        </div>
+    </div>
+    
+    
+
+
+  
+</div>
+
+
+  
+{% include 'layouts/layout_footer.html' %}  
+
+ 
+<!-- Enlaces a scripts de JavaScript -->
+<link rel =  "stylesheet" href = "{{ url_for('static',filename='css/productos/carritoCompras.css')}}"> 
+
+{% endblock %}
