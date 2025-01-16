@@ -7,30 +7,43 @@ function mostrarDetalles(pedidoId) {
             // Referencia al cuerpo del modal
             const cuerpoModal = document.getElementById("detallePedidoBody");
             cuerpoModal.innerHTML = ""; // Limpiar el contenido previo del modal
-    
+        
             // Recorremos cada detalle en la respuesta
             data.detalles.forEach((detalle) => {
                 // Creamos una fila para cada detalle
                 const fila = document.createElement("tr");
-    
+        
                 // Rellenamos la fila con los datos
                 fila.innerHTML = `                   
                     <td>${detalle.nombre_producto}</td>
-                    <td>${detalle.cantidad}</td>
-                    <td>${detalle.consulta}</td>
+                    <td>${detalle.cantidad}</td>                   
                     <td>${detalle.precio_unitario}</td>
-                    <td>${detalle.total}</td>
-                   
+                     <td style="color: yellow; font-weight: bold;">${detalle.subtotal}</td>
                 `;
-                
+        
                 // Añadimos la fila al cuerpo del modal
                 cuerpoModal.appendChild(fila);
             });
-    
+        
+            // Referencia al contenedor de detalles adicionales (fuera de la tabla)
+            const contenedorAdicional = document.getElementById("detallePedidoExtras");
+            contenedorAdicional.innerHTML = ""; // Limpiar contenido previo
+        
+            // Mostrar el total del pedido
+            const total = document.createElement("p");
+            total.innerHTML = `<strong">Total del pedido:</strong> <span style="color: #90EE90;; font-weight: bold;">$ ${data.total}</span>`;
+            contenedorAdicional.appendChild(total);
+        
+            // Mostrar la consulta del cliente
+            const consulta = document.createElement("p");
+            consulta.innerHTML = `<strong>Consulta del cliente:</strong> ${data.consulta}`;
+            contenedorAdicional.appendChild(consulta);
+        
             // Mostramos el modal
             const modal = new bootstrap.Modal(document.getElementById("modalDetallePedido"));
             modal.show();
         })
+        
         .catch((err) => console.error("Error:", err));
 }
 
@@ -95,23 +108,47 @@ function filtrarTabla() {
 
 
 
-
-// Función para actualizar el estado del pedido
-function ActualizarEstado(pedidoId) {
-    // Aquí puedes hacer una solicitud para actualizar el estado del pedido
-    fetch(`/actualizarEstado/${pedidoId}`, {
-        method: 'POST',
-        body: JSON.stringify({ estado: 'nuevo_estado' }), // Cambia el estado según lo que desees
+function actualizarEstado(pedidoId, checkbox) { 
+    const nuevoEstado = checkbox.checked ? 'entregado' : 'pendiente'; // Cambia según tu lógica de estados
+    console.log(`Pedido ID: ${pedidoId}, Nuevo Estado: ${nuevoEstado}`);
+    
+    fetch(`/productosComerciales_pedidos_ventasProductosComerciales_actualizarEstado_pedido/${pedidoId}`, {
+        method: 'POST',  // Cambiar a POST
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': 'token_de_seguridad_aqui' // Si estás usando CSRF Token para seguridad
-        }
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ estado: nuevoEstado })  // Asegúrate de enviar el estado en el cuerpo
     })
     .then(response => response.json())
     .then(data => {
-        alert('Estado actualizado');
-        // Aquí puedes recargar la página o actualizar la interfaz de usuario
-        location.reload();
+        if (data.success) {
+            alert('Estado actualizado');
+            // Encontramos la fila a la que queremos aplicar el estilo
+            const fila = checkbox.closest('tr'); // Esto selecciona la fila más cercana al checkbox
+            console.log("Fila seleccionada:", fila);  // Muestra toda la fila en consola
+
+            // Asegúrate de que estamos seleccionando la fila correcta
+            if (fila) {
+                const estadoCelda = fila.querySelector('td:nth-child(4)'); // Suponiendo que el estado es la 4ta columna
+                if (estadoCelda) {
+                    estadoCelda.textContent = nuevoEstado;
+
+                    if (nuevoEstado === 'entregado') {
+                        estadoCelda.style.backgroundColor = '#90EE90'; // Verde claro
+                        estadoCelda.style.color = 'black';  // Aseguramos que el texto sea visible
+                    } else {
+                        estadoCelda.style.backgroundColor = ''; // Restaurar el color original si no está entregado
+                        estadoCelda.style.color = '';  // Restaurar el color del texto
+                    }
+                } else {
+                    console.error("No se encontró la celda de estado.");
+                }
+            } else {
+                console.error("No se encontró la fila.");
+            }
+        } else {
+            alert('No se pudo actualizar el estado');
+        }
     })
     .catch(error => {
         console.error('Error al actualizar el estado:', error);
@@ -119,42 +156,129 @@ function ActualizarEstado(pedidoId) {
     });
 }
 
-// Función para cancelar un pedido
-function cancelarPedido(pedidoId) {
-    // Confirmar si el usuario realmente quiere cancelar el pedido
-    if (confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
-        fetch(`/cancelarPedido/${pedidoId}`, {
-            method: 'POST',
-            body: JSON.stringify({ estado: 'cancelado' }), // Cambia el estado o agrega lo necesario
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': 'token_de_seguridad_aqui' // Si estás usando CSRF Token
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert('Pedido cancelado');
-            // Aquí puedes recargar la página o actualizar la interfaz de usuario
-            location.reload();
-        })
-        .catch(error => {
-            console.error('Error al cancelar el pedido:', error);
-            alert('Hubo un error al cancelar el pedido');
-        });
-    }
-}
+
 
 // Función para mostrar los datos del cliente
 function datosDelCliente(pedidoId) {
     // Obtener los datos del cliente relacionado con el pedido
-    fetch(`/datosCliente/${pedidoId}`)
+    fetch(`/productosComerciales_pedidos_ventasProductosComerciales_DatosDelCliente_pedido/${pedidoId}`)
         .then(response => response.json())
         .then(data => {
-            // Aquí puedes mostrar los datos del cliente en un modal o en un área específica de tu página
-            alert(`Datos del cliente: ${data.nombreCliente}, ${data.telefonoCliente}, ${data.emailCliente}`);
+            if (data.detalles) {
+                const cliente = data.detalles[0];  // Suponiendo que 'detalles' es una lista con un único objeto
+                alert(`Datos del cliente:\nNombre: ${cliente.nombreCliente} \nApellido: ${cliente.apellidoCliente}\nTeléfono: ${cliente.telefonoCliente}\nEmail: ${cliente.emailCliente}`);
+            } else {
+                alert('No se encontraron datos del cliente');
+            }
         })
         .catch(error => {
             console.error('Error al obtener los datos del cliente:', error);
             alert('Hubo un error al obtener los datos del cliente');
         });
 }
+
+
+
+function cancelarPedido(pedidoId) {
+    debugger;
+
+    fetch(`/productosComerciales_pedidos_ventasProductosComerciales_cancela_pedido/${pedidoId}`, {
+        method: 'POST', // Método de la solicitud
+        headers: {
+            'Content-Type': 'application/json', // Tipo de contenido
+        },
+        body: JSON.stringify({ pedidoId: pedidoId }) // Datos que se envían en el cuerpo (si los necesitas)
+    })
+    .then(response => response.json())  // Convertir la respuesta a JSON
+    .then(data => {
+        if (data.success) {
+            alert("Pedido cancelado exitosamente");
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error al cancelar el pedido:', error);
+        alert("Hubo un error al intentar cancelar el pedido");
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Función para recargar la tabla
+function recargarTabla() {
+    const data = new FormData();
+    let access_token = localStorage.getItem("access_token");
+    var ambito = localStorage.getItem("dominio");
+    data.append('access_token_form_Ventas', access_token);
+    data.append('ambito_form_Ventas', ambito);
+
+    fetch('/productosComerciales_pedidos_recargaAutomatica_muestra/', {
+        method: 'POST',
+        body: data
+    })
+    .then(response => response.json())
+    .then(pedidos => {
+        const tabla = document.getElementById("tablaPedidosEntrega");  // Actualizado a 'tablaPedidosEntrega'
+        tabla.innerHTML = '';  // Limpiar la tabla
+
+        pedidos.forEach(pedido => {
+            const fila = document.createElement("tr");
+            fila.innerHTML = `
+                <td>${pedido.fecha_entrega}</td>
+                <td>${pedido.nombreCliente}</td>
+                <td>${pedido.lugar_entrega}</td>
+                <td>${pedido.estado}</td>
+                <td style="color: rgb(232, 232, 95); font-weight: bold;">$ ${pedido.precio_venta}</td>
+                <td>
+                    <input type="checkbox" class="estado-checkbox" onchange="actualizarEstado(${pedido.id}, this)" 
+                           ${pedido.estado === 'entregado' ? 'checked' : ''}>
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-sm" onclick="mostrarDetalles(${pedido.id})">
+                        Detalle
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="datosDelCliente(${pedido.id})">
+                        Cliente
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="cancelarPedido(${pedido.id})">
+                        Cancelar
+                    </button>
+                </td>
+            `;
+            tabla.appendChild(fila);
+        });
+    })
+    .catch(error => {
+        console.error('Error al recargar la tabla:', error);
+    });
+}
+
+// Recargar la tabla cada 2 minutos (120,000 ms)
+setInterval(recargarTabla, 120000);
