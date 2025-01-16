@@ -68,6 +68,24 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('compras-link').addEventListener('click', function (event) {
+        event.preventDefault(); // Evitar comportamiento por defecto del enlace
+        const form = document.getElementById('compras-form');
+        // Asignar valores dinámicos al formulario (si es necesario)
+        let access_token = localStorage.getItem("access_token")
+    
+        var ambito = localStorage.getItem("dominio");
+        
+        document.getElementById('access_token_btn_compras').value = access_token;
+        document.getElementById('ambito_btn_compras').value = ambito;
+        // Enviar el formulario
+        form.submit();
+    });
+
+});
+
+
 
 
 
