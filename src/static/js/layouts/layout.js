@@ -47,38 +47,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('ventas-link').addEventListener('click', function (event) {
-        event.preventDefault(); // Prevenir la acción predeterminada del enlace
+        event.preventDefault(); // Evitar comportamiento por defecto del enlace
+        const form = document.getElementById('ventas-form');
+        // Asignar valores dinámicos al formulario (si es necesario)
+        let access_token = localStorage.getItem("access_token")
+    
+        var ambito = localStorage.getItem("dominio");
         
-        try {
-            const token = localStorage.getItem('access_token');
-            const dominio = localStorage.getItem('ambito');
-
-            if (!token || !dominio) {
-                throw new Error("Datos faltantes en localStorage.");
-            }
-
-            // Asignar valores al formulario
-            document.getElementById('pedidos_ventas_accessToken').value = token;
-            document.getElementById('pedidos_ventas_dominio').value = dominio;
-
-            // Enviar el formulario
-            document.getElementById('ventas-form').submit();
-        } catch (error) {
-            console.error("Error al procesar el formulario:", error.message);
-            alert("No se pudo procesar la solicitud. Intente nuevamente.");
-        }
+        document.getElementById('access_token_form_Ventas').value = access_token;
+        document.getElementById('ambito_form_Ventas').value = ambito;
+        // Enviar el formulario
+        form.submit();
     });
+
 });
-
-
-
-
-
-
-
-
 
 
 
