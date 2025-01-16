@@ -36,6 +36,7 @@ from productosComerciales.planes import planes
 from productosComerciales.suscripcionPlanUsuario import suscripcionPlanUsuario
 from productosComerciales.promociones.promociones import promociones
 from productosComerciales.pedidos.pedidos import pedidos
+from productosComerciales.pedidos.ventasProductosComerciales import ventasProductosComerciales
 
 
 
@@ -300,6 +301,7 @@ app.register_blueprint(pedido)
 app.register_blueprint(pedidos)
 app.register_blueprint(pedidoEntregaPago)
 app.register_blueprint(pagoPedidos)
+app.register_blueprint(ventasProductosComerciales)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)

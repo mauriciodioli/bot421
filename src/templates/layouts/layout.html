@@ -109,21 +109,6 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Pedidos</a>
                         <ul class="dropdown-menu">
-                            <!-- Ventas -->
-                            <li>
-                                <a class="dropdown-item" href="#" id="ventas-link">Ventas</a>
-                                <!-- Formulario Oculto para Ventas -->
-                                <form id="ventas-form" method="POST" action="/productosComerciales_pedidos_muestra" style="display: none;">
-                                    <input type="hidden" id="pedidos_ventas_accessToken" name="accessToken" value="">
-                                    <input type="hidden" id="pedidos_ventas_dominio" name="dominio" value="">
-                                </form>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            <!-- Compras -->
-                            <li>
-                                <a class="dropdown-item" href="/llamada/index-contacto">Compras</a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
                              <!-- Carrito -->
                              <li>
                                 <form action="/productosComerciales_pedidos_mostrar_carrito/" method="POST">
@@ -134,8 +119,24 @@
                                      
                                     </button>
                                 </form>
+                             </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- Ventas -->
+                            <li>
+                                <a class="dropdown-item" href="#" id="ventas-link">Ventas</a>
+                                <!-- Formulario Oculto para Ventas -->
+                                <form id="ventas-form" method="POST" action="/productosComerciales_pedidos_ventasProductosComerciales_muestra/" style="display: none;">
+                                    <input type="hidden" id="access_token_form_Ventas" name="access_token_form_Ventas" value="">
+                                    <input type="hidden" id="ambito_form_Ventas" name="ambito_form_Ventas" value="">
+                                </form>
                             </li>
                             <li><hr class="dropdown-divider"></li>
+                            <!-- Compras -->
+                            <li>
+                                <a class="dropdown-item" href="/llamada/index-contacto">Compras</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            
                             <!-- Consultas -->
                             <li>
                                 <a class="dropdown-item" id="consultas-link" href="#">Consultas</a>
@@ -313,6 +314,10 @@
         //carrito   
         document.getElementById('access_token_btn_carrito').value = access_token;  
         document.getElementById('ambito_btn_carrito').value = ambito;
+
+        //ventas
+        document.getElementById('access_token_form_Ventas').value = access_token;       
+        document.getElementById('ambito_form_Ventas').value = ambito;
  
        //herramientas
         document.getElementById('form_cuenta_accounCuenta').value = cuentaBroker;
