@@ -86,6 +86,24 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('consultas-link').addEventListener('click', function (event) {
+        debugger;
+        event.preventDefault(); // Evitar comportamiento por defecto del enlace
+        const form = document.getElementById('consultas-form');
+        // Asignar valores dinámicos al formulario (si es necesario)
+        let access_token = localStorage.getItem("access_token")
+    
+        var ambito = localStorage.getItem("dominio");
+        
+        document.getElementById('access_token_btn_consultas').value = access_token;
+        document.getElementById('ambito_btn_consultas').value = ambito;
+        // Enviar el formulario
+        form.submit();
+    });
+
+});
+
 
 
 

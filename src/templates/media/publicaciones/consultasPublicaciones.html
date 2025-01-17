@@ -1,0 +1,134 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% if layout == 'layout_administracion' %}
+   {% extends 'layouts/layout_administracion.html' %}    
+{% endif %}
+{% if layout == 'layout' %}
+{% extends 'layouts/layout.html'%}    
+{% endif %}
+
+{% block content%}
+
+<div class="cart-container"> 
+    <h3 style="color:black;">Carrito de Compras</h3>
+    <div class="search-container">
+        <input type="text" id="consulta_publicaciones_data" name="consulta_publicaciones_data" placeholder="Buscar por ID o Usuario">
+        <button id="search_button" type="button">
+            <i class="fa fa-search"></i> <!-- Ícono de lupa -->
+        </button>
+    </div>
+    
+    
+    
+   
+    <div class="table-container">
+        <table class="consulta-table">
+            <tbody>
+                {% for consulta in data %}
+                <tr data-precio="{{ consulta.precio_venta }}" data-id="{{ consulta.id }}">
+                    <td>
+                        {% if consulta.imagen_url %}
+                        <img src="{{ consulta.imagen_url }}" alt="Imagen del producto" class="product-image">
+                        {% else %}
+                        <img src="default.jpg" alt="Producto sin imagen" class="product-image">
+                        {% endif %}
+                    </td>
+                    <td class="text">{{ consulta.nombre_producto }}</td>
+                    <td class="price">
+                        <span class="unit-price">{{ consulta.precio_venta }}</span>
+                    </td>
+                    <td>
+                        <input type="number" id="quantity-{{ consulta.id }}" name="quantity" class="quantity-input" value="1" min="1">
+                    </td>
+                    <td>
+                        <input type="checkbox" class="estado-checkbox" onchange="agregarListado({{ consulta.id }}, this)" 
+                               {{ 'checked' if consulta.precio_venta == 'entregado' else '' }}>
+                      </td>
+                    <td>
+                        <button class="remove-button" data-consulta-id="{{ consulta.id }}" data-user-id="{{ consulta.user_id }}" style="display: none;">
+                            Eliminar
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn-success detalleProducto" data-consulta-id="{{ consulta.id }}" data-user-id="{{ consulta.user_id }}" >
+                            Detalle
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="cart-summary-container">
+        <!-- Aquí se insertará el resumen del carrito -->
+    </div>
+    
+    {% if data %}
+        <div class="cart-summary">
+            <div class="summary-details">
+                <p>Subtotal: $<span id="subtotal"></span></p>
+                <p>Total: $<span id="total"></span></p>
+            </div>
+        
+            <div class="buttons-container">
+                <button id="return-button" onclick="goBack()">Volver</button>
+        
+                <form id="sistemaDePagos_pagoconsultas" method="POST" action="/sistemaDePagos_pagoconsultas/">
+                    <input type="hidden" id="access_token_btn_finalizarPago" name="access_token_btn_finalizarPago">
+                    <input type="hidden" id="correo_electronico_btn_finalizarPago" name="correo_electronico_btn_finalizarPago"> 
+                    <input type="hidden" id="productoComercial" name="productoComercial" value='finalizarPago'> 
+                    <input type="hidden" id="cluster_btn_finalizarPago" name="cluster_btn_finalizarPago" value='1'>        
+                    <input type="hidden" id="ambito_btn_finalizarPago" name="ambito_btn_finalizarPago"> 
+                    <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
+                    <input type="hidden" id="consulta_data" name="consulta_data">
+
+                    <!-- Campo oculto para enviar el total -->
+                    <input type="hidden" id="total_pago" name="total_pago" >
+                
+                        <button class="card-button btn-success long-button" type="submit" style="color: green;">Elegir pago</button>
+                
+                </form>
+            </div>
+        </div>
+    {% endif %}
+    
+    
+<!-- Modal -->
+<div class="modal" id="detalleModal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h2 style="color:yellowgreen">Detalle del Producto</h2>
+        <p><span id="productoNombre"></span></p>
+        <p><strong>Descripción:</strong> <span id="productoDescripcion"></span></p>
+        <p><span id="productoTexto"></span></p>
+        <p> <span id="productoCorreo"></span></p>
+        <p><strong>Fecha de Creación:</strong> <span id="productoFecha"></span></p>
+        <p><strong>Usuario ID:</strong> <span  style="color:rgb(255, 80, 80)" id="productoUserId"></span></p>
+    </div>
+</div>
+
+
+
+  
+</div>
+
+
+  
+{% include 'layouts/layout_footer.html' %}  
+
+{% include 'layouts/layout_carrito.html' %}  
+<!-- Enlaces a scripts de JavaScript -->
+<link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/publicaciones/consultasPublicaciones.css')}}"> 
+<script src="{{ url_for('static', filename='js/media/publicaciones/consultasPublicaciones.js') }}"></script>
+<!--<script src="{{ url_for('static', filename='js/productosComerciales/consultas/carritoCompras.js') }}"></script>-->
+
+{% endblock %}

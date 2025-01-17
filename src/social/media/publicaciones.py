@@ -258,7 +258,9 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
             .order_by(Public_imagen_video.id.asc())  # Ordena para obtener el primero
             .first()
         )
-
+        
+       
+        
         # Inicializar listas para imágenes y videos
         imagenes = []
         videos = []
@@ -302,7 +304,16 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
                             })
                 except Exception as e:
                     logging.error(f"Error al obtener información del video {imagen_video.video_id}: {e}")
-
+       
+        if not publicacion.imagen:
+            if imagenes:
+                # Asigna la URL de la primera imagen si existen imágenes
+                publicacion.imagen = imagenes[0]['filepath']  # Usar la URL de la primera imagen
+            elif videos:
+                # Si no hay imagen, asigna la URL del primer video si existen videos
+                publicacion.imagen = videos[0]['filepath']  # Usar la URL del primer video
+            db.session.commit()   
+            
         # Agregar la publicación con la primera imagen o video encontrado
         publicaciones_data.append({
             'publicacion_id': publicacion.id,
@@ -320,7 +331,8 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
             'videos': videos,  # Solo un video
             'layout': layout
         })
-
+   
+    db.session.close()
     return publicaciones_data
 
 

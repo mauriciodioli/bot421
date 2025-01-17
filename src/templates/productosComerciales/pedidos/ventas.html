@@ -69,7 +69,7 @@
               <td>
                 <input type="checkbox" class="estado-checkbox" onchange="actualizarEstado({{ pedido.id }}, this)" 
                        {{ 'checked' if pedido.estado == 'entregado' else '' }}>
-               </td>
+              </td>
               <td>
                
       
@@ -125,6 +125,8 @@
 
 
 {% include 'layouts/layout_footer.html' %} 
+
+{% include 'layouts/layout_carrito.html' %}  
 <link rel="stylesheet" href="{{ url_for('static', filename='css/productos/ventasProductosComerciales.css') }}"> 
 <script src="{{ url_for('static', filename='js/productosComerciales/ventas/ventas.js') }}"></script>  
 {% endblock %}
