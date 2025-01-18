@@ -30,7 +30,7 @@
             <h2>{{ pedido.nombre_producto }}</h2>
             <p class="price">Precio: $<span class="unit-price">{{ pedido.precio_venta }}</span></p>
             <label for="quantity-{{ pedido.id }}">Cantidad:</label>
-            <input type="number" id="quantity-{{ pedido.id }}" name="quantity" class="quantity-input" value="1" min="1">
+            <input type="number" id="quantity-{{ pedido.id }}" name="quantity" class="quantity-input" value="{{ pedido.cantidad or 1 }}" min="1">
             <button class="remove-button" data-pedido-id="{{ pedido.id }}">Eliminar</button>
         </div>
     </div>
