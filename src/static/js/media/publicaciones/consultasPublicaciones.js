@@ -156,36 +156,7 @@ $(document).ready(function() {
                             // Llamar a la función para mostrar el modal
                             mostrarDetalle(consultaId, userId); 
                                                 });
-                        // Mostrar el resumen del carrito
-                        var cartSummary = `
-                            <div class="cart-summary">
-                                <div class="summary-details">
-                                    <p>Subtotal: $<span id="subtotal">${subtotal.toFixed(2)}</span></p>
-                                    <p>Total: $<span id="total">${total.toFixed(2)}</span></p>
-                                </div>
-
-                                <div class="buttons-container">
-                                    <button id="return-button" onclick="goBack()">Volver</button>
-
-                                    <form id="sistemaDePagos_pagoconsultas" method="POST" action="/sistemaDePagos_pagoconsultas/">
-                                        <input type="hidden" id="access_token_btn_finalizarPago" name="access_token_btn_finalizarPago">
-                                        <input type="hidden" id="correo_electronico_btn_finalizarPago" name="correo_electronico_btn_finalizarPago"> 
-                                        <input type="hidden" id="productoComercial" name="productoComercial" value='finalizarPago'> 
-                                        <input type="hidden" id="cluster_btn_finalizarPago" name="cluster_btn_finalizarPago" value='1'>        
-                                        <input type="hidden" id="ambito_btn_finalizarPago" name="ambito_btn_finalizarPago"> 
-                                        <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
-                                        <input type="hidden" id="consulta_data" name="consulta_data">
-
-                                        <!-- Campo oculto para enviar el total -->
-                                        <input type="hidden" id="total_pago" name="total_pago" value="${total.toFixed(2)}">
-                                    
-                                        <button class="card-button btn-success long-button" type="submit" style="color: green;">Elegir pago</button>
-                                    </form>
-                                </div>
-                            </div>
-                        `;
-
-                        $('.cart-summary-container').html(cartSummary);
+                        
 
                     } else {
                         console.log("No se encontraron publicaciones.");
