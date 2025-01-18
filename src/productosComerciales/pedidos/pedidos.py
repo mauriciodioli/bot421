@@ -146,6 +146,7 @@ def productosComerciales_pedidos_mostrar_carrito():
                 'fecha_pedido': pedido.fecha_pedido,
                 'precio_venta': pedido.precio_venta,
                 'estado': pedido.estado,
+                'cantidad': pedido.cantidad,
                 'imagen_url': pedido.imagen  # Incluir la URL de la imagen                
             }
             for pedido in pedidos
@@ -424,6 +425,63 @@ def productosComerciales_pedidos_alta_carrito():
         db.session.close()  # Cerrar la sesión siempre
 
 
+
+
+
+
+#############################################################################
+#############################################################################
+#######################esto es para el chekbox de consultas##################
+#############################################################################
+#############################################################################
+
+@pedidos.route('/productosComerciales_pedidos_alta_carrito_checkBox/<int:pedido_id>', methods=['POST'])
+def productosComerciales_pedidos_alta_carrito_checkBox(pedido_id):
+    try:
+        data = request.get_json()  # Asegúrate de recibir datos en formato JSON
+        nuevo_estado = data.get('estado')
+
+        # Validar token
+        access_token = data.get('access_token_btn_carrito1')
+        if not access_token or not Token.validar_expiracion_token(access_token=access_token):
+            return jsonify({'success': False, 'error': 'Token inválido o expirado.'}), 401
+
+        # Decodificar token para obtener el user_id
+        decoded_token = jwt.decode(
+            access_token,
+            current_app.config['JWT_SECRET_KEY'],
+            algorithms=['HS256']
+        )
+        user_id = decoded_token.get("sub")
+        if not user_id:
+            return jsonify({'success': False, 'error': 'Token inválido: falta el user_id.'}), 401
+        publicacion_id = int(data.get('publicacion_id')) if data.get('publicacion_id') else data.get('publicacion_id')
+        # Buscar el pedido
+        publicacion = db.session.get(Publicacion, publicacion_id)
+
+        if not publicacion:
+            return jsonify({'success': False, 'error': 'publicacion no encontrada.'}), 404
+
+         ####### guardar pedido en db ###########
+       # Guardar pedido en la base de datos
+         # Validar y procesar el precio
+        texto = publicacion.texto  # Clave corregida
+        precio, resto = obtenerPrecio(texto) if texto else (None, None)
+        cantidad = data.get('cantidadCompra', 1)
+        emailCliente = data.get('correo_electronico_cbox', '')        
+        if not guardarPedidoDesdeConsultasChecbox(publicacion, user_id, precio,cantidad,emailCliente):
+            return jsonify({'success': False, 'message': 'No se pudo guardar el pedido. Inicia sesión e inténtalo de nuevo.'}), 403
+
+        return jsonify({'success': True, 'message': 'Pedido agregado correctamente.'})
+    except Exception as e:
+        current_app.logger.error(f"Error al actualizar pedido: {str(e)}")
+        return jsonify({'success': False, 'message': 'Error al procesar la solicitud.'}), 500
+
+
+
+
+
+
 @pedidos.route('/productosComerciales_pedidos_process_order/', methods=['POST'])
 def productosComerciales_pedidos_process_order():
     try:
@@ -562,7 +620,71 @@ def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
         db.session.rollback()
         return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500
    
+def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailCliente):
+    try:
+        """
+        Guarda un nuevo pedido en la base de datos si no existe uno similar para el mismo usuario.
 
+        :param data: Diccionario con los datos del pedido.
+        :param userId: ID del usuario que realiza el pedido.
+        :param precio: Precio del producto como cadena (e.g., '$ 100.00').
+        :return: Objeto `Pedido` creado o None si ya existe un pedido duplicado.
+        """
+      
+        # Validar y procesar el precio
+        texto = data.texto
+        precio_venta = float(precio.replace('$', '').replace(',', '').strip())
+        tiempo = datetime.now()
+        
+        # Verificar si ya existe un pedido para este usuario con el mismo producto
+      #  producto_existente = Pedido.query.filter_by(user_id=userId, nombre_producto=data.get('titulo_btn_carrrito') ).first()
+        
+       # if producto_existente:
+        #    print(f"Pedido duplicado detectado para user_id={userId} y nombre_producto={data.get('titulo_btn_carrrito')}.")
+         #   return None  # No guardar duplicados
+
+        # Crear el nuevo pedido
+        nuevo_pedido = Pedido(
+            user_id=userId,
+            publicacion_id=int(data.id),
+            ambito=data.ambito,
+            estado='terminado',
+            fecha_pedido=tiempo,
+            fecha_entrega=tiempo,
+            fecha_consulta=tiempo,
+            fecha_baja=tiempo,
+            lugar_entrega='',
+            nombreCliente ='',
+            apellidoCliente = '',
+            telefonoCliente = '',
+            comentarioCliente = '',
+            emailCliente = emailCliente,
+            cantidad=int(cantidad),
+            precio_costo=precio_venta,
+            precio_venta=precio_venta,
+            ganancia=precio_venta,
+            diferencia=precio_venta,
+            nombre_producto=data.titulo,
+            descripcion=texto,
+            consulta='',
+            respuesta='',
+            asignado_a='gerente',
+            tamaño='',
+            provincia='',
+            region='',
+            sexo='',
+            imagen=data.imagen 
+        )
+
+        # Guardar en la base de datos
+        db.session.add(nuevo_pedido)
+        db.session.commit()
+        return nuevo_pedido
+    
+    except Exception as e:
+        print(f"Error al guardar pedido: {e}")
+        db.session.rollback()  # Revertir cambios en caso de error
+        return None  # Indica fallo
 def guardarPedido(data, userId, precio):
     try:
         """

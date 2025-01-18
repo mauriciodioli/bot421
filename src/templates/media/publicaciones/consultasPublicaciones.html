@@ -18,7 +18,7 @@
 {% block content%}
 
 <div class="cart-container"> 
-    <h3 style="color:black;">Carrito de Compras</h3>
+    <h3 style="color:black;">Lista de Compras</h3>
     <div class="search-container">
         <input type="text" id="consulta_publicaciones_data" name="consulta_publicaciones_data" placeholder="Buscar por ID o Usuario">
         <button id="search_button" type="button">
@@ -48,7 +48,7 @@
                     <td>
                         <input type="number" id="quantity-{{ consulta.id }}" name="quantity" class="quantity-input" value="1" min="1">
                     </td>
-                    <td>
+                      <td>
                         <input type="checkbox" class="estado-checkbox" onchange="agregarListado({{ consulta.id }}, this)" 
                                {{ 'checked' if consulta.precio_venta == 'entregado' else '' }}>
                       </td>

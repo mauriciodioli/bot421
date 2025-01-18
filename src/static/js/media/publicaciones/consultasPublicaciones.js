@@ -214,3 +214,86 @@ $(document).ready(function() {
         }
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function agregarListado(pedidoId, checkbox) { 
+    if (!checkbox.checked) {
+        console.log(`El pedido con ID ${pedidoId} no se enviará porque el checkbox no está marcado.`);
+        return; // Salir de la función si el checkbox no está marcado
+    }
+    const nuevoEstado = checkbox.checked ? 'activo' : 'inactivo';  // Determinar el nuevo estado
+    const access_token_btn_carrito1 = localStorage.getItem('access_token');
+    const correo_electronico_cbox = localStorage.getItem('correo_electronico');
+    const ambito_btn_carrito = localStorage.getItem('dominio');
+    
+    // Obtén el campo de cantidad usando el pedidoId
+    const quantityInput = document.querySelector(`#quantity-${pedidoId}`);
+    const cantidadSeleccionada = quantityInput ? quantityInput.value : null;
+
+    console.log(`Pedido ID: ${pedidoId}, Nuevo Estado: ${nuevoEstado}, Cantidad: ${cantidadSeleccionada}`);
+
+    
+    fetch(`/productosComerciales_pedidos_alta_carrito_checkBox/${pedidoId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ estado: nuevoEstado,
+            access_token_btn_carrito1: access_token_btn_carrito1,
+            correo_electronico_cbox: correo_electronico_cbox,
+            ambito_btn_carrito: ambito_btn_carrito,
+            publicacion_id: pedidoId,
+            cantidadCompra: cantidadSeleccionada, // Incluye la cantidad
+            checkbox: checkbox.checked            
+         })  // Enviar el estado en el cuerpo
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Agregado al carrito correctamente'); // Muestra el mensaje de éxito
+        } else {
+            alert(data.message || 'No se pudo actualizar el carrito'); // Muestra mensaje del servidor
+        }
+    })
+    .catch(error => {
+        console.error('Error al actualizar el carrito:', error);
+        alert('Hubo un error al actualizar el carrito');
+    });
+}
+
+
+
+
+
+document.querySelector('.card-button').addEventListener('click', function () {
+    const selectedProducts = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(checkbox => {
+        const row = checkbox.closest('tr');
+        return {
+            id: row.dataset.id,
+            nombre_producto: row.querySelector('.text').textContent.trim(),
+            precio_venta: row.querySelector('.unit-price').textContent.trim(),
+            cantidad: row.querySelector('.quantity-input').value
+        };
+    });
+
+    // Convertir los datos seleccionados en JSON y asignarlos al campo oculto
+    document.getElementById('consulta_data').value = JSON.stringify(selectedProducts);
+
+    // Opcionalmente, puedes actualizar el total
+    const total = selectedProducts.reduce((sum, product) => sum + (parseFloat(product.precio_venta) * parseInt(product.cantidad, 10)), 0);
+    document.getElementById('total_pago').value = total.toFixed(2);
+});
