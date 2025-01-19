@@ -17,7 +17,7 @@ function cargarPublicaciones(ambitoId) {
         if (splash) splash.style.display = 'none';
         return;
     }
-    debugger;
+   
     // Verificar si el acordeón con el ID ya existe
     let accordionItem = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
 
@@ -87,11 +87,32 @@ function cargarPublicaciones(ambitoId) {
                         accordionContent.innerHTML = ''; // Limpiar contenido existente
                     
                         publicaciones.forEach(function (post) {
-                            let mediaHtml = '';
-                            if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                                const firstImageUrl = post.imagenes[0].filepath;
-                                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                            let mediaHtml = '';        
+                            debugger;                   
+                            if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
+                        
+                                if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                                    // Si hay imágenes, usar la primera
+                                    var firstImageUrl = post.imagenes[0].filepath;
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                                } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                                   
+                                    // Si no hay imágenes pero hay videos, usar el primero
+                                    var firstVideoUrl = post.videos[0].filepath;
+                                    console.log(post.videos[0].filepath);
+                                    mediaHtml += `
+                                            <video controls onclick="abrirModal(${post.publicacion_id})">
+                                                <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                                Tu navegador no soporta la reproducción de videos.
+                                            </video>
+                                        `;
+                                } else {
+                                    // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
+                                    mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
+                                }
+                           
                             }
+                            
 
                             const cardHtml = `
                                 <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">

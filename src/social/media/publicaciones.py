@@ -292,7 +292,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
                     video = db.session.query(Video).filter_by(id=imagen_video.video_id).first()
                     if video:
                         filepath = video.filepath
-                        video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')
+                        video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
                         video_url = mostrar_from_gcs(video_url)
                         if video_url:
                             videos.append({
@@ -614,8 +614,17 @@ def social_publicaciones_crear_publicacion():
                 elif file_ext in {'mp4', 'avi', 'mov'}:
                     # Llama a la función de carga de video
                     color_texto = request.form.get('color_texto')   
-                    file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion,color_texto, userid=user_id, index=index, size=request.form.get(f'mediaFileSize_{index}'))
-
+                    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
+                    file_path = cargarVideo_crearPublicacion(app, 
+                                                    request, 
+                                                    file, 
+                                                    filename, 
+                                                    id_publicacion, 
+                                                    color_texto, 
+                                                    titulo_publicacion, 
+                                                    userid=user_id, 
+                                                    index=index,
+                                                    size=request.form.get(f'mediaFileSize_{index}'))
                 if file_path:
                     # Crea el diccionario del archivo solo si la carga fue exitosa
                     file_data = {
@@ -705,7 +714,7 @@ def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, 
       
 
 
-def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,color_texto,userid=0, index=None, size=0):   
+def cargarVideo_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, userid=0, index=None, size=0):  
     print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
    
     file_path = os.path.join('static', 'uploads', filename)
@@ -724,7 +733,7 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,color_tex
     else:
         print(f"Archivo {filename} subido a GCS con éxito.")
     nombre_archivo = filename
-    description_video = 'ambitoSocial'
+    description_video = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
 
     print(f"Authorization header: {request.headers.get('Authorization')}")
@@ -756,7 +765,7 @@ def cargarVideo_crearPublicacion(request,file, filename,id_publicacion,color_tex
         return file_path
     else:
         print("Creating new video")
-        nuevo_video = Image(
+        nuevo_video = Video(
             user_id=userid,
             title=nombre_archivo,
             description=description_video,
@@ -904,7 +913,7 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
                 )
                 if not imagen_en_multiples_publicaciones:
                     # Eliminar la imagen asociada, si no está en otras publicaciones
-                    imagen = db.session.query(Image).filter_by(id=p.imagen_id, user_id=user_id, size=float(p.size)).first()
+                    imagen = db.session.query(Image).filter_by(id=p.imagen_id, user_id=user_id).first()
                     if imagen:
                         db.session.delete(imagen)
                       #  eliminar_desde_archivo(imagen.title, user_id)
@@ -918,7 +927,7 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
                 )
                 if not video_en_multiples_publicaciones:
                     # Eliminar el video asociado, si no está en otras publicaciones
-                    video = db.session.query(Video).filter_by(id=p.video_id, user_id=user_id, size=float(p.size)).first()
+                    video = db.session.query(Video).filter_by(id=p.video_id, user_id=user_id).first()
                     if video:
                         db.session.delete(video)
                         #eliminar_desde_archivo(video.title, user_id)

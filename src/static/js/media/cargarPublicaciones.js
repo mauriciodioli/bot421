@@ -372,7 +372,7 @@
             'Authorization': 'Bearer ' + access_token
           },
           success: function(response) {
-           
+            debugger;
             splash.style.display = 'none'; // Ocultar el splash al terminar
             modal.style.display = "none";
             if (Array.isArray(response)) {
@@ -393,7 +393,7 @@
                 Object.keys(postsByAmbito).forEach(function(ambito, index) {
                     var ambitoId = 'ambito-' + index; // ID único para cada ámbito
                     var publicaciones = postsByAmbito[ambito];
-        
+                   
                     var accordionItemHtml = `
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="heading-${ambitoId}">

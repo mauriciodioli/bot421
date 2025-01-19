@@ -11,9 +11,10 @@ function formatDate(dateString) {
 
 
 function cargarPublicaciones(ambitoParam,layout) {
-   
+
     var access_token = localStorage.getItem('access_token');   
     var ambito = ambitoParam || localStorage.getItem('dominio'); // Usa el parámetro o toma del localStorage
+    debugger;
     var galeriaURL = '/media-publicaciones-mostrar-home';
     // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');
@@ -39,15 +40,43 @@ function cargarPublicaciones(ambitoParam,layout) {
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
                 postDisplayContainer.empty();
-
+     
                 response.forEach(function (post) {
+                    debugger;
                     if (post.imagenes.length > 0 || post.videos.length > 0) {
                         var mediaHtml = '';
 
                         // Mostrar la primera imagen
-                        if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                            var firstImageUrl = post.imagenes[0].filepath;
-                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                        if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
+                            
+                            if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                                // Si hay imágenes, usar la primera
+                                var firstImageUrl = post.imagenes[0].filepath;
+                                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+
+                            } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                               
+                                // Si no hay imágenes pero hay videos, usar el primero
+                                var firstVideoUrl = post.videos[0].filepath;
+                                console.log(post.videos[0].filepath);
+                                mediaHtml += `
+                                        <video controls onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
+                                            <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                            Tu navegador no soporta la reproducción de videos.
+                                        </video>
+                                    `;
+
+                            } else {
+                                // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
+                                mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
+                            }
+
+
+
+
+
+
+
 
                             // Modal para imágenes adicionales
                             var modalImagesHtml = '';

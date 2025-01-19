@@ -539,8 +539,17 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
                     app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
                 elif file_ext in {'mp4', 'avi', 'mov'}:
                     # Llama a la función de carga de video
-                    color_texto = request.form.get('color_texto')   
-                    file_path = cargarVideo_crearPublicacion(request, file, filename, id_publicacion, color_texto, userid=user_id, index=index,size=size)
+                    color_texto = request.form.get('selectedColor')   
+                    file_path = cargarVideo_crearPublicacion(app, 
+                                                    request, 
+                                                    file, 
+                                                    filename, 
+                                                    id_publicacion, 
+                                                    color_texto, 
+                                                    titulo_publicacion, 
+                                                    userid=user_id, 
+                                                    index=index,
+                                                    size=request.form.get(f'mediaFileSize_{index}'))
 
               
             db.session.close()

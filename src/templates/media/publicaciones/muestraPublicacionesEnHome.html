@@ -72,6 +72,8 @@
                     <input type="hidden" id="imagen_btn_carrito" name="imagen_btn_carrito" 
                         value="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}">
                     {% endif %}
+
+
                     <!-- Combo para elegir cantidad -->
                     <div style="display: flex; align-items: center; margin-top: 20px; gap: 10px;">
                         <label for="cantidadCompra" class="label-combo" style="margin-right: 10px;">Cantidad:</label>
@@ -168,6 +170,15 @@
     function abrirPublicacionEnAmbitos(publicacionId, userId, ambito,layout) {
         mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito,layout);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!localStorage.getItem('user_id')) {
+            const botonCompra = document.querySelector('.fila.boton-compra');
+            if (botonCompra) {
+                botonCompra.style.display = 'none';
+            }
+        }
+    });
 </script>
 
 {% endblock %}
