@@ -37,7 +37,7 @@ def media_publicaciones_detalle_dpi(publicacion_id):
     # Aquí deberías hacer una consulta para obtener las imágenes y videos
     post = obtener_publicacion_por_id(publicacion_id)  # Reemplaza con tu lógica de obtención
     if post:
-        return render_template('media/publicaciones/muestraPublicacionesEnHome.html', post=post, layout='layout_dpi')
+        return render_template('media/publicaciones/muestraPublicacionesEnHome.html', post=post, layout='layout_muestra_imagenes_dpi')
     else:
         return jsonify({'error': 'Publicación no encontrada'}), 404
     
@@ -104,7 +104,7 @@ def obtener_publicacion_por_id(publicacion_id):
                     video = db.session.query(Video).filter_by(id=iv.video_id).first()
                     if video:
                         filepath = video.filepath
-                        video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
+                        video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
                         video_url = mostrar_from_gcs(video_url)
                         if filepath.startswith('static/'):
                             filepath = filepath[len('static/'):]

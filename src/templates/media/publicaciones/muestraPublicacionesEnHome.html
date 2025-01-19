@@ -16,6 +16,9 @@
 {% if layout == 'layout_signal' %}
 {% extends 'layouts/layout_signal.html' %}    
 {% endif %}
+{% if layout == 'layout_muestra_imagenes_dpi' %}
+{% extends 'layouts/layout_muestra_imagenes_dpi.html' %}    
+{% endif %}
 
 {% block title %}Publicacion desplegada{% endblock %}
 {% block content %}
@@ -92,36 +95,35 @@
     {% endif %}
             
 
-    <!-- Fila 5: Galería de imágenes y videos -->
-    <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
-        {% if post.imagenes %}
-            <div class="imagenes-muestra-despliegue-publicacion-home">
-                {% for imagen in post.imagenes %}
-                    <div class="imagen-muestra-despliegue-publicacion-home">
-                        <img src="{% if 'http' in imagen.filepath %}{{ imagen.filepath }}{% else %}{{ url_for('static', filename=imagen.filepath) }}{% endif %}" 
-                             alt="{{ imagen.title }}" 
-                             onclick="replaceMainMedia(this.src, 'image')" />
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        
-        {% if post.videos %}
-            <h2>Videos:</h2>
-            <div class="videos-muestra-despliegue-publicacion-home">
-                {% for video in post.videos %}
-                    <div class="video-muestra-despliegue-publicacion-home">
-                        <video onclick="replaceMainMedia('{% if 'http' in video.filepath %}{{ video.filepath }}{% else %}{{ url_for('static', filename=video.filepath) }}{% endif %}', 'video')" controls>
-                            <source src="{% if 'http' in video.filepath %}{{ video.filepath }}{% else %}{{ url_for('static', filename=video.filepath) }}{% endif %}" type="video/mp4">
+   <!-- Fila 5: Galería de imágenes y videos -->
+<div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
+    <div class="imagenes-muestra-despliegue-publicacion-home">
+        {% if post.imagenes or post.videos %}
+            {% for media in post.imagenes + post.videos %}
+                <div class="imagen-muestra-despliegue-publicacion-home">
+                    {% if media.filepath.endswith('.mp4') %}
+                        <!-- Video con estilos consistentes -->
+                        <video 
+                            class="media-adaptada" 
+                            onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
+                            controls>
+                            <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
                             Tu navegador no soporta el formato de video.
                         </video>
-                        <p>{{ video.title }}</p>
-                        <p>{{ video.description }}</p>
-                    </div>
-                {% endfor %}
-            </div>
+                    {% else %}
+                        <!-- Imagen con estilos consistentes -->
+                        <img 
+                            class="media-adaptada" 
+                            src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
+                            alt="{{ media.title }}" 
+                            onclick="replaceMainMedia(this.src, 'image')" />
+                    {% endif %}
+                </div>
+            {% endfor %}
         {% endif %}
     </div>
+</div>
+
 
     <!-- Fila 6: Información adicional -->
     <div class="fila informacion-adicional">
@@ -172,7 +174,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        if (!localStorage.getItem('user_id')) {
+        if (!localStorage.getItem('access_token')) {
             const botonCompra = document.querySelector('.fila.boton-compra');
             if (botonCompra) {
                 botonCompra.style.display = 'none';

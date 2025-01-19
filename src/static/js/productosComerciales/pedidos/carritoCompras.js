@@ -99,20 +99,50 @@ const removeButtons = document.querySelectorAll('.remove-button');
 
 // Función para recalcular el subtotal y total
 function recalculateTotal() {
-    let subtotal = 0;
+    try {
+        let subtotal = 0;
 
-    // Iterar sobre todos los elementos visibles en el carrito
-    document.querySelectorAll('.cart-item').forEach(item => {
-        const precio = parseFloat(item.getAttribute('data-precio')) || 0;
-        const cantidad = parseInt(item.querySelector('.quantity-input').value) || 1;
+        // Verificar si los elementos subtotal y total están presentes
+        const subtotalElement = document.getElementById('subtotal');
+        const totalElement = document.getElementById('total');
 
-        subtotal += precio * cantidad;
-    });
+        if (!subtotalElement || !totalElement) {
+            console.warn('Los elementos "subtotal" o "total" no están presentes en el DOM. No se realizará ninguna actualización.');
+            return;
+        }
 
-    // Actualizar los valores en el DOM
-    document.getElementById('subtotal').textContent = subtotal.toFixed(2);
-    document.getElementById('total').textContent = subtotal.toFixed(2); // Si tienes impuestos o descuentos, aplica aquí
+        // Verificar si hay elementos con la clase 'cart-item'
+        const cartItems = document.querySelectorAll('.cart-item');
+        if (cartItems.length === 0) {
+            console.warn('No se encontraron elementos en el carrito.');
+            return;
+        }
+
+        // Iterar sobre todos los elementos visibles en el carrito
+        cartItems.forEach(item => {
+            // Manejar posibles excepciones al acceder a atributos y valores
+            const precio = parseFloat(item.getAttribute('data-precio')) || 0;
+            const cantidadInput = item.querySelector('.quantity-input');
+            if (!cantidadInput) {
+                console.warn('No se encontró un input de cantidad para un elemento del carrito.');
+                return;
+            }
+
+            const cantidad = parseInt(cantidadInput.value) || 1;
+            subtotal += precio * cantidad;
+        });
+
+        // Actualizar los valores en el DOM solo si los elementos están presentes
+        subtotalElement.textContent = subtotal.toFixed(2);
+        totalElement.textContent = subtotal.toFixed(2);
+
+    } catch (error) {
+        console.error('Ocurrió un error al recalcular el total:', error);
+    }
 }
+
+
+
 
 // Listener para eliminar elementos
 removeButtons.forEach(button => {
