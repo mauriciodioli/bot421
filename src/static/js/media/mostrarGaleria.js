@@ -126,13 +126,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     var mediaHtml = '';
                     //var baseUrl = window.location.origin;
     
-                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                        //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                        var firstImageUrl =  post.imagenes[0].filepath;
-                       // console.log(firstImageUrl); // Verifica la respuesta del servidor
-                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-          
-                    }
+                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
+                        
+                      if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                          // Si hay imágenes, usar la primera
+                          var firstImageUrl = post.imagenes[0].filepath;
+                          mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                      } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                         
+                          // Si no hay imágenes pero hay videos, usar el primero
+                          var firstVideoUrl = post.videos[0].filepath;
+                          console.log(post.videos[0].filepath);
+                          mediaHtml += `
+                                  <video controls onclick="abrirModal(${post.publicacion_id})">
+                                      <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                      Tu navegador no soporta la reproducción de videos.
+                                  </video>
+                              `;
+                      } else {
+                          // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
+                          mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
+                      }
+                 
+                  }
     
                     var cardHtml = `
                         <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">

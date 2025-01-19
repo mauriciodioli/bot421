@@ -19,17 +19,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Delegación de eventos para manejar clics en los ítems del menú
     dropdownMenu.addEventListener('click', function (event) {
         const clickedElement = event.target;
-
+       
         // Verificar si el clic ocurrió en un elemento del menú
         if (clickedElement.classList.contains('dropdown-item')) {
             event.preventDefault();
-            debugger;
+           
             const selectedItem = clickedElement.id; // ID del elemento clicado
             console.log(`Elemento seleccionado: ${selectedItem}`);
 
             // Guardar el ámbito seleccionado en localStorage
             localStorage.setItem('dominio', selectedItem);
-
+          
             // Llamar a la función cargarPublicaciones (asegúrate de definir esta función previamente)
             //llamada desde js/media/muestraPublicacionesEnHome.js
             cargarPublicaciones(selectedItem, 'layout');

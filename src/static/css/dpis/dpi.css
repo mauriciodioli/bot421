@@ -3,6 +3,20 @@ body {
     padding-top: 70px; /* Altura del navbar */
 }
 
+.card-media-grid-publicacion-en-ambito img {
+  width: 100%;
+  height: auto; /* Mantiene la proporción */
+}
+
+.splashCarga {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: 999; /* Sobreponer al contenido */
+}
 
 
 .NdpiLogo {
