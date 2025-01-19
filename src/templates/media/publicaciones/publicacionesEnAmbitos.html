@@ -18,6 +18,10 @@
 {% extends 'layouts/layout_signal.html' %}    
 {% endif %}
 
+{% if layout == 'layout_muestra_imagenes_dpi' %}
+{% extends 'layouts/layout_muestra_imagenes_dpi.html' %}    
+{% endif %}
+
 {% block title %}Publicación en Ámbitos{% endblock %}
 {% block content %}
 <div class="home-publicaciones-en-ambitos-personales">
@@ -36,6 +40,7 @@
 <!-- Incluye el archivo JavaScript --> 
 <link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/publicaciones/muestraPublicacionesEnAmbitoPersonales.css')}}>    
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
+
 <script>
     var publicacionId = '{{ publicacion_id }}';
     var userId = '{{ user_id }}'; 
