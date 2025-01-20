@@ -141,7 +141,7 @@ from models.turing.testTuringUser import testTuringUser
 from models.pedidos.pedido import pedido
 from models.pedidos.pedidoEntregaPago import pedidoEntregaPago
 
-
+from aplicaciones.calculadora import calculadora
 
 
 from Tests.test_procesar_estado_final import test_procesar_estado_final
@@ -307,6 +307,7 @@ app.register_blueprint(ventasProductosComerciales)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)
+app.register_blueprint(calculadora)
 
 
 app.register_blueprint(testTuringUser)

@@ -1,0 +1,144 @@
+body {
+    font-family: Arial, sans-serif;
+    position: relative;
+    height: 100vh;
+    background-color: #100f0f;
+    margin: 0;
+  }
+  
+  .calculator {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #0c0c0c; /* Fondo negro */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 320px;
+    padding: 20px;
+    text-align: center;
+    cursor: move;
+    border: 15px solid #333; /* Borde alrededor de la calculadora */
+  }
+  
+
+  
+  .display {
+    width: 100%;
+    height: 60px;
+    background: #333; /* Fondo oscuro para la pantalla de la calculadora */
+    color: #5cff1c;
+    text-align: right;
+    font-size: 2em;
+    border: none;
+    border-radius: 5px;
+    padding-right: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  
+  .btn {
+    background-color: #444;
+    border: none;
+    color: #fff;
+    font-size: 1.5em;
+    padding: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .btn:hover {
+    background-color: #666;
+  }
+  
+  .btn-operator {
+    background-color: #ff9500;
+  }
+  
+  .btn-operator:hover {
+    background-color: #ffac33;
+  }
+  
+  .btn-equal {
+    background-color: #007aff;
+    grid-column: span 2;
+  }
+  
+  .btn-equal:hover {
+    background-color: #339cff;
+  }
+  
+  .btn-clear {
+    background-color: #ff3b30;
+  }
+  
+  .btn-clear:hover {
+    background-color: #ff6b66;
+  }
+  
+  /* Asegura que los bordes sean visibles */
+  .elemento-con-botones {
+    background-color: #000; /* Fondo negro */
+    padding: 20px;  /* Ajusta el padding para que los botones tengan espacio */
+    border-radius: 10px;  /* Borde redondeado */
+    border: 2px solid #fff;  /* Borde blanco para destacar el contenedor */
+  }
+  
+  .boton {
+    color: white;
+    background-color: #333; /* Fondo oscuro para los botones */
+    padding: 10px 20px;
+    border: 1px solid #fff; /* Borde blanco para los botones */
+  }
+  
+
+
+
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 600px) {
+    .calculator {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+    }
+
+    .display {
+        font-size: 20px;
+    }
+
+    .buttons {
+        grid-template-columns: repeat(4, 1fr); /* 4 botones por fila en móviles */
+        gap: 5px;
+    }
+
+    .btn {
+        padding: 15px;
+        font-size: 16px;
+    }
+
+    .btn-clear, .btn-equal {
+        font-size: 14px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .display {
+        font-size: 18px;
+    }
+
+    .buttons {
+        grid-template-columns: repeat(3, 1fr); /* 3 botones por fila en pantallas muy pequeñas */
+    }
+
+    .btn {
+        padding: 12px;
+        font-size: 14px;
+    }
+}
