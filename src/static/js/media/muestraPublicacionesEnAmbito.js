@@ -26,6 +26,56 @@ document.addEventListener("DOMContentLoaded", function() {
             cargarDatosPublicacion();
         }
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+        var video1 = document.getElementById('videoPlayer');
+        var canvas = document.getElementById('canvasPreview');
+        var ctx = canvas.getContext('2d');
+
+        video1.addEventListener('loadeddata', function() {
+            video1.currentTime = 1; // Ajusta el tiempo al segundo 1 o cualquier otro
+            video1.addEventListener('seeked', function() {
+                canvas.width = video1.videoWidth;
+                canvas.height = video1.videoHeight;
+                ctx.drawImage(video1, 0, 0, canvas.width, canvas.height);
+                video1.poster = canvas.toDataURL(); // Asigna el fotograma como poster
+                video1.currentTime = 0; // Restablece el tiempo
+            }, { once: true });
+        });
+    
 });
 
 
@@ -38,7 +88,10 @@ function formatDate(dateString) {
 }
 
 
-
+function cargarDatosPublicacion() {
+    // Redirigir a la URL construida con los parámetros
+    window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}`;
+}
 
 function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
      // Mostrar el splash de espera

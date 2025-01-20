@@ -192,6 +192,23 @@ a.btn-close-publicacion-ambitos:hover {
     transform: scale(1.05); /* Aumenta ligeramente el tamaño al hacer hover */
 }
 
+
+
+
+
+
+
+
+/* Contenedor de la galería */
+.imagenes-muestra-despliegue-publicacion-home {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Por defecto 3 columnas */
+    gap: 15px; /* Espacio entre elementos */
+}
+
+
+
+
 @media (max-width: 768px) {
     #principal-media {
         max-width: 100%; /* Ajusta el tamaño máximo del contenedor para pantallas pequeñas */
@@ -208,10 +225,10 @@ a.btn-close-publicacion-ambitos:hover {
 }
 
 
-@media (max-width: 320px) {
-    .imagen-muestra-despliegue-publicacion-home {
-        font-size: 12px; /* Reducir tamaño de fuente si es necesario */
-        padding: 5px; /* Ajustar espaciado */
+/* Diseño para móviles más pequeños (máximo 480px) */
+@media (max-width: 480px) {
+    .imagenes-muestra-despliegue-publicacion-home {
+        grid-template-columns: 1fr; /* 1 columna en pantallas muy pequeñas */
     }
 }
 
