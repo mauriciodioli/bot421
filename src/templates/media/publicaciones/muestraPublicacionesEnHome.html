@@ -39,7 +39,7 @@
         <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
         {% if post.videos %}
             <!-- Mostrar el primer video si está disponible -->
-            <canvas id="canvasPreview" style="display:none;"></canvas>
+           
             <video controls id="main-video"   onclick="cargarDatosPublicacion()">
                 {% if 'http' in post.videos[0].filepath %}
                     <source src="{{ post.videos[0].filepath }}" type="video/mp4">
