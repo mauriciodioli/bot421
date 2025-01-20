@@ -1,8 +1,36 @@
+document.addEventListener("DOMContentLoaded", function() {
+    const video = document.getElementById('main-video');
+
+    video.addEventListener('click', function(event) {
+        const rect = video.getBoundingClientRect();
+        const clickX = event.clientX - rect.left;
+        const clickY = event.clientY - rect.top;
+
+        // Definir el área del centro (20% del ancho y 20% del alto)
+        const centerWidth = rect.width * 0.2;
+        const centerHeight = rect.height * 0.2;
+        const centerX = rect.width / 2 - centerWidth / 2;
+        const centerY = rect.height / 2 - centerHeight / 2;
+
+        // Verificar si el clic está dentro del área central
+        if (clickX >= centerX && clickX <= centerX + centerWidth &&
+            clickY >= centerY && clickY <= centerY + centerHeight) {
+            // Si el clic está en el centro, reproducir o pausar el video
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        } else {
+            // Si el clic está fuera del centro, ejecutar cargarDatosPublicacion()
+            cargarDatosPublicacion();
+        }
+    });
+});
+
+
+
 // Define la función formatDate
-
-
-
-
 function formatDate(dateString) {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
     var date = new Date(dateString);

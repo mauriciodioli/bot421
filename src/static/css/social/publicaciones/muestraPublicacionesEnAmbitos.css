@@ -208,8 +208,19 @@ a.btn-close-publicacion-ambitos:hover {
 }
 
 
+@media (max-width: 320px) {
+    .imagen-muestra-despliegue-publicacion-home {
+        font-size: 12px; /* Reducir tamaño de fuente si es necesario */
+        padding: 5px; /* Ajustar espaciado */
+    }
+}
 
-
+video {
+    width: 100%;
+    height: auto;
+    object-fit: contain; /* Asegura que la imagen no se deforme */
+    background-color: #000; /* Color de fondo en caso de que la imagen no cargue */
+}
 
 
 
