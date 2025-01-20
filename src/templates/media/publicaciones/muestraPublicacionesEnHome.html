@@ -39,7 +39,7 @@
         <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
         {% if post.videos %}
             <!-- Mostrar el primer video si está disponible -->
-            <video controls id="main-video" onclick="cargarDatosPublicacion()">
+            <video controls id="main-video" poster="ruta/a/imagen-previa.jpg"  onclick="cargarDatosPublicacion()">
                 {% if 'http' in post.videos[0].filepath %}
                     <source src="{{ post.videos[0].filepath }}" type="video/mp4">
                 {% else %}
@@ -94,35 +94,40 @@
 
     {% endif %}
             
-
-   <!-- Fila 5: Galería de imágenes y videos -->
-<div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
-    <div class="imagenes-muestra-despliegue-publicacion-home">
-        {% if post.imagenes or post.videos %}
-            {% for media in post.imagenes + post.videos %}
-                <div class="imagen-muestra-despliegue-publicacion-home">
-                    {% if media.filepath.endswith('.mp4') %}
-                        <!-- Video con estilos consistentes -->
-                        <video 
-                            class="media-adaptada" 
-                            onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
-                            controls>
-                            <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
-                            Tu navegador no soporta el formato de video.
-                        </video>
-                    {% else %}
-                        <!-- Imagen con estilos consistentes -->
-                        <img 
-                            class="media-adaptada" 
-                            src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
-                            alt="{{ media.title }}" 
-                            onclick="replaceMainMedia(this.src, 'image')" />
+            <!-- Fila 5: Galería de imágenes y videos -->
+            <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
+                <div class="imagenes-muestra-despliegue-publicacion-home">
+                    {% if post.imagenes or post.videos %}
+                        {% for media in post.imagenes + post.videos %}
+                            <div class="imagen-muestra-despliegue-publicacion-home">
+                                {% if media.filepath.endswith('.mp4') %}
+                                    <!-- Video con reproducción automática al pasar el mouse -->
+                                    <video 
+                                        class="media-adaptada" 
+                                        poster="ruta/a/imagen-previa.jpg" 
+                                        onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
+                                        onmouseover="this.play()" 
+                                        onmouseout="this.pause(); this.currentTime=0;" 
+                                        muted 
+                                        loop
+                                        playsinline>
+                                        <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
+                                        Tu navegador no soporta el formato de video.
+                                    </video>
+                                {% else %}
+                                    <!-- Imagen con estilos consistentes -->
+                                    <img 
+                                        class="media-adaptada" 
+                                        src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
+                                        alt="{{ media.title }}" 
+                                        onclick="replaceMainMedia(this.src, 'image')" />
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                     {% endif %}
                 </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-</div>
+            </div>
+
 
 
     <!-- Fila 6: Información adicional -->
