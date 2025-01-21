@@ -158,7 +158,7 @@
         if (type === 'image') {
             container.innerHTML = '<img id="main-image" style="cursor: pointer;" onclick="cargarDatosPublicacion()" src="' + src + '" alt="Imagen seleccionada" />';
         } else if (type === 'video') {
-            container.innerHTML = '<video controls id="main-video" style="cursor: pointer;" onclick="cargarDatosPublicacion()"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
+            container.innerHTML = '<video controls id="main-video" style="cursor: pointer;"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
         }
         // Desplazar suavemente hacia el contenedor de la imagen principal
         container.scrollIntoView({ behavior: 'smooth', block: 'start' });
