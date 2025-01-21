@@ -12,7 +12,7 @@
     display: block;
     width: 100%; /* Ajusta al ancho del contenedor */
     height: auto; /* Mantiene la proporción */
-    object-fit: contain; /* Asegura que todo el contenido se muestre sin recortes */
+   /* object-fit: contain;*/ /* Asegura que todo el contenido se muestre sin recortes */
     border: none; /* Elimina bordes por defecto */
 }
 
@@ -182,7 +182,7 @@ a.btn-close-publicacion-ambitos:hover {
    /* height: auto;*/ /* Mantiene la altura proporcional a la anchura */
     max-width: 100%; /* Asegura que no se agrande más allá de su contenedor */
     max-height: 80vh; /* Limita la altura máxima al 80% del alto de la ventana */
-    object-fit: contain; /* Asegura que la imagen/video se ajuste manteniendo las proporciones */
+   /* object-fit: contain;*/ /* Asegura que la imagen/video se ajuste manteniendo las proporciones */
     border-radius: 8px; /* Bordes redondeados opcionales */
     cursor: pointer; /* Cambia el cursor al pasar sobre la imagen o video */
 }
@@ -220,7 +220,7 @@ a.btn-close-publicacion-ambitos:hover {
         max-width: 100%; /* Asegura que no se agrande más allá de su contenedor */
         max-height: 300px; /* Ajusta la altura máxima para pantallas pequeñas */
         width: 100%; /* Ajusta el ancho al 100% en pantallas pequeñas */
-        object-fit: contain; /* Mantiene las proporciones correctas */
+       /* object-fit: contain; *//* Mantiene las proporciones correctas */
     }
 }
 
@@ -235,7 +235,7 @@ a.btn-close-publicacion-ambitos:hover {
 video {
     width: 100%;
     height: auto;
-    object-fit: contain; /* Asegura que la imagen no se deforme */
+   /* object-fit: contain; *//* Asegura que la imagen no se deforme */
     background-color: #000; /* Color de fondo en caso de que la imagen no cargue */
 }
 
@@ -246,7 +246,7 @@ video {
 .media-adaptada {
     width: 100%; /* Hace que la imagen/video ocupe el 100% del ancho disponible */
     height: auto; /* Mantiene la proporción de la imagen/video */
-    object-fit: contain; /* Asegura que la imagen o el video se ajusten sin deformarse */
+  /*  object-fit: contain; *//* Asegura que la imagen o el video se ajusten sin deformarse */
     max-width: 100%; /* Evita que los medios se desborden horizontalmente */
     max-height: 300px; /* Limita la altura máxima si es necesario */
     margin: 10px 0; /* Añade algo de espacio alrededor de las imágenes/videos */
