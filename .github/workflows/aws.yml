@@ -89,9 +89,8 @@ jobs:
         script: |
                # Instalar y arrancar Redis en el contenedor
                docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "
-                 apt update &&
-                 apt install -y redis-server &&
-                 service redis-server start
+                 apt update && redis-server --daemonize yes
+                 apt-get install vim -y
                "
     - name: Modify _app.py in websocket library
       uses: appleboy/ssh-action@master
