@@ -1,11 +1,16 @@
 # Capa 1: Imagen base
 FROM python:3.9.7
 
-# Capa 2: Instalar tzdata para manejar zonas horarias
-RUN apt-get update && apt-get install -y tzdata
+
+# Capa 2: Instalar dependencias del sistema, incluyendo Redis
+RUN apt-get update && apt-get install -y tzdata redis-server redis-tools && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Capa 3: Configurar el directorio de trabajo
 WORKDIR /app
+
+# Capa 4: Instalar tzdata para manejar zonas horarias
+RUN apt-get update && apt-get install -y tzdata
 
 # Establecer la zona horaria
 ENV TZ=America/Argentina/Buenos_Aires
@@ -19,6 +24,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Capa 6: Copiar todo el código fuente
 COPY src/ .
+
+# Capa 7: Iniciar Redis como un proceso en segundo plano
+RUN redis-server --daemonize yes
+
+# Capa 8: Exponer el puerto de Redis (opcional, si se necesita acceso externo)
+EXPOSE 6379
 
 # Capa 7: Comando por defecto para ejecutar la aplicación
 CMD ["python", "./app.py"]

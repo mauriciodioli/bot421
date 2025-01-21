@@ -25,11 +25,13 @@ from models.modelMedia.video import Video
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from social.buckets.bucketGoog import mostrar_from_gcs
+import redis
 
 
 muestraPublicacionesEnHome = Blueprint('muestraPublicacionesEnHome',__name__)
 
-
+# Configurar la conexión a Redis
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
 
 @muestraPublicacionesEnHome.route('/media-muestraPublicacionesEnDpi-mostrar/<int:publicacion_id>', methods=['GET'])
 def media_publicaciones_detalle_dpi(publicacion_id):
@@ -57,38 +59,36 @@ def media_publicaciones_detalle(publicacion_id, layout):
         
         return jsonify({'error': 'Publicación no encontrada'}), 404
     
+
+
+
+
 def obtener_publicacion_por_id(publicacion_id):
     try:
+        # Intentar obtener los datos desde Redis
+        cache_key = f"publicacion:{publicacion_id}"
+        cached_data = redis_client.get(cache_key)
+        
+        if cached_data:
+            print("Recuperando datos desde la caché")
+            return json.loads(cached_data)  # Convertir la cadena JSON a un diccionario
+
         publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
         if publicacion:
-            publicaciones_data = []
-            
-            # Obtener la ruta completa de la carpeta 'static/uploads'
             uploads_folder = os.path.join(current_app.root_path, 'static', 'uploads')
-
-            # Obtener todas las imágenes en la carpeta 'static/uploads'
             image_files = [file for file in os.listdir(uploads_folder) if file.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-
-            # Crear las rutas completas de las imágenes sin codificación de caracteres
             image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
 
-            # Obtener todas las imágenes y videos asociados a esta publicación
             imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
-            
+
             imagenes = []
             videos = []
 
             for iv in imagenes_videos:
-                # Obtener la información de las imágenes
                 if iv.imagen_id:
                     imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
                     if imagen:
-                        # Quitar 'static/' del inicio del filepath si existe
-                        filepath = imagen.filepath
-                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                        imagen_url = mostrar_from_gcs(imagen_url)                      
-                        if filepath.startswith('static'):
-                            filepath = filepath[len('static/'):]
+                        imagen_url = mostrar_from_gcs(imagen.filepath.replace('static/uploads/', '').replace('static\\uploads\\', ''))
                         imagenes.append({
                             'id': imagen.id,
                             'title': imagen.title,
@@ -99,15 +99,10 @@ def obtener_publicacion_por_id(publicacion_id):
                             'size': imagen.size                      
                         })
 
-                # Obtener la información de los videos
                 if iv.video_id:
                     video = db.session.query(Video).filter_by(id=iv.video_id).first()
                     if video:
-                        filepath = video.filepath
-                        video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
-                        video_url = mostrar_from_gcs(video_url)
-                        if filepath.startswith('static/'):
-                            filepath = filepath[len('static/'):]
+                        video_url = mostrar_from_gcs(video.filepath.replace('static/uploads/', '').replace('static\\uploads\\', ''))
                         videos.append({
                             'id': video.id,
                             'title': video.title,
@@ -117,16 +112,8 @@ def obtener_publicacion_por_id(publicacion_id):
                             'colorDescription': video.colorDescription,
                             'size': video.size
                         })
-            # Ajustar las rutas de archivos según el sistema operativo
-            path_separator = '/'
-            for imagen in imagenes:
-                imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
-            for video in videos:
-                video['filepath'] = video['filepath'].replace('\\', path_separator)
 
-            # Agregar la publicación con sus imágenes y videos al diccionario
-            db.session.close()
-            return {
+            response_data = {
                 'publicacion_id': publicacion.id,
                 'user_id': publicacion.user_id,
                 'titulo': publicacion.titulo,
@@ -136,16 +123,23 @@ def obtener_publicacion_por_id(publicacion_id):
                 'descripcion': publicacion.descripcion,
                 'color_texto': publicacion.color_texto,
                 'color_titulo': publicacion.color_titulo,
-                'fecha_creacion': publicacion.fecha_creacion,
-                'estado': publicacion.estado,  
-                'botonCompra': publicacion.botonCompra,        
+                'fecha_creacion': str(publicacion.fecha_creacion),
+                'estado': publicacion.estado,
+                'botonCompra': publicacion.botonCompra,
                 'imagenes': imagenes,
                 'videos': videos
             }
-            
+
+            # Guardar los datos en Redis con una expiración de 1 hora (3600 segundos)
+            redis_client.setex(cache_key, 3600, json.dumps(response_data))
+
+            db.session.close()
+            return response_data
         else:
             return None
+
     except Exception as e:
-        print(str(e))
+        print(f"Error: {str(e)}")
         return None
+
 

@@ -114,6 +114,7 @@ regex==2022.1.18
 requests==2.31.0
 requests-oauthlib==1.1.0
 rsa==4.9
+redis==5.0.1
 schedule==1.2.1
 signalr-client-threads==0.0.12
 simplejson==3.10.0
