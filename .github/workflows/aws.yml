@@ -87,7 +87,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-               # Instalar y arrancar Redis en el contenedor
+               # arrancar Redis en el contenedor
                docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "
                  apt update && redis-server --daemonize yes
                  apt-get install vim -y
@@ -153,3 +153,4 @@ jobs:
 
           # Iniciar el contenedor
           docker start ${{ env.DEPLOYMENT_VERSION }}
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "redis-server --daemonize yes"
