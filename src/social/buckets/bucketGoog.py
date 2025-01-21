@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, session, current_app, request, redirect, url_for, flash, jsonify, g
 import random
 from datetime import datetime
+import redis
 from google.cloud import storage
 import os
 from dotenv import load_dotenv
@@ -8,6 +9,11 @@ from dotenv import load_dotenv
 # Cargar las variables del archivo .env
 load_dotenv()
 bucketGoog = Blueprint('bucketGoog', __name__)
+
+
+# Configuración de Redis
+redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+
 
 # Ruta a las credenciales de Google Cloud (archivo JSON descargado)
 if 'EC2' in os.uname().nodename:  # o cualquier otro chequeo que prefieras
@@ -36,6 +42,15 @@ def upload_to_gcs(file_path_local, blob_name_gcs):
     else:
         print(f"Archivo {file_path_local} subido a {blob_name_gcs} exitosamente.")
 
+        # Generar la URL pública del archivo
+        url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name_gcs}"
+
+        # Guardar la URL pública en Redis con un tiempo de expiración (por ejemplo, 1 hora)
+        redis_client.set(blob_name_gcs, url_publica, ex=3600)
+        print(f"URL de {blob_name_gcs} almacenada en Redis: {url_publica}")
+
+        return url_publica
+
 
         
 def delete_from_gcs(blob_name):
@@ -48,19 +63,36 @@ def delete_from_gcs(blob_name):
     try:
         blob.delete()
         print(f"Archivo {blob_name} eliminado del bucket {BUCKET_NAME}.")
+
+        # Eliminar la entrada en caché de Redis si existe
+        if redis_client.exists(blob_name):
+            redis_client.delete(blob_name)
+            print(f"Entrada {blob_name} eliminada de Redis.")
+        else:
+            print(f"El archivo {blob_name} no estaba en caché.")
+
     except Exception as e:
         print(f"No se pudo eliminar el archivo {blob_name} del bucket. Error: {e}")
 
         
 def mostrar_from_gcs(blob_name):
-    # Inicializar cliente de Google Cloud Storage
+    # Verificar si la URL ya está en caché
+    cached_url = redis_client.get(blob_name)
+    if cached_url:
+        print("Obteniendo URL desde Redis")
+        return cached_url
+
+    # Si no está en caché, obtener desde GCS
     client = storage.Client()
     bucket = client.get_bucket(BUCKET_NAME)
     blob = bucket.blob(blob_name)
 
     try:
-        # Construir y retornar la URL pública
         url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name}"
+        
+        # Guardar la URL en Redis con un tiempo de expiración (por ejemplo, 1 hora)
+        redis_client.setex(blob_name, 3600, url_publica)
+        
         return url_publica
     except Exception as e:
         print(f"No se pudo obtener la URL pública del archivo {blob_name}. Error: {e}")

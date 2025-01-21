@@ -79,6 +79,20 @@ jobs:
            docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
            docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
     
+
+    - name: Install and start Redis inside the container
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ env.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+               # Instalar y arrancar Redis en el contenedor
+               docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "
+                 apt update &&
+                 apt install -y redis-server &&
+                 service redis-server start
+               "
     - name: Modify _app.py in websocket library
       uses: appleboy/ssh-action@master
       with:
