@@ -23,6 +23,14 @@ body {
   margin-bottom: 20px;
   margin-right: 20px;
 }
+
+#ambito_actual {
+  font-size: small;
+  
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
 #mensaje_cuentaBroker {
   font-size: small;  
   margin-bottom: 20px;
