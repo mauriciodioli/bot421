@@ -10,10 +10,21 @@ from dotenv import load_dotenv
 load_dotenv()
 bucketGoog = Blueprint('bucketGoog', __name__)
 
+# Configuración de Redis usando las variables de entorno
+redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
+redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
+redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
 
-# Configuración de Redis
-redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+# Conexión a Redis
+redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
 
+
+# Probar la conexión a Redis (opcional)
+try:
+    redis_client.ping()  # Verifica si Redis está accesible
+    print("Conexión a Redis exitosa")
+except redis.ConnectionError:
+    print("No se pudo conectar a Redis")
 
 # Ruta a las credenciales de Google Cloud (archivo JSON descargado)
 if 'EC2' in os.uname().nodename:  # o cualquier otro chequeo que prefieras

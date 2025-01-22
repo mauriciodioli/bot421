@@ -44,7 +44,7 @@ def media_muestraPublicacionesEnAmbitos():
     return render_template('media/publicaciones/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito, layout=layoutIn)
 
 
-@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar', methods=['POST'])
+@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar/', methods=['POST'])
 def mostrar_publicaciones_en_ambitos():
     # Acceder a los datos enviados en la solicitud POST
     data = request.json  # Si los datos se enviaron como JSON
@@ -144,6 +144,7 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout):
                 'estado': publicacion.estado,           
                 'imagenes': imagenes,
                 'videos': videos,
+                'botonCompra': publicacion.botonCompra,
                 'layout':layout
             })
 

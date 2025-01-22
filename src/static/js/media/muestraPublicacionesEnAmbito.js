@@ -1,40 +1,41 @@
 document.addEventListener("DOMContentLoaded", function() {
     const video = document.getElementById('main-video');
 
-    video.addEventListener('click', function(event) {
-        const rect = video.getBoundingClientRect();
-        const clickX = event.clientX - rect.left;
-        const clickY = event.clientY - rect.top;
-
-        // Definir el área del centro (20% del ancho y 20% del alto)
-        const centerWidth = rect.width * 0.2;
-        const centerHeight = rect.height * 0.2;
-        const centerX = rect.width / 2 - centerWidth / 2;
-        const centerY = rect.height / 2 - centerHeight / 2;
-
-        // Verificar si el clic está dentro del área central
-        if (clickX >= centerX && clickX <= centerX + centerWidth &&
-            clickY >= centerY && clickY <= centerY + centerHeight) {
-            // Si el clic está en el centro, reproducir o pausar el video
-            if (video.paused) {
-                video.play();
+    if (video) {
+        video.addEventListener('click', function(event) {
+            const rect = video.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const clickY = event.clientY - rect.top;
+    
+            // Definir el área del centro (20% del ancho y 20% del alto)
+            const centerWidth = rect.width * 0.2;
+            const centerHeight = rect.height * 0.2;
+            const centerX = rect.width / 2 - centerWidth / 2;
+            const centerY = rect.height / 2 - centerHeight / 2;
+    
+            // Verificar si el clic está dentro del área central
+            if (clickX >= centerX && clickX <= centerX + centerWidth &&
+                clickY >= centerY && clickY <= centerY + centerHeight) {
+                // Si el clic está en el centro, reproducir o pausar el video
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
             } else {
-                video.pause();
+                // Si el clic está fuera del centro, ejecutar cargarDatosPublicacion()
+                cargarDatosPublicacion();
             }
-        } else {
-            // Si el clic está fuera del centro, ejecutar cargarDatosPublicacion()
-            cargarDatosPublicacion();
-        }
-    });
-
-
-
-
-
-    
-        
-    
+        });
+    } else {
+        console.warn("El elemento video no se encuentra disponible.");
+    }
 });
+
+
+
+
+
 
 
 
@@ -61,7 +62,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
 
     
     
-    var galeriaURL1 = '/media-muestraPublicacionesEnAmbitos-mostrar';
+    var galeriaURL1 = '/media-muestraPublicacionesEnAmbitos-mostrar/';
     var access_token = localStorage.getItem('access_token');
     
     $.ajax({
@@ -115,18 +116,28 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
                         }
 
                         var cardHtml = `
-                            <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}">
-                                <div class="card-body-en-ambitos-personales">
-                                    <h5 class="card-title-en-ambitos-personales">${post.titulo}</h5>
-                                    <div class="card-media-grid-publicacion-en-ambitos-personales">
-                                        ${mediaHtml}
-                                    </div>
-                                    <p class="card-date-en-ambitos-personales">${formatDate(post.fecha_creacion)}</p>
-                                    <p class="card-text-en-ambitos-personales text-truncated-en-ambitos-personales" id="postText-${post.publicacion_id}">${post.texto}</p>
-                                    <a href="#" class="btn-ver-mas-en-ambitos-personales" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                        <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}">
+                            <div class="card-body-en-ambitos-personales">
+                                <h5 class="card-title-en-ambitos-personales">${post.titulo}</h5>
+                                <h6 class="card-title-en-ambitos-personales">user_id: ${post.user_id}</h6>
+                                <div class="card-media-grid-publicacion-en-ambitos-personales">
+                                    ${mediaHtml}
                                 </div>
+                                <p class="card-date-en-ambitos-personales">${formatDate(post.fecha_creacion)}</p>
+                                <p class="card-text-en-ambitos-personales text-truncated-en-ambitos-personales" id="postText-${post.publicacion_id}">${post.texto}</p>
+                               <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                                    ${post.botonCompra ? `
+                                        <button id="btn-comprar-${post.publicacion_id}" style="background-color: #28a745; color: white; font-size: 12px; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;"
+                                        onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'"
+                                        onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
+                                            Comprar
+                                        </button>` : ''
+                                    }
+                            
                             </div>
-                        `;
+                        </div>
+                    `;
+                    
                         
                         postDisplayContainer.append(cardHtml);
 

@@ -153,4 +153,4 @@ jobs:
 
           # Iniciar el contenedor
           docker start ${{ env.DEPLOYMENT_VERSION }}
-          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "redis-server --daemonize yes"
+          

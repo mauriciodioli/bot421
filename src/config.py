@@ -31,3 +31,12 @@ DOMAIN = os.getenv('DOMAIN')
 
 
 
+
+# Configuración de Redis
+redis_host = os.environ["REDIS_HOST"]
+redis_port = os.environ["REDIS_PORT"]
+redis_db = os.environ["REDIS_DB"]
+
+
+
+

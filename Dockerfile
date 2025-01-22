@@ -25,11 +25,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Capa 6: Copiar todo el código fuente
 COPY src/ .
 
-# Capa 7: Iniciar Redis como un proceso en segundo plano
-RUN redis-server --daemonize yes
-
-# Capa 8: Exponer el puerto de Redis (opcional, si se necesita acceso externo)
-EXPOSE 6379
 
 # Capa 7: Comando por defecto para ejecutar la aplicación
 CMD ["python", "./app.py"]

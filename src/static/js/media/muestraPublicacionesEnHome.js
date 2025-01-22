@@ -42,7 +42,7 @@ function cargarPublicaciones(ambitoParam,layout) {
                 postDisplayContainer.empty();
      
                 response.forEach(function (post) {
-                    debugger;
+                   
                     if (post.imagenes.length > 0 || post.videos.length > 0) {
                         var mediaHtml = '';
 
@@ -109,6 +109,7 @@ function cargarPublicaciones(ambitoParam,layout) {
                                         <span class="text-white">&times;</span>
                                     </a>
                                     <h5 class="card-title">${post.titulo}</h5>
+                                    <h6 class="card-title">user_id: ${post.user_id}</h6>
                                     <div class="card-media-grid-publicacion-en-ambito">
                                         ${mediaHtml}
                                     </div>

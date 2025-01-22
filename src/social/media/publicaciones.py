@@ -527,7 +527,7 @@ def media_publicaciones_cambiar_estado():
 
 
 
-@publicaciones.route('/social_publicaciones_crear_publicacion', methods=['POST'])
+@publicaciones.route('/social_publicaciones_crear_publicacion/', methods=['POST'])
 def social_publicaciones_crear_publicacion():
     try:
           # Obtener el encabezado Authorization

@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           var firstImageUrl = post.imagenes[0].filepath;
                           mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
                       } else if (Array.isArray(post.videos) && post.videos.length > 0) {
-                         
+                         debugger;
                           // Si no hay imágenes pero hay videos, usar el primero
                           var firstVideoUrl = post.videos[0].filepath;
                           console.log(post.videos[0].filepath);
@@ -231,38 +231,53 @@ document.addEventListener('DOMContentLoaded', function() {
               // Crear contenido dinámico para las imágenes del modal
               let modalImagesHtml = '';
   
-              if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                  post.imagenes.forEach(image => {
-                      const imageUrl = image.filepath;
-                      modalImagesHtml += `
-                          <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
-                              <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
-                              <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id})">X</button>
-                          </div>`;
-                  });
+              if (Array.isArray(post.imagenes) && post.imagenes.length > 0) { 
+                post.imagenes.forEach(image => {
+                    const imageUrl = image.filepath;
+                    modalImagesHtml += `
+                        <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
+                            <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
+                            <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id})">X</button>
+                        </div>`;
+                });
+            } else {
+                modalImagesHtml = '<p>No hay imágenes disponibles para esta publicación.</p>';
+            }
+            
+            // Agregar lógica para los videos con los mismos estilos que las imágenes
+              if (Array.isArray(post.videos) && post.videos.length > 0) {
+                post.videos.forEach(video => {
+                    const videoUrl = video.filepath;
+                    modalImagesHtml += `
+                      <div id="image-container-modal-publicacion-crear-publicacion-${video.id}" class="image-container-modal-publicacion-crear-publicacion" style="position: relative; display: inline-block; margin: 10px;">
+                          <video src="${videoUrl}" alt="Video de la publicación" onclick="abrirImagenEnGrande('${videoUrl}')" controls style="max-width: 100%; border-radius: 5px;">
+                              Tu navegador no soporta el formato de video.
+                          </video>
+                          <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${video.id})">X</button>
+                      </div>`;
+                });
               } else {
-                  modalImagesHtml = '<p>No hay imágenes disponibles para esta publicación.</p>';
+                modalImagesHtml += '<p>No hay videos disponibles para esta publicación.</p>';
               }
-  
-              // Crear o actualizar el contenido del modal
-              const modalHtml = `
-                              <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                                  <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                      <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                      <div class="modal-image-grid">
-                                          ${modalImagesHtml}
-                                      </div>
-                                      
-                                      <div id="mediaContainer_creaPublicacion-${post.publicacion_id}" class="media-container_creaPublicacion"></div>
-                                      <div class="d-flex justify-content-between align-items-center mt-3">
-                                          <label for="imagen-media_imagenes-${post.publicacion_id}" class="btn btn-success me-2">
-                                              Agregar Imagen o Video
-                                              <input type="file" id="imagen-media_imagenes-${post.publicacion_id}" accept="image/*,video/*" multiple onchange="agregarImagen(${post.publicacion_id})" style="display:none;">
-                                           </label>
-                                          <button class="btn btn-primary" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
-                                      </div>
-                                  </div>
-                              </div>`;
+            
+            // Crear o actualizar el contenido del modal
+            const modalHtml = `
+                <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                    <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                        <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                        <div class="modal-image-grid">
+                            ${modalImagesHtml}
+                        </div>
+                        <div id="mediaContainer_creaPublicacion-${post.publicacion_id}" class="media-container_creaPublicacion"></div>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <label for="imagen-media_imagenes-${post.publicacion_id}" class="btn btn-success me-2">
+                                Agregar Imagen o Video
+                                <input type="file" id="imagen-media_imagenes-${post.publicacion_id}" accept="image/*,video/*" multiple onchange="agregarImagen(${post.publicacion_id})" style="display:none;">
+                            </label>
+                            <button class="btn btn-primary" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
+                        </div>
+                    </div>
+                </div>`;
 
   
               // Verificar si el modal ya existe
@@ -640,8 +655,12 @@ function eliminarPublicacion(id) {
         splash.style.display = 'block'; // Mostrar el splash
     }
     
-    var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta publicación?');
-    if (!confirmDelete) return;
+     // Preguntar al usuario si está seguro de eliminar la imagen
+     var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta imagen?');
+     if (!confirmDelete) {
+         splash.style.display = 'none'; // Ocultar el splash si se cancela la eliminación
+         return; // Salir de la función si se cancela
+     }
 
     var correo_electronico = localStorage.getItem('correo_electronico');
     var access_token = localStorage.getItem('access_token');
@@ -784,8 +803,13 @@ function guardarNuevaImagenVideo(publicacion_id) {
   var archivos = archivosPublicacion.get(publicacion_id);
 
   if (!archivos || archivos.length === 0) {
-      alert('No hay imágenes o videos seleccionados.');
-      return;
+    // Cerrar el splash si no hay archivos
+    if (splash) {
+        splash.style.display = 'none'; // Ocultar el splash
+    }
+
+    alert('No hay imágenes o videos seleccionados.');
+    return;
   }
 
   // Crea el objeto FormData para enviar los datos
@@ -1048,9 +1072,12 @@ function createPost() {
         splash.style.display = 'block'; // Mostrar el splash
     }
     
-    // Preguntar al usuario si está seguro de eliminar la imagen
-    var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta imagen?');
-    if (!confirmDelete) return;
+     // Preguntar al usuario si está seguro de eliminar la imagen
+     var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta imagen?');
+     if (!confirmDelete) {
+         splash.style.display = 'none'; // Ocultar el splash si se cancela la eliminación
+         return; // Salir de la función si se cancela
+     }
 
     // Obtener el correo electrónico del usuario y el token de acceso
     var correo_electronico = localStorage.getItem('correo_electronico');
