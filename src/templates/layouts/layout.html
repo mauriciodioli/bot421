@@ -80,6 +80,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <h1 name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
+            <h1 name="ambito_actual" id="ambito_actual"></h1>
             <h1 name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
             <h1 name="mensaje_simulado"  id="mensaje_simulado"></h1>
            
@@ -360,6 +361,10 @@
                     let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
                     document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
+                    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                    document.getElementById("ambito_actual").innerHTML = ambito_actual;
+
+
                     let mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
                     document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
                     
@@ -371,11 +376,19 @@
                     let enlace_correo = "<a ' style='text-decoration:none; color:#00ff00;''>" + correo_electronico + "</a>";
                     document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
 
+                    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                    document.getElementById("ambito_actual").innerHTML = ambito_actual;
+
+
                     let mensaje = "<a ' style='text-decoration:none;  color:#00ff00;'>" + cuentaBroker + "</a>";
                     document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
                     } else {
                         let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
                         document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                        let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                        document.getElementById("ambito_actual").innerHTML = ambito_actual;
+    
     
                     }
                 
@@ -397,6 +410,10 @@
                 }else {
                     let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
                     document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                    document.getElementById("ambito_actual").innerHTML = ambito_actual;
+
                     console.log("El valor 'selector' no existe en localStorage.");
                   }
 
