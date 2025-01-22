@@ -497,15 +497,21 @@ function enviarDominioAJAX(domain) {
     if ( !localStorage.getItem('dominio')) {
         
         localStorage.setItem('dominio', domain);
+        let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + domain + "</a>";
+        document.getElementById("ambitoActual").innerHTML = ambito_actual;
     }
 
     if ( domain !=='inicialDominio') {
         
         localStorage.setItem('dominio', domain);
+        let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + domain + "</a>";
+        document.getElementById("ambitoActual").innerHTML = ambito_actual;
     }
 
 
     domain = localStorage.getItem('dominio');
+    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + domain + "</a>";
+    document.getElementById("ambitoActual").innerHTML = ambito_actual;
 
     $.ajax({
     type: 'POST',

@@ -92,7 +92,10 @@
                           </div>
                       </div>
 
+                        <h1 name="ambitoActual" id="ambitoActual" style="color: gold;"></h1>
                       <div class="dpi-muestra-publicaciones-centrales">
+                       
+                       
                         <!-- Aquí se insertará la galería -->
                       </div>
                     </div>
@@ -219,7 +222,9 @@
   
   <!-- Aquí se agrega el script -->  
   <script>
-   
+    var ambito = localStorage.getItem("dominio");
+    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+    document.getElementById("ambitoActual").innerHTML = ambito_actual;
     function showError(message) {
       // muestra un mensaje de error al usuario
       alert(message);
