@@ -89,7 +89,7 @@ $(document).ready(function() {
         // Verifica si hay texto en el campo
         if (consulta.trim() !== "") {
             $.ajax({
-                url: '/media_consultaPublicaciones_lupa_muestra',  // URL de la ruta
+                url: '/media_consultaPublicaciones_lupa_muestra/',  // URL de la ruta
                 type: 'POST',
                 data: {
                     consulta: consulta,  // Envía el texto de búsqueda al servidor

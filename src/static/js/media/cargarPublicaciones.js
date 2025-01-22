@@ -362,7 +362,7 @@
       setTimeout(function() { 
         $.ajax({
           // Configuración de la solicitud AJAX
-          url: '/social_publicaciones_crear_publicacion',
+          url: '/social_publicaciones_crear_publicacion/',
           type: 'POST',
           data: formData,
           processData: false,
@@ -499,13 +499,13 @@
         },     
           error: function(xhr, status, error) {
             
-            //splash.style.display = 'none'; // Ocultar el splash al terminar
-           // modal.style.display = "none";
+            splash.style.display = 'none'; // Ocultar el splash al terminar
+            modal.style.display = "none";
             // En la consola del navegador
             console.log(xhr.status); // Imprime el código de estado HTTP
-            //console.log(xhr.responseText); // Imprime el cuerpo de la respuesta
-           // console.log(error); // Imprime el mensaje de error
-           // alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
+            console.log(xhr.responseText); // Imprime el cuerpo de la respuesta
+            console.log(error); // Imprime el mensaje de error
+            alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
           }
         });
       }, 100); // 100 ms de pausa antes de hacer la petición  
