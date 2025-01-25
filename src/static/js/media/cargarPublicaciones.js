@@ -330,7 +330,9 @@ $(document).ready(function () {
               }
 
           } catch (error) {
+            
             modal.style.display = "none";  
+            finalizarCarga();
             $(".splashCarga").hide();   
             console.error(`Error al cargar el fragmento del archivo "${file.name}":`, error.responseText || error);
             throw error; // Repropaga el error
@@ -522,7 +524,7 @@ function createPost(event,storedFiles) {
       }
 
         // Finalizar carga
-                       
+        finalizarCarga();
         modal.style.display = "none";  
         $(".splashCarga").hide();    
   },
@@ -567,6 +569,34 @@ function createPost(event,storedFiles) {
 
 
 
+  function finalizarCarga() {
+    // Obtener el modal y ocultarlo
+    var modal = document.getElementById("createPostModal_creaPublicacion");
+    if (modal) {
+        modal.style.display = "none";
+    }
+
+    // Ocultar la pantalla de carga
+    $(".splashCarga").hide();
+
+    // Vaciar los campos del formulario
+    var form = document.getElementById("createPostForm_creaPublicacion");
+    if (form) {
+        form.reset(); // Restablece todos los campos del formulario
+    }
+
+   
+    // Resetear el campo de carga de archivos
+    document.getElementById("fileInput_creaPublicacion").value = '';
+
+    // Limpiar el input de creación de publicación en la vista principal
+    document.getElementById("createPostBtn_creaPublicacion").value = '';
+
+    // Opcional: Limpiar el menú desplegable de opciones personalizadas
+    document.querySelector(".custom-dropdown-menu").innerHTML = '';
+
+    console.log("Modal vaciado y cerrado correctamente.");
+}
 
 
 

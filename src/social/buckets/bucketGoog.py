@@ -90,6 +90,8 @@ def upload_chunk_to_gcs_with_redis(chunk, blob_name_gcs, blob_name, start_byte, 
 
 
 
+
+
 def upload_to_gcs(file_path_local, blob_name_gcs):
     # Inicializar cliente de Google Cloud Storage
     client = storage.Client()

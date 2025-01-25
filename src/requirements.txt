@@ -27,6 +27,7 @@ distlib==0.3.4
 djlint==0.7.4
 enum34==1.1.6
 executing==1.2.0
+ffmpeg-python
 fastapi==0.74.1
 filelock==3.4.2
 Flask==2.2.3
