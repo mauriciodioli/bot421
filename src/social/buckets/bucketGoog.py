@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from io import BytesIO
 
 
+
 # Cargar las variables del archivo .env
 load_dotenv()
 bucketGoog = Blueprint('bucketGoog', __name__)
@@ -143,9 +144,8 @@ def delete_from_gcs(blob_name):
 def mostrar_from_gcs(blob_name):
     # Verificar si la URL ya está en caché
     cached_url = redis_client.get(blob_name)
-    if cached_url:
-        logger.info(f"Obteniendo URL desde Redis para el archivo: {blob_name}")
-        return cached_url
+    print(f"Obteniendo URL desde Redis para el archivo: {blob_name}")
+       
 
     # Si no está en caché, obtener desde GCS
     client = storage.Client()
@@ -158,8 +158,12 @@ def mostrar_from_gcs(blob_name):
         # Guardar la URL en Redis con un tiempo de expiración (por ejemplo, 1 hora)
         redis_client.setex(blob_name, 3600, url_publica)
         
-        logger.info(f"URL obtenida y guardada en Redis para el archivo: {blob_name}")
+        print(f"URL obtenida y guardada en Redis para el archivo: {blob_name}")
         return url_publica
-    except Exception as e:
-        logger.error(f"No se pudo obtener la URL pública del archivo {blob_name}. Error: {e}")
+    except storage.exceptions.NotFound:
+        print(f"El archivo {blob_name} no existe en el bucket {BUCKET_NAME}.")
         return None
+    except Exception as e:
+        print(f"No se pudo obtener la URL pública del archivo {blob_name}. Error: {e}")
+        return None
+
