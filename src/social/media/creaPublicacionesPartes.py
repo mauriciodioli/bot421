@@ -4,10 +4,13 @@ import random
 import json
 from datetime import datetime
 
+import io
+import mimetypes
 # Librerías externas
 import requests
 import jwt
 from PIL import Image as PILImage  # Renombrar la clase Image de Pillow
+import ffmpeg
 from flask import (
     Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 )
@@ -274,9 +277,12 @@ def social_publicaciones_handle_upload_chunkn():
             # Mover el archivo a su ubicación final
             final_path = os.path.join('static', 'uploads', f"{safe_file_name}")  # Ruta final del archivo
             os.rename(file_path, final_path)
-
+            
+            comprimir_imagen(file_path,safe_file_name, 85)
+            comprimir_video_ffmpeg(file_path,safe_file_name,"800k")
+            
            # Subir la imagen comprimida a GCS
-            upload_to_gcs(final_path, safe_file_name)
+            upload_to_gcs(file_path, safe_file_name)
             # Eliminar el archivo temporal
             if os.path.exists(file_path):
                 os.remove(file_path)
@@ -584,3 +590,48 @@ def  eliminar_desde_archivo(title,user_id):
         print(f"Error al eliminar el archivo: {e}")
         return False
 
+def comprimir_imagen(output_path,file_name, quality=85):
+    # Detectar el tipo de archivo automáticamente
+    content_type, _ = mimetypes.guess_type(file_name)
+   
+    # Si es un video, devolver el archivo sin cambios
+    if content_type and content_type.startswith('video/'):
+       return False
+
+    # Procesar la imagen si no es JPEG (convertir a JPEG y comprimir)
+    with PILImage.open(output_path) as img:
+        img = img.convert("RGB")  # Asegurar que esté en formato RGB
+        img.thumbnail((800, 800))  # Redimensionar (por ejemplo, máximo 800x800 px)
+        img.save(output_path, format="JPEG", quality=quality)  # Guardar comprimida con calidad especificada
+    
+    return output_path
+
+
+
+import os
+
+def comprimir_video_ffmpeg(output_path, file_name, bitrate="800k"):
+    content_type, _ = mimetypes.guess_type(file_name)
+
+    if not content_type or not content_type.startswith('video/'):
+        return False
+
+    try:
+        # Obtener el nombre del archivo sin la extensión
+        base_name, ext = os.path.splitext(file_name)
+
+        # Crear una ruta temporal con un sufijo para el archivo comprimido
+        temp_output_path = os.path.join('static/uploads', f"{base_name}_compressed{ext}")
+        if not os.path.exists(output_path):
+            print(f"El archivo {output_path} no existe.")
+            return False
+        # Comprimir el video
+        ffmpeg.input(output_path).output(temp_output_path, vcodec='libx264', b=bitrate, acodec='aac').run()
+
+        # Reemplazar el archivo original con el comprimido
+        os.replace(temp_output_path, output_path)
+        
+        return output_path
+    except ffmpeg.Error as e:
+        print(f"Error al comprimir el video: {e}")
+        return False

@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 postsByAmbito[post.ambito].push(post);
             });
-            debugger;
+           
             // Crear secciones del acordeón para cada ámbito
             Object.keys(postsByAmbito).forEach(function(ambito, index) {
                 var ambitoId = 'ambito-' + index; // ID único para cada ámbito
@@ -656,7 +656,7 @@ function eliminarPublicacion(id) {
     }
     
      // Preguntar al usuario si está seguro de eliminar la imagen
-     var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta imagen?');
+     var confirmDelete = confirm('¿Estás seguro de que quieres eliminar esta publicacion?');
      if (!confirmDelete) {
          splash.style.display = 'none'; // Ocultar el splash si se cancela la eliminación
          return; // Salir de la función si se cancela
