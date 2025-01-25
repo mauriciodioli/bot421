@@ -91,6 +91,7 @@ jobs:
                docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "
                  apt update && redis-server --daemonize yes
                  apt-get install vim -y
+                 apt-get install ffmpeg -y
                "
     - name: Modify _app.py in websocket library
       uses: appleboy/ssh-action@master
