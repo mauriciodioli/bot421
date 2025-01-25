@@ -12,15 +12,6 @@ WORKDIR /app
 # Capa 4: Instalar tzdata para manejar zonas horarias
 RUN apt-get install -y tzdata
 # Instalar FFmpeg en el contenedor
-# Instalar software-properties-common para usar add-apt-repository
-RUN apt-get update -y && apt-get install -y software-properties-common
-
-# Ahora puedes agregar el PPA
-RUN add-apt-repository ppa:jonathonf/ffmpeg-4 -y && \
-    apt-get update -y && \
-    apt-get install -y ffmpeg
-
-
 # Establecer la zona horaria
 ENV TZ=America/Argentina/Buenos_Aires
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
