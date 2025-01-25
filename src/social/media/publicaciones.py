@@ -30,7 +30,7 @@ import re
 import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
 from social.buckets.bucketGoog import (
-    upload_to_gcs, delete_from_gcs, mostrar_from_gcs
+    upload_to_gcs, delete_from_gcs, mostrar_from_gcs,upload_chunk_to_gcs_with_redis
 )
 
 #import boto3
@@ -523,10 +523,6 @@ def media_publicaciones_cambiar_estado():
 
 
 
-
-
-
-
 @publicaciones.route('/social_publicaciones_crear_publicacion/', methods=['POST'])
 def social_publicaciones_crear_publicacion():
     try:
@@ -569,6 +565,19 @@ def social_publicaciones_crear_publicacion():
           #  print("Título de la publicación:", post_title)
           #  print("Texto de la publicación:", post_text)        
           #  print("Finalizando social_publicaciones_crear_publicacion")
+          
+          
+           # Recibir los metadatos de los archivos
+            uploaded_files_metadata = request.form.getlist('uploadedFilesMetadata')  # Obtiene todos los valores de este campo
+            
+            # Parsear los metadatos JSON de cada archivo
+            file_metadata_list = [json.loads(file_metadata) for file_metadata in uploaded_files_metadata]
+
+            # Ahora `file_metadata_list` contiene los metadatos de los archivos
+            print(file_metadata_list)
+          
+          
+          
             id_publicacion = guardarPublicacion(request, user_id)
             # Procesar archivos multimedia
        # Inicializa una lista para almacenar los datos de los archivos

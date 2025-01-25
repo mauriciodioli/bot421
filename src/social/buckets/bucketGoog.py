@@ -5,6 +5,8 @@ import redis
 from google.cloud import storage
 import os
 from dotenv import load_dotenv
+from io import BytesIO
+
 
 # Cargar las variables del archivo .env
 load_dotenv()
@@ -37,6 +39,56 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BUCKET_GOOGLE_CREDENTIAL
 
 # Nombre del bucket
 BUCKET_NAME = os.environ.get('BUCKET_NAME')  # Asegúrate de que este nombre coincide con tu bucket
+
+
+
+
+# Función para subir el fragmento a GCS
+
+def upload_chunk_to_gcs_with_redis(chunk, blob_name_gcs, blob_name, start_byte, is_last_chunk, file_id, content_type):
+    """
+    Sube fragmentos de archivo a Google Cloud Storage utilizando Redis para el control de estado.
+    """
+    # Verificar si el fragmento ya fue subido (usando Redis)
+    if redis_client.get(f"{file_id}_chunk_{start_byte}"):
+        print(f"Fragmento {start_byte} ya subido, saltando.")
+        return
+
+    # Inicializar cliente de Google Cloud Storage
+    client = storage.Client()
+    bucket = client.get_bucket(BUCKET_NAME)
+    blob = bucket.blob(blob_name)
+
+    # Subir el fragmento directamente a GCS
+    try:
+        # Asegurarte de que `chunk` es un objeto de tipo FileStorage y convertirlo a bytes
+        byte_stream = BytesIO(chunk.read())  # Lee los datos del archivo y crea un objeto BytesIO
+
+        # Subir el fragmento al GCS
+        if start_byte == 0:
+            # Si es el primer fragmento, sube el archivo completo
+            blob.upload_from_file(byte_stream, content_type=content_type)
+        else:
+            # Si es un fragmento intermedio, realiza un reemplazo o carga incremental
+            byte_stream.seek(0)
+            blob.upload_from_file(byte_stream, content_type=content_type)  # Recarga el fragmento
+
+        print(f"Fragmento {start_byte} subido a {blob_name}.")
+
+        # Marcar este fragmento como subido en Redis
+        redis_client.set(f"{file_id}_chunk_{start_byte}", "uploaded")
+
+        # Si es el último fragmento, puedes realizar alguna acción adicional (por ejemplo, finalizar la carga)
+        if is_last_chunk:
+            print(f"Último fragmento recibido. La carga de {blob_name} ha finalizado.")
+
+    except Exception as e:
+        print(f"No se pudo subir el fragmento a {blob_name}. Error: {e}")
+        raise
+
+
+
+
 
 def upload_to_gcs(file_path_local, blob_name_gcs):
     # Inicializar cliente de Google Cloud Storage
