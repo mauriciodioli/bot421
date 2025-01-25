@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 postsByAmbito[post.ambito].push(post);
             });
-    
+            debugger;
             // Crear secciones del acordeón para cada ámbito
             Object.keys(postsByAmbito).forEach(function(ambito, index) {
                 var ambitoId = 'ambito-' + index; // ID único para cada ámbito
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                           var firstImageUrl = post.imagenes[0].filepath;
                           mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
                       } else if (Array.isArray(post.videos) && post.videos.length > 0) {
-                         debugger;
+                       
                           // Si no hay imágenes pero hay videos, usar el primero
                           var firstVideoUrl = post.videos[0].filepath;
                           console.log(post.videos[0].filepath);

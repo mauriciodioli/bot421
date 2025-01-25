@@ -421,147 +421,116 @@ function createPost(event,storedFiles) {
           },
           success: function(response) {           
              
-                  
-                    if (Array.isArray(response)) {
-                        var postAccordion = $('#postAccordion');
-                        postAccordion.empty();
-                
-                        // Crear un objeto para almacenar las publicaciones por ámbito
-                        var postsByAmbito = {};
-                        // Iterar sobre las publicaciones para organizarlas por ámbito
-                        response.forEach(function(post) {
-                            if (!postsByAmbito[post.ambito]) {
-                                postsByAmbito[post.ambito] = [];
-                            }
-                            postsByAmbito[post.ambito].push(post);
-                        });
-                
-                        // Crear secciones del acordeón para cada ámbito
-                        Object.keys(postsByAmbito).forEach(function(ambito, index) {
-                            var ambitoId = 'ambito-' + index; // ID único para cada ámbito
-                            var publicaciones = postsByAmbito[ambito];
-                          
-                            var accordionItemHtml = `
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="heading-${ambitoId}">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
-                                            ${ambito}
-                                        </button>
-                                    </h2>
-                                    <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
-                                        <div class="accordion-body">
-                                            <div id="accordion-content-${ambitoId}" class="accordion-content">
-                                                <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                
-                            postAccordion.append(accordionItemHtml);
-                
-                            var accordionContent = $(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
-                
-                            // Agregar publicaciones al acordeón correspondiente
-                            publicaciones.forEach(function(post) {
-                                var mediaHtml = '';
-                                //var baseUrl = window.location.origin;
-                                debugger;
-                                if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                                    //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                                    var firstImageUrl =  post.imagenes[0].filepath;
-                                  // console.log(firstImageUrl); // Verifica la respuesta del servidor
-                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-                
-                                    var modalImagesHtml = '';
-                                    post.imagenes.forEach(function(image) {
-                                        //var imageUrl = baseUrl + '/' + image.filepath;
-                                        var imageUrl = image.filepath;
-                                        //console.log(imageUrl); // Verifica la respuesta del servidor
-                                
-                                        modalImagesHtml += `
-                                            <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
-                                                <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
-                                                <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">X</button>
-                                            </div>
-                                              <!-- Container to display selected images and videos -->
-                                              <input type="file" id="imagen-media_imagenes" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple onchange="previewSelectedMedia()">
-                                              <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
-                                              
-            
-                                        `;
-                                    });
-                
-
-
-
-
-
-
-
-
-
-                                    
-                                    var modalHtml = `
-                                        <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                                            <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                                <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                                <div class="modal-image-grid">
-                                                    ${modalImagesHtml}
-                                                </div>
-                                                <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                                    <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
-                                                        <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="agregarImagen(${post.publicacion_id})">
-                                                        <i class="fas fa-folder"></i> Agregar Imagen o viedeo
-                                                    </label>
-                                                  <button class="btn-guardar-nueva-imagen-video" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    `;
-                
-                                    accordionContent.append(modalHtml);
-                                }
-                
-                                var cardHtml = `
-                                    <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
-                                        <div class="card-body">
-                                            <h5 class="card-title">${post.titulo}</h5>
-                                            <p class="card-text-estado">${post.estado}</p>
-                                            <p class="card-text-email">${post.correo_electronico}</p>
-                                            <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                            <p class="card-text">${post.texto}</p>
-                                            <div class="card-media-grid-publicacion-admin">
-                                                ${mediaHtml}
-                                            </div>
-                                            <p class="card-text-ambito">${post.ambito}</p>
-                                            <p class="card-text-descripcion">${post.descripcion}</p>
-                                            <div class="btn-modificar-eliminar">
-                                                <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
-                                                <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                
-                                accordionContent.append(cardHtml);
-                            });
-                        });
+                   
+        if (Array.isArray(response)) {
+          var postAccordion = $('#postAccordion');
+          postAccordion.empty();
+  
+          // Crear un objeto para almacenar las publicaciones por ámbito
+          var postsByAmbito = {};
+          // Iterar sobre las publicaciones para organizarlas por ámbito
+          response.forEach(function(post) {
+              if (!postsByAmbito[post.ambito]) {
+                  postsByAmbito[post.ambito] = [];
+              }
+              postsByAmbito[post.ambito].push(post);
+          });
+          debugger;
+          // Crear secciones del acordeón para cada ámbito
+          Object.keys(postsByAmbito).forEach(function(ambito, index) {
+              var ambitoId = 'ambito-' + index; // ID único para cada ámbito
+              var publicaciones = postsByAmbito[ambito];
+              
+              var accordionItemHtml = `
+                  <div class="accordion-item">
+                      <h2 class="accordion-header" id="heading-${ambitoId}">
+                          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
+                              ${ambito}
+                          </button>
+                      </h2>
+                      <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                          <div class="accordion-body">
+                              <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                  <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              `;
+  
+              postAccordion.append(accordionItemHtml);
+  
+              var accordionContent = $(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
+  
+              // Agregar publicaciones al acordeón correspondiente
+              publicaciones.forEach(function(post) {
+                  var mediaHtml = '';
+                  //var baseUrl = window.location.origin;
+  
+                  if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
+                      
+                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                        // Si hay imágenes, usar la primera
+                        var firstImageUrl = post.imagenes[0].filepath;
+                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                    } else if (Array.isArray(post.videos) && post.videos.length > 0) {
                      
+                        // Si no hay imágenes pero hay videos, usar el primero
+                        var firstVideoUrl = post.videos[0].filepath;
+                        console.log(post.videos[0].filepath);
+                        mediaHtml += `
+                                <video controls onclick="abrirModal(${post.publicacion_id})">
+                                    <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                    Tu navegador no soporta la reproducción de videos.
+                                </video>
+                            `;
                     } else {
-                        splash.style.display = 'none'; // Ocultar el splash al terminar
-                        modal.style.display = "none";
-                        console.log('Respuesta no válida');
+                        // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
+                        mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
                     }
+               
+                }
+  
+                  var cardHtml = `
+                      <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
+                          <div class="card-body">
+                              <h5 class="card-title">${post.titulo}</h5>
+                              <p class="card-text-estado">${post.estado}</p>
+                              <p class="card-text-email">${post.correo_electronico}</p>
+                              <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                              <p class="card-text">${post.texto}</p>
+                              <div class="card-media-grid-publicacion-admin">
+                                  ${mediaHtml}
+                              </div>
+                              <p class="card-text-ambito">${post.ambito}</p>
+                              <p class="card-text-descripcion">${post.descripcion}</p>
+                              <div class="btn-modificar-eliminar">
+                                  <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                                  <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
+                              </div>
+                          </div>
+                      </div>
+                  `;
+  
+                  accordionContent.append(cardHtml);
+              });
+          });
+      } else {
+        splash.style.display = 'none'; // Ocultar el splash al terminar
+        console.log('Respuesta no válida');
+      }
 
-                        // Finalizar carga
+        // Finalizar carga
                        
-                        modal.style.display = "none";  
-                        $(".splashCarga").hide();       
+        modal.style.display = "none";  
+        $(".splashCarga").hide();    
+  },
+
+                         
            
           
-        },     
+          
           error: function(xhr, status, error) {
             
            // splash.style.display = 'none'; // Ocultar el splash al terminar
