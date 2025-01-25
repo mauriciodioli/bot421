@@ -450,49 +450,41 @@ def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_
 
 def cargarVideo_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, userid=0, index=None, size=0):  
     print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
-   
+   # Guardar información en la base de datos
+    nombre_archivo = filename
+    descriptionVideo = titulo_publicacion
+    randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
     
-    authorization_header = request.headers.get('Authorization')
-    if not authorization_header:
-        print("Authorization header is empty")
-        return jsonify({'error': 'Token de acceso no proporcionado'}), 401
-    parts = authorization_header.split()
-    if len(parts) != 2 or parts[0].lower() != 'bearer':
-        print("Invalid authorization header format")
-        return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+    try:
+        video_existente = db.session.query(Video).filter_by(title=filename,size=size).first()
 
-    access_token = parts[1]
-    app = current_app._get_current_object()
-    userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-    
-    print(f"Decoded user ID: {userid}")
-    
-    # Sube el video a S3
-    #file_path_s3 = upload_to_s3(file, BUCKET_NAME, f"videos/{filename}")
-    #if file_path_s3:
-    video_existente = db.session.query(Video).filter_by(title=filename,size=size).first()
-
-    if video_existente:
-        print("Video already exists, saving relation to publicacion_media")
-        # Si la imagen ya existe, solo guarda la relación en publicacion_media
-        cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
+        if video_existente:
+            print("Video already exists, saving relation to publicacion_media")
+            # Si la imagen ya existe, solo guarda la relación en publicacion_media
+            cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
+            return filename
+        else:
+            print("Creating new video")
+            nuevo_video = Video(
+                user_id=userid,
+                title=nombre_archivo,
+                description=descriptionVideo,
+                colorDescription=color_texto,
+                filepath=filename,
+                randomNumber=randomNumber_,
+                size=float(size)
+            )
+            db.session.add(nuevo_video)
+            db.session.commit()
+            print("Saving relation to publicacion_media")
+            cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
         return filename
-    else:
-        print("Creating new video")
-        nuevo_video = Video(
-            user_id=userid,
-            title=nombre_archivo,
-            description=description_video,
-            colorDescription=color_texto,
-            filepath=filename,
-            randomNumber=randomNumber_,
-            size=float(size)
-        )
-        db.session.add(nuevo_video)
-        db.session.commit()
-        print("Saving relation to publicacion_media")
-        cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
-    return filename
+    except Exception as db_error:
+        app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
+        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.close()  # Asegurarse de cerrar la sesión incluso si ocurre un error
+
+        raise  # Propagar el error para que pueda ser manejado por capas superiores
 
 
 def allowed_file(filename):
