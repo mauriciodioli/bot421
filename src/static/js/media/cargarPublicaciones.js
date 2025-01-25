@@ -323,11 +323,15 @@ $(document).ready(function () {
                   },
                 });
               } catch (error) {
+                modal.style.display = "none";  
+                $(".splashCarga").hide();   
                 console.error(`Error al cargar el fragmento del archivo "${file.name}"`, error);
                 throw error; // Relanzar para que el flujo principal detecte errores
               }
 
           } catch (error) {
+            modal.style.display = "none";  
+            $(".splashCarga").hide();   
             console.error(`Error al cargar el fragmento del archivo "${file.name}":`, error.responseText || error);
             throw error; // Repropaga el error
         }
@@ -463,7 +467,7 @@ function createPost(event,storedFiles) {
                             publicaciones.forEach(function(post) {
                                 var mediaHtml = '';
                                 //var baseUrl = window.location.origin;
-                
+                                debugger;
                                 if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                                     //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
                                     var firstImageUrl =  post.imagenes[0].filepath;
@@ -489,6 +493,16 @@ function createPost(event,storedFiles) {
                                         `;
                                     });
                 
+
+
+
+
+
+
+
+
+
+                                    
                                     var modalHtml = `
                                         <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
                                             <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
@@ -542,8 +556,9 @@ function createPost(event,storedFiles) {
                     }
 
                         // Finalizar carga
-                        $(".splashCarga").hide();
-                        modal.style.display = "none";         
+                       
+                        modal.style.display = "none";  
+                        $(".splashCarga").hide();       
            
           
         },     
@@ -552,6 +567,7 @@ function createPost(event,storedFiles) {
            // splash.style.display = 'none'; // Ocultar el splash al terminar
             //modal.style.display = "none";
             // En la consola del navegador
+            modal.style.display = "none";  
             console.log(xhr.status); // Imprime el código de estado HTTP
             console.log(xhr.responseText); // Imprime el cuerpo de la respuesta
             console.log(error); // Imprime el mensaje de error

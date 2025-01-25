@@ -88,7 +88,7 @@ function cargarPublicaciones(ambitoId) {
                     
                         publicaciones.forEach(function (post) {
                             let mediaHtml = '';        
-                            debugger;                   
+                                        
                             if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
                         
                                 if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
