@@ -99,6 +99,7 @@ from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
 from social.media.ambitos.ambito import ambito
 from social.media.consultaPublicaciones import consultaPublicaciones
+from social.media.creaPublicacionesPartes import creaPublicacionesPartes
 from turing.testTuring import testTuring
 from turing.turingUser import turingUser
 from turing.turingRespuestas import turingRespuestas
@@ -299,6 +300,7 @@ app.register_blueprint(ambito_usuario)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(consultaPublicaciones)
+app.register_blueprint(creaPublicacionesPartes)
 app.register_blueprint(pedido)
 app.register_blueprint(pedidos)
 app.register_blueprint(pedidoEntregaPago)

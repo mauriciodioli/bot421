@@ -268,56 +268,115 @@
 /*******************AQUI SE CREA LAS PUBLICACIOENS*************************/
 /*******************DESDE MOSTRARGALERIA.HTML******************************/
 /**************************************************************************/
+$(document).ready(function () {
+  var storedFiles = [];
+  var CHUNK_SIZE = 1024 * 1024; // 1 MB por fragmento
+  var progressBar = $("#progressBar");
+  var progressText = $("#progressText");
 
-  $(document).ready(function() {
-    var storedFiles = []; // Array para almacenar todos los archivos seleccionados
+  $("#fileInput_creaPublicacion").on("change", function (event) {
+    var files = event.target.files;
+    storedFiles = Array.from(files); // Convertimos a array para trabajar fácilmente
+  });
+
+  $("#createPostForm_creaPublicacion").on("submit", function (event) {
+    event.preventDefault();
+    document.getElementById("loader-modal-crear-publicacion").style.display = "block";
+
+    var access_token = localStorage.getItem("access_token");
+    var totalSize = storedFiles.reduce((sum, file) => sum + file.size, 0); // Tamaño total
+    var uploadedSize = 0; // Tamaño ya cargado
+
+    // Mostrar el splash
+    $(".splashCarga").show();
+
+    // Función para subir un archivo fragmentado
+    async function uploadChunk(file, start) {
+      try {
+        var end = Math.min(start + CHUNK_SIZE, file.size);
+        var chunk = file.slice(start, end);
+
+        var isLastChunk = end === file.size; // Verifica si es el último fragmento
+
+        // Determinar el tipo MIME (content_type) basado en el tipo del archivo
+        var content_type = file.type || "application/octet-stream"; // Si no se detecta, usa un valor predeterminado
+
+        var formData = new FormData();
+        formData.append("chunk", chunk);
+        formData.append("fileName", file.name);
+        formData.append("fileSize", file.size);
+        formData.append("fileType", file.type); // Tipo de archivo detectado
+        formData.append("chunkStart", start);
+        formData.append("isLastChunk", isLastChunk); // Indicador para el servidor
+        formData.append("content_type", content_type); // Pasar el tipo de contenido correcto
+
+       // console.log(...formData.entries());
+              try {
+                return await $.ajax({
+                  url: "/social_publicaciones_handle_upload_chunkn/",
+                  type: "POST",
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  headers: {
+                    Authorization: "Bearer " + access_token,
+                  },
+                });
+              } catch (error) {
+                console.error(`Error al cargar el fragmento del archivo "${file.name}"`, error);
+                throw error; // Relanzar para que el flujo principal detecte errores
+              }
+
+          } catch (error) {
+            console.error(`Error al cargar el fragmento del archivo "${file.name}":`, error.responseText || error);
+            throw error; // Repropaga el error
+        }
+    }
+
+    // Subir un archivo completo en fragmentos
+    async function uploadFile(file) {
+      var start = 0;
+
+      while (start < file.size) {
+        await uploadChunk(file, start);
+        start += CHUNK_SIZE;
+        uploadedSize += Math.min(CHUNK_SIZE, file.size - start);
+
+        // Actualizar el progreso
+        var progress = Math.min((uploadedSize / totalSize) * 100, 100);
+        progressBar.css("width", progress + "%");
+        progressText.text(`Cargando... ${progress.toFixed(2)}%`);
+      }
+    }
+
+    // Subir todos los archivos
+    (async function uploadAllFiles() {
+      try {
+        for (let file of storedFiles) {
+          await uploadFile(file);
+        }
+
+       
+       
+        // Llamar a la función createPost después de la carga
+        createPost(event,storedFiles); // Llamar a la función createPost
+      } catch (error) {
+        console.error("Error al cargar archivos:", error);
+        alert("Hubo un error durante la carga");
+      } finally {
+        $(".splashCarga").hide(); // Asegurar que se oculte incluso en errores
+      }
+    })();
+  });
+});
+
+
+function createPost(event,storedFiles) {  
+     event.preventDefault(); // Evitar el envío predeterminado del formulario
   // Definir y inicializar mediaContainer
-    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
-
-    // Evento cuando se seleccionan archivos
-    $("#fileInput_creaPublicacion").on("change", function(event) {
-      var files = event.target.files;
-  
-      // Crear un mapa de archivos basado en el nombre del archivo
-      var fileMap = {};
-  
-      // Añadir archivos ya almacenados al mapa
-      storedFiles.forEach(file => {
-        fileMap[file.name] = file;
-      });
-  
-      // Añadir archivos nuevos al mapa, reemplazando si ya existe
-      for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        fileMap[file.name] = file;
-      }
-  
-      // Convertir el mapa de archivos de nuevo a un array
-      storedFiles = Object.values(fileMap);
-    
-     
-       // Mostrar una vista previa de los archivos seleccionados
-  
-    });
-  
-    $("#createPostForm_creaPublicacion").on("submit", function(event) {
-      event.preventDefault(); // Prevent the default form submission
-      document.getElementById('loader-modal-crear-publicacion').style.display = 'block';
-    
-      var formData = new FormData(this);
-  
-
-      // Agregar archivos recortados al FormData
-      var thumbnails = mediaContainer.getElementsByClassName('thumbnail_creaPublicacion');
-      for (var i = 0; i < thumbnails.length; i++) {
-        var fileInput = document.createElement('input');
-        fileInput.type = 'hidden';
-        fileInput.name = 'mediaFile_creaPublicacion';
-        fileInput.value = thumbnails[i].src; // Puedes usar un identificador o URL en lugar del contenido real
-        formData.append(fileInput.name, fileInput.value);
-      }
-
-
+     var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
+  // Obtener datos del formulario
+     var formData = new FormData(event.target); // Usar el formulario que ha disparado el evento
       // Añadir datos adicionales al FormData
       var access_token = localStorage.getItem('access_token');
       var correo_electronico = localStorage.getItem('correo_electronico');
@@ -334,35 +393,20 @@
       formData.append('layout',layout);
       formData.append('ambito', ambito);
      
-  
-      // Añadir todos los archivos almacenados en storedFiles al FormData
-      storedFiles.forEach((file, index) => {
-        formData.append(`mediaFile_${index}`, file);
-        formData.append(`mediaFileSize_${index}`, file.size);
-        formData.append(`mediaFileIndex_${index}`, index);
-        formData.append(`mediaFileName_${index}`, file.name);
-        formData.append(`mediaFileType_${index}`, file.type);
-        formData.append(`mediaFileLastModified_${index}`, file.lastModified);
-        formData.append(`mediaFileLastModifiedDate_${index}`, file.lastModifiedDate ? file.lastModifiedDate.toISOString() : 'No disponible');
-        formData.append(`mediaFileWebkitRelativePath_${index}`, file.webkitRelativePath || 'No disponible');
+     
+      // Añadir los metadatos de los archivos
+      storedFiles.forEach(file => {
+        formData.append('uploadedFilesMetadata', JSON.stringify({
+          fileName: file.name,
+          fileSize: file.size,
+          content_type: file.type
+        }));
       });
-  
-      // Limpiar storedFiles después de enviar
-      storedFiles = [];
-  
-
-      // Mostrar el splash de espera
-      var splash = document.querySelector('.splashCarga');
-
-      if (splash) {
-          splash.style.display = 'block'; // Mostrar el splash
-      }
-
 
       setTimeout(function() { 
         $.ajax({
           // Configuración de la solicitud AJAX
-          url: '/social_publicaciones_crear_publicacion/',
+          url: '/social_publicaciones_crear_publicacion_partes/',
           type: 'POST',
           data: formData,
           processData: false,
@@ -371,146 +415,152 @@
           headers: {
             'Authorization': 'Bearer ' + access_token
           },
-          success: function(response) {
-            debugger;
-            splash.style.display = 'none'; // Ocultar el splash al terminar
-            modal.style.display = "none";
-            if (Array.isArray(response)) {
-                var postAccordion = $('#postAccordion');
-                postAccordion.empty();
-        
-                // Crear un objeto para almacenar las publicaciones por ámbito
-                var postsByAmbito = {};
-                // Iterar sobre las publicaciones para organizarlas por ámbito
-                response.forEach(function(post) {
-                    if (!postsByAmbito[post.ambito]) {
-                        postsByAmbito[post.ambito] = [];
-                    }
-                    postsByAmbito[post.ambito].push(post);
-                });
-        
-                // Crear secciones del acordeón para cada ámbito
-                Object.keys(postsByAmbito).forEach(function(ambito, index) {
-                    var ambitoId = 'ambito-' + index; // ID único para cada ámbito
-                    var publicaciones = postsByAmbito[ambito];
-                   
-                    var accordionItemHtml = `
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="heading-${ambitoId}">
-                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
-                                    ${ambito}
-                                </button>
-                            </h2>
-                            <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
-                                <div class="accordion-body">
-                                    <div id="accordion-content-${ambitoId}" class="accordion-content">
-                                        <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-        
-                    postAccordion.append(accordionItemHtml);
-        
-                    var accordionContent = $(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
-        
-                    // Agregar publicaciones al acordeón correspondiente
-                    publicaciones.forEach(function(post) {
-                        var mediaHtml = '';
-                        //var baseUrl = window.location.origin;
-        
-                        if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                            //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                            var firstImageUrl =  post.imagenes[0].filepath;
-                           // console.log(firstImageUrl); // Verifica la respuesta del servidor
-                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-        
-                            var modalImagesHtml = '';
-                            post.imagenes.forEach(function(image) {
-                                //var imageUrl = baseUrl + '/' + image.filepath;
-                                var imageUrl = image.filepath;
-                                //console.log(imageUrl); // Verifica la respuesta del servidor
-                        
-                                modalImagesHtml += `
-                                    <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
-                                        <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
-                                        <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">X</button>
-                                    </div>
-                                      <!-- Container to display selected images and videos -->
-                                      <input type="file" id="imagen-media_imagenes" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple onchange="previewSelectedMedia()">
-                                      <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
-                                       
-    
-                                `;
-                            });
-        
-                            var modalHtml = `
-                                <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                                    <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                        <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                        <div class="modal-image-grid">
-                                            ${modalImagesHtml}
-                                        </div>
-                                        <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
-                                            <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
-                                                <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="agregarImagen(${post.publicacion_id})">
-                                                <i class="fas fa-folder"></i> Agregar Imagen o viedeo
-                                            </label>
-                                           <button class="btn-guardar-nueva-imagen-video" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
+          success: function(response) {           
+             
+                  
+                    if (Array.isArray(response)) {
+                        var postAccordion = $('#postAccordion');
+                        postAccordion.empty();
+                
+                        // Crear un objeto para almacenar las publicaciones por ámbito
+                        var postsByAmbito = {};
+                        // Iterar sobre las publicaciones para organizarlas por ámbito
+                        response.forEach(function(post) {
+                            if (!postsByAmbito[post.ambito]) {
+                                postsByAmbito[post.ambito] = [];
+                            }
+                            postsByAmbito[post.ambito].push(post);
+                        });
+                
+                        // Crear secciones del acordeón para cada ámbito
+                        Object.keys(postsByAmbito).forEach(function(ambito, index) {
+                            var ambitoId = 'ambito-' + index; // ID único para cada ámbito
+                            var publicaciones = postsByAmbito[ambito];
+                          
+                            var accordionItemHtml = `
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading-${ambitoId}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
+                                            ${ambito}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                                        <div class="accordion-body">
+                                            <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                                <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             `;
-        
-                            accordionContent.append(modalHtml);
-                        }
-        
-                        var cardHtml = `
-                            <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
-                                <div class="card-body">
-                                    <h5 class="card-title">${post.titulo}</h5>
-                                    <p class="card-text-estado">${post.estado}</p>
-                                    <p class="card-text-email">${post.correo_electronico}</p>
-                                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                    <p class="card-text">${post.texto}</p>
-                                    <div class="card-media-grid-publicacion-admin">
-                                        ${mediaHtml}
+                
+                            postAccordion.append(accordionItemHtml);
+                
+                            var accordionContent = $(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
+                
+                            // Agregar publicaciones al acordeón correspondiente
+                            publicaciones.forEach(function(post) {
+                                var mediaHtml = '';
+                                //var baseUrl = window.location.origin;
+                
+                                if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                                    //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
+                                    var firstImageUrl =  post.imagenes[0].filepath;
+                                  // console.log(firstImageUrl); // Verifica la respuesta del servidor
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                
+                                    var modalImagesHtml = '';
+                                    post.imagenes.forEach(function(image) {
+                                        //var imageUrl = baseUrl + '/' + image.filepath;
+                                        var imageUrl = image.filepath;
+                                        //console.log(imageUrl); // Verifica la respuesta del servidor
+                                
+                                        modalImagesHtml += `
+                                            <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
+                                                <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
+                                                <button class="close-button-media_imagenes" onclick="removeImageFromModal(${post.publicacion_id}, ${image.id}, '${image.title}', '${image.size}', '${image.filepath}')">X</button>
+                                            </div>
+                                              <!-- Container to display selected images and videos -->
+                                              <input type="file" id="imagen-media_imagenes" name="mediaFile_creaPublicacion" accept="image/*,video/*" multiple onchange="previewSelectedMedia()">
+                                              <div id="mediaContainer_creaPublicacion" class="media-container_creaPublicacion"></div>
+                                              
+            
+                                        `;
+                                    });
+                
+                                    var modalHtml = `
+                                        <div class="mostrar-imagenes-en-modal-publicacion-crear-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
+                                            <div class="modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                                                <span class="close" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
+                                                <div class="modal-image-grid">
+                                                    ${modalImagesHtml}
+                                                </div>
+                                                <div class="modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion">
+                                                    <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
+                                                        <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="agregarImagen(${post.publicacion_id})">
+                                                        <i class="fas fa-folder"></i> Agregar Imagen o viedeo
+                                                    </label>
+                                                  <button class="btn-guardar-nueva-imagen-video" onclick="guardarNuevaImagenVideo(${post.publicacion_id})">Guardar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                
+                                    accordionContent.append(modalHtml);
+                                }
+                
+                                var cardHtml = `
+                                    <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${post.titulo}</h5>
+                                            <p class="card-text-estado">${post.estado}</p>
+                                            <p class="card-text-email">${post.correo_electronico}</p>
+                                            <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                            <p class="card-text">${post.texto}</p>
+                                            <div class="card-media-grid-publicacion-admin">
+                                                ${mediaHtml}
+                                            </div>
+                                            <p class="card-text-ambito">${post.ambito}</p>
+                                            <p class="card-text-descripcion">${post.descripcion}</p>
+                                            <div class="btn-modificar-eliminar">
+                                                <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                                                <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <p class="card-text-ambito">${post.ambito}</p>
-                                    <p class="card-text-descripcion">${post.descripcion}</p>
-                                    <div class="btn-modificar-eliminar">
-                                        <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
-                                        <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-        
-                        accordionContent.append(cardHtml);
-                    });
-                });
-            } else {
-                splash.style.display = 'none'; // Ocultar el splash al terminar
-                modal.style.display = "none";
-                console.log('Respuesta no válida');
-            }
+                                `;
+                
+                                accordionContent.append(cardHtml);
+                            });
+                        });
+                     
+                    } else {
+                        splash.style.display = 'none'; // Ocultar el splash al terminar
+                        modal.style.display = "none";
+                        console.log('Respuesta no válida');
+                    }
+
+                        // Finalizar carga
+                        $(".splashCarga").hide();
+                        modal.style.display = "none";         
+           
+          
         },     
           error: function(xhr, status, error) {
             
-            splash.style.display = 'none'; // Ocultar el splash al terminar
-            modal.style.display = "none";
+           // splash.style.display = 'none'; // Ocultar el splash al terminar
+            //modal.style.display = "none";
             // En la consola del navegador
             console.log(xhr.status); // Imprime el código de estado HTTP
             console.log(xhr.responseText); // Imprime el cuerpo de la respuesta
             console.log(error); // Imprime el mensaje de error
-            alert("Error al cargar las publicaciones. Inténtalo de nuevo.");
+            alert("Error al cargar las publicaciones. Inténtalo de nuevo con otro nombre.");
           }
         });
       }, 100); // 100 ms de pausa antes de hacer la petición  
 
-    });
+    
   
     function dataURLToFile(dataURL, filename) {
       var arr = dataURL.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -520,5 +570,30 @@
       }
       return new File([u8arr], filename, {type: mime});
     }
-  });
-  
+
+
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
