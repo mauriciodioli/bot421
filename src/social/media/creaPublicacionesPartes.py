@@ -279,7 +279,7 @@ def social_publicaciones_handle_upload_chunkn():
             os.rename(file_path, final_path)
             
             comprimir_imagen(file_path,safe_file_name, 85)
-            comprimir_video_ffmpeg(file_path,safe_file_name,"800k")
+            comprimir_video_ffmpeg(file_path,safe_file_name,0.5)
             
            # Subir la imagen comprimida a GCS
             upload_to_gcs(file_path, safe_file_name)
@@ -525,7 +525,11 @@ def guardarPublicacion(request, user_id):
         if publicacion_existente:
             # Si existe, devolver un mensaje sugiriendo cambiar el nombre
              return True
-        
+        if botonCompra == 'True':
+            botonCompra = True
+        else:
+            botonCompra = False
+
         # Crear una nueva publicación si no existe una con el mismo nombre
         nueva_publicacion = Publicacion(
             user_id=user_id,             
@@ -538,7 +542,7 @@ def guardarPublicacion(request, user_id):
             color_titulo=color_titulo,
             fecha_creacion=datetime.now(),
             estado=estado,
-            botonCompra=bool(botonCompra)
+            botonCompra=botonCompra
         )
         
         db.session.add(nueva_publicacion)
@@ -608,28 +612,63 @@ def comprimir_imagen(output_path,file_name, quality=85):
 
 
 
-import os
-
-def comprimir_video_ffmpeg(output_path, file_name, bitrate="800k"):
+def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):
     content_type, _ = mimetypes.guess_type(file_name)
 
     if not content_type or not content_type.startswith('video/'):
         return False
 
     try:
+        
+        # Obtener el tamaño original del archivo
+        original_size = os.path.getsize(output_path)
+        target_size = int(original_size * compression_ratio)
+
+        
         # Obtener el nombre del archivo sin la extensión
         base_name, ext = os.path.splitext(file_name)
 
         # Crear una ruta temporal con un sufijo para el archivo comprimido
         temp_output_path = os.path.join('static/uploads', f"{base_name}_compressed{ext}")
+        
+        
+        
         if not os.path.exists(output_path):
             print(f"El archivo {output_path} no existe.")
             return False
-        # Comprimir el video
-        ffmpeg.input(output_path).output(temp_output_path, vcodec='libx264', b=bitrate, acodec='aac').run()
+        
+        
+         # Comprimir el video para redes sociales (720p o inferiores)
+        ffmpeg.input(output_path).output(
+            temp_output_path, 
+            vcodec='libx264', 
+            acodec='aac', 
+            crf=30,   # Nivel de calidad optimizado para redes sociales
+            preset='fast',  # Velocidad de compresión rápida
+            vf="scale=-1:720"  # Reducción a 720p manteniendo la relación de aspecto
+        ).run(overwrite_output=True)
+       # Comprimir el video asegurando el 70% del tamaño original
+       # ffmpeg.input(output_path).output(temp_output_path, vcodec='libx264',  acodec='aac', crf=28, preset='medium', fs=target_size ).run(overwrite_output=True)
+        
+        # Verificar si la compresión se realizó correctamente
+        compressed_size = os.path.getsize(temp_output_path)
+        original_size = os.path.getsize(output_path)
+        reduction_percentage = (1 - (compressed_size / original_size)) * 100
 
-        # Reemplazar el archivo original con el comprimido
-        os.replace(temp_output_path, output_path)
+        print(f"Tamaño original: {original_size} bytes, Tamaño comprimido: {compressed_size} bytes")
+        print(f"Reducción del tamaño: {reduction_percentage:.2f}%")
+
+        if compressed_size < original_size:
+            # Reemplazar el archivo original con el comprimido
+            os.replace(temp_output_path, output_path)
+            print("Compresión exitosa.")
+            return output_path
+        else:
+            os.remove(temp_output_path)
+            print("No se logró comprimir el archivo.")
+            return False
+        
+        
         
         return output_path
     except ffmpeg.Error as e:

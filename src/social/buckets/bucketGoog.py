@@ -98,7 +98,7 @@ def upload_to_gcs(file_path_local, blob_name_gcs):
     client = storage.Client()
     bucket = client.get_bucket(BUCKET_NAME)
     blob = bucket.blob(blob_name_gcs)
-
+    blob.chunk_size = 1 * 1024 * 1024  # 1MB chunks
     # Intentar subir el archivo al bucket
     try:
         blob.upload_from_filename(file_path_local)
@@ -116,6 +116,10 @@ def upload_to_gcs(file_path_local, blob_name_gcs):
         print(f"URL de {blob_name_gcs} almacenada en Redis: {url_publica}")
 
         return url_publica
+
+
+
+
 
 
         
