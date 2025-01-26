@@ -1,0 +1,88 @@
+
+
+.carrusel {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre los items */
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+  }
+  
+  .carrusel-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding: 0 10px;  /* Padding adicional para el carrusel */
+    gap: 10px; /* Espacio entre los items */
+    width: 100%;
+    
+  }
+  
+  .carrusel-container::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .carrusel-item { 
+    border-radius: 20px;
+    background: #000;
+    color: #fff;
+    padding: 10px 20px;
+    font-weight: bold;
+    flex-shrink: 0;  /* Esto asegura que los items no se contraigan */
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .carrusel-item.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .carrusel-item.active:hover {
+    background-color: #003366;
+    color: white;
+  }
+  
+  .carrusel-item:hover {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px; /* Espacio alrededor de los botones */
+  }
+  
+  /* RESPONSIVE DESIGN */
+  
+  /* Pantallas medianas (hasta 768px) */
+  @media (max-width: 768px) {
+    .carrusel-container {
+      justify-content: center;
+    }
+  
+    .carrusel-item {
+      padding: 8px 15px;
+      font-size: 14px;
+    }
+  }
+  
+  /* Pantallas pequeñas (hasta 480px) */
+  @media (max-width: 480px) {
+    .carrusel-container {
+      gap: 5px;
+    }
+  
+    .carrusel-item {
+      width: 80%;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+  }
+  
