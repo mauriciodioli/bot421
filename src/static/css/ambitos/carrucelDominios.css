@@ -73,16 +73,27 @@
     }
   }
   
-  /* Pantallas pequeñas (hasta 480px) */
-  @media (max-width: 480px) {
+ /* Pantallas pequeñas (hasta 480px) */
+@media (max-width: 480px) {
     .carrusel-container {
-      gap: 5px;
+        display: flex;
+        gap: 5px; /* Ajusta la separación entre ítems */
+        justify-content: center; /* Centra los ítems */
+        overflow-x: auto; /* Habilita el desplazamiento horizontal si es necesario */
     }
-  
+
     .carrusel-item {
-      width: 80%;
-      padding: 6px 12px;
-      font-size: 12px;
+        display: inline-block; /* Asegura que el botón se adapte al contenido */
+        padding: 6px 12px; /* Espaciado interno ajustable */
+        font-size: 12px; /* Tamaño de fuente reducido */
+        white-space: nowrap; /* Evita que las palabras se dividan en varias líneas */        
+        background-color: #0f0e0e; /* Fondo opcional */
+        color: #fff; /* Color de texto */
+        border: 1px solid #ccc; /* Borde opcional */
+        border-radius: 4px; /* Bordes redondeados */
+        text-align: center; /* Centra el texto dentro del ítem */
+        cursor: pointer; /* Añade un puntero al pasar el ratón */
     }
-  }
+}
+
   

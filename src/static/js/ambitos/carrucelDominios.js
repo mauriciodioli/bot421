@@ -1,9 +1,9 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-  window.cargarAmbitos(); // Llamar a la función cuando el DOM esté listo
+  window.cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
 });
 
-window.cargarAmbitos = function () {
+window.cargarAmbitosCarrusel = function () {
   fetch('/social-media-publicaciones-obtener-ambitos', {
       method: 'GET',
       headers: {
@@ -17,7 +17,7 @@ window.cargarAmbitos = function () {
       return response.json();
   })
   .then(data => {
-    
+   
       // Obtener el contenedor donde se agregará el carrusel
       const carruselContainer = document.querySelector('.carrusel-container');
       
@@ -44,15 +44,26 @@ window.cargarAmbitos = function () {
               
               // Añadir la clase 'active' al item en el que se ha hecho clic
               item.classList.add('active');
-
+             
               // Obtener el valor almacenado en el atributo 'data-valor'
               const valor = item.getAttribute('data-valor');
-              console.log('Valor del item seleccionado:', valor);
-              
+             
+             
               // Modificar el localStorage con el nuevo valor seleccionado
               localStorage.setItem('dominio', valor);
-               // Llamar a la función de enviarDominioAJAX desde dpi.js
-               enviarDominioAJAX(valor);  // Pasar el valor a la función AJAX
+              // Llamar a cargarPublicaciones si está definida
+                if (typeof cargarPublicaciones === 'function') {
+                    cargarPublicaciones(valor, 'layout');
+                } else {
+                    console.warn('La función cargarPublicaciones no está definida.');
+                }
+                
+                // Llamar a enviarDominioAJAX si está definida
+                if (typeof enviarDominioAJAX === 'function') {
+                    enviarDominioAJAX(valor);
+                } else {
+                    console.warn('La función enviarDominioAJAX no está definida.');
+                }
           });
       });
   })

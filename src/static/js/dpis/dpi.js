@@ -476,7 +476,7 @@ function toggleSplash(section, splashElement) {
 }
 
 function enviarDominioAJAX(domain) {
-    
+ 
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
@@ -757,6 +757,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateLanguage();
        
         cargarAmbitos();
+        cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
     });
 });
 

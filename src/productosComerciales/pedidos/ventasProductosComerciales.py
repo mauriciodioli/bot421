@@ -56,7 +56,7 @@ def productosComerciales_pedidos_ventasProductosComerciales_muestra():
 
             # Consultar publicaciones y pedidos
             publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
-            pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito).all()
+            pedidos = db.session.query(Pedido).filter_by( ambito=ambito).all()
 
             # Verificar asociaciones
             ids_publicaciones = {publicacion.id for publicacion in publicaciones}
