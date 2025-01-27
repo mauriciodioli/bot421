@@ -109,8 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const dropdownMenu = document.querySelector('.dropdown-menu');
 
-    // Función para cargar los ámbitos desde el servidor
-    // Función para cargar los ámbitos desde el servidor
+        // Función para cargar los ámbitos desde el servidor
     window.cargarAmbitos = function ()  {
         fetch('/social-media-publicaciones-obtener-ambitos', {
             method: 'GET',
@@ -477,6 +476,7 @@ function toggleSplash(section, splashElement) {
 }
 
 function enviarDominioAJAX(domain) {
+    
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
