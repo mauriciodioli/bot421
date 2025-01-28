@@ -87,18 +87,25 @@ if (seleccionarUsuarioModal) {
          
 
          filas.forEach(function(fila) {
-            // Obtener la fecha de traspaso desde la fila
-            var fechaTraspaso = fila.querySelector('th').innerText;
-    
-            if (fechaTraspaso) {
-                // Calcular los días pasados
-                var dias = calcularDias(fechaTraspaso);
-    
-                fila.querySelector('th').innerText = ` ${dias}`;
-
+            // Obtener el elemento <th> dentro de la fila
+            var thElement = fila.querySelector('th');
+        
+            // Verificar si el elemento <th> existe
+            if (thElement) {
+                // Obtener la fecha de traspaso desde el <th>
+                var fechaTraspaso = thElement.innerText;
+        
+                if (fechaTraspaso) {
+                    // Calcular los días pasados
+                    var dias = calcularDias(fechaTraspaso);
+        
+                    // Actualizar el contenido del <th>
+                    thElement.innerText = ` ${dias}`;
+                }
+            } else {
+                console.error('No se encontró un elemento <th> en la fila:', fila);
             }
         });
-
 
 
 
