@@ -11,6 +11,7 @@ import requests
 import jwt
 from PIL import Image as PILImage  # Renombrar la clase Image de Pillow
 import ffmpeg
+
 from flask import (
     Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 )
@@ -619,37 +620,31 @@ def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):
         return False
 
     try:
-        
         # Obtener el tamaño original del archivo
         original_size = os.path.getsize(output_path)
         target_size = int(original_size * compression_ratio)
 
-        
         # Obtener el nombre del archivo sin la extensión
         base_name, ext = os.path.splitext(file_name)
 
         # Crear una ruta temporal con un sufijo para el archivo comprimido
         temp_output_path = os.path.join('static/uploads', f"{base_name}_compressed{ext}")
-        
-        
-        
+
         if not os.path.exists(output_path):
             print(f"El archivo {output_path} no existe.")
             return False
-        
-        
-         # Comprimir el video para redes sociales (720p o inferiores)
+
+        # Comprimir el video para redes sociales (720p o inferiores)
         ffmpeg.input(output_path).output(
-            temp_output_path, 
-            vcodec='libx264', 
-            acodec='aac', 
-            crf=30,   # Nivel de calidad optimizado para redes sociales
-            preset='fast',  # Velocidad de compresión rápida
-            vf="scale=-1:720"  # Reducción a 720p manteniendo la relación de aspecto
-        ).run(overwrite_output=True)
-       # Comprimir el video asegurando el 70% del tamaño original
-       # ffmpeg.input(output_path).output(temp_output_path, vcodec='libx264',  acodec='aac', crf=28, preset='medium', fs=target_size ).run(overwrite_output=True)
-        
+                temp_output_path, 
+                vcodec='libx264', 
+                acodec='aac', 
+                audio_bitrate='128k',  # Bitrate de audio
+                crf=25,
+                preset='medium',
+                vf="scale='trunc(iw/2)*2:720'"
+            ).run(overwrite_output=True)
+
         # Verificar si la compresión se realizó correctamente
         compressed_size = os.path.getsize(temp_output_path)
         original_size = os.path.getsize(output_path)
@@ -667,10 +662,7 @@ def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):
             os.remove(temp_output_path)
             print("No se logró comprimir el archivo.")
             return False
-        
-        
-        
-        return output_path
+
     except ffmpeg.Error as e:
         print(f"Error al comprimir el video: {e}")
         return False

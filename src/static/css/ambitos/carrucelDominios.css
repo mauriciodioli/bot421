@@ -25,9 +25,9 @@
   }
   
   .carrusel-item { 
-    border-radius: 20px;
+    border-radius: 15px;
     background: #000;
-    color: #fff;
+    color: #dcdada;
     padding: 10px 20px;
     font-weight: bold;
     flex-shrink: 0;  /* Esto asegura que los items no se contraigan */
@@ -36,7 +36,7 @@
   }
   
   .carrusel-item.active {
-    background-color: #007bff;
+    background-color: #005fbe;
     color: white;
     font-weight: bold;
   }
@@ -47,7 +47,7 @@
   }
   
   .carrusel-item:hover {
-    background-color: #007bff;
+    background-color: #005fbe;
     color: white;
   }
   
@@ -78,7 +78,7 @@
     .carrusel-container {
         display: flex;
         gap: 5px; /* Ajusta la separación entre ítems */
-        justify-content: center; /* Centra los ítems */
+        justify-content: flex-start; 
         overflow-x: auto; /* Habilita el desplazamiento horizontal si es necesario */
     }
 
