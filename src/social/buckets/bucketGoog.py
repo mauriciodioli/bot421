@@ -6,6 +6,7 @@ from google.cloud import storage
 import os
 from dotenv import load_dotenv
 from io import BytesIO
+import base64
 
 
 
@@ -111,10 +112,7 @@ def upload_to_gcs(file_path_local, blob_name_gcs):
         # Generar la URL pública del archivo
         url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name_gcs}"
 
-        # Guardar la URL pública en Redis con un tiempo de expiración (por ejemplo, 1 hora)
-        redis_client.set(blob_name_gcs, url_publica, ex=3600)
-        print(f"URL de {blob_name_gcs} almacenada en Redis: {url_publica}")
-
+       
         return url_publica
 
 
@@ -146,28 +144,51 @@ def delete_from_gcs(blob_name):
 
         
 def mostrar_from_gcs(blob_name):
-    # Verificar si la URL ya está en caché
-    cached_url = redis_client.get(blob_name)
-    print(f"Obteniendo URL desde Redis para el archivo: {blob_name}")
-       
+    # Primero, verificar si la imagen binaria está en caché
+    # Intentar obtener los datos de la imagen desde Redis
+    cached_image = redis_client.hgetall(blob_name)
 
-    # Si no está en caché, obtener desde GCS
+    if cached_image:
+        # Obtener la cadena hexadecimal de Redis
+        hex_data = cached_image.get("file_data")
+        file_path = cached_image.get("file_path")
+      
+        # Retornar los datos binarios de la imagen
+        # Convertir de hexadecimal a binario
+        image_data = bytes.fromhex(hex_data)
+        return image_data,file_path  # Aquí puedes retornar la imagen o procesarla como desees
+
+    # Si no está en caché, obtener la URL y la imagen desde GCS
     client = storage.Client()
     bucket = client.get_bucket(BUCKET_NAME)
     blob = bucket.blob(blob_name)
 
     try:
+        # Obtener la URL pública de GCS
         url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name}"
+
+        # Leer la imagen como binario desde GCS
+        image_data = blob.download_as_bytes()
+
+        # Convertir los datos binarios a hexadecimal
+        hex_data = image_data.hex()
+
+        # Almacenar en Redis la URL y los datos hexadecimales
+        redis_client.hset(blob_name, mapping={
+            "file_path": url_publica,
+            "file_data": hex_data  # Almacenar los datos como una cadena hexadecimal
+        })
+
+        # Opcional: establecer un tiempo de expiración (por ejemplo, 1 hora)
+        redis_client.expire(f"image:{blob_name}", 3600)  # 3600 segundos = 1 hora
+        print(f"Imagen y URL obtenidas y guardadas en Redis para el archivo: {blob_name}")
         
-        # Guardar la URL en Redis con un tiempo de expiración (por ejemplo, 1 hora)
-        redis_client.setex(blob_name, 3600, url_publica)
-        
-        print(f"URL obtenida y guardada en Redis para el archivo: {blob_name}")
-        return url_publica
+        return image_data,url_publica # Devolver los datos binarios de la imagen
+
     except storage.exceptions.NotFound:
         print(f"El archivo {blob_name} no existe en el bucket {BUCKET_NAME}.")
         return None
     except Exception as e:
-        print(f"No se pudo obtener la URL pública del archivo {blob_name}. Error: {e}")
+        print(f"No se pudo obtener la imagen y URL para el archivo {blob_name}. Error: {e}")
         return None
 

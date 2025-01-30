@@ -3,7 +3,8 @@ import os
 import random
 import json
 from datetime import datetime
-
+import base64
+import logging
 # Librerías externas
 import requests
 import jwt
@@ -27,12 +28,14 @@ from models.modelMedia.video import Video
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from utils.db import db
 import re
+import redis
 import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
 from social.buckets.bucketGoog import (
     upload_to_gcs, delete_from_gcs, mostrar_from_gcs,upload_chunk_to_gcs_with_redis
 )
 
+from automatizacion.cargaAutomatica import ArrancaSheduleCargaAutomatica
 #import boto3
 #from botocore.exceptions import NoCredentialsError
 
@@ -46,8 +49,21 @@ publicaciones = Blueprint('publicaciones',__name__)
 
 BUCKET_NAME = 'nombre-de-tu-bucket'
 
+# Configuración de Redis usando las variables de entorno
+redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
+redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
+redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
+# Conexión a Redis
+redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
 
-@publicaciones.route('/media-publicaciones-mostrar', methods=['POST'])
+
+# Probar la conexión a Redis (opcional)
+try:
+    redis_client.ping()  # Verifica si Redis está accesible
+    print("Conexión a Redis exitosa")
+except redis.ConnectionError:
+    print("No se pudo conectar a Redis")
+@publicaciones.route('/media-publicaciones-mostrar/', methods=['POST'])
 def media_publicaciones_mostrar():
     try:
         
@@ -244,8 +260,6 @@ def media_publicaciones_mostrar_dpi():
 
 
 
-import logging
-
 
 def armar_publicacion_bucket_para_dpi(publicaciones,layout):
     publicaciones_data = []
@@ -272,17 +286,26 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
                     imagen = db.session.query(Image).filter_by(id=imagen_video.imagen_id).first()
                     if imagen:
                         filepath = imagen.filepath
-                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                        imagen_url = mostrar_from_gcs(imagen_url)
+                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
+                       
+                        file_data, file_path  = mostrar_from_gcs(imagen_url)
+                        if file_data:
+                            # Convertir la imagen a base64 solo si hemos obtenido datos binarios
+                            imagen_base64 = base64.b64encode(file_data).decode('utf-8')
+                        else:
+                            imagen_base64 = None
+                                
                         if imagen_url:
                             imagenes.append({
-                                'id': imagen.id,
-                                'title': imagen.title,
-                                'description': imagen.description,
-                                'filepath': imagen_url,  # Usar la URL de GCS
-                                'randomNumber': imagen.randomNumber,
-                                'size': imagen.size
-                            })
+                                    'id': imagen.id,
+                                    'title': imagen.title,
+                                    'description': imagen.description,
+                                    'filepath': file_path,  # Usar la URL de GCS o el path procesado
+                                    'imagen': imagen_base64 if file_data else None,  # La imagen en base64
+                                    'mimetype': 'image/jpeg',  # Asignar correctamente el tipo MIME
+                                    'randomNumber': imagen.randomNumber,
+                                    'size': imagen.size
+                                })
                 except Exception as e:
                     logging.error(f"Error al obtener información de la imagen {imagen_video.imagen_id}: {e}")
 
@@ -293,7 +316,13 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
                     if video:
                         filepath = video.filepath
                         video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
-                        video_url = mostrar_from_gcs(video_url)
+                        
+                        cached_video_url = redis_client.get(video_url)  # Busca en Redis la URL almacenada
+                        if cached_video_url:
+                            video_url = cached_video_url  # Decodifica el valor de Redis
+                        else:
+                            video_url = mostrar_from_gcs(video_url)  # Si no está en Redis, busca en GCS
+                            
                         if video_url:
                             videos.append({
                                 'id': video.id,
@@ -331,7 +360,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
             'videos': videos,  # Solo un video
             'layout': layout
         })
-   
+        
     db.session.close()
     return publicaciones_data
 
@@ -655,6 +684,8 @@ def social_publicaciones_crear_publicacion():
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
             db.session.close()
+            ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
+   
             #print(publicaciones_data)
             return jsonify(publicaciones_data)
     except Exception as e:
