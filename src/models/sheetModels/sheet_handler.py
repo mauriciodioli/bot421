@@ -20,15 +20,15 @@ class SheetHandler:
                     'T:T',    # ut - cantidad a operar
                     'U:U',    # senial - Open o Close
                     'Z:Z',    # gan_tot
-                    'AD:AD'   # dias_operado - Dias habiles operado
+                    'AD:AD',  # dias_operado - Dias habiles operado
+                    'R:R'     # factorUt - negativo o positivo o 0
                 ]
 
-              
                 for _ in range(3):  # Intentar hasta 3 veces
                     try:
                         data = sheet.batch_get(ranges)
                         if data:
-                            # Asumiendo que cada lista dentro de data representa una columna de datos
+                            # Procesar cada columna de datos
                             symbol = [str(item[0]).strip("['").strip("']") for item in data[0][1:]] if len(data) > 0 and len(data[0]) > 1 else []
                             tipo_de_activo = [str(item).strip("['").strip("']") for item in data[1][1:]] if len(data) > 1 and len(data[1]) > 1 else []
                             precioUt = [str(item).strip("['").strip("']") for item in data[2][1:]] if len(data) > 2 and len(data[2]) > 1 else []
@@ -37,8 +37,9 @@ class SheetHandler:
                             senial = [str(item).strip("['").strip("']") for item in data[5][1:]] if len(data) > 5 and len(data[5]) > 1 else []
                             gan_tot = [str(item).strip("['").strip("']") for item in data[6][1:]] if len(data) > 6 and len(data[6]) > 1 else []
                             dias_operado = [str(item).strip("['").strip("']") for item in data[7][1:]] if len(data) > 7 and len(data[7]) > 1 else []
+                            factorUt = [str(item).strip("['").strip("']") for item in data[8][1:]] if len(data) > 8 and len(data[8]) > 1 else []
 
-                            # Eliminar los encabezados si están presentes y combinar las columnas
+                            # Eliminar los encabezados si están presentes
                             symbol = symbol[1:] if len(symbol) > 1 else []
                             tipo_de_activo = tipo_de_activo[1:] if len(tipo_de_activo) > 1 else []
                             precioUt = precioUt[1:] if len(precioUt) > 1 else []
@@ -47,10 +48,15 @@ class SheetHandler:
                             senial = senial[1:] if len(senial) > 1 else []
                             gan_tot = gan_tot[1:] if len(gan_tot) > 1 else []
                             dias_operado = dias_operado[1:] if len(dias_operado) > 1 else []
-                            
-                            union = zip(symbol, tipo_de_activo, trade_en_curso, ut, senial, gan_tot, dias_operado, precioUt)
-                           # for linea in union:
-#                                print(linea)
+                            factorUt = factorUt[1:] if len(factorUt) > 1 else []
+
+                            # Combinar columnas en un solo resultado
+                            union = zip(
+                                symbol, tipo_de_activo, trade_en_curso, ut, 
+                                senial, gan_tot, dias_operado, precioUt, factorUt
+                            )
+                            #for linea in union:
+                                #print(linea)
                             return union
                     except gspread.exceptions.APIError as e:
                         print(f"Error al leer la hoja: {e}")

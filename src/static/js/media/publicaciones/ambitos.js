@@ -77,8 +77,39 @@ function obtenerAmbitos() {
                 tablaCuerpo.innerHTML = '<tr><td colspan="9" class="text-center">No hay datos disponibles</td></tr>';
                 return;
             }
-
+            const iconosPorAmbito = {
+                "Personal": "👤",
+                "Laboral": "💼",
+                "Educacion": "📚",
+                "Negocios": "📈",
+                "Arte": "🎨",
+                "Deporte": "⚽",
+                "Social": "👥",
+                "Familia": "👨‍👩‍👧",
+                "Salud": "🏥",
+                "Animales": "🐶",
+                "Amistad": "🧑", // Ícono de una persona para Amistad
+                "Filantropia": "🤝", // Ícono para Filantropía
+                "Turismo": "✈️", // Ícono para Turismo                 
+                "Tecnología": "💻",
+                "Regionales": "🧉", // Ícono de mate para Regionales                   
+                "Work": "💼", // Laboral
+                "Education": "📚", // Educación
+                "Business": "📈", // Negocios
+                "Art": "🎨", // Arte
+                "Sports": "⚽", // Deporte
+                "Social": "👥", // Social
+                "Family": "👨‍👩‍👧", // Familia
+                "Health": "🏥", // Salud
+                "Pets": "🐶", // Animales
+                "Friendship": "🧑", // Amistad
+                "Philanthropy": "🤝", // Filantropía
+                "Tourism": "✈️", // Turismo
+                "Technology": "💻", // Tecnología
+                "Regional": "🧉" // Regionales
+            };
             data.forEach((ambito, index) => {
+                const icono = iconosPorAmbito[ambito.nombre] || ""; // Obtener el ícono correspondiente
                 const tr = document.createElement('tr');
 
                 // Crear las celdas dinámicamente
@@ -89,7 +120,7 @@ function obtenerAmbitos() {
                     <td>${ambito.nombre}</td>
                     <td>${ambito.descripcion}</td>
                     <td>${ambito.idioma}</td>
-                    <td>${ambito.valor}</td>
+                    <td>${icono} ${ambito.valor}</td>
                     <td>${ambito.estado}</td>
                     <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"

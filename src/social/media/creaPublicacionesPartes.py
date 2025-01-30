@@ -36,7 +36,7 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from publicaciones import armar_publicacion_bucket_para_dpi
-
+import redis
 import re
 import logging
 import routes.api_externa_conexion.get_login as get
@@ -59,6 +59,20 @@ creaPublicacionesPartes = Blueprint('creaPublicacionesPartes',__name__)
 BUCKET_NAME = 'nombre-de-tu-bucket'
 
 
+# Configuración de Redis usando las variables de entorno
+redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
+redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
+redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
+# Conexión a Redis
+redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
+
+
+# Probar la conexión a Redis (opcional)
+try:
+    redis_client.ping()  # Verifica si Redis está accesible
+    print("Conexión a Redis exitosa")
+except redis.ConnectionError:
+    print("No se pudo conectar a Redis")
 
 def armar_publicacion_bucket(publicaciones):
     publicaciones_data = []
@@ -280,13 +294,23 @@ def social_publicaciones_handle_upload_chunkn():
             os.rename(file_path, final_path)
             
             comprimir_imagen(file_path,safe_file_name, 85)
-            comprimir_video_ffmpeg(file_path,safe_file_name,0.5)
+           # comprimir_video_ffmpeg(file_path,safe_file_name,0.5)
+          # final_path= 'static/uploads/WhatsApp_Video_2024-12-04_at_18.26.12.mp4'
+          #safe_file_name ='WhatsApp_Video_2024-12-04_at_18.26.12.mp4'
+            # Guardar la URL en Redis con expiración de 1 hora
+            # Guardar el archivo en Redis con expiración de 1 hora
+            with open(final_path, "rb") as f:
+                redis_client.hset(safe_file_name, mapping={
+                        "file_path": final_path,
+                        "file_data": f.read().hex()  # Guardar binario como string hexadecimal
+                    })
+            print(f"URL de {safe_file_name} almacenada en Redis: {final_path}")
             
            # Subir la imagen comprimida a GCS
-            upload_to_gcs(file_path, safe_file_name)
+          #  upload_to_gcs(file_path, safe_file_name)
             # Eliminar el archivo temporal
-            if os.path.exists(file_path):
-                os.remove(file_path)
+           # if os.path.exists(file_path):
+            #    os.remove(file_path)
 
             return jsonify({'message': 'Archivo recibido completamente', 'path': final_path})
 
@@ -614,15 +638,23 @@ def comprimir_imagen(output_path,file_name, quality=85):
 
 
 def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):
-    content_type, _ = mimetypes.guess_type(file_name)
+    # Verificar si el archivo existe antes de continuar
+    if not os.path.exists(output_path):
+        print(f"El archivo {output_path} no existe.")
+        return False
 
+    # Verificar que el archivo sea un video
+    content_type, _ = mimetypes.guess_type(file_name)
     if not content_type or not content_type.startswith('video/'):
+        print(f"El archivo {file_name} no es un video.")
         return False
 
     try:
         # Obtener el tamaño original del archivo
         original_size = os.path.getsize(output_path)
-        target_size = int(original_size * compression_ratio)
+        if original_size == 0:
+            print("Error: El archivo original está vacío.")
+            return False
 
         # Obtener el nombre del archivo sin la extensión
         base_name, ext = os.path.splitext(file_name)
@@ -630,31 +662,25 @@ def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):
         # Crear una ruta temporal con un sufijo para el archivo comprimido
         temp_output_path = os.path.join('static/uploads', f"{base_name}_compressed{ext}")
 
-        if not os.path.exists(output_path):
-            print(f"El archivo {output_path} no existe.")
-            return False
-
-        # Comprimir el video para redes sociales (720p o inferiores)
+        # Comprimir el video para redes sociales (manteniendo la relación de aspecto)
         ffmpeg.input(output_path).output(
                 temp_output_path, 
                 vcodec='libx264', 
-                acodec='aac', 
-                audio_bitrate='128k',  # Bitrate de audio
+                acodec='copy',  # Copia el audio original sin modificarlo
                 crf=25,
                 preset='medium',
-                vf="scale='trunc(iw/2)*2:720'"
+                vf="scale='if(gt(iw/ih,16/9),1280,-2)':'if(gt(iw/ih,16/9),-2,720)', pad=1280:720:(ow-iw)/2:(oh-ih)/2"
             ).run(overwrite_output=True)
 
-        # Verificar si la compresión se realizó correctamente
+
+        # Verificar el tamaño del archivo comprimido
         compressed_size = os.path.getsize(temp_output_path)
-        original_size = os.path.getsize(output_path)
         reduction_percentage = (1 - (compressed_size / original_size)) * 100
 
         print(f"Tamaño original: {original_size} bytes, Tamaño comprimido: {compressed_size} bytes")
         print(f"Reducción del tamaño: {reduction_percentage:.2f}%")
 
         if compressed_size < original_size:
-            # Reemplazar el archivo original con el comprimido
             os.replace(temp_output_path, output_path)
             print("Compresión exitosa.")
             return output_path
@@ -665,4 +691,7 @@ def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):
 
     except ffmpeg.Error as e:
         print(f"Error al comprimir el video: {e}")
+        return False
+    except Exception as e:
+        print(f"Error inesperado: {e}")
         return False

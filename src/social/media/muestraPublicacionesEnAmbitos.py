@@ -15,6 +15,7 @@ import tokens.token as Token
 import jwt
 import asyncio
 import os
+import base64
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
@@ -91,13 +92,19 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout):
                         # Ajustar la ruta del archivo
                         filepath = imagen.filepath
                         imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                        imagen_url = mostrar_from_gcs(imagen_url)                      
+                        imgen,file_path = mostrar_from_gcs(imagen_url)  # Asegúrate de definir esta función
+                    
+                        if imgen:
+                            # Si imgen ya es binario, simplemente lo codificamos en base64
+                            imagen_base64 = base64.b64encode(imgen).decode('utf-8')
+                                                    
 
                         imagenes.append({
                             'id': imagen.id,
                             'title': imagen.title,
                             'description': imagen.description,
-                            'filepath': imagen_url,
+                            'imagen': imagen_base64,
+                            'filepath': file_path,
                             'randomNumber': imagen.randomNumber,
                             'colorDescription': imagen.colorDescription,
                             'size': imagen.size                      

@@ -115,6 +115,7 @@ from panelControl.pcEstrategiaUs import pcEtrategiaUs
 
 from automatizacion.programar_trigger import programar_trigger 
 from automatizacion.shedule_triggers import shedule_triggers
+from automatizacion.cargaAutomatica import cargaAutomatica
 import automatizacion.programar_trigger as trigger
 import subprocess
 
@@ -310,7 +311,7 @@ app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)
 app.register_blueprint(calculadora)
-
+app.register_blueprint(cargaAutomatica)
 
 app.register_blueprint(testTuringUser)
 app.register_blueprint(testTuring)

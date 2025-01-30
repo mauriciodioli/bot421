@@ -25,6 +25,7 @@ import jwt
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError
 import sys
+import base64
 
 
 # Configuración del Blueprint para el registro de usuarios
@@ -361,7 +362,7 @@ def es_formato_imagen(filepath):
 
 
 
-@imagenesOperaciones.route('/imagenesOperaciones-cargar-imagen-video-bucket', methods=['POST'])
+@imagenesOperaciones.route('/imagenesOperaciones-cargar-imagen-video-bucket/', methods=['POST'])
 def imagenesOperaciones_cargar_imagen_video_bucket():
     if request.method == 'POST':
         try:
@@ -425,13 +426,21 @@ def armar_publicacion_bucket_para_modal(publicacion, layout):
                 if imagen:
                     filepath = imagen.filepath
                     imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                    imagen_url = mostrar_from_gcs(imagen_url)  # Asegúrate de definir esta función
+                    imgen,file_path = mostrar_from_gcs(imagen_url)  # Asegúrate de definir esta función
+                    
+                    if imgen:
+                          # Si imgen ya es binario, simplemente lo codificamos en base64
+                        imagen_base64 = base64.b64encode(imgen).decode('utf-8')
+                     
+                    
                     if imagen_url:
                         imagenes.append({
                             'id': imagen.id,
                             'title': imagen.title,
                             'description': imagen.description,
-                            'filepath': imagen_url,
+                            'imagen': imagen_base64,
+                            'filepath': file_path,
+                            'mimetype': 'image/jpeg',  # Asignar correctamente el tipo MIME
                             'randomNumber': imagen.randomNumber,
                             'size': imagen.size
                         })

@@ -367,17 +367,19 @@ $(document).ready(function () {
         // Llamar a la función createPost después de la carga
         createPost(event,storedFiles); // Llamar a la función createPost
       } catch (error) {
+        $(".splashCarga").hide(); // Asegurar que se oculte incluso en errores
         console.error("Error al cargar archivos:", error);
         alert("Hubo un error durante la carga");
       } finally {
-        $(".splashCarga").hide(); // Asegurar que se oculte incluso en errores
+        console.log("Carga finalizada");
       }
     })();
   });
 });
 
 
-function createPost(event,storedFiles) {  
+function createPost(event,storedFiles) { 
+    
      event.preventDefault(); // Evitar el envío predeterminado del formulario
   // Definir y inicializar mediaContainer
      var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
@@ -422,7 +424,7 @@ function createPost(event,storedFiles) {
             'Authorization': 'Bearer ' + access_token
           },
           success: function(response) {           
-             
+            
                    
         if (Array.isArray(response)) {
           var postAccordion = $('#postAccordion');
@@ -437,7 +439,7 @@ function createPost(event,storedFiles) {
               }
               postsByAmbito[post.ambito].push(post);
           });
-          debugger;
+        
           // Crear secciones del acordeón para cada ámbito
           Object.keys(postsByAmbito).forEach(function(ambito, index) {
               var ambitoId = 'ambito-' + index; // ID único para cada ámbito
@@ -474,9 +476,18 @@ function createPost(event,storedFiles) {
                       
                     if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                         // Si hay imágenes, usar la primera
-                        var firstImageUrl = post.imagenes[0].filepath;
-                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-                    } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                      
+                       if (post.imagenes[0].imagen != null) {
+                            var firstImageBase64 = post.imagenes[0].imagen;
+                            var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
+                             mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                       } else {
+                            var firstImageUrl = post.imagenes[0].filepath;
+
+                            console.log(post.imagenes[0].filepath);
+                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
+                       }
+                      } else if (Array.isArray(post.videos) && post.videos.length > 0) {
                      
                         // Si no hay imágenes pero hay videos, usar el primero
                         var firstVideoUrl = post.videos[0].filepath;

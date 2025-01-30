@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formData.append('layout','layout');
     formData.append('ambito', ambito);
     $.ajax({
-      url: '/media-publicaciones-mostrar',
+      url: '/media-publicaciones-mostrar/',
       type: 'POST',
       data: formData,
       processData: false,
@@ -130,7 +130,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                       if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                           // Si hay imágenes, usar la primera
-                          var firstImageUrl = post.imagenes[0].filepath;
+                          debugger;
+                          let firstImageUrl = post.imagenes[0].imagen ? `data:image/png;base64,${post.imagenes[0].imagen}` : post.imagenes[0].filepath;
+
+                         
                           mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
                       } else if (Array.isArray(post.videos) && post.videos.length > 0) {
                        
@@ -200,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
-    const url = '/imagenesOperaciones-cargar-imagen-video-bucket';
+    const url = '/imagenesOperaciones-cargar-imagen-video-bucket/';
     const access_token = localStorage.getItem('access_token');
     const layout = 'layout';
 
@@ -225,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(data => {
       if (data && Array.isArray(data)) {
+       
           data.forEach(function(post) {
               splash.style.display = 'none'; // Ocultar el splash al terminar
      
@@ -233,7 +237,10 @@ document.addEventListener('DOMContentLoaded', function() {
   
               if (Array.isArray(post.imagenes) && post.imagenes.length > 0) { 
                 post.imagenes.forEach(image => {
-                    const imageUrl = image.filepath;
+                   debugger;
+                   let imageUrl = image.imagen ? `data:image/png;base64,${image.imagen}` : image.filepath;
+
+                   
                     modalImagesHtml += `
                         <div id="image-container-modal-publicacion-crear-publicacion-${image.id}" class="image-container-modal-publicacion-crear-publicacion">
                             <img src="${imageUrl}" alt="Imagen de la publicación" onclick="abrirImagenEnGrande('${imageUrl}')">
