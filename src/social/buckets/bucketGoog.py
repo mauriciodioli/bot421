@@ -4,6 +4,7 @@ from datetime import datetime
 import redis
 from google.cloud import storage
 import os
+import mimetypes
 from dotenv import load_dotenv
 from io import BytesIO
 import base64
@@ -157,7 +158,8 @@ def mostrar_from_gcs(blob_name):
         # Convertir de hexadecimal a binario
         if hex_data == '':
             image_data = None
-            file_path = '/'+file_path
+            if not tiene_https(file_path):
+               file_path = '/'+file_path
             return image_data,file_path
         image_data = bytes.fromhex(hex_data)
         return image_data,file_path  # Aquí puedes retornar la imagen o procesarla como desees
@@ -204,6 +206,14 @@ def mostrar_from_gcs(blob_name):
         return None
     
 def es_video(file_path):
-    mimetype, _ = mimetypes.guess_type(file_path)
-    return mimetype is not None and mimetype.startswith("video/")
+    try:
+        mimetype, _ = mimetypes.guess_type(file_path)
+        if mimetype and mimetype.startswith("video/"):
+            return True
+        return False
+    except Exception as e:
+        print(f"Error al determinar el tipo MIME del archivo: {e}")
+        return False
+def tiene_https(url):
+    return url.lower().startswith("https://")
 
