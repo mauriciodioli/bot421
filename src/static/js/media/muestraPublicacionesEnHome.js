@@ -58,14 +58,23 @@ function cargarPublicaciones(ambitoParam,layout) {
                             
                             if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                                 // Si hay imágenes, usar la primera
-                                var firstImageUrl = post.imagenes[0].filepath;
-                                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
-
+                                if (post.imagenes[0].imagen != null) {
+                                    var firstImageBase64 = post.imagenes[0].imagen;
+                                    var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                               } else {
+                                    var firstImageUrl = post.imagenes[0].filepath;
+        
+                                    console.log(post.imagenes[0].filepath);
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                               }
+                              
                             } else if (Array.isArray(post.videos) && post.videos.length > 0) {
                                
                                 // Si no hay imágenes pero hay videos, usar el primero
                                 var firstVideoUrl = post.videos[0].filepath;
                                 console.log(post.videos[0].filepath);
+                               
                                 mediaHtml += `
                                         <video controls onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
                                             <source src="${firstVideoUrl}" type="video/mp4">                                           

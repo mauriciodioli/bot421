@@ -560,38 +560,43 @@ function enviarDominioAJAX(domain) {
 
             response.forEach(function(post) {
                 if (post.imagenes.length > 0 || post.videos.length > 0) {
-                    var mediaHtml = '';
-                    //var baseUrl = window.location.origin;
+                        var mediaHtml = '';
 
-                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                        // Mostrar solo la primera imagen
-                        //var firstImageUrl = baseUrl + '/' + post.imagenes[0].filepath;
-                        var firstImageUrl = post.imagenes[0].filepath;
-                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id})" style="cursor: pointer;">`;
+                        // Mostrar la primera imagen
+                        if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
+                            
+                            if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                                // Si hay imágenes, usar la primera
+                                if (post.imagenes[0].imagen != null) {
+                                    var firstImageBase64 = post.imagenes[0].imagen;
+                                    var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                               } else {
+                                    var firstImageUrl = post.imagenes[0].filepath;
+        
+                                    console.log(post.imagenes[0].filepath);
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                               }
+                              
+                            } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                               
+                                // Si no hay imágenes pero hay videos, usar el primero
+                                var firstVideoUrl = post.videos[0].filepath;
+                                console.log(post.videos[0].filepath);
+                               
+                                mediaHtml += `
+                                        <video controls  style="cursor: pointer;" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
+                                            <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                            Tu navegador no soporta la reproducción de videos.
+                                        </video>
+                                    `;
 
-                        // Guardar las demás imágenes para mostrarlas en el modal
-                        var modalImagesHtml = '';
-                        post.imagenes.forEach(function(image, index) {
-                            if (index > 0) { // Saltar la primera imagen
-                                //var imageUrl = baseUrl + '/' + image.filepath;
-                                var imageUrl = image.filepath;
-                                modalImagesHtml += `<img src="${imageUrl}" alt="Imagen de la publicación" class="imagen-muestra-en-ambito-publicacion">`;
+                            } else {
+                                // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
+                                mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
                             }
-                        });
 
-                        // Crear el HTML del modal con el sufijo muestra-crea-publicacion
-                        var modalHtml = `
-                            <div class="modal-muestra-crea-publicacion" id="modal-${post.publicacion_id}" style="display:none;">
-                                <div class="modal-content-muestra-crea-publicacion">
-                                    <span class="close-muestra-crea-publicacion" onclick="cerrarModal(${post.publicacion_id})">&times;</span>
-                                    <div class="modal-image-grid-muestra-crea-publicacion">
-                                        ${modalImagesHtml}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-
-                        postDisplayContainer.append(modalHtml);
+                        
                     }
 
                     var estadoClass;

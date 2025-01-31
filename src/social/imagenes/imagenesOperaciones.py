@@ -1,4 +1,5 @@
 import os
+from PIL import Image as PILImage
 from flask import Flask,jsonify, request, render_template,redirect, Blueprint,current_app, url_for,flash
 from utils.db import db
 
@@ -454,15 +455,28 @@ def armar_publicacion_bucket_para_modal(publicacion, layout):
                 if video:
                     filepath = video.filepath
                     video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
-                    video_url = mostrar_from_gcs(video_url)
-                    if video_url:
-                        videos.append({
-                            'id': video.id,
-                            'title': video.title,
-                            'description': video.description,
-                            'filepath': video_url,
-                            'size': video.size
-                        })
+                    
+                    file_data, file_path  = mostrar_from_gcs(video_url)
+                        
+                    if file_data:
+                        # Convertir la imagen a base64 solo si hemos obtenido datos binarios
+                        video_base64 = base64.b64encode(file_data).decode('utf-8')
+                    else:
+                        video_base64 = None
+                    
+                    if filepath.startswith('static/'):
+                        filepath = filepath[len('static/'):]
+                    videos.append({
+                        'id': video.id,
+                        'title': video.title,
+                        'description': video.description,
+                        'filepath': file_path,  # Usar la URL de GCS o el path procesado
+                        'video': video_base64 if file_data else None,  # La imagen en base64
+                        'mimetype': video.mimetype,  # Asignar correctamente el tipo MIME
+                        'randomNumber': video.randomNumber,
+                        'colorDescription': video.colorDescription,
+                        'size': video.size
+                    })
             except Exception as e:
                 logging.error(f"Error al obtener información del video {imagen_video.video_id}: {e}")
 
@@ -537,6 +551,7 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
                 # Obtén el índice del archivo del formulario
                 index = request.form.get(f'mediaFileIndex_{key.split("_")[-1]}')
                 size=request.form.get(f'mediaFileSize_{index}')
+                mimetype = request.form.get(f'mediaFileType_{index}')
                 # Decide si el archivo es una imagen o un video
                 
                 file_ext = filename.rsplit('.', 1)[-1].lower()
@@ -544,23 +559,35 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
                     # Llama a la función de carga de imagen
                     color_texto = request.form.get('selectedColor')
                    
-                    file_path = cargarImagen_crearPublicacion(app,request, file, filename, id_publicacion,color_texto, titulo_publicacion,content_type, userid=user_id,index=index,size=size)
-                                                
+                    file_path = cargarImagen_crearPublicacion(
+                                                        app,
+                                                        '',                                                          
+                                                        filename, 
+                                                        id_publicacion,
+                                                        color_texto, 
+                                                        titulo_publicacion,
+                                                        mimetype,
+                                                        user_id,
+                                                        index,
+                                                        size
+                                                        )
+                    comprimir_imagen_y_subir(file, filename)                         
                     app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
                 elif file_ext in {'mp4', 'avi', 'mov'}:
                     # Llama a la función de carga de video
                     color_texto = request.form.get('selectedColor')   
-                    file_path = cargarVideo_crearPublicacion(app, 
-                                                    request, 
-                                                    file, 
-                                                    filename, 
-                                                    id_publicacion, 
-                                                    color_texto, 
-                                                    titulo_publicacion, 
-                                                    content_type,
-                                                    userid=user_id, 
-                                                    index=index,
-                                                    size=request.form.get(f'mediaFileSize_{index}'))
+                    file_path = cargarVideo_crearPublicacion(
+                                                        app,
+                                                        '',                                                         
+                                                        filename, 
+                                                        id_publicacion,
+                                                        color_texto, 
+                                                        titulo_publicacion,
+                                                        mimetype,
+                                                        user_id,
+                                                        index,
+                                                        size
+                                                        )
 
               
             db.session.close()
@@ -574,9 +601,32 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
         # Manejo de errores
         return jsonify({'success': False, 'message': str(e)}), 500
 
+def comprimir_imagen_y_subir(file, filename):
+    # Ruta donde se guardará temporalmente la imagen comprimida
+    temp_file_path = os.path.join('static', 'uploads', filename)
+    
+    try:
+        # Asegúrate de que la carpeta existe
+        os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
 
+        with PILImage.open(file) as img:
+            img = img.convert('RGB')  # Convertir a RGB si la imagen está en otro formato
+            img.thumbnail((800, 800))  # Reducir el tamaño de la imagen
+            img.save(temp_file_path, format="JPEG", quality=85)  # Guardar como JPEG con calidad 85
 
+        absolute_file_path = os.path.abspath(temp_file_path)
 
+        # Subir la imagen a Google Cloud Storage
+        upload_to_gcs(absolute_file_path, filename)
+
+        # Eliminar el archivo temporal después de subirlo
+        os.remove(absolute_file_path)
+
+        app.logger.info(f"Se cargó la imagen comprimida: {filename}")
+        return True
+    except Exception as e:
+        app.logger.error(f"Error al cargar la imagen {filename}: {e}")
+        return False
 
 # Función para verificar si el archivo es una imagen
 def allowed_image_file(filename):

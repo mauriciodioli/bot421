@@ -170,9 +170,15 @@ def mostrar_from_gcs(blob_name):
     blob = bucket.blob(blob_name)
 
     try:
+       
         # Obtener la URL pública de GCS
         url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name}"
-
+       
+        # Verificar si el archivo existe en GCS
+        if not blob.exists(client):
+            print(f"El archivo {blob_name} no existe en el bucket {BUCKET_NAME}.")
+            image_data = ""
+            return image_data,url_publica
         # Leer la imagen como binario desde GCS
         image_data = blob.download_as_bytes()
 
@@ -193,7 +199,8 @@ def mostrar_from_gcs(blob_name):
             })
 
         # Opcional: establecer un tiempo de expiración (por ejemplo, 1 hora)
-        redis_client.expire(f"image:{blob_name}", 120)  # 3600 segundos = 1 hora
+        redis_client.expire(blob_name, 300)
+ 
         print(f"Imagen y URL obtenidas y guardadas en Redis para el archivo: {blob_name}")
         
         return image_data,url_publica # Devolver los datos binarios de la imagen

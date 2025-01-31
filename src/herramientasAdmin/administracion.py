@@ -2,7 +2,22 @@ from flask import Blueprint, render_template, current_app, session, request, red
 from utils.common import Marshmallow, db, get
 import tokens.token as Token
 import jwt
+import redis
+import os
+from dotenv import load_dotenv
 administracion = Blueprint('administracion', __name__)
+
+
+
+# Configuración de Redis usando las variables de entorno
+redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
+redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
+redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
+
+# Conexión a Redis
+redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
+
+
 
 @administracion.route('/herramientaAdmin-administracion', methods=['POST'])
 def herramientaAdmin_administracion():
@@ -49,6 +64,22 @@ def herramientaAdmin_administracion():
         else:
                 return jsonify({'error': 'Token no válido o expirado'}), 403
 
+    except Exception as e:
+        # Manejo de excepciones generales
+        return jsonify({'error': 'Error en el servidor', 'detalle': str(e)}), 500
+
+
+@administracion.route('/herramientaAdmin-administracion-control-redis/', methods=['GET'])
+def herramientaAdmin_administracion_control_redis():
+    try:
+        
+     # Obtener todas las claves
+        keys = redis_client.keys("*")  # Asegura que estamos obteniendo las claves más recientes
+        for key in keys:
+            ttl = redis_client.ttl(key)
+            print(f"{key} => {ttl if ttl != -1 else 'Sin expiración'} segundos")
+          
+        return render_template('notificaciones/terminoExitoso.html', layout='layout_administracion')    
     except Exception as e:
         # Manejo de excepciones generales
         return jsonify({'error': 'Error en el servidor', 'detalle': str(e)}), 500
