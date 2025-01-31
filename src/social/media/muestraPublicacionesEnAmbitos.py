@@ -117,13 +117,21 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout):
                         # Ajustar la ruta del archivo
                         filepath = video.filepath
                         video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
-                        video_url = mostrar_from_gcs(video_url)
+                        file_data, file_path  = mostrar_from_gcs(video_url)
+                        
+                        if file_data:
+                            # Convertir la imagen a base64 solo si hemos obtenido datos binarios
+                            video_base64 = base64.b64encode(file_data).decode('utf-8')
+                        else:
+                            video_base64 = None
 
                         videos.append({
                             'id': video.id,
                             'title': video.title,
                             'description': video.description,
-                            'filepath': video_url,
+                            'filepath': file_path,  # Usar la URL de GCS o el path procesado
+                            'video': video_base64 if file_data else None,  # La imagen en base64
+                            'mimetype': video.mimetype,  # Asignar correctamente el tipo MIME
                             'randomNumber': video.randomNumber,
                             'colorDescription': video.colorDescription,
                             'size': video.size

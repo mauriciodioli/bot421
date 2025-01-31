@@ -561,7 +561,6 @@ def media_publicaciones_cambiar_estado():
 
 def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):
     size = size
-       
     # Guardar información en la base de datos
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
@@ -899,7 +898,7 @@ def borrado_logicopublicacion(publicacion_id, user_id, estado):
 
 
 
-@publicaciones.route('/social_media_publicaciones_modificar_publicaciones', methods=['POST'])
+@publicaciones.route('/social_media_publicaciones_modificar_publicaciones/', methods=['POST'])
 def publicaciones_modificar_publicaciones():
     try:
         # Obtener los datos del formulario

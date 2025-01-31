@@ -492,7 +492,7 @@ function cerrarModalImagenGrande() {
 
 
   $.ajax({
-    url: '/social_media_publicaciones_modificar_publicaciones', // Cambia esta URL a la ruta correcta en tu servidor
+    url: '/social_media_publicaciones_modificar_publicaciones/', // Cambia esta URL a la ruta correcta en tu servidor
     type: 'POST',
     data: formData,
     contentType: false, // No establecer el Content-Type
@@ -839,12 +839,13 @@ function guardarNuevaImagenVideo(publicacion_id) {
   formData.append('layout', 'layout');
   formData.append('selectedColor', 'red');
   formData.append('publicacion_id', publicacion_id);
+  
 
   // Obtén el token de acceso desde localStorage
   var access_token = localStorage.getItem('access_token');
 
   // Envía la solicitud AJAX con Fetch API
-  fetch('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion', {
+  fetch('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion/', {
       method: 'POST',
       headers: {
           'Authorization': `Bearer ${access_token}`
