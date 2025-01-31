@@ -19,12 +19,13 @@ class Video(db.Model):
     filepath = db.Column(db.String(500), nullable=True)
     randomNumber = db.Column(db.Integer)
     size = db.Column(db.Float)
+    mimetype = db.Column(db.String(255), nullable=True)  # Agregado: video.mimetype,  # Tipo MIME correcto
     
     # Relación con Public_imagen_video
     #publicaciones_video = relationship("Public_imagen_video", back_populates="video")
 
    
-    def __init__(self, user_id, title, description, filepath, randomNumber, colorDescription,size):
+    def __init__(self, user_id, title, description, filepath, randomNumber, colorDescription,size, mimetype):
         self.user_id = user_id
         self.title = title
         self.description = description
@@ -32,9 +33,10 @@ class Video(db.Model):
         self.randomNumber = randomNumber
         self.colorDescription = colorDescription
         self.size = size
+        self.mimetype = mimetype
 
     def __repr__(self):
-        return f"Video(id={self.id}, user_id={self.user_id}, title={self.title}, description={self.description}, filepath={self.filepath}, randomNumber={self.randomNumber}, colorDescription={self.colorDescription}, size={self.size})"
+        return f"Video(id={self.id}, user_id={self.user_id}, title={self.title}, description={self.description}, filepath={self.filepath}, randomNumber={self.randomNumber}, colorDescription={self.colorDescription}, size={self.size}, mimetype={self.mimetype})"
 
     @classmethod
     def crear_tabla_video(cls):
@@ -44,7 +46,7 @@ class Video(db.Model):
 
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id", "title", "description", "filepath", "randomNumber", "colorDescription", "size")
+        fields = ("id", "user_id", "title", "description", "filepath", "randomNumber", "colorDescription", "size", "mimetype")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)

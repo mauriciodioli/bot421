@@ -155,6 +155,10 @@ def mostrar_from_gcs(blob_name):
       
         # Retornar los datos binarios de la imagen
         # Convertir de hexadecimal a binario
+        if hex_data == '':
+            image_data = None
+            file_path = '/'+file_path
+            return image_data,file_path
         image_data = bytes.fromhex(hex_data)
         return image_data,file_path  # Aquí puedes retornar la imagen o procesarla como desees
 
@@ -172,15 +176,22 @@ def mostrar_from_gcs(blob_name):
 
         # Convertir los datos binarios a hexadecimal
         hex_data = image_data.hex()
-
-        # Almacenar en Redis la URL y los datos hexadecimales
-        redis_client.hset(blob_name, mapping={
-            "file_path": url_publica,
-            "file_data": hex_data  # Almacenar los datos como una cadena hexadecimal
-        })
+        
+        if es_video(blob_name):
+             # Almacenar en Redis la URL y los datos hexadecimales
+            redis_client.hset(blob_name, mapping={
+                "file_path": url_publica,
+                "file_data": ""  # Almacenar los datos como una cadena vacia
+            })
+        else:
+            # Almacenar en Redis la URL y los datos hexadecimales
+            redis_client.hset(blob_name, mapping={
+                "file_path": url_publica,
+                "file_data": hex_data  # Almacenar los datos como una cadena hexadecimal
+            })
 
         # Opcional: establecer un tiempo de expiración (por ejemplo, 1 hora)
-        redis_client.expire(f"image:{blob_name}", 3600)  # 3600 segundos = 1 hora
+        redis_client.expire(f"image:{blob_name}", 120)  # 3600 segundos = 1 hora
         print(f"Imagen y URL obtenidas y guardadas en Redis para el archivo: {blob_name}")
         
         return image_data,url_publica # Devolver los datos binarios de la imagen
@@ -191,4 +202,8 @@ def mostrar_from_gcs(blob_name):
     except Exception as e:
         print(f"No se pudo obtener la imagen y URL para el archivo {blob_name}. Error: {e}")
         return None
+    
+def es_video(file_path):
+    mimetype, _ = mimetypes.guess_type(file_path)
+    return mimetype is not None and mimetype.startswith("video/")
 
