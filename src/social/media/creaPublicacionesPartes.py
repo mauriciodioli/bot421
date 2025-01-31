@@ -242,7 +242,8 @@ def social_publicaciones_handle_upload_chunkn():
                             "file_path": final_path,
                             "file_data": f.read().hex()  # Guardar binario como string hexadecimal
                         })
-                    # Configurar expiración de 2 minutos (120 segundos)
+                    
+            # Configurar expiración de 2 minutos (120 segundos) para ambos tipos de archivo
             redis_client.expire(safe_file_name, 120)
             print(f"URL de {safe_file_name} almacenada en Redis: {final_path}")
                 
