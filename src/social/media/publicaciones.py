@@ -35,7 +35,7 @@ from social.buckets.bucketGoog import (
     upload_to_gcs, delete_from_gcs, mostrar_from_gcs,upload_chunk_to_gcs_with_redis
 )
 
-from automatizacion.cargaAutomatica import ArrancaSheduleCargaAutomatica
+
 #import boto3
 #from botocore.exceptions import NoCredentialsError
 
@@ -317,18 +317,22 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
                         filepath = video.filepath
                         video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
                         
-                        cached_video_url = redis_client.get(video_url)  # Busca en Redis la URL almacenada
-                        if cached_video_url:
-                            video_url = cached_video_url  # Decodifica el valor de Redis
+                        file_data, file_path  = mostrar_from_gcs(video_url)
+                        
+                        if file_data:
+                            # Convertir la imagen a base64 solo si hemos obtenido datos binarios
+                            video_base64 = base64.b64encode(file_data).decode('utf-8')
                         else:
-                            video_url = mostrar_from_gcs(video_url)  # Si no está en Redis, busca en GCS
+                            video_base64 = None
                             
                         if video_url:
                             videos.append({
                                 'id': video.id,
                                 'title': video.title,
                                 'description': video.description,
-                                'filepath': video_url,
+                                'video': video_base64 if file_data else None,  # La imagen en base64
+                                'filepath': file_path,
+                                'mimetype': video.mimetype,  # Tipo MIME correcto
                                 'size': video.size
                             })
                 except Exception as e:
@@ -552,199 +556,37 @@ def media_publicaciones_cambiar_estado():
 
 
 
-@publicaciones.route('/social_publicaciones_crear_publicacion/', methods=['POST'])
-def social_publicaciones_crear_publicacion():
-    try:
-          # Obtener el encabezado Authorization
-          # Obtener el encabezado Authorization
-        authorization_header = request.headers.get('Authorization')
-        if not authorization_header:
-            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
-        
-        # Verificar formato del encabezado Authorization
-        parts = authorization_header.split()
-        if len(parts) != 2 or parts[0].lower() != 'bearer':
-            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
-        
-        # Obtener el token de acceso
-        access_token = parts[1]
 
-        # Validar y decodificar el token
-        if Token.validar_expiracion_token(access_token=access_token):  # Asegúrate de que este método acepte el token directamente
-            app = current_app._get_current_object() 
-            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
-            user_id = decoded_token.get("sub")
-            
-            # Obtener datos del formulario
-            post_title = request.form.get('postTitle_creaPublicacion')
-            post_text = request.form.get('postText_creaPublicacion')
-            post_description = request.form.get('postDescription_creaPublicacion')
-            post_ambito = request.form.get('postAmbito_creaPublicacion')
-            post_estado = request.form.get('postEstado_creaPublicacion')        
-            correo_electronico = request.form.get('correo_electronico')
-            color_texto = request.form.get('color_texto')
-            color_titulo = request.form.get('color_titulo')
-            layout = request.form.get('layout')
-            ambito = request.form.get('ambito')
-            
-            total_publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id).count()
-            if total_publicaciones >= 10:
-                return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
-            #  print("Inicio social_publicaciones_crear_publicacion")
-          #  print("Título de la publicación:", post_title)
-          #  print("Texto de la publicación:", post_text)        
-          #  print("Finalizando social_publicaciones_crear_publicacion")
-          
-          
-           # Recibir los metadatos de los archivos
-            uploaded_files_metadata = request.form.getlist('uploadedFilesMetadata')  # Obtiene todos los valores de este campo
-            
-            # Parsear los metadatos JSON de cada archivo
-            file_metadata_list = [json.loads(file_metadata) for file_metadata in uploaded_files_metadata]
-
-            # Ahora `file_metadata_list` contiene los metadatos de los archivos
-            print(file_metadata_list)
-          
-          
-          
-            id_publicacion = guardarPublicacion(request, user_id)
-            # Procesar archivos multimedia
-       # Inicializa una lista para almacenar los datos de los archivos
-            media_files = []
-           
-            for key in request.files:
-                file = request.files[key]
-
-                # Obtén el índice del archivo del formulario
-                index = request.form.get(f'mediaFileIndex_{key.split("_")[-1]}')
-
-                # Verifica si el índice es None o 'None'
-                if index is None or index == 'None':
-                    continue  # Salta el archivo si el índice es None
-
-                # Verifica si el archivo tiene un nombre
-                if file.filename == '':
-                    continue
-
-                # Asegúrate de usar un nombre de archivo seguro
-                filename = secure_filename(file.filename)
-
-                # Decide si el archivo es una imagen o un video
-                file_ext = filename.rsplit('.', 1)[-1].lower()
-                if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
-                    # Llama a la función de carga de imagen
-                    color_texto = request.form.get('color_texto')
-                    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-                    file_path = cargarImagen_crearPublicacion(
-                                                    app, 
-                                                    request, 
-                                                    file, 
-                                                    filename, 
-                                                    id_publicacion, 
-                                                    color_texto, 
-                                                    titulo_publicacion, 
-                                                    userid=user_id, 
-                                                    index=index,
-                                                    size=request.form.get(f'mediaFileSize_{index}'))
-
-
-                    app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
-                elif file_ext in {'mp4', 'avi', 'mov'}:
-                    # Llama a la función de carga de video
-                    color_texto = request.form.get('color_texto')   
-                    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-                    file_path = cargarVideo_crearPublicacion(app, 
-                                                    request, 
-                                                    file, 
-                                                    filename, 
-                                                    id_publicacion, 
-                                                    color_texto, 
-                                                    titulo_publicacion, 
-                                                    userid=user_id, 
-                                                    index=index,
-                                                    size=request.form.get(f'mediaFileSize_{index}'))
-                if file_path:
-                    # Crea el diccionario del archivo solo si la carga fue exitosa
-                    file_data = {
-                        'filename': filename,
-                        'content_type': file.content_type,
-                        'size': request.form.get(f'mediaFileSize_{index}'),
-                        'last_modified': request.form.get(f'mediaFileLastModified_{index}'),
-                        'type': request.form.get(f'mediaFileType_{index}'),
-                        'name': request.form.get(f'mediaFileName_{index}'),
-                        'webkit_relative_path': request.form.get(f'mediaFileWebkitRelativePath_{index}'),
-                        'index': index,
-                        'filepath': file_path  # Agrega la ruta del archivo cargado
-                    }
-                    media_files.append(file_data)
-
-              # Obtener todas las publicaciones del usuario
-            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id,ambito=ambito).all()
-           
-            # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
-            db.session.close()
-            ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
-   
-            #print(publicaciones_data)
-            return jsonify(publicaciones_data)
-    except Exception as e:
-        # Manejo genérico de excepciones, devolver un mensaje de error
-        return jsonify({'error': str(e)}), 500
         
 
-def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, userid=0, index=None, size=0):
+def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):
     size = size
-    
-    # Ruta para guardar la imagen comprimida temporalmente
-    temp_file_path = os.path.join('static', 'uploads', f"{filename}")
-    
-    try:
-        # Comprimir o redimensionar la imagen usando Pillow
-        with PILImage.open(file) as img:
-            img = img.convert("RGB")  # Asegurar que esté en formato RGB
-            img.thumbnail((800, 800))  # Redimensionar (por ejemplo, máximo 800x800 px)
-            img.save(temp_file_path, format="JPEG", quality=85)  # Guardar comprimida al 85% de calidad
-        
-        # Obtener la nueva ruta absoluta del archivo comprimido
-        absolute_file_path = os.path.abspath(temp_file_path)
-        
-        # Subir la imagen comprimida a GCS
-        upload_to_gcs(absolute_file_path, filename)
-        
-        # Eliminar el archivo temporal después de subirlo
-        os.remove(temp_file_path)
-        
-        app.logger.info(f'Se cargó imagen comprimida: {filename}, path: {absolute_file_path}')
-        
-    except Exception as e:
-        app.logger.error(f"Error al comprimir o cargar la imagen: {e}")
-        raise  # Propagar el error
-    
+       
     # Guardar información en la base de datos
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
     
     try:
-        imagen_existente = db.session.query(Image).filter_by(filepath=temp_file_path).first()
+        imagen_existente = db.session.query(Image).filter_by(title=filename).first()
         if imagen_existente:
             cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
-            return temp_file_path
+            return filename
         else:
             nueva_imagen = Image(
                 user_id=userid,
                 title=nombre_archivo,
                 description=descriptionImagen,
                 colorDescription=color_texto,
-                filepath=temp_file_path,
+                filepath=filename,
                 randomNumber=randomNumber_,
-                size=float(size)
+                size=float(size),
+                mimetype=mimetype
             )
             db.session.add(nueva_imagen)
             db.session.commit()
             cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
-            return temp_file_path
+            return filename
     except Exception as db_error:
         app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
         db.session.rollback()  # Deshacer cambios en caso de error
@@ -754,71 +596,45 @@ def cargarImagen_crearPublicacion(app, request, file, filename, id_publicacion, 
       
 
 
-def cargarVideo_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, userid=0, index=None, size=0):  
+def cargarVideo_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):  
     print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
-   
-    file_path = os.path.join('static', 'uploads', filename)
-    
-    #file_path = file_path.replace('\\', '/')
-   
-    size = size  # Obtener tamaño del archivo usando el índice
-    file.save(file_path)
-    # Subir el archivo a GCS
-    try:
-        absolute_file_path = os.path.abspath(file_path)  # Obtener la ruta absoluta 
-        upload_to_gcs(absolute_file_path, filename)  # `file_path` es el path local, `filename` es el nombre en GCS
-        eliminar_desde_archivo(filename, None)
-    except Exception as e:
-        print(f"No se pudo subir el archivo {filename} a GCS. Error: {e}")
-    else:
-        print(f"Archivo {filename} subido a GCS con éxito.")
+   # Guardar información en la base de datos
     nombre_archivo = filename
-    description_video = titulo_publicacion
-    randomNumber_ = random.randint(1, 1000000)  # Generar un número aleatorio entre 1 y 1,000,000
-
-    print(f"Authorization header: {request.headers.get('Authorization')}")
-
-    authorization_header = request.headers.get('Authorization')
-    if not authorization_header:
-        print("Authorization header is empty")
-        return jsonify({'error': 'Token de acceso no proporcionado'}), 401
-    parts = authorization_header.split()
-    if len(parts) != 2 or parts[0].lower() != 'bearer':
-        print("Invalid authorization header format")
-        return jsonify({'error': 'Formato de token de acceso no válido'}), 401
-
-    access_token = parts[1]
-    app = current_app._get_current_object()
-    userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+    descriptionVideo = titulo_publicacion
+    randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
     
-    print(f"Decoded user ID: {userid}")
-    
-    # Sube el video a S3
-    #file_path_s3 = upload_to_s3(file, BUCKET_NAME, f"videos/{filename}")
-    #if file_path_s3:
-    video_existente = db.session.query(Video).filter_by(filepath=file_path,size=size).first()
+    try:
+        video_existente = db.session.query(Video).filter_by(title=filename,size=size).first()
 
-    if video_existente:
-        print("Video already exists, saving relation to publicacion_media")
-        # Si la imagen ya existe, solo guarda la relación en publicacion_media
-        cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
-        return file_path
-    else:
-        print("Creating new video")
-        nuevo_video = Video(
-            user_id=userid,
-            title=nombre_archivo,
-            description=description_video,
-            colorDescription=color_texto,
-            filepath=file_path,
-            randomNumber=randomNumber_,
-            size=float(size)
-        )
-        db.session.add(nuevo_video)
-        db.session.commit()
-        print("Saving relation to publicacion_media")
-        cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
-    return file_path
+        if video_existente:
+            print("Video already exists, saving relation to publicacion_media")
+            # Si la imagen ya existe, solo guarda la relación en publicacion_media
+            cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
+            return filename
+        else:
+            print("Creating new video")
+            nuevo_video = Video(
+                user_id=userid,
+                title=nombre_archivo,
+                description=descriptionVideo,
+                colorDescription=color_texto,
+                filepath=filename,
+                randomNumber=randomNumber_,
+                size=float(size),
+                mimetype=mimetype
+            )
+            db.session.add(nuevo_video)
+            db.session.commit()
+            print("Saving relation to publicacion_media")
+            cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
+        return filename
+    except Exception as db_error:
+        app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
+        db.session.rollback()  # Deshacer cambios en caso de error
+        db.session.close()  # Asegurarse de cerrar la sesión incluso si ocurre un error
+
+        raise  # Propagar el error para que pueda ser manejado por capas superiores
+
 
 
 def allowed_file(filename):

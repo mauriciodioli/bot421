@@ -36,6 +36,8 @@ import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from publicaciones import armar_publicacion_bucket_para_dpi
+from social.media.publicaciones import cargarImagen_crearPublicacion
+from social.media.publicaciones import cargarVideo_crearPublicacion
 import redis
 import re
 import logging
@@ -44,6 +46,7 @@ import tokens.token as Token
 from social.buckets.bucketGoog import (
     upload_to_gcs, delete_from_gcs, mostrar_from_gcs,upload_chunk_to_gcs_with_redis
 )
+from automatizacion.cargaAutomatica import ArrancaSheduleCargaAutomatica
 
 #import boto3
 #from botocore.exceptions import NoCredentialsError
@@ -153,77 +156,6 @@ def armar_publicacion_bucket(publicaciones):
 
 
 
-def armar_publicacion(publicaciones):
-    publicaciones_data = []
-    
-    # Obtener la ruta completa de la carpeta 'static/uploads'
-    uploads_folder = os.path.join(current_app.root_path, 'static', 'uploads')
-
-    # Obtener todas las imágenes en la carpeta 'static/uploads'
-    image_files = [file for file in os.listdir(uploads_folder) if file.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-
-    # Crear las rutas completas de las imágenes sin codificación de caracteres
-    image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
-
-    for publicacion in publicaciones:
-        # Obtener todas las imágenes y videos asociados a esta publicación
-        imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
-        
-        imagenes = []
-        videos = []
-
-        for iv in imagenes_videos:
-            # Obtener la información de las imágenes
-            if iv.imagen_id:
-                imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
-                if imagen:
-                    imagenes.append({
-                        'id': imagen.id,
-                        'title': imagen.title,
-                        'description': imagen.description,
-                        'filepath': imagen.filepath,
-                        'randomNumber': imagen.randomNumber,  
-                        'size': imagen.size                      
-                    })
-
-            # Obtener la información de los videos
-            if iv.video_id:
-                video = db.session.query(Video).filter_by(id=iv.video_id).first()
-                if video:
-                    videos.append({
-                        'id': video.id,
-                        'title': video.title,
-                        'description': video.description,
-                        'filepath': video.filepath,
-                        'size': video.size
-                    })
-
-        # Ajustar las rutas de archivos según el sistema operativo
-        path_separator = '/'
-        for imagen in imagenes:
-            imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
-        
-        for video in videos:
-            video['filepath'] = video['filepath'].replace('\\', path_separator)
-
-        # Agregar la publicación con sus imágenes y videos al diccionario
-        publicaciones_data.append({
-            'publicacion_id': publicacion.id,
-            'user_id': publicacion.user_id,
-            'titulo': publicacion.titulo,
-            'texto': publicacion.texto,
-            'ambito': publicacion.ambito,
-            'correo_electronico': publicacion.correo_electronico,
-            'descripcion': publicacion.descripcion,
-            'color_texto': publicacion.color_texto,
-            'color_titulo': publicacion.color_titulo,
-            'fecha_creacion': publicacion.fecha_creacion, 
-            'estado': publicacion.estado,           
-            'imagenes': imagenes,
-            'videos': videos
-        })
-
-    return publicaciones_data
 
 
 @creaPublicacionesPartes.route('/social_publicaciones_handle_upload_chunkn/', methods=['POST'])
@@ -271,7 +203,7 @@ def social_publicaciones_handle_upload_chunkn():
         # Almacenar el fragmento
         safe_file_name = os.path.basename(file_name)
         file_path = os.path.join('static', 'uploads', f"{safe_file_name}")  # Ruta temporal para archivo
-
+        
         with open(file_path, 'ab') as f:
             f.seek(chunk_start)
             f.write(chunk.read())
@@ -293,25 +225,28 @@ def social_publicaciones_handle_upload_chunkn():
             final_path = os.path.join('static', 'uploads', f"{safe_file_name}")  # Ruta final del archivo
             os.rename(file_path, final_path)
             
-            comprimir_imagen(file_path,safe_file_name, 85)
-           # comprimir_video_ffmpeg(file_path,safe_file_name,0.5)
-          # final_path= 'static/uploads/WhatsApp_Video_2024-12-04_at_18.26.12.mp4'
-          #safe_file_name ='WhatsApp_Video_2024-12-04_at_18.26.12.mp4'
-            # Guardar la URL en Redis con expiración de 1 hora
-            # Guardar el archivo en Redis con expiración de 1 hora
-            with open(final_path, "rb") as f:
-                redis_client.hset(safe_file_name, mapping={
-                        "file_path": final_path,
-                        "file_data": f.read().hex()  # Guardar binario como string hexadecimal
-                    })
-            print(f"URL de {safe_file_name} almacenada en Redis: {final_path}")
+            if es_video(file_path):
+                with open(final_path, "rb") as f:
+                    redis_client.hset(safe_file_name, mapping={
+                            "file_path": final_path,
+                            "file_data": "" # Guardar binario como string hexadecimal
+                        })
+              
+            else:
+                comprimir_imagen(file_path,safe_file_name, 85)
+            # comprimir_video_ffmpeg(file_path,safe_file_name,0.5)
             
-           # Subir la imagen comprimida a GCS
-          #  upload_to_gcs(file_path, safe_file_name)
-            # Eliminar el archivo temporal
-           # if os.path.exists(file_path):
-            #    os.remove(file_path)
-
+                # Guardar el archivo en Redis con expiración de 2 minutos
+                with open(final_path, "rb") as f:
+                    redis_client.hset(safe_file_name, mapping={
+                            "file_path": final_path,
+                            "file_data": f.read().hex()  # Guardar binario como string hexadecimal
+                        })
+                    # Configurar expiración de 2 minutos (120 segundos)
+            redis_client.expire(safe_file_name, 120)
+            print(f"URL de {safe_file_name} almacenada en Redis: {final_path}")
+                
+        
             return jsonify({'message': 'Archivo recibido completamente', 'path': final_path})
 
         return jsonify({'message': 'Fragmento recibido con éxito'})
@@ -360,10 +295,6 @@ def social_publicaciones_crear_publicacion_partes():
             total_publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id).count()
             if total_publicaciones >= 10:
                 return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
-            #  print("Inicio social_publicaciones_crear_publicacion")
-          #  print("Título de la publicación:", post_title)
-          #  print("Texto de la publicación:", post_text)        
-          #  print("Finalizando social_publicaciones_crear_publicacion")
           
           
            # Recibir los metadatos de los archivos
@@ -408,6 +339,7 @@ def social_publicaciones_crear_publicacion_partes():
                                                     id_publicacion, 
                                                     color_texto, 
                                                     titulo_publicacion, 
+                                                    content_type,
                                                     userid=user_id, 
                                                     index=index,
                                                     size=size)
@@ -425,9 +357,11 @@ def social_publicaciones_crear_publicacion_partes():
                                                         id_publicacion, 
                                                         color_texto, 
                                                         titulo_publicacion, 
+                                                        content_type,
                                                         userid=user_id, 
                                                         index=index,
-                                                        size=size)
+                                                        size=size
+                                                        )
                 
 
               # Obtener todas las publicaciones del usuario
@@ -436,6 +370,8 @@ def social_publicaciones_crear_publicacion_partes():
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
             db.session.close()
+            ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
+   
             #print(publicaciones_data)
             return jsonify(publicaciones_data)
     except Exception as e:
@@ -443,79 +379,6 @@ def social_publicaciones_crear_publicacion_partes():
         return jsonify({'error': str(e)}), 500
         
 
-def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, userid=0, index=None, size=0):
-    size = size
-       
-    # Guardar información en la base de datos
-    nombre_archivo = filename
-    descriptionImagen = titulo_publicacion
-    randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
-    
-    try:
-        imagen_existente = db.session.query(Image).filter_by(title=filename).first()
-        if imagen_existente:
-            cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
-            return filename
-        else:
-            nueva_imagen = Image(
-                user_id=userid,
-                title=nombre_archivo,
-                description=descriptionImagen,
-                colorDescription=color_texto,
-                filepath=filename,
-                randomNumber=randomNumber_,
-                size=float(size)
-            )
-            db.session.add(nueva_imagen)
-            db.session.commit()
-            cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
-            return filename
-    except Exception as db_error:
-        app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
-        db.session.rollback()  # Deshacer cambios en caso de error
-        db.session.close()  # Asegurarse de cerrar la sesión incluso si ocurre un error
-
-        raise  # Propagar el error para que pueda ser manejado por capas superiores
-      
-
-
-def cargarVideo_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, userid=0, index=None, size=0):  
-    print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
-   # Guardar información en la base de datos
-    nombre_archivo = filename
-    descriptionVideo = titulo_publicacion
-    randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
-    
-    try:
-        video_existente = db.session.query(Video).filter_by(title=filename,size=size).first()
-
-        if video_existente:
-            print("Video already exists, saving relation to publicacion_media")
-            # Si la imagen ya existe, solo guarda la relación en publicacion_media
-            cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
-            return filename
-        else:
-            print("Creating new video")
-            nuevo_video = Video(
-                user_id=userid,
-                title=nombre_archivo,
-                description=descriptionVideo,
-                colorDescription=color_texto,
-                filepath=filename,
-                randomNumber=randomNumber_,
-                size=float(size)
-            )
-            db.session.add(nuevo_video)
-            db.session.commit()
-            print("Saving relation to publicacion_media")
-            cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
-        return filename
-    except Exception as db_error:
-        app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
-        db.session.rollback()  # Deshacer cambios en caso de error
-        db.session.close()  # Asegurarse de cerrar la sesión incluso si ocurre un error
-
-        raise  # Propagar el error para que pueda ser manejado por capas superiores
 
 
 def allowed_file(filename):
@@ -636,62 +499,6 @@ def comprimir_imagen(output_path,file_name, quality=85):
     return output_path
 
 
-
-def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):
-    # Verificar si el archivo existe antes de continuar
-    if not os.path.exists(output_path):
-        print(f"El archivo {output_path} no existe.")
-        return False
-
-    # Verificar que el archivo sea un video
-    content_type, _ = mimetypes.guess_type(file_name)
-    if not content_type or not content_type.startswith('video/'):
-        print(f"El archivo {file_name} no es un video.")
-        return False
-
-    try:
-        # Obtener el tamaño original del archivo
-        original_size = os.path.getsize(output_path)
-        if original_size == 0:
-            print("Error: El archivo original está vacío.")
-            return False
-
-        # Obtener el nombre del archivo sin la extensión
-        base_name, ext = os.path.splitext(file_name)
-
-        # Crear una ruta temporal con un sufijo para el archivo comprimido
-        temp_output_path = os.path.join('static/uploads', f"{base_name}_compressed{ext}")
-
-        # Comprimir el video para redes sociales (manteniendo la relación de aspecto)
-        ffmpeg.input(output_path).output(
-                temp_output_path, 
-                vcodec='libx264', 
-                acodec='copy',  # Copia el audio original sin modificarlo
-                crf=25,
-                preset='medium',
-                vf="scale='if(gt(iw/ih,16/9),1280,-2)':'if(gt(iw/ih,16/9),-2,720)', pad=1280:720:(ow-iw)/2:(oh-ih)/2"
-            ).run(overwrite_output=True)
-
-
-        # Verificar el tamaño del archivo comprimido
-        compressed_size = os.path.getsize(temp_output_path)
-        reduction_percentage = (1 - (compressed_size / original_size)) * 100
-
-        print(f"Tamaño original: {original_size} bytes, Tamaño comprimido: {compressed_size} bytes")
-        print(f"Reducción del tamaño: {reduction_percentage:.2f}%")
-
-        if compressed_size < original_size:
-            os.replace(temp_output_path, output_path)
-            print("Compresión exitosa.")
-            return output_path
-        else:
-            os.remove(temp_output_path)
-            print("No se logró comprimir el archivo.")
-            return False
-
-    except ffmpeg.Error as e:
-        print(f"Error al comprimir el video: {e}")
-        return False
-    except Exception as e:
-        print(f"Error inesperado: {e}")
-        return False
+def es_video(file_path):
+    mimetype, _ = mimetypes.guess_type(file_path)
+    return mimetype is not None and mimetype.startswith("video/")

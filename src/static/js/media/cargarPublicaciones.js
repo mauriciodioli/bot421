@@ -275,8 +275,7 @@ $(document).ready(function () {
   var progressText = $("#progressText");
 
   $("#fileInput_creaPublicacion").on("change", function (event) {
-    var files = event.target.files;
-    storedFiles = Array.from(files); // Convertimos a array para trabajar fácilmente
+    storedFiles = Array.from(event.target.files);
   });
 
   $("#createPostForm_creaPublicacion").on("submit", function (event) {
@@ -284,90 +283,73 @@ $(document).ready(function () {
     document.getElementById("loader-modal-crear-publicacion").style.display = "block";
 
     var access_token = localStorage.getItem("access_token");
-    var totalSize = storedFiles.reduce((sum, file) => sum + file.size, 0); // Tamaño total
-    var uploadedSize = 0; // Tamaño ya cargado
+    var totalSize = storedFiles.reduce((sum, file) => sum + file.size, 0);
+    var uploadedSize = 0;
+    var minDisplayTime = 500; // Tiempo mínimo en ms para que la barra sea visible
+    var startTime = Date.now();
 
-    // Mostrar el splash
     $(".splashCarga").show();
 
-    // Función para subir un archivo fragmentado
     async function uploadChunk(file, start) {
       try {
         var end = Math.min(start + CHUNK_SIZE, file.size);
         var chunk = file.slice(start, end);
-
-        var isLastChunk = end === file.size; // Verifica si es el último fragmento
-
-        // Determinar el tipo MIME (content_type) basado en el tipo del archivo
-        var content_type = file.type || "application/octet-stream"; // Si no se detecta, usa un valor predeterminado
+        var isLastChunk = end === file.size;
 
         var formData = new FormData();
         formData.append("chunk", chunk);
         formData.append("fileName", file.name);
         formData.append("fileSize", file.size);
-        formData.append("fileType", file.type); // Tipo de archivo detectado
+        formData.append("fileType", file.type);
         formData.append("chunkStart", start);
-        formData.append("isLastChunk", isLastChunk); // Indicador para el servidor
-        formData.append("content_type", content_type); // Pasar el tipo de contenido correcto
+        formData.append("isLastChunk", isLastChunk);
+        formData.append("content_type", file.type || "application/octet-stream");
 
-       // console.log(...formData.entries());
-              try {
-                return await $.ajax({
-                  url: "/social_publicaciones_handle_upload_chunkn/",
-                  type: "POST",
-                  data: formData,
-                  processData: false,
-                  contentType: false,
-                  headers: {
-                    Authorization: "Bearer " + access_token,
-                  },
-                });
-              } catch (error) {
-                modal.style.display = "none";  
-                $(".splashCarga").hide();   
-                console.error(`Error al cargar el fragmento del archivo "${file.name}"`, error);
-                throw error; // Relanzar para que el flujo principal detecte errores
-              }
+        await $.ajax({
+          url: "/social_publicaciones_handle_upload_chunkn/",
+          type: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          headers: { Authorization: "Bearer " + access_token },
+        });
 
-          } catch (error) {
-            
-            modal.style.display = "none";  
-            finalizarCarga();
-            $(".splashCarga").hide();   
-            console.error(`Error al cargar el fragmento del archivo "${file.name}":`, error.responseText || error);
-            throw error; // Repropaga el error
-        }
-    }
+        uploadedSize += chunk.size;
 
-    // Subir un archivo completo en fragmentos
-    async function uploadFile(file) {
-      var start = 0;
-
-      while (start < file.size) {
-        await uploadChunk(file, start);
-        start += CHUNK_SIZE;
-        uploadedSize += Math.min(CHUNK_SIZE, file.size - start);
-
-        // Actualizar el progreso
+        // Actualizar la barra de progreso con el progreso total de todos los archivos
         var progress = Math.min((uploadedSize / totalSize) * 100, 100);
         progressBar.css("width", progress + "%");
         progressText.text(`Cargando... ${progress.toFixed(2)}%`);
+
+      } catch (error) {
+        $(".splashCarga").hide();
+        console.error(`Error al cargar el fragmento del archivo "${file.name}"`, error);
+        throw error;
       }
     }
 
-    // Subir todos los archivos
+    async function uploadFile(file) {
+      var start = 0;
+      while (start < file.size) {
+        await uploadChunk(file, start);
+        start += CHUNK_SIZE;
+      }
+    }
+
     (async function uploadAllFiles() {
       try {
         for (let file of storedFiles) {
           await uploadFile(file);
         }
 
-       
-       
-        // Llamar a la función createPost después de la carga
-        createPost(event,storedFiles); // Llamar a la función createPost
+        let elapsedTime = Date.now() - startTime;
+        if (elapsedTime < minDisplayTime) {
+          await new Promise(resolve => setTimeout(resolve, minDisplayTime - elapsedTime));
+        }
+
+        createPost(event, storedFiles);
       } catch (error) {
-        $(".splashCarga").hide(); // Asegurar que se oculte incluso en errores
+        $(".splashCarga").hide();
         console.error("Error al cargar archivos:", error);
         alert("Hubo un error durante la carga");
       } finally {
