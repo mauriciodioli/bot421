@@ -12,7 +12,7 @@ from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.usuario import Usuario
 from social.media.publicaciones import cargarImagen_crearPublicacion
 from social.media.publicaciones import cargarVideo_crearPublicacion
-
+from automatizacion.cargaAutomatica import ArrancaSheduleCargaAutomatica_video_by_name
 
 from social.buckets.bucketGoog import upload_to_gcs
 from social.buckets.bucketGoog import (
@@ -505,7 +505,7 @@ def armar_publicacion_bucket_para_modal(publicacion, layout):
 
 
 
-@imagenesOperaciones.route('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion', methods=['POST'])
+@imagenesOperaciones.route('/imagenesOperaciones-cargarImagenVideosAgregados-publicacion/', methods=['POST'])
 def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
     try:
         # Obtén los campos adicionales del formulario
@@ -588,7 +588,11 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
                                                         index,
                                                         size
                                                         )
-
+                    
+                    if comprimir_imagen_y_subir_video(file, filename):
+                        ArrancaSheduleCargaAutomatica_video_by_name(filename)
+                        
+                    app.logger.info(f'Se cargó un video: {filename}, índice: {index}')
               
             db.session.close()
                 #print(publicaciones_data)
@@ -600,6 +604,30 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
     except Exception as e:
         # Manejo de errores
         return jsonify({'success': False, 'message': str(e)}), 500
+
+def comprimir_imagen_y_subir_video(file, filename):
+    
+    if not file:
+        app.logger.error("No se encontró el archivo en la solicitud.")
+        return False
+    
+    # Ruta donde se guardará temporalmente la imagen comprimida
+    temp_file_path = os.path.join('static', 'uploads', filename)
+    
+    try:
+        # Asegúrate de que la carpeta existe
+        os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
+
+        
+        absolute_file_path = os.path.abspath(temp_file_path)
+        
+        file.save(temp_file_path)  # Guarda el archivo en la ubicación final
+        return True
+    
+    except OSError as e:
+        app.logger.error(f"Error al crear la carpeta: {e}")
+        return False
+    
 
 def comprimir_imagen_y_subir(file, filename):
     # Ruta donde se guardará temporalmente la imagen comprimida
