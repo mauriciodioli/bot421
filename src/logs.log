@@ -1323,3 +1323,88 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+mauriciodioli@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Error al interactuar con la base de datos: (pymysql.err.DataError) (1366, "Incorrect integer value: 'red' for column 'publicacion_id' at row 1")
+[SQL: INSERT INTO publicacion_imagen_video (publicacion_id, imagen_id, video_id, fecha_creacion, media_type, size) VALUES (%(publicacion_id)s, %(imagen_id)s, %(video_id)s, %(fecha_creacion)s, %(media_type)s, %(size)s)]
+[parameters: {'publicacion_id': 'red', 'imagen_id': 0, 'video_id': 76, 'fecha_creacion': datetime.datetime(2025, 2, 1, 5, 30, 46, 909814), 'media_type': 'video', 'size': 0.0}]
+(Background on this error at: https://sqlalche.me/e/14/9h9h)
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó un video: WhatsApp_Video_2024-12-04_at_18.26.14.mp4, índice: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó un video: WhatsApp_Video_2024-12-04_at_18.26.01.mp4, índice: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó un video: WhatsApp_Video_2024-12-04_at_18.26.01.mp4, índice: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó un video: WhatsApp_Video_2024-12-04_at_18.26.01.mp4, índice: 0
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Se cargó un video: WhatsApp_Video_2024-12-04_at_18.25.57.mp4, índice: 0

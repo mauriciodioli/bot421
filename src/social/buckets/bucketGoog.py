@@ -101,21 +101,24 @@ def upload_to_gcs(file_path_local, blob_name_gcs):
     bucket = client.get_bucket(BUCKET_NAME)
     blob = bucket.blob(blob_name_gcs)
     blob.chunk_size = 1 * 1024 * 1024  # 1MB chunks
-    # Intentar subir el archivo al bucket
+
+    # URL pública del archivo en GCS
+    url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name_gcs}"
+
+    # Verificar si el archivo ya existe en GCS
+    if blob.exists():
+        print(f"El archivo {blob_name_gcs} ya existe en el bucket {BUCKET_NAME}.")
+        return url_publica  # Devolver la URL directamente si ya está en GCS
+
+    # Subir el archivo si no existe
     try:
-        blob.upload_from_filename(file_path_local)
+        blob.upload_from_filename(file_path_local, timeout=300)  # 5 minutos
+        print(f"Archivo {file_path_local} subido a {blob_name_gcs} exitosamente.")
     except Exception as e:
         print(f"No se pudo subir el archivo {file_path_local} a {blob_name_gcs}. Error: {e}")
         raise
-    else:
-        print(f"Archivo {file_path_local} subido a {blob_name_gcs} exitosamente.")
 
-        # Generar la URL pública del archivo
-        url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name_gcs}"
-
-       
-        return url_publica
-
+    return url_publica  # Devolver la URL después de subirlo
 
 
 

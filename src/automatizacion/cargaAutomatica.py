@@ -81,7 +81,32 @@ def ArrancaSheduleCargaAutomatica(id_publicacion):
         hilo = threading.Thread(target=delayed_execution)
         hilo.start()
         
-        
+def ArrancaSheduleCargaAutomatica_video_by_name(blob_name_gcs):
+    # Asegúrate de que este código esté dentro del contexto de la aplicación
+       
+        """ Inicia un hilo que, después de 2 minutos, sube los archivos a Google Cloud Storage. """
+        def delayed_execution():
+            time.sleep(17)  # Esperar 2 minutos
+          
+            # Obtener la nueva ruta absoluta del archivo comprimido
+            temp_file_path = os.path.join('static', 'uploads', f"{blob_name_gcs}")
+            absolute_file_path = os.path.abspath(temp_file_path)
+            comprimir_video_ffmpeg(absolute_file_path,blob_name_gcs,0.5)
+            url = upload_to_gcs(absolute_file_path, blob_name_gcs)                
+            # Liberar la memoria de Redis
+            redis_client.hdel(blob_name_gcs, "file_path", "file_data")  # Eliminar los datos en Redis
+            print(f"Memoria de Redis liberada para la clave ")
+            # Eliminar el archivo temporal después de la carga
+            if os.path.exists(absolute_file_path):
+                os.remove(absolute_file_path)
+                print(f"Archivo temporal eliminado: {absolute_file_path}")
+            print("Todas las imágenes han sido subidas a Google Cloud Storage.")
+
+        # Crear un thread en segundo plano
+        # Crear y arrancar el hilo en segundo plano (sin daemon para que termine antes de finalizar la aplicación)
+        hilo = threading.Thread(target=delayed_execution)
+        hilo.start()
+                
 
 
 def comprimir_video_ffmpeg(output_path, file_name, compression_ratio=0.7):

@@ -595,7 +595,7 @@ def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_
       
 
 
-def cargarVideo_crearPublicacion(app, request, file, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):  
+def cargarVideo_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):
     print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
    # Guardar información en la base de datos
     nombre_archivo = filename
@@ -608,6 +608,7 @@ def cargarVideo_crearPublicacion(app, request, file, filename, id_publicacion, c
         if video_existente:
             print("Video already exists, saving relation to publicacion_media")
             # Si la imagen ya existe, solo guarda la relación en publicacion_media
+            
             cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
             return filename
         else:
