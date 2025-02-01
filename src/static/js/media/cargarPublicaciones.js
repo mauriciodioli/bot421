@@ -531,7 +531,7 @@ function createPost(event,storedFiles) {
            // splash.style.display = 'none'; // Ocultar el splash al terminar
             //modal.style.display = "none";
             // En la consola del navegador
-            modal.style.display = "none";  
+            $(".splashCarga").hide();
             console.log(xhr.status); // Imprime el código de estado HTTP
             console.log(xhr.responseText); // Imprime el cuerpo de la respuesta
             console.log(error); // Imprime el mensaje de error
@@ -589,6 +589,12 @@ function createPost(event,storedFiles) {
     document.querySelector(".custom-dropdown-menu").innerHTML = '';
 
     console.log("Modal vaciado y cerrado correctamente.");
+
+    var mediaContainer = document.getElementById('mediaContainer_creaPublicacion');
+    while (mediaContainer.firstChild) {
+        mediaContainer.removeChild(mediaContainer.firstChild);
+    }
+
 }
 
 

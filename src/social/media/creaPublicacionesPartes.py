@@ -41,6 +41,9 @@ from social.media.publicaciones import cargarVideo_crearPublicacion
 import redis
 import re
 import logging
+from google.cloud import storage
+from datetime import datetime, timedelta
+from datetime import timedelta
 import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
 from social.buckets.bucketGoog import (
@@ -58,8 +61,10 @@ creaPublicacionesPartes = Blueprint('creaPublicacionesPartes',__name__)
 
 # Configura el cliente de S3
 #s3 = boto3.client('s3', aws_access_key_id='TU_ACCESS_KEY', aws_secret_access_key='TU_SECRET_KEY', region_name='tu-region')
+# Nombre del bucket
+BUCKET_NAME = os.environ.get('BUCKET_NAME')  # Asegúrate de que este nombre coincide con tu bucket
 
-BUCKET_NAME = 'nombre-de-tu-bucket'
+
 
 
 # Configuración de Redis usando las variables de entorno
@@ -76,6 +81,74 @@ try:
     print("Conexión a Redis exitosa")
 except redis.ConnectionError:
     print("No se pudo conectar a Redis")
+
+
+
+
+
+@creaPublicacionesPartes.route('/creaPublicacionesPartes_testCgs/')
+def creaPublicacionesPartes_testCgs():
+    return render_template('administracion/testCGS.html', layout='layout_administracion')
+
+
+def generate_signed_url(blob_name, content_type, expiration=timedelta(hours=1)):
+    """Genera una URL firmada para subir archivos a GCS"""
+    client = storage.Client()
+    bucket = client.get_bucket(BUCKET_NAME)
+    blob = bucket.blob(blob_name)
+    
+    # Generar la URL firmada
+    url = blob.generate_signed_url(
+        expiration=expiration,
+        version="v4",  # Asegúrate de usar la versión correcta de la API
+        method="PUT",
+        content_type=content_type
+    )
+    
+    return url
+
+@creaPublicacionesPartes.route('/get_signed_url/', methods=['POST'])
+def get_signed_url():
+    """Devuelve una URL firmada para subir archivos"""
+    data = request.json
+    file_name = data.get("file_name")  # Nombre del archivo
+    file_type = data.get("file_type")  # MIME type (image/jpeg, video/mp4, etc.)
+
+    if not file_name or not file_type:
+        return jsonify({"error": "file_name y file_type son requeridos"}), 400
+
+    signed_url = generate_signed_url(file_name, file_type)
+    return jsonify({"signedUrl": signed_url})  # Devolver la URL firmada como respuesta
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def armar_publicacion_bucket(publicaciones):
     publicaciones_data = []
@@ -294,7 +367,7 @@ def social_publicaciones_crear_publicacion_partes():
             ambito = request.form.get('ambito')
             
             total_publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id).count()
-            if total_publicaciones >= 10:
+            if total_publicaciones >= 20:
                 return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
           
           
@@ -351,17 +424,17 @@ def social_publicaciones_crear_publicacion_partes():
                     # Llama a la función de carga de video
                     color_texto = request.form.get('color_texto')   
                     titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-                    file_path = cargarVideo_crearPublicacion(app, 
-                                                        app, 
-                                                        request, 
+                    file_path = cargarVideo_crearPublicacion(
+                                                        app,
+                                                        '',                                                         
                                                         filename, 
-                                                        id_publicacion, 
+                                                        id_publicacion,
                                                         color_texto, 
-                                                        titulo_publicacion, 
+                                                        titulo_publicacion,
                                                         content_type,
-                                                        userid=user_id, 
-                                                        index=index,
-                                                        size=size
+                                                        user_id,
+                                                        index,
+                                                        size
                                                         )
                 
 
