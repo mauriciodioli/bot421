@@ -270,7 +270,6 @@
 /**************************************************************************/
 $(document).ready(function () {
   var storedFiles = [];
-  var CHUNK_SIZE = 1024 * 1024; // 1 MB por fragmento
   var progressBar = $("#progressBar");
   var progressText = $("#progressText");
 
@@ -285,77 +284,91 @@ $(document).ready(function () {
     var access_token = localStorage.getItem("access_token");
     var totalSize = storedFiles.reduce((sum, file) => sum + file.size, 0);
     var uploadedSize = 0;
-    var minDisplayTime = 500; // Tiempo mínimo en ms para que la barra sea visible
-    var startTime = Date.now();
 
     $(".splashCarga").show();
 
-    async function uploadChunk(file, start) {
+    async function uploadFileToGCS(file) {
       try {
-        var end = Math.min(start + CHUNK_SIZE, file.size);
-        var chunk = file.slice(start, end);
-        var isLastChunk = end === file.size;
-
-        var formData = new FormData();
-        formData.append("chunk", chunk);
-        formData.append("fileName", file.name);
-        formData.append("fileSize", file.size);
-        formData.append("fileType", file.type);
-        formData.append("chunkStart", start);
-        formData.append("isLastChunk", isLastChunk);
-        formData.append("content_type", file.type || "application/octet-stream");
-
-        await $.ajax({
-          url: "/social_publicaciones_handle_upload_chunkn/",
-          type: "POST",
-          data: formData,
-          processData: false,
-          contentType: false,
-          headers: { Authorization: "Bearer " + access_token },
-        });
-
-        uploadedSize += chunk.size;
-
-        // Actualizar la barra de progreso con el progreso total de todos los archivos
-        var progress = Math.min((uploadedSize / totalSize) * 100, 100);
-        progressBar.css("width", progress + "%");
-        progressText.text(`Cargando... ${progress.toFixed(2)}%`);
-
+          // 1. Obtener una URL firmada desde el backend
+          let response = await fetch("/get_signed_url/", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + access_token,
+              },
+              body: JSON.stringify({
+                  file_name: file.name,
+                  file_type: file.type,
+              }),
+          });
+  
+          let data = await response.json();
+          if (!data.signedUrl) {
+              throw new Error("No se recibió una URL firmada válida");
+          }
+  
+          let signedUrl = data.signedUrl;
+  
+          // 2. Subir el archivo directamente a GCS usando XMLHttpRequest (para ver el progreso)
+          return new Promise((resolve, reject) => {
+              let xhr = new XMLHttpRequest();
+              xhr.open("PUT", signedUrl, true);
+              xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+  
+              xhr.upload.onprogress = function (event) {
+                  if (event.lengthComputable) {
+                      let progress = Math.min((uploadedSize + event.loaded) / totalSize * 100, 100);
+                      progressBar.css("width", progress + "%");
+                      progressText.text(`Cargando... ${progress.toFixed(2)}%`);
+                  }
+              };
+  
+              xhr.onload = function () {
+                  if (xhr.status === 200) {
+                      uploadedSize += file.size;
+                      resolve(signedUrl.split("?")[0]); // Devuelve la URL pública del archivo
+                  } else {
+                      reject(`Error al subir: ${xhr.statusText}`);
+                  }
+              };
+  
+              xhr.onerror = function () {
+                  reject("Error en la conexión");
+              };
+  
+              xhr.send(file);
+          });
+  
       } catch (error) {
-        $(".splashCarga").hide();
-        console.error(`Error al cargar el fragmento del archivo "${file.name}"`, error);
-        throw error;
+          console.error(`Error al subir "${file.name}"`, error);
+          alert("Hubo un error al subir el archivo");
+          $(".splashCarga").hide();
+          throw error;
       }
-    }
+  }
 
-    async function uploadFile(file) {
-      var start = 0;
-      while (start < file.size) {
-        await uploadChunk(file, start);
-        start += CHUNK_SIZE;
-      }
-    }
-
-    (async function uploadAllFiles() {
+    async function uploadAllFiles() {
       try {
+        let uploadedUrls = [];
+
         for (let file of storedFiles) {
-          await uploadFile(file);
+          let fileUrl = await uploadFileToGCS(file);
+          uploadedUrls.push({ file_name: file.name, file_url: fileUrl });
         }
 
-        let elapsedTime = Date.now() - startTime;
-        if (elapsedTime < minDisplayTime) {
-          await new Promise(resolve => setTimeout(resolve, minDisplayTime - elapsedTime));
-        }
-
-        createPost(event, storedFiles);
-      } catch (error) {
         $(".splashCarga").hide();
-        console.error("Error al cargar archivos:", error);
-        alert("Hubo un error durante la carga");
-      } finally {
-        console.log("Carga finalizada");
+        alert("¡Archivos subidos exitosamente!");
+
+        // Enviar los datos al servidor para completar la publicación
+        createPost(event, storedFiles);
+
+      } catch (error) {
+        console.error("Error al subir archivos:", error);
+        $(".splashCarga").hide();
       }
-    })();
+    }
+
+    uploadAllFiles();
   });
 });
 
@@ -407,7 +420,9 @@ function createPost(event,storedFiles) {
           },
           success: function(response) {           
             
-                   
+             
+
+
         if (Array.isArray(response)) {
           var postAccordion = $('#postAccordion');
           postAccordion.empty();
@@ -450,66 +465,59 @@ function createPost(event,storedFiles) {
               var accordionContent = $(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
   
               // Agregar publicaciones al acordeón correspondiente
-              publicaciones.forEach(function(post) {
-                  var mediaHtml = '';
-                  //var baseUrl = window.location.origin;
-  
-                  if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
-                      
-                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                        // Si hay imágenes, usar la primera
-                      
-                       if (post.imagenes[0].imagen != null) {
-                            var firstImageBase64 = post.imagenes[0].imagen;
-                            var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
-                             mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-                       } else {
-                            var firstImageUrl = post.imagenes[0].filepath;
-
-                            console.log(post.imagenes[0].filepath);
-                            mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
-                       }
-                      } else if (Array.isArray(post.videos) && post.videos.length > 0) {
-                     
-                        // Si no hay imágenes pero hay videos, usar el primero
-                        var firstVideoUrl = post.videos[0].filepath;
-                        console.log(post.videos[0].filepath);
-                        mediaHtml += `
-                                <video controls onclick="abrirModal(${post.publicacion_id})">
-                                    <source src="${firstVideoUrl}" type="video/mp4">                                           
-                                    Tu navegador no soporta la reproducción de videos.
-                                </video>
-                            `;
+              publicaciones.forEach(async function (post) {  // Cambiado forEach a una función async
+                var mediaHtml = '';
+            
+                if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                    if (post.imagenes[0].imagen != null) {
+                        var firstImageBase64 = post.imagenes[0].imagen;
+                        var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
+                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
                     } else {
-                        // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
-                        mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
+                        var firstImageUrl = post.imagenes[0].filepath;
+                        console.log(post.imagenes[0].filepath);
+                        mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirModal(${post.publicacion_id})">`;
                     }
-               
+                } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                    let firstVideoUrl = await loadVideo(post.videos[0].title); // Aquí llamamos a la función correctamente
+                    debugger;
+                    console.log(firstVideoUrl);
+            
+                    if (firstVideoUrl) {
+                        mediaHtml += `
+                            <video controls onclick="abrirModal(${post.publicacion_id})">
+                                <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                Tu navegador no soporta la reproducción de videos.
+                            </video>
+                        `;
+                    }
+                } else {
+                    mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
                 }
-  
-                  var cardHtml = `
-                      <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
-                          <div class="card-body">
-                              <h5 class="card-title">${post.titulo}</h5>
-                              <p class="card-text-estado">${post.estado}</p>
-                              <p class="card-text-email">${post.correo_electronico}</p>
-                              <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                              <p class="card-text">${post.texto}</p>
-                              <div class="card-media-grid-publicacion-admin">
-                                  ${mediaHtml}
-                              </div>
-                              <p class="card-text-ambito">${post.ambito}</p>
-                              <p class="card-text-descripcion">${post.descripcion}</p>
-                              <div class="btn-modificar-eliminar">
-                                  <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
-                                  <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
-                              </div>
-                          </div>
-                      </div>
-                  `;
-  
-                  accordionContent.append(cardHtml);
-              });
+            
+                var cardHtml = `
+                    <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
+                        <div class="card-body">
+                            <h5 class="card-title">${post.titulo}</h5>
+                            <p class="card-text-estado">${post.estado}</p>
+                            <p class="card-text-email">${post.correo_electronico}</p>
+                            <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                            <p class="card-text">${post.texto}</p>
+                            <div class="card-media-grid-publicacion-admin">
+                                ${mediaHtml}
+                            </div>
+                            <p class="card-text-ambito">${post.ambito}</p>
+                            <p class="card-text-descripcion">${post.descripcion}</p>
+                            <div class="btn-modificar-eliminar">
+                                <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
+                                <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            
+                accordionContent.append(cardHtml);
+            });
           });
       } else {
         splash.style.display = 'none'; // Ocultar el splash al terminar
@@ -556,7 +564,23 @@ function createPost(event,storedFiles) {
   }
 
 
+// Función para obtener la URL firmada del video
+async function loadVideo(fileName) {
+  debugger;
+  try {
+      let response = await fetch("/bucketGoog_get_download_url/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ file_name: fileName })
+      });
 
+      let data = await response.json();
+      return data.publicUrl ? data.publicUrl : null;
+  } catch (error) {
+      console.error("Error obteniendo la URL del video:", error);
+      return null;
+  }
+}
 
 
 

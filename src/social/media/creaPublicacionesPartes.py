@@ -43,7 +43,6 @@ import re
 import logging
 from google.cloud import storage
 from datetime import datetime, timedelta
-from datetime import timedelta
 import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
 from social.buckets.bucketGoog import (
@@ -91,34 +90,7 @@ def creaPublicacionesPartes_testCgs():
     return render_template('administracion/testCGS.html', layout='layout_administracion')
 
 
-def generate_signed_url(blob_name, content_type, expiration=timedelta(hours=1)):
-    """Genera una URL firmada para subir archivos a GCS"""
-    client = storage.Client()
-    bucket = client.get_bucket(BUCKET_NAME)
-    blob = bucket.blob(blob_name)
-    
-    # Generar la URL firmada
-    url = blob.generate_signed_url(
-        expiration=expiration,
-        version="v4",  # Asegúrate de usar la versión correcta de la API
-        method="PUT",
-        content_type=content_type
-    )
-    
-    return url
 
-@creaPublicacionesPartes.route('/get_signed_url/', methods=['POST'])
-def get_signed_url():
-    """Devuelve una URL firmada para subir archivos"""
-    data = request.json
-    file_name = data.get("file_name")  # Nombre del archivo
-    file_type = data.get("file_type")  # MIME type (image/jpeg, video/mp4, etc.)
-
-    if not file_name or not file_type:
-        return jsonify({"error": "file_name y file_type son requeridos"}), 400
-
-    signed_url = generate_signed_url(file_name, file_type)
-    return jsonify({"signedUrl": signed_url})  # Devolver la URL firmada como respuesta
 
 
 
@@ -444,7 +416,7 @@ def social_publicaciones_crear_publicacion_partes():
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
             db.session.close()
-            ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
+           # ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
    
             #print(publicaciones_data)
             return jsonify(publicaciones_data)
