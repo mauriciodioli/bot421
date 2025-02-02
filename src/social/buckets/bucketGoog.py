@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from io import BytesIO
 import base64
 import urllib.parse
+import re
 from datetime import datetime, timedelta
 
 # Cargar las variables del archivo .env
@@ -273,23 +274,29 @@ def bucketGoog_get_download_url():
 
         # Corregir el nombre del bucket para que sea consistente
         bucket_name = "bucket_202404"  # Nombre correcto del bucket
-        encoded_file_name = urllib.parse.quote(file_name)
+       
+        # Reemplazar guiones bajos por espacios
+        decoded_file_name = file_name.replace("_", " ")
 
-        # Obtener el bucket y el blob
-        bucket = storage_client.bucket(bucket_name)
-        blob = bucket.blob(f"uploads/{encoded_file_name}")  # Ajusta la ruta si es necesario
+        # Buscar si hay un número al final antes de ".mp4" y restaurar el formato con paréntesis
+        match = re.search(r" (\d+)\.mp4$", decoded_file_name)
+        if match:
+            num = match.group(1)  # Extrae el número
+            decoded_file_name = re.sub(r" (\d+)\.mp4$", f" ({num}).mp4", decoded_file_name)
 
-        # Obtener la URL pública del archivo
-        public_url = blob.public_url
+        # Codificar la URL correctamente
+        public_url = f"https://storage.googleapis.com/{bucket_name}/{urllib.parse.quote(decoded_file_name, safe='()/')}"
 
-        # Reemplazar caracteres incorrectos en la URL pública
-        # Corrige el nombre del bucket si contiene errores como '%20'
-        corrected_url = public_url.replace("bucket%20202404", "bucket_202404")
 
-        # Opcional: corregir espacios (%20) y paréntesis en el nombre del archivo si es necesario
-        corrected_url = corrected_url.replace("%20", " ").replace("%28", "(").replace("%29", ")")
+        print(f"Archivo original: {file_name}")
+        print(f"Archivo transformado: {decoded_file_name}")
+        print(f"URL pública generada: {public_url}")
 
-        return jsonify({"publicUrl": corrected_url})
+
+
+        
+
+        return jsonify({"publicUrl": public_url})
 
     except Exception as e:
         print(f"Error obteniendo la URL pública: {e}")  # Log para depuración
