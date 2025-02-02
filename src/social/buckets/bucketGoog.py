@@ -8,8 +8,8 @@ import mimetypes
 from dotenv import load_dotenv
 from io import BytesIO
 import base64
-
-
+import urllib.parse
+from datetime import datetime, timedelta
 
 # Cargar las variables del archivo .env
 load_dotenv()
@@ -44,7 +44,8 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = BUCKET_GOOGLE_CREDENTIAL
 BUCKET_NAME = os.environ.get('BUCKET_NAME')  # Asegúrate de que este nombre coincide con tu bucket
 
 
-
+# Inicializar el cliente de GCS
+storage_client = storage.Client()
 
 # Función para subir el fragmento a GCS
 
@@ -227,3 +228,69 @@ def es_video(file_path):
 def tiene_https(url):
     return url.lower().startswith("https://")
 
+
+def generate_signed_url(blob_name, content_type, expiration=timedelta(hours=1)):
+    """Genera una URL firmada para subir archivos a GCS"""
+    client = storage.Client()
+    bucket = client.get_bucket(BUCKET_NAME)
+    blob = bucket.blob(blob_name)
+    
+    # Generar la URL firmada
+    url = blob.generate_signed_url(
+        expiration=expiration,
+        version="v4",  # Asegúrate de usar la versión correcta de la API
+        method="PUT",
+        content_type=content_type
+    )
+    
+    return url
+
+@bucketGoog.route('/get_signed_url/', methods=['POST'])
+def get_signed_url():
+    """Devuelve una URL firmada para subir archivos"""
+    data = request.json
+    file_name = data.get("file_name")  # Nombre del archivo
+    file_type = data.get("file_type")  # MIME type (image/jpeg, video/mp4, etc.)
+
+    if not file_name or not file_type:
+        return jsonify({"error": "file_name y file_type son requeridos"}), 400
+
+    signed_url = generate_signed_url(file_name, file_type)
+    return jsonify({"signedUrl": signed_url})  # Devolver la URL firmada como respuesta
+
+
+
+
+
+@bucketGoog.route('/bucketGoog_get_download_url/', methods=['POST'])
+def bucketGoog_get_download_url():
+    try:
+        data = request.json
+        file_name = data.get("file_name")
+
+        if not file_name:
+            return jsonify({"error": "Falta el nombre del archivo"}), 400
+
+        # Corregir el nombre del bucket para que sea consistente
+        bucket_name = "bucket_202404"  # Nombre correcto del bucket
+        encoded_file_name = urllib.parse.quote(file_name)
+
+        # Obtener el bucket y el blob
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(f"uploads/{encoded_file_name}")  # Ajusta la ruta si es necesario
+
+        # Obtener la URL pública del archivo
+        public_url = blob.public_url
+
+        # Reemplazar caracteres incorrectos en la URL pública
+        # Corrige el nombre del bucket si contiene errores como '%20'
+        corrected_url = public_url.replace("bucket%20202404", "bucket_202404")
+
+        # Opcional: corregir espacios (%20) y paréntesis en el nombre del archivo si es necesario
+        corrected_url = corrected_url.replace("%20", " ").replace("%28", "(").replace("%29", ")")
+
+        return jsonify({"publicUrl": corrected_url})
+
+    except Exception as e:
+        print(f"Error obteniendo la URL pública: {e}")  # Log para depuración
+        return jsonify({"error": str(e)}), 500
