@@ -47,7 +47,6 @@ publicaciones = Blueprint('publicaciones',__name__)
 # Configura el cliente de S3
 #s3 = boto3.client('s3', aws_access_key_id='TU_ACCESS_KEY', aws_secret_access_key='TU_SECRET_KEY', region_name='tu-region')
 
-BUCKET_NAME = 'nombre-de-tu-bucket'
 
 # Configuración de Redis usando las variables de entorno
 redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
@@ -561,7 +560,8 @@ def media_publicaciones_cambiar_estado():
 
 def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):
     size = size
-    # Guardar información en la base de datos
+    # Guardar información en la base de datos   
+   
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
@@ -598,6 +598,7 @@ def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_
 def cargarVideo_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):
     print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
    # Guardar información en la base de datos
+   
     nombre_archivo = filename
     descriptionVideo = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
@@ -713,7 +714,7 @@ def show_publicacion_galeriaimagenes(request, media_files,id_publicacion):
      return render_template('publicaciones/publicacionesGaleriaImagenes.html', media_files=media_files,id_publicacion=id_publicacion)
      
 
-@publicaciones.route('/social_imagenes_eliminar_publicacion', methods=['POST'])
+@publicaciones.route('/social_imagenes_eliminar_publicacion/', methods=['POST'])
 def social_imagenes_eliminar_publicacion():
     # Obtener el encabezado Authorization
     authorization_header = request.headers.get('Authorization')

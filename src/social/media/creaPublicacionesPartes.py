@@ -238,7 +238,8 @@ def social_publicaciones_handle_upload_chunkn():
         if not chunk or not filename or chunk_start is None:
             return jsonify({'error': 'Datos incompletos en la solicitud'}), 400
         # Asegúrate de usar un nombre de archivo seguro
-        file_name = secure_filename(filename)
+        file_name = secure_filename(filename_pre).replace("_", "")
+
         # Convertir chunk_start a entero
         try:
             chunk_start = int(chunk_start)
@@ -370,8 +371,7 @@ def social_publicaciones_crear_publicacion_partes():
                     continue
 
                 # Asegúrate de usar un nombre de archivo seguro
-                filename = secure_filename(filename_pre)
-
+                filename =  secure_filename(filename_pre).replace("_", "")
                 # Decide si el archivo es una imagen o un video
                 file_ext = filename.rsplit('.', 1)[-1].lower()
                 if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
@@ -463,7 +463,7 @@ def guardarPublicacion(request, user_id):
             botonCompra = True
         else:
             botonCompra = False
-
+       
         # Crear una nueva publicación si no existe una con el mismo nombre
         nueva_publicacion = Publicacion(
             user_id=user_id,             
