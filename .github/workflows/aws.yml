@@ -79,18 +79,7 @@ jobs:
            docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
            docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
     
-
-    - name: Install and start vim and ffmpeg inside the container
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ env.EC2_HOST }}
-        username: ubuntu
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |               
-               docker exec $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "
-                 apt update && apt-get install -y vim ffmpeg
-               "
-         
+            
     - name: Modify _app.py in websocket library
       uses: appleboy/ssh-action@master
       with:
@@ -146,10 +135,21 @@ jobs:
           set -e  # Detener el script si hay un error en cualquier comando
           docker cp /home/ubuntu/bot421dbversion2.pem 202404:/src
           docker cp /home/ubuntu/upload_to_gcs.json 202404:/src
-          
+        
           # Detener el contenedor
           docker stop ${{ env.DEPLOYMENT_VERSION }} || true
 
           # Iniciar el contenedor
           docker start ${{ env.DEPLOYMENT_VERSION }}
+          
+    - name: Install and start vim and ffmpeg inside the container
+      uses: appleboy/ssh-action@master
+      with:
+         host: ${{ env.EC2_HOST }}
+         username: ubuntu
+         key: ${{ secrets.SSH_PRIVATE_KEY }}
+         script: |               
+                   docker exec $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "
+                     apt update && apt-get install -y vim ffmpeg
+                   "
           
