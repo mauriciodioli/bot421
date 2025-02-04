@@ -275,8 +275,24 @@ $(document).ready(function () {
   var progressText = $("#progressText");
 
   $("#fileInput_creaPublicacion").on("change", function (event) {
-    storedFiles = Array.from(event.target.files);
-  });
+    storedFiles = Array.from(event.target.files);  // Convertir la lista de archivos en un array
+    let label = document.getElementById("fileLabel");
+
+    if (storedFiles.length > 0) {
+        let totalSize = 0;
+        let fileNames = [];
+
+        for (let file of storedFiles) {
+            totalSize += file.size; // Suma el tamaño en bytes
+            fileNames.push(`${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+        }
+
+        label.textContent = `Archivos seleccionados: ${fileNames.join(", ")}`;
+    } else {
+        label.textContent = "No se ha seleccionado archivo";
+    }
+});
+
 
   $("#createPostForm_creaPublicacion").on("submit", function (event) {
     event.preventDefault();
