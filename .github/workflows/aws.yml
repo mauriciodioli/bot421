@@ -86,10 +86,9 @@ jobs:
         host: ${{ env.EC2_HOST }}
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-               # arrancar Redis en el contenedor
+        script: |               
                docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) bash -c "
-                 apt update && redis-server --daemonize yes
+                 apt update
                  apt-get install vim -y
                  apt-get install ffmpeg -y
                "
