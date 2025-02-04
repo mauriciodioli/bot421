@@ -252,6 +252,7 @@ def get_signed_url():
     data = request.json
     file_name = data.get("file_name")  # Nombre del archivo
     file_type = data.get("file_type")  # MIME type (image/jpeg, video/mp4, etc.)
+    file_name = file_name.replace(" ", "").replace("(", "").replace(")", "")
 
     if not file_name or not file_type:
         return jsonify({"error": "file_name y file_type son requeridos"}), 400
@@ -272,29 +273,12 @@ def bucketGoog_get_download_url():
         if not file_name:
             return jsonify({"error": "Falta el nombre del archivo"}), 400
 
-        # Corregir el nombre del bucket para que sea consistente
-        bucket_name = "bucket_202404"  # Nombre correcto del bucket
-       
-        # Reemplazar guiones bajos por espacios
-        decoded_file_name = file_name.replace("_", " ")
-
-        # Buscar si hay un número al final antes de ".mp4" y restaurar el formato con paréntesis
-        match = re.search(r" (\d+)\.mp4$", decoded_file_name)
-        if match:
-            num = match.group(1)  # Extrae el número
-            decoded_file_name = re.sub(r" (\d+)\.mp4$", f" ({num}).mp4", decoded_file_name)
+        file_name = file_name.replace(" ", "").replace("(", "").replace(")", "")
 
         # Codificar la URL correctamente
-        public_url = f"https://storage.googleapis.com/{bucket_name}/{urllib.parse.quote(decoded_file_name, safe='()/')}"
+        public_url = f"https://storage.googleapis.com/{BUCKET_NAME}/{urllib.parse.quote(file_name, safe='()/')}"
 
 
-        print(f"Archivo original: {file_name}")
-        print(f"Archivo transformado: {decoded_file_name}")
-        print(f"URL pública generada: {public_url}")
-
-
-
-        
 
         return jsonify({"publicUrl": public_url})
 

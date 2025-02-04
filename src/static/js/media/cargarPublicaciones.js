@@ -49,7 +49,7 @@
       for (var i = 0; i < files.length; i++) {
         var file = files[i];
         var reader = new FileReader();
-  
+      
         reader.onload = function(e) {
           var mediaElement;
           var mediaWrapper = document.createElement('div');
@@ -60,6 +60,7 @@
             mediaElement.src = e.target.result;
             mediaElement.classList.add('thumbnail_creaPublicacion');            
           } else if (file.type.startsWith('video/')) {
+              
             mediaElement = document.createElement('video');
             mediaElement.src = e.target.result;
             mediaElement.controls = true;
@@ -358,13 +359,14 @@ $(document).ready(function () {
 
         $(".splashCarga").hide();
         alert("¡Archivos subidos exitosamente!");
-
+        modal.style.display = "none";  // Ocultar el modal
         // Enviar los datos al servidor para completar la publicación
         createPost(event, storedFiles);
 
       } catch (error) {
         console.error("Error al subir archivos:", error);
         $(".splashCarga").hide();
+        modal.style.display = "none";  // Ocultar el modal
       }
     }
 
@@ -424,9 +426,10 @@ function createPost(event,storedFiles) {
 
 
         if (Array.isArray(response)) {
+          debugger;
           var postAccordion = $('#postAccordion');
           postAccordion.empty();
-  
+    
           // Crear un objeto para almacenar las publicaciones por ámbito
           var postsByAmbito = {};
           // Iterar sobre las publicaciones para organizarlas por ámbito
@@ -480,7 +483,7 @@ function createPost(event,storedFiles) {
                     }
                 } else if (Array.isArray(post.videos) && post.videos.length > 0) {
                     let firstVideoUrl = await loadVideo(post.videos[0].title); // Aquí llamamos a la función correctamente
-                    debugger;
+                    
                     console.log(firstVideoUrl);
             
                     if (firstVideoUrl) {
@@ -517,6 +520,7 @@ function createPost(event,storedFiles) {
                 `;
             
                 accordionContent.append(cardHtml);
+                $('#postAccordion').show();
             });
           });
       } else {
@@ -526,8 +530,7 @@ function createPost(event,storedFiles) {
 
         // Finalizar carga
         finalizarCarga();
-        modal.style.display = "none";  
-        $(".splashCarga").hide();    
+       
   },
 
                          

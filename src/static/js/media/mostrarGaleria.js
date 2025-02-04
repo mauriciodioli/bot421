@@ -682,7 +682,7 @@ function eliminarPublicacion(id) {
     formData.append('correo_electronico', correo_electronico);
 
     $.ajax({
-        url: '/social_imagenes_eliminar_publicacion',
+        url: '/social_imagenes_eliminar_publicacion/',
         type: 'POST',
         data: formData,
         processData: false,
@@ -692,9 +692,24 @@ function eliminarPublicacion(id) {
         },
         success: function(response) {
             if (response.success) {
+              
                 splash.style.display = 'none'; // Ocultar el splash al terminar
                 alert('Publicación eliminada exitosamente.');
                 $('#card-' + id).remove(); // Eliminar la tarjeta de la interfaz
+
+                debugger;
+                 // Verificar si hay más tarjetas dentro del acordeón
+                var remainingCards = $('#postAccordion .accordion-item .card-grid-publicaciones .card').length;
+                console.log("Tarjetas restantes en el acordeón:", remainingCards);
+
+                // Si no hay más tarjetas, eliminar el acordeón
+                if (remainingCards === 0) {
+                    console.log("No quedan tarjetas, eliminando el acordeón.");
+                    $('#postAccordion').hide();  // Ocultar el acordeón
+
+                }
+
+
             } else {
                 alert('Error al eliminar la publicación: ' + response.error);
             }
