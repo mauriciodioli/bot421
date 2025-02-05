@@ -29,84 +29,6 @@
   
   
   
-
-
-
-
-
-
-
-
-
-  const IMAGE_MAX_SIZE_MB = 2;  // Comprimir imágenes mayores a 2MB
-  const VIDEO_MAX_SIZE_MB = 10; // Comprimir videos mayores a 10MB
-  
-  async function optimizeImage(file) {
-      return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = function (event) {
-              const img = new Image();
-              img.src = event.target.result;
-              img.onload = function () {
-                  const canvas = document.createElement("canvas");
-                  const maxSize = 1024; // Máximo tamaño en píxeles
-                  let width = img.width;
-                  let height = img.height;
-  
-                  if (width > height && width > maxSize) {
-                      height *= maxSize / width;
-                      width = maxSize;
-                  } else if (height > maxSize) {
-                      width *= maxSize / height;
-                      height = maxSize;
-                  }
-  
-                  canvas.width = width;
-                  canvas.height = height;
-                  const ctx = canvas.getContext("2d");
-                  ctx.drawImage(img, 0, 0, width, height);
-  
-                  canvas.toBlob((blob) => resolve(blob), "image/webp", 0.75); // WebP calidad 75%
-              };
-          };
-          reader.onerror = reject;
-      });
-  }
-  
-  async function optimizeVideo(file) {
-      const stream = await file.arrayBuffer();
-      const mediaSource = new Blob([stream], { type: file.type });
-  
-      return new Promise((resolve, reject) => {
-          const video = document.createElement("video");
-          video.src = URL.createObjectURL(mediaSource);
-          video.muted = true;
-          video.playsInline = true;
-          video.autoplay = true;
-  
-          video.onloadedmetadata = async function () {
-              const stream = video.captureStream();
-              const recorder = new MediaRecorder(stream, { mimeType: "video/webm", videoBitsPerSecond: 500000 });
-              const chunks = [];
-  
-              recorder.ondataavailable = (event) => chunks.push(event.data);
-              recorder.onstop = () => resolve(new Blob(chunks, { type: "video/webm" }));
-  
-              recorder.start();
-              setTimeout(() => recorder.stop(), video.duration * 1000);
-          };
-  
-          video.onerror = reject;
-      });
-  }
-
-
-
-
-
-
-  
   
   document.addEventListener('DOMContentLoaded', function() {
     initializeMediaHandlers();
@@ -121,65 +43,52 @@
     var closeMediaModal = document.querySelector('.close-image_creaPublicacion');
     var cropper;
   
-    fileInput.addEventListener('change', async function(event) { // ← Se agrega `async`
+    fileInput.addEventListener('change', function(event) {
       var files = event.target.files;
-
+  
       for (var i = 0; i < files.length; i++) {
-          let file = files[i];
-          let shouldOptimize = false;
-          let optimizedBlob = file;
+        var file = files[i];
+        var reader = new FileReader();
+      
+        reader.onload = function(e) {
+          var mediaElement;
+          var mediaWrapper = document.createElement('div');
+          mediaWrapper.classList.add('media-wrapper_creaPublicacion'); // Envoltorio para el elemento multimedia y el botón de cerrar
 
-          if (file.type.startsWith('image/') && file.size > IMAGE_MAX_SIZE_MB * 1024 * 1024) {
-              shouldOptimize = true;
-              optimizedBlob = await optimizeImage(file);
-          } else if (file.type.startsWith('video/') && file.size > VIDEO_MAX_SIZE_MB * 1024 * 1024) {
-              shouldOptimize = true;
-              optimizedBlob = await optimizeVideo(file);
+          if (file.type.startsWith('image/')) {
+            mediaElement = document.createElement('img');
+            mediaElement.src = e.target.result;
+            mediaElement.classList.add('thumbnail_creaPublicacion');            
+          } else if (file.type.startsWith('video/')) {
+              
+            mediaElement = document.createElement('video');
+            mediaElement.src = e.target.result;
+            mediaElement.controls = true;
+            mediaElement.classList.add('thumbnail_creaPublicacion');
           }
-
-          let finalFile = new File([optimizedBlob], shouldOptimize ? `${file.name.split('.')[0]}.${optimizedBlob.type.split('/')[1]}` : file.name, { type: optimizedBlob.type });
-
-          var reader = new FileReader();
-          reader.onload = function(e) {
-              var mediaElement;
-              var mediaWrapper = document.createElement('div');
-              mediaWrapper.classList.add('media-wrapper_creaPublicacion');
-
-              if (finalFile.type.startsWith('image/')) {
-                  mediaElement = document.createElement('img');
-                  mediaElement.src = URL.createObjectURL(finalFile);
-                  mediaElement.classList.add('thumbnail_creaPublicacion');
-              } else if (finalFile.type.startsWith('video/')) {
-                  mediaElement = document.createElement('video');
-                  mediaElement.src = URL.createObjectURL(finalFile);
-                  mediaElement.controls = true;
-                  mediaElement.classList.add('thumbnail_creaPublicacion');
-              }
-
-              var closeButton = document.createElement('button');
-              closeButton.textContent = '×';
-              closeButton.classList.add('close-button_creaPublicacion');
-              closeButton.addEventListener('click', function () {
-                  mediaWrapper.remove();
-              });
-
-              mediaElement.addEventListener('click', function () {
-                  openMediaModal(e.target.result, finalFile.type);
-              });
-
-              mediaWrapper.appendChild(mediaElement);
-              mediaWrapper.appendChild(closeButton);
-              mediaContainer.appendChild(mediaWrapper);
-          };
-
-          reader.readAsDataURL(file);
+          var closeButton = document.createElement('button');
+          closeButton.textContent = '×';
+          closeButton.classList.add('close-button_creaPublicacion'); // Clase para estilizar el botón de cerrar
+          closeButton.addEventListener('click', function() {
+              mediaWrapper.remove(); // Elimina el elemento multimedia del contenedor
+          });
+          mediaElement.addEventListener('click', function() {
+            openMediaModal(e.target.result, file.type);
+          });
+          mediaWrapper.appendChild(mediaElement); // Añade el elemento multimedia al contenedor
+          mediaWrapper.appendChild(closeButton); // Añade el botón de cerrar al contenedor
+      
+          mediaContainer.appendChild(mediaWrapper);
+        };
+  
+        reader.readAsDataURL(file);
       }
-  });
+    });
   
 
 
 
-    // Función para mostrar vista previa de archivos
+ // Función para mostrar vista previa de archivos
 
 
 
