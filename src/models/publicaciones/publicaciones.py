@@ -24,8 +24,9 @@ class Publicacion(db.Model):
     estado = db.Column(db.String(120), nullable=False)
     botonCompra = db.Column(db.Boolean, default=False)  # Nuevo campo
     imagen = db.Column(db.String(255), nullable=True)
+    idioma = db.Column(db.String(255), nullable=True)
     
-    def __init__(self, user_id, titulo, texto, ambito, correo_electronico, descripcion, color_texto, color_titulo, fecha_creacion, estado, botonCompra=False, imagen=None):
+    def __init__(self, user_id, titulo, texto, ambito, correo_electronico, descripcion, color_texto, color_titulo, fecha_creacion, estado, botonCompra=False, imagen=None,idioma=None):
         self.user_id = user_id       
         self.titulo = titulo
         self.texto = texto
@@ -38,9 +39,10 @@ class Publicacion(db.Model):
         self.estado = estado
         self.botonCompra = botonCompra
         self.imagen = imagen
+        self.idioma = idioma
 
     def __repr__(self):
-        return f"Publicacion(id={self.id}, user_id={self.user_id}, titulo={self.titulo}, texto={self.texto}, ambito={self.ambito}, correo_electronico={self.correo_electronico}, descripcion={self.descripcion}, color_texto={self.color_texto}, color_titulo={self.color_titulo}, fecha_creacion={self.fecha_creacion}, botonCompra={self.botonCompra}, imagen={self.imagen})"
+        return f"Publicacion(id={self.id}, user_id={self.user_id}, titulo={self.titulo}, texto={self.texto}, ambito={self.ambito}, correo_electronico={self.correo_electronico}, descripcion={self.descripcion}, color_texto={self.color_texto}, color_titulo={self.color_titulo}, fecha_creacion={self.fecha_creacion}, botonCompra={self.botonCompra}, imagen={self.imagen}, idioma={self.idioma})"
 
     @classmethod
     def crear_tabla_publicacion(cls):
@@ -50,7 +52,7 @@ class Publicacion(db.Model):
             
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id", "titulo", "texto", "ambito", "correo_electronico", "descripcion", "color_texto", "color_titulo", "fecha_creacion", "estado", "botonCompra", "imagen")
+        fields = ("id", "user_id", "titulo", "texto", "ambito", "correo_electronico", "descripcion", "color_texto", "color_titulo", "fecha_creacion", "estado", "botonCompra", "imagen", "idioma")
 
 
 mer_schema = MerShema()

@@ -452,6 +452,7 @@ def guardarPublicacion(request, user_id):
         color_titulo = request.form.get('color_titulo')
         estado = request.form.get('postEstado_creaPublicacion')
         botonCompra = request.form.get('postBotonCompra_creaPublicacion')
+        idioma = request.form.get('lenguaje')
         
         # Verificar si ya existe una publicación con el mismo título para el mismo usuario
         publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
@@ -476,7 +477,8 @@ def guardarPublicacion(request, user_id):
             color_titulo=color_titulo,
             fecha_creacion=datetime.now(),
             estado=estado,
-            botonCompra=botonCompra
+            botonCompra=botonCompra,
+            idioma=idioma
         )
         
         db.session.add(nueva_publicacion)

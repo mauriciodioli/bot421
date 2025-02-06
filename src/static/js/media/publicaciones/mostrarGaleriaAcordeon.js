@@ -20,6 +20,7 @@ function cargarPublicaciones(ambitoId) {
    
     // Verificar si el acordeón con el ID ya existe
     let accordionItem = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
+    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
 
 
     if (!accordionItem) {
@@ -29,6 +30,7 @@ function cargarPublicaciones(ambitoId) {
             formData.append('correo_electronico', correo_electronico);
             formData.append('layout', 'layout');
             formData.append('ambito', ambitoId); // Pasar el ID del ámbito
+            formData.append('lenguaje', lenguaje);
 
             // Realizar la solicitud AJAX
             $.ajax({
