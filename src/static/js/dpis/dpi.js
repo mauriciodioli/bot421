@@ -544,13 +544,16 @@ function enviarDominioAJAX(domain) {
     domain = localStorage.getItem('dominio');
     let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + domain + "</a>";
     document.getElementById("ambitoActual").innerHTML = ambito_actual;
+    
+    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
+
 
     $.ajax({
     type: 'POST',
     url: galeriaURL1,
     dataType: 'json', // Asegúrate de que el backend devuelva un JSON
     headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
-    data: { ambitos: domain }, // Enviar el dominio como parte de los datos
+    data: { ambitos: domain, lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
     success: function (response) {
     
         splash.style.display = 'none'; // Ocultar el splash al terminar

@@ -68,6 +68,7 @@ def media_publicaciones_mostrar():
         
         layout = request.form.get('layout')
         ambito = request.form.get('ambito')
+        idioma = request.form.get('lenguaje')
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
@@ -86,7 +87,7 @@ def media_publicaciones_mostrar():
             user_id = decoded_token.get("sub")
 
             # Obtener todas las publicaciones del usuario
-            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
+            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
@@ -107,6 +108,7 @@ def media_publicaciones_mostrar_home():
         
         layout = request.form.get('layout')
         ambito = request.form.get('ambito')
+        idioma = request.form.get('lenguaje')
         
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
@@ -140,21 +142,21 @@ def media_publicaciones_mostrar_home():
                     if fecha_eliminado:
                         dias_diferencia = (datetime.today().date() - fecha_eliminado).days
                         if dias_diferencia > 30:
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id).first()
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma).first()
                             if publicacion:
                                 # Agrega la publicación a la lista de publicaciones
                                 publicaciones.append(publicacion)
                     
                     # Si el estado no es "eliminado", obtén la publicación correspondiente
                     if estado_publicacion.estado != 'eliminado':
-                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id).first()
+                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma).first()
                         if publicacion:
                             # Agrega la publicación a la lista de publicaciones
                             publicaciones.append(publicacion)
 
             else:
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito).all()
+                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma).all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()
@@ -178,7 +180,7 @@ def media_publicaciones_mostrar_dpi():
         authorization_header = request.headers.get('Authorization')
          # Obtener el valor de 'ambitos' enviado en el cuerpo de la solicitud
         ambitos = request.form.get('ambitos')  # Si el contenido es application/x-www-form-urlencoded
-        
+        idioma = request.form.get('lenguaje')
         if ambitos == 'inicialDominio':
             ambitos = 'laboral'
         
@@ -210,21 +212,21 @@ def media_publicaciones_mostrar_dpi():
                     if fecha_eliminado:
                         dias_diferencia = (datetime.today().date() - fecha_eliminado).days
                         if dias_diferencia > 30:
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos).first()
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma).first()
                             if publicacion:
                                 # Agrega la publicación a la lista de publicaciones
                                 publicaciones.append(publicacion)
                     
                     # Si el estado no es "eliminado", obtén la publicación correspondiente
                     if estado_publicacion.estado != 'eliminado':
-                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos).first()
+                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma).first()
                         if publicacion:
                             # Agrega la publicación a la lista de publicaciones
                             publicaciones.append(publicacion)
 
             else:
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos).all()
+                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma).all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()

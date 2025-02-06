@@ -64,7 +64,8 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
     
     var galeriaURL1 = '/media-muestraPublicacionesEnAmbitos-mostrar/';
     var access_token = localStorage.getItem('access_token');
-    
+    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
+
     $.ajax({
         type: 'POST',
         url: galeriaURL1,
@@ -72,7 +73,8 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
             publicacion_id: publicacionId,
             user_id: userId,
             ambito: ambito,
-            layout: layout
+            layout: layout,
+            lenguaje: lenguaje
         }),
         contentType: 'application/json', // Indica que se envía un JSON al backend
         dataType: 'json', // Asegúrate de que el backend devuelva un JSON

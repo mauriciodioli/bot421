@@ -401,6 +401,7 @@ function createPost(event,storedFiles) {
       // Añadir datos adicionales al FormData
       var access_token = localStorage.getItem('access_token');
       var correo_electronico = localStorage.getItem('correo_electronico');
+      var lenguaje = localStorage.getItem('lenguage');
       var color_texto = 'black';
       var color_titulo = 'black';
       var layout = 'layout'
@@ -413,6 +414,7 @@ function createPost(event,storedFiles) {
       formData.append('color_titulo', color_titulo);
       formData.append('layout',layout);
       formData.append('ambito', ambito);
+      formData.append('lenguaje', lenguaje);
      
      
       // Añadir los metadatos de los archivos

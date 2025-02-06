@@ -53,9 +53,10 @@ def mostrar_publicaciones_en_ambitos():
     user_id = data.get('user_id')
     ambito = data.get('ambito')
     layout = data.get('layout')
+    idioma = data.get('lenguaje')
    
     # Ahora puedes usar publicacion_id, user_id, y ambito en tu lógica
-    post = armar_publicacion_bucket_para_dpi(user_id,ambito,layout)  # Reemplaza con tu lógica de obtención
+    post = armar_publicacion_bucket_para_dpi(user_id,ambito,layout,idioma)  # Reemplaza con tu lógica de obtención
     
     if post:
         # Aquí puedes usar los parámetros adicionales si es necesario
@@ -64,10 +65,10 @@ def mostrar_publicaciones_en_ambitos():
     else:
         return jsonify({'error': 'Publicación no encontrada'}), 404
 
-def armar_publicacion_bucket_para_dpi(user_id, ambito,layout):
+def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma):
     try:  
         # Obtener todas las publicaciones que coincidan con user_id y ambito
-        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
+        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
 
         resultados = []
 

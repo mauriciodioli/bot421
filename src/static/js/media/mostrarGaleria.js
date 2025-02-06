@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     var correo_electronico = localStorage.getItem('correo_electronico');
     var roll = localStorage.getItem('roll');
+    var lenguaje = localStorage.getItem('language');
     var access_token = localStorage.getItem('access_token');    
     var ambito = localStorage.getItem('dominio');
   
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formData.append('correo_electronico', correo_electronico);
     formData.append('layout','layout');
     formData.append('ambito', ambito);
+    formData.append('lenguaje', lenguaje);
     $.ajax({
       url: '/media-publicaciones-mostrar/',
       type: 'POST',

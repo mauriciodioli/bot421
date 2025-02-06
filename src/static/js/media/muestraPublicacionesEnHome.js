@@ -28,6 +28,7 @@ function cargarPublicaciones(ambitoParam,layout) {
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
+    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
 
     $.ajax({
         type: 'POST',
@@ -36,7 +37,8 @@ function cargarPublicaciones(ambitoParam,layout) {
         headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
         data: {
             layout: layout,
-            ambito: ambito
+            ambito: ambito,
+            lenguaje: lenguaje
         },
         success: function (response) {
            
