@@ -361,6 +361,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
             'color_titulo': publicacion.color_titulo,
             'fecha_creacion': publicacion.fecha_creacion,
             'estado': publicacion.estado,
+            'idioma':publicacion.idioma,
             'imagenes': imagenes,  # Solo una imagen
             'videos': videos,  # Solo un video
             'layout': layout
@@ -439,6 +440,7 @@ def armar_publicacion_bucket(publicaciones):
             'color_titulo': publicacion.color_titulo,
             'fecha_creacion': publicacion.fecha_creacion,
             'estado': publicacion.estado,
+            'idioma':publicacion.idioma,
             'imagenes': imagenes,
             'videos': videos
         })
@@ -518,7 +520,8 @@ def armar_publicacion(publicaciones):
             'color_texto': publicacion.color_texto,
             'color_titulo': publicacion.color_titulo,
             'fecha_creacion': publicacion.fecha_creacion, 
-            'estado': publicacion.estado,           
+            'estado': publicacion.estado,    
+            'idioma':publicacion.idioma,       
             'imagenes': imagenes,
             'videos': videos
         })
@@ -912,6 +915,7 @@ def publicaciones_modificar_publicaciones():
         descripcion = request.form.get('postDescription_modificaPublicacion')
         estado = request.form.get('postEstado_modificaPublicacion')
         ambito = request.form.get('postAmbito_modificaPublicacion')
+        idioma = request.form.get('postCambiarIdioma_modificaPublicacion')
         botonCompra = request.form.get('postBotonCompra_modificaPublicacion')
 
         # Obtener archivos subidos si es necesario
@@ -953,6 +957,7 @@ def publicaciones_modificar_publicaciones():
         publicacion.descripcion = descripcion
         publicacion.estado = estado
         publicacion.ambito = ambito
+        publicacion.idioma = idioma
         publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
         publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
 
