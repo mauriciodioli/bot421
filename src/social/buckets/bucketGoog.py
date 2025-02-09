@@ -230,6 +230,15 @@ def tiene_https(url):
     return url.lower().startswith("https://")
 
 
+
+
+def file_exists_in_gcs(file_name):
+    """Verifica si un archivo ya está en el bucket de GCS."""
+    client = storage.Client()
+    bucket = client.bucket(BUCKET_NAME)
+    blob = bucket.blob(file_name)
+    return blob.exists()
+
 def generate_signed_url(blob_name, content_type, expiration=timedelta(hours=1)):
     """Genera una URL firmada para subir archivos a GCS"""
     client = storage.Client()
@@ -253,7 +262,8 @@ def get_signed_url():
     file_name = data.get("file_name")  # Nombre del archivo
     file_type = data.get("file_type")  # MIME type (image/jpeg, video/mp4, etc.)
     file_name = file_name.replace(" ", "").replace("(", "").replace(")", "")
-
+    if file_exists_in_gcs(file_name):
+        return jsonify({"error": "El archivo ya existe"}), 409
     if not file_name or not file_type:
         return jsonify({"error": "file_name y file_type son requeridos"}), 400
 
