@@ -13,15 +13,15 @@ class SheetHandler:
             if sheet:
                 # Definimos los rangos correctos
                 ranges = [
-                    'E:E',    # symbol - ticker de mercado
-                    'V:V',    # tipo_de_activo - cedear, arg o usa
-                    'Y:Y',    # precioUt - en planilla usa no trae precio
-                    'S:S',    # trade_en_curso - long, short o nada
-                    'T:T',    # ut - cantidad a operar
-                    'U:U',    # senial - Open o Close
-                    'Z:Z',    # gan_tot
-                    'AD:AD',  # dias_operado - Dias habiles operado
-                    'R:R'     # factorUt - negativo o positivo o 0
+                    'E:E',    #0 symbol - ticker de mercado
+                    'V:V',    #1 tipo_de_activo - cedear, arg o usa
+                    'Y:Y',    #2 precioUt - en planilla usa no trae precio
+                    'S:S',    #3 trade_en_curso - long, short o nada
+                    'T:T',    #4 ut - cantidad a operar
+                    'U:U',    #5 senial - Open o Close
+                    'Z:Z',    #6 gan_tot
+                    'AD:AD',  #7 dias_operado - Dias habiles operado
+                    'R:R'     #8 factorUt - negativo o positivo o 0
                 ]
 
                 for _ in range(3):  # Intentar hasta 3 veces

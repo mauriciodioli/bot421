@@ -16,9 +16,14 @@
     <!-- Layout en la parte inferior -->
     
     <div id="bottomLayout" class="fixed-bottom bg-dark text-white p-3">
-        <button id="closeLayout" class="btn btn-sm">
-             <img src="{{ url_for('static', filename='icons/image-upload-icon.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">           
-        </button>
+        <form action="/productosComerciales_pedidos_mostrar_carrito/" method="POST">
+            <input type="hidden" id="access_token_btn_carrito_bajo" name="access_token_btn_carrito_bajo" value="">
+            <input type="hidden" id="ambito_btn_carrito_bajo" name="ambito_btn_carrito_bajo" value="">
+           
+            <button id="closeLayout" class="btn btn-sm">
+                <img src="{{ url_for('static', filename='img/carrito.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">           
+            </button>
+        </form>
         <div class="custom-dropdown-menu-container">
             <button class="btn btn-sm close-layout-btn">
                 <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
@@ -77,11 +82,19 @@
 
 
 </div>
+<script>
+    debugger;
+    let access_tokenx = localStorage.getItem("access_token");
+    var ambitox = localStorage.getItem("dominio");
+    //carrito   
+    document.getElementById('access_token_btn_carrito_bajo').value = access_tokenx;  
+    document.getElementById('ambito_btn_carrito_bajo').value = ambitox;
+</script>
     <!-- Scripts al final del body -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
     <script src="{{ url_for('static', filename='js/layouts/layout_bajo.js') }}"></script>   
-    
+   
     
 </body>
 </html>
