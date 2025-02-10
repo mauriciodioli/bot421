@@ -151,8 +151,10 @@
     var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
     var userId = '{{ post.user_id }}';
     var ambito = '{{ post.ambito }}';
-    var layout = '{{layout}}'
-
+    var layout = '{{layout}}';
+    if( !localStorage.setItem('dominio', ambito)) {
+     localStorage.setItem('dominio', ambito);
+    }
     function replaceMainMedia(src, type) {
         var container = document.getElementById('principal-media');
         if (type === 'image') {

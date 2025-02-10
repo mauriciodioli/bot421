@@ -48,6 +48,7 @@ function formatDate(dateString) {
 
 
 function cargarDatosPublicacion() {
+
     // Redirigir a la URL construida con los parámetros
     window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}`;
 }
@@ -81,7 +82,10 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
         headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
 
         success: function (response) {
-           
+           if(!localStorage.getItem('dominio')){
+              localStorage.setItem('dominio', ambito);
+               
+           }
             splash.style.display = 'none'; // Ocultar el splash al terminar
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
