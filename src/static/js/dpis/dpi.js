@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Función para cargar los ámbitos desde el servidor
     window.cargarAmbitos = function ()  {
-        fetch('/social-media-publicaciones-obtener-ambitos', {
+        fetch('/social-media-publicaciones-obtener-ambitos/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -726,15 +726,15 @@ function getCookie(name) {
 }
 
 
-var currentLanguage = 'in';
-
+var currentLanguage = navigator.language.split('-')[0].toLowerCase(); 
+debugger;
 // Obtener el enlace para cambiar el idioma
 const languageLink = document.getElementById("languageLink");
 
 // Si no existe la cookie "language", se crea y se establece "in" como idioma
 if (!getCookie("language")) {
     document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
-    currentLanguage = "in";
+    currentLanguage = currentLanguage;
     localStorage.setItem("language", currentLanguage);
     // Cambiar el texto del enlace según el idioma
     languageLink.textContent = "ENG";  // Cambiar solo a "ENG"

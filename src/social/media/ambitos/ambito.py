@@ -106,7 +106,7 @@ def informe_ambito():
     return render_template('ambitos/informe_ambitos.html', layout='layout_administracion')
 
 # Obtener todos los ambitos
-@ambito.route('/social-media-publicaciones-obtener-ambitos', methods=['GET'])
+@ambito.route('/social-media-publicaciones-obtener-ambitos/', methods=['GET'])
 def obtener_ambitos():
     try:
         # Obtener el valor de la cookie "language"
