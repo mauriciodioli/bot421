@@ -55,46 +55,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Limpiar el menú existente
                 dropdownMenu.empty();
-                // Mapeo de íconos según el ámbito
-                const iconosPorAmbito = {
-                    "Personal": "👤",
-                    "Laboral": "💼",
-                    "Educacion": "📚",
-                    "Negocios": "📈",
-                    "Arte": "🎨",
-                    "Deporte": "⚽",
-                    "Social": "👥",
-                    "Familia": "👨‍👩‍👧",
-                    "Salud": "🏥",
-                    "Animales": "🐶",
-                    "Amistad": "🧑", // Ícono de una persona para Amistad
-                    "Filantropia": "🤝", // Ícono para Filantropía
-                    "Turismo": "✈️", // Ícono para Turismo                 
-                    "Tecnología": "💻",
-                    "Regionales": "🧉", // Ícono de mate para Regionales                   
-                    "Work": "💼", // Laboral
-                    "Education": "📚", // Educación
-                    "Business": "📈", // Negocios
-                    "Art": "🎨", // Arte
-                    "Sports": "⚽", // Deporte
-                    "Social": "👥", // Social
-                    "Family": "👨‍👩‍👧", // Familia
-                    "Health": "🏥", // Salud
-                    "Pets": "🐶", // Animales
-                    "Friendship": "🧑", // Amistad
-                    "Philanthropy": "🤝", // Filantropía
-                    "Tourism": "✈️", // Turismo
-                    "Technology": "💻", // Tecnología
-                    "Regional": "🧉" // Regionales
-                };
+                
               
                 // Agregar los ámbitos dinámicamente al menú
                 data.forEach(ambito => {                   
-                    const icono = iconosPorAmbito[ambito.nombre] || ""; // Obtener el ícono correspondiente
+                   
                     const listItem = `
                         <li>
                             <a href="#" class="dropdown-item" id="${ambito.valor}">
-                                ${icono} ${ambito.nombre}
+                                ${ambito.nombre}
                             </a>
                         </li>
                         <li><hr class="dropdown-divider"></li>
