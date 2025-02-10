@@ -315,25 +315,24 @@ def simbolo_no_en_diccionario(simbol, diccionarios):
             return False
     return True
 
-def cargaUt(UT_unidadTrader, elemento7, elemento8):
+def cargaUt(UT_unidadTrader, elemento7, elemento3):
     try:
         # Calcular el trader base
         ut_trader = UT_unidadTrader / elemento7
         
-        # Validar que elemento8 no sea vacío ni None
-        if not elemento8 or elemento8.strip() == "":
-            return UT_unidadTrader  # Devolver el valor base si elemento8 está vacío
-        
         # Reemplazar comas y puntos para manejar el formato numérico
-        numero = float(elemento8.replace('.', '').replace(',', '.'))
-        
-        # Asegurar que el número sea positivo y entero
-        factorUtnuevo = abs(int(numero))
+        # LONG -1, LONG -2
+        factorNuevo = elemento3.replace("_", "")  # Elimina los guiones bajos
+        factorNuevo = elemento3.replace("LONG", "")
+        re.search(r'[-+]?\d*\.?\d+', factorNuevo)
+      #  factorUtnuevo = int(match.group()) if match else None  # Convertir a int si se encuentra un número
+        factorUtnuevo = abs(int(factorNuevo))
+      
         
         # Filtrar para solo obtener números <= 20
         if factorUtnuevo > 20:
-            return UT_unidadTrader  # Ignorar valores mayores a 20
-        
+            return ut_trader  # Ignorar valores mayores a 20
+         
         # Ajustar el trader base según el factor calculado
         ut_tradert = ut_trader * factorUtnuevo
         return ut_tradert  # Devolver el UT ajustado
@@ -343,27 +342,191 @@ def cargaUt(UT_unidadTrader, elemento7, elemento8):
 
 
 
-def carga_operaciones(app, pyRofexInicializada, ContenidoSheet_list, account, usuario, correo_electronico, message, idTrigger):
-    try:
-        coincidencias = []
-        símbolos_vistos = set()
-        tiempoLecturaSaldo = datetime.now()
+def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
+     coincidencias = []
+     contador_1=0
+     símbolos_vistos = set()
+     tiempoLecturaSaldo = datetime.now()
+   
+   
+     usuariodb = db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
+     unidadTrader = db.session.query(UnidadTrader).filter(UnidadTrader.trigger_id == idTrigger).first()
+    
+    # saldo = cuenta.obtenerSaldoCuentaConObjeto(pyRofexInicializada, account=account )
 
-        usuariodb = obtener_usuario_por_correo(correo_electronico)
-        unidadTrader = obtener_unidad_trader_por_trigger(idTrigger)
+     #filtrar las coincidencias entre las dos listas
+     for elemento1 in ContenidoSheet_list:
+        if not isinstance(elemento1, list):
+            elemento1 = list(elemento1)
+        
+        if contador_1 >= 2:
+            for key, elemento2 in diccionario_operaciones_enviadas.items():
+                if elemento1[0] == elemento2['Symbol']:
+                    if elemento2['Symbol'] not in símbolos_vistos:
+                        if elemento1[4] == 'closed.':
+                            print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                            app.logger.info(elemento1)
+                            elemento1[3] = int(elemento2['_ut_'])
+                            coincidencias.append(elemento1)
+                        elif elemento1[2] == 'SHORT':
+                            if elemento1[4] == '':
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)
+                                elemento1[3] = int(elemento2['_ut_'])
+                                coincidencias.append(elemento1)
+                        elif elemento1[4] == 'OPEN.':
+                            if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)
+                                elemento1[3] = int(elemento2['_ut_'])
+                                coincidencias.append(elemento1)
+                        símbolos_vistos.add(elemento2['Symbol'])
+                    else:
+                        elemento1[3] = 0
+                        coincidencias.append(elemento1)
+                        símbolos_vistos.add(elemento2['Symbol'])
+        contador_1 += 1
+     #coincidencias = [elemento2 for elemento1 in message for elemento2 in ContenidoSheet_list if elemento1 == elemento2[0]]
+    
+     contador = 0
+     for elemento1 in ContenidoSheet_list:
+        if contador >= 2:
+            #print('elemento1 ', elemento1)        
+            for elemento2 in message:
+             # if elemento1[0] == 'MERV - XMEV - SUPV - 24hs':
+              #  print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)                
+                if elemento1[2].startswith("LONG"):  # Verifica si empieza con "LONG "   
+                     if int(elemento1[3]) != 0:                       
+                          if elemento1[4] == 'OPEN.':
+                               if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
+                                    if elemento1[0] == elemento2:
+                                           # Paso 1: Eliminar los puntos
+                                        cadena_sin_puntos = elemento1[7].replace('.', '')
+                                        # Paso 2: Reemplazar la coma por un punto
+                                        cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                                        # Paso 3: Convertir la cadena a float
+                                        precio = float(cadena_correcta)
+                                        ut = cargaUt(unidadTrader.ut, precio, elemento1[2])
+                                        ut = abs(int(ut))
+                                        # Paso 6: Agregar a elemento1 y coincidencias
+                                        lista_modificable = list(elemento1)
 
-        coincidencias = filtrar_coincidencias(ContenidoSheet_list, diccionario_operaciones_enviadas, símbolos_vistos, account, app)
-        coincidencias = procesar_coincidencias(ContenidoSheet_list, message, coincidencias, unidadTrader)
+                                        # Modificar el valor en el índice deseado
+                                        lista_modificable[3] = str(ut)  # Cambia el valor en el índice 3
 
-        for elemento in coincidencias:
-            procesar_elemento(elemento, unidadTrader, usuariodb, account, tiempoLecturaSaldo, app)
+                                        # Convertir la lista de nuevo a una tupla si es necesario
+                                        tupla_modificada = tuple(lista_modificable)
+                                    
+                                        coincidencias.append(tupla_modificada)
+                                    # print(' elemento1[] ', elemento1[0])
+                                    # print(coincidencias)
+                            
+        contador += 1  
+          
+       
+     for elemento  in coincidencias:  
+         # Paso 1: Eliminar los puntos
+         cadena_sin_puntos = elemento[7].replace('.', '')
+        # Paso 2: Reemplazar la coma por un punto
+         cadena_correcta = cadena_sin_puntos.replace(',', '.')
+        # Paso 3: Convertir la cadena a float
+         precio = float(cadena_correcta)
+         if int(elemento[3]) == 0:
+            ut = cargaUt(unidadTrader.ut, precio, elemento1[2])
+                                      
+        
+            ut = abs(int(ut))
+         else:
+            ut = abs(int(elemento[3]))
+         if ut > 0:
+        #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
+            #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
+            if elemento1[2].startswith("LONG"):  # Verifica si empieza con "LONG "
+                    tradeEnCurso = 'LONG_'
+            else:
+                    tradeEnCurso = elemento1[2]
+            # Cargar los valores del objeto en el diccionario global
+            if  elemento[4] == 'closed.': 
+                if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
+                     tradeEnCurso = 'SHORT'
+            else:
+                 tradeEnCurso =  elemento[2]
+            
+            if  elemento[2] == 'SHORT':
+               senial='closed.'
+            else:
+               senial = elemento[4] 
+            # cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
+            if tradeEnCurso.startswith("LONG"):  # Verifica si empieza con "LONG "
+                    tradeEnCurso = 'LONG_'
+            nueva_orden_para_dic = {
+                'user_id': usuariodb.id,
+                'userCuenta': usuario,
+                'accountCuenta': account, 
+                'idTrigger' : idTrigger,          
+                'clOrdId_alta': '',
+                'clOrdId_baja': '',
+                'orderId': '',
+                'wsClOrdId_timestamp': datetime.now(),
+                'clOrdId_alta_timestamp': None,
+                'clOrdId_baja_timestamp': None,
+                'proprietary': True,
+                'marketId': '',           
+                'symbol': elemento[0],
+                'tipo_de_activo': elemento[1],
+                'tradeEnCurso': tradeEnCurso,                
+                'ut':ut,            
+                'senial': senial,
+                'status': '0',
+                'tiempoSaldo':tiempoLecturaSaldo,
+                'saldo':VariableParaSaldoCta
+            }
+        # Cargar cada objeto Orden en el diccionario global con una clave única
+            diccionario_global_operaciones[elemento[0]] = nueva_orden_para_dic
+        
+            if elemento[0] in diccionario_global_operaciones:
+                    contenido = diccionario_global_operaciones[elemento[0]]
+                   # print(f"Contenido encontrado para {contenido['symbol']}:")
 
-        if not diccionario_global_operaciones:
-            manejar_sin_operaciones_pendientes(account, idTrigger)
+                    # Seleccionar los campos específicos
+                    campos_especificos = [
+                        'symbol',
+                        'tipo_de_activo',
+                        'tradeEnCurso',
+                        'ut',
+                        'senial',
+                        'status'
+                    ]
 
-        app.logger.info('______CARGA_OPERACIONES____')
-    finally:
-        db.session.close()
+                    # Formatear los campos específicos en una sola línea
+                    contenido_linea = ', '.join([f"{campo}: {contenido[campo]}" for campo in campos_especificos])
+                    print('c: ',account,' ',contenido_linea)
+            else:
+                    print(f"No se encontró contenido para {elemento[0]} en diccionario_global_operaciones.")
+
+        
+    # Acceder al diccionario global y a los objetos Orden
+     
+    #     db.session.add(nueva_orden)
+    #     db.session.commit() 
+     #get.current_session = db.session
+     for clave, valor in diccionario_global_operaciones.items():
+          print(f'Clave: {clave}, Valor: {valor}')
+   
+    # db.session.close()
+     if len(diccionario_global_operaciones) == 0 or diccionario_global_operaciones == None:
+            parametros = {
+                    'account': get.ConexionesBroker[account]['cuenta'], 
+                    'user_id': idUser, 
+                    'symbol': '',
+                    'mensaje' : 'No hay operaciones',
+                    'status': 'termino'               
+                }
+
+            get.estrategias_usuario__endingOperacionBot[idTrigger] = parametros
+     app.logger.info('______CARGA_OPERACIONES____') 
+    # app.logger.info(diccionario_global_operaciones) 
+
 
 def obtener_usuario_por_correo(correo_electronico):
     return db.session.query(Usuario).filter(Usuario.correo_electronico == correo_electronico).first()
@@ -391,7 +554,7 @@ def procesar_coincidencias(ContenidoSheet_list, message, coincidencias, unidadTr
             for elemento2 in message:
                 if elemento1[2] == 'LONG_' and int(elemento1[3]) != 0 and elemento1[4] == 'OPEN.' and simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas) and elemento1[0] == elemento2:
                     precio = convertir_cadena_a_float(elemento1[7])
-                    ut = cargaUt(unidadTrader.ut, precio, elemento1[8])
+                    ut = cargaUt(unidadTrader.ut, precio, elemento1[2])
                     ut = abs(int(ut))
                     lista_modificable = list(elemento1)
                     lista_modificable[3] = str(ut)
@@ -405,7 +568,7 @@ def convertir_cadena_a_float(cadena):
 
 def procesar_elemento(elemento, unidadTrader, usuariodb, account, tiempoLecturaSaldo, app):
     precio = convertir_cadena_a_float(elemento[7])
-    ut = cargaUt(unidadTrader.ut, precio, elemento[8]) if int(elemento[3]) == 0 else abs(int(elemento[3]))
+    ut = cargaUt(unidadTrader.ut, precio, elemento[2]) if int(elemento[3]) == 0 else abs(int(elemento[3]))
     
     if ut > 0:
         tradeEnCurso = 'SHORT' if elemento[4] == 'closed.' and (elemento[2] == '' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT') else elemento[2]
