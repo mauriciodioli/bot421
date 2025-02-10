@@ -167,6 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     ${mediaHtml}
                                 </div>
                                 <p class="card-text-ambito">${post.ambito}</p>
+                                 <p class="card-text-idioma">${post.idioma}</p>
                                 <p class="card-text-descripcion">${post.descripcion}</p>
                                 <div class="btn-modificar-eliminar">
                                     <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
@@ -450,7 +451,7 @@ function cerrarModalImagenGrande() {
       var descripcion = postCard.querySelector('.card-text-descripcion').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
       var ambito = postCard.querySelector('.card-text-ambito').textContent;
-
+      var idioma = postCard.querySelector('.card-text-idioma').textContent;
       // Cargar los datos en el modal
       document.getElementById('postId_modificaPublicacion').value = id_publicacion;
       document.getElementById('postTitle_modificaPublicacion').value = titulo;
@@ -462,7 +463,7 @@ function cerrarModalImagenGrande() {
       document.getElementById('postDescription_modificaPublicacion').value = descripcion;
       document.getElementById('postEstado_modificaPublicacion').value = estado;
       document.getElementById('postAmbito_modificaPublicacion').value = ambito;
-
+      document.getElementById('postCambiarIdioma_modificaPublicacion').value = idioma;
       // Limpiar el contenedor de medios y agregar la imagen
       var mediaContainer = document.getElementById('mediaContainer_modificaPublicacion');
       // Limpiar el contenedor de medios

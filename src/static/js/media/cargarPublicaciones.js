@@ -401,7 +401,7 @@ function createPost(event,storedFiles) {
       // Añadir datos adicionales al FormData
       var access_token = localStorage.getItem('access_token');
       var correo_electronico = localStorage.getItem('correo_electronico');
-      var lenguaje = localStorage.getItem('lenguage');
+      var lenguaje = localStorage.getItem('language');
       var color_texto = 'black';
       var color_titulo = 'black';
       var layout = 'layout'

@@ -37,45 +37,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     select.appendChild(option);
                 });
             });
-            const iconosPorAmbito = {
-                "Personal": "👤",
-                "Laboral": "💼",
-                "Educacion": "📚",
-                "Negocios": "📈",
-                "Arte": "🎨",
-                "Deporte": "⚽",
-                "Social": "👥",
-                "Familia": "👨‍👩‍👧",
-                "Salud": "🏥",
-                "Animales": "🐶",
-                "Amistad": "🧑", // Ícono de una persona para Amistad
-                "Filantropia": "🤝", // Ícono para Filantropía
-                "Turismo": "✈️", // Ícono para Turismo                 
-                "Tecnología": "💻",
-                "Regionales": "🧉", // Ícono de mate para Regionales                   
-                "Work": "💼", // Laboral
-                "Education": "📚", // Educación
-                "Business": "📈", // Negocios
-                "Art": "🎨", // Arte
-                "Sports": "⚽", // Deporte
-                "Social": "👥", // Social
-                "Family": "👨‍👩‍👧", // Familia
-                "Health": "🏥", // Salud
-                "Pets": "🐶", // Animales
-                "Friendship": "🧑", // Amistad
-                "Philanthropy": "🤝", // Filantropía
-                "Tourism": "✈️", // Turismo
-                "Technology": "💻", // Tecnología
-                "Regional": "🧉" // Regionales
-            };
+            
             // Actualizar menú desplegable
             dropdownMenu.innerHTML = ''; // Limpiar contenido existente
             data.forEach(ambito => {
-                const icono = iconosPorAmbito[ambito.nombre] || ""; // Obtener el ícono correspondiente
+               
                 const listItem = `
                     <li>
                         <a class="dropdown-item" id="${ambito.valor}" href="#" data-val="${ambito.valor}">
-                             ${icono} ${ambito.nombre}
+                            ${ambito.nombre}
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
