@@ -17,12 +17,23 @@ from models.turing.respuestaUsuario import RespuestaUsuario, RespuestaUsuarioSch
 from models.turing.preguntaUsuario import PreguntaUsuario, PreguntaUsuarioSchema
 import os
 
+
+
+PUBLIC_KEY_DS = os.getenv("PUBLIC_KEY_DS")
 ACCESS_TOKEN_IA = os.getenv("HUGGINGFACE_API_TOKEN")
 API_URLS = {
     "gpt2Model": os.getenv("API_URL_GPT2"),
     "bertModel": os.getenv("API_URL_BERT"),
     "distilbertModel": os.getenv("API_URL_DISTILBERT"),
+    "deepSeekModel": os.getenv("API_URL_DEEPSEEK"),
 }
+
+HEADER = {
+    "Authorization": f"Bearer {PUBLIC_KEY_DS}",
+    "Content-Type": "application/json"
+}
+
+
 # Verificar que las URLs estén configuradas correctamente
 for model, url in API_URLS.items():
     if not url:
@@ -155,6 +166,7 @@ def turing_testTuring_obtener_respuestas_id():
         # Cerrar la sesión de la base de datos para liberar recursos
         db.session.close()
 
+import requests
 
 def respuestaIa(pregunta, selectedModel):
     try:
@@ -162,59 +174,74 @@ def respuestaIa(pregunta, selectedModel):
         if selectedModel not in API_URLS:
             return {"error": f"Modelo '{selectedModel}' no soportado."}, 400
 
-        # Definir los headers y payload para la generación de respuesta
         headers = {"Authorization": f"Bearer {ACCESS_TOKEN_IA}"}
 
-        # Configurar los parámetros dependiendo del modelo
-        if selectedModel == 'distilbertModel':
-            payload_respuesta = {
-                "inputs": pregunta.descripcion,
-                "parameters": {
-                    "max_length": 150,
-                    "temperature": 0.7,
-                    "top_p": 0.8,
-                    "top_k": 40,
-                    "repetition_penalty": 1.2
-                }
+        # Configuración especial para DeepSeek
+        if selectedModel == 'deepSeekModel':
+            headers = {
+                "Authorization": f"Bearer {PUBLIC_KEY_DS}",
+                "Content-Type": "application/json"
             }
-            # Elimina num_return_sequences si existe
-            payload_respuesta["parameters"].pop("num_return_sequences", None)
-
-        elif selectedModel == 'bertModel':  # BERT no usa 'temperature'
-            # Asegurar que el texto contiene [MASK]
-            pregunta.descripcion = agregar_mask(pregunta.descripcion)
-            payload_respuesta = {"inputs": pregunta.descripcion}
-
-        else:  # Para GPT-2 y otros modelos que soporten temperature
-            payload_respuesta = {
-                "inputs": pregunta.descripcion,
-                "parameters": {
-                    "max_length": 150,
-                    "num_return_sequences": 1,
-                    "temperature": 0.7,
-                    "top_p": 0.8,
-                    "top_k": 40,
-                    "repetition_penalty": 1.2
-                }
+           
+             # Definir el payload con la pregunta
+            payload = {
+                "model": "deepseek-chat",  # Especificar el modelo
+                "messages": [{"role": "user", "content": pregunta.descripcion}],
+                "temperature": 0.7,
+                "top_p": 0.8
             }
+            
+            # Realiza la solicitud POST
+            response = requests.post(API_URLS[selectedModel], headers=headers, json=payload)
 
-        # Realizar la solicitud al modelo seleccionado para generar la respuesta
-        response = requests.post(API_URLS[selectedModel], headers=headers, json=payload_respuesta)
+           
+
+        else:
+            # Configurar los parámetros dependiendo del modelo
+            if selectedModel == 'distilbertModel':
+                payload_respuesta = {
+                    "inputs": pregunta.descripcion,
+                    "parameters": {
+                        "max_length": 150,
+                        "temperature": 0.7,
+                        "top_p": 0.8,
+                        "top_k": 40,
+                        "repetition_penalty": 1.2
+                    }
+                }
+                payload_respuesta["parameters"].pop("num_return_sequences", None)
+
+            elif selectedModel == 'bertModel':
+                pregunta.descripcion = agregar_mask(pregunta.descripcion)
+                payload_respuesta = {"inputs": pregunta.descripcion}
+
+            else:  # GPT-2 u otros modelos similares
+                payload_respuesta = {
+                    "inputs": pregunta.descripcion,
+                    "parameters": {
+                        "max_length": 150,
+                        "num_return_sequences": 1,
+                        "temperature": 0.7,
+                        "top_p": 0.8,
+                        "top_k": 40,
+                        "repetition_penalty": 1.2
+                    }
+                }
+
+            response = requests.post(API_URLS[selectedModel], headers=headers, json=payload_respuesta)
+
         print(response.status_code, response.text)  # Depuración
 
         if response.status_code == 200:
             response_json = response.json()
-            resumen = response_json[0].get('generated_text', None)
+            resumen = response_json.get("choices", [{}])[0].get("message", {}).get("content", None)
 
-            # Limitar al primer punto o 20 palabras
-            if resumen:                
-                return truncar_resumen(resumen,pregunta.descripcion)
+            if resumen:
+                return truncar_resumen(resumen, pregunta.descripcion)
             else:
                 return "Resumen no disponible"
 
-       
-        else:
-            return {"error": f"Error al llamar a la API: {response.text}"}, response.status_code
+        return {"error": f"Error al llamar a la API: {response.text}"}, response.status_code
 
     except requests.exceptions.RequestException as e:
         return {"error": f"Error en la solicitud HTTP: {str(e)}"}, 500

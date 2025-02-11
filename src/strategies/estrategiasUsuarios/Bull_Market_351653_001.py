@@ -315,9 +315,29 @@ def simbolo_no_en_diccionario(simbol, diccionarios):
         if simbol == diccionario['Symbol']:
             return False
     return True
-def cargaUt(UT_unidadTrader,elemento7):
-    ut_trader = UT_unidadTrader/elemento7
-    return ut_trader
+def cargaUt(UT_unidadTrader, elemento7, elemento3):
+    try:
+        # Calcular el trader base
+        ut_trader = UT_unidadTrader / elemento7
+        ut_trader = abs(int(ut_trader))
+        # Reemplazar comas y puntos para manejar el formato numérico
+        # LONG -1, LONG -2
+        factorNuevo = elemento3.replace("_", "").replace("LONG", "").strip()
+       # factorNuevo = re.search(r'[-+]?\d*\.?\d+', factorNuevo)
+      #  factorUtnuevo = int(match.group()) if match else None  # Convertir a int si se encuentra un número
+        factorUtnuevo = abs(int(factorNuevo))
+      
+        
+        # Filtrar para solo obtener números <= 20
+        if factorUtnuevo > 20:
+            return ut_trader  # Ignorar valores mayores a 20
+         
+        # Ajustar el trader base según el factor calculado
+        ut_tradert = ut_trader * factorUtnuevo
+        return ut_tradert  # Devolver el UT ajustado
+    except (ValueError, AttributeError):
+        # Si elemento8 no es válido (por ejemplo, #REF!, None, etc.), devolver el UT base
+        return UT_unidadTrader
 
 def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuario,correo_electronico,message,idTrigger):#carg
      coincidencias = []
@@ -341,11 +361,18 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
                 if elemento1[0] == elemento2['Symbol']:
                     if elemento2['Symbol'] not in símbolos_vistos:
                         if elemento1[4] == 'closed.':
-                            print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
-                            app.logger.info(elemento1)
-                            elemento1[3] = int(elemento2['_ut_'])
-                            coincidencias.append(elemento1)
-                        elif elemento1[2] == 'SHORT':
+                                print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
+                                app.logger.info(elemento1)
+                                # Paso 1: Eliminar los puntos
+                                cadena_sin_puntos = elemento1[7].replace('.', '')
+                                # Paso 2: Reemplazar la coma por un punto
+                                cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                                # Paso 3: Convertir la cadena a float
+                                precio = float(cadena_correcta)
+                                ut = cargaUt(unidadTrader.ut, precio, elemento1[2])
+                                elemento1[3] =  ut 
+                                coincidencias.append(elemento1)
+                        elif elemento1[2] == 'SHORT_2':
                             if elemento1[4] == '':
                                 print('account: ',account,' elemento1[0] ******************', elemento1[0], 'elemento2[_ut_]:', elemento2['_ut_'], '**** ', elemento1[4], ' tipo:', elemento1[1],' tradeEnCurso: ',elemento1[2])
                                 app.logger.info(elemento1)
@@ -370,33 +397,33 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
         if contador >= 2:
             #print('elemento1 ', elemento1)        
             for elemento2 in message:
-              #if elemento1[0] == 'MERV - XMEV - COME - 48hs':
-               # print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)
-                if elemento1[2] == 'LONG_':
+             # if elemento1[0] == 'MERV - XMEV - SUPV - 24hs':
+              #  print(' elemento1[0] ', elemento1 ,' elemento2 ',elemento2)                
+                if elemento1[2].startswith("LONG"):  # Verifica si empieza con "LONG "   
                      if int(elemento1[3]) != 0:                       
                           if elemento1[4] == 'OPEN.':
-                               if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
-                                    if elemento1[0] == elemento2:
-                                           # Paso 1: Eliminar los puntos
-                                        cadena_sin_puntos = elemento1[7].replace('.', '')
-                                        # Paso 2: Reemplazar la coma por un punto
-                                        cadena_correcta = cadena_sin_puntos.replace(',', '.')
-                                        # Paso 3: Convertir la cadena a float
-                                        precio = float(cadena_correcta)
-                                        ut = cargaUt(unidadTrader.ut,precio)
-                                        ut = abs(int(ut))
-                                        # Paso 6: Agregar a elemento1 y coincidencias
-                                        lista_modificable = list(elemento1)
+                               #if simbolo_no_en_diccionario(elemento1[0], diccionario_operaciones_enviadas):
+                                if elemento1[0] == elemento2:
+                                        # Paso 1: Eliminar los puntos
+                                    cadena_sin_puntos = elemento1[7].replace('.', '')
+                                    # Paso 2: Reemplazar la coma por un punto
+                                    cadena_correcta = cadena_sin_puntos.replace(',', '.')
+                                    # Paso 3: Convertir la cadena a float
+                                    precio = float(cadena_correcta)
+                                    ut = cargaUt(unidadTrader.ut, precio, elemento1[2])
+                                    ut = abs(int(ut))
+                                    # Paso 6: Agregar a elemento1 y coincidencias
+                                    lista_modificable = list(elemento1)
 
-                                        # Modificar el valor en el índice deseado
-                                        lista_modificable[3] = str(ut)  # Cambia el valor en el índice 3
+                                    # Modificar el valor en el índice deseado
+                                    lista_modificable[3] = str(ut)  # Cambia el valor en el índice 3
 
-                                        # Convertir la lista de nuevo a una tupla si es necesario
-                                        tupla_modificada = tuple(lista_modificable)
-                                    
-                                        coincidencias.append(tupla_modificada)
-                                    # print(' elemento1[] ', elemento1[0])
-                                    # print(coincidencias)
+                                    # Convertir la lista de nuevo a una tupla si es necesario
+                                    tupla_modificada = tuple(lista_modificable)
+                                
+                                    coincidencias.append(tupla_modificada)
+                                # print(' elemento1[] ', elemento1[0])
+                                # print(coincidencias)
                             
         contador += 1  
           
@@ -409,7 +436,8 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
         # Paso 3: Convertir la cadena a float
          precio = float(cadena_correcta)
          if int(elemento[3]) == 0:
-            ut = cargaUt(unidadTrader.ut,precio)
+            ut = cargaUt(unidadTrader.ut, precio, elemento1[2])
+                                      
         
             ut = abs(int(ut))
          else:
@@ -417,7 +445,10 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
          if ut > 0:
         #  print("FUN carga_operaciones_ print(elem[0]",elemento[0],"elem[1]",elemento[1],",elem[2]",elemento[2],",elem[3]",elemento[3],",elem[4])",elemento[4])
             #print(elemento[0],elemento[1],elemento[2],elemento[3],elemento[4])
-           
+            if elemento1[2].startswith("LONG"):  # Verifica si empieza con "LONG "
+                    tradeEnCurso = 'LONG_'
+            else:
+                    tradeEnCurso = elemento1[2]
             # Cargar los valores del objeto en el diccionario global
             if  elemento[4] == 'closed.': 
                 if elemento[2] =='' or elemento[2] != 'LONG_' or elemento[2] != 'SHORT':
@@ -430,6 +461,10 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
             else:
                senial = elemento[4] 
             # cargar_ordenes_db(cuentaAcount=usuario,cantidad_a_comprar_abs=ut,signal=senial,clOrdId='', orderStatus='operado', tipo_orden='trigger', symbol=elemento[0], user_id=usuariodb.id, accountCuenta=account)   
+            if tradeEnCurso.startswith("LONG"):  # Verifica si empieza con "LONG "
+                    tradeEnCurso = 'LONG_'
+            if tradeEnCurso.startswith("LONG -"):  # Verifica si empieza con "LONG "
+                    tradeEnCurso = 'SHORT'
             nueva_orden_para_dic = {
                 'user_id': usuariodb.id,
                 'userCuenta': usuario,
@@ -481,8 +516,8 @@ def carga_operaciones(app,pyRofexInicializada,ContenidoSheet_list,account,usuari
     #     db.session.add(nueva_orden)
     #     db.session.commit() 
      #get.current_session = db.session
-     #for clave, valor in diccionario_global_operaciones.items():
-        #  print(f'Clave: {clave}, Valor: {valor}')
+     for clave, valor in diccionario_global_operaciones.items():
+          print(f'Clave: {clave}, Valor: {valor}')
    
     # db.session.close()
      if len(diccionario_global_operaciones) == 0 or diccionario_global_operaciones == None:

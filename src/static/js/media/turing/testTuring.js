@@ -24,7 +24,7 @@
 
 if (typeof localStorage.getItem('selectedModel') === 'undefined' || localStorage.getItem('selectedModel') === null) {
   // Si no está configurado o es indefinido, lo inicializa con el valor 1
-  localStorage.setItem('selectedModel', 'gpt2Model');
+  localStorage.setItem('selectedModel', 'deepSeekModel');
  
 } else {
   console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('selectedModel'));
@@ -273,6 +273,7 @@ function obtenerRespuesta() {
 
             // Verificar que los valores necesarios existan
             if (descripcion && preguntaId) {
+              debugger;
                 // Crear un objeto con los datos a enviar
                 const data = {
                     pregunta_id: preguntaId,
@@ -984,10 +985,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const conectarButton = document.getElementById('conectar');
   const gpt2Model = document.getElementById('gpt2Model');
   const bertModel = document.getElementById('bertModel');
+  const deepSeekModel = document.getElementById('deepSeekModel');
   const distilbertModel = document.getElementById('distilbertModel');
 
   // Obtener modelo seleccionado desde localStorage
-  let selectedModel = localStorage.getItem('selectedModel') || 'gpt2Model'; // Modelo por defecto
+  let selectedModel = localStorage.getItem('selectedModel') || 'deepSeekModel'; // Modelo por defecto
 
   // Actualizar selección al cargar
   function updateSelectedModelUI() {
@@ -997,6 +999,8 @@ document.addEventListener('DOMContentLoaded', function() {
       bertModel.classList.add('active');
     } else if (selectedModel === 'distilbertModel') {
       distilbertModel.classList.add('active');
+    }else if (selectedModel === 'deepSeekModel') {
+      deepSeekModel.classList.add('active');
     }
   }
 
@@ -1009,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function() {
     gpt2Model.classList.remove('active');
     bertModel.classList.remove('active');
     distilbertModel.classList.remove('active');
-
+    deepSeekModel.classList.remove('active');
     // Activar modelo seleccionado
     updateSelectedModelUI();
   }
@@ -1023,6 +1027,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   if (distilbertModel) {
     distilbertModel.addEventListener('click', () => saveSelectedModel('distilbertModel'));
+  }
+  if (deepSeekModel) {
+    deepSeekModel.addEventListener('click', () => saveSelectedModel('deepSeekModel'));
   }
 
   // Inicializar UI
