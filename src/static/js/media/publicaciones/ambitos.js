@@ -58,7 +58,7 @@ function confirmarCrearAmbito() {
 // Función para obtener todos los ambitos
 function obtenerAmbitos() {
     
-    fetch('/social-media-publicaciones-obtener-ambitos')
+    fetch('/social-media-publicaciones-obtener-ambitos/')
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Error del servidor: ${response.statusText}`);
