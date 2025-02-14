@@ -58,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var lenguaje = localStorage.getItem('language');
     var access_token = localStorage.getItem('access_token');    
     var ambito = localStorage.getItem('dominio');
+    var codigoPostal = localStorage.getItem('codigoPostal');
   
     if (!access_token) {
       alert("No se ha encontrado el token de acceso.");
@@ -70,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formData.append('layout','layout');
     formData.append('ambito', ambito);
     formData.append('lenguaje', lenguaje);
+    formData.append('codigoPostal', codigoPostal);
     $.ajax({
       url: '/media-publicaciones-mostrar/',
       type: 'POST',
