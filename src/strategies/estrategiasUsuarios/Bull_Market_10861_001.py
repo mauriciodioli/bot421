@@ -1223,12 +1223,15 @@ def Bull_Market_10861_001_verificar_estado():
                             diccionario_operaciones_enviadas.clear()
                             pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_estrategia, environment=account)
         
-                            
+                            redirect_url = url_for('accionesTriggers.terminoEjecutarEstrategia')
+                            if not redirect_url.endswith('/'):
+                                redirect_url += '/'
+                           
                             return jsonify({
                                 'estado': 'listo',
                                 'account': account,
                                 'mensaje': 'FELICIDADES, EL BOT TERMINO DE OPERAR CON EXITO !!!',
-                                'redirect': url_for('accionesTriggers.terminoEjecutarEstrategia')  # Corregido aquí
+                                'redirect': redirect_url  # Corregido aquí
                             }), 200
                     else:
                         return jsonify({'estado': 'en_proceso'}), 200       

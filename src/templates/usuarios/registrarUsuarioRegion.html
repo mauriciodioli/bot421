@@ -1,0 +1,147 @@
+{% extends 'layouts/layout_without_navbar.html' %}
+
+{% block content %}
+
+<h1>Registrarse como usuario</h1>
+<div id="cardIndex">
+    <div class="cardIndexPlanes">
+        <!-- Contenido de la tarjeta -->
+        <div id="seleccionPais">
+            <label for="pais">Selecciona tu país:</label>
+            <select id="pais" class="form-select" onchange="seleccionarIdioma()">
+                <option value="">--Seleccionar--</option>
+            </select>
+        </div>
+        
+        <div id="seleccionLenguaje" style="display: none;">
+            <label for="lenguaje">Selecciona tu idioma:</label>
+            <select id="lenguaje" class="form-select" onchange="mostrarCodigoPostal()">
+                <option value="">--Seleccionar--</option>
+            </select>
+        </div>
+        
+        <div id="seleccionCodigoPostal" style="display: none;">
+            <label for="codigoPostal">Ingresa tu código postal:</label>
+            <input type="text" id="codigoPostal" class="form-control" onblur="enviarDatos()">
+        </div>
+
+        <!-- Campos ocultos para correo_electronico y password -->
+        <input type="hidden" id="correo_electronico" value="{{ correo_electronico }}">
+        <input type="hidden" id="password" value="{{ password }}">
+    </div>
+</div>
+
+
+
+
+
+
+
+{% include 'layouts/layout_footer.html' %}  
+<script>
+   
+    async function cargarPaises() {
+        try {
+            const response = await fetch('https://restcountries.com/v3.1/all');
+            const paises = await response.json();
+            const selectPais = document.getElementById('pais');
+            window.paisesData = {}; 
+    
+            paises.sort((a, b) => a.name.common.localeCompare(b.name.common));
+    
+            paises.forEach(pais => {
+                const option = document.createElement('option');
+                option.value = pais.cca2; 
+                option.textContent = pais.name.common; 
+                selectPais.appendChild(option);
+    
+                window.paisesData[pais.cca2] = {
+                    nombre: pais.name.common,
+                    idiomas: Object.values(pais.languages || {})
+                };
+            });
+        } catch (error) {
+            console.error('Error al cargar los países:', error);
+        }
+    }
+    
+    function seleccionarIdioma() {
+        const paisCodigo = document.getElementById('pais').value;
+        const datosPais = window.paisesData[paisCodigo];
+        const selectLenguaje = document.getElementById('lenguaje');
+        
+        selectLenguaje.innerHTML = '<option value="">--Seleccionar--</option>';
+    
+        if (datosPais) {
+            datosPais.idiomas.forEach(idioma => {
+                const option = document.createElement('option');
+                option.value = idioma;
+                option.textContent = idioma;
+                selectLenguaje.appendChild(option);
+            });
+        }
+
+        // Actualizar el label con el país seleccionado
+        const labelPais = document.querySelector('label[for="pais"]');
+        labelPais.textContent = `País seleccionado: ${window.paisesData[paisCodigo].nombre}`;
+        
+        // Limpiar el valor del idioma
+        const labelLenguaje = document.querySelector('label[for="lenguaje"]');
+        labelLenguaje.textContent = 'Selecciona tu idioma:';
+
+        // Cambiar de sección
+        mostrarSiguiente('seleccionPais', 'seleccionLenguaje');
+    }
+    
+    function mostrarCodigoPostal() {
+        const selectLenguaje = document.getElementById('lenguaje');
+        if (selectLenguaje.value) {
+            // Mostrar directamente el campo de código postal
+            mostrarSiguiente('seleccionLenguaje', 'seleccionCodigoPostal');
+        }
+    }
+    
+    function mostrarSiguiente(actual, siguiente) {
+        document.getElementById(actual).style.display = 'none';
+        document.getElementById(siguiente).style.display = 'block';
+    }
+    
+    async function enviarDatos() {
+        const correo_electronico = document.getElementById('correo_electronico').value;
+        const password = document.getElementById('password').value;
+        const region = "region";
+        const provincia = "provincia";
+        const ciudad = "ciudad";
+        
+        const datos = {
+            pais: document.getElementById('pais').value,
+            lenguaje: document.getElementById('lenguaje').value,
+            codigoPostal: document.getElementById('codigoPostal').value,
+            correo_electronico: correo_electronico,  // Usa el nombre que coincide con el backend
+            password: password,
+            region: region,
+            provincia: provincia,
+            ciudad: ciudad
+        };
+        
+        fetch('/registro-usuario/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(datos)
+        })
+        .then(response => response.text())  // Recibe HTML en lugar de JSON
+        .then(html => {
+            document.open();  // Borra el contenido actual
+            document.write(html);  // Escribe la nueva respuesta (index.html)
+            document.close();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+    
+    document.addEventListener('DOMContentLoaded', cargarPaises);
+    
+</script>
+<link rel=   "stylesheet" href=" {{ url_for('static', filename='css/usuarios/registrarUsuarioRegion.css') }}">
+{% endblock %}

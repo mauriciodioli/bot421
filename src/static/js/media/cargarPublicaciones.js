@@ -444,7 +444,7 @@ function createPost(event,storedFiles) {
 
 
         if (Array.isArray(response)) {
-          debugger;
+          
           var postAccordion = $('#postAccordion');
           postAccordion.empty();
     
@@ -587,7 +587,7 @@ function createPost(event,storedFiles) {
 
 // Función para obtener la URL firmada del video
 async function loadVideo(fileName) {
-  debugger;
+
   try {
       let response = await fetch("/bucketGoog_get_download_url/", {
           method: "POST",

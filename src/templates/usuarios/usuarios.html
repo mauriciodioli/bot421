@@ -26,29 +26,47 @@
       <thead>           
         <tr>
           <th scope="col">Orden</th>
-          <th scope="col">Id</th>          
+          <th scope="col">Id</th>
           <th scope="col">Email</th>
           <th scope="col">Rol</th>
+          <th scope="col">Código Postal</th>
+          <th scope="col">País</th>
+          <th scope="col">Idioma</th>
           <th scope="col">Acciones</th>
         </tr>            
       </thead>
       <tbody>
         <!-- Aquí se mostrarán los usuarios -->
-        {% for usuario in datos %}
+        {% for usuario_region in datos %}
         <tr>
           <td>{{ loop.index }}</td>
-          <td>{{ usuario.id }}</td>
-          <td>{{ usuario.correo_electronico }}</td>          
-          <td>{{ usuario.roll }}</td>
+          <td>{{ usuario_region.usuario.id }}</td>
+          <td>{{ usuario_region.usuario.correo_electronico }}</td>  
+          <td>{{ usuario_region.usuario.roll }}</td>
+          <td>{{ usuario_region.codigo_postal }}</td>  <!-- Mostrar Código Postal -->
+          <td>{{ usuario_region.pais }}</td>  <!-- Mostrar País -->
+          <td>{{ usuario_region.idioma }}</td>  <!-- Mostrar Idioma -->
           <td class="d-flex">
-            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" data-usuario-id="{{ usuario.id }}"  data-usuario-email="{{ usuario.correo_electronico }}" data-usuario-rol="{{ usuario.roll }}">Editar</button>
-            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal" data-usuario-id="{{ usuario.id }}" onclick="setUserData(this.getAttribute('data-usuario-id'))">Eliminar</button>
+            <button 
+                        type="button" 
+                        class="btn btn-primary" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#editarUsuarioModal"
+                        data-usuario-id="{{ usuario_region.usuario.id }}"
+                        data-usuario-email="{{ usuario_region.usuario.correo_electronico }}"
+                        data-usuario-rol="{{ usuario_region.usuario.roll }}"
+                        data-usuario-codigo-postal="{{ usuario_region.codigo_postal }}"  
+                        data-usuario-pais="{{ usuario_region.pais }}"                  
+                        data-usuario-idioma="{{ usuario_region.idioma }}">               
+                        Editar
+            </button>
+            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal" data-usuario-id="{{ usuario_region.usuario.id }}" onclick="setUserData(this.getAttribute('data-usuario-id'))">Eliminar</button>
 
            
                        
             <form action="/estrategias-usuario" method="POST">
                 <div class="form-group">
-                    <input type="hidden" name="usuario_id" placeholder="escribe cuenta" value="{{ usuario.id }}" class="form-control">
+                    <input type="hidden" name="usuario_id" placeholder="escribe cuenta" value="{{ usuario_region.usuario.id }}" class="form-control">
                 </div>                               
                 <div class="form-group">
                     <button type="submit" class="btn btn-secondary btn-sm btn-block form-control mx-2">Estrategias</button>
@@ -88,23 +106,46 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="editarUsuarioModalLabel">Editar Usuario</h5>
+          <h5 class="modal-title" id="editarUsuarioModalLabel" style="color: black;">Editar Usuario</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="editarUsuarioForm" action="/editar-usuario" method="POST">
           <div class="modal-body">
             <input type="hidden" id="editarUsuarioId" name="id">
-            <div class="form-group">
-              <label for="editarUsuarioEmail" >Email:</label>
+            
+            <!-- Campo Email -->
+            <div class="form-group mb-3">
+              <label for="editarUsuarioEmail" style="color: black;">Email:</label>
               <input type="email" class="form-control" id="editarUsuarioEmail" autocomplete="email" name="email" required>
             </div>
-            <div class="form-group">
-              <label for="editarUsuarioRol">Rol:</label>
+  
+            <!-- Campo Rol -->
+            <div class="form-group mb-3">
+              <label for="editarUsuarioRol" style="color: black;">Rol:</label>
               <select class="form-control" id="editarUsuarioRol" name="rol">
                 <option value="USUARIO">Usuario</option>
                 <option value="ADMINISTRADOR">Administrador</option>
               </select>
             </div>
+  
+            <!-- Campo Código Postal -->
+            <div class="form-group mb-3">
+              <label for="editarUsuarioCodigoPostal" style="color: black;">Código Postal:</label>
+              <input type="text" class="form-control" id="editarUsuarioCodigoPostal" name="codigoPostal" required>
+            </div>
+  
+            <!-- Campo País -->
+            <div class="form-group mb-3">
+              <label for="editarUsuarioPais" style="color: black;">País:</label>
+              <input type="text" class="form-control" id="editarUsuarioPais" name="pais" required>
+            </div>
+  
+            <!-- Campo Idioma -->
+            <div class="form-group mb-3">
+              <label for="editarUsuarioIdioma" style="color: black;">Idioma:</label>
+              <input type="text" class="form-control" id="editarUsuarioIdioma" name="idioma" required>
+            </div>
+  
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -114,6 +155,8 @@
       </div>
     </div>
   </div>
+  
+  
 
   <div class="modal fade" id="eliminarUsuarioModal" tabindex="-1" aria-labelledby="eliminarUsuarioModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -174,12 +217,20 @@
       const userId = button.dataset.usuarioId;
       const userEmail = button.dataset.usuarioEmail;
       const userRol = button.dataset.usuarioRol;
+      const userCodigoPostal = button.dataset.usuarioCodigoPostal; // Nuevo dato
+      const userPais = button.dataset.usuarioPais; // Nuevo dato
+      const userIdioma = button.dataset.usuarioIdioma; // Nuevo dato
+  
+      // Asignar los valores a los campos del modal
       document.querySelector('#editarUsuarioId').value = userId;
       document.querySelector('#editarUsuarioEmail').value = userEmail;
       document.querySelector('#editarUsuarioRol').value = userRol;
+      document.querySelector('#editarUsuarioCodigoPostal').value = userCodigoPostal; // Asignar Código Postal
+      document.querySelector('#editarUsuarioPais').value = userPais; // Asignar País
+      document.querySelector('#editarUsuarioIdioma').value = userIdioma; // Asignar Idioma
     });
   });
-
+  
 
   function setUserData(userId) {
     document.getElementById('eliminarUsuarioId').value = userId;

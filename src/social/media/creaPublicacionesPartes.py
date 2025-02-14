@@ -340,8 +340,8 @@ def social_publicaciones_crear_publicacion_partes():
             ambito = request.form.get('ambito')
             
             total_publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id).count()
-            if total_publicaciones >= 20:
-                return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
+            #if total_publicaciones >= 20:
+            #    return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
           
           
            # Recibir los metadatos de los archivos
