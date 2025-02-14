@@ -69,6 +69,8 @@ def media_publicaciones_mostrar():
         layout = request.form.get('layout')
         ambito = request.form.get('ambito')
         idioma = request.form.get('lenguaje')
+        codigoPostal = request.cookies.get('codigoPostal')
+        
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
@@ -85,10 +87,13 @@ def media_publicaciones_mostrar():
             app = current_app._get_current_object()                    
             decoded_token = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             user_id = decoded_token.get("sub")
-
-            # Obtener todas las publicaciones del usuario
-            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
-           
+            
+            if codigoPostal == '1':
+                # Obtener todas las publicaciones del usuario
+                publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
+            else:
+                # Obtener todas las publicaciones del usuario
+                publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal).all()  
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
             db.session.close()
@@ -181,6 +186,9 @@ def media_publicaciones_mostrar_dpi():
          # Obtener el valor de 'ambitos' enviado en el cuerpo de la solicitud
         ambitos = request.form.get('ambitos')  # Si el contenido es application/x-www-form-urlencoded
         idioma = request.form.get('lenguaje')
+        codigoPostal = request.cookies.get('codigoPostal')
+        if codigoPostal == None:
+            codigoPostal = '1'
         if ambitos == 'inicialDominio':
             ambitos = 'laboral'
         
@@ -219,14 +227,26 @@ def media_publicaciones_mostrar_dpi():
                     
                     # Si el estado no es "eliminado", obtén la publicación correspondiente
                     if estado_publicacion.estado != 'eliminado':
-                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma).first()
+                        if codigoPostal == '1':
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma).first()
+                        else: 
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,codigoPostal = codigoPostal).first()
                         if publicacion:
                             # Agrega la publicación a la lista de publicaciones
                             publicaciones.append(publicacion)
 
             else:
-                # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma).all()
+                if codigoPostal == '1':
+                             # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma).all()
+                else: 
+                  publicaciones = db.session.query(Publicacion).filter(
+                                Publicacion.estado == 'activo',
+                                Publicacion.ambito == ambitos,
+                                Publicacion.idioma == idioma,
+                                Publicacion.codigoPostal.in_([codigoPostal, '1'])  # Código postal debe ser uno de estos valores
+                            ).all()
+              
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()
@@ -668,6 +688,7 @@ def guardarPublicacion(request, user_id):
         color_titulo = request.form.get('color_titulo')
         estado = request.form.get('postEstado_creaPublicacion')
         botonCompra = request.form.get('postBotonCompra_creaPublicacion')
+        codigoPostal = request.cookies.get('codigoPostal')
         
         # Verificar si ya existe una publicación con el mismo título para el mismo usuario
         publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
@@ -688,6 +709,7 @@ def guardarPublicacion(request, user_id):
             color_titulo=color_titulo,
             fecha_creacion=datetime.now(),
             estado=estado,
+            codigoPostal=codigoPostal,
             botonCompra=bool(botonCompra)
         )
         
@@ -917,6 +939,7 @@ def publicaciones_modificar_publicaciones():
         ambito = request.form.get('postAmbito_modificaPublicacion')
         idioma = request.form.get('postCambiarIdioma_modificaPublicacion')
         botonCompra = request.form.get('postBotonCompra_modificaPublicacion')
+        codigoPostal = request.form.get('codigoPostal_modificaPublicacion')
 
         # Obtener archivos subidos si es necesario
         archivos = request.files.getlist('mediaFile_modificaPublicacion')
@@ -958,6 +981,7 @@ def publicaciones_modificar_publicaciones():
         publicacion.estado = estado
         publicacion.ambito = ambito
         publicacion.idioma = idioma
+        publicacion.codigoPostal = codigoPostal
         publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
         publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
 
