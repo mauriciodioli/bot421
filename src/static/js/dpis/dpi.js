@@ -269,17 +269,62 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
  
- 
- 
- 
- // Obtener el enlace "Signals"
- document.getElementById('openModalSignals').addEventListener('click', function (e) {
+
+// Obtener el enlace "Signals"
+document.getElementById('openModalCP').addEventListener('click', function (e) {
     // Prevenir el comportamiento por defecto (enlace)
     e.preventDefault();
+
+    // Cargar el código postal desde el localStorage si existe
+    const codigoPostalGuardado = localStorage.getItem('codigoPostal');
+    if (codigoPostalGuardado) {
+        // Mostrar el código postal guardado en el campo del modal
+        document.getElementById('codigoPostalModal').value = codigoPostalGuardado;
+    } else {
+        // Si no hay código postal en localStorage, dejar el campo vacío
+        document.getElementById('codigoPostalModal').value = '';
+    }
+
     // Abrir el modal
-    var myModal = new bootstrap.Modal(document.getElementById('modalSeleccionPais'));
+    var myModal = new bootstrap.Modal(document.getElementById('modalSeleccionCodigoPostal'));
     myModal.show();
 });
+
+// Función para permitir solo números en el input
+document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
+    // Reemplazar todo lo que no sea un número
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+});
+
+// Función para guardar el código postal en el localStorage
+// Función para guardar el código postal en el localStorage y las cookies
+function guardarCodigoPostal() {
+    const codigoPostal = document.getElementById('codigoPostalModal').value;
+
+    // Validar si el campo no está vacío y contiene solo números
+    if (codigoPostal && !isNaN(codigoPostal)) {
+        // Guardar el código postal en el localStorage
+        localStorage.setItem('codigoPostal', codigoPostal);
+        console.log('Código Postal guardado en localStorage:', codigoPostal);
+
+        // Guardar el código postal en las cookies (con una duración de 1 hora)
+        document.cookie = `codigoPostal=${codigoPostal};max-age=3600;path=/`;
+
+        // Cerrar el modal
+        const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
+        myModal.hide();  // Aquí se cierra el modal
+
+    } else {
+        alert('Por favor ingresa un código postal válido (solo números)');
+    }
+}
+
+// Función para permitir solo números en el input
+document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
+    // Reemplazar todo lo que no sea un número
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+});
+
 
 
 
@@ -696,7 +741,7 @@ function getCookie(name) {
 
 
 var currentLanguage = navigator.language.split('-')[0].toLowerCase(); 
-debugger;
+
 // Obtener el enlace para cambiar el idioma
 const languageLink = document.getElementById("languageLink");
 
@@ -722,7 +767,7 @@ function cambiarIdioma() {
     
 
 document.addEventListener("DOMContentLoaded", function () {
-    const languageLink = document.getElementById("languageLink");
+   var languageLink = document.getElementById("languageLink");
 
     // Función para obtener el valor de una cookie
     function getCookie(name) {

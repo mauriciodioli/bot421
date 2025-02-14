@@ -72,7 +72,7 @@ def get_server_time():
 
 
 
-@accionesTriggers.route("/terminoEjecutarEstrategia")
+@accionesTriggers.route("/terminoEjecutarEstrategia/")
 def terminoEjecutarEstrategia(): 
     return render_template('notificaciones/terminoEjecutarEstrategia.html')
 @accionesTriggers.route('/herramientasAdmin_accionesTriggers_actualizaLuzTrigger')

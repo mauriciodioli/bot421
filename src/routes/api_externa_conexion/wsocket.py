@@ -94,8 +94,9 @@ def wsocketConexion(app, pyRofexInicializada, accountCuenta, user_id, selector):
             get.ContenidoSheet_list = SuscripcionDeSheet(app, pyRofexInicializada, accountCuenta, user_id, selector)
 
         # Remover manejadores de WebSocket si es necesario
-        if accountCuenta != get.CUENTA_ACTUALIZAR_SHEET:
-            pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0, environment=accountCuenta)
+        #if accountCuenta != get.CUENTA_ACTUALIZAR_SHEET:
+            #pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0, environment=accountCuenta)
+        pyRofexInicializada.remove_websocket_market_data_handler(market_data_handler_0, environment=accountCuenta)
         
         pyRofexInicializada.remove_websocket_order_report_handler(order_report_handler_0, environment=accountCuenta)
     

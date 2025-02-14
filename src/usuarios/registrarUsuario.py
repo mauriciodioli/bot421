@@ -26,15 +26,18 @@ from datetime import datetime, timedelta
 
 from flask_login import LoginManager, login_required, login_user, UserMixin
 
+
 import jwt
 from flask_dance.consumer import oauth_authorized
 
 from oauthlib.oauth2.rfc6749.errors import OAuth2Error
 from requests.exceptions import HTTPError
 from models.usuario import Usuario
+from models.usuarioRegion import UsuarioRegion
 from datetime import datetime, timedelta
 from utils.db import db
 from usuarios.autenticacion import autenticacion
+
 
 # Configuración del Blueprint para el registro de usuarios
 registrarUsuario = Blueprint("registrarUsuario", __name__)
@@ -68,12 +71,22 @@ def logout():
 def registrar_usuario():
     return render_template("usuarios/registrarUsuario.html")
 
-from flask import jsonify
 
-@registrarUsuario.route('/registro-usuario', methods=['POST'])
+@registrarUsuario.route('/registro-usuario/', methods=['POST'])
 def registro_usuario():
-    correo_electronico = request.form['correo_electronico']   
-    password = request.form['password']   
+    datos = request.get_json()
+    correo_electronico = datos['correo_electronico']   
+    password = datos['password']  
+    idioma = datos['lenguaje']
+    codigoPostal = datos['codigoPostal']
+    pais = datos['pais']
+    region = datos['region']
+    provincia = datos['provincia']
+    ciudad = datos['ciudad']
+    if idioma == 'Spanish':
+        idioma = 'es'
+    elif idioma == 'English':
+        idioma = 'in'
     numero_de_cuenta = ''
     tipo_usuario= 'usuario'
     
@@ -93,8 +106,10 @@ def registro_usuario():
     refresh_token = create_refresh_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'actualizacion'}, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
 
     usuario = Usuario(id=None, token=access_token, refresh_token=refresh_token, activo=True, correo_electronico=correo_electronico, password=hashed_password)
-
     db.session.add(usuario)
+    db.session.commit()  # Esto asegura que el usuario tenga un ID asignado
+    usuarioRegion = UsuarioRegion( user_id=usuario.id, idioma=idioma, codigoPostal=codigoPostal, pais=pais, region=region, provincia=provincia, ciudad=ciudad)
+    db.session.add(usuarioRegion)
     db.session.commit()
     db.session.close()
     # Crear una respuesta
@@ -104,11 +119,14 @@ def registro_usuario():
     flash('Registro como usuario exitoso.')
     # Crear una respuesta
     response = make_response(render_template("index.html"))
+    #response = make_response(redirect(url_for('index')))  # Si 'index' es el nombre de la ruta para la página de inicio
+
    # response = make_response(render_template("home.html", tokens=[access_token, refresh_token]))
 
     # Configurar las cookies HTTP con los tokens
     set_access_cookies(response, access_token)
     set_refresh_cookies(response, refresh_token)
+    response.set_cookie('codigoPostal', codigoPostal, max_age=3600, path='/')  # Ajusta la duración según tus necesidades
 
     # Devolver la respuesta con los tokens
     return response

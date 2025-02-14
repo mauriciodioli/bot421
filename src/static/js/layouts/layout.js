@@ -1,3 +1,7 @@
+
+
+
+
 // Definir la función que manejará el clic en "Administración"
 function handleAdminClick(event) {
     event.preventDefault(); // Evita el comportamiento predeterminado del enlace
@@ -88,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('consultas-link').addEventListener('click', function (event) {
-        debugger;
+     
         event.preventDefault(); // Evitar comportamiento por defecto del enlace
         const form = document.getElementById('consultas-form');
         // Asignar valores dinámicos al formulario (si es necesario)
@@ -159,7 +163,7 @@ function getCookie(name) {
 var currentLanguage = 'in';
 
 // Obtener el enlace para cambiar el idioma
-const languageLink = document.getElementById("languageLink");
+  var languageLink = document.getElementById("languageLink");
 
 // Si no existe la cookie "language", se crea y se establece "in" como idioma
 if (!getCookie("language")) {
@@ -188,7 +192,7 @@ function cambiarIdioma() {
     
 
 document.addEventListener("DOMContentLoaded", function () {
-    const languageLink = document.getElementById("languageLink");
+     languageLink = document.getElementById("languageLink");
 
     // Función para obtener el valor de una cookie
     function getCookie(name) {
@@ -239,6 +243,97 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializamos el modal fuera del listener
+    const modalElement = document.getElementById('modalSeleccionCodigoPostal');
+    const myModal = new bootstrap.Modal(modalElement);
+
+    // Obtener el enlace "Signals"
+    document.getElementById('openModalCP').addEventListener('click', function (e) {
+        // Prevenir el comportamiento por defecto (enlace)
+        e.preventDefault();
+
+        // Cargar el código postal desde el localStorage si existe
+        const codigoPostalGuardado = localStorage.getItem('codigoPostal');
+        const codigoPostalModal = document.getElementById('codigoPostalModal');
+        if (codigoPostalGuardado) {
+            // Mostrar el código postal guardado en el campo del modal
+            codigoPostalModal.value = codigoPostalGuardado;
+        } else {
+            // Si no hay código postal en localStorage, dejar el campo vacío
+            codigoPostalModal.value = '';
+        }
+
+        // Asegurarse de que solo se ingresen números
+        codigoPostalModal.addEventListener('input', function(event) {
+            // Reemplazar todo lo que no sea un número
+            event.target.value = event.target.value.replace(/[^0-9]/g, '');
+        });
+
+        // Abrir el modal
+        myModal.show();
+    });
+});
+// Función para guardar el código postal en el localStorage y las cookies
+function guardarCodigoPostal() {
+    const codigoPostal = document.getElementById('codigoPostalModal').value;
+
+    // Validar si el campo no está vacío y contiene solo números
+    if (codigoPostal && !isNaN(codigoPostal)) {
+        // Guardar el código postal en el localStorage
+        localStorage.setItem('codigoPostal', codigoPostal);
+        console.log('Código Postal guardado en localStorage:', codigoPostal);
+
+        // Guardar el código postal en las cookies (con una duración de 1 hora)
+        document.cookie = `codigoPostal=${codigoPostal};max-age=3600;path=/`;
+
+        // Cerrar el modal
+        const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
+        myModal.hide();  // Aquí se cierra el modal
+
+    } else {
+        alert('Por favor ingresa un código postal válido (solo números)');
+    }
+}
+
+// Función para permitir solo números en el input
+document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
+    // Reemplazar todo lo que no sea un número
+    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

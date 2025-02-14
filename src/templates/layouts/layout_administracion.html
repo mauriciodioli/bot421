@@ -138,9 +138,10 @@
                         </ul>                        
                     </li>
                    
-                    <li class="nav-item ">
-                        <a class="nav-link" aria-current="page" href="/usuarios/" >Usuarios</a>                       
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/usuarios/" >Usuarios</a>                        
                     </li>
+                    
                     <li class="nav-item ">
                         <a class="nav-link" aria-current="page" href="/cuentas-Usuario-Broker/" >Cuentas</a>                        
                     </li>
@@ -254,7 +255,12 @@
     
 
     <script>
+        debugger;
         document.addEventListener("DOMContentLoaded", function() {
+           
+
+
+
             const userId = localStorage.getItem("usuario_id");
             if (userId) {
               const link = document.getElementById("consultas-link");
@@ -379,6 +385,21 @@
             }
         );
     });
+
+
+
+
+
+
+
+
+
+   
+   
+
+
+
+    
     </script>
    
 </body>

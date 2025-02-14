@@ -91,6 +91,7 @@ from usuarios.autenticacion import autenticacion
 from usuarios.registrarUsuario import registrarUsuario
 from usuarios.usuario import usuario
 from usuarios.cambiarContrasenaUsuarioSistema import cambiarContrasenaUsuarioSistema
+from usuarios.registrarUsuarioRegion import registrarUsuarioRegion
 
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
@@ -120,6 +121,7 @@ import automatizacion.programar_trigger as trigger
 import subprocess
 
 from models.usuario import Usuario
+from models.usuarioRegion import usuarioRegion
 from models.triggerEstrategia import triggerEstrategia
 from models.strategy import strategy
 from models.orden import orden
@@ -271,6 +273,8 @@ app.register_blueprint(datoSheet)
 app.register_blueprint(autenticacion)
 app.register_blueprint(registrarUsuario)
 app.register_blueprint(usuario)
+app.register_blueprint(usuarioRegion)
+app.register_blueprint(registrarUsuarioRegion)
 app.register_blueprint(cambiarContrasenaUsuarioSistema)
 app.register_blueprint(testWS)
 app.register_blueprint(imagenesOperaciones)
@@ -617,7 +621,7 @@ def home(dominio):
 def entrada(dominio=None, pagina=None):
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-   # crea_tablas_DB()
+    #crea_tablas_DB()
     if not dominio:
         dominio = "inicialDominio"
     if not pagina:
