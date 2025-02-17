@@ -11,6 +11,7 @@ function cargarPublicaciones(ambitoId) {
     const correo_electronico = localStorage.getItem('correo_electronico');
     const roll = localStorage.getItem('roll');
     const access_token = localStorage.getItem('access_token');
+    const codigoPostal = localStorage.getItem('codigoPostal');
 
     if (!access_token) {
         alert("No se ha encontrado el token de acceso.");
@@ -31,6 +32,7 @@ function cargarPublicaciones(ambitoId) {
             formData.append('layout', 'layout');
             formData.append('ambito', ambitoId); // Pasar el ID del ámbito
             formData.append('lenguaje', lenguaje);
+            formData.append('codigoPostal', codigoPostal);
 
             // Realizar la solicitud AJAX
             $.ajax({

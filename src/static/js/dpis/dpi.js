@@ -468,7 +468,7 @@ $(document).ready(function () {
         let partAfterIndex = currentURL.split("index/")[1];
         // Si la parte después de "index/" es undefined o vacía, asigna 'laboral'
         if (typeof partAfterIndex === 'undefined' || partAfterIndex === '') {
-            partAfterIndex = 'laboral';
+            partAfterIndex = 'Laboral';
         }
         console.log(partAfterIndex); // Mostrará "personal"
         domain = partAfterIndex;

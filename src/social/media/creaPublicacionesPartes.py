@@ -26,6 +26,9 @@ from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
+from models.usuarioRegion import UsuarioRegion
+from models.usuarioUbicacion import UsuarioUbicacion
+from models.usuarioPublicacionUbicacion import UsuarioPublicacionUbicacion
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 from models.modelMedia.TelegramNotifier import TelegramNotifier
@@ -337,7 +340,8 @@ def social_publicaciones_crear_publicacion_partes():
             color_texto = request.form.get('color_texto')
             color_titulo = request.form.get('color_titulo')
             layout = request.form.get('layout')
-            ambito = request.form.get('ambito')
+            ambito = request.form.get('ambito')  
+               
             
             total_publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id).count()
             #if total_publicaciones >= 20:
@@ -453,6 +457,9 @@ def guardarPublicacion(request, user_id):
         estado = request.form.get('postEstado_creaPublicacion')
         botonCompra = request.form.get('postBotonCompra_creaPublicacion')
         idioma = request.form.get('lenguaje')
+        codigoPostal = request.form.get('codigoPostal')
+        latitud = request.form.get('latitud')
+        longitud = request.form.get('longitud')     
         
         # Verificar si ya existe una publicación con el mismo título para el mismo usuario
         publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
@@ -478,11 +485,15 @@ def guardarPublicacion(request, user_id):
             fecha_creacion=datetime.now(),
             estado=estado,
             botonCompra=botonCompra,
-            idioma=idioma
+            idioma=idioma,
+            codigoPostal=codigoPostal,
         )
         
         db.session.add(nueva_publicacion)
         db.session.commit()
+        #guardar la ubicacion publicacion
+        publicacion_id = publicacionUbicacion(nueva_publicacion.id,user_id)
+        #guardar 
         return nueva_publicacion.id
         
     except Exception as e:
@@ -550,3 +561,39 @@ def comprimir_imagen(output_path,file_name, quality=85):
 def es_video(file_path):
     mimetype, _ = mimetypes.guess_type(file_path)
     return mimetype is not None and mimetype.startswith("video/")
+
+
+
+
+def publicacionUbicacion(nueva_publicacion_id,user_id):
+    try:
+        # Buscar si el usuario ya tiene una ubicación guardada
+       
+        usuarioRegion = db.session.query(UsuarioRegion).filter_by(user_id=user_id).first()
+        usuario_ubicacion = db.session.query(UsuarioUbicacion).filter_by(user_id=user_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
+        publicacion_ubicacion = db.session.query(UsuarioPublicacionUbicacion).filter_by(id=nueva_publicacion_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
+        if publicacion_ubicacion:
+            return True
+        else:
+            
+            if usuario_ubicacion:
+                id_ubicaion = usuario_ubicacion.id
+            else:
+                # Si no existe, creamos un nuevo registro de ubicación
+                id_ubicaion = 0
+                
+            new_publicacion_ubicacion = UsuarioPublicacionUbicacion(
+                        user_id = user_id,
+                        id_region = usuarioRegion.id,
+                        id_publicacion = nueva_publicacion_id,
+                        id_ubicacion = id_ubicaion
+                    )
+            db.session.add(new_publicacion_ubicacion)
+
+        db.session.commit()
+        return True
+    except Exception as e:
+        print(str(e))
+        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+        return False
+            

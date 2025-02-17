@@ -92,6 +92,7 @@ from usuarios.registrarUsuario import registrarUsuario
 from usuarios.usuario import usuario
 from usuarios.cambiarContrasenaUsuarioSistema import cambiarContrasenaUsuarioSistema
 from usuarios.registrarUsuarioRegion import registrarUsuarioRegion
+from usuarios.usuarioUbicacionC import usuarioUbicacionC
 
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
@@ -122,6 +123,8 @@ import subprocess
 
 from models.usuario import Usuario
 from models.usuarioRegion import usuarioRegion
+from models.usuarioUbicacion import usuarioUbicacion
+from models.usuarioPublicacionUbicacion import usuarioPublicacionUbicacion
 from models.triggerEstrategia import triggerEstrategia
 from models.strategy import strategy
 from models.orden import orden
@@ -275,6 +278,9 @@ app.register_blueprint(registrarUsuario)
 app.register_blueprint(usuario)
 app.register_blueprint(usuarioRegion)
 app.register_blueprint(registrarUsuarioRegion)
+app.register_blueprint(usuarioUbicacion)
+app.register_blueprint(usuarioUbicacionC)
+app.register_blueprint(usuarioPublicacionUbicacion)
 app.register_blueprint(cambiarContrasenaUsuarioSistema)
 app.register_blueprint(testWS)
 app.register_blueprint(imagenesOperaciones)

@@ -23,6 +23,7 @@ from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
+from models.usuarioPublicacionUbicacion import UsuarioPublicacionUbicacion
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 from models.modelMedia.TelegramNotifier import TelegramNotifier
@@ -69,8 +70,11 @@ def media_publicaciones_mostrar():
         layout = request.form.get('layout')
         ambito = request.form.get('ambito')
         idioma = request.form.get('lenguaje')
-        codigoPostal = request.cookies.get('codigoPostal')
-        
+        codigoPostal = request.form.get('codigoPostal')
+        if codigoPostal == None:
+            codigoPostal = request.cookies.get('codigoPostal')
+        if ambito == 'laboral':
+            ambito = 'Laboral'
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
@@ -94,6 +98,10 @@ def media_publicaciones_mostrar():
             else:
                 # Obtener todas las publicaciones del usuario
                 publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal).all()  
+            
+                if len(publicaciones_user)==0:
+                    publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal='1').all()
+            
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
             db.session.close()
@@ -782,6 +790,9 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
     try:
         publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
         if publicacion:
+            publicacion_id = int(publicacion_id)
+            usuario_publicacion_ubicacion = db.session.query(UsuarioPublicacionUbicacion).filter_by(id_publicacion=publicacion_id).first()
+            db.session.delete(usuario_publicacion_ubicacion)  
             # Obtener los registros de medios relacionados en la tabla intermedia
             publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id).all()
             
