@@ -290,11 +290,18 @@ document.getElementById('openModalCP').addEventListener('click', function (e) {
     myModal.show();
 });
 
-// Función para permitir solo números en el input
-document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
-    // Reemplazar todo lo que no sea un número
-    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('codigoPostalModal');
+    if (input) {
+        input.addEventListener('input', function(event) {
+            // Reemplazar todo lo que no sea un número
+            event.target.value = event.target.value.replace(/[^0-9]/g, '');
+        });
+    } else {
+        console.log("El elemento con id 'codigoPostalModal' no existe.");
+    }
 });
+
 
 // Función para guardar el código postal en el localStorage
 // Función para guardar el código postal en el localStorage y las cookies
@@ -318,11 +325,12 @@ function guardarCodigoPostal() {
         alert('Por favor ingresa un código postal válido (solo números)');
     }
 }
-
-// Función para permitir solo números en el input
-document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
-    // Reemplazar todo lo que no sea un número
-    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para permitir solo números en el input
+    document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
+        // Reemplazar todo lo que no sea un número
+        event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    });
 });
 
 
@@ -522,7 +530,7 @@ function toggleSplash(section, splashElement) {
 }
 
 function enviarDominioAJAX(domain) {
- 
+    
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
@@ -569,7 +577,8 @@ function enviarDominioAJAX(domain) {
     headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
     data: { ambitos: domain, lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
     success: function (response) {
-    
+       // console.log('Respuesta del servidor:', response[0].ambito);
+        document.getElementById("ambitoActual").innerHTML = response[0].ambito;
         splash.style.display = 'none'; // Ocultar el splash al terminar
         if (Array.isArray(response)) {
             var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');

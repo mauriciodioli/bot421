@@ -198,7 +198,7 @@ def media_publicaciones_mostrar_dpi():
         if codigoPostal == None:
             codigoPostal = '1'
         if ambitos == 'inicialDominio':
-            ambitos = 'laboral'
+            ambitos = 'Laboral'
         
         layout = 'layout_dpi'
         if not authorization_header:
