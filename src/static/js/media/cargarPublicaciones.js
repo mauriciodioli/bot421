@@ -406,6 +406,9 @@ function createPost(event,storedFiles) {
       var color_titulo = 'black';
       var layout = 'layout'
       var ambito = localStorage.getItem('dominio');
+      var codigoPostal = localStorage.getItem('codigoPostal');
+      var latitud = localStorage.getItem('latitud');
+      var longitud = localStorage.getItem('longitud');
      
   
       // Añadir los datos al FormData
@@ -415,6 +418,9 @@ function createPost(event,storedFiles) {
       formData.append('layout',layout);
       formData.append('ambito', ambito);
       formData.append('lenguaje', lenguaje);
+      formData.append('codigoPostal', codigoPostal);
+      formData.append('latitud', latitud);
+      formData.append('longitud', longitud);
      
      
       // Añadir los metadatos de los archivos
