@@ -342,6 +342,7 @@ function mostrarSplash() {
   }
 
   document.getElementById('guardarPais').addEventListener('click', function() {
+    debugger;
     document.getElementById('splash').style.display = 'block';
    
     var selectedCountry = document.getElementById('seleccionarPais').value;
@@ -545,7 +546,7 @@ function enviarDominioAJAX(domain) {
 
     // Ruta al archivo con la galería de imágenes
     var galeriaURL = '/MostrarImages/';
-    var galeriaURL1 = '/media-publicaciones-mostrar-dpi';
+    var galeriaURL1 = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
 
     if ( !localStorage.getItem('dominio')) {
@@ -566,107 +567,117 @@ function enviarDominioAJAX(domain) {
     domain = localStorage.getItem('dominio');
     let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + domain + "</a>";
     document.getElementById("ambitoActual").innerHTML = ambito_actual;
-    
-    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
-
-
-    $.ajax({
-    type: 'POST',
-    url: galeriaURL1,
-    dataType: 'json', // Asegúrate de que el backend devuelva un JSON
-    headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
-    data: { ambitos: domain, lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
-    success: function (response) {
-       // console.log('Respuesta del servidor:', response[0].ambito);
-        document.getElementById("ambitoActual").innerHTML = response[0].ambito;
-        splash.style.display = 'none'; // Ocultar el splash al terminar
-        if (Array.isArray(response)) {
-            var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
-            postDisplayContainer.empty();
-
-            response.forEach(function(post) {
-                if (post.imagenes.length > 0 || post.videos.length > 0) {
-                        var mediaHtml = '';
-
-                        // Mostrar la primera imagen
-                        if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
-                            
-                            if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
-                                // Si hay imágenes, usar la primera
-                                if (post.imagenes[0].imagen != null) {
-                                    var firstImageBase64 = post.imagenes[0].imagen;
-                                    var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
-                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
-                               } else {
-                                    var firstImageUrl = post.imagenes[0].filepath;
+    // Obtener ubicación antes de ejecutar AJAX
+   
+    getLocation();
+    // Esperar a que se actualice el idioma en localStorage antes de continuar
+    setTimeout(() => {
         
-                                    console.log(post.imagenes[0].filepath);
-                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
-                               }
-                              
-                            } else if (Array.isArray(post.videos) && post.videos.length > 0) {
-                               
-                                // Si no hay imágenes pero hay videos, usar el primero
-                                var firstVideoUrl = post.videos[0].filepath;
-                                console.log(post.videos[0].filepath);
-                               
-                                mediaHtml += `
-                                        <video controls  style="cursor: pointer;" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
-                                            <source src="${firstVideoUrl}" type="video/mp4">                                           
-                                            Tu navegador no soporta la reproducción de videos.
-                                        </video>
-                                    `;
+                let lenguaje = localStorage.getItem('language'); // Por defecto 'es' si no está definido
 
-                            } else {
-                                // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
-                                mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
-                            }
 
-                        
+                $.ajax({
+                type: 'POST',
+                url: galeriaURL1,
+                dataType: 'json', // Asegúrate de que el backend devuelva un JSON
+                headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
+                data: { ambitos: domain, lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
+                success: function (response) {
+                // console.log('Respuesta del servidor:', response[0].ambito);
+                    if (response && response[0]) {
+                        document.getElementById("ambitoActual").innerHTML = response[0].ambito;
+                    } else {
+                        console.error("La respuesta del servidor no contiene el formato esperado.");
                     }
+                    splash.style.display = 'none'; // Ocultar el splash al terminar
+                    if (Array.isArray(response)) {
+                        var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
+                        postDisplayContainer.empty();
 
-                    var estadoClass;
-                    var estadoTextClass;
-                
+                        response.forEach(function(post) {
+                            if (post.imagenes.length > 0 || post.videos.length > 0) {
+                                    var mediaHtml = '';
 
-                    var cardHtml = `
-                            <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
-                                <div class="card-body">
-                                    <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
-                                        <span class="text-white">&times;</span>
-                                    </a>
-                                    <h5 class="card-title">${post.titulo}</h5>
-                                    <div class="card-media-grid-publicacion-en-ambito">
-                                        ${mediaHtml}
-                                    </div>
-                                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                    <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
-                                    <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                                    // Mostrar la primera imagen
+                                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
+                                        
+                                        if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                                            // Si hay imágenes, usar la primera
+                                            if (post.imagenes[0].imagen != null) {
+                                                var firstImageBase64 = post.imagenes[0].imagen;
+                                                var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
+                                                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                                        } else {
+                                                var firstImageUrl = post.imagenes[0].filepath;
+                    
+                                                console.log(post.imagenes[0].filepath);
+                                                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                                        }
+                                        
+                                        } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                                        
+                                            // Si no hay imágenes pero hay videos, usar el primero
+                                            var firstVideoUrl = post.videos[0].filepath;
+                                            console.log(post.videos[0].filepath);
+                                        
+                                            mediaHtml += `
+                                                    <video controls  style="cursor: pointer;" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
+                                                        <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                                        Tu navegador no soporta la reproducción de videos.
+                                                    </video>
+                                                `;
+
+                                        } else {
+                                            // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
+                                            mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
+                                        }
 
                                     
-                                </div>
-                            </div>
-                        `;
+                                }
+
+                                var estadoClass;
+                                var estadoTextClass;
+                            
+
+                                var cardHtml = `
+                                        <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
+                                            <div class="card-body">
+                                                <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                                    <span class="text-white">&times;</span>
+                                                </a>
+                                                <h5 class="card-title">${post.titulo}</h5>
+                                                <div class="card-media-grid-publicacion-en-ambito">
+                                                    ${mediaHtml}
+                                                </div>
+                                                <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                                <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
+                                                <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+
+                                                
+                                            </div>
+                                        </div>
+                                    `;
 
 
-                    postDisplayContainer.append(cardHtml);
-                } else {
+                                postDisplayContainer.append(cardHtml);
+                            } else {
+                                splash.style.display = 'none'; // Ocultar el splash al terminar
+                                console.log('Publicación sin contenido:', post.publicacion_id);
+                            }
+                        });
+                    } else {
+                        splash.style.display = 'none'; // Ocultar el splash al terminar
+                        console.error("La respuesta no es un array. Recibido:", response);
+                    }
+                },
+                error: function () {
                     splash.style.display = 'none'; // Ocultar el splash al terminar
-                    console.log('Publicación sin contenido:', post.publicacion_id);
+                    console.error('Error al cargar la galería de imágenes.');
                 }
             });
-        } else {
-            splash.style.display = 'none'; // Ocultar el splash al terminar
-            console.error("La respuesta no es un array. Recibido:", response);
-        }
-    },
-    error: function () {
-        splash.style.display = 'none'; // Ocultar el splash al terminar
-        console.error('Error al cargar la galería de imágenes.');
-    }
-});
 
 
+    }, 2000); // Esperamos 2 segundos para asegurar que `getLocation()` actualice `language`
 
 
 }
@@ -737,9 +748,6 @@ function abrirPublicacionHome(publicacionId) {
 
 
 
-
-
-
 // Función para obtener el valor de una cookie
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -748,82 +756,113 @@ function getCookie(name) {
     return null;
 }
 
-
+// Obtener el idioma del navegador (si no se encuentra en cookies o en la ubicación)
 var currentLanguage = navigator.language.split('-')[0].toLowerCase(); 
 
 // Obtener el enlace para cambiar el idioma
 const languageLink = document.getElementById("languageLink");
 
-// Si no existe la cookie "language", se crea y se establece "in" como idioma
-if (!getCookie("language")) {
-    document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
-    currentLanguage = currentLanguage;
-    localStorage.setItem("language", currentLanguage);
-    // Cambiar el texto del enlace según el idioma
-    languageLink.textContent = "ENG";  // Cambiar solo a "ENG"
-} else {
-    // Si ya existe la cookie, obtener el valor y poner el texto de acuerdo a ella
-    currentLanguage = getCookie("language");
-    localStorage.setItem("language", currentLanguage);
-    languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
-}
+document.addEventListener("DOMContentLoaded", function () {
+    
+    // Si no existe la cookie "language", intenta obtener la ubicación y luego establecer el idioma
+   
+    // Intenta obtener la ubicación
+    getLocation();  // Llama a getLocation, que debe establecer el idioma basado en la ubicación
+  
+    setTimeout(function() {
+        // Si existe la cookie, usa el idioma configurado en ella
+        currentLanguage = localStorage.getItem("language") || getCookie("language");
+    
+        // Cambiar el texto del enlace según el idioma
+        
+        // Si no se pudo obtener el idioma desde las cookies o la ubicación, usa el idioma del navegador
+        if (!currentLanguage) {
+            
+            currentLanguage = navigator.language.split('-')[0].toLowerCase();
+        
+
+            // Establecer el idioma en las cookies y el almacenamiento local
+            document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+            localStorage.setItem("language", currentLanguage);
+
+        }
+
+        languageLink.textContent = currentLanguage;  // Cambiar solo a "ENG"
+
+    }, 1000); // 1000 milisegundos = 1 segundo
+});
 
 
 
 
 
 function cambiarIdioma() {
-    
+    document.addEventListener("DOMContentLoaded", function () {
+        var languageLink = document.getElementById("languageLink");
+        
+        // Lista de idiomas disponibles
+        const availableLanguages = ["es", "in", "fr", "de", "it", "pt"]; // Puedes agregar más idiomas aquí
 
-document.addEventListener("DOMContentLoaded", function () {
-   var languageLink = document.getElementById("languageLink");
-
-    // Función para obtener el valor de una cookie
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    // Función para actualizar el idioma y mostrarlo
-    function updateLanguage() {
-        // Leer el idioma desde localStorage o cookies
-        let currentLanguage = localStorage.getItem("language") || getCookie("language");
-
-        // Si no hay un idioma configurado, asignar "in" como valor inicial
-        if (!currentLanguage) {
-            currentLanguage = "in";
-        } else {
-            // Alternar entre "in" y "es"
-            currentLanguage = currentLanguage === "in" ? "es" : "in";
+        // Función para obtener el valor de una cookie
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         }
 
-        // Guardar el idioma actualizado en localStorage y cookies
-        localStorage.setItem("language", currentLanguage);
-        document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+        // Función para actualizar el idioma y mostrarlo
+        function updateLanguage() {
+            let currentLanguage = localStorage.getItem("language") || getCookie("language");
 
-        // Actualizar el texto del enlace
-        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+            // Si no hay un idioma configurado, asignar "in" como valor inicial
+            if (!currentLanguage) {
+                currentLanguage = "in";
+            } else {
+                // Pasar al siguiente idioma (cíclico)
+                let currentIndex = availableLanguages.indexOf(currentLanguage);
+                let nextIndex = (currentIndex + 1) % availableLanguages.length; // Ciclo a través de los idiomas
+                currentLanguage = availableLanguages[nextIndex];
+            }
 
-        alert(`Idioma actualizado: ${currentLanguage}`);
-    }
+            // Guardar el idioma actualizado en localStorage y cookies
+            localStorage.setItem("language", currentLanguage);
+            document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
 
-    // Establecer el idioma inicial y el texto del enlace
-    (function setInitialLanguage() {
-        const currentLanguage = localStorage.getItem("language") || getCookie("language") || "in";
-        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
-    })();
+            // Actualizar el texto del enlace
+            const languageText = getLanguageText(currentLanguage);
+            languageLink.textContent = languageText;
 
-    // Agregar el evento para alternar el idioma
-    languageLink.addEventListener("click", function (event) {
-        event.preventDefault(); // Evitar la recarga de la página
-        updateLanguage();
-       
-        cargarAmbitos();
-        cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
+            alert(`Idioma actualizado: ${currentLanguage}`);
+        }
+
+        // Función para obtener el texto correspondiente a cada idioma
+        function getLanguageText(language) {
+            const languageTexts = {
+                "es": "ES",
+                "in": "ENG",
+                "fr": "FR",
+                "de": "DE",
+                "it": "IT",
+                "pt": "PT"
+            };
+            return languageTexts[language] || "ES"; // Devuelve "ES" por defecto si el idioma no está definido
+        }
+
+        // Establecer el idioma inicial y el texto del enlace
+        (function setInitialLanguage() {
+            const currentLanguage = localStorage.getItem("language") || getCookie("language") || "in";
+            const languageText = getLanguageText(currentLanguage);
+            languageLink.textContent = languageText;
+        })();
+
+        // Agregar el evento para alternar el idioma
+        languageLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Evitar la recarga de la página
+            updateLanguage();
+            cargarAmbitos(); // Llamar a las funciones necesarias
+            cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
+        });
     });
-});
-
 }
 
 

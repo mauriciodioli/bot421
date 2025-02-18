@@ -186,7 +186,7 @@ def media_publicaciones_mostrar_home():
 
 
 
-@publicaciones.route('/media-publicaciones-mostrar-dpi', methods=['POST'])
+@publicaciones.route('/media-publicaciones-mostrar-dpi/', methods=['POST'])
 def media_publicaciones_mostrar_dpi():
     try:
         # Obtener el encabezado Authorization

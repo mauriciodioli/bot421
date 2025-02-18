@@ -3,6 +3,7 @@ let lastLongitude = null;
 let lastLanguage = null; // Para evitar enviar datos repetidos
 
 // Función para obtener la ubicación
+
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
@@ -72,7 +73,6 @@ function getLanguageFromLocation(latitude, longitude) {
         .catch(error => console.error("Error obteniendo detalles de la ubicación:", error));
 }
 
-// Mapa de códigos de país a idioma principal
 function getLanguageByCountryCode(countryCode) {
     const languageMap = {
         "EN": ["US", "GB", "AU", "CA", "NZ"], // Inglés
@@ -86,9 +86,9 @@ function getLanguageByCountryCode(countryCode) {
         "JA": ["JP"], // Japonés
         "HI": ["IN"], // Hindi
         "AR": ["SA", "AE", "EG", "DZ", "MA"], // Árabe
+        "DA": ["DK"], // Danés (para Dinamarca)
     };
 
-    // Buscar el idioma por código de país
     for (const [language, countries] of Object.entries(languageMap)) {
         if (countries.includes(countryCode.toUpperCase())) {
             return getLanguageName(language);
@@ -101,21 +101,23 @@ function getLanguageByCountryCode(countryCode) {
 // Función auxiliar para convertir códigos de idioma a nombres en inglés
 function getLanguageName(code) {
     const languageNames = {
-        "EN": "English",
-        "ES": "Spanish",
-        "FR": "French",
-        "DE": "German",
-        "IT": "Italian",
-        "PT": "Portuguese",
-        "RU": "Russian",
-        "CN": "Chinese",
-        "JA": "Japanese",
-        "HI": "Hindi",
-        "AR": "Arabic"
+        "EN": "in",
+        "ES": "es",
+        "FR": "fr",
+        "DE": "gr",
+        "IT": "it",
+        "PT": "pr",
+        "RU": "ru",
+        "CN": "ch",
+        "JA": "jp",
+        "HI": "hi",
+        "AR": "ar",
+        "DA": "da", // Agregado para Dinamarca
     };
 
     return languageNames[code] || "Unknown";
 }
+
 
 // Enviar la ubicación y el idioma al servidor con AJAX
 // Función para establecer una cookie con expiración
@@ -188,6 +190,60 @@ function getSavedLanguage() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Llamar a getLocation cada 10 segundos para verificar cambios
 setInterval(getLocation, 3600000); // 3600000 ms = 1 hora
 
+
+// Lista de ubicaciones para simular
+//const locations = [
+//    { lat: 37.7749, lon: -122.4194, name: "🇺🇸 Estados Unidos (San Francisco)" },
+//    { lat: 55.6761, lon: 12.5683, name: "🇩🇰 Dinamarca (Copenhague)" },
+//    { lat: -34.6037, lon: -58.3816, name: "🇦🇷 Argentina (Buenos Aires)" },
+//    { lat: 41.9028, lon: 12.4964, name: "🇮🇹 Italia (Roma)" },
+//    { lat: 40.4168, lon: -3.7038, name: "🇪🇸 España (Madrid)" }
+//];
+
+//let index = 0;
+
+// Función para simular cambio de ubicación
+//function mockLocation() {
+//    let location = locations[index];
+
+//    console.log(`📍 Simulando ubicación: ${location.name} (Lat: ${location.lat}, Lng: ${location.lon})`);
+
+//    navigator.geolocation.getCurrentPosition = function (success) {
+//        success({ coords: { latitude: location.lat, longitude: location.lon } });
+//    };
+
+//    getLocation(); // Llamar a la función para procesar la ubicación
+//    index = (index + 1) % locations.length; // Pasar a la siguiente ubicación
+//}
+
+// Cambiar ubicación cada 10 segundos
+//setInterval(mockLocation, 10000);
+
+// Ejecutar la primera simulación inmediatamente
+//mockLocation();

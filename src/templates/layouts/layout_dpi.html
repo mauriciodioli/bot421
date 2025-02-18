@@ -97,7 +97,7 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link" id="openModalSignals">Signals</a>
+                            <a class="nav-link" id="guardarPais">Signals</a>
                         </li>
                         <li class="nav-item dropdown" id='AdministrarDominiosLayout'>
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Domains</a>
@@ -230,11 +230,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
-    
+    <script src="{{ url_for('static', filename='js/usuarios/usuarioUbicacion.js') }}"></script>
+  
     
   
 
     <script>
+    
+
         //esto cambia el idioma en localstorage y en cookies
         cambiarIdioma();
         
