@@ -149,6 +149,7 @@ function sendLocationToServer(latitude, longitude, language) {
     if (language && typeof language === "string") { // Verifica que sea un string válido
         try {
             // Guardar en localStorage
+           
             localStorage.setItem("language", language);
             console.log("Idioma guardado en localStorage:", language);
             

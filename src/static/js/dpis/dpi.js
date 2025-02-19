@@ -212,7 +212,14 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
  
- 
+ // Obtener el enlace "Signals"
+document.getElementById('openModalSignals').addEventListener('click', function (e) {
+    // Prevenir el comportamiento por defecto (enlace)
+    e.preventDefault();
+    // Abrir el modal
+    var modalSeleccionPais = new bootstrap.Modal(document.getElementById('modalSeleccionPais'));
+    modalSeleccionPais.show();
+});
  
  
  
@@ -568,8 +575,10 @@ function enviarDominioAJAX(domain) {
     let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + domain + "</a>";
     document.getElementById("ambitoActual").innerHTML = ambito_actual;
     // Obtener ubicación antes de ejecutar AJAX
-   
-    getLocation();
+    let existe = localStorage.getItem('language');
+    if (!existe){
+        getLocation();
+    } 
     // Esperar a que se actualice el idioma en localStorage antes de continuar
     setTimeout(() => {
         
@@ -767,7 +776,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Si no existe la cookie "language", intenta obtener la ubicación y luego establecer el idioma
    
     // Intenta obtener la ubicación
-    getLocation();  // Llama a getLocation, que debe establecer el idioma basado en la ubicación
+    //getLocation();  // Llama a getLocation, que debe establecer el idioma basado en la ubicación
   
     setTimeout(function() {
         // Si existe la cookie, usa el idioma configurado en ella
@@ -779,7 +788,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!currentLanguage) {
             
             currentLanguage = navigator.language.split('-')[0].toLowerCase();
-        
+             debugger;
 
             // Establecer el idioma en las cookies y el almacenamiento local
             document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
@@ -802,7 +811,7 @@ function cambiarIdioma() {
         
         // Lista de idiomas disponibles
         const availableLanguages = ["es", "in", "fr", "de", "it", "pt"]; // Puedes agregar más idiomas aquí
-
+       
         // Función para obtener el valor de una cookie
         function getCookie(name) {
             const value = `; ${document.cookie}`;
@@ -813,26 +822,38 @@ function cambiarIdioma() {
         // Función para actualizar el idioma y mostrarlo
         function updateLanguage() {
             let currentLanguage = localStorage.getItem("language") || getCookie("language");
-
+           
             // Si no hay un idioma configurado, asignar "in" como valor inicial
             if (!currentLanguage) {
-                currentLanguage = "in";
+                currentLanguage = "in"; 
+                debugger;
+                localStorage.setItem("language", currentLanguage);
+                document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+
+                // Actualizar el texto del enlace
+                const languageText = getLanguageText(currentLanguage);
+                languageLink.textContent = languageText;
+
+                alert(`Idioma actualizado: ${currentLanguage}`);
+            
             } else {
                 // Pasar al siguiente idioma (cíclico)
                 let currentIndex = availableLanguages.indexOf(currentLanguage);
                 let nextIndex = (currentIndex + 1) % availableLanguages.length; // Ciclo a través de los idiomas
                 currentLanguage = availableLanguages[nextIndex];
+                debugger;
+                localStorage.setItem("language", currentLanguage);
+                document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+
+                // Actualizar el texto del enlace
+                const languageText = getLanguageText(currentLanguage);
+                languageLink.textContent = languageText;
+
+                alert(`Idioma actualizado: ${currentLanguage}`);
+            
+            
             }
-
-            // Guardar el idioma actualizado en localStorage y cookies
-            localStorage.setItem("language", currentLanguage);
-            document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
-
-            // Actualizar el texto del enlace
-            const languageText = getLanguageText(currentLanguage);
-            languageLink.textContent = languageText;
-
-            alert(`Idioma actualizado: ${currentLanguage}`);
+          
         }
 
         // Función para obtener el texto correspondiente a cada idioma
@@ -857,7 +878,7 @@ function cambiarIdioma() {
 
         // Agregar el evento para alternar el idioma
         languageLink.addEventListener("click", function (event) {
-            event.preventDefault(); // Evitar la recarga de la página
+            event.preventDefault(); // Evitar la recarga de la página            
             updateLanguage();
             cargarAmbitos(); // Llamar a las funciones necesarias
             cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
