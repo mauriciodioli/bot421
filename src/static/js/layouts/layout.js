@@ -189,60 +189,87 @@ if (!getCookie("language")) {
 
 
 function cambiarIdioma() {
-    
-
-document.addEventListener("DOMContentLoaded", function () {
-     languageLink = document.getElementById("languageLink");
-
-    // Función para obtener el valor de una cookie
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-
-    // Función para actualizar el idioma y mostrarlo
-    function updateLanguage() {
-        // Leer el idioma desde localStorage o cookies
-        let currentLanguage = localStorage.getItem("language") || getCookie("language");
-
-        // Si no hay un idioma configurado, asignar "in" como valor inicial
-        if (!currentLanguage) {
-            currentLanguage = "in";
-        } else {
-            // Alternar entre "in" y "es"
-            currentLanguage = currentLanguage === "in" ? "es" : "in";
+    document.addEventListener("DOMContentLoaded", function () {
+        var languageLink = document.getElementById("languageLink");
+        
+        // Lista de idiomas disponibles
+        const availableLanguages = ["es", "in", "fr", "de", "it", "pt"]; // Puedes agregar más idiomas aquí
+       
+        // Función para obtener el valor de una cookie
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
         }
 
-        // Guardar el idioma actualizado en localStorage y cookies
-        localStorage.setItem("language", currentLanguage);
-        document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+        // Función para actualizar el idioma y mostrarlo
+        function updateLanguage() {
+            let currentLanguage = localStorage.getItem("language") || getCookie("language");
+           
+            // Si no hay un idioma configurado, asignar "in" como valor inicial
+            if (!currentLanguage) {
+                currentLanguage = "in"; 
+                debugger;
+                localStorage.setItem("language", currentLanguage);
+                document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
 
-        if (languageLink) {
-              // Actualizar el texto del enlace
-             languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+                // Actualizar el texto del enlace
+                const languageText = getLanguageText(currentLanguage);
+                languageLink.textContent = languageText;
 
-        } else {
-            console.error("Element with ID 'yourElementId' not found.");
+                alert(`Idioma actualizado: ${currentLanguage}`);
+            
+            } else {
+                // Pasar al siguiente idioma (cíclico)
+                let currentIndex = availableLanguages.indexOf(currentLanguage);
+                let nextIndex = (currentIndex + 1) % availableLanguages.length; // Ciclo a través de los idiomas
+                currentLanguage = availableLanguages[nextIndex];
+                debugger;
+                localStorage.setItem("language", currentLanguage);
+                document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
+
+                // Actualizar el texto del enlace
+                const languageText = getLanguageText(currentLanguage);
+                languageLink.textContent = languageText;
+
+                alert(`Idioma actualizado: ${currentLanguage}`);
+            
+            
+            }
+          
         }
-      
-        alert(`Idioma actualizado: ${currentLanguage}`);
-    }
 
-    // Establecer el idioma inicial y el texto del enlace
-    (function setInitialLanguage() {
-        const currentLanguage = localStorage.getItem("language") || getCookie("language") || "in";
-        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
-    })();
+        // Función para obtener el texto correspondiente a cada idioma
+        function getLanguageText(language) {
+            const languageTexts = {
+                "es": "ES",
+                "in": "ENG",
+                "fr": "FR",
+                "de": "DE",
+                "it": "IT",
+                "pt": "PT"
+            };
+            return languageTexts[language] || "ES"; // Devuelve "ES" por defecto si el idioma no está definido
+        }
 
-    // Agregar el evento para alternar el idioma
-    languageLink.addEventListener("click", function (event) {
-        event.preventDefault(); // Evitar la recarga de la página
-        updateLanguage();
+        // Establecer el idioma inicial y el texto del enlace
+        (function setInitialLanguage() {
+            const currentLanguage = localStorage.getItem("language") || getCookie("language") || "in";
+            const languageText = getLanguageText(currentLanguage);
+            languageLink.textContent = languageText;
+        })();
+
+        // Agregar el evento para alternar el idioma
+        languageLink.addEventListener("click", function (event) {
+            event.preventDefault(); // Evitar la recarga de la página            
+            updateLanguage();
+            cargarAmbitos(); // Llamar a las funciones necesarias
+            cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
+        });
     });
-});
-
 }
+
+
 
 
 
