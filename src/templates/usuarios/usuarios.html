@@ -109,9 +109,12 @@
           <h5 class="modal-title" id="editarUsuarioModalLabel" style="color: black;">Editar Usuario</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form id="editarUsuarioForm" action="/editar-usuario" method="POST">
+        <form id="editarUsuarioForm" action="/editar-usuario/" method="POST">
           <div class="modal-body">
             <input type="hidden" id="editarUsuarioId" name="id">
+            <input type="hidden" id="editarUsuarioLongitud" name="longitud">
+            <input type="hidden" id="editarUsuarioLatitud" name="latitud"> 
+
             
             <!-- Campo Email -->
             <div class="form-group mb-3">
@@ -181,6 +184,8 @@
   
 {% include 'layouts/layout_footer.html' %}    
 <!-- Enlaces a scripts de JavaScript -->
+<script src="{{ url_for('static', filename='js/usuarios/usuarioUbicacion.js') }}"></script>
+
 <script >
   $(document).ready(function() {
     // Validación del nombre
@@ -211,31 +216,61 @@
     confirm_password.onkeyup = validatePassword;
   });
 
-  const editButtons = document.querySelectorAll('[data-bs-target="#editarUsuarioModal"]');
-  editButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const userId = button.dataset.usuarioId;
-      const userEmail = button.dataset.usuarioEmail;
-      const userRol = button.dataset.usuarioRol;
-      const userCodigoPostal = button.dataset.usuarioCodigoPostal; // Nuevo dato
-      const userPais = button.dataset.usuarioPais; // Nuevo dato
-      const userIdioma = button.dataset.usuarioIdioma; // Nuevo dato
-  
-      // Asignar los valores a los campos del modal
-      document.querySelector('#editarUsuarioId').value = userId;
-      document.querySelector('#editarUsuarioEmail').value = userEmail;
-      document.querySelector('#editarUsuarioRol').value = userRol;
-      document.querySelector('#editarUsuarioCodigoPostal').value = userCodigoPostal; // Asignar Código Postal
-      document.querySelector('#editarUsuarioPais').value = userPais; // Asignar País
-      document.querySelector('#editarUsuarioIdioma').value = userIdioma; // Asignar Idioma
-    });
-  });
-  
-
   function setUserData(userId) {
     document.getElementById('eliminarUsuarioId').value = userId;
   
   }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const editButtons = document.querySelectorAll('[data-bs-target="#editarUsuarioModal"]');
+
+    editButtons.forEach(button => {
+        button.addEventListener("click", async () => {
+            try {
+                const userId = button.dataset.usuarioId;
+                const userEmail = button.dataset.usuarioEmail;
+                const userRol = button.dataset.usuarioRol;
+                const userCodigoPostal = button.dataset.usuarioCodigoPostal;
+                const userPais = button.dataset.usuarioPais;
+                const userIdioma = button.dataset.usuarioIdioma;
+
+                // Obtener ubicación actual del usuario
+                const { latitude, longitude } = await obtenerUbicacion();
+                console.log("Ubicación obtenida:", latitude, longitude);
+
+                // Asignar valores a los campos del modal
+                document.querySelector("#editarUsuarioLongitud").value = longitude;
+                document.querySelector("#editarUsuarioLatitud").value = latitude; // Corregido name="latitud"
+                document.querySelector("#editarUsuarioId").value = userId;
+                document.querySelector("#editarUsuarioEmail").value = userEmail;
+                document.querySelector("#editarUsuarioRol").value = userRol;
+                document.querySelector("#editarUsuarioCodigoPostal").value = userCodigoPostal;
+                document.querySelector("#editarUsuarioPais").value = userPais;
+                document.querySelector("#editarUsuarioIdioma").value = userIdioma;
+
+            } catch (error) {
+                console.error("Error obteniendo ubicación:", error);
+            }
+        });
+    });
+});
+
+function obtenerUbicacion() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => resolve({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude
+                }),
+                error => reject(error),
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        } else {
+            reject(new Error("Geolocalización no soportada por este navegador."));
+        }
+    });
+}
 
 </script>
 {% endblock %}

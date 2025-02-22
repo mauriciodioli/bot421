@@ -12,6 +12,7 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from models.usuario import Usuario
 from models.usuarioRegion import UsuarioRegion
+from models.usuarioUbicacion import UsuarioUbicacion
 
 
 
@@ -85,12 +86,15 @@ def eliminar_usuario():
         # Buscar el usuario y su región
         usuario = db.session.query(Usuario).get(usuario_id)
         usuarioRegion = db.session.query(UsuarioRegion).filter_by(user_id=int(usuario_id)).first()
-
+        usuarioUbicacion = db.session.query(UsuarioUbicacion).filter_by(user_id=int(usuario_id)).first()
         if usuarioRegion:
             db.session.delete(usuarioRegion)  # Primero eliminar UsuarioRegion
 
         if usuario:
             db.session.delete(usuario)  # Luego eliminar Usuario
+            
+        if usuarioUbicacion:
+            db.session.delete(usuarioUbicacion)  # Luego eliminar UsuarioUbicacion
         
         db.session.commit()
         flash('Usuario eliminado correctamente.')
@@ -137,17 +141,24 @@ def eliminar_usuario():
 
 
 
-@usuario.route("/editar-usuario",  methods=["POST"])
+@usuario.route("/editar-usuario/",  methods=["POST"])
 def editar_usuario():
     try:
         usuario_id = request.form['id']    
         usuario = db.session.query(Usuario).get(usuario_id) #Usuario.query.get(usuario_id)
         usuarioRegion = db.session.query(UsuarioRegion).filter_by(user_id=int(usuario_id)).first()
+        usuarioUbicacion = db.session.query(UsuarioUbicacion).filter_by(user_id=int(usuario_id)).first()
         usuario.email = request.form['email']
         usuario.roll = request.form['rol']
         usuarioRegion.codigoPostal = request.form['codigoPostal']
         usuarioRegion.pais = request.form['pais']
         usuarioRegion.idioma = request.form['idioma']
+        if usuarioUbicacion:
+            usuarioUbicacion.latitud = request.form['latitud']
+            usuarioUbicacion.longitud = request.form['longitud']
+        else:
+            usuarioUbicacion = UsuarioUbicacion(user_id=int(usuario_id), id_region=usuarioRegion.id, codigoPostal=request.form['codigoPostal'], latitud=float(request.form['latitud']), longitud=float(request.form['longitud'])) #UsuarioUbicacion(user_id=int(usuario_id), id_region=usuarioRegion.id, codigoPostal=request.form['codigoPostal'], latitud=request.form['latitud'], longitud=request.form['longitud'])
+            db.session.add(usuarioUbicacion)
         
         db.session.commit()
         flash('Usuario editado correctamente.')

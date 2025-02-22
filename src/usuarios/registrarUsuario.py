@@ -34,6 +34,7 @@ from oauthlib.oauth2.rfc6749.errors import OAuth2Error
 from requests.exceptions import HTTPError
 from models.usuario import Usuario
 from models.usuarioRegion import UsuarioRegion
+from models.usuarioUbicacion import UsuarioUbicacion
 from datetime import datetime, timedelta
 from utils.db import db
 from usuarios.autenticacion import autenticacion
@@ -83,6 +84,8 @@ def registro_usuario():
     region = datos['region']
     provincia = datos['provincia']
     ciudad = datos['ciudad']
+    latitud = datos['latitud']
+    longitud = datos['longitud']
     if idioma == 'Spanish':
         idioma = 'es'
     elif idioma == 'English':
@@ -110,6 +113,9 @@ def registro_usuario():
     db.session.commit()  # Esto asegura que el usuario tenga un ID asignado
     usuarioRegion = UsuarioRegion( user_id=usuario.id, idioma=idioma, codigoPostal=codigoPostal, pais=pais, region=region, provincia=provincia, ciudad=ciudad)
     db.session.add(usuarioRegion)
+    db.session.commit()
+    usuarioUbicacion = UsuarioUbicacion(user_id=usuario.id, id_region=usuarioRegion.id, codigoPostal=codigoPostal, latitud=latitud, longitud=longitud)
+    db.session.add(usuarioUbicacion)
     db.session.commit()
     db.session.close()
     # Crear una respuesta
