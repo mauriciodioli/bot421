@@ -19,17 +19,19 @@ class UsuarioPublicacionUbicacion(db.Model):
     id_region = db.Column(db.Integer,  nullable=False)  # Relación con UsuarioRegion
     id_publicacion = db.Column(db.Integer,  nullable=False)  # Relación con Publicacion
     id_ubicacion = db.Column(db.Integer,  nullable=False)  # Relación con UsuarioUbicacion
+    codigoPostal = db.Column(db.String(120), nullable=False)
    
 
     # constructor
-    def __init__(self, user_id, id_region, id_publicacion, id_ubicacion):
+    def __init__(self, user_id, id_region, id_publicacion, id_ubicacion, codigoPostal):
         self.user_id = user_id
         self.id_region = id_region
         self.id_publicacion = id_publicacion
         self.id_ubicacion = id_ubicacion
+        self.codigoPostal = codigoPostal
 
     def __repr__(self):
-        return f"UsuarioPublicacionUbicacion(id={self.id}, user_id={self.user_id},id_region={self.id_region}, id_publicacion={self.id_publicacion}, id_ubicacion={self.id_ubicacion})"
+        return f"UsuarioPublicacionUbicacion(id={self.id}, user_id={self.user_id},id_region={self.id_region}, id_publicacion={self.id_publicacion}, id_ubicacion={self.id_ubicacion}, codigoPostal={self.codigoPostal})"
 
     @classmethod
     def crear_tabla_usuarioPublicacionUbicacion(cls):
@@ -40,7 +42,7 @@ class UsuarioPublicacionUbicacion(db.Model):
 class MerShema(ma.SQLAlchemyAutoSchema):  # Usar SQLAlchemyAutoSchema para mayor comodidad
     class Meta:
         model = UsuarioPublicacionUbicacion  # Especificamos que el schema está basado en la clase UsuarioRegion
-        fields = ("id", "user_id","id_region" ,"id_publicacion", "id_ubicacion")
+        fields = ("id", "user_id","id_region" ,"id_publicacion", "id_ubicacion", "codigoPostal")
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)  # Corregido el nombre del objeto
