@@ -158,7 +158,7 @@
                                     {% endif %}
                                 {% endwith %}
             
-                                <form method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
+                                <form id="loginForm" method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
                                     <div class="form-group">
                                         <!--<label for="correo_electronico" class="text-white">Correo electrónico:</label>-->
                                         <input type="email" class="form-control mb-3" id="correo_electronico" name="correo_electronico" autocomplete="email" placeholder="Correo electrónico" required>
@@ -168,7 +168,11 @@
                                         <!--<label for="password" class="text-white">Contraseña:</label>-->
                                         <input type="password" class="form-control" id="password" name="password" required>
                                         <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
-                                    </div>                            
+                                    </div>     
+                                    
+                                    <!-- Campos ocultos para la ubicación -->
+                                    <input type="hidden" id="latitud" name="latitud">
+                                    <input type="hidden" id="longitud" name="longitud">
             
                                     <div class="row justify-content-center">
                                         <div class="col-md-6 mb-4">
@@ -181,11 +185,22 @@
                                         </div>
                                     </div>
                                 </form>
-            
-                                <form action="/login/google" method="get" class="mt-4 bts">
+
+
+                                
+                                <form class="mt-4 bts" method="POST" action="{{ url_for('autenticacion.login_google') }}">                               
                                     <a class="gplogin social"><i class="fa fa-google-plus"></i><span>Sign in with Google</span></a>
                                     <!--<button type="submit" class="btn btn-primary btn-block my-2">Iniciar sesión con Google</button>-->
                                 </form>
+
+
+                                
+                               <!--
+                                <form class="mt-4 bts" method="POST" action="{{ url_for('autenticacion.login_google') }}">    
+                                  <button type="submit" class="gplogin social"><i class="fa fa-google-plus"></i><span>Sign in with Google</span></button>
+                                </form>
+                                 -->
+
                                 
                                 <!-- Enlace para recuperación de contraseña -->
                                 <div class="row justify-content-center mt-3">
@@ -253,9 +268,29 @@
   {% include 'layouts/layout_footer.html' %}
 
  
+
   
   <!-- Aquí se agrega el script -->  
   <script>
+    
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+      event.preventDefault(); // Detener el envío del formulario hasta obtener la ubicación
+     
+      let latitude = localStorage.getItem("latitude");
+      let longitude = localStorage.getItem("longitude");
+  
+      if (latitude && longitude) {
+          // Si hay datos almacenados, llenamos los campos ocultos y enviamos el formulario
+          document.getElementById("latitud").value = latitude;
+          document.getElementById("longitud").value = longitude;
+          event.target.submit();
+      }  else {
+          // Si el navegador no soporta geolocalización
+          document.getElementById("status").textContent = "Geolocalización no soportada.";
+          event.target.submit(); // Enviar de todos modos
+      }
+  });
+  
     var ambito = localStorage.getItem("dominio");
     let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
     document.getElementById("ambitoActual").innerHTML = ambito_actual;
@@ -273,6 +308,8 @@
       var refresh_token = localStorage.getItem('refresh_token');
       var selectorEnvironment = localStorage.getItem('selector');
       account =  localStorage.getItem('cuenta');
+     
+
       if (token) {
         const payload = JSON.parse(atob(token.split('.')[1]));
         const tokenExpirationDate = new Date(payload.exp * 1000);
@@ -285,6 +322,8 @@
       //console.log("tokenExpirationDate: ",tokenExpirationDate," currentDateTime: ",currentDateTime," vencimiento: ",vencimiento_access_token)
       
       if (token) { // Verificar si el token existe en el localStorage
+        
+       
         // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
         $.ajax({
           type: "POST",
@@ -328,6 +367,8 @@
       icon.textContent = "👁️";
     }
   }
+
+
 
 
   </script>

@@ -493,6 +493,7 @@ def guardarPublicacion(request, user_id):
         db.session.commit()
         #guardar la ubicacion publicacion
         publicacion_id = publicacionUbicacion(nueva_publicacion.id,user_id)
+        
         #guardar 
         return nueva_publicacion.id
         
@@ -591,6 +592,7 @@ def publicacionUbicacion(nueva_publicacion_id,user_id):
             db.session.add(new_publicacion_ubicacion)
 
         db.session.commit()
+        
         return True
     except Exception as e:
         print(str(e))

@@ -30,6 +30,8 @@ from flask_jwt_extended import (
     
 )
 from models.usuario import Usuario
+from models.usuarioRegion import UsuarioRegion
+from models.usuarioUbicacion import UsuarioUbicacion
 from models.cuentas import Cuenta
 from routes.api_externa_conexion.cuenta import cuenta
 from utils.db import db
@@ -106,13 +108,18 @@ def usuarios_listado():
     return render_template("usuarios.html", datos=all_usr)
 
 
-@autenticacion.route("/login/google")
+@autenticacion.route("/login_google/", methods=['POST'])
 def login_google():
-    return google.authorize(callback=url_for("autenticacion.authorized", _external=True))
+    try:
+        # Inicia el proceso de autorización con Google
+        return google.authorize(callback=url_for("autenticacion.login_google_authorized", _external=True))
+    except Exception as e:       
+        # Si ocurre un error, renderiza una página de error
+        return render_template('notificaciones/logeePrimero.html', layout='layout_dpi', error_message=str(e))
 
 
-@autenticacion.route("/login/google/authorized")
-def authorized():
+@autenticacion.route("/login_google_authorized")
+def login_google_authorized():
     resp = google.authorized_response()
     if resp is None:
         return "Acceso denegado: razón=%s error=%s" % (
@@ -291,6 +298,8 @@ def loginUsuario():
     if request.method == 'POST':
         correo_electronico = request.form['correo_electronico']
         password = request.form['password']
+        latitud = request.form['latitud']
+        longitud = request.form['longitud']
 
         # Consolidar la consulta dentro de un solo contexto de sesión
         with session_scope() as session:
@@ -313,6 +322,32 @@ def loginUsuario():
             usuario.refresh_token = refresh_token
             session.add(usuario)  # Usa `session.add` en lugar de `db.session.add`
             session.commit()      # Usa `session.commit` en lugar de `db.session.commit`
+
+            # Obtener información de ubicación y región
+            usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=usuario.id).first()
+            usuarioUbicacion = session.query(UsuarioUbicacion).filter_by(user_id=usuario.id).first()
+            
+            if latitud != '' and longitud != '':
+                if usuarioUbicacion:
+                        # Si existe, actualizar latitud y longitud
+                        usuarioUbicacion.latitud = float(latitud)
+                        usuarioUbicacion.longitud = float(longitud)  # Convertir a float antes de actualizar longitud
+                else:
+                    # Validar que usuarioRegion no sea None antes de acceder a su id
+                    id_region = usuarioRegion.id if usuarioRegion else None
+                    codigoPostal = request.form.get('codigoPostal')  # Obtener código postal del formulario si es necesario
+
+                    usuarioUbicacion = UsuarioUbicacion(
+                        user_id=usuario.id,
+                        id_region=id_region,
+                        codigoPostal=codigoPostal,
+                        latitud=float(latitud),  # Convertir a float antes de almacenar latitud,
+                        longitud=float(longitud)  # Convertir a float antes de almacenar longitud
+                    )
+                    session.add(usuarioUbicacion)
+
+                session.commit()
+
 
             # Configurar las cookies de JWT y respuesta
             if access_token:

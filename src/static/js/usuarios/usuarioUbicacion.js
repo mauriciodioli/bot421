@@ -21,6 +21,8 @@ function successCallback(position) {
     let latitude = position.coords.latitude;
     let longitude = position.coords.longitude;
     console.log(`📍 Ubicación obtenida: Latitud: ${latitude}, Longitud: ${longitude}`);
+    localStorage.setItem("latitude", latitude);
+    localStorage.setItem("longitude", longitude);
     document.getElementById("status").innerText = `Ubicación actual: Lat ${latitude}, Lng ${longitude}`;
 
     // Si la ubicación ha cambiado, obtener el idioma y enviarlo al servidor

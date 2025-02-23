@@ -314,10 +314,16 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
                 try:
                     imagen = db.session.query(Image).filter_by(id=imagen_video.imagen_id).first()
                     if imagen:
+                        
                         filepath = imagen.filepath
                         imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
-                       
-                        file_data, file_path  = mostrar_from_gcs(imagen_url)
+                        
+                        if publicacion.imagen:
+                            file_path = publicacion.imagen
+                            file_data = None
+                        else:                           
+                            file_data, file_path  = mostrar_from_gcs(imagen_url)
+                        
                         if file_data:
                             # Convertir la imagen a base64 solo si hemos obtenido datos binarios
                             imagen_base64 = base64.b64encode(file_data).decode('utf-8')
