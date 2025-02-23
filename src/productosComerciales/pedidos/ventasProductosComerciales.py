@@ -234,14 +234,13 @@ def productosComerciales_pedidos_ventasProductosComerciales_cancela_pedido(pedid
     try:
         # Lógica para cancelar el pedido
         pedidoEntregaPago = db.session.query(PedidoEntregaPago).filter(PedidoEntregaPago.id == pedido_id).first()
-        pedido = db.session.query(Pedido).filter(Pedido.id == pedido_id).first()
+     
         if pedidoEntregaPago:
             # Verifica si el pedido ya está cancelado
             if pedidoEntregaPago.estado == 'cancelado':
                 return jsonify({"success": False, "message": "El pedido ya está cancelado"}), 400
 
-            # Cambiar el estado del pedido a 'cancelado'
-            pedido.estado = 'cancelado'
+            # Cambiar el estado del pedido a 'cancelado'            
             pedidoEntregaPago.estado = 'cancelado'
             db.session.commit()
             db.session.close()
