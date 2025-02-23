@@ -788,7 +788,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!currentLanguage) {
             
             currentLanguage = navigator.language.split('-')[0].toLowerCase();
-             debugger;
+            
 
             // Establecer el idioma en las cookies y el almacenamiento local
             document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año

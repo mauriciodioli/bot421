@@ -93,12 +93,17 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma):
                         # Ajustar la ruta del archivo
                         filepath = imagen.filepath
                         imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                        imgen,file_path = mostrar_from_gcs(imagen_url)  # Asegúrate de definir esta función
+                        if publicacion.imagen:
+                            file_path = publicacion.imagen
+                            file_data = None
+                        else:   
+                            file_data,file_path = mostrar_from_gcs(imagen_url)  # Asegúrate de definir esta función
                     
-                        if imgen:
-                            # Si imgen ya es binario, simplemente lo codificamos en base64
-                            imagen_base64 = base64.b64encode(imgen).decode('utf-8')
-                                                    
+                        if file_data:
+                            # Convertir la imagen a base64 solo si hemos obtenido datos binarios
+                            imagen_base64 = base64.b64encode(file_data).decode('utf-8')
+                        else:
+                            imagen_base64 = None                   
 
                         imagenes.append({
                             'id': imagen.id,
