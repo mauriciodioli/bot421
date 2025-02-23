@@ -459,7 +459,8 @@ def guardarPublicacion(request, user_id):
         idioma = request.form.get('lenguaje')
         codigoPostal = request.form.get('codigoPostal')
         latitud = request.form.get('latitud')
-        longitud = request.form.get('longitud')     
+        longitud = request.form.get('longitud') 
+        pagoOnline = False
         
         # Verificar si ya existe una publicación con el mismo título para el mismo usuario
         publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
@@ -487,6 +488,7 @@ def guardarPublicacion(request, user_id):
             botonCompra=botonCompra,
             idioma=idioma,
             codigoPostal=codigoPostal,
+            pagoOnline=pagoOnline
         )
         
         db.session.add(nueva_publicacion)

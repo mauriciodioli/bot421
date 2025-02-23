@@ -73,6 +73,8 @@ def media_publicaciones_mostrar():
         codigoPostal = request.form.get('codigoPostal')
         if codigoPostal == None:
             codigoPostal = request.cookies.get('codigoPostal')
+        if codigoPostal == 'null':
+            codigoPostal = '1'
         if ambito == 'laboral':
             ambito = 'Laboral'
         # Obtener el encabezado Authorization
@@ -957,7 +959,7 @@ def publicaciones_modificar_publicaciones():
         idioma = request.form.get('postCambiarIdioma_modificaPublicacion')
         botonCompra = request.form.get('postBotonCompra_modificaPublicacion')
         codigoPostal = request.form.get('codigoPostal_modificaPublicacion')
-
+        botonPagoOnline = request.form.get('postPagoOnline_modificaPublicacion')
         # Obtener archivos subidos si es necesario
         archivos = request.files.getlist('mediaFile_modificaPublicacion')
 
@@ -1001,6 +1003,7 @@ def publicaciones_modificar_publicaciones():
         publicacion.codigoPostal = codigoPostal
         publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
         publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
+        publicacion.pagoOnline  = botonPagoOnline.lower() == "true" if botonPagoOnline else False
 
        
         db.session.commit()

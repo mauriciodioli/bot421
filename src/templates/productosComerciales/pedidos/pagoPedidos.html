@@ -48,23 +48,25 @@
                                         <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
                                         <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
                                         <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">
-                                            Confirmar pedido
+                                            Confirmar
                                         </button>
                                     </form>
-                                    <form class="pagoPedidoForm">
-                                        <input type="hidden" id="accessToken_pagoPedido" name="accessToken_pagoPedido" value="">
-                                        <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
-                                        <input type="hidden" id="reason" name="reason" value="{{ pedido.reason }}">
-                                        <input type="hidden" id="costo_base" name="costo_base" value="{{ pedido.price }}">
-                                        <input type="hidden" id="currency_id" name="currency_id" value="{{ pedido.currency_id }}">
-                                        <input type="hidden" id="discount" name="discount" value="{{ pedido.discount }}">
-                                        <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
-                                        <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
-                                        <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
-                                        <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">
-                                            Pagar online
-                                        </button>
-                                    </form>
+                                    {% if pedido.botonPagoOnline == 'True' %}
+                                        <form class="pagoPedidoForm">
+                                            <input type="hidden" id="accessToken_pagoPedido" name="accessToken_pagoPedido" value="">
+                                            <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
+                                            <input type="hidden" id="reason" name="reason" value="{{ pedido.reason }}">
+                                            <input type="hidden" id="costo_base" name="costo_base" value="{{ pedido.price }}">
+                                            <input type="hidden" id="currency_id" name="currency_id" value="{{ pedido.currency_id }}">
+                                            <input type="hidden" id="discount" name="discount" value="{{ pedido.discount }}">
+                                            <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
+                                            <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
+                                            <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
+                                            <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">
+                                                Pagar online
+                                            </button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

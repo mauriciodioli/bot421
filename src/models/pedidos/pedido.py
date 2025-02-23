@@ -52,6 +52,7 @@ class Pedido(db.Model):
     comentarioCliente = db.Column(Text, nullable=True)
     emailCliente = db.Column(String(255), nullable=True)
     cluster_id = db.Column(Integer, nullable=True)
+    pagoOnline = db.Column(db.Boolean, default=True)
     
     
     # Constructor
@@ -65,7 +66,7 @@ class Pedido(db.Model):
     def __repr__(self):
         return (
             f"<Pedido(id={self.id}, user_id={self.user_id}, publicacion_id={self.publicacion_id}, "
-            f"estado={self.estado}, fecha_pedido={self.fecha_pedido})>"
+            f"estado={self.estado}, fecha_pedido={self.fecha_pedido},pagoOnline={self.pagoOnline})>"
         )
 
 # Esquema para serialización
@@ -75,7 +76,7 @@ class PedidoSchema(ma.Schema):
             "id", "user_id", "publicacion_id", "ambito", "estado", "fecha_pedido",
             "fecha_entrega", "lugar_entrega", "cantidad", "precio_costo", "precio_venta",
             "ganancia", "diferencia", "nombre_producto", "descripcion", "consulta", "respuesta",
-            "asignado_a", "tamaño", "pais", "provincia", "region", "sexo","imagen"
+            "asignado_a", "tamaño", "pais", "provincia", "region", "sexo","imagen","pagoOnline"
         )
 
 # Instancias del esquema

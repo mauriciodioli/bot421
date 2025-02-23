@@ -27,9 +27,11 @@
         <img src="default.jpg" alt="Producto sin imagen" class="product-image">
         {% endif %}
         <div class="product-details">
+            
             <h2>{{ pedido.nombre_producto }}</h2>
             <p class="price">Precio: $<span class="unit-price">{{ pedido.precio_venta }}</span></p>
             <label for="quantity-{{ pedido.id }}">Cantidad:</label>
+           
             <input type="number" id="quantity-{{ pedido.id }}" name="quantity" class="quantity-input" value="{{ pedido.cantidad or 1 }}" min="1">
             <button class="remove-button" data-pedido-id="{{ pedido.id }}">Eliminar</button>
         </div>
@@ -49,7 +51,8 @@
                 <input type="hidden" id="correo_electronico_btn_finalizarPago" name="correo_electronico_btn_finalizarPago"> 
                 <input type="hidden" id="productoComercial" name="productoComercial" value='finalizarPago'> 
                 <input type="hidden" id="cluster_btn_finalizarPago" name="cluster_btn_finalizarPago" value='1'>        
-                <input type="hidden" id="ambito_btn_finalizarPago" name="ambito_btn_finalizarPago"> 
+                <input type="hidden" id="ambito_btn_finalizarPago" name="ambito_btn_finalizarPago">
+                <input type="hidden" id="boton_pagoOnline" name="boton_pagoOnline" > 
                 <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
                 <input type="hidden" id="pedido_data" name="pedido_data">
 
@@ -77,4 +80,23 @@
 <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/productos/carritoCompras.css')}}"> 
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/pedido.js') }}"></script>
+<script>
+    // Convertir 'data' a JSON de forma segura para evitar errores de sintaxis
+    var data = {{ data|tojson }};
+    
+    // Validar que 'data[0]' y 'pagoOnline' existan antes de acceder a ellos
+    var botonPedidoOnline = (Array.isArray(data) && data.length > 0 && data[0].pagoOnline) 
+        ? data[0].pagoOnline 
+        : "";
+
+    console.log("Valor de botonPedidoOnline:", botonPedidoOnline);
+
+    // Asignar el valor al input (si el elemento existe en el DOM)
+    var inputElement = document.getElementById("boton_pagoOnline");
+    if (inputElement) {
+        inputElement.value = botonPedidoOnline;
+    }
+</script>
+
+
 {% endblock %}
