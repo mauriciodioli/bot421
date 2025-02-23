@@ -202,6 +202,7 @@ $(document).ready(function() {
 
 
 function agregarListado(pedidoId, checkbox) { 
+    debugger;
     if (!checkbox.checked) {
         console.log(`El pedido con ID ${pedidoId} no se enviará porque el checkbox no está marcado.`);
         return; // Salir de la función si el checkbox no está marcado
@@ -216,7 +217,7 @@ function agregarListado(pedidoId, checkbox) {
     const cantidadSeleccionada = quantityInput ? quantityInput.value : null;
 
     console.log(`Pedido ID: ${pedidoId}, Nuevo Estado: ${nuevoEstado}, Cantidad: ${cantidadSeleccionada}`);
-
+    
     
     fetch(`/productosComerciales_pedidos_alta_carrito_checkBox/${pedidoId}`, {
         method: 'POST',

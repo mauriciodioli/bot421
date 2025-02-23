@@ -22,6 +22,7 @@ def sistemaDePagos_pagoPedidos():
         productoComercial = data.get('productoComercial')
         total = data.get('total_pago')
         ambito = data.get('ambito_btn_finalizarPago')
+        botonPagoOnline = data.get('boton_pagoOnline')
         # Captura y procesa el JSON de pedidos
         pedido_data_json = data.get('pedido_data')  # JSON string enviado desde el formulario
        
@@ -54,6 +55,7 @@ def sistemaDePagos_pagoPedidos():
                 'ambito':ambito,
                 'cluster':random_number,
                 'pedido_data_json':pedido_data_json, 
+                'botonPagoOnline':botonPagoOnline
                                   
             }]
 

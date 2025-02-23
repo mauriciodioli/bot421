@@ -18,7 +18,7 @@
 {% block content%}
 
 <div class="cart-container"> 
-    <h3 style="color:black;">Compras</h3>
+    <h3 style="color:rgb(0, 0, 0);">Aquiridos</h3>
     {% for pedido in data %}
     <div class="cart-item" data-precio="{{ pedido.precio_venta }}" data-id="{{ pedido.id }}">
         {% if pedido.imagen_url %}
@@ -28,9 +28,13 @@
         {% endif %}
         <div class="product-details">
             <h2>{{ pedido.nombre_producto }}</h2>
-            <p class="price">Precio: $<span class="unit-price">{{ pedido.precio_venta }}</span></p>
+            <p class="price">-> <span class="unit-price">{{ pedido.precio_venta }}</span></p>
             <p class="fecha_entrega" style="color: black;>Fecha: <span style="color: black;">{{ pedido.fecha_pedido.strftime('%d/%m/%Y') }}</span></p>
-
+            {% if pedido.estado=="terminado" %}
+               <p class="estado" style="color: black;>Estado: <span style="color: black;">Pendiente de atención o entrega</span></p>
+            {%else %}
+                 <p class="estado" style="color: black;>Estado: <span style="color: black;">{{ pedido.estado }}</span></p>
+            {% endif %}
 
            
         </div>

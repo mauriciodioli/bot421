@@ -125,25 +125,22 @@ def productosComerciales_pedidos_mostrar_carrito():
             return jsonify({'error': 'El usuario no está activo.'}), 403
 
        
-         
+        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado='pendiente').all()
+        
         # Consultar publicaciones y pedidos
         publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
-        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado='terminado').all()
+        if publicaciones:
+            # Verificar asociaciones
+            ids_publicaciones = {publicacion.id for publicacion in publicaciones}
+            pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
 
-        # Verificar asociaciones
-        ids_publicaciones = {publicacion.id for publicacion in publicaciones}
-        pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
-
-        if pedidos_con_publicaciones:
-            return render_template(
-                'productosComerciales/pedidos/carritoCompras.html',
-                data='',
-                layout='layout'
-            )
-
-      
-       
-       # Procesar datos de los pedidos
+            if not pedidos_con_publicaciones:
+                return render_template(
+                    'productosComerciales/pedidos/carritoCompras.html',
+                    data='',
+                    layout='layout'
+                )
+         # Procesar datos de los pedidos
         pedidos_data = [
             {
                 'id': pedido.id,
@@ -153,7 +150,8 @@ def productosComerciales_pedidos_mostrar_carrito():
                 'precio_venta': pedido.precio_venta,
                 'estado': pedido.estado,
                 'cantidad': pedido.cantidad,
-                'imagen_url': pedido.imagen  # Incluir la URL de la imagen                
+                'imagen_url': pedido.imagen,  # Incluir la URL de la imagen   
+                'pagoOnline': pedido.pagoOnline       
             }
             for pedido in pedidos
         ]
@@ -210,7 +208,9 @@ def productosComerciales_pedidos_compras():
          
         # Consultar publicaciones y pedidos
         publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
-        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado="entregado").all()
+        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito).filter(
+                                Pedido.estado.in_(["entregado", "terminado"])
+                            ).all()
 
         # Verificar asociaciones
         ids_publicaciones = {publicacion.id for publicacion in publicaciones}
@@ -359,6 +359,7 @@ def productosComerciales_pedidos_alta_carrito():
         #print(request.form)
         data = request.form or request.json
         access_token = data.get('access_token_btn_carrito1')
+        botonPagoOnline = data.get('precio_btn_PagoOnline')
         if not access_token:
             return jsonify({'error': 'Token no proporcionado.'}), 401
 
@@ -389,6 +390,8 @@ def productosComerciales_pedidos_alta_carrito():
          # Validar y procesar el precio
         texto = data.get('texto_btn_carrito', '')  # Clave corregida
         precio, resto = obtenerPrecio(texto) if texto else (None, None)
+        if not precio:
+            precio = 0
 
         if not guardarPedido(data,user_id,precio):
             return render_template('notificaciones/logeePrimero.html')
@@ -410,7 +413,8 @@ def productosComerciales_pedidos_alta_carrito():
                 'fecha_pedido': pedido.fecha_pedido,
                 'precio_venta': pedido.precio_venta,
                 'estado': pedido.estado,
-                'imagen_url': pedido.imagen  # Incluir la URL de la imagen               
+                'imagen_url': pedido.imagen,  # Incluir la URL de la imagen  
+                'pagoOnline': botonPagoOnline            
             }
             for pedido in pedidos
         ]
@@ -654,7 +658,7 @@ def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailClient
             user_id=userId,
             publicacion_id=int(data.id),
             ambito=data.ambito,
-            estado='terminado',
+            estado='pendiente',
             fecha_pedido=tiempo,
             fecha_entrega=tiempo,
             fecha_consulta=tiempo,
@@ -679,7 +683,8 @@ def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailClient
             provincia='',
             region='',
             sexo='',
-            imagen=data.imagen 
+            imagen=data.imagen,
+            pagoOnline=data.pagoOnline 
         )
 
         # Guardar en la base de datos
@@ -713,7 +718,8 @@ def guardarPedido(data, userId, precio):
        # if producto_existente:
         #    print(f"Pedido duplicado detectado para user_id={userId} y nombre_producto={data.get('titulo_btn_carrrito')}.")
          #   return None  # No guardar duplicados
-
+        botonPagoOnline = data.get('precio_btn_PagoOnline')
+        pagoOnline = botonPagoOnline.lower() == "true" if botonPagoOnline else False
         # Crear el nuevo pedido
         nuevo_pedido = Pedido(
             user_id=userId,
@@ -744,7 +750,8 @@ def guardarPedido(data, userId, precio):
             provincia='',
             region='',
             sexo='',
-            imagen=imagen_url 
+            imagen=imagen_url,
+            pagoOnline=pagoOnline
         )
 
         # Guardar en la base de datos

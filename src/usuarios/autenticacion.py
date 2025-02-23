@@ -336,7 +336,8 @@ def loginUsuario():
                     # Validar que usuarioRegion no sea None antes de acceder a su id
                     id_region = usuarioRegion.id if usuarioRegion else None
                     codigoPostal = request.form.get('codigoPostal')  # Obtener código postal del formulario si es necesario
-
+                    if codigoPostal is None:
+                        codigoPostal = '1'
                     usuarioUbicacion = UsuarioUbicacion(
                         user_id=usuario.id,
                         id_region=id_region,

@@ -87,10 +87,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var access_token_btn_finalizarPago = localStorage.getItem('access_token');
     var correo_electronico_btn_finalizarPago = localStorage.getItem('correo_electronico');
     var ambito_btn_finalizarPago = localStorage.getItem('dominio');
-
+   
+   
     if (document.getElementById('access_token_btn_finalizarPago')) {
         document.getElementById('access_token_btn_finalizarPago').value = access_token_btn_finalizarPago;
     }
+   
     if (document.getElementById('correo_electronico_btn_finalizarPago')) {
         document.getElementById('correo_electronico_btn_finalizarPago').value = correo_electronico_btn_finalizarPago;
     }
