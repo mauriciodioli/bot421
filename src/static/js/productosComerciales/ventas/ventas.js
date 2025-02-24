@@ -12,7 +12,7 @@ function mostrarDetalles(pedidoId) {
             data.detalles.forEach((detalle) => {
                 // Creamos una fila para cada detalle
                 const fila = document.createElement("tr");
-        
+                console.log("Respuesta de la API:", data);
                 // Rellenamos la fila con los datos
                 fila.innerHTML = `                   
                     <td>${detalle.nombre_producto}</td>
@@ -31,6 +31,7 @@ function mostrarDetalles(pedidoId) {
         
             // Mostrar el total del pedido
             const total = document.createElement("p");
+
             total.innerHTML = `<strong">Total del pedido:</strong> <span style="color: #90EE90;; font-weight: bold;">$ ${data.total}</span>`;
             contenedorAdicional.appendChild(total);
         
