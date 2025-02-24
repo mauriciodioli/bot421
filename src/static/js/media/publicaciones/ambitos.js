@@ -227,3 +227,45 @@ function eliminarAmbito(id) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+function actualizarAmbitoCambiarPosicion() {
+    const id_1 = document.getElementById('id-ambito-uno').value;
+    const id_2 = document.getElementById('id-ambito-dos').value;
+
+    const data = {
+        id_1: id_1,
+        id_2: id_2       
+    };
+
+    fetch(`/social-media-publicaciones-ambitos-cambiarPosicion/${id_1}/${id_2}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {       
+        alert('Ámbito actualizado con éxito');
+        $('#editarAmbitoModal').modal('hide'); // Cerrar el modal
+        obtenerAmbitos();  // Actualizar la lista de ámbitos
+    })
+    .catch(error => {
+        alert('Error al actualizar el ámbito: ' + error);
+    });
+}
+
+
+
+
