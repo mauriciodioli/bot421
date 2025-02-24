@@ -9,27 +9,44 @@ function formatDate(dateString) {
 
 
 
-
-function cargarPublicaciones(ambitoParam,layout) {
+function cargarPublicaciones(ambitoParam, layout) {
 
     var access_token = localStorage.getItem('access_token');   
     var ambito = ambitoParam || localStorage.getItem('dominio'); // Usa el parámetro o toma del localStorage
-   
+    
     let ambito_actual = "<a style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+    
+    var codigoPostal = localStorage.getItem('codigoPostal'); // Obtener el código postal de localStorage
 
-    // Verificar si el elemento con ID "ambito_actual" existe antes de asignarlo
-    if (document.getElementById("ambito_actual")) {
-        document.getElementById("ambito_actual").innerHTML = ambito_actual;
+    // Si no existe el código postal, solicitarlo
+    if (!codigoPostal) {
+        codigoPostal = prompt("Por favor, ingresa tu código postal:");
+
+        if (codigoPostal) {
+            localStorage.setItem('codigoPostal', codigoPostal); // Guardar en localStorage
+        } else {
+            alert("El código postal es obligatorio para continuar.");
+            return; // Detener la ejecución si no se proporciona
+        }
     }
 
-    var galeriaURL = '/media-publicaciones-mostrar-home';
+    // Verificar si el elemento con ID "ambito_actual" existe antes de asignarlo
+    var ambitoElement = document.getElementById("ambito_actual");
+    if (ambitoElement) {
+        ambitoElement.innerHTML = ambito_actual;
+    }
+
+    var galeriaURL = '/media-publicaciones-mostrar-home/';
+    
     // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
+
     let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
 
+    // Realizar la petición AJAX
     $.ajax({
         type: 'POST',
         url: galeriaURL,
@@ -38,7 +55,8 @@ function cargarPublicaciones(ambitoParam,layout) {
         data: {
             layout: layout,
             ambito: ambito,
-            lenguaje: lenguaje
+            lenguaje: lenguaje,
+            codigoPostal: codigoPostal
         },
         success: function (response) {
            
