@@ -117,13 +117,14 @@ def media_publicaciones_mostrar():
     # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
-@publicaciones.route('/media-publicaciones-mostrar-home', methods=['POST'])
+@publicaciones.route('/media-publicaciones-mostrar-home/', methods=['POST'])
 def media_publicaciones_mostrar_home():
     try:
         
         layout = request.form.get('layout')
         ambito = request.form.get('ambito')
         idioma = request.form.get('lenguaje')
+        codigoPostal = request.form.get('codigoPostal')
         
         # Obtener el encabezado Authorization
         authorization_header = request.headers.get('Authorization')
@@ -157,21 +158,21 @@ def media_publicaciones_mostrar_home():
                     if fecha_eliminado:
                         dias_diferencia = (datetime.today().date() - fecha_eliminado).days
                         if dias_diferencia > 30:
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma).first()
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
                             if publicacion:
                                 # Agrega la publicación a la lista de publicaciones
                                 publicaciones.append(publicacion)
                     
                     # Si el estado no es "eliminado", obtén la publicación correspondiente
                     if estado_publicacion.estado != 'eliminado':
-                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma).first()
+                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
                         if publicacion:
                             # Agrega la publicación a la lista de publicaciones
                             publicaciones.append(publicacion)
 
             else:
                 # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma).all()
+                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal).all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()
