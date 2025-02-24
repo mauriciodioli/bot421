@@ -218,6 +218,93 @@ def eliminar_ambito(id):
 
 
 
+
+
+
+@ambito.route('/social-media-publicaciones-ambitos-cambiarPosicion/<int:id_1>/<int:id_2>', methods=['PUT'])
+def actualizar_cambiarPosicion(id_1, id_2):
+    try:
+            # Obtener los dos ámbitos existentes
+            ambito_1 = db.session.query(Ambitos).filter_by(id=id_1).first()
+            ambito_2 = db.session.query(Ambitos).filter_by(id=id_2).first()
+
+            # Verificar si los ámbitos existen
+            if not ambito_1 or not ambito_2:
+                return jsonify({"error": "Uno o ambos ámbitos no encontrados"}), 404
+
+            # 1. Almacenar los datos del id_1 en una variable
+            datos_ambito_1 = {
+                'nombre': ambito_1.nombre,
+                'descripcion': ambito_1.descripcion,
+                'idioma': ambito_1.idioma,
+                'valor': ambito_1.valor,
+                'estado': ambito_1.estado
+            }
+
+            # 2. Almacenar los datos del id_2 en una variable
+            datos_ambito_2 = {
+                'nombre': ambito_2.nombre,
+                'descripcion': ambito_2.descripcion,
+                'idioma': ambito_2.idioma,
+                'valor': ambito_2.valor,
+                'estado': ambito_2.estado
+            }
+
+            # 3. Cambiar los datos del registro id_1 por cualquier cosa (por ejemplo, valores vacíos)
+            ambito_1.nombre = "Valor temporal"
+            ambito_1.descripcion = "Valor temporal"
+            ambito_1.idioma = "Valor temporal"
+            ambito_1.valor = "Valor temporal"
+            ambito_1.estado = "Valor temporal"
+
+            # Guardar los cambios después de modificar el id_1
+            db.session.commit()
+
+            # 4. Colocar los datos almacenados del id_1 en el registro del id_2
+            ambito_2.nombre = datos_ambito_1['nombre']
+            ambito_2.descripcion = datos_ambito_1['descripcion']
+            ambito_2.idioma = datos_ambito_1['idioma']
+            ambito_2.valor = datos_ambito_1['valor']
+            ambito_2.estado = datos_ambito_1['estado']
+
+            # Guardar los cambios después de modificar el id_2
+            db.session.commit()
+
+            # 5. Colocar los datos almacenados del id_2 en el registro del id_1
+            ambito_1.nombre = datos_ambito_2['nombre']
+            ambito_1.descripcion = datos_ambito_2['descripcion']
+            ambito_1.idioma = datos_ambito_2['idioma']
+            ambito_1.valor = datos_ambito_2['valor']
+            ambito_1.estado = datos_ambito_2['estado']
+
+            # Guardar los cambios después de modificar el id_1
+            db.session.commit()
+
+            # Serializar los resultados
+            resultado_1 = serializar_ambito(ambito_1)
+            resultado_2 = serializar_ambito(ambito_2)
+
+            db.session.close()
+
+         
+            # Devolver los resultados como JSON
+            return jsonify({"ambito_1": resultado_1, "ambito_2": resultado_2}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+
+
+
+
+
+
+
+
 def serializar_ambito(ambito):
     return {
         "id": ambito.id,

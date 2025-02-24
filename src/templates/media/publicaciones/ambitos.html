@@ -46,6 +46,12 @@
                         data-bs-target="#eliminarAmbitoModal" 
                         data-ambito-id="{{ ambito.id }}"
                         data-nombre="{{ ambito.nombre }}">Eliminar</button>
+                   
+                    <!-- Botón para abrir el modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCambiarPosicion" 
+                    data-ambito-id="{{ ambito.id }}">
+                    Cambiar Posicion
+                    </button>
 
 
 
@@ -157,9 +163,62 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+<!-- Modal de cambiar posicion -->
+<div class="modal fade" id="modalCambiarPosicion" tabindex="-1" aria-labelledby="modalCambiarPosicionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCambiarPosicionLabel" style="color: black;">Cambiar posicion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editarAmbitoForm">
+          <label for="id-ambito-uno" style="color: black;">Id Ambito 1:</label>
+          <input type="text" id="id-ambito-uno" class="form-control" required><br>
+
+          <label for="id-ambito-dos" style="color: black;">Id Ambito 2:</label>
+          <input type="text" id="id-ambito-dos" class="form-control"><br>
+
+          <button type="button" class="btn btn-primary" onclick="actualizarAmbitoCambiarPosicion()">Actualizar Ambito</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 {% include 'layouts/layout_footer.html' %}   
 <script src="{{ url_for('static', filename='js/media/publicaciones/ambitos.js') }}"></script>
 <script>
+
+  $(document).ready(function() {
+    // Este evento se dispara cuando se abre el modal
+    $('#modalCambiarPosicion').on('show.bs.modal', function (event) {
+      // Obtener el botón que activó el modal
+      var button = $(event.relatedTarget);
+      
+      // Obtener el valor del atributo data-ambito-id del botón
+      var ambitoId = button.data('ambito-id');
+      
+      // Obtener el campo de entrada en el modal y asignarle el valor
+      var modal = $(this);
+      modal.find('#id-ambito-uno').val(ambitoId);
+    });
+  });
+  
+
 $(document).ready(function() {
     // Cargar los datos en el modal de edición
     $('#editarAmbitoModal').on('show.bs.modal', function (event) {

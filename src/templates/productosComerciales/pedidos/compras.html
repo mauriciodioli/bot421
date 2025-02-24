@@ -30,11 +30,14 @@
             <h2>{{ pedido.nombre_producto }}</h2>
             <p class="price">-> <span class="unit-price">{{ pedido.precio_venta }}</span></p>
             <p class="fecha_entrega" style="color: black;>Fecha: <span style="color: black;">{{ pedido.fecha_pedido.strftime('%d/%m/%Y') }}</span></p>
-            {% if pedido.estado=="terminado" %}
-               <p class="estado" style="color: black;>Estado: <span style="color: black;">Pendiente de atención o entrega</span></p>
-            {%else %}
-                 <p class="estado" style="color: black;>Estado: <span style="color: black;">{{ pedido.estado }}</span></p>
+            {% if pedido.estado == "terminado" %}
+                <p class="estado" style="color: black;">Estado: <span style="color: black;">Pendiente de atención o entrega</span></p>
             {% endif %}
+            {% if pedido.estado == "entregado" %}
+                <p class="estado" style="color: black;">Estado: <span style="color: black;">Finalizado</span></p>
+            {% endif %}
+
+            
 
            
         </div>
