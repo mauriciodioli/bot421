@@ -25,6 +25,7 @@ function cargarPublicaciones(ambitoParam, layout) {
         if (codigoPostal) {
             localStorage.setItem('codigoPostal', codigoPostal); // Guardar en localStorage
         } else {
+            codigoPostal = '1';
             alert("El código postal es obligatorio para continuar.");
             return; // Detener la ejecución si no se proporciona
         }
