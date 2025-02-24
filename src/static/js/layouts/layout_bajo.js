@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Función para cargar dinámicamente los ítems del menú desde el servidor
     window.cargarAmbitos = function ()  {
-        fetch('/social-media-publicaciones-obtener-ambitos', {
+        fetch('/social-media-publicaciones-obtener-ambitos/', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',

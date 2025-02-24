@@ -68,11 +68,19 @@ def productosComerciales_pedidos_ventasProductosComerciales_muestra():
                     data='',
                     layout='layout'
                 )
-
+            data = []
             # Consultar entregas
             entregas = db.session.query(PedidoEntregaPago).filter_by( ambito=ambito, estado="pendiente").all()
-            data = [
-                {
+           
+            for entrega in entregas:
+                # Convertir JSON a objeto Python
+                pedido_data = json.loads(entrega.pedido_data_json)
+
+                # Verificar que haya al menos un pedido en la lista antes de acceder
+                precio_venta = pedido_data[0]['precio'] if pedido_data else 0
+
+                # Construir el diccionario para cada entrega
+                data.append({
                     "id": entrega.id,
                     "user_id": entrega.user_id,
                     "fecha_entrega": entrega.fecha_entrega,
@@ -83,11 +91,9 @@ def productosComerciales_pedidos_ventasProductosComerciales_muestra():
                     "lugar_entrega": entrega.lugar_entrega,
                     "ambito": entrega.ambito,
                     "estado": entrega.estado,
-                    "precio_venta": entrega.precio_venta,
+                    "precio_venta": precio_venta,
                     "pedido_data_json": entrega.pedido_data_json,
-                }
-                for entrega in entregas
-            ]
+                })
 
             db.session.close()
             return render_template(
@@ -126,7 +132,12 @@ def productosComerciales_pedidos_ventasProductosComerciales_detalle_pedido(pedid
        
        # Guardamos consulta y total desde el pedido
         consulta = pedido_entrega.comentarioCliente  # O el campo correcto para la consulta
-        total = pedido_entrega.precio_venta          # O el campo correcto para el total
+       
+
+
+        # Calcular el total correctamente
+        total = data[0]['precio'] * data[0]['cantidad']
+        # O el campo correcto para el total
 
         for item in data:
             id_pedido = item['id']

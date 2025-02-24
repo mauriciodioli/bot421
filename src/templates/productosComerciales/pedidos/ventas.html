@@ -1,4 +1,4 @@
-{% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for message in messages%}  
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -65,7 +65,7 @@
               <td>{{ pedido.nombreCliente }}</td>
               <td>{{ pedido.lugar_entrega }}</td>              
               <td>{{ pedido.estado }}</td>
-              <td style="color: rgb(232, 232, 95); font-weight: bold;">$ {{ pedido.precio_venta }}</td>
+              <td style="color: rgb(232, 232, 95); font-weight: bold;"> $ {{ pedido.precio_venta }}</td>
               <td>
                 <input type="checkbox" class="estado-checkbox" onchange="actualizarEstado({{ pedido.id }}, this)" 
                        {{ 'checked' if pedido.estado == 'entregado' else '' }}>
