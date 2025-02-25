@@ -6,6 +6,10 @@ body {
 .card-media-grid-publicacion-en-ambito img {
   width: 100%;
   height: auto; /* Mantiene la proporción */
+  cursor: pointer;
+}
+.dropdown-item {
+  cursor: pointer;
 }
 
 .splashCarga {
@@ -170,6 +174,16 @@ section[id] {
     flex-wrap: wrap; /* Permite que los elementos se ajusten cuando haya poco espacio */
 }
 
+
+
+
+/* Estilo para pantallas grandes */
+@media (min-width: 992px) { /* Puedes ajustar este valor según lo que consideres "pantalla grande" */
+  #domains {
+      display: none; /* Oculta la sección en pantallas grandes */
+  }
+}
+
 /* Media queries para pantallas pequeñas */
 @media (max-width: 768px) {
     .flex-container {
@@ -220,6 +234,7 @@ section[id] {
 
 
 
+
 /* Contenedor de las tarjetas */
 .card-container {
     display: flex;
@@ -228,6 +243,14 @@ section[id] {
     justify-content: center;
     margin-top: 30px;
   }
+  /* Contenedor de las tarjetas */
+.card-container-grande {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 30px;
+}
   
   /* Estilos para cada tarjeta */
   .card {
@@ -271,7 +294,7 @@ section[id] {
   /* Número en la tarjeta */
   .card-number {
     font-family: 'Poppins', sans-serif;
-    font-size: 48px;
+    font-size: 24px;
     color: white; /* Texto blanco */
     font-weight: bold;
     margin: 0; /* Elimina el margen para evitar que se desplace */
@@ -304,6 +327,13 @@ section[id] {
     .card-container {
       gap: 8px; /* Reducir el espacio entre las tarjetas */
     }
+    .card-container-grande {
+      gap: 8px; /* Reducir el espacio entre las tarjetas */
+    }
+     /* Ocultar la sección "sobre-nosotros" en pantallas pequeñas */
+      #sobre-nosotros {
+        display: none;
+      }
   }
   
   @media (max-width: 480px) {
@@ -314,6 +344,14 @@ section[id] {
   
     .card-container {
       gap: 8px; /* Reducir el espacio entre las tarjetas */
+    }
+    .card-container-grande {
+      gap: 8px; /* Reducir el espacio entre las tarjetas */
+    }
+
+    /* También ocultar la sección "sobre-nosotros" en pantallas más pequeñas */
+    #sobre-nosotros {
+      display: none;
     }
   }
   

@@ -319,6 +319,9 @@ def simbolo_no_en_diccionario(simbol, diccionarios):
 
 def cargaUt(UT_unidadTrader, elemento7, elemento3):
     try:
+        if elemento7 == -1:
+            elemento7 = 1
+            console.log('elemento7 = 1: Error de precio desde sheet ')
         # Calcular el trader base
         ut_trader = UT_unidadTrader / elemento7
         ut_trader = abs(int(ut_trader))

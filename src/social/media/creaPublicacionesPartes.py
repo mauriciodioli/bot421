@@ -494,7 +494,7 @@ def guardarPublicacion(request, user_id):
         db.session.add(nueva_publicacion)
         db.session.commit()
         #guardar la ubicacion publicacion
-        publicacion_id = publicacionUbicacion(nueva_publicacion.id,user_id)
+        publicacion_id = publicacionUbicacion(nueva_publicacion.id,codigoPostal,user_id)
         
         #guardar 
         return nueva_publicacion.id
@@ -568,7 +568,7 @@ def es_video(file_path):
 
 
 
-def publicacionUbicacion(nueva_publicacion_id,user_id):
+def publicacionUbicacion(nueva_publicacion_id,codigoPostal,user_id):
     try:
         # Buscar si el usuario ya tiene una ubicación guardada
        
@@ -589,7 +589,8 @@ def publicacionUbicacion(nueva_publicacion_id,user_id):
                         user_id = user_id,
                         id_region = usuarioRegion.id,
                         id_publicacion = nueva_publicacion_id,
-                        id_ubicacion = id_ubicaion
+                        id_ubicacion = id_ubicaion,
+                        codigoPostal = codigoPostal,
                     )
             db.session.add(new_publicacion_ubicacion)
 

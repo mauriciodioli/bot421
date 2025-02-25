@@ -106,17 +106,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-    
-    const dropdownMenu = document.querySelector('.dropdown-menu');
+            
+        const dropdownMenu = document.querySelector('.dropdown-menu');
 
         // Función para cargar los ámbitos desde el servidor
-    window.cargarAmbitos = function ()  {
-        fetch('/social-media-publicaciones-obtener-ambitos/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        window.cargarAmbitos = function () {
+            fetch('/social-media-publicaciones-obtener-ambitos/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Error al obtener los ámbitos.');
@@ -124,14 +124,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then(data => {
-                const dropdownMenu = $('.dropdown-menu'); // Usa jQuery para seleccionar el menú
+                const dropdownMenu = $('.dropdown-menu'); // Usar jQuery para seleccionar el menú
+                const cardContainer = $('.card-container'); // Usar jQuery para seleccionar el contenedor de tarjetas
 
                 // Limpiar el menú existente
                 dropdownMenu.empty();
-              
+                // Limpiar el contenedor de tarjetas
+                cardContainer.empty();  // Limpiar antes de agregar las nuevas tarjetas
+
                 // Agregar los ámbitos dinámicamente al menú
-                data.forEach(ambito => {
-                    
+                data.forEach((ambito, index) => {
+                    // Agregar el ámbito al menú desplegable
                     const listItem = `
                         <li>
                             <a href="#" class="dropdown-item" id="${ambito.valor}">
@@ -141,54 +144,98 @@ document.addEventListener("DOMContentLoaded", () => {
                         <li><hr class="dropdown-divider"></li>
                     `;
                     dropdownMenu.append(listItem);
+
+                    // Crear una nueva tarjeta para cada dominio
+                    const domainCard = `
+                        <div class="numRequeris-card${index + 1} card" id="card-${ambito.valor}">
+                            <div class="card-content">                              
+                                <p class="card-number">${ambito.nombre}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    // Insertar la tarjeta en el contenedor
+                    cardContainer.append(domainCard); // Usar jQuery para insertar la tarjeta
                 });
-                
+
                 // Agregar el elemento "Turing test" al final del menú
                 const turingTestItem = `
-                <li class="nav-item content">
-                    <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
-                </li>
-                 <li><hr class="dropdown-divider"></li>
+                    <li class="nav-item content">
+                        <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
                 `;
                 dropdownMenu.append(turingTestItem);
 
-                
                 // Eliminar el último separador
                 dropdownMenu.children('li').last().remove();
             })
             .catch(error => {
                 console.error('Error al cargar los ámbitos:', error);
             });
-    }
-
-    // Delegación de eventos para manejar clics en los ítems
-    $('.dropdown-menu').on('click', '.dropdown-item', function (e) {
-        e.preventDefault(); // Previene el comportamiento predeterminado
-
-        const selectedDomain = this.id; // ID del ítem clickeado
-
-        // Guardar el dominio en localStorage
-        localStorage.setItem('dominio', selectedDomain);
-
-        // Actualizar el input oculto
-        const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
-        if (hiddenInput.length) {
-            hiddenInput.val(selectedDomain);
         }
 
-        // Mostrar en consola
-        console.log('Dominio seleccionado:', selectedDomain);
+        // Delegación de eventos para manejar clics en los ítems del menú desplegable
+        $('.dropdown-menu').on('click', '.dropdown-item', function (e) {
+            e.preventDefault(); // Previene el comportamiento predeterminado
+
+            const selectedDomain = this.id; // ID del ítem clickeado
+
+            // Guardar el dominio en localStorage
+            localStorage.setItem('dominio', selectedDomain);
+
+            // Actualizar el input oculto
+            const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
+            if (hiddenInput.length) {
+                hiddenInput.val(selectedDomain);
+            }
+
+            // Mostrar en consola
+            console.log('Dominio seleccionado:', selectedDomain);
+            
+            // Llamar a la función para manejar el dominio seleccionado
+            enviarDominioAJAX(selectedDomain);
+
+            // Marcar el ítem como activo
+            $('.dropdown-item').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        // Delegación de eventos para manejar clics en las tarjetas
+        $('.card-container').on('click', '.card', function () {
+            //const selectedDomain = $(this).find('.card-number').text(); // Usar el número de la tarjeta como dominio
+            const selectedDomain = $(this).find('.card-number').text().replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
+
+            // Guardar el dominio en localStorage
+            localStorage.setItem('dominio', selectedDomain);
+
+            // Actualizar el input oculto
+            const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
+            if (hiddenInput.length) {
+                hiddenInput.val(selectedDomain);
+            }
+
+            // Mostrar en consola
+            console.log('Dominio seleccionado:', selectedDomain);
+            
+            // Llamar a la función para manejar el dominio seleccionado
+            enviarDominioAJAX(selectedDomain);
+
+            // Marcar la tarjeta como activa
+            $('.card').removeClass('active');
+            $(this).addClass('active');
+
+
+             
+            // Enfocar la sección
+            $('.dpi-muestra-publicaciones-centrales')[0].focus();
+        });
+
+        // Llamar a la función para cargar los ámbitos al cargar la página
+        cargarAmbitos();
+
+
         
-        // Llamar a la función para manejar el dominio seleccionado
-        enviarDominioAJAX(selectedDomain);
-
-        // Cerrar el menú (opcional)
-       // $(this).closest('.dropdown-menu').hide();
-    });
-
-    
-    // Llamar a la función para cargar los ámbitos al cargar la página
-    cargarAmbitos();
 });
 
 
