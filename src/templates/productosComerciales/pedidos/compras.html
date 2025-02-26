@@ -33,9 +33,12 @@
             {% if pedido.estado == "terminado" %}
                 <p class="estado" style="color: black;">Estado: <span style="color: black;">Pendiente de atención o entrega</span></p>
             {% endif %}
-            {% if pedido.estado == "entregado" %}
+            {% if pedido.estado == "entregado" %}               
                 <p class="estado" style="color: black;">Estado: <span style="color: black;">Finalizado</span></p>
             {% endif %}
+            <p class="respuesta" style="font-weight: bold; color: black;">Respuesta: <span style="color: blue;">{{ pedido.respuesta }}</span></p>
+
+            
 
             
 

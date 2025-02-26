@@ -210,7 +210,53 @@ function cancelarPedido(pedidoId) {
 
 
 
-
+// Función para abrir el modal con el id del pedido
+// Función para abrir el modal con el id del pedido
+function comentarDescripcionalCliente(cluster_id) {
+    // Guardar el id del pedido en una variable global
+    window.cluster_id = cluster_id;
+    // Abrir el modal
+    var myModal = new bootstrap.Modal(document.getElementById('modalComentario'));
+    myModal.show();
+  }
+  
+  // Función para enviar el comentario por AJAX
+  function enviarComentario() {
+    // Obtener el texto del comentario
+    var respuesta = document.getElementById('comentarioText').value;  // Cambié 'comentario' por 'respuesta'
+    // Obtener el access_token desde el localStorage
+    var accessToken = localStorage.getItem('access_token');
+    
+    // Verificar que el comentario y el token estén presentes
+    if (!respuesta || !accessToken) {
+      alert('Por favor, ingresa una respuesta y asegúrate de estar autenticado.');
+      return;
+    }
+  
+    // Enviar la solicitud AJAX para modificar la respuesta del pedido
+    $.ajax({
+      url: '/productosComerciales_pedidos_ventasProductosComerciales_actualizarRespuesta_pedido/',  // Reemplaza con la URL correcta
+      type: 'POST',
+      data: {
+        cluster_id: window.cluster_id,
+        respuesta: respuesta,  // Cambié 'comentario' por 'respuesta'
+        access_token_form_Ventas: accessToken  // Asegúrate de que el nombre del campo coincida
+      },
+      success: function(response) {
+        // Aquí puedes manejar la respuesta del servidor
+        alert('Respuesta enviada correctamente');
+        // Cerrar el modal
+        var myModal = bootstrap.Modal.getInstance(document.getElementById('modalComentario'));
+        myModal.hide();
+      },
+      error: function(xhr, status, error) {
+        // Manejar cualquier error de la solicitud
+        alert('Hubo un error al enviar la respuesta');
+      }
+    });
+  }
+  
+  
 
 
 
@@ -283,3 +329,7 @@ function recargarTabla() {
 
 // Recargar la tabla cada 2 minutos (120,000 ms)
 setInterval(recargarTabla, 120000);
+
+
+
+

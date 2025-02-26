@@ -31,6 +31,59 @@ from models.publicaciones.publicaciones import Publicacion
 ventasProductosComerciales = Blueprint('ventasProductosComerciales',__name__)
 
 
+
+@ventasProductosComerciales.route('/productosComerciales_pedidos_ventasProductosComerciales_actualizarRespuesta_pedido/', methods=['POST'])
+def productosComerciales_pedidos_ventasProductosComerciales_actualizarRespuesta_pedido():
+    # Obtener datos del formulario
+    access_token = request.form.get('access_token_form_Ventas')
+    respuesta = request.form.get('respuesta')  # Cambié de 'ambito' a 'respuesta' aquí
+
+    if not access_token:
+        return jsonify({'error': 'Access token no proporcionado.'}), 400
+
+    if Token.validar_expiracion_token(access_token=access_token):
+        app = current_app._get_current_object()
+
+        try:
+            # Decodificar el token para obtener el user_id
+            user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
+
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
+
+            if not user.activo:
+                return jsonify({'message': 'El usuario no está activo.'}), 403
+
+            cluster_id = request.form.get('cluster_id')
+            
+            pedido = db.session.query(Pedido).filter(Pedido.cluster_id == int(cluster_id)).first()
+            if pedido:
+                pedido.respuesta = respuesta  # Actualizo la respuesta del pedido
+                db.session.commit()
+                db.session.close()
+                return jsonify({'message': 'Respuesta actualizada correctamente.'}), 200
+            else:
+                return jsonify({'error': 'Pedido no encontrado.'}), 404
+        except jwt.ExpiredSignatureError:
+            return jsonify({'error': 'Token expirado.'}), 401
+        except jwt.InvalidTokenError:
+            return jsonify({'error': 'Token inválido.'}), 401
+        except Exception as e:
+            print("Error:", e)
+            db.session.rollback()
+            db.session.close()
+            return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
+    else:
+        return jsonify({'error': 'Token inválido o expirado.'}), 401
+
+
+
+
+
+
+
+
 @ventasProductosComerciales.route('/productosComerciales_pedidos_ventasProductosComerciales_muestra/', methods=['POST'])
 def productosComerciales_pedidos_ventasProductosComerciales_muestra():
     # Obtener datos del formulario
@@ -92,6 +145,7 @@ def productosComerciales_pedidos_ventasProductosComerciales_muestra():
                     "ambito": entrega.ambito,
                     "estado": entrega.estado,
                     "precio_venta": precio_venta,
+                    "cluster_id": entrega.cluster_id,
                     "pedido_data_json": entrega.pedido_data_json,
                 })
 
