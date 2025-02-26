@@ -233,6 +233,7 @@ def productosComerciales_pedidos_compras():
                 'nombre_producto': pedido.nombre_producto,
                 'fecha_pedido': pedido.fecha_pedido,
                 'precio_venta': pedido.precio_venta,
+                'respuesta': pedido.respuesta,
                 'estado': pedido.estado,
                 'imagen_url': pedido.imagen  # Incluir la URL de la imagen                
             }

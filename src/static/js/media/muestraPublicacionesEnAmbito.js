@@ -156,7 +156,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
                                         <button id="btn-comprar-${post.publicacion_id}" style="background-color: #28a745; color: white; font-size: 12px; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;"
                                         onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'"
                                         onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
-                                            Comprar
+                                            Agregar
                                         </button>` : ''
                                     }
                                 </div>

@@ -187,51 +187,42 @@ def home():
 
 @autenticacion.route("/loginIndex", methods=['POST'])
 def loginIndex():
-    if request.method == 'POST':
-       
-        
+    if request.method == 'POST':      
         access_token = request.json.get('token')
         refresh_token  = request.json.get('refresh_token')
         selector = request.json.get('selectorEnvironment')
         account = request.json.get('account')
-        #print("___________________token   ", access_token)
-        
         
         if access_token:
             app = current_app._get_current_object()             
-########################## logica para entrar de nuevo sin tener que logear nuevamente #################################3333             
-             #return procesar_login(access_token, refresh_token, selector, account)
             try:
                 # Decodificar el token y obtener el id del usuario
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                user = Usuario.query.get(user_id)
+                user = db.session.query(Usuario).filter_by(id=user_id).first()
+                
                 if len(user.cuentas) > 0:
                     user_cuenta = user.cuentas[0].userCuenta
-                    # do something with user_cuenta
                 else:
-                    user_cuenta ='null'
+                    user_cuenta = 'null'
               
-                
                 # Si el usuario existe, redirigirlo a la página de inicio
                 if user:
-                    # return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
                     resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': user_cuenta, 'selector': selector}))
                     resp.headers['Content-Type'] = 'application/json'
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
                     return resp
-                    #return render_template('cuentas/panelDeControlBroker.html', cuenta=[account,user,selector])
                     
             except jwt.ExpiredSignatureError:
-                # Si el token ha expirado, redirigirlo a la página de inicio de sesión
                 print("El token ha expirado")
                 return redirect(url_for('autenticacion.index'))
             except jwt.InvalidTokenError:
-                # Si hay un error decodificando el token, redirigirlo a la página de inicio de sesión
                 print("El token es inválido")
-        
-        # Si no hay token válido o el usuario no existe, mostrar un mensaje de error o redirigir a otra página
+            finally:
+                db.session.close()  # Se asegura de cerrar la sesión de la base de datos
+
         return render_template('error.html', error_message="Error de autenticación")
+
 
 
 ##################################################################################################
