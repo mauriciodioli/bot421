@@ -51,6 +51,7 @@ window.cargarAmbitosCarrusel = function () {
              
               // Modificar el localStorage con el nuevo valor seleccionado
               localStorage.setItem('dominio', valor);
+              
               // Llamar a cargarPublicaciones si está definida
                 if (typeof cargarPublicaciones === 'function') {
                     cargarPublicaciones(valor, 'layout');
