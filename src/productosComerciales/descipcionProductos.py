@@ -45,6 +45,8 @@ def detalle_producto(producto,OrigenLayout):
         return render_template('productosComerciales/detalle_fintech.html',layout = OrigenLayout)
     elif producto == "index-monedas-virtuales":
         return render_template('productosComerciales/detalle_monedas_virtuales.html',layout = OrigenLayout)
+    elif producto == "index-dominios":
+        return render_template('productosComerciales/detalle_dominios.html',layout = OrigenLayout)
     elif producto == "sobreNosotros":
         return render_template('estaticas/sobreNosotros.html',layout = OrigenLayout)
     elif producto == "cuenta-demo":
