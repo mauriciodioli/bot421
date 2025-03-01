@@ -127,6 +127,13 @@ def productosComerciales_pedidos_mostrar_carrito():
        
         pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado='pendiente').all()
         
+        if not pedidos:
+            return render_template(
+                'productosComerciales/pedidos/carritoCompras.html',
+                data='',
+                layout='layout'
+            )
+        
         # Consultar publicaciones y pedidos
         publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
         if publicaciones:
@@ -140,6 +147,10 @@ def productosComerciales_pedidos_mostrar_carrito():
                     data='',
                     layout='layout'
                 )
+                
+        
+   
+
          # Procesar datos de los pedidos
         pedidos_data = [
             {
@@ -149,12 +160,14 @@ def productosComerciales_pedidos_mostrar_carrito():
                 'fecha_pedido': pedido.fecha_pedido,
                 'precio_venta': pedido.precio_venta,
                 'estado': pedido.estado,
+                'ambito': quitar_acentos(pedido.ambito),  # Se llama directamente la función aquí
                 'cantidad': pedido.cantidad,
                 'imagen_url': pedido.imagen,  # Incluir la URL de la imagen   
                 'pagoOnline': pedido.pagoOnline       
             }
             for pedido in pedidos
         ]
+
         db.session.close()
         # Renderizar la plantilla
         return render_template(
@@ -797,3 +810,9 @@ def obtenerPrecio(data):
         # Si no se encuentra el precio, retornar 0 y el resto del texto (acortado)
         resto_corto = ' '.join(data.split()[:7]) + " ..."
         return 0, resto_corto
+
+
+
+def quitar_acentos(texto):
+    acentos = str.maketrans("áéíóúüÁÉÍÓÚÜ", "aeiouuAEIOUU")
+    return texto.translate(acentos).lower()

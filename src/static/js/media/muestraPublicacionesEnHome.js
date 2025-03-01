@@ -242,6 +242,7 @@ function toggleTexto(postId) {
 
 
 function abrirPublicacionHome(publicacionId, layout) {
+   
     // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');
     

@@ -48,7 +48,13 @@ function formatDate(dateString) {
 
 
 function cargarDatosPublicacion() {
+    
+    // Mostrar el splash de espera
+    var splash = document.querySelector('.splashCarga');
 
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
+    }
     // Redirigir a la URL construida con los parámetros
     window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}`;
 }
@@ -212,6 +218,13 @@ function abrirPublicacionHome(publicacionId, layout) {
     if (!accessToken) {
         alert("Para adquirir este contenido, debe iniciar sesión. Si no es usuario, regístrese.");
         return;
+    }
+    
+    // Mostrar el splash de espera
+    var splash = document.querySelector('.splashCarga');
+    
+    if (splash) {
+        splash.style.display = 'block'; // Mostrar el splash
     }
     window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
 }

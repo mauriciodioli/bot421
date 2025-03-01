@@ -639,7 +639,7 @@ def delete_cuenta_usuario_broker():
             
             return render_template("notificaciones/logeeNuevamente.html",layout =  'layout') 
          
-@cuenta.route("/logOutAccount", methods=['POST'])   
+@cuenta.route("/logOutAccount/", methods=['POST'])   
 def logOutAccount():
     if request.method == 'POST':
         try:

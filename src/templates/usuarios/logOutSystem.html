@@ -12,8 +12,16 @@
 <script>
   
     let dominio = localStorage.getItem('dominio');
+    let codigoPostal = localStorage.getItem('codigoPostal');
+    let language = localStorage.getItem('language');
+    let latitude = localStorage.getItem('latitude');
+    let longitude = localStorage.getItem('longitude');
     localStorage.clear();
     localStorage.setItem('dominio', dominio);
+    localStorage.setItem('codigoPostal', codigoPostal);
+    localStorage.setItem('language', language);
+    localStorage.setItem('latitude', latitude);
+    localStorage.setItem('longitude', longitude);
    
 </script>
 {% endblock%}
