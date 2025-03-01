@@ -31,9 +31,14 @@ $(document).ready(function() {
         var correo_electronico = localStorage.getItem('correo_electronico');
         var cuenta = localStorage.getItem("cuenta");
         var usuario = localStorage.getItem("usuario");
+        var usuario_id = localStorage.getItem("usuario_id");
         var simuladoOproduccion = localStorage.getItem("selector");
         var dominio = localStorage.getItem('dominio');
-        var pagina = localStorage.getItem('pagina');
+        var codigoPostal = localStorage.getItem('codigoPostal');  // Obtener el código postal de localStorage
+        var latitude = localStorage.getItem('latitude');
+        var longitude = localStorage.getItem('longitude');
+        var language = localStorage.getItem('language');
+        var pagina = 'app'
         rutaDeLogeo = dominio;
         $.ajax({
             url: '/send_local_storage',
@@ -46,6 +51,13 @@ $(document).ready(function() {
                 'cuenta': cuenta,
                 'usuario': usuario,
                 'access_token':access_token,
+                'usuario_id':usuario_id,
+                'dominio': dominio,
+                'pagina': pagina,
+                'codigoPostal': codigoPostal,
+                'latitude' : latitude,
+                'longitude' :longitude,
+                'language': language,
                 'simuladoOproduccion': simuladoOproduccion
             }),
             success: function(data) {
