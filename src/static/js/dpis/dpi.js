@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Función para cargar los ámbitos desde el servidor
         window.cargarAmbitos = function () {
+           
             fetch('/social-media-publicaciones-obtener-ambitos/', {
                 method: 'GET',
                 headers: {
@@ -791,8 +792,18 @@ function toggleTexto(postId) {
 
 
 function abrirPublicacionHome(publicacionId) {
-  // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
-  window.location.href = `/media-muestraPublicacionesEnDpi-mostrar/${publicacionId}`;
+    // Mostrar el splash de carga
+    const splash = document.querySelector('.splashCarga');
+    const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
+
+    if (!splash || !targetSection) {
+        console.error("No se encontró el elemento 'splashCarga' o la sección 'dpi'.");
+        return;
+    }
+
+    toggleSplash(targetSection, splash);
+   // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
+    window.location.href = `/media-muestraPublicacionesEnDpi-mostrar/${publicacionId}`;
 }
 
 

@@ -60,7 +60,7 @@ login_manager.init_app(autenticacion)
 
     
 #sale del sistema completo
-@autenticacion.route("/logOutSystem", methods=['POST'])   
+@autenticacion.route("/logOutSystem/", methods=['POST'])   
 def logOutSystem():   
    if request.method == 'POST':
         try:
