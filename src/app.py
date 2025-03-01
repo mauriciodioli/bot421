@@ -4,12 +4,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from config import DATABASE_CONNECTION_URI
 from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import SQLAlchemyError
+
 # Importar create_engine y NullPool
 import logging
+import datetime
 import os
+import jwt
 from datetime import timedelta
 from log.logRegister import generate_logs
-
+from models.logs import Logs
 from sqlalchemy import create_engine, event
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import QueuePool
@@ -564,6 +568,51 @@ def logs():
 
 
 
+
+
+def registrar_acceso(request, usuario, exito, motivo_fallo=None):
+    """Registra los intentos de acceso en la base de datos."""
+    ip = request.get('client_ip')  # Ahora obtenemos la IP desde `data['client_ip']`
+    codigoPostal = request.get('codigoPostal')
+    latitude = request.get('latitude')
+    longitude = request.get('longitude')
+    language = request.get('language')
+    fecha = datetime.datetime.now()
+  
+
+    try:
+        # Crear una instancia de la clase Logs
+        log = Logs(
+            user_id=usuario.id,  # ID del usuario (lo que llega como parámetro)
+            userCuenta=usuario.correo_electronico,  # Se asume que `correo_electronico` está en el modelo `Usuario`
+            accountCuenta=usuario.correo_electronico,  # Se asume que `cuenta` está en el modelo `Usuario`
+            fecha_log=fecha,  # Fecha y hora actuales
+            ip=ip,  # Dirección IP del usuario
+            funcion='login',  # Función o acción que se está registrando
+            archivo='app.py',  # Nombre del archivo donde ocurrió el evento (ajústalo según sea necesario)
+            linea=608,  # Línea del código donde ocurrió el evento (ajústalo según sea necesario)
+            error='No hubo error' if exito else motivo_fallo,  # Mensaje de error, si hubo un fallo
+            codigoPostal=codigoPostal,
+            latitude= latitude,
+            longitude=longitude,
+            language=language
+        )
+
+        # Agregar la instancia a la sesión de SQLAlchemy
+        db.session.add(log)
+
+        # Confirmar (guardar) los cambios en la base de datos
+        db.session.commit()
+        db.session.close()
+
+    except SQLAlchemyError as e:
+        # Si hay un error, realizar un rollback
+        db.session.rollback()
+        app.logger.error(f"Error registrando acceso: {e}")
+
+
+
+
 @app.route("/send_local_storage", methods=["POST"])
 def send_local_storage():
     data = request.json
@@ -573,15 +622,21 @@ def send_local_storage():
         access_token = data.get('access_token')
         correo_electronico = data.get('correo_electronico')
         cuenta = data.get('cuenta')
-        usuario = data.get('usuario')
+        user_id = data.get('usuario_id')        
         simuladoOproduccion = data.get('simuladoOproduccion')
         client_ip = request.remote_addr  # Obtiene la IP del cliente
         data['client_ip'] = client_ip
+        # Elimina los logs antiguos cada 5 días
+        Logs.eliminar_logs_antiguos(5)
         if access_token:
             if Token.validar_expiracion_token(access_token=access_token):                     
+                usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
+                registrar_acceso(data,usuario_obj, True)  # Acceso exitoso
+           
                 if correo_electronico:
                 #  app.logger.info(client_ip)
                     app.logger.info(correo_electronico)  
+                    
                     redirect_route = 'home'
                     return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
                 else:
@@ -599,6 +654,10 @@ def send_local_storage():
                     user_id = decoded_token.get("sub")  # "sub" contiene la identidad del usuario en JWT
 
                     nuevo_access_token = generar_nuevo_token_acceso_vencido(user_id)
+                    usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
+                    registrar_acceso(data,usuario_obj, True)  # Acceso exitoso
+           
+           
                     app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
                     return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
                 else:
