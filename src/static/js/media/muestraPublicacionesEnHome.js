@@ -186,7 +186,17 @@ function cargarPublicaciones(ambitoParam, layout) {
     });
 }
 
+// Asegurar que el splash desaparezca al volver atrás
+window.addEventListener("pageshow", function(event) {
+    var splash = document.querySelector('.splashCarga');
 
+    if (splash) {
+        // Si la página se cargó desde la caché del navegador (back-forward cache)
+        if (event.persisted) {
+            splash.style.display = 'none';
+        }
+    }
+});
 
 
 function cerrarPublicacion(publicacionId) {

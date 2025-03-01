@@ -46,18 +46,31 @@ function formatDate(dateString) {
     return date.toLocaleDateString(undefined, options);
 }
 
-
 function cargarDatosPublicacion() {
-    
     // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');
 
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
+
     // Redirigir a la URL construida con los parámetros
     window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}`;
 }
+
+// Asegurar que el splash desaparezca al volver atrás
+window.addEventListener("pageshow", function(event) {
+    var splash = document.querySelector('.splashCarga');
+
+    if (splash) {
+        // Si la página se cargó desde la caché del navegador (back-forward cache)
+        if (event.persisted) {
+            splash.style.display = 'none';
+        }
+    }
+});
+
+
 
 function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
      // Mostrar el splash de espera
@@ -226,6 +239,7 @@ function abrirPublicacionHome(publicacionId, layout) {
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
+   
     window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
 }
 

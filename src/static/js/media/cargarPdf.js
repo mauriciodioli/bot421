@@ -75,18 +75,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
 document.addEventListener("DOMContentLoaded", function() {
     const openModalBtns = document.querySelectorAll(".open-pdf-modal");
     const modal = document.getElementById("pdfModal");
     const pdfViewer = document.getElementById("pdfViewer");
 
+    // Función para detectar si el usuario está en un móvil
+    function isMobile() {
+        return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+    }
+
     openModalBtns.forEach(btn => {
         btn.addEventListener("click", function(event) {
             event.preventDefault();
             const pdfUrl = btn.getAttribute("data-pdf-url");
-            pdfViewer.src = pdfUrl;
-            modal.style.display = "flex";  // Usamos flex para centrar el modal
+
+            if (isMobile()) {
+                // Si es un dispositivo móvil, descargar el archivo
+                const link = document.createElement("a");
+                link.href = pdfUrl;
+                link.download = pdfUrl.split("/").pop(); // Intenta sugerir un nombre de archivo
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                // Si es una PC, mostrar en el modal
+                pdfViewer.src = pdfUrl;
+                modal.style.display = "flex";
+            }
         });
     });
 
@@ -97,11 +113,11 @@ document.addEventListener("DOMContentLoaded", function() {
         pdfViewer.src = "";  // Limpiar la vista previa cuando se cierre
     });
 
-    // Cerrar el modal si el usuario hace clic fuera del modal (opcional)
+    // Cerrar el modal si el usuario hace clic fuera del modal
     window.addEventListener("click", function(event) {
         if (event.target === modal) {
             modal.style.display = "none";
-            pdfViewer.src = "";  // Limpiar la vista previa cuando se cierre
+            pdfViewer.src = "";  
         }
     });
 });
