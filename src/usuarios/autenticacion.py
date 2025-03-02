@@ -318,7 +318,7 @@ def loginUsuario():
             usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=usuario.id).first()
             usuarioUbicacion = session.query(UsuarioUbicacion).filter_by(user_id=usuario.id).first()
             
-            if latitud != '' and longitud != '':
+            if latitud not in [None, '', 'null'] and longitud not in [None, '', 'null']:             
                 if usuarioUbicacion:
                         # Si existe, actualizar latitud y longitud
                         usuarioUbicacion.latitud = float(latitud)
@@ -348,8 +348,12 @@ def loginUsuario():
                     cuenta = ''
                     selector = 'vacio'
                     user = ''
-                    
-                    resp = make_response(render_template('home.html', tokens=[access_token, refresh_token, usuario.correo_electronico, expiry_timestamp, usuario.roll, cuenta, selector, user, usuario.id]))
+                    codigoPostal = usuarioUbicacion.codigoPostal if usuarioUbicacion and usuarioUbicacion.codigoPostal else 'N/A'
+
+                    resp = make_response(render_template('home.html', tokens=[
+                        access_token, refresh_token, usuario.correo_electronico, expiry_timestamp, 
+                        usuario.roll, cuenta, selector, user, usuario.id, codigoPostal
+                    ]))
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
                     return resp

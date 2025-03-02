@@ -24,7 +24,7 @@ function successCallback(position) {
     localStorage.setItem("latitude", latitude);
     localStorage.setItem("longitude", longitude);
     document.getElementById("status").innerText = `Ubicación actual: Lat ${latitude}, Lng ${longitude}`;
-
+    
     // Si la ubicación ha cambiado, obtener el idioma y enviarlo al servidor
     if (lastLatitude !== latitude || lastLongitude !== longitude) {
         lastLatitude = latitude;
@@ -69,6 +69,7 @@ function getLanguageFromLocation(latitude, longitude) {
                 if (lastLanguage !== language) {
                     lastLanguage = language;
                     sendLocationToServer(latitude, longitude, language);
+
                 }
             }
         })
@@ -158,7 +159,9 @@ function sendLocationToServer(latitude, longitude, language) {
             // Guardar en cookies por 30 días
             setCookie("language", language, 30);
             console.log("Idioma guardado en cookies:", language);
-            
+            document.getElementById("languageLink").innerText = language.toUpperCase();
+            cargarAmbitos(); // Llamar a las funciones necesarias
+            cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
         } catch (error) {
             console.error("Error guardando en localStorage o cookies:", error);
         }
