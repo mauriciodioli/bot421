@@ -20,7 +20,7 @@ mostrarGaleria = Blueprint('mostrarGaleria',__name__)
 
 
 
-@mostrarGaleria.route('/media_mostrargaleria_guardar_publicacon', methods=['POST'])
+@mostrarGaleria.route('/media_mostrargaleria_guardar_publicacon/', methods=['POST'])
 def media_mostrargaleria_guardar_publicacon():
     try:
         if request.method == 'POST':

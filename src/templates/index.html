@@ -117,13 +117,16 @@
                   <section class="domains-publicaciones" id="domains-publicaciones">
                       <div class="jumbotron">
                         
-                        <div class="splashCarga" id="splashNotificaciones" style="display: none;">
-                          <div class="splash-contenido">
-                              <div class="spinner"></div>
-                            </div>
-                        </div>
-
+                      
+                     
                           <h1 name="ambitoActual" id="ambitoActual" style="color: gold;"></h1>
+                          {% include 'ambitos/navBarCaracteristicas.html' %}  <!-- Aquí se incluye la barra de navegación -->
+                          <div class="splashCarga" id="splashNotificaciones" style="display: none;">
+                            <div class="splash-contenido">
+                                <div class="spinner"></div>
+                              </div>
+                          </div>
+  
                           <div class="dpi-muestra-publicaciones-centrales" tabindex="0">
                         
                           <!-- Aquí se insertará la galería -->

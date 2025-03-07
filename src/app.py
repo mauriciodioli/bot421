@@ -106,6 +106,7 @@ from social.media.cargarPdf import cargarPdf
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
 from social.media.ambitos.ambito import ambito
+from social.media.ambitos.ambitosCategorias import ambitosCategorias
 from social.media.consultaPublicaciones import consultaPublicaciones
 from social.media.creaPublicacionesPartes import creaPublicacionesPartes
 from turing.testTuring import testTuring
@@ -145,6 +146,10 @@ from models.operacionEstrategia import operacionEstrategia
 from models.servidores.servidorAws import servidorAws
 from models.publicaciones.ambitos import ambitos
 from models.publicaciones.ambito_usuario import ambito_usuario
+from models.publicaciones.ambitoCategoria import ambitoCategoria
+from models.publicaciones.ambitoCategoriaRelation import ambitoCategoriaRelation
+from models.publicaciones.categoriaPublicacion import categoriaPublicacion
+from models.publicaciones.publicacionCodigoPostal import publicacionCodigoPostal
 from models.turing.preguntaUsuario import preguntaUsuario
 from models.turing.preguntas import preguntas
 from models.turing.respuesta import respuesta
@@ -316,6 +321,11 @@ app.register_blueprint(cargarPdf)
 app.register_blueprint(ambitos)
 app.register_blueprint(ambito)
 app.register_blueprint(ambito_usuario)
+app.register_blueprint(ambitoCategoria)
+app.register_blueprint(ambitoCategoriaRelation)
+app.register_blueprint(categoriaPublicacion)
+app.register_blueprint(ambitosCategorias)
+app.register_blueprint(publicacionCodigoPostal)
 app.register_blueprint(muestraPublicacionesEnHome)
 app.register_blueprint(muestraPublicacionesEnAmbitos)
 app.register_blueprint(consultaPublicaciones)

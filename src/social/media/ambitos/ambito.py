@@ -15,6 +15,8 @@ from models.publicaciones.ambito_usuario import Ambito_usuario
 
 ambito = Blueprint('ambito', __name__)
 
+
+
 @ambito.route('/social-media-ambitos-ambitos')
 def social_media_ambitos_ambitos():
     try:      
@@ -24,7 +26,7 @@ def social_media_ambitos_ambitos():
        
         accion = 'crear'
         
-        return render_template('media/publicaciones/ambitos.html', 
+        return render_template('media/publicaciones/ambitos/ambitos.html', 
                                datos=datos, 
                                layout='layout_administracion', 
                                accion=accion)

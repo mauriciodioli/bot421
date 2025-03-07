@@ -697,16 +697,17 @@ function eliminarPublicacion(id) {
         },
         success: function(response) {
             if (response.success) {
-              
+              debugger;
                 splash.style.display = 'none'; // Ocultar el splash al terminar
                 alert('Publicación eliminada exitosamente.');
                 $('#card-' + id).remove(); // Eliminar la tarjeta de la interfaz
 
                 debugger;
                  // Verificar si hay más tarjetas dentro del acordeón
-                var remainingCards = $('#postAccordion .accordion-item .card-grid-publicaciones .card').length;
-                console.log("Tarjetas restantes en el acordeón:", remainingCards);
-
+                 var remainingCards = $('#postAccordion .accordion-item .card-grid-publicaciones .card-publicacion-admin').length;
+                 console.log("Elementos encontrados:", $('#postAccordion .accordion-item .card-grid-publicaciones').length);
+                 console.log("Tarjetas restantes en el acordeón:", remainingCards);
+                 
                 // Si no hay más tarjetas, eliminar el acordeón
                 if (remainingCards === 0) {
                     console.log("No quedan tarjetas, eliminando el acordeón.");

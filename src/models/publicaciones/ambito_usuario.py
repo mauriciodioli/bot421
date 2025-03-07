@@ -22,7 +22,7 @@ class Ambito_usuario(db.Model):
     
     
     # Constructor
-    def __init__(self, ambito_id, user_id=None,publicacion_id=None,estado=None,):      
+    def __init__(self, ambito_id, user_id=None,publicacion_id=None,estado=None):      
         self.ambito_id = ambito_id        
         self.user_id = user_id
         self.publicacion_id = publicacion_id

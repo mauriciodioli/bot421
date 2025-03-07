@@ -1,70 +1,73 @@
 <!-- Pie de página -->
 <footer class="footer footer-distributed">
-  <div class="footer-left">
-      <table>
-          <tr>
-              <td><img src="/static/img/leon_transp.png" alt="logo" style="margin: 0 auto; display:block; width:50px;height:50px"/></td> 
-              <td><h3>Somos <span>DPI Investments</span></h3></td>
-          </tr>
-      </table>
-      <p class="footer-links">
-          <a href="/">Inicio</a>
-          ·
-          <a href="#planes">Planes</a>
-          ·
-          <a href="#sobre-nosotros">Sobre nosotros</a>
-          ·
-          <a href="/media_visualizarPdf/">Documentos</a> 
-          .         
-          <a class="nav-link active" href="/dpi-in">Content</a>
-          .
-          <a href="#faq">FAQ</a>
-          ·
-          <a href="#contacto">Contactos</a>
-          ·
-          <a href="#">Lenguaje</a>
-          ·
-          <a href="#ingreso">Login</a>
-          ·
-          <a href="/registrar_usuario">Registrarse</a>
-          
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <!-- Espacios en blanco -->
-          <a href="/run-script"><span style="color: black;">.</span></a>
-
-         
-      </p>
-      <p class="footer-company-name">DPI Inversiones © <span id="year"><script>document.getElementById('year').appendChild(document.createTextNode(new Date().getFullYear()))</script></span> - Todos los derechos reservados</p>
-      <div class="footer-icons">
-          <a href="#"><i class="fa fa-facebook"></i></a>
-          <a href="#"><i class="fa fa-instagram"></i></a>
-          <a href="#"><i class="fa fa-linkedin"></i></a>
-      </div>
-  </div>
-  <div class="footer-right">     
-      <form id="newsletter-form">
-          <p>Suscribite a nuestro <span>newsletter</span></p>
-          <input type="text" name="email" placeholder="Email" autocomplete="email">
-          <button type="button" id="submit-newsletter">Enviar</button>
-      </form>
-  </div>
-</footer>
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script>
-  $(document).ready(function() {
-      $('#submit-newsletter').on('click', function() {
-          var email = $('input[name="email"]').val();
-          $.ajax({
-              url: '/comunicacion_newsLetter_add/',
-              type: 'POST',
-              data: { email: email },
-              success: function(response) {
-                  alert('Suscripción exitosa');
-              },
-              error: function(error) {
-                  alert('Ocurrió un error. Inténtalo de nuevo.');
-              }
-          });
-      });
-  });
-</script>
+    <div class="footer-left">
+        <table>
+            <tr>
+                <td><img src="/static/img/leon_transp.png" alt="logo" style="margin: 0 auto; display:block; width:50px;height:50px"/></td> 
+                <td><h3>Somos <span>DPI Investments</span></h3></td>
+            </tr>
+        </table>
+        <p class="footer-links">
+            <a href="/">Inicio</a>
+            ·
+            <a href="#planes">Planes</a>
+            ·
+            <a href="#sobre-nosotros">Sobre nosotros</a>
+            ·
+            <a href="/media_visualizarPdf/">Documentos</a> 
+            .         
+            <a class="nav-link active" href="/dpi-in">Content</a>
+            .
+            <a href="#faq">FAQ</a>
+            ·
+            <a href="#contacto">Contactos</a>
+            ·
+            <a href="#">Lenguaje</a>
+            ·
+            <a href="#ingreso">Login</a>
+            ·
+            <a href="/registrar_usuario">Registrarse</a>
+        </p>
+        <p class="footer-company-name">DPI Inversiones © <span id="year"><script>document.getElementById('year').appendChild(document.createTextNode(new Date().getFullYear()))</script></span> - Todos los derechos reservados</p>
+        <div class="footer-icons">
+            <a href="#"><i class="fa fa-facebook"></i></a>
+            <a href="#"><i class="fa fa-instagram"></i></a>
+            <a href="#"><i class="fa fa-linkedin"></i></a>
+        </div>
+    </div>
+  
+    <!-- Sección central con el QR -->
+    <div class="footer-center">
+        <img src="/static/img/codigo_qr.png" alt="QR Code" style="display:block; margin: 0 auto; width:100px; height:100px;">
+    
+    </div>
+  
+    <div class="footer-right">     
+        <form id="newsletter-form">
+            <p>Suscribite a nuestro <span>newsletter</span></p>
+            <input type="text" name="email" placeholder="Email" autocomplete="email">
+            <button type="button" id="submit-newsletter">Enviar</button>
+        </form>
+    </div>
+  </footer>
+  
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    $(document).ready(function() {
+        $('#submit-newsletter').on('click', function() {
+            var email = $('input[name="email"]').val();
+            $.ajax({
+                url: '/comunicacion_newsLetter_add/',
+                type: 'POST',
+                data: { email: email },
+                success: function(response) {
+                    alert('Suscripción exitosa');
+                },
+                error: function(error) {
+                    alert('Ocurrió un error. Inténtalo de nuevo.');
+                }
+            });
+        });
+    });
+  </script>
+  

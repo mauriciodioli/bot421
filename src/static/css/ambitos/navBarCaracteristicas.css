@@ -1,0 +1,57 @@
+/* Personalización solo para el nuevo dropdown */
+.categoria-dropdown-menu {
+  background-color: #f8f9fa; /* Color de fondo personalizado */
+  border-radius: 0.375rem; /* Si quieres darle un borde redondeado */
+}
+
+/* Personaliza los items si es necesario */
+.categoria-dropdown-menu .dropdown-item {
+  color: #495057;
+  background-color: transparent;
+}
+
+/* Puedes agregar más personalización si lo necesitas */
+.categoria-dropdown-menu .dropdown-item:hover {
+  background-color: #e9ecef;
+}
+
+
+  
+  /* Estilo base de las pestañas */
+  .nav-tabs {
+    border-bottom: 1px solid #007bff; /* Color por defecto */
+    transition: border-color 0.3s ease-in-out;
+  }
+  
+  /* Diferentes colores para las categorías (también en el borde) */
+  .nav-tabs.border-red, .nav-link.border-red {
+    border-bottom: 1px solid red !important;
+  }
+  
+  .nav-tabs.border-green, .nav-link.border-green {
+    border-bottom: 1px solid green !important;
+  }
+  
+  .nav-tabs.border-orange, .nav-link.border-orange {
+    border-bottom: 1px solid orange !important;
+  }
+  
+  /* Cambia el fondo, texto y borde del botón "Home" */
+  .nav-link.border-red {
+    background-color: red !important;
+    color: white !important;
+    border-color: red !important; /* Cambia el borde */
+  }
+  
+  .nav-link.border-green {
+    background-color: green !important;
+    color: white !important;
+    border-color: green !important; /* Cambia el borde */
+  }
+  
+  .nav-link.border-orange {
+    background-color: orange !important;
+    color: white !important;
+    border-color: orange !important; /* Cambia el borde */
+  }
+  

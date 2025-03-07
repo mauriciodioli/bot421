@@ -37,7 +37,7 @@ def obtener_pais():
     return f'El país de la conexión es: {pais}'
 
 
-@panelControl.route('/panel_control_sin_cuenta')
+@panelControl.route('/panel_control_sin_cuenta/')
 def panel_control_sin_cuenta():
         
     pais = request.args.get('country')
@@ -331,7 +331,8 @@ def determinar_pais(pais):
 def procesar_datos(app,pais, accountCuenta,user_id,selector):
     if determinar_pais(pais) is not None:
         if pais not in get.diccionario_global_sheet_intercambio:
-            datos_desempaquetados,unidadTrader = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], user_id)
+            if len(get.diccionario_global_sheet[pais])>0:
+                datos_desempaquetados,unidadTrader = forma_datos_para_envio_paneles(app,get.diccionario_global_sheet[pais], user_id)
             if len(datos_desempaquetados) != 0:
                 get.diccionario_global_sheet_intercambio[pais] = datos_desempaquetados
         else:

@@ -234,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Llamar a la función para cargar los ámbitos al cargar la página
         cargarAmbitos();
-
+        localStorage.setItem('banderaCategorias', 'True');
 
         
 });
@@ -329,7 +329,7 @@ document.getElementById('openModalSignals').addEventListener('click', function (
 document.getElementById('openModalCP').addEventListener('click', function (e) {
     // Prevenir el comportamiento por defecto (enlace)
     e.preventDefault();
-
+    
     // Cargar el código postal desde el localStorage si existe
     const codigoPostalGuardado = localStorage.getItem('codigoPostal');
     if (codigoPostalGuardado) {
@@ -362,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Función para guardar el código postal en el localStorage y las cookies
 function guardarCodigoPostal() {
     const codigoPostal = document.getElementById('codigoPostalModal').value;
-
+   
     // Validar si el campo no está vacío y contiene solo números
     if (codigoPostal && !isNaN(codigoPostal)) {
         // Guardar el código postal en el localStorage
@@ -397,7 +397,7 @@ function mostrarSplash() {
   }
 
   document.getElementById('guardarPais').addEventListener('click', function() {
-    debugger;
+    
     document.getElementById('splash').style.display = 'block';
    
     var selectedCountry = document.getElementById('seleccionarPais').value;
@@ -410,7 +410,7 @@ function mostrarSplash() {
     $('#modalSeleccionPais').modal('hide'); // Esta línea cierra el modal
      // Redirigir a la ruta /panel_control_sin_cuenta
     layoutOrigen = 'layout_dpi'; // Cambia 'nombre_del_layout' por el valor deseado
-    var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token+'&selector='+selector;
+    var url = '/panel_control_sin_cuenta/?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token+'&selector='+selector;
     window.location.href = url;
   });   
 // en este script cargo el correo electrónico almacenado en el localStorage
@@ -895,7 +895,7 @@ function cambiarIdioma() {
             // Si no hay un idioma configurado, asignar "in" como valor inicial
             if (!currentLanguage) {
                 currentLanguage = "in"; 
-                debugger;
+                
                 localStorage.setItem("language", currentLanguage);
                 document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
 
@@ -949,7 +949,7 @@ function cambiarIdioma() {
         languageLink.addEventListener("click", function (event) {
             event.preventDefault(); // Evitar la recarga de la página            
             updateLanguage();
-            cargarAmbitos(); // Llamar a las funciones necesarias
+            cargarAmbitos(); // Llamar a las funciones necesarias         
             cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
         });
     });

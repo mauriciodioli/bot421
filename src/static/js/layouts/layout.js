@@ -224,7 +224,7 @@ function cambiarIdioma() {
                 let currentIndex = availableLanguages.indexOf(currentLanguage);
                 let nextIndex = (currentIndex + 1) % availableLanguages.length; // Ciclo a través de los idiomas
                 currentLanguage = availableLanguages[nextIndex];
-                debugger;
+                
                 localStorage.setItem("language", currentLanguage);
                 document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
 
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializamos el modal fuera del listener
     const modalElement = document.getElementById('modalSeleccionCodigoPostal');
     const myModal = new bootstrap.Modal(modalElement);
-
+    
     // Obtener el enlace "Signals"
     document.getElementById('openModalCP').addEventListener('click', function (e) {
         // Prevenir el comportamiento por defecto (enlace)
@@ -324,11 +324,9 @@ function guardarCodigoPostal() {
     if (codigoPostal && !isNaN(codigoPostal)) {
         // Guardar el código postal en el localStorage
         localStorage.setItem('codigoPostal', codigoPostal);
-        console.log('Código Postal guardado en localStorage:', codigoPostal);
-
-        // Guardar el código postal en las cookies (con una duración de 1 hora)
-        document.cookie = `codigoPostal=${codigoPostal};max-age=3600;path=/`;
-
+        document.cookie = `codigoPostal=${codigoPostal}; max-age=3600; path=/; SameSite=Lax`;
+        console.log("Cookies accesibles por JS después de setear:", document.cookie);
+      
         // Cerrar el modal
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal

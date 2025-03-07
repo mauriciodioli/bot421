@@ -21,11 +21,15 @@ from models.instrumento import Instrumento
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.ambitoCategoria import AmbitoCategoria
+from models.publicaciones.ambitoCategoriaRelation import AmbitoCategoriaRelation
+from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.usuarioPublicacionUbicacion import UsuarioPublicacionUbicacion
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
+
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from utils.db import db
 import re
@@ -384,14 +388,20 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
                 # Si no hay imagen, asigna la URL del primer video si existen videos
                 publicacion.imagen = videos[0]['filepath']  # Usar la URL del primer video
             db.session.commit()   
-            
-        # Agregar la publicación con la primera imagen o video encontrado
+        categoriaPublicacion = db.session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion.id).first()
+        categoria = None
+        if categoriaPublicacion:
+            categoria = db.session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
+       
+          # Agregar la publicación con la primera imagen o video encontrado
         publicaciones_data.append({
             'publicacion_id': publicacion.id,
             'user_id': publicacion.user_id,
             'titulo': publicacion.titulo,
             'texto': publicacion.texto,
             'ambito': publicacion.ambito,
+            'categoriaNombre': categoria.nombre if categoria else None,
+            'categoria_id': categoria.id if categoria else None,
             'correo_electronico': publicacion.correo_electronico,
             'descripcion': publicacion.descripcion,
             'color_texto': publicacion.color_texto,
@@ -787,6 +797,7 @@ def social_imagenes_eliminar_publicacion():
         try:
             # Ejemplo de eliminación (ajustar según tu implementación)
             with app.app_context():
+                eliminar_relacion_categorias_publicaciones(publicacion_id)
                 eliminar_publicacion_y_medios(publicacion_id, user_id)
 
             return jsonify({'success': True}), 200
@@ -795,13 +806,26 @@ def social_imagenes_eliminar_publicacion():
 
     return jsonify({'error': 'Token de acceso no válido o expirado'}), 401
 
+def eliminar_relacion_categorias_publicaciones(publicacion_id):
+    try:
+        publicacion_id = int(publicacion_id)
+        # Eliminar la relación entre la publicación y las categorías
+        db.session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).delete()
+        db.session.commit()
+        return True
+    except Exception as e:
+        print(str(e))
+        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+        return False
+
 def eliminar_publicacion_y_medios(publicacion_id, user_id):
     try:
         publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
         if publicacion:
             publicacion_id = int(publicacion_id)
             usuario_publicacion_ubicacion = db.session.query(UsuarioPublicacionUbicacion).filter_by(id_publicacion=publicacion_id).first()
-            db.session.delete(usuario_publicacion_ubicacion)  
+            if usuario_publicacion_ubicacion:
+                 db.session.delete(usuario_publicacion_ubicacion)  
             # Obtener los registros de medios relacionados en la tabla intermedia
             publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id).all()
             
@@ -842,6 +866,7 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
             
             # Commit de todas las eliminaciones en una sola transacción
             db.session.commit()
+            db.session.close()
             return True
 
     except Exception as e:

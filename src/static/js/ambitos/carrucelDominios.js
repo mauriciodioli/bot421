@@ -51,7 +51,7 @@ window.cargarAmbitosCarrusel = function () {
              
               // Modificar el localStorage con el nuevo valor seleccionado
               localStorage.setItem('dominio', valor);
-              
+              localStorage.setItem('banderaCategorias', 'True');
               // Llamar a cargarPublicaciones si está definida
                 if (typeof cargarPublicaciones === 'function') {
                     cargarPublicaciones(valor, 'layout');
@@ -126,7 +126,7 @@ items.forEach(item => {
     item.addEventListener('click', () => {
       // Cambiar el valor de "dominio" en localStorage
       localStorage.setItem('dominio', item.textContent);
-  
+      localStorage.setItem('banderaCategorias', 'True');
       // Volver a aplicar la clase active
       items.forEach(i => i.classList.remove('active')); // Eliminar la clase active de todos
       item.classList.add('active'); // Añadir la clase active al item clickeado

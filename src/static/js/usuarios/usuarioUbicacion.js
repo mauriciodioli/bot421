@@ -158,6 +158,7 @@ function sendLocationToServer(latitude, longitude, language) {
             
             // Guardar en cookies por 30 días
             setCookie("language", language, 30);
+           
             console.log("Idioma guardado en cookies:", language);
             document.getElementById("languageLink").innerText = language.toUpperCase();
             cargarAmbitos(); // Llamar a las funciones necesarias
