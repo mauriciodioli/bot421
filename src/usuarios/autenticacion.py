@@ -356,6 +356,9 @@ def loginUsuario():
                     ]))
                     set_access_cookies(resp, access_token)
                     set_refresh_cookies(resp, refresh_token)
+                    # Almacenar el código postal en una cookie
+                    resp.set_cookie('codigoPostal', codigoPostal, max_age=60*60*24, httponly=False, secure=True, samesite='Lax')
+
                     return resp
 
                 except Exception as e:

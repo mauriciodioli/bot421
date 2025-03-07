@@ -29,6 +29,10 @@ from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.usuarioRegion import UsuarioRegion
 from models.usuarioUbicacion import UsuarioUbicacion
 from models.usuarioPublicacionUbicacion import UsuarioPublicacionUbicacion
+from models.publicaciones.ambitoCategoria import AmbitoCategoria
+from models.publicaciones.ambitoCategoriaRelation import AmbitoCategoriaRelation
+from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
+
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 from models.modelMedia.TelegramNotifier import TelegramNotifier
@@ -451,6 +455,7 @@ def guardarPublicacion(request, user_id):
         post_text = request.form.get('postText_creaPublicacion')   
         post_descripcion = request.form.get('postDescription_creaPublicacion')
         ambito = request.form.get('postAmbito_creaPublicacion')
+        categoria_id =  request.form.get('postAmbitoCategorias_creaPublicacion')
         correo_electronico = request.form.get('correo_electronico')
         color_texto = request.form.get('color_texto')
         color_titulo = request.form.get('color_titulo')
@@ -479,6 +484,7 @@ def guardarPublicacion(request, user_id):
             titulo=post_title,
             texto=post_text,
             ambito=ambito,
+            categoria_id=int(categoria_id),
             correo_electronico=correo_electronico,
             descripcion=post_descripcion,
             color_texto=color_texto,
@@ -487,7 +493,7 @@ def guardarPublicacion(request, user_id):
             estado=estado,
             botonCompra=botonCompra,
             idioma=idioma,
-            codigoPostal=codigoPostal,
+            codigoPostal=codigoPostal,            
             pagoOnline=pagoOnline
         )
         
@@ -495,7 +501,7 @@ def guardarPublicacion(request, user_id):
         db.session.commit()
         #guardar la ubicacion publicacion
         publicacion_id = publicacionUbicacion(nueva_publicacion.id,codigoPostal,user_id)
-        
+        publicacionCategoriaPublicacion(categoria_id,nueva_publicacion.id)
         #guardar 
         return nueva_publicacion.id
         
@@ -566,6 +572,24 @@ def es_video(file_path):
     return mimetype is not None and mimetype.startswith("video/")
 
 
+
+
+def publicacionCategoriaPublicacion(categoria_id,publicacion_id):
+    try:
+        new_categoria_publicacion = CategoriaPublicacion(
+            categoria_id=int(categoria_id),
+            publicacion_id=publicacion_id,
+            estado='activo'
+        )
+        db.session.add(new_categoria_publicacion)
+        db.session.commit()
+        
+        return True
+    except Exception as e:
+        print(str(e))
+        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+        return False
+    
 
 
 def publicacionUbicacion(nueva_publicacion_id,codigoPostal,user_id):

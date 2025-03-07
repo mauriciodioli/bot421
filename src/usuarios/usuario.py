@@ -31,6 +31,10 @@ def obtener_usuarios_modal():
     except Exception as e:
         print('Error al obtener usuarios:', str(e))
         abort(500)  # Devuelve un código de estado de error 500 si hay problemas con la base de datos
+        
+        
+        
+        
 @usuario.route("/usuarios/", methods=["GET"])
 def usuarios():
     try:

@@ -150,6 +150,16 @@
               <option value="" disabled selected>Selecciona un ámbito</option>
           </select>
         </div>
+        <!-- Combobox for creating categories -->
+        <div class="form-group_creaPublicacion">
+          <label for="postAmbitoCategorias_creaPublicacion" class="text-black">Categorias:</label>
+          <select id="postAmbitoCategorias_creaPublicacion" name="postAmbitoCategorias_creaPublicacion" class="form-control" required>
+              <option value="" disabled selected>Selecciona una categoria</option>
+          </select>
+        </div>
+
+
+
          <!-- Combobox for boton pago -->
          <div class="form-group_creaPublicacion">
           <label for="postBotonCompra_creaPublicacion" class="text-black">Botón de Compra:</label>
@@ -319,7 +329,17 @@
         <select id="postAmbito_modificaPublicacion" name="postAmbito_modificaPublicacion" class="form-control" required>
             <option value="" disabled selected>Selecciona un ámbito</option>
         </select>
-    </div>
+      </div>
+      <!-- Combobox for categorias -->
+      <div class="form-group_modificaPublicacion">       
+        <label for="postAmbitoCategorias_modificaPublicacion" class="text-black">Categorias:</label>
+        <select id="postAmbitoCategorias_modificaPublicacion" name="postAmbitoCategorias_modificaPublicacion" class="form-control" required>
+            <option value="" disabled selected>Selecciona una categoria</option>
+        </select>
+      </div>
+
+
+
       <!-- Combobox for boton pago -->
       <div class="form-group_modificaPublicacion">
         <label for="postBotonCompra_modificaPublicacion" class="text-black">Botón de Compra:</label>
@@ -444,6 +464,7 @@ function toggleUnderline() {
 <script src="{{ url_for('static', filename='js/media/cargarPublicaciones.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/publicaciones/mostrarGaleriaAcordeon.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/cargarAmbitosEnComboMostrarGaleria.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/cargarAmCategoriaComboMstrarGleria.js') }}"></script>
 
 
 <!-- ... Más código HTML ... -->

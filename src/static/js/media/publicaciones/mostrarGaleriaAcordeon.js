@@ -36,7 +36,7 @@ function cargarPublicaciones(ambitoId) {
 
             // Realizar la solicitud AJAX
             $.ajax({
-                url: '/media-publicaciones-mostrar',
+                url: '/media-publicaciones-mostrar/',
                 type: 'POST',
                 data: formData,
                 processData: false,

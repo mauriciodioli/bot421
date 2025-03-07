@@ -16,6 +16,7 @@ class Publicacion(db.Model):
     titulo = db.Column(db.String(120), unique=True, nullable=False)
     texto = db.Column(db.Text, nullable=False)  # Cambiado a db.Text
     ambito = db.Column(db.String(120), nullable=False)
+    categoria_id = db.Column(db.Integer,nullable=True)
     correo_electronico = db.Column(db.String(120), nullable=False)
     descripcion = db.Column(db.String(1000), nullable=False)
     color_texto = db.Column(db.String(120), nullable=False)
@@ -28,11 +29,12 @@ class Publicacion(db.Model):
     codigoPostal = db.Column(db.String(255), nullable=True)
     pagoOnline = db.Column(db.Boolean, default=True)
     
-    def __init__(self, user_id, titulo, texto, ambito, correo_electronico, descripcion, color_texto, color_titulo, fecha_creacion, estado,codigoPostal,pagoOnline, botonCompra=False, imagen=None,idioma=None):
+    def __init__(self, user_id, titulo, texto, ambito,categoria_id, correo_electronico, descripcion, color_texto, color_titulo, fecha_creacion, estado,codigoPostal,pagoOnline, botonCompra=False, imagen=None,idioma=None):
         self.user_id = user_id       
         self.titulo = titulo
         self.texto = texto
         self.ambito = ambito
+        self.categoria_id = categoria_id
         self.correo_electronico = correo_electronico
         self.descripcion = descripcion
         self.color_texto = color_texto
@@ -46,7 +48,7 @@ class Publicacion(db.Model):
         self.pagoOnline = pagoOnline
 
     def __repr__(self):
-        return f"Publicacion(id={self.id}, user_id={self.user_id}, titulo={self.titulo}, texto={self.texto}, ambito={self.ambito}, correo_electronico={self.correo_electronico}, descripcion={self.descripcion}, color_texto={self.color_texto}, color_titulo={self.color_titulo}, fecha_creacion={self.fecha_creacion}, botonCompra={self.botonCompra}, imagen={self.imagen}, idioma={self.idioma}, codigoPostal={self.codigoPostal}, pagoOnline={self.pagoOnline})"
+        return f"Publicacion(id={self.id}, user_id={self.user_id}, titulo={self.titulo}, texto={self.texto}, ambito={self.ambito}, categoria_id={self.categoria_id}, correo_electronico={self.correo_electronico}, descripcion={self.descripcion}, color_texto={self.color_texto}, color_titulo={self.color_titulo}, fecha_creacion={self.fecha_creacion}, botonCompra={self.botonCompra}, imagen={self.imagen}, idioma={self.idioma}, codigoPostal={self.codigoPostal}, pagoOnline={self.pagoOnline})"
 
     @classmethod
     def crear_tabla_publicacion(cls):
@@ -56,7 +58,7 @@ class Publicacion(db.Model):
             
 class MerShema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id", "titulo", "texto", "ambito", "correo_electronico", "descripcion", "color_texto", "color_titulo", "fecha_creacion", "estado", "botonCompra", "imagen", "idioma", "codigoPostal", "pagoOnline")
+        fields = ("id", "user_id", "titulo", "texto", "ambito", "categoria_id", "correo_electronico", "descripcion", "color_texto", "color_titulo", "fecha_creacion", "estado", "botonCompra", "imagen", "idioma", "codigoPostal", "pagoOnline")
 
 
 mer_schema = MerShema()
