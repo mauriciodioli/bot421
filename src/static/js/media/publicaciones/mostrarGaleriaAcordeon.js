@@ -53,7 +53,8 @@ function cargarPublicaciones(ambitoId) {
                     if (!accordionContent && publicaciones.length > 0) {
                         // Si el acordeón no existe, crearlo dinámicamente
                         const accordionContainer = document.querySelector('#postAccordion'); // Contenedor con el ID correcto
-                        
+                        var navBarHtml = document.getElementById('navBarCaracteristicasAcordeon').innerHTML;
+                
                         if (accordionContainer) {
                             const newAccordion = `
                                         <div class="accordion-item">
@@ -66,7 +67,10 @@ function cargarPublicaciones(ambitoId) {
 
                                                         <div class="accordion-body">
                                                             <div id="accordion-content-${ambitoId}" class="accordion-content">
-                                                                <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
+                                                                 <div id="navBar-${ambitoId}">
+                                                                    ${navBarHtml} <!-- Aquí se inserta el contenido de la barra de navegación -->
+                                                                </div>
+                                                               <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
                                                                 </div>
                                                             </div>
                                                         </div>

@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.keys(postsByAmbito).forEach(function(ambito, index) {
                 var ambitoId = 'ambito-' + index; // ID único para cada ámbito
                 var publicaciones = postsByAmbito[ambito];
+                var navBarHtml = document.getElementById('navBarCaracteristicasAcordeon').innerHTML;
                 
                 var accordionItemHtml = `
                     <div class="accordion-item">
@@ -112,9 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         </h2>
                         <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
                             <div class="accordion-body">
-                                <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                    <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                     <div id="navBar-${ambitoId}">
+                                          ${navBarHtml} <!-- Aquí se inserta el contenido de la barra de navegación -->
+                                      </div>
                                     <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
-                                    </div>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -134,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                       if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
                           // Si hay imágenes, usar la primera
-                          debugger;
+                          
                           let firstImageUrl = post.imagenes[0].imagen ? `data:image/png;base64,${post.imagenes[0].imagen}` : post.imagenes[0].filepath;
 
                          
@@ -242,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
               if (Array.isArray(post.imagenes) && post.imagenes.length > 0) { 
                 post.imagenes.forEach(image => {
-                   debugger;
+                 
                    let imageUrl = image.imagen ? `data:image/png;base64,${image.imagen}` : image.filepath;
 
                    
