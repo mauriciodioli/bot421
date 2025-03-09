@@ -1,24 +1,49 @@
+document.addEventListener('DOMContentLoaded', function () {
+    // Seleccionamos el primer ítem que tiene el atributo 'data-color'
+    const firstItem = document.querySelector('.categoria-dropdown-item[data-color]');
 
+    // Si hay un primer ítem, actualizamos el color
+    if (firstItem) {
+        updateColor(firstItem);
+    }
 
-document.querySelectorAll('.categoria-dropdown-item').forEach(item => {
-    item.addEventListener('click', function (event) {
-        event.preventDefault(); // Evita que el enlace recargue la página
-
-        let color = this.getAttribute('data-color'); // Obtiene el color del atributo
-        if (!color) return; // Si no hay color, no hacer nada
-
-        let navTabs = document.querySelector('.nav-tabs');
-        let homeTab = document.querySelector('#home-tab'); // Selecciona el botón "Home"
-
-        // Elimina cualquier clase de color existente en la barra y en el botón "Home"
-        navTabs.classList.remove('border-red', 'border-green', 'border-orange');
-        homeTab.classList.remove('border-red', 'border-green', 'border-orange');
-
-        // Agrega la nueva clase de color
-        navTabs.classList.add('border-' + color);
-        homeTab.classList.add('border-' + color);
-    });
+    // Aseguramos que la lógica solo se ejecute una vez para el primer ítem
+    // Esto solo se ejecutará una vez en el evento 'DOMContentLoaded'
 });
+
+
+function updateColor(element) {
+    console.log(element);
+    if (!element) return; // Evita errores si no se pasa un elemento
+    
+    // Obtener el id del elemento
+    let id = element.id;
+    console.log('ID obtenido:', id);
+   
+    // Mapeo de IDs a colores
+    const colorMap = {
+        'Electrónica': 'red',
+        'Informática': 'green',
+        'Deportes': 'blue',
+        // Añadir más ID y colores si es necesario
+    };
+
+    // Si el id no está en el mapa, se asigna el color predeterminado 'orange'
+    let color = colorMap[id] || 'orange'; // Si no encuentra el id, asigna 'orange'
+    console.log('Color obtenido:', color); // Verifica el valor de color
+    
+    let navTabs = document.querySelector('.nav-tabs');
+    let homeTab = document.querySelector('#home-tab'); // Selecciona el botón "Home"
+
+    // Elimina cualquier clase de color existente en la barra y en el botón "Home"
+    navTabs.classList.remove('border-red', 'border-green', 'border-blue', 'border-orange');
+    homeTab.classList.remove('border-red', 'border-green', 'border-blue', 'border-orange');
+
+    // Agrega la nueva clase de color para los elementos de la barra
+    navTabs.classList.add('border-' + color);
+    homeTab.classList.add('border-' + color);
+}
+
 
 
 
@@ -84,14 +109,18 @@ function cargarAmbitosCategorias() {
         // Agregar las categorías obtenidas al dropdown
         data.categorias.forEach((categoria, index) => {
             // Agregar la categoría al menú desplegable
+            // Asigna un valor predeterminado en caso de que no esté definido
+            const color = categoria.color || 'red'; // O cualquier color predeterminado que desees
             const listItem = `
                 <li>
-                    <a href="#" class=" categoria-dropdown-item" id="${categoria.valor}">
+                    <a href="#" class="categoria-dropdown-item" id="${categoria.valor}" data-color="${color}">
                         ${categoria.nombre}
                     </a>
                 </li>
                 <li><hr class="dropdown-divider"></li>
             `;
+
+        
             dropdownMenuCategorias.append(listItem);
 
             // Crear una nueva tarjeta para cada categoría
@@ -115,10 +144,12 @@ function cargarAmbitosCategorias() {
     });
 }
 
+
+
 // Delegación de eventos para manejar clics en los ítems del menú desplegable
 $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (e) {
     e.preventDefault(); // Previene el comportamiento predeterminado
-
+   
     const selectedCategory = this.id; // ID del ítem clickeado
 
     // Guardar el dominio en localStorage
@@ -139,6 +170,9 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
     // Marcar el ítem como activo
     $('.categoria-dropdown-item').removeClass('active');
     $(this).addClass('active');
+     
+    updateColor($(this)[0]); // Convierte jQuery a elemento DOM puro
+
 });
 
 // Delegación de eventos para manejar clics en las tarjetas
