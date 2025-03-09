@@ -983,6 +983,7 @@ def publicaciones_modificar_publicaciones():
         descripcion = request.form.get('postDescription_modificaPublicacion')
         estado = request.form.get('postEstado_modificaPublicacion')
         ambito = request.form.get('postAmbito_modificaPublicacion')
+        categoria = request.form.get('postAmbitoCategorias_modificaPublicacion')
         idioma = request.form.get('postCambiarIdioma_modificaPublicacion')
         botonCompra = request.form.get('postBotonCompra_modificaPublicacion')
         codigoPostal = request.form.get('codigoPostal_modificaPublicacion')
@@ -1016,6 +1017,23 @@ def publicaciones_modificar_publicaciones():
         if not publicacion:
             return jsonify({'error': 'Publicación no encontrada o no autorizada'}), 404
         
+        categoriPublicacion = db.session.query(CategoriaPublicacion).filter(
+                CategoriaPublicacion.id == int(categoria),
+                CategoriaPublicacion.publicacion_id == publicacion.id
+            ).first()
+
+        if not categoriPublicacion:
+            new_categoriPublicacion = CategoriaPublicacion(
+                publicacion_id=publicacion.id,
+                categoria_id=int(categoria),
+                estado='activo'
+            )   
+            db.session.add(new_categoriPublicacion)
+        else:
+            categoriPublicacion.categoria_id = int(categoria)
+
+        db.session.commit()
+
         
         # Eliminar todas las etiquetas HTML
         texto_limpio = re.sub(r'<[^>]*>', '', texto) if texto else ''
@@ -1026,6 +1044,7 @@ def publicaciones_modificar_publicaciones():
         publicacion.descripcion = descripcion
         publicacion.estado = estado
         publicacion.ambito = ambito
+        publicacion.categoria_id = int(categoria) if categoria else categoria
         publicacion.idioma = idioma
         publicacion.codigoPostal = codigoPostal
         publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
