@@ -236,7 +236,7 @@ def media_publicaciones_mostrar_dpi():
                     if fecha_eliminado:
                         dias_diferencia = (datetime.today().date() - fecha_eliminado).days
                         if dias_diferencia > 30:
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma).first()
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
                             if publicacion:
                                 # Agrega la publicación a la lista de publicaciones
                                 publicaciones.append(publicacion)
@@ -244,9 +244,9 @@ def media_publicaciones_mostrar_dpi():
                     # Si el estado no es "eliminado", obtén la publicación correspondiente
                     if estado_publicacion.estado != 'eliminado':
                         if codigoPostal == '1':
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma).first()
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
                         else: 
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,codigoPostal = codigoPostal).first()
+                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,codigoPostal = codigoPostal,categoria_id = int(categoria)).first()
                         if publicacion:
                             # Agrega la publicación a la lista de publicaciones
                             publicaciones.append(publicacion)
@@ -254,12 +254,13 @@ def media_publicaciones_mostrar_dpi():
             else:
                 if codigoPostal == '1':
                              # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma).all()
+                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).all()
                 else: 
                   publicaciones = db.session.query(Publicacion).filter(
                                 Publicacion.estado == 'activo',
                                 Publicacion.ambito == ambitos,
                                 Publicacion.idioma == idioma,
+                                Publicacion.categoria_id == int(categoria),
                                 Publicacion.codigoPostal.in_([codigoPostal, '1'])  # Código postal debe ser uno de estos valores
                             ).all()
               
