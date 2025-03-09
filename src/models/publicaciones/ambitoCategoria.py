@@ -19,20 +19,22 @@ class AmbitoCategoria(db.Model):
     descripcion = db.Column(db.String(500), nullable=True)
     idioma = db.Column(db.String(500), nullable=True)
     valor = db.Column(db.String(500), nullable=True)
+    color = db.Column(db.String(50), nullable=True)
     estado = db.Column(db.String(500), nullable=True)
     
     
     # Constructor
-    def __init__(self, nombre, descripcion, idioma=None, valor=None, estado=None):
+    def __init__(self, nombre, descripcion,color, idioma=None, valor=None, estado=None):
         self.nombre = nombre
         self.descripcion = descripcion
         self.idioma = idioma
         self.valor = valor
+        self.color = color
         self.estado = estado
        
     
     def __repr__(self):
-        return f"AmbitoCategoria(id={self.id}, nombre={self.nombre}, descripcion={self.descripcion}, idioma={self.idioma}, valor={self.valor}, estado={self.estado})"
+        return f"AmbitoCategoria(id={self.id}, nombre={self.nombre}, descripcion={self.descripcion}, idioma={self.idioma},color={self.color}, valor={self.valor}, estado={self.estado})"
     
     @classmethod
     def crear_tabla_ambitoCategoria(self):
@@ -46,5 +48,5 @@ class AmbitoCategoria(db.Model):
 # Schema de Marshmallow para serialización
 class MerShema(ma.Schema):
     class Meta:       
-        fields = ("id", "nombre", "descripcion", "idioma", "valor", "estado")  # Campos a serializar
+        fields = ("id", "nombre", "descripcion", "idioma","color" "valor", "estado")  # Campos a serializar
 

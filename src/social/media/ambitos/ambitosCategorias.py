@@ -64,6 +64,7 @@ def social_media_ambitosCategorias_categoria_mostrar():
             'descripcion': categoria.descripcion,
             'idioma': categoria.idioma,
             'valor': categoria.valor,
+            'color': categoria.color,
             'estado': categoria.estado
         } for categoria in categorias]
 
@@ -89,6 +90,7 @@ def social_media_ambitos_crear_categoria():
         descripcion = data.get('descripcion')
         idioma = data.get('idioma', None)
         valor = data.get('valor', None)
+        color = data.get('color', None)
         estado = data.get('estado', None)
         nombreAmbito = data.get('ambito', None)
 
@@ -107,6 +109,7 @@ def social_media_ambitos_crear_categoria():
             descripcion=descripcion,
             idioma=idioma,
             valor=valor,
+            color=color,
             estado=estado
         )
         db.session.add(nuevo_ambito_categoria)
@@ -149,6 +152,7 @@ def social_media_ambitos_actualizar_categoria(id):
         ambitoCategoria.descripcion = data.get('descripcion', ambitoCategoria.descripcion)
         ambitoCategoria.idioma = data.get('idioma', ambitoCategoria.idioma)
         ambitoCategoria.valor = data.get('valor', ambitoCategoria.valor)
+        ambitoCategoria.color = data.get('color', ambitoCategoria.color)
         ambitoCategoria.estado = data.get('estado', ambitoCategoria.estado)
       
         # Guardar los cambios en la base de datos
@@ -230,6 +234,7 @@ def obtener_ambitosCategorias():
                 "descripcion": categoria.descripcion,
                 "idioma": categoria.idioma,
                 "valor": categoria.valor,
+                "color": categoria.color,
                 "estado": categoria.estado,
             }
             for categoria in ambitosCategorias
@@ -251,5 +256,6 @@ def serializar_ambito(ambito):
         "descripcion": ambito.descripcion,
         "idioma": ambito.idioma,
         "valor": ambito.valor,
+        "color": ambito.color,
         "estado": ambito.estado,
     }

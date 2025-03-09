@@ -13,25 +13,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function updateColor(element) {
-    //console.log(element);
+    console.log(element);
     if (!element) return; // Evita errores si no se pasa un elemento
     
     // Obtener el id del elemento
     let id = element.id;
+    let colorElementCategoria = element.getAttribute('data-color');
     //console.log('ID obtenido:', id);
    
-    // Mapeo de IDs a colores
-    const colorMap = {
-        '19': 'red',
-        '18': 'green',
-        '20': 'blue',
-        // Añadir más ID y colores si es necesario
-    };
 
-    // Si el id no está en el mapa, se asigna el color predeterminado 'orange'
-    let color = colorMap[id] || 'orange'; // Si no encuentra el id, asigna 'orange'
-    //console.log('Color obtenido:', color); // Verifica el valor de color
-    
     let navTabs = document.querySelector('.nav-tabs');
     let homeTab = document.querySelector('#home-tab'); // Selecciona el botón "Home"
 
@@ -40,8 +30,8 @@ function updateColor(element) {
     homeTab.classList.remove('border-red', 'border-green', 'border-blue', 'border-orange');
 
     // Agrega la nueva clase de color para los elementos de la barra
-    navTabs.classList.add('border-' + color);
-    homeTab.classList.add('border-' + color);
+    navTabs.classList.add('border-' + colorElementCategoria);
+    homeTab.classList.add('border-' + colorElementCategoria);
 }
 
 

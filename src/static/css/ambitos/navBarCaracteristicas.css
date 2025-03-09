@@ -22,6 +22,47 @@
     transition: border-color 0.3s ease-in-out;
   }
   
+
+/* 🟡 Amarillo */
+.nav-tabs.border-yellow, .nav-link.border-yellow {
+  border-bottom: 1px solid yellow !important;
+}
+.nav-link.border-yellow {
+  background-color: yellow !important;
+  color: black !important;
+  border-color: yellow !important;
+}
+
+/* ⚫ Gris */
+.nav-tabs.border-gray, .nav-link.border-gray {
+  border-bottom: 1px solid gray !important;
+}
+.nav-link.border-gray {
+  background-color: gray !important;
+  color: white !important;
+  border-color: gray !important;
+}
+
+/* 🔵 Azul */
+.nav-tabs.border-blue, .nav-link.border-blue {
+  border-bottom: 1px solid blue !important;
+}
+.nav-link.border-blue {
+  background-color: blue !important;
+  color: white !important;
+  border-color: blue !important;
+}
+
+/* 🌊 Cian */
+.nav-tabs.border-cyan, .nav-link.border-cyan {
+  border-bottom: 1px solid cyan !important;
+}
+.nav-link.border-cyan {
+  background-color: cyan !important;
+  color: black !important;
+  border-color: cyan !important;
+}
+
   /* Diferentes colores para las categorías (también en el borde) */
   .nav-tabs.border-red, .nav-link.border-red {
     border-bottom: 1px solid red !important;

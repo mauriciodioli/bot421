@@ -46,6 +46,7 @@ $(document).ready(function() {
                     <td>${categoria.descripcion}</td>
                     <td>${categoria.idioma}</td>
                     <td>${categoria.valor}</td>
+                    <td>${categoria.color}</td>
                     <td>${categoria.estado}</td>
                     <td>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -54,6 +55,7 @@ $(document).ready(function() {
                         data-nombre="${categoria.nombre}"
                         data-descripcion="${categoria.descripcion}"
                         data-idioma="${categoria.idioma}"
+                        data-color="${categoria.color}"
                         data-valor="${categoria.valor}"
                         data-estado="${categoria.estado}">Editar</button>
 
@@ -88,6 +90,7 @@ function crearAmbitoCategorias() {
     let descripcion = document.getElementById("descripcion").value;
     let idioma = document.getElementById("idioma").value;
     let valor = document.getElementById("valor").value;
+    let color = document.getElementById("color").value;
     let estado = document.getElementById("estado").value;
     let ambito = localStorage.getItem("dominio");
     // Validar campos obligatorios
@@ -102,6 +105,7 @@ function crearAmbitoCategorias() {
         descripcion: descripcion,
         idioma: idioma,
         valor: valor,
+        color: color,
         ambito: ambito,
         estado: estado
     };
@@ -136,8 +140,9 @@ function agregarFilaATabla(data) {
         <td>${data.id}</td>      
         <td>${data.nombre}</td>
         <td>${data.descripcion}</td>
-        <td>${data.idioma}</td>
+        <td>${data.idioma}</td>       
         <td>${data.valor}</td>
+        <td>${data.color}</td>
         <td>${data.estado}</td>
         <td>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -147,6 +152,7 @@ function agregarFilaATabla(data) {
                 data-descripcion="${data.descripcion}"
                 data-idioma="${data.idioma}"
                 data-valor="${data.valor}"
+                data-color="${data.color}"
                 data-estado="${data.estado}">
                 Editar
             </button>
@@ -170,6 +176,7 @@ function actualizarAmbitoCategoria() {
     const descripcion = document.getElementById('descripcion-editar').value;
     const idioma = document.getElementById('idioma-editar').value;
     const valor = document.getElementById('valor-editar').value;
+    const color = document.getElementById('color-editar').value;
     const estado = document.getElementById('estado-editar').value;
     const userId = document.getElementById('user_id-editar').value;
    
@@ -178,6 +185,7 @@ function actualizarAmbitoCategoria() {
         descripcion: descripcion,
         idioma: idioma,
         valor: valor,
+        color: color,
         estado: estado,
         user_id: userId
     };
@@ -246,6 +254,7 @@ function obtenerAmbitosCategoria() {
                 <td>${categoria.descripcion}</td>
                 <td>${categoria.idioma}</td>
                 <td>${icono} ${categoria.valor}</td>
+                <td>${categoria.color}</td>
                 <td>${categoria.estado}</td>
                 <td>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -255,6 +264,7 @@ function obtenerAmbitosCategoria() {
                         data-descripcion="${categoria.descripcion}"
                         data-idioma="${categoria.idioma}"
                         data-valor="${categoria.valor}"
+                        data-color="${categoria.color}"
                         data-estado="${categoria.estado}"
                         data-user_id="${categoria.user_id}">Editar</button>
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
