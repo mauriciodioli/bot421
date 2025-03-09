@@ -456,6 +456,7 @@ function cerrarModalImagenGrande() {
       
       var descripcion = postCard.querySelector('.card-text-descripcion').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
+      debugger;
       var ambito = postCard.querySelector('.card-text-ambito').textContent;
       var idioma = postCard.querySelector('.card-text-idioma').textContent;
       // Cargar los datos en el modal
