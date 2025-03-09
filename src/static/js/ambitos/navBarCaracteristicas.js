@@ -13,24 +13,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function updateColor(element) {
-    console.log(element);
+    //console.log(element);
     if (!element) return; // Evita errores si no se pasa un elemento
     
     // Obtener el id del elemento
     let id = element.id;
-    console.log('ID obtenido:', id);
+    //console.log('ID obtenido:', id);
    
     // Mapeo de IDs a colores
     const colorMap = {
-        'Electrónica': 'red',
-        'Informática': 'green',
-        'Deportes': 'blue',
+        '19': 'red',
+        '18': 'green',
+        '20': 'blue',
         // Añadir más ID y colores si es necesario
     };
 
     // Si el id no está en el mapa, se asigna el color predeterminado 'orange'
     let color = colorMap[id] || 'orange'; // Si no encuentra el id, asigna 'orange'
-    console.log('Color obtenido:', color); // Verifica el valor de color
+    //console.log('Color obtenido:', color); // Verifica el valor de color
     
     let navTabs = document.querySelector('.nav-tabs');
     let homeTab = document.querySelector('#home-tab'); // Selecciona el botón "Home"
@@ -110,15 +110,15 @@ function cargarAmbitosCategorias() {
         data.categorias.forEach((categoria, index) => {
             // Agregar la categoría al menú desplegable
             // Asigna un valor predeterminado en caso de que no esté definido
-            const color = categoria.color || 'red'; // O cualquier color predeterminado que desees
+            const color = categoria.color || 'orange'; // O cualquier color predeterminado que desees
             const listItem = `
-                <li>
-                    <a href="#" class="categoria-dropdown-item" id="${categoria.valor}" data-color="${color}">
-                        ${categoria.nombre}
-                    </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-            `;
+                        <li>
+                            <a href="#" class="categoria-dropdown-item" id="${categoria.id}" data-value="${categoria.valor}" data-color="${color}" style="color: ${color}; padding: 10px;">
+                                ${categoria.nombre}
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                    `;
 
         
             dropdownMenuCategorias.append(listItem);
@@ -150,22 +150,23 @@ function cargarAmbitosCategorias() {
 $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (e) {
     e.preventDefault(); // Previene el comportamiento predeterminado
    
-    const selectedCategory = this.id; // ID del ítem clickeado
+    const selectedCategory = this.id; // Obtiene el valor de data-value
 
     // Guardar el dominio en localStorage
     localStorage.setItem('categoria', selectedCategory);
-
+    var domain = localStorage.getItem('dominio');
     // Actualizar el input oculto
     const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
     if (hiddenInput.length) {
         hiddenInput.val(selectedCategory);
     }
-    $('#home-tab').text(selectedCategory);  // Cambiar el texto del botón con el valor de 'selectedCategory'
+    $('#home-tab').text(this.dataset.value);  // Cambiar el texto del botón con el valor de 'selectedCategory'
     // Mostrar en consola
-    console.log('Dominio seleccionado:', selectedCategory);
-    
+  
+    console.log('Dominio enviado desde categorias---------------:', domain);
+    console.log('Categorias---------------:', selectedCategory);
     // Llamar a la función para manejar el dominio seleccionado
-    enviarDominioAJAXDesdeCategorias(selectedCategory);
+    enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
 
     // Marcar el ítem como activo
     $('.categoria-dropdown-item').removeClass('active');
@@ -181,18 +182,18 @@ $('.card-container').on('click', '.card', function () {
 
     // Guardar el dominio en localStorage
     localStorage.setItem('categoria', selectedCategory);
-
+    var domain = localStorage.getItem('dominio');
     // Actualizar el input oculto
     const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
     if (hiddenInput.length) {
         hiddenInput.val(selectedCategory);
     }
-
+    console.log('hiddenInput:', hiddenInput.val());
     // Mostrar en consola
-    console.log('Dominio seleccionado:', selectedCategory);
+     console.log('Categoria seleccionada---------------:', selectedCategory);
     
     // Llamar a la función para manejar el dominio seleccionado
-    enviarDominioAJAXDesdeCategorias(selectedCategory);
+    enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
 
     // Marcar la tarjeta como activa
     $('.card').removeClass('active');
@@ -235,7 +236,7 @@ cargarAmbitosCategorias();
 
 
 
-function enviarDominioAJAXDesdeCategorias(domain) {    
+function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {    
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
@@ -247,7 +248,7 @@ function enviarDominioAJAXDesdeCategorias(domain) {
 
     // Mostrar/ocultar splash según la visibilidad de la sección
     toggleSplash(targetSection, splash);
-
+  
     // Ruta al archivo con la galería de imágenes   
     var galeriaURL = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
@@ -273,7 +274,9 @@ function enviarDominioAJAXDesdeCategorias(domain) {
                 url: galeriaURL,
                 dataType: 'json', // Asegúrate de que el backend devuelva un JSON
                 headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
-                data: { ambitos: domain, lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
+                data: { ambitos: domain,
+                        categoria: selectedCategory, 
+                        lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
                 success: function (response) {
                 // console.log('Respuesta del servidor:', response[0].ambito);
                   

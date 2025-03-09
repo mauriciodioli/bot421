@@ -18,7 +18,7 @@
   
   /* Estilo base de las pestañas */
   .nav-tabs {
-    border-bottom: 1px solid #007bff; /* Color por defecto */
+    border-bottom: 1px solid #ffb300; /* Color por defecto */
     transition: border-color 0.3s ease-in-out;
   }
   
@@ -54,3 +54,15 @@
     border-color: orange !important; /* Cambia el borde */
   }
   
+
+
+
+  .categoria-item {
+    padding: 10px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.categoria-item:hover {
+    background-color: #f0f0f0; /* Cambia el fondo al pasar el mouse */
+}
