@@ -200,6 +200,7 @@ def media_publicaciones_mostrar_dpi():
         authorization_header = request.headers.get('Authorization')
          # Obtener el valor de 'ambitos' enviado en el cuerpo de la solicitud
         ambitos = request.form.get('ambitos')  # Si el contenido es application/x-www-form-urlencoded
+        categoria = request.form.get('categoria')
         idioma = request.form.get('lenguaje')
         codigoPostal = request.cookies.get('codigoPostal')
         if codigoPostal == None:
