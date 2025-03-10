@@ -207,6 +207,8 @@ def media_publicaciones_mostrar_dpi():
             codigoPostal = '1'
         if ambitos == 'inicialDominio':
             ambitos = 'Laboral'
+        if categoria == None:
+            categoria = 'Publicidad'
         
         layout = 'layout_dpi'
         if not authorization_header:

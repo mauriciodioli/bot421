@@ -156,8 +156,18 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
     console.log('Dominio enviado desde categorias---------------:', domain);
     console.log('Categorias---------------:', selectedCategory);
     // Llamar a la función para manejar el dominio seleccionado
-    enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
-
+    if (document.querySelector('#navBarCaracteristicas-home')) {
+        console.log("Ejecutando en home.html");
+        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+    }else{
+        console.log("Ejecutando en index.html");
+        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+    } 
+    if (document.querySelector('#navBarCaracteristicas-mostrarGaleria')) {
+        console.log("Ejecutando en mostrarGaleria.html");
+        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+   
+    }
     // Marcar el ítem como activo
     $('.categoria-dropdown-item').removeClass('active');
     $(this).addClass('active');
@@ -180,10 +190,20 @@ $('.card-container').on('click', '.card', function () {
     }
     console.log('hiddenInput:', hiddenInput.val());
     // Mostrar en consola
-     console.log('Categoria seleccionada---------------:', selectedCategory);
+    console.log('Categoria seleccionada---------------:', selectedCategory);
     
-    // Llamar a la función para manejar el dominio seleccionado
-    enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+     if (document.querySelector('#navBarCaracteristicas-home')) {
+        console.log("Ejecutando en home.html");
+        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+    }else{
+        console.log("Ejecutando en index.html");
+        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+    } 
+    if (document.querySelector('#navBarCaracteristicas-mostrarGaleria')) {
+        console.log("Ejecutando en mostrarGaleria.html");
+        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+   
+    }
 
     // Marcar la tarjeta como activa
     $('.card').removeClass('active');
