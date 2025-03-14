@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function updateColor(element) {
+  
     console.log(element);
     if (!element) return; // Evita errores si no se pasa un elemento
     
@@ -57,6 +58,7 @@ function updateColor(element) {
 
 // Agregar un manejador de eventos de clic al botón
 $('#caracteristicas-tab').on('click', function() {
+    
     // Llamar a la función para cargar los ámbitos
     banderaCategorias = localStorage.getItem('banderaCategorias');
     if (banderaCategorias == 'True') {
@@ -72,10 +74,12 @@ const dropdownMenuCategorias = $('.categoria-dropdown-menu');
 
 // Función para cargar los ámbitos desde el servidor
 function cargarAmbitosCategorias() {
+   
     // Datos del formulario o de algún elemento que necesites enviar
-    const ambito = localStorage.getItem('dominio');
+    let ambito = localStorage.getItem('dominio');
     const cp = localStorage.getItem('codigoPostal');
     
+    if(ambito == 'inicialDominio'){ ambito = 'Laboral';}
     const formData = new FormData();
     formData.append('ambito', ambito);  // Cambia 'nombre_del_ambito' con el valor que necesites
     formData.append('cp', cp);  // Cambia 'codigo_postal' con el valor correspondiente
@@ -91,7 +95,9 @@ function cargarAmbitosCategorias() {
     .then(response => response.json())
     .then(data => {
         // Aquí manejas la respuesta de la API, por ejemplo, agregando los elementos a la interfaz
-
+        if (!data || !Array.isArray(data.categorias)) {
+            throw new Error("La respuesta de la API no contiene 'categorias' o no es un array.");
+        }
         // Limpiar el menú y el contenedor de tarjetas antes de agregar nuevos elementos
         dropdownMenuCategorias.empty();
         $('.card-container').empty();
@@ -141,7 +147,7 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
     e.preventDefault(); // Previene el comportamiento predeterminado
    
     const selectedCategory = this.id; // Obtiene el valor de data-value
-
+  
     // Guardar el dominio en localStorage
     localStorage.setItem('categoria', selectedCategory);
     var domain = localStorage.getItem('dominio');
@@ -158,7 +164,8 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
     // Llamar a la función para manejar el dominio seleccionado
     if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
-        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
+        debugger;
+        cargarPublicaciones(domain, 'layout');
     }else{
         console.log("Ejecutando en index.html");
         enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
