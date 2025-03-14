@@ -21,6 +21,7 @@ from models.instrumento import Instrumento
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.ambitos import Ambitos
 from models.publicaciones.ambitoCategoria import AmbitoCategoria
 from models.publicaciones.ambitoCategoriaRelation import AmbitoCategoriaRelation
 from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
@@ -128,6 +129,7 @@ def media_publicaciones_mostrar_home():
         layout = request.form.get('layout')
         ambito = request.form.get('ambito')
         idioma = request.form.get('lenguaje')
+        categoria = request.form.get('categoria')
         codigoPostal = request.form.get('codigoPostal')
         
         # Obtener el encabezado Authorization
@@ -175,8 +177,15 @@ def media_publicaciones_mostrar_home():
                             publicaciones.append(publicacion)
 
             else:
-                # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal).all()
+                if categoria == '1':
+                    ambito_id = db.session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()
+                    categoriaRelation = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
+                    categoria_id = db.session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
+                    # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()
+                else:
+                    # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             db.session.close()

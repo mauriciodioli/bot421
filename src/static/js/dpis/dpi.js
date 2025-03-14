@@ -586,7 +586,7 @@ function toggleSplash(section, splashElement) {
 }
 
 function enviarDominioAJAX(domain) {
-    
+    debugger;
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
@@ -640,6 +640,9 @@ function enviarDominioAJAX(domain) {
                 headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
                 data: { ambitos: domain, lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
                 success: function (response) {
+                  debugger;
+                        console.log("Respuesta del servidor:", response);
+                    
                 // console.log('Respuesta del servidor:', response[0].ambito);
                     if (response && response[0]) {
                         document.getElementById("ambitoActual").innerHTML = response[0].ambito;

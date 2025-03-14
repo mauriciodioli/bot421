@@ -37,7 +37,8 @@ def social_media_ambitosCategorias_categoria_mostrar():
         # Obtener los datos del formulario
         ambito_nombre = request.form.get('ambito')
         codigo_postal = request.form.get('cp')
-
+        if not ambito_nombre:
+            ambito_nombre = 'Laboral'
         # Buscar el ámbito
         ambitos = db.session.query(Ambitos).filter(
             Ambitos.valor == ambito_nombre,

@@ -10,14 +10,17 @@ function formatDate(dateString) {
 
 
 function cargarPublicaciones(ambitoParam, layout) {
-
+  
     var access_token = localStorage.getItem('access_token');   
     var ambito = ambitoParam || localStorage.getItem('dominio'); // Usa el parámetro o toma del localStorage
     
     let ambito_actual = "<a style='text-decoration:none; color:orange;'>" + ambito + "</a>";
     
     var codigoPostal = localStorage.getItem('codigoPostal'); // Obtener el código postal de localStorage
-
+    var categoria = localStorage.getItem('categoria'); // Obtener la categoría de localStorage
+    if (!categoria) {
+        categoria = '1';
+    }
     // Si no existe el código postal, solicitarlo
     if (!codigoPostal) {
         codigoPostal = prompt("Por favor, ingresa tu código postal:");
@@ -57,6 +60,7 @@ function cargarPublicaciones(ambitoParam, layout) {
             layout: layout,
             ambito: ambito,
             lenguaje: lenguaje,
+            categoria: categoria,
             codigoPostal: codigoPostal
         },
         success: function (response) {
