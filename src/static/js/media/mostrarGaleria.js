@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var access_token = localStorage.getItem('access_token');    
     var ambito = localStorage.getItem('dominio');
     var codigoPostal = localStorage.getItem('codigoPostal');
+    var categoria = localStorage.getItem('categoria');
   
     if (!access_token) {
       alert("No se ha encontrado el token de acceso.");
@@ -72,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formData.append('ambito', ambito);
     formData.append('lenguaje', lenguaje);
     formData.append('codigoPostal', codigoPostal);
+    formData.append('categoria', categoria);
     $.ajax({
       url: '/media-publicaciones-mostrar/',
       type: 'POST',
@@ -111,12 +113,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 ${ambito}
                             </button>
                         </h2>
-                        <div id="collapse-${ambitoId}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
-                            <div class="accordion-body">
+                        <div id="collapse-${ambitoId}"  class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                            <div class="accordion-body" style="background-color: #343a40; color: white;">
                                     <div id="accordion-content-${ambitoId}" class="accordion-content">
-                                     <div id="navBar-${ambitoId}">
-                                          ${navBarHtml} <!-- Aquí se inserta el contenido de la barra de navegación -->
-                                      </div>
+                                    
                                     <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
                                 </div>
                                 </div>

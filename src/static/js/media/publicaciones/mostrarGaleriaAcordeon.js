@@ -65,7 +65,7 @@ function cargarPublicaciones(ambitoId) {
                                                     </h2>
                                                 <div id="collapse-${ambitoId}" class="accordion-collapse collapse show" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
 
-                                                        <div class="accordion-body">
+                                                        <div class="accordion-body" style="background-color: #343a40; color: white;">
                                                             <div id="accordion-content-${ambitoId}" class="accordion-content">
                                                                  <div id="navBar-${ambitoId}">
                                                                     ${navBarHtml} <!-- Aquí se inserta el contenido de la barra de navegación -->
