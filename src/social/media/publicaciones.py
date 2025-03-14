@@ -76,6 +76,9 @@ def media_publicaciones_mostrar():
         ambito = request.form.get('ambito')
         idioma = request.form.get('lenguaje')
         codigoPostal = request.form.get('codigoPostal')
+        categoria = request.form.get('categoria')
+        if categoria == None:
+            categoria = '1'
         if codigoPostal == None:
             codigoPostal = request.cookies.get('codigoPostal')
         if codigoPostal == 'null':
@@ -103,8 +106,15 @@ def media_publicaciones_mostrar():
                 # Obtener todas las publicaciones del usuario
                 publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
             else:
-                # Obtener todas las publicaciones del usuario
-                publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal).all()  
+                if categoria == '1':
+                    ambito_id = db.session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()
+                    categoriaRelation = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
+                    categoria_id = db.session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
+                    publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()  
+            
+                else:
+                    # Obtener todas las publicaciones del usuario
+                    publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()  
             
                 if len(publicaciones_user)==0:
                     publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal='1').all()
