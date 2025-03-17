@@ -34,32 +34,29 @@ function agregarEventListenerCategorias(ambitoId) {
 document.body.addEventListener('click', function(event) {
     // Verificamos si el elemento clickeado tiene la clase 'categoria-dropdown-item'
     if (event.target.classList.contains('categoria-dropdown-item')) {
+        const categoriaValue = event.target.getAttribute('data-value');
         debugger;
         // Obtenemos el valor de 'data-color' y 'data-value' del elemento clickeado
         const color = event.target.getAttribute('data-color');
         const value = event.target.getAttribute('data-value');
          // Obtenemos el ambitoId de la parte del ID del div contenedor (navBar-Tecnologia)
         const ambitoId = event.target.closest('[id^="navBar-"]')?.id.replace('navBar-', '');
-
+      
         if (ambitoId) {
             console.log(`Categoría seleccionada: ${value}, Color: ${color} para el ámbito ${ambitoId}`);
+            const homeButton = document.querySelector(`#home-tab-${ambitoId}`);
+            if (homeButton) {
+                const categoriaValueSanitized = decodeURIComponent(categoriaValue);
+                homeButton.textContent = categoriaValueSanitized; // Cambiar el texto del botón "Home"
+            }
             updateColor(ambitoId, color);
+            cargarPublicaciones(ambitoId,categoriaValue);
         }
     }
 });
 
 
-document.body.addEventListener('click', function(event) {
-    if (event.target.classList.contains('categoria-dropdown-item')) {
-        const color = event.target.getAttribute('data-color');
-        const ambitoId = event.target.closest('.acordeon-item')?.getAttribute('data-ambito');
-        if (ambitoId) {
-            console.log(`Color seleccionado: ${color} para el ámbito ${ambitoId}`);
-            updateColor(ambitoId, color);
-        }
-    }
-});
-
+////////////////////////////////////////////////////////////////////////////
 function updateColor(ambitoId, color) {
     if (!ambitoId || !color) return;
 
