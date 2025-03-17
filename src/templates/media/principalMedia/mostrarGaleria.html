@@ -85,9 +85,7 @@
     </div>
 
     {% include 'ambitos/carrucelDominios.html' %}
-    <div id="navBarCaracteristicasAcordeon" style="display: none;">
-        {% include 'ambitos/navBarCaracteristicas.html' %}
-    </div>
+   
    <div class="accordion" id="postAccordion" style="margin-top: 10px;">
       <!-- Aquí se agregarán dinámicamente las secciones del acordeón -->
   </div>
@@ -461,6 +459,49 @@ function toggleUnderline() {
       quill.format('underline', true);
   }
 }
+
+
+
+
+$(document).ready(function () {
+    // Delegación de eventos para los ítems del menú desplegable
+    $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (e) {
+        e.preventDefault(); // Previene el comportamiento predeterminado (en este caso, el enlace no irá a ninguna parte)
+        
+        // Obtener el ID y el valor de datos del ítem clickeado
+        const selectedCategory = this.id; // El ID del ítem (por ejemplo, 18, 19, 20)
+        const categoryName = this.dataset.value; // El valor de 'data-value' (por ejemplo, "Informática")
+        const categoryColor = this.dataset.color; // El valor de 'data-color' (por ejemplo, "red")
+
+        // Mostrar la categoría seleccionada en consola
+        console.log('Categoría seleccionada:', categoryName);
+        console.log('ID de categoría:', selectedCategory);
+        console.log('Color de categoría:', categoryColor);
+
+        // Puedes hacer algo con los datos obtenidos, por ejemplo:
+        localStorage.setItem('categoria', selectedCategory); // Guardar en localStorage
+        const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input oculto
+        if (hiddenInput.length) {
+            hiddenInput.val(selectedCategory); // Actualizar el valor del input oculto
+        }
+
+        // Marcar el ítem como activo (si es necesario)
+        $('.categoria-dropdown-item').removeClass('active');
+        $(this).addClass('active');
+
+        // Ejecutar alguna función después de seleccionar la categoría
+        // (por ejemplo, actualizando un contenido o haciendo una solicitud AJAX)
+        // Aquí puedes llamar a tus funciones, como 'cargarPublicaciones()' o 'enviarDominioAJAXDesdeCategorias()'
+    });
+});
+
+
+
+
+
+
+
+
 </script>
 <script src="{{ url_for('static', filename='js/media/mostrarGaleria.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/cargarPdf.js') }}"></script>
@@ -468,7 +509,12 @@ function toggleUnderline() {
 <script src="{{ url_for('static', filename='js/media/publicaciones/mostrarGaleriaAcordeon.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/cargarAmbitosEnComboMostrarGaleria.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/cargarAmCategoriaComboMstrarGleria.js') }}"></script>
+<script src="{{ url_for('static', filename='js/ambitos/navBarCarecMostrarGaleria.js') }}"></script>
 
+<script>
+  const cssUrl = "{{ url_for('static', filename='css/ambitos/navBarCaracteristicas.css') }}";
+  const jsUrl = "{{ url_for('static', filename='js/ambitos/navBarCarecMostrarGaleria.js') }}";
+</script>
 
 <!-- ... Más código HTML ... -->
 
