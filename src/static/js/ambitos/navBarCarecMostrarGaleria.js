@@ -1,3 +1,7 @@
+
+////////////////////////////////////////////////////////////////////////////
+// Funciones para cargar las categorías de los ámbitos en el acordeón
+////////////////////////////////////////////////////////////////////////////
 function agregarEventListenerCategorias(ambitoId) {
     setTimeout(() => {
         const botonCategorias = document.getElementById(`caracteristicas-tab-${ambitoId}`);
@@ -6,14 +10,14 @@ function agregarEventListenerCategorias(ambitoId) {
         if (botonCategorias) {
             botonCategorias.addEventListener("click", function() {
                 const actionElement = document.querySelector(`#acordeon-${ambitoId} .categoria-dropdown-menu .categoria-dropdown-item`);
-                debugger;
+               
                 if (actionElement) {
                     console.log("Texto del elemento Action:", actionElement.textContent.trim());
                 } else {
                     console.warn("No se encontró el elemento Action.");
                 }
                
-                debugger;
+             
                 if (actionElement.textContent.trim() === 'Action') {
                     cargarAmbitosCategorias(ambitoId);
                       // Elimina el elemento Action para que no vuelva a ser procesado
@@ -27,16 +31,23 @@ function agregarEventListenerCategorias(ambitoId) {
     }, 100);
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const firstItem = document.querySelector('.categoria-dropdown-item[data-color]');
-    if (firstItem) {
-        const color = firstItem.getAttribute('data-color');
-        const ambitoId = firstItem.closest('.acordeon-item')?.getAttribute('data-ambito');
-        if (ambitoId && color) {
+document.body.addEventListener('click', function(event) {
+    // Verificamos si el elemento clickeado tiene la clase 'categoria-dropdown-item'
+    if (event.target.classList.contains('categoria-dropdown-item')) {
+        debugger;
+        // Obtenemos el valor de 'data-color' y 'data-value' del elemento clickeado
+        const color = event.target.getAttribute('data-color');
+        const value = event.target.getAttribute('data-value');
+         // Obtenemos el ambitoId de la parte del ID del div contenedor (navBar-Tecnologia)
+        const ambitoId = event.target.closest('[id^="navBar-"]')?.id.replace('navBar-', '');
+
+        if (ambitoId) {
+            console.log(`Categoría seleccionada: ${value}, Color: ${color} para el ámbito ${ambitoId}`);
             updateColor(ambitoId, color);
         }
     }
 });
+
 
 document.body.addEventListener('click', function(event) {
     if (event.target.classList.contains('categoria-dropdown-item')) {
