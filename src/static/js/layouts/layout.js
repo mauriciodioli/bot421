@@ -179,7 +179,7 @@ if (!getCookie("language")) {
     if (languageLink) {
         languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
     } else {
-        console.error("Element with ID 'yourElementId' not found.");
+        console.error("Element with ID 'languageLink' not found.");
     }
     
 }

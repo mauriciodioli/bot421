@@ -1,6 +1,7 @@
 
 // Función para manejar la lógica del acordeón y cargar publicaciones
 function cargarPublicaciones(ambitoId) {
+   
     // Mostrar el splash de carga
     const splash = document.querySelector('.splashCarga');
     if (splash) {
@@ -12,6 +13,7 @@ function cargarPublicaciones(ambitoId) {
     const roll = localStorage.getItem('roll');
     const access_token = localStorage.getItem('access_token');
     const codigoPostal = localStorage.getItem('codigoPostal');
+ 
 
     if (!access_token) {
         alert("No se ha encontrado el token de acceso.");
@@ -21,7 +23,8 @@ function cargarPublicaciones(ambitoId) {
    
     // Verificar si el acordeón con el ID ya existe
     let accordionItem = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
-    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
+    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido3
+    let categoria = localStorage.getItem('categoria') || '0';
 
 
     if (!accordionItem) {
@@ -33,6 +36,7 @@ function cargarPublicaciones(ambitoId) {
             formData.append('ambito', ambitoId); // Pasar el ID del ámbito
             formData.append('lenguaje', lenguaje);
             formData.append('codigoPostal', codigoPostal);
+            formData.append('categoria',categoria);
 
             // Realizar la solicitud AJAX
             $.ajax({
@@ -50,44 +54,80 @@ function cargarPublicaciones(ambitoId) {
                     // Verificar si el acordeón existe
                     let accordionContent = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
 
-                    if (!accordionContent && publicaciones.length > 0) {
+                 //   if (!accordionContent && publicaciones.length > 0) {
                         // Si el acordeón no existe, crearlo dinámicamente
                         const accordionContainer = document.querySelector('#postAccordion'); // Contenedor con el ID correcto
-                        var navBarHtml = document.getElementById('navBarCaracteristicasAcordeon').innerHTML;
-                
-                        if (accordionContainer) {
-                            const newAccordion = `
-                                        <div class="accordion-item">
-                                                    <h2 class="accordion-header" id="heading-${ambitoId}">
-                                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
-                                                            ${ambitoId}
-                                                        </button>
-                                                    </h2>
-                                                <div id="collapse-${ambitoId}" class="accordion-collapse collapse show" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
-
-                                                        <div class="accordion-body" style="background-color: #343a40; color: white;">
-                                                            <div id="accordion-content-${ambitoId}" class="accordion-content">
-                                                                 <div id="navBar-${ambitoId}">
-                                                                    ${navBarHtml} <!-- Aquí se inserta el contenido de la barra de navegación -->
-                                                                </div>
-                                                               <div class="card-grid-publicaciones"> <!-- Aquí se aplica la clase de grilla -->
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                        
+                    
+                       // var navBarHtml = document.getElementById('navBarCaracteristicasAcordeon').innerHTML;
+                       const navBarHtml = `
+                                <ul class="nav nav-tabs mt-3" id="listadoCategorias-${ambitoId}" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="home-tab-${ambitoId}" data-bs-toggle="tab" data-bs-target="#home-tab-pane-${ambitoId}" type="button" role="tab" aria-controls="home-tab-pane-${ambitoId}" aria-selected="true">Home</button>
+                                        </li>
+                                        <li class="nav-item dropdown" role="presentation">
+                                            <button class="nav-link dropdown-toggle" style="color: azure;" id="caracteristicas-tab-${ambitoId}" data-bs-toggle="dropdown" type="button" role="tab" aria-expanded="false">Categorías</button>
+                                            <ul class="dropdown-menu categoria-dropdown-menu">
+                                                <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="red">Action</a></li>
+                                                <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="green">Another action</a></li>
+                                                <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="orange">Something else here</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item categoria-dropdown-item" href="#">Separated link</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content mt-3" id="myTabContent-${ambitoId}">
+                                        <div class="tab-pane fade show active" id="home-tab-pane-${ambitoId}" role="tabpanel" aria-labelledby="home-tab-${ambitoId}" tabindex="0">Contenido de Home</div>
+                                        <div class="tab-pane fade" id="profile-tab-pane-${ambitoId}" role="tabpanel" aria-labelledby="profile-tab-${ambitoId}" tabindex="0">Contenido de Profile</div>
+                                        <div class="tab-pane fade" id="contact-tab-pane-${ambitoId}" role="tabpanel" aria-labelledby="contact-tab-${ambitoId}" tabindex="0">Contenido de Contact</div>
+                                        <div class="tab-pane fade" id="disabled-tab-pane-${ambitoId}" role="tabpanel" aria-labelledby="disabled-tab-${ambitoId}" tabindex="0">Contenido Deshabilitado</div>
+                                    </div>
+                        `;
+                   
+                   if (accordionContainer) {
+                    const newAccordion = `
+                                <div class="accordion-item" id="acordeon-${ambitoId}"> <!-- Se añade el ID aquí -->
+                                    <h2 class="accordion-header" id="heading-${ambitoId}">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
+                                            ${ambitoId}
+                                        </button>
+                                    </h2>
+                                    <div id="collapse-${ambitoId}" class="accordion-collapse collapse show" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                                        <div class="accordion-body" style="background-color: #343a40; color: white;">
+                                            <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                                <div id="navBar-${ambitoId}">
+                                                    ${navBarHtml}
                                                 </div>
-                                            `;
-                            accordionContainer.insertAdjacentHTML('beforeend', newAccordion);
-                            // Usar un pequeño retraso para asegurarse de que el DOM se actualice
-                            
-                        
-                        
-                            // Actualizar la referencia para el contenido del acordeón recién creado
-                        
-                            accordionContent = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
-                            
-                        }
-                    }
+                                                <div class="card-grid-publicaciones"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                
+                       accordionContainer.insertAdjacentHTML('beforeend', newAccordion);
+                       agregarEventListenerCategorias(ambitoId);
+                       // Verificar si el archivo CSS ya está presente
+                       if (!document.querySelector(`link[href="${cssUrl}"]`)) {
+                           const link = document.createElement('link');
+                           link.rel = 'stylesheet';
+                           link.href = cssUrl;
+                           document.head.appendChild(link);
+                       }
+                   
+                       // Verificar si el archivo JS ya está presente
+                       if (!document.querySelector(`script[src="${jsUrl}"]`)) {
+                           const script = document.createElement('script');
+                           script.src = jsUrl;
+                           script.defer = true;
+                           document.head.appendChild(script);
+                       }
+                   
+                       // Actualizar la referencia para el contenido del acordeón recién creado
+                       const accordionContent = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
+                   }
+                   
+                  //  }
                     
                     // Ahora que el acordeón existe, limpiar y actualizar su contenido
                     if (accordionContent&& publicaciones.length > 0) {
@@ -121,7 +161,7 @@ function cargarPublicaciones(ambitoId) {
                            
                             }
                             
-
+                            debugger;
                             const cardHtml = `
                                 <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
                                     <div class="card-body">
@@ -161,7 +201,6 @@ function cargarPublicaciones(ambitoId) {
             if (splash) splash.style.display = 'none';
         }
 }
-
 
 
 
@@ -233,3 +272,32 @@ function gestionarAcordeones(ambitoId) {
 }
 
 
+
+
+
+// Esperar a que el DOM se haya cargado
+document.addEventListener('DOMContentLoaded', function() {
+    // Seleccionar todos los elementos de la categoría
+    const categoriaItems = document.querySelectorAll('.categoria-dropdown-item');
+debugger;
+    // Añadir un evento 'click' a cada elemento
+    categoriaItems.forEach(function(item) {
+        item.addEventListener('click', function(event) {
+            // Prevenir la acción por defecto
+            event.preventDefault();
+
+            // Obtener el ID de la categoría y otros atributos
+            const categoriaId = item.id;  // id del item (18, 19, 20, etc.)
+            const categoriaValor = item.getAttribute('data-value');  // Valor de la categoría (Informática, Electrónica, etc.)
+            const categoriaColor = item.getAttribute('data-color');  // Color de la categoría (rojo, verde, azul, etc.)
+
+            // Hacer lo que necesites con la categoría seleccionada, por ejemplo, cargar publicaciones
+            console.log(`Categoría seleccionada: ${categoriaValor}, ID: ${categoriaId}, Color: ${categoriaColor}`);
+
+            // Aquí puedes agregar la lógica para filtrar o cargar las publicaciones
+            // Puedes llamar a tu función cargarPublicaciones() pasando el ambitoId adecuado
+            cargarPublicaciones(categoriaId);  // Ejemplo de uso, si quieres cargar publicaciones basadas en la categoría
+
+        });
+    });
+});

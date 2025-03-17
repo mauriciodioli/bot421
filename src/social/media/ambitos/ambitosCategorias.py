@@ -60,7 +60,8 @@ def social_media_ambitosCategorias_categoria_mostrar():
 
         # Serializar los datos
         categorias_data = [{
-            'id': categoria.id,           
+            'id': categoria.id,     
+            'ambito': ambito_nombre,     
             'nombre': categoria.nombre,
             'descripcion': categoria.descripcion,
             'idioma': categoria.idioma,

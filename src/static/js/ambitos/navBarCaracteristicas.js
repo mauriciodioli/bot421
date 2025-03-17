@@ -144,8 +144,16 @@ function cargarAmbitosCategorias() {
 
 // Delegación de eventos para manejar clics en los ítems del menú desplegable
 $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (e) {
+//$(document).on('click', '#navBar-' + ambitoId + ' .categoria-dropdown-item', function (e) {
+
     e.preventDefault(); // Previene el comportamiento predeterminado
-   
+  
+    let categoriaId = $(this).attr('id');
+    let categoriaNombre = $(this).data('value');
+    
+    console.log("Categoría seleccionada:", categoriaNombre);
+    console.log("Clic detectado"); // Para verificar si el clic está siendo detectado
+ 
     const selectedCategory = this.id; // Obtiene el valor de data-value
   
     // Guardar el dominio en localStorage
@@ -162,19 +170,18 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
     console.log('Dominio enviado desde categorias---------------:', domain);
     console.log('Categorias---------------:', selectedCategory);
     // Llamar a la función para manejar el dominio seleccionado
+    
     if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
-        debugger;
+       
         cargarPublicaciones(domain, 'layout');
-    }else{
+    }
+    if (document.querySelector('#navBarCaracteristicas-index')) {
         console.log("Ejecutando en index.html");
         enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
     } 
-    if (document.querySelector('#navBarCaracteristicas-mostrarGaleria')) {
-        console.log("Ejecutando en mostrarGaleria.html");
-        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
-   
-    }
+    
+    
     // Marcar el ítem como activo
     $('.categoria-dropdown-item').removeClass('active');
     $(this).addClass('active');

@@ -104,8 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Object.keys(postsByAmbito).forEach(function(ambito, index) {
                 var ambitoId = 'ambito-' + index; // ID único para cada ámbito
                 var publicaciones = postsByAmbito[ambito];
-                var navBarHtml = document.getElementById('navBarCaracteristicasAcordeon').innerHTML;
-                
+                 
                 var accordionItemHtml = `
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="heading-${ambitoId}">
@@ -456,7 +455,7 @@ function cerrarModalImagenGrande() {
       
       var descripcion = postCard.querySelector('.card-text-descripcion').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
-      debugger;
+    
       var ambito = postCard.querySelector('.card-text-ambito').textContent;
       var idioma = postCard.querySelector('.card-text-idioma').textContent;
       // Cargar los datos en el modal
