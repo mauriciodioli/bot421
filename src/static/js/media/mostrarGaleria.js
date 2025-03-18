@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
    */
   
   function muestraGaleriadePublicaciones() {
-
+  
     // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');
 
@@ -59,7 +59,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var access_token = localStorage.getItem('access_token');    
     var ambito = localStorage.getItem('dominio');
     var codigoPostal = localStorage.getItem('codigoPostal');
-    var categoria = localStorage.getItem('categoria');
+    var categoria = '1';
+    localStorage.setItem('categoria', '');
   
     if (!access_token) {
       alert("No se ha encontrado el token de acceso.");

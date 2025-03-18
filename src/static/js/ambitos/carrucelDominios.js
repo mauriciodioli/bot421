@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.cargarAmbitosCarrusel = function () {
+  
   fetch('/social-media-publicaciones-obtener-ambitos/', {
       method: 'GET',
       headers: {
