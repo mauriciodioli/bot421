@@ -1,7 +1,12 @@
 
 // Función para manejar la lógica del acordeón y cargar publicaciones
 function cargarPublicaciones(ambitoId) {
-   
+   debugger;
+   compara = localStorage.getItem('dominio');
+   if(ambitoId!=compara) {
+    localStorage.setItem('categoria', '1');
+   }
+
     // Mostrar el splash de carga
     const splash = document.querySelector('.splashCarga');
     if (splash) {
@@ -23,11 +28,14 @@ function cargarPublicaciones(ambitoId) {
    
     // Verificar si el acordeón con el ID ya existe
     let accordionItem = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
+    
     let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido3
     let categoria = localStorage.getItem('categoria') || '0';
 
+    //if (!accordionItem || accordionItem?.childElementCount === 0 || accordionItem?.textContent.trim() === "") {
 
-    if (!accordionItem) {
+            console.log("El acordeón está vacío.");
+        
             // Preparar los datos para la solicitud AJAX
             const formData = new FormData();
             formData.append('roll', roll);
@@ -56,8 +64,10 @@ function cargarPublicaciones(ambitoId) {
 
                  //   if (!accordionContent && publicaciones.length > 0) {
                         // Si el acordeón no existe, crearlo dinámicamente
-                        const accordionContainer = document.querySelector('#postAccordion'); // Contenedor con el ID correcto
-                        
+                        //const accordionContainer = document.querySelector('#postAccordion'); // Contenedor con el ID correcto
+                        const accordionContainer = document.querySelector(`#acordeon-${ambitoId}`);
+                        console.log(accordionContainer);
+
                     
                        // var navBarHtml = document.getElementById('navBarCaracteristicasAcordeon').innerHTML;
                        const navBarHtml = `
@@ -84,48 +94,51 @@ function cargarPublicaciones(ambitoId) {
                                     </div>
                         `;
                    
-                   if (accordionContainer) {
-                    const newAccordion = `
-                                <div class="accordion-item" id="acordeon-${ambitoId}"> <!-- Se añade el ID aquí -->
-                                    <h2 class="accordion-header" id="heading-${ambitoId}">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
-                                            ${ambitoId}
-                                        </button>
-                                    </h2>
-                                    <div id="collapse-${ambitoId}" class="accordion-collapse collapse show" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
-                                        <div class="accordion-body" style="background-color: #343a40; color: white;">
-                                            <div id="accordion-content-${ambitoId}" class="accordion-content">
-                                                <div id="navBar-${ambitoId}">
-                                                    ${navBarHtml}
-                                                </div>
-                                                <div class="card-grid-publicaciones"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                
-                       accordionContainer.insertAdjacentHTML('beforeend', newAccordion);
-                       agregarEventListenerCategorias(ambitoId);
-                       // Verificar si el archivo CSS ya está presente
-                       if (!document.querySelector(`link[href="${cssUrl}"]`)) {
-                           const link = document.createElement('link');
-                           link.rel = 'stylesheet';
-                           link.href = cssUrl;
-                           document.head.appendChild(link);
-                       }
-                   
-                       // Verificar si el archivo JS ya está presente
-                       if (!document.querySelector(`script[src="${jsUrl}"]`)) {
-                           const script = document.createElement('script');
-                           script.src = jsUrl;
-                           script.defer = true;
-                           document.head.appendChild(script);
-                       }
-                   
-                       // Actualizar la referencia para el contenido del acordeón recién creado
-                       const accordionContent = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
-                   }
+
+
+if (!accordionContainer) {  // Si NO existe, lo creamos
+    const newAccordion = `
+        <div class="accordion-item" id="acordeon-${ambitoId}"> <!-- Se añade el ID aquí -->
+            <h2 class="accordion-header" id="heading-${ambitoId}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
+                    ${ambitoId}
+                </button>
+            </h2>
+            <div id="collapse-${ambitoId}" class="accordion-collapse collapse show" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                <div class="accordion-body" style="background-color: #343a40; color: white;">
+                    <div id="accordion-content-${ambitoId}" class="accordion-content">
+                        <div id="navBar-${ambitoId}">
+                            ${navBarHtml}
+                        </div>
+                        <div class="card-grid-publicaciones"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Insertar el nuevo acordeón en el contenedor principal
+    document.querySelector('#postAccordion').insertAdjacentHTML('beforeend', newAccordion);
+
+    agregarEventListenerCategorias(ambitoId);
+
+    // Verificar y agregar CSS solo si no está ya presente
+    if (!document.querySelector(`link[href="${cssUrl}"]`)) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssUrl;
+        document.head.appendChild(link);
+    }
+
+    // Verificar y agregar JS solo si no está ya presente
+    if (!document.querySelector(`script[src="${jsUrl}"]`)) {
+        const script = document.createElement('script');
+        script.src = jsUrl;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+} 
+
                    
                   //  }
                     
@@ -196,10 +209,10 @@ function cargarPublicaciones(ambitoId) {
                     if (splash) splash.style.display = 'none';
                 }
             });
-        } else {
-            gestionarAcordeones(ambitoId) ;
-            if (splash) splash.style.display = 'none';
-        }
+       //  } else {
+      //      gestionarAcordeones(ambitoId) ;
+     //       if (splash) splash.style.display = 'none';
+     //   }
 }
 
 
@@ -279,7 +292,7 @@ function gestionarAcordeones(ambitoId) {
 document.addEventListener('DOMContentLoaded', function() {
     // Seleccionar todos los elementos de la categoría
     const categoriaItems = document.querySelectorAll('.categoria-dropdown-item');
-debugger;
+
     // Añadir un evento 'click' a cada elemento
     categoriaItems.forEach(function(item) {
         item.addEventListener('click', function(event) {
@@ -293,7 +306,7 @@ debugger;
 
             // Hacer lo que necesites con la categoría seleccionada, por ejemplo, cargar publicaciones
             console.log(`Categoría seleccionada: ${categoriaValor}, ID: ${categoriaId}, Color: ${categoriaColor}`);
-
+            debugger;
             // Aquí puedes agregar la lógica para filtrar o cargar las publicaciones
             // Puedes llamar a tu función cargarPublicaciones() pasando el ambitoId adecuado
             cargarPublicaciones(categoriaId);  // Ejemplo de uso, si quieres cargar publicaciones basadas en la categoría

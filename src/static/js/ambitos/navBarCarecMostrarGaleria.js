@@ -50,7 +50,8 @@ document.body.addEventListener('click', function(event) {
                 homeButton.textContent = categoriaValueSanitized; // Cambiar el texto del botón "Home"
             }
             updateColor(ambitoId, color);
-            cargarPublicaciones(ambitoId,categoriaValue);
+            localStorage.setItem('categoria', categoriaValue);
+            cargarPublicaciones(ambitoId);
         }
     }
 });

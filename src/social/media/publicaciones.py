@@ -79,7 +79,7 @@ def media_publicaciones_mostrar():
         categoria = request.form.get('categoria')
         
         if categoria == None or categoria == 'undefined' or categoria == 'null':
-            categoria = '1'
+            categoria = '1' 
         if codigoPostal == None:
             codigoPostal = request.cookies.get('codigoPostal')
         if codigoPostal == 'null':
@@ -118,11 +118,24 @@ def media_publicaciones_mostrar():
                         publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()  
             
                 else:
+                    if not categoria.isdigit():
+                        ambito_id = db.session.query(Ambitos).filter_by(valor=ambito, idioma=idioma).first()
+                        
+                        if ambito_id:  # Verificar que se encontró el ámbito antes de acceder a .id
+                            categoriaRelation = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).all()
+                        
+                            for categoriaR in categoriaRelation:
+                                categoria_id = db.session.query(AmbitoCategoria).filter_by(id=categoriaR.ambitoCategoria_id, valor=categoria).first()
+                                if categoria_id:
+                                    publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()  
+                                    break  # Detener el bucle si se encuentra una coincidencia
+
+                    else:
                     # Obtener todas las publicaciones del usuario
-                    publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()  
+                             publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()  
             
-                if len(publicaciones_user)==0:
-                    publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal='1').all()
+                    if len(publicaciones_user)==0:
+                        publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal='1').all()
             
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
