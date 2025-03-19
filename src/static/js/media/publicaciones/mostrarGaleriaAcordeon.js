@@ -92,48 +92,48 @@ function cargarPublicaciones(ambitoId) {
                    
 
 
-if (!accordionContainer) {  // Si NO existe, lo creamos
-    const newAccordion = `
-        <div class="accordion-item" id="acordeon-${ambitoId}"> <!-- Se añade el ID aquí -->
-            <h2 class="accordion-header" id="heading-${ambitoId}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
-                    ${ambitoId}
-                </button>
-            </h2>
-            <div id="collapse-${ambitoId}" class="accordion-collapse collapse show" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
-                <div class="accordion-body" style="background-color: #343a40; color: white;">
-                    <div id="accordion-content-${ambitoId}" class="accordion-content">
-                        <div id="navBar-${ambitoId}">
-                            ${navBarHtml}
-                        </div>
-                        <div class="card-grid-publicaciones"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+                            if (!accordionContainer) {  // Si NO existe, lo creamos
+                                const newAccordion = `
+                                    <div class="accordion-item" id="acordeon-${ambitoId}"> <!-- Se añade el ID aquí -->
+                                        <h2 class="accordion-header" id="heading-${ambitoId}">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${ambitoId}" aria-expanded="true" aria-controls="collapse-${ambitoId}">
+                                                ${ambitoId}
+                                            </button>
+                                        </h2>
+                                        <div id="collapse-${ambitoId}" class="accordion-collapse collapse show" aria-labelledby="heading-${ambitoId}" data-bs-parent="#postAccordion">
+                                            <div class="accordion-body" style="background-color: #343a40; color: white;">
+                                                <div id="accordion-content-${ambitoId}" class="accordion-content">
+                                                    <div id="navBar-${ambitoId}">
+                                                        ${navBarHtml}
+                                                    </div>
+                                                    <div class="card-grid-publicaciones"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
 
-    // Insertar el nuevo acordeón en el contenedor principal
-    document.querySelector('#postAccordion').insertAdjacentHTML('beforeend', newAccordion);
+                                // Insertar el nuevo acordeón en el contenedor principal
+                                document.querySelector('#postAccordion').insertAdjacentHTML('beforeend', newAccordion);
 
-    agregarEventListenerCategorias(ambitoId);
+                                agregarEventListenerCategorias(ambitoId);
 
-    // Verificar y agregar CSS solo si no está ya presente
-    if (!document.querySelector(`link[href="${cssUrl}"]`)) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = cssUrl;
-        document.head.appendChild(link);
-    }
+                                // Verificar y agregar CSS solo si no está ya presente
+                                if (!document.querySelector(`link[href="${cssUrl}"]`)) {
+                                    const link = document.createElement('link');
+                                    link.rel = 'stylesheet';
+                                    link.href = cssUrl;
+                                    document.head.appendChild(link);
+                                }
 
-    // Verificar y agregar JS solo si no está ya presente
-    if (!document.querySelector(`script[src="${jsUrl}"]`)) {
-        const script = document.createElement('script');
-        script.src = jsUrl;
-        script.defer = true;
-        document.head.appendChild(script);
-    }
-} 
+                                // Verificar y agregar JS solo si no está ya presente
+                                if (!document.querySelector(`script[src="${jsUrl}"]`)) {
+                                    const script = document.createElement('script');
+                                    script.src = jsUrl;
+                                    script.defer = true;
+                                    document.head.appendChild(script);
+                                }
+                            } 
 
                    
                   //  }
@@ -184,7 +184,7 @@ if (!accordionContainer) {  // Si NO existe, lo creamos
                                         </div>
                                         <p class="card-text-ambito">${post.ambito}</p>
                                         <p class="card-text-descripcion">${post.descripcion}</p>
-                                        <p class="card-text-idiomas">${post.idioma}</p>
+                                        <p class="card-text-idioma">${post.idioma}</p>
                                         <div class="btn-modificar-eliminar">
                                             <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
                                             <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>

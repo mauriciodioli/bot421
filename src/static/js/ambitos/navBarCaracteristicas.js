@@ -276,10 +276,9 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
     // Ruta al archivo con la galería de imágenes   
     var galeriaURL = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
-
-    if ( !localStorage.getItem('categorias')) {
-        
-        localStorage.setItem('categoria', domain);
+   
+    if ( !localStorage.getItem('categoria')) {        
+        localStorage.setItem('categoria', '1');
        
     }
 
