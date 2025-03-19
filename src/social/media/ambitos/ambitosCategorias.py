@@ -95,7 +95,7 @@ def social_media_ambitos_crear_categoria():
         color = data.get('color', None)
         estado = data.get('estado', None)
         nombreAmbito = data.get('ambito', None)
-
+        codigo_postal = data.get('cp', None)
         # Validar campos obligatorios
         if not nombre or not descripcion:
             return jsonify({"error": "Los campos 'nombre' y 'descripcion' son obligatorios"}), 400

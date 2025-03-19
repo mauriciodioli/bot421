@@ -85,6 +85,12 @@ $(document).ready(function() {
 
 
 function crearAmbitoCategorias() {
+    let codigo_postal = document.getElementById("codigoPostalInput").value;
+    let ambito = document.getElementById("ambitoInput").value;
+    if (!ambito || !codigo_postal) {
+        ambito = localStorage.getItem("dominio");
+        codigo_postal = localStorage.getItem("codigoPostal");
+    }
     // Obtener los valores del formulario
     let nombre = document.getElementById("nombre").value;
     let descripcion = document.getElementById("descripcion").value;
@@ -92,7 +98,7 @@ function crearAmbitoCategorias() {
     let valor = document.getElementById("valor").value;
     let color = document.getElementById("color").value;
     let estado = document.getElementById("estado").value;
-    let ambito = localStorage.getItem("dominio");
+   
     // Validar campos obligatorios
     if (!nombre || !descripcion) {
         alert("Los campos 'Nombre' y 'Descripción' son obligatorios.");
@@ -107,7 +113,8 @@ function crearAmbitoCategorias() {
         valor: valor,
         color: color,
         ambito: ambito,
-        estado: estado
+        estado: estado,
+        cp: codigo_postal
     };
 
     // Enviar la solicitud AJAX

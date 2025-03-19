@@ -2,10 +2,9 @@
 // Función para manejar la lógica del acordeón y cargar publicaciones
 function cargarPublicaciones(ambitoId) {
    debugger;
-   compara = localStorage.getItem('dominio');
-   if(ambitoId!=compara) {
-    localStorage.setItem('categoria', '1');
-   }
+   compara = localStorage.getItem('dominio');  
+  
+   
 
     // Mostrar el splash de carga
     const splash = document.querySelector('.splashCarga');
@@ -31,7 +30,7 @@ function cargarPublicaciones(ambitoId) {
     
     let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido3
     let categoria = localStorage.getItem('categoria') || '0';
-
+    localStorage.setItem('categoria', '1');
     //if (!accordionItem || accordionItem?.childElementCount === 0 || accordionItem?.textContent.trim() === "") {
 
             console.log("El acordeón está vacío.");
@@ -59,6 +58,7 @@ function cargarPublicaciones(ambitoId) {
                 success: function (response) {
                     const publicaciones = response || []; // Acceder directamente al objeto recibido
                     limpiarAcordeon(ambitoId); 
+                    localStorage.setItem('dominio', ambitoId);
                     // Verificar si el acordeón existe
                     let accordionContent = document.querySelector(`#accordion-content-${ambitoId} .card-grid-publicaciones`);
 
