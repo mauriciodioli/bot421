@@ -100,7 +100,7 @@ function crearAmbitoCategorias() {
     let estado = document.getElementById("estado").value;
    
     // Validar campos obligatorios
-    if (!nombre || !descripcion) {
+    if (!nombre || !descripcion||idioma||valor||color||estado) {
         alert("Los campos 'Nombre' y 'Descripción' son obligatorios.");
         return;
     }

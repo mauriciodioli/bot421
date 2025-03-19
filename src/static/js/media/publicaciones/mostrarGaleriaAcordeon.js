@@ -1,7 +1,7 @@
 
 // Función para manejar la lógica del acordeón y cargar publicaciones
 function cargarPublicaciones(ambitoId) {
-   debugger;
+   
    compara = localStorage.getItem('dominio');  
   
    
@@ -78,11 +78,7 @@ function cargarPublicaciones(ambitoId) {
                                         <li class="nav-item dropdown" role="presentation">
                                             <button class="nav-link dropdown-toggle" style="color: azure;" id="caracteristicas-tab-${ambitoId}" data-bs-toggle="dropdown" type="button" role="tab" aria-expanded="false">Categorías</button>
                                             <ul class="dropdown-menu categoria-dropdown-menu">
-                                                <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="red">Action</a></li>
-                                                <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="green">Another action</a></li>
-                                                <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="orange">Something else here</a></li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li><a class="dropdown-item categoria-dropdown-item" href="#">Separated link</a></li>
+                                                <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="red">Action</a></li>                                               
                                             </ul>
                                         </li>
                                     </ul>
@@ -174,7 +170,7 @@ if (!accordionContainer) {  // Si NO existe, lo creamos
                            
                             }
                             
-                            debugger;
+                            
                             const cardHtml = `
                                 <div class="card-publicacion-admin" id="card-${post.publicacion_id}" onclick="cambiarEstado(event, ${post.publicacion_id})">
                                     <div class="card-body">
@@ -188,6 +184,7 @@ if (!accordionContainer) {  // Si NO existe, lo creamos
                                         </div>
                                         <p class="card-text-ambito">${post.ambito}</p>
                                         <p class="card-text-descripcion">${post.descripcion}</p>
+                                        <p class="card-text-idiomas">${post.idioma}</p>
                                         <div class="btn-modificar-eliminar">
                                             <button class="btn-modificar" onclick="modificarPublicacion(${post.publicacion_id})">Modificar</button>
                                             <button class="btn-eliminar" onclick="eliminarPublicacion(${post.publicacion_id})">Eliminar</button>
