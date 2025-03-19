@@ -35,7 +35,7 @@ document.body.addEventListener('click', function(event) {
     // Verificamos si el elemento clickeado tiene la clase 'categoria-dropdown-item'
     if (event.target.classList.contains('categoria-dropdown-item')) {
         const categoriaValue = event.target.getAttribute('data-value');
-        debugger;
+        
         // Obtenemos el valor de 'data-color' y 'data-value' del elemento clickeado
         const color = event.target.getAttribute('data-color');
         const value = event.target.getAttribute('data-value');
