@@ -49,13 +49,13 @@ function formatDate(dateString) {
 function cargarDatosPublicacion() {
     // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');
-
+    let categoria = localStorage.getItem('categoria');
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
 
     // Redirigir a la URL construida con los parámetros
-    window.location.href = `/media-muestraPublicacionesEnAmbitos?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}`;
+    window.location.href = `/media-muestraPublicacionesEnAmbitos/?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}&categoria=${categoria}`;
 }
 
 // Asegurar que el splash desaparezca al volver atrás
@@ -72,7 +72,7 @@ window.addEventListener("pageshow", function(event) {
 
 
 
-function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
+function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, categoria) {
      // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');
 
@@ -93,6 +93,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout) {
             publicacion_id: publicacionId,
             user_id: userId,
             ambito: ambito,
+            categoria: categoria,
             layout: layout,
             lenguaje: lenguaje
         }),

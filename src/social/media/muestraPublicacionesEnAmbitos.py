@@ -31,18 +31,19 @@ muestraPublicacionesEnAmbitos = Blueprint('muestraPublicacionesEnAmbitos',__name
 
 
 
-@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos', methods=['GET'])
+@muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos/', methods=['GET'])
 def media_muestraPublicacionesEnAmbitos():
     # Acceder a los parámetros de la URL
     publicacion_id = request.args.get('publicacion_id')
     user_id = request.args.get('user_id')
     ambito = request.args.get('ambito')
     layoutIn = request.args.get('layout')
+    categoria = request.args.get('categoria')
 
      # Aquí manejas los datos recibidos y haces la lógica correspondiente
     # Podrías devolver una página renderizada con los datos correspondientes.
     # Ejemplo de cómo podrías usar los datos:
-    return render_template('media/publicaciones/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito, layout=layoutIn)
+    return render_template('media/publicaciones/publicacionesEnAmbitos.html', publicacion_id=publicacion_id, user_id=user_id, ambito=ambito, layout=layoutIn, categoria=categoria)
 
 
 @muestraPublicacionesEnAmbitos.route('/media-muestraPublicacionesEnAmbitos-mostrar/', methods=['POST'])
@@ -54,9 +55,10 @@ def mostrar_publicaciones_en_ambitos():
     ambito = data.get('ambito')
     layout = data.get('layout')
     idioma = data.get('lenguaje')
+    categoria = data.get('categoria')
    
     # Ahora puedes usar publicacion_id, user_id, y ambito en tu lógica
-    post = armar_publicacion_bucket_para_dpi(user_id,ambito,layout,idioma)  # Reemplaza con tu lógica de obtención
+    post = armar_publicacion_bucket_para_dpi(user_id,ambito,layout,idioma,categoria)  # Reemplaza con tu lógica de obtención
     
     if post:
         # Aquí puedes usar los parámetros adicionales si es necesario
@@ -65,10 +67,10 @@ def mostrar_publicaciones_en_ambitos():
     else:
         return jsonify({'error': 'Publicación no encontrada'}), 404
 
-def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma):
+def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
     try:  
         # Obtener todas las publicaciones que coincidan con user_id y ambito
-        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
+        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, categoria_id=int(categoria)).all()
 
         resultados = []
 
@@ -157,6 +159,7 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma):
                 'titulo': publicacion.titulo,
                 'texto': publicacion.texto,
                 'ambito': publicacion.ambito,
+                'categoria_id': publicacion.categoria_id,
                 'correo_electronico': publicacion.correo_electronico,
                 'descripcion': publicacion.descripcion,
                 'color_texto': publicacion.color_texto,

@@ -4,8 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
  // Agregar manejador de eventos para el formulario
  var form = document.getElementById('modificarPostForm_modificaPublicacion');
  form.addEventListener('submit', function(event) {
-   event.preventDefault(); // Prevenir el envío por defecto del formulario
-   debugger;
+   event.preventDefault(); // Prevenir el envío por defecto del formulario   
    // Enviar los datos del formulario por AJAX
    enviarDatosFormulario();
  });
@@ -448,6 +447,7 @@ function cerrarModalImagenGrande() {
   function cargarDatosPublicacion(id) {
     // Obtener la información del post desde el DOM si ya está cargada
     var postCard = document.getElementById(`card-${id}`);
+    debugger;   
     if (postCard) {
       // Obtener los datos de la publicación
       var id_publicacion = id;
@@ -456,7 +456,7 @@ function cerrarModalImagenGrande() {
       
       var descripcion = postCard.querySelector('.card-text-descripcion').textContent;
       var estado = postCard.querySelector('.card-text-estado').textContent;
-     debugger;
+    
       var ambito = postCard.querySelector('.card-text-ambito').textContent;
       var idioma = postCard.querySelector('.card-text-idioma').textContent;
       // Cargar los datos en el modal
