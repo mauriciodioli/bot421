@@ -46,6 +46,7 @@ registrarUsuario = Blueprint("registrarUsuario", __name__)
 # Clave secreta para generar los tokens
 SECRET_KEY = 'supersecreto'
 
+
 # Duración de los tokens
 TOKEN_DURATION = 30  # minutos
 REFRESH_TOKEN_DURATION = 60  # minutos
@@ -86,6 +87,7 @@ def registro_usuario():
     ciudad = datos['ciudad']
     latitud = datos['latitud']
     longitud = datos['longitud']
+   
     if idioma == 'Spanish':
         idioma = 'es'
     elif idioma == 'English':
