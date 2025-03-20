@@ -39,11 +39,15 @@ from usuarios.autenticacion import autenticacion
 # Configuración del Blueprint para el registro de usuarios
 registrarUsuarioRegion = Blueprint("registrarUsuarioRegion", __name__)
 
+HCAPTCHA_SECRET_KEY = "cc46341e-6f28-419c-b544-5fc8b4deb302"
 
 @registrarUsuarioRegion.route('/usuarios-registrarUsuarioRegion/', methods=['POST'])
 def usuarios_registrarUsuarioRegion(): 
     correo_electronico = request.form['correo_electronico']   
-    password = request.form['password']  
+    password = request.form['password'] 
+    hcaptcha_response = request.form['h-captcha-response']
+    if not hcaptcha_response:
+        return jsonify({"error": "Captcha no completado"}), 400 
     
     return render_template('usuarios/registrarUsuarioRegion.html', correo_electronico=correo_electronico, password=password,layout='layout_without_navbar')
 

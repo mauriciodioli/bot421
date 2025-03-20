@@ -677,6 +677,7 @@ def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_
             )
             db.session.add(nueva_imagen)
             db.session.commit()
+            
             cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
             return filename
     except Exception as db_error:
@@ -840,7 +841,7 @@ def social_imagenes_eliminar_publicacion():
             with app.app_context():
                 eliminar_relacion_categorias_publicaciones(publicacion_id)
                 eliminar_publicacion_y_medios(publicacion_id, user_id)
-
+                db.session.close()
             return jsonify({'success': True}), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 500
@@ -1050,11 +1051,13 @@ def publicaciones_modificar_publicaciones():
             decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             user_id = decoded_token.get("sub")
         else:
+            db.session.close()
             return jsonify({'error': 'Token de acceso expirado o inválido'}), 401
 
         # Verificar si la publicación existe y pertenece al usuario
         publicacion = db.session.query(Publicacion).filter_by(id=post_id, user_id=user_id).first()
         if not publicacion:
+            db.session.close()
             return jsonify({'error': 'Publicación no encontrada o no autorizada'}), 404
         
         categoriPublicacion = db.session.query(CategoriaPublicacion).filter(

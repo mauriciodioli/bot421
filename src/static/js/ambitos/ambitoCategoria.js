@@ -98,9 +98,9 @@ function crearAmbitoCategorias() {
     let valor = document.getElementById("valor").value;
     let color = document.getElementById("color").value;
     let estado = document.getElementById("estado").value;
-   
+   debugger;
     // Validar campos obligatorios
-    if (!nombre || !descripcion||idioma||valor||color||estado) {
+    if (!nombre || !descripcion||!idioma||!valor||!color||!estado) {
         alert("Los campos 'Nombre' y 'Descripción' son obligatorios.");
         return;
     }
