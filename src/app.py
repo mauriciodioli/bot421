@@ -628,66 +628,60 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 @app.route("/send_local_storage", methods=["POST"])
 def send_local_storage():
     data = request.json
-    if data:
-        ruta_de_logeo = data.get('rutaDeLogeo')
-        refresh_token = data.get('refresh_token')
-        access_token = data.get('access_token')
-        correo_electronico = data.get('correo_electronico')
-        cuenta = data.get('cuenta')
-        user_id = data.get('usuario_id')        
-        simuladoOproduccion = data.get('simuladoOproduccion')
-        client_ip = request.remote_addr  # Obtiene la IP del cliente
-        data['client_ip'] = client_ip
-        
-        # Elimina los logs antiguos cada 5 días
-        Logs.eliminar_logs_antiguos(5)
-        
-        try:
-            if access_token:
-                if Token.validar_expiracion_token(access_token=access_token):                     
-                    usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
-                    registrar_acceso(data, usuario_obj, True)  # Acceso exitoso
-                   
-                    if correo_electronico:
-                        app.logger.info(correo_electronico)  
-                        redirect_route = 'home'
-                        return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
-                    else:
-                        app.logger.info('____INTENTO ENTRAR____')  
-                        app.logger.info(client_ip)
-                        app.logger.info(correo_electronico)  
-                        redirect_route = 'index'  
-                        return jsonify(success=True, ruta=redirect_route)
-                else:   
-                    # Si el access_token no es válido, verifica el refresh_token
-                    if refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
-                        decoded_token = decode_token(refresh_token)
-                        user_id = decoded_token.get("sub")  # "sub" contiene la identidad del usuario en JWT
-
-                        nuevo_access_token = generar_nuevo_token_acceso_vencido(user_id)
-                        usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
-                        registrar_acceso(data, usuario_obj, True)  # Acceso exitoso
-                       
-                        app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
-                        return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
-                    else:
-                        # Si no hay refresh_token válido, redirigir al inicio de sesión
-                        app.logger.warning("El token ha expirado y no hay refresh_token válido")
-                        return jsonify(success=False, ruta='index', message="Requiere autenticación nuevamente")
-            else:            
-                app.logger.info('____INTENTO ENTRAR____') 
-                app.logger.info(client_ip) 
-                app.logger.info(correo_electronico)  
-                redirect_route = 'index'        
-                return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
-        except Exception as e:
-            app.logger.error(f"Error al procesar la solicitud: {e}")
-            return jsonify(success=False, message="Hubo un error en la solicitud")
-        finally:
-            # Siempre cierra la sesión después de la operación
-            db.session.close()
-    else:
+    if not data:
         return jsonify(success=False, message="No data received")
+
+    ruta_de_logeo = data.get('rutaDeLogeo')
+    refresh_token = data.get('refresh_token')
+    access_token = data.get('access_token')
+    correo_electronico = data.get('correo_electronico')
+    cuenta = data.get('cuenta')
+    user_id = data.get('usuario_id')        
+    simuladoOproduccion = data.get('simuladoOproduccion')
+    client_ip = request.remote_addr  # Obtiene la IP del cliente
+    data['client_ip'] = client_ip
+
+    # Elimina los logs antiguos cada 5 días
+    Logs.eliminar_logs_antiguos(5)
+
+    try:
+        if access_token:
+            if Token.validar_expiracion_token(access_token=access_token):                     
+                usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
+                registrar_acceso(data, usuario_obj, True)  # Acceso exitoso
+
+                redirect_route = 'home' if correo_electronico else 'index'
+                app.logger.info(correo_electronico or '____INTENTO ENTRAR____')
+                return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
+
+            elif refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
+                decoded_token = decode_token(refresh_token)
+                user_id = decoded_token.get("sub")  # "sub" contiene la identidad del usuario en JWT
+
+                nuevo_access_token = generar_nuevo_token_acceso_vencido(user_id)
+                usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
+                registrar_acceso(data, usuario_obj, True)  # Acceso exitoso
+
+                app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
+                return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
+
+            else:
+                app.logger.warning("El token ha expirado y no hay refresh_token válido")
+                return jsonify(success=False, ruta='index', message="Requiere autenticación nuevamente")
+
+        else:
+            app.logger.info('____INTENTO ENTRAR____') 
+            app.logger.info(client_ip) 
+            app.logger.info(correo_electronico)  
+            return jsonify(success=True, ruta='index', dominio=ruta_de_logeo)
+
+    except Exception as e:
+        app.logger.error(f"Error al procesar la solicitud: {e}")
+        return jsonify(success=False, message="Hubo un error en la solicitud")
+
+    finally:
+        # Siempre cierra la sesión después de la operación
+        db.session.close()
 
 
 @app.route("/index/<string:dominio>")
