@@ -46,6 +46,7 @@ def social_media_ambitosCategorias_categoria_mostrar():
         ).first()
 
         if not ambitos:
+            db.session.close()
             return jsonify({'error': 'Ámbito no encontrado'}), 404
 
         # Buscar las relaciones
@@ -69,7 +70,7 @@ def social_media_ambitosCategorias_categoria_mostrar():
             'color': categoria.color,
             'estado': categoria.estado
         } for categoria in categorias]
-
+        db.session.close()
         return jsonify({'categorias': categorias_data})
 
     except Exception as e:
@@ -103,6 +104,7 @@ def social_media_ambitos_crear_categoria():
         # Buscar si ya existe un ámbito con ese nombre e idioma
         existing_ambito = db.session.query(AmbitoCategoria).filter_by(nombre=nombre, idioma=idioma).first()
         if existing_ambito:
+            db.session.close()
             return jsonify({"error": "La categoría ya existe en este idioma"}), 400
         ambito = db.session.query(Ambitos).filter_by(valor=nombreAmbito,idioma=idioma).first()
         # Crear la nueva categoría
@@ -128,6 +130,7 @@ def social_media_ambitos_crear_categoria():
 
         # Serializar y devolver el nuevo ámbito
         resultado = serializar_ambito(nuevo_ambito_categoria)
+        db.session.close()
         return jsonify(resultado), 201
 
     except Exception as e:

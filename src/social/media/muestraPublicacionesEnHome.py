@@ -26,6 +26,9 @@ from models.modelMedia.video import Video
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from social.buckets.bucketGoog import mostrar_from_gcs
+from google.api_core.exceptions import NotFound
+
+
 
 
 muestraPublicacionesEnHome = Blueprint('muestraPublicacionesEnHome',__name__)
