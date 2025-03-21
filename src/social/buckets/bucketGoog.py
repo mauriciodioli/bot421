@@ -3,6 +3,8 @@ import random
 from datetime import datetime
 import redis
 from google.cloud import storage
+from google.api_core.exceptions import NotFound
+
 import os
 import mimetypes
 from dotenv import load_dotenv
@@ -197,6 +199,8 @@ def mostrar_from_gcs(blob_name):
                 "file_data": ""  # Almacenar los datos como una cadena vacia
             })
         else:
+            print(f"blob_name: {blob_name}, url_publica: {url_publica}, hex_data: {hex_data[:10]}...")
+
             # Almacenar en Redis la URL y los datos hexadecimales
             redis_client.hset(blob_name, mapping={
                 "file_path": url_publica,
@@ -210,7 +214,7 @@ def mostrar_from_gcs(blob_name):
         
         return image_data,url_publica # Devolver los datos binarios de la imagen
 
-    except storage.exceptions.NotFound:
+    except NotFound:
         print(f"El archivo {blob_name} no existe en el bucket {BUCKET_NAME}.")
         return None
     except Exception as e:
