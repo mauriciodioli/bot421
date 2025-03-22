@@ -936,7 +936,7 @@ def  eliminar_desde_archivo(title,user_id):
         print(f"Error al eliminar el archivo: {e}")
         return False
 
-@publicaciones.route('/social_media_publicaciones_borrado_logico_publicaciones', methods=['POST'])
+@publicaciones.route('/social_media_publicaciones_borrado_logico_publicaciones/', methods=['POST'])
 def social_media_publicaciones_borrado_logico_publicaciones(): 
     try:
         # Obtener el encabezado Authorization

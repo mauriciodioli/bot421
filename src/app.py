@@ -394,10 +394,11 @@ engine = create_engine(
     DATABASE_CONNECTION_URI,
     poolclass=QueuePool,    
     max_overflow=INITIAL_MAX_OVERFLOW,
-    pool_timeout=5,  # Tiempo máximo en segundos que se esperará por una conexión
-    pool_recycle=3600
+    pool_timeout=0.5,  # Tiempo máximo en segundos que se esperará por una conexión
+    pool_recycle=3600,
+    
 )
-
+  
 
 
 db = SQLAlchemy(app)
@@ -424,7 +425,8 @@ def connect_listener(dbapi_connection, connection_record):
     # Registrar la nueva conexión
     active_connections.add(connection_key)
     connection_times[connection_key] = time.time()
-    #app.logger.info(f"connect_listener Conexión abierta. Total conexiones activas: {len(active_connections)}")
+  #  app.logger.info(f"connect_listener Conexión abierta. Total conexiones activas: {len(active_connections)}")
+  #  app.logger.info(f"connect_listener Conexión abierta. Total conexiones activas: {len(connection_times)}")
 
 # Escuchar cuando se obtiene una conexión del pool
 @event.listens_for(Pool, "checkout")
@@ -437,12 +439,18 @@ def checkout_listener(dbapi_connection, connection_record,connection_proxy):
         connection_times[connection_key] = time.time()
     else:
         pass
-        #app.logger.warning(f"checkout_listener Clave de conexión no encontrada en connection_times: {connection_key}")
+   # app.logger.warning(f"checkout_listener Clave de conexión no encontrada en connection_times: {connection_key}")
 
 @event.listens_for(db.engine, "close")
 def close_listener(dbapi_connection, connection_record):
-    connection_id = id(connection_record)
-   # app.logger.info(f"close_listener Conexión cerrada. ID: {connection_id}")
+    connection_key = id(connection_record)
+      # Cerrar la conexión inmediatamente después de abrirla
+  #  print(f"Cerrando la conexión inmediatamente. Conexión ID: {connection_key}")
+    dbapi_connection.close()  # Cerrar la conexión en este punto
+    if connection_key in active_connections:
+        active_connections.remove(connection_key)  # Removerla del conjunto de conexiones activas
+        connection_times.pop(connection_key, None)  # Eliminar el tiempo asociado
+   #     app.logger.info(f"close_listener Conexión cerrada. ID: {connection_key}. Total conexiones activas: {len(active_connections)}")
 
 @app.teardown_appcontext
 def teardown_db(exception):
@@ -459,7 +467,8 @@ def checkin_listener(dbapi_connection, connection_record):
         active_connections.remove(connection_key)
     else:
         pass
-        #app.logger.warning(f"Clave de conexión no encontrada en active_connections: {connection_key}")
+        
+    #app.logger.warning(f"Clave de conexión no encontrada en active_connections: {connection_key}")
     
     # Verificar y eliminar la clave de connection_times si existe
     if connection_key in connection_times:
@@ -582,44 +591,6 @@ def logs():
 
 
 
-def registrar_acceso(request, usuario, exito, motivo_fallo=None):
-    """Registra los intentos de acceso en la base de datos."""
-    ip = request.get('client_ip')
-    codigoPostal = request.get('codigoPostal')
-    latitude = request.get('latitude')
-    longitude = request.get('longitude')
-    language = request.get('language')
-    usuario_id = request.get('usuario_id')
-    correo_electronico = request.get('correo_electronico')
-    fecha = datetime.datetime.utcnow()
-
-    try:
-        log = Logs(
-            user_id=usuario_id,
-            userCuenta=correo_electronico,
-            accountCuenta=correo_electronico,
-            fecha_log=fecha,
-            ip=ip,
-            funcion='log_acceso',
-            archivo='logRegister.py',
-            linea=608,
-            error='No hubo error' if exito else motivo_fallo,
-            codigoPostal=codigoPostal,
-            latitude=latitude,
-            longitude=longitude,
-            language=language
-        )
-
-        db.session.add(log)
-        db.session.commit()
-        db.session.close()
-
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        app.logger.error(f"Error registrando acceso: {e}")
-
-    finally:
-        db.session.remove()  # Libera la conexión del pool correctamente
 
 
 
