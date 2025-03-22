@@ -41,7 +41,7 @@ $(document).ready(function() {
         var pagina = 'app'
         rutaDeLogeo = dominio;
         $.ajax({
-            url: '/send_local_storage',
+            url: '/send_local_storage/',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({

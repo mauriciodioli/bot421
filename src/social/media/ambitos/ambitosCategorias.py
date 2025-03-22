@@ -49,15 +49,24 @@ def social_media_ambitosCategorias_categoria_mostrar():
             db.session.close()
             return jsonify({'error': 'Ámbito no encontrado'}), 404
 
-        # Buscar las relaciones
+       # Buscar las relaciones
         relations = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambitos.id).all()
-        
-        categorias = []  # Lista para almacenar las categorías
 
+        # Obtener todos los ids de las categorías que necesitamos
+        categoria_ids = [relation.ambitoCategoria_id for relation in relations]
+
+        # Obtener todas las categorías asociadas de una vez
+        categorias_map = {categoria.id: categoria for categoria in db.session.query(AmbitoCategoria).filter(AmbitoCategoria.id.in_(categoria_ids)).all()}
+
+        # Lista para almacenar las categorías
+        categorias = []
+
+        # Ahora, simplemente accedemos al diccionario de categorías
         for relation in relations:
-            categoria = db.session.query(AmbitoCategoria).filter_by(id=relation.ambitoCategoria_id).first()
+            categoria = categorias_map.get(relation.ambitoCategoria_id)
             if categoria:  # Verificar que la categoría exista
                 categorias.append(categoria)
+
 
         # Serializar los datos
         categorias_data = [{

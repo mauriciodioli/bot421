@@ -13,23 +13,27 @@ import time
 from sqlalchemy.exc import SQLAlchemyError
 import datetime
 from models.logs import Logs
+from contextlib import contextmanager
 
 
 
 logRegister = Blueprint('logRegister',__name__)
 
-@logRegister.route('/log_acceso/', methods=['POST'])
-def log_acceso():
-    data = request.get_json()
-    if data:
-        usuario_obj = 'none'
-        # Aquí podrías también verificar si los datos son correctos (por ejemplo, si el token es válido)
-        exito = True  # Suponiendo que el login es exitoso. Cambia esto si es necesario.
-        registrar_acceso(data, usuario_obj, exito)
-        return jsonify({'status': 'ok'})
-        
-    else:
-        return jsonify({'status': 'error', 'message': 'Datos no recibidos'}), 400
+
+@contextmanager
+def session_scope():
+    """Proporciona un contexto para una sesión de base de datos."""
+    session = db.session()
+    try:
+        yield session
+        session.commit()  # Se hace commit al final del contexto
+    except Exception:
+        session.rollback()  # Si hay un error, se hace rollback
+        raise
+    finally:
+        session.close()  # Se cierra la sesión al finalizar el contexto
+
+
 
 def registrar_acceso(request, usuario, exito, motivo_fallo=None):
     """Registra los intentos de acceso en la base de datos."""
@@ -69,6 +73,28 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 
     finally:
         db.session.remove()  # Libera la conexión del pool correctamente
+
+
+
+
+
+
+
+
+
+@logRegister.route('/log_acceso/', methods=['POST'])
+def log_acceso():
+    data = request.get_json()
+    if data:
+        usuario_obj = 'none'
+        # Aquí podrías también verificar si los datos son correctos (por ejemplo, si el token es válido)
+        exito = True  # Suponiendo que el login es exitoso. Cambia esto si es necesario.
+        registrar_acceso(data, usuario_obj, exito)
+        return jsonify({'status': 'ok'})
+        
+    else:
+        return jsonify({'status': 'error', 'message': 'Datos no recibidos'}), 400
+
 
 
 def registroLogs(datos):

@@ -749,7 +749,7 @@ function cerrarPublicacion(publicacionId) {
 
   // Enviar solicitud AJAX para actualizar el estado de la publicación
   $.ajax({
-      url: '/social_media_publicaciones_borrado_logico_publicaciones', // Asegúrate de que esta URL sea correcta
+      url: '/social_media_publicaciones_borrado_logico_publicaciones/', // Asegúrate de que esta URL sea correcta
       type: 'POST',
       headers: {
           'Authorization': 'Bearer ' + access_token // Agregar el token al encabezado Authorization
