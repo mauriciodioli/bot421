@@ -584,48 +584,47 @@ def logs():
 
 def registrar_acceso(request, usuario, exito, motivo_fallo=None):
     """Registra los intentos de acceso en la base de datos."""
-    ip = request.get('client_ip')  # Ahora obtenemos la IP desde `data['client_ip']`
+    ip = request.get('client_ip')
     codigoPostal = request.get('codigoPostal')
     latitude = request.get('latitude')
     longitude = request.get('longitude')
     language = request.get('language')
-    fecha = datetime.datetime.now()
-  
+    usuario_id = request.get('usuario_id')
+    correo_electronico = request.get('correo_electronico')
+    fecha = datetime.datetime.utcnow()
 
     try:
-        # Crear una instancia de la clase Logs
         log = Logs(
-            user_id=usuario.id,  # ID del usuario (lo que llega como parámetro)
-            userCuenta=usuario.correo_electronico,  # Se asume que `correo_electronico` está en el modelo `Usuario`
-            accountCuenta=usuario.correo_electronico,  # Se asume que `cuenta` está en el modelo `Usuario`
-            fecha_log=fecha,  # Fecha y hora actuales
-            ip=ip,  # Dirección IP del usuario
-            funcion='login',  # Función o acción que se está registrando
-            archivo='app.py',  # Nombre del archivo donde ocurrió el evento (ajústalo según sea necesario)
-            linea=608,  # Línea del código donde ocurrió el evento (ajústalo según sea necesario)
-            error='No hubo error' if exito else motivo_fallo,  # Mensaje de error, si hubo un fallo
+            user_id=usuario_id,
+            userCuenta=correo_electronico,
+            accountCuenta=correo_electronico,
+            fecha_log=fecha,
+            ip=ip,
+            funcion='log_acceso',
+            archivo='logRegister.py',
+            linea=608,
+            error='No hubo error' if exito else motivo_fallo,
             codigoPostal=codigoPostal,
-            latitude= latitude,
+            latitude=latitude,
             longitude=longitude,
             language=language
         )
 
-        # Agregar la instancia a la sesión de SQLAlchemy
         db.session.add(log)
-
-        # Confirmar (guardar) los cambios en la base de datos
         db.session.commit()
         db.session.close()
 
     except SQLAlchemyError as e:
-        # Si hay un error, realizar un rollback
         db.session.rollback()
         app.logger.error(f"Error registrando acceso: {e}")
 
+    finally:
+        db.session.remove()  # Libera la conexión del pool correctamente
 
 
 
-@app.route("/send_local_storage", methods=["POST"])
+
+@app.route("/send_local_storage/", methods=["POST"])
 def send_local_storage():
     data = request.json
     if not data:
@@ -681,7 +680,7 @@ def send_local_storage():
 
     finally:
         # Siempre cierra la sesión después de la operación
-        db.session.close()
+        db.session.remove()
 
 
 @app.route("/index/<string:dominio>")
@@ -727,9 +726,11 @@ def load_user(user_id):
         try:
             # Reintenta la consulta después de reconfigurar
             user = db.session.query(Usuario).filter_by(id=user_id).first()
+            db.session.close()
             return user
         except OperationalError as e:
             app.logger.error(f"Error de conexión a la base de datos tras reintentar: {e}")
+            db.session.close()
             return None
 # Make sure this we are executing this file
 if __name__ == "__main__":

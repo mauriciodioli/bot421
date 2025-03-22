@@ -108,7 +108,7 @@ function cargarAmbitosCategorias() {
             // Asigna un valor predeterminado en caso de que no esté definido
             const color = categoria.color || 'orange'; // O cualquier color predeterminado que desees
             const listItem = `
-                        <li>
+                        <li style="padding: 10px;">
                             <a href="#" class="categoria-dropdown-item" id="${categoria.id}" data-value="${categoria.valor}" data-color="${color}" style="color: ${color}; padding: 10px;">
                                 ${categoria.nombre}
                             </a>

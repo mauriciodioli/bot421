@@ -17,7 +17,7 @@ ambito = Blueprint('ambito', __name__)
 
 
 
-@ambito.route('/social-media-ambitos-ambitos')
+@ambito.route('/social-media-ambitos-ambitos/')
 def social_media_ambitos_ambitos():
     try:      
           # Obtener el valor de la cookie "language"
@@ -40,7 +40,7 @@ def social_media_ambitos_ambitos():
 
 
 # Crear un nuevo Ambito
-@ambito.route('/social-media-publicaciones-ambitos-crear', methods=['POST'])
+@ambito.route('/social-media-publicaciones-ambitos-crear/', methods=['POST'])
 def crear_ambito():
     try:
         # Obtener los datos del cuerpo de la solicitud
@@ -134,6 +134,9 @@ def obtener_ambitos():
         return jsonify(resultado), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        db.session.remove()  # Asegura que la sesión se cierre correctamente
+
 
 
 
