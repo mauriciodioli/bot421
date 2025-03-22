@@ -309,6 +309,7 @@ def media_publicaciones_mostrar_dpi():
             return jsonify(publicaciones_data)
 
     except Exception as e:
+        db.session.remove()
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
 
