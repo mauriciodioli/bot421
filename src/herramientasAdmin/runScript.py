@@ -4,7 +4,7 @@ import os
 
 runScript = Blueprint('runScript', __name__)
 
-@runScript.route('/run-script')
+@runScript.route('/run-script/')
 def run_script():
     try:
         # Obtener el objeto de la aplicación actual

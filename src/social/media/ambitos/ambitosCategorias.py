@@ -229,6 +229,7 @@ def obtener_ambitosCategorias():
         # Obtener el ámbito por su valor
         ambito = db.session.query(Ambitos).filter_by(valor=ambito_valor).first()
         if not ambito:
+            db.session.close()
             return jsonify({"error": "Ámbito no encontrado"}), 404
         
         # Obtener todas las relaciones del ámbito con sus categorías
@@ -259,7 +260,7 @@ def obtener_ambitosCategorias():
         return jsonify({"error": str(e)}), 500
 
     finally:
-        db.session.close()  # Asegura que la sesión se cierre siempre
+        db.session.remove()  # Asegura que la sesión se cierre siempre
 
 
 def serializar_ambito(ambito):
