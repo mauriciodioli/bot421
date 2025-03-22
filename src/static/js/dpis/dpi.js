@@ -586,10 +586,15 @@ function toggleSplash(section, splashElement) {
 }
 
 function enviarDominioAJAX(domain) {
-    debugger;
+    
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
+    cp = localStorage.getItem('codigoPostal');
+    if (!cp){
+        cp = '1';
+    }
+
 
     if (!splash || !targetSection) {
         console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
@@ -600,8 +605,8 @@ function enviarDominioAJAX(domain) {
     toggleSplash(targetSection, splash);
 
     // Ruta al archivo con la galería de imágenes
-    var galeriaURL = '/MostrarImages/';
-    var galeriaURL1 = '/media-publicaciones-mostrar-dpi/';
+
+    var galeriaURL = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
 
     if ( !localStorage.getItem('dominio')) {
@@ -627,6 +632,7 @@ function enviarDominioAJAX(domain) {
     if (!existe){
         getLocation();
     } 
+    debugger;
     // Esperar a que se actualice el idioma en localStorage antes de continuar
     setTimeout(() => {
         
@@ -635,10 +641,12 @@ function enviarDominioAJAX(domain) {
 
                 $.ajax({
                 type: 'POST',
-                url: galeriaURL1,
+                url: galeriaURL,
                 dataType: 'json', // Asegúrate de que el backend devuelva un JSON
                 headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
-                data: { ambitos: domain, lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
+                data: { ambitos: domain, 
+                        codigoPostal: cp,                         
+                        lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
                 success: function (response) {
                   debugger;
                         console.log("Respuesta del servidor:", response);

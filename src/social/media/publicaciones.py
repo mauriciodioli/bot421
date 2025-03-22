@@ -305,7 +305,7 @@ def media_publicaciones_mostrar_dpi():
               
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
-            db.session.remove()
+            db.session.close()
             return jsonify(publicaciones_data)
 
     except Exception as e:

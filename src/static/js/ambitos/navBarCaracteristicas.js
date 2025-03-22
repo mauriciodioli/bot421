@@ -71,7 +71,7 @@ $('#caracteristicas-tab').on('click', function() {
 
 
 const dropdownMenuCategorias = $('.categoria-dropdown-menu');
-
+dropdownMenuCategorias.empty();
 // Función para cargar los ámbitos desde el servidor
 function cargarAmbitosCategorias() {
    
@@ -100,7 +100,7 @@ function cargarAmbitosCategorias() {
         }
         // Limpiar el menú y el contenedor de tarjetas antes de agregar nuevos elementos
         dropdownMenuCategorias.empty();
-        $('.card-container').empty();
+ 
 
         // Agregar las categorías obtenidas al dropdown
         data.categorias.forEach((categoria, index) => {
@@ -119,21 +119,17 @@ function cargarAmbitosCategorias() {
         
             dropdownMenuCategorias.append(listItem);
 
-            // Crear una nueva tarjeta para cada categoría
-            const categoryCard = `
-                <div class="category-card${index + 1} card" id="card-${categoria.valor}">
-                    <div class="card-content">                              
-                        <p class="card-number">${categoria.nombre}</p>
-                    </div>
-                </div>
-            `;
-            $('.card-container').append(categoryCard);
+         
         });
 
       
 
         // Eliminar el último separador
         dropdownMenuCategorias.children('li').last().remove();
+         // Agregar evento para cerrar el dropdown al hacer clic en una categoría
+       
+           
+       
     })
     .catch(error => {
         console.error('Error al cargar las categorías:', error);
@@ -142,18 +138,30 @@ function cargarAmbitosCategorias() {
 
 
 
+
+
+
+
+
+
+
+
+
 // Delegación de eventos para manejar clics en los ítems del menú desplegable
 $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (e) {
 //$(document).on('click', '#navBar-' + ambitoId + ' .categoria-dropdown-item', function (e) {
 
     e.preventDefault(); // Previene el comportamiento predeterminado
-  
+   debugger;
     let categoriaId = $(this).attr('id');
     let categoriaNombre = $(this).data('value');
     
     console.log("Categoría seleccionada:", categoriaNombre);
     console.log("Clic detectado"); // Para verificar si el clic está siendo detectado
- 
+    // Cerrar el menú desplegable correctamente
+    $('.categoria-dropdown-menu').removeClass('show'); // Alternativa sin Bootstrap
+ //   $('.categoria-dropdown-toggle').dropdown('hide');  // Si usas Bootstrap (el botón que activa el menú)
+   
     const selectedCategory = this.id; // Obtiene el valor de data-value
   
     // Guardar el dominio en localStorage
@@ -189,6 +197,17 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
     updateColor($(this)[0]); // Convierte jQuery a elemento DOM puro
 
 });
+
+
+
+
+
+
+
+
+
+
+
 
 // Delegación de eventos para manejar clics en las tarjetas
 $('.card-container').on('click', '.card', function () {
