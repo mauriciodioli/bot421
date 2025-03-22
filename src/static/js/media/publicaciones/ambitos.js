@@ -34,7 +34,7 @@ function confirmarCrearAmbito() {
     
 
     // Realizar la solicitud al servidor para crear el ámbito
-    fetch('/social-media-publicaciones-ambitos-crear', {
+    fetch('/social-media-publicaciones-ambitos-crear/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
