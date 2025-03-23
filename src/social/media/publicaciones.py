@@ -293,19 +293,27 @@ def media_publicaciones_mostrar_dpi():
 
             else:
                 if codigoPostal == '1':
-                    ambitosCategorias = db.session.query(AmbitoCategoria).filter_by(valor=categoria).first()
-                    if not ambitosCategorias:
-                            db.session.close()
-                            raise ValueError(f"No se encontró una categoría con el valor: {categoria}")  # O maneja la excepción de otra forma
-
+                    if isinstance(categoria, str) and not categoria.isdigit():
+                        ambitosCategorias = db.session.query(AmbitoCategoria).filter_by(valor=categoria).first()
+                        categoria_id = ambitosCategorias.id
+                        if not ambitosCategorias:
+                                db.session.close()
+                                raise ValueError(f"No se encontró una categoría con el valor: {categoria}")  # O maneja la excepción de otra forma
+                    else:
+                        categoria_id = int(categoria)
                              # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = ambitosCategorias.id).all()
+                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = categoria_id ).all()
                 else: 
+                  if isinstance(categoria, str) and not categoria.isdigit():
+                        ambitosCategorias = db.session.query(AmbitoCategoria).filter_by(valor=categoria).first()
+                        categoria_id = ambitosCategorias.id
+                  else:
+                     categoria_id = int(categoria)
                   publicaciones = db.session.query(Publicacion).filter(
                                 Publicacion.estado == 'activo',
                                 Publicacion.ambito == ambitos,
                                 Publicacion.idioma == idioma,
-                                Publicacion.categoria_id == int(categoria),
+                                Publicacion.categoria_id == categoria_id,
                                 Publicacion.codigoPostal.in_([codigoPostal, '1'])  # Código postal debe ser uno de estos valores
                             ).all()
               
@@ -315,7 +323,7 @@ def media_publicaciones_mostrar_dpi():
             return jsonify(publicaciones_data)
 
     except Exception as e:
-        db.session.remove()
+        db.session.close()
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
 
