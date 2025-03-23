@@ -470,7 +470,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
             'layout': layout
         })
         
-    db.session.close()
+  
     return publicaciones_data
 
 

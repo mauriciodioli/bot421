@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Función para cargar los ámbitos desde el servidor
         window.cargarAmbitos = function () {
-           
+           debugger;
             fetch('/social-media-publicaciones-obtener-ambitos/', {
                 method: 'GET',
                 headers: {
@@ -586,7 +586,7 @@ function toggleSplash(section, splashElement) {
 }
 
 function enviarDominioAJAX(domain) {
-    
+    localStorage.setItem('banderaCategorias', 'True');
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
@@ -650,7 +650,10 @@ function enviarDominioAJAX(domain) {
                 success: function (response) {
                   debugger;
                         console.log("Respuesta del servidor:", response);
-                    
+                    if (response.length == 0) {
+                        splash.style.display = 'none'; // Ocultar el splash al terminar
+                        return;
+                    }
                 // console.log('Respuesta del servidor:', response[0].ambito);
                     if (response && response[0]) {
                         document.getElementById("ambitoActual").innerHTML = response[0].ambito;
