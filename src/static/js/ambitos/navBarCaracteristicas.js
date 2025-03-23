@@ -143,7 +143,11 @@ function cargarAmbitosCategorias() {
 
 
 
-
+// Asegurar que al hacer clic en el botón de categoría, se vuelva a mostrar
+$('.categoria-dropdown-toggle').on('click', function (e) {
+    e.stopPropagation(); // Evita que el evento se propague y lo cierre inmediatamente
+    $('.categoria-dropdown-menu').toggleClass('show'); // Alterna visibilidad
+});
 
 
 
@@ -152,7 +156,7 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
 //$(document).on('click', '#navBar-' + ambitoId + ' .categoria-dropdown-item', function (e) {
 
     e.preventDefault(); // Previene el comportamiento predeterminado
-   debugger;
+   
     let categoriaId = $(this).attr('id');
     let categoriaNombre = $(this).data('value');
     

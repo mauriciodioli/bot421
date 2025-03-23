@@ -283,6 +283,7 @@ def media_publicaciones_mostrar_dpi():
                     # Si el estado no es "eliminado", obtén la publicación correspondiente
                     if estado_publicacion.estado != 'eliminado':
                         if codigoPostal == '1':
+                            
                             publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
                         else: 
                             publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,codigoPostal = codigoPostal,categoria_id = int(categoria)).first()
@@ -292,8 +293,13 @@ def media_publicaciones_mostrar_dpi():
 
             else:
                 if codigoPostal == '1':
+                    ambitosCategorias = db.session.query(AmbitoCategoria).filter_by(valor=categoria).first()
+                    if not ambitosCategorias:
+                            db.session.close()
+                            raise ValueError(f"No se encontró una categoría con el valor: {categoria}")  # O maneja la excepción de otra forma
+
                              # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).all()
+                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = ambitosCategorias.id).all()
                 else: 
                   publicaciones = db.session.query(Publicacion).filter(
                                 Publicacion.estado == 'activo',
