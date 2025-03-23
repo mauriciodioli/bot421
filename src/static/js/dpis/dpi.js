@@ -657,6 +657,12 @@ function enviarDominioAJAX(domain) {
                     } else {
                         console.error("La respuesta del servidor no contiene el formato esperado.");
                     }
+                     // Verificar si existe un 'codigoPostal' en localStorage
+                    let codigoPostal = localStorage.getItem('codigoPostal');
+                    if (codigoPostal) {
+                        // Crear la cookie con el código postal
+                        document.cookie = `codigoPostal=${codigoPostal}; path=/; max-age=86400`; // Expira en 1 día
+                    }
                     splash.style.display = 'none'; // Ocultar el splash al terminar
                     if (Array.isArray(response)) {
                         var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
