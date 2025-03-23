@@ -79,7 +79,7 @@ def social_media_ambitosCategorias_categoria_mostrar():
             'color': categoria.color,
             'estado': categoria.estado
         } for categoria in categorias]
-        db.session.close()
+      
         return jsonify({'categorias': categorias_data})
 
     except Exception as e:
