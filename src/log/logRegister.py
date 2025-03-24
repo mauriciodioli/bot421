@@ -72,7 +72,7 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
         app.logger.error(f"Error registrando acceso: {e}")
 
     finally:
-        db.session.remove()  # Libera la conexión del pool correctamente
+        db.session.close()  # Libera la conexión del pool correctamente
 
 
 

@@ -651,8 +651,47 @@ def send_local_storage():
 
     finally:
         # Siempre cierra la sesión después de la operación
-        db.session.remove()
+        db.session.close()
 
+
+def registrar_acceso(request, usuario, exito, motivo_fallo=None):
+    """Registra los intentos de acceso en la base de datos."""
+    ip = request.get('client_ip')
+    codigoPostal = request.get('codigoPostal')
+    latitude = request.get('latitude')
+    longitude = request.get('longitude')
+    language = request.get('language')
+    usuario_id = request.get('usuario_id')
+    correo_electronico = request.get('correo_electronico')
+    fecha = datetime.datetime.utcnow()
+
+    try:
+        log = Logs(
+            user_id=usuario_id,
+            userCuenta=correo_electronico,
+            accountCuenta=correo_electronico,
+            fecha_log=fecha,
+            ip=ip,
+            funcion='log_acceso',
+            archivo='logRegister.py',
+            linea=608,
+            error='No hubo error' if exito else motivo_fallo,
+            codigoPostal=codigoPostal,
+            latitude=latitude,
+            longitude=longitude,
+            language=language
+        )
+
+        db.session.add(log)
+        db.session.commit()
+        db.session.close()
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        app.logger.error(f"Error registrando acceso: {e}")
+
+    #finally:
+     #   db.session.close()  # Libera la conexión d
 
 @app.route("/index/<string:dominio>")
 def index(dominio):

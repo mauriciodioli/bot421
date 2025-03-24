@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
              
             // Enfocar la sección
-            $('.dpi-muestra-publicaciones-centrales')[0].focus();
+            $('#ambitoActual').focus();
         });
 
         // Llamar a la función para cargar los ámbitos al cargar la página
@@ -649,6 +649,7 @@ function enviarDominioAJAX(domain) {
                         lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
                 success: function (response) {
                   debugger;
+                    $('#ambitoActual').focus();
                         console.log("Respuesta del servidor:", response);
                     if (response.length == 0) {
                         splash.style.display = 'none'; // Ocultar el splash al terminar
