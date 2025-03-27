@@ -65,7 +65,7 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 
         db.session.add(log)
         db.session.commit()
-        db.session.close()
+       
 
     except SQLAlchemyError as e:
         db.session.rollback()

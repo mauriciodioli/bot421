@@ -318,12 +318,26 @@ document.getElementById('openModalSignals').addEventListener('click', function (
  
  
  
+document.addEventListener("DOMContentLoaded", function() {
+    cargaCodigoPostalLayout();
+});
  
+ function cargaCodigoPostalLayout(){
+    // Obtener referencia al label
+    const labelCP = document.getElementById("labelCP");
+
+    // Obtener el valor almacenado en localStorage
+    const cpValue = localStorage.getItem("codigoPostal");
+
+    // Si hay un valor en localStorage, asignarlo al label
+    if (cpValue) {
+        labelCP.textContent = cpValue;
+    }
  
+
+ }
  
- 
- 
- 
+
 
 // Obtener el enlace "Signals"
 document.getElementById('openModalCP').addEventListener('click', function (e) {
@@ -371,7 +385,7 @@ function guardarCodigoPostal() {
 
         // Guardar el código postal en las cookies (con una duración de 1 hora)
         document.cookie = `codigoPostal=${codigoPostal};max-age=3600;path=/`;
-
+        cargaCodigoPostalLayout();
         // Cerrar el modal
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal
