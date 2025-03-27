@@ -119,6 +119,7 @@
       <div class="modal-body">
         <form id="editarAmbitoForm">
           <input type="hidden" id="ambito-id-editar">
+          
           <label for="nombre-editar" style="color: black;">Nombre:</label>
           <input type="text" id="nombre-editar" class="form-control" required><br>
 
@@ -132,17 +133,21 @@
           <input type="text" id="valor-editar" class="form-control"><br>
 
           <label for="estado-editar" style="color: black;">Estado:</label>
-          <input type="text" id="estado-editar" class="form-control"><br>
+          <select id="estado-editar" class="form-control">
+            <option value="ACTIVO">ACTIVO</option>
+            <option value="INACTIVO">INACTIVO</option>
+          </select><br>
 
           <label for="user_id-editar" style="color: black;">User ID:</label>
           <input type="text" id="user_id-editar" class="form-control" required><br>
 
-          <button type="button" class="btn btn-primary" onclick="actualizarAmbito()">Actualizar Ambito</button>
+          <button type="button" class="btn btn-primary" onclick="actualizarAmbito()">Actualizar Ámbito</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Modal de confirmación de eliminación -->
 <div class="modal fade" id="eliminarAmbitoModal" tabindex="-1" aria-labelledby="eliminarAmbitoModalLabel" aria-hidden="true">

@@ -684,14 +684,12 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 
         db.session.add(log)
         db.session.commit()
-        db.session.close()
-
+       
     except SQLAlchemyError as e:
         db.session.rollback()
         app.logger.error(f"Error registrando acceso: {e}")
 
-    #finally:
-     #   db.session.close()  # Libera la conexión d
+  
 
 @app.route("/index/<string:dominio>")
 def index(dominio):

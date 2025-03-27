@@ -282,10 +282,27 @@ function cambiarIdioma() {
 
 
 
+ 
+ function cargaCodigoPostalLayout(){
+    // Obtener referencia al label
+    const labelCP = document.getElementById("labelCP");
+
+    // Obtener el valor almacenado en localStorage
+    const cpValue = localStorage.getItem("codigoPostal");
+
+    // Si hay un valor en localStorage, asignarlo al label
+    if (cpValue) {
+        labelCP.textContent = cpValue;
+    }
+ 
+
+ }
+ 
 
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    cargaCodigoPostalLayout();
     // Inicializamos el modal fuera del listener
     const modalElement = document.getElementById('modalSeleccionCodigoPostal');
     const myModal = new bootstrap.Modal(modalElement);
@@ -326,7 +343,7 @@ function guardarCodigoPostal() {
         localStorage.setItem('codigoPostal', codigoPostal);
         document.cookie = `codigoPostal=${codigoPostal}; max-age=3600; path=/; SameSite=Lax`;
         console.log("Cookies accesibles por JS después de setear:", document.cookie);
-      
+        cargaCodigoPostalLayout();
         // Cerrar el modal
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal

@@ -115,7 +115,7 @@ def obtener_ambitos():
         idioma = request.cookies.get('language', 'in')  # Por defecto "in" si no se encuentra la cookie
 
         # Consultar los ambitos según el idioma
-        ambitos = db.session.query(Ambitos).filter_by(idioma=idioma).all()
+        ambitos = db.session.query(Ambitos).filter_by(idioma=idioma, estado='ACTIVO').all()
 
         # Convertir los objetos a dicts serializables
         resultado = [

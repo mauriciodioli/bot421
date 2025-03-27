@@ -387,6 +387,11 @@ section[id] {
 
 
 
+#labelCP {
+  vertical-align: middle;
+  line-height: 1.5; /* Ajusta según el tamaño del texto de los enlaces */
+  padding-top: 8px; /* Puedes ajustar este valor */
+}
 
 
 
