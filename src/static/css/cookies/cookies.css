@@ -1,0 +1,78 @@
+/* Contenedor del aviso de cookies - ocupa todo el ancho */
+#cookieConsent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(2, 74, 230, 0.3);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    display: none;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Contenedor interno para centrar el texto */
+.cookie-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+/* Botones */
+.cookie-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.cookie-btn {
+    padding: 12px 20px;
+    border-radius: 20px; /* Aumenta el radio para bordes más redondeados */
+    cursor: pointer;
+    font-weight: bold;
+    border: none;
+    transition: background 0.3s, transform 0.2s;
+    font-size: 14px;
+}
+
+/* Botón aceptar */
+#acceptCookies {
+    background: #3009f4;
+    color: white;
+}
+
+#acceptCookies:hover {
+    background: #2ac3ff;
+    transform: scale(1.05); /* Efecto de aumento al pasar el mouse */
+}
+
+/* Botón rechazar */
+#rejectCookies {
+    background: #2104fd;
+    color: white;
+}
+
+#rejectCookies:hover {
+    background: #0eadfd;
+    transform: scale(1.05);
+}
+
+/* Responsive para móviles: apilar los botones */
+@media (max-width: 768px) {
+    .cookie-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .cookie-buttons {
+        margin-top: 10px;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .cookie-btn {
+        width: 100%;
+        padding: 10px;
+    }
+}
