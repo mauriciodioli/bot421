@@ -130,12 +130,12 @@ def obtener_ambitos():
             }
             for ambito in ambitos
         ]
-        db.session.close()
+       
         return jsonify(resultado), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
-        db.session.remove()  # Asegura que la sesión se cierre correctamente
+        db.session.close()  # Asegura que la sesión se cierre correctamente
 
 
 

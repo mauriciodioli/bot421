@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Función para cargar los ámbitos desde el servidor
         window.cargarAmbitos = function () {
-           debugger;
+          
             fetch('/social-media-publicaciones-obtener-ambitos/', {
                 method: 'GET',
                 headers: {
@@ -643,10 +643,11 @@ function enviarDominioAJAX(domain) {
     document.getElementById("ambitoActual").innerHTML = ambito_actual;
     // Obtener ubicación antes de ejecutar AJAX
     let existe = localStorage.getItem('language');
+    debugger;
     if (!existe){
         getLocation();
     } 
-    debugger;
+  
     // Esperar a que se actualice el idioma en localStorage antes de continuar
     setTimeout(() => {
         
@@ -662,7 +663,7 @@ function enviarDominioAJAX(domain) {
                         codigoPostal: cp,                         
                         lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
                 success: function (response) {
-                  debugger;
+                
                     $('#ambitoActual').focus();
                         console.log("Respuesta del servidor:", response);
                     if (response.length == 0) {

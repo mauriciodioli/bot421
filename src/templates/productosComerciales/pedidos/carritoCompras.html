@@ -34,6 +34,7 @@
            
             <input type="number" id="quantity-{{ pedido.id }}" name="quantity" class="quantity-input" value="{{ pedido.cantidad or 1 }}" min="1">
             <button class="remove-button" data-pedido-id="{{ pedido.id }}">Eliminar</button>
+          
         </div>
     </div>
     {% endfor %}
@@ -55,6 +56,8 @@
                 <input type="hidden" id="boton_pagoOnline" name="boton_pagoOnline" > 
                 <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
                 <input type="hidden" id="pedido_data" name="pedido_data">
+                <input type="hidden" id="calendly_url" name="calendly_url">
+                <input type="hidden" id="nombrePublicacionUsuario" name="nombrePublicacionUsuario">
 
                 <!-- Campo oculto para enviar el total -->
                 <input type="hidden" id="total_pago" name="total_pago" >
@@ -96,6 +99,26 @@
     if (inputElement) {
         inputElement.value = botonPedidoOnline;
     }
+
+    calendly_url = (Array.isArray(data) && data.length > 0 && data[0].calendly_url) 
+        ? data[0].calendly_url 
+        : "";
+    console.log("Valor de calendly_url:", calendly_url);
+    // Asignar el valor al input (si el elemento existe en el DOM)
+    var inputElement = document.getElementById("calendly_url");
+    if (inputElement) {
+        inputElement.value = calendly_url;
+    }
+    nombrePublicacionUsuario = (Array.isArray(data) && data.length > 0 && data[0].nombrePublicacionUsuario) 
+        ? data[0].nombrePublicacionUsuario 
+        : "";
+    console.log("Valor de nombrePublicacionUsuario:", nombrePublicacionUsuario);
+    // Asignar el valor al input (si el elemento existe en el DOM)
+    var inputElement = document.getElementById("nombrePublicacionUsuario");
+    if (inputElement) {
+        inputElement.value = nombrePublicacionUsuario;
+    }
+
 </script>
 
 
