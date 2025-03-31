@@ -45,8 +45,7 @@ def social_media_ambitosCategorias_categoria_mostrar():
             Ambitos.idioma == idioma
         ).first()
 
-        if not ambitos:
-            db.session.close()
+        if not ambitos:           
             return jsonify({'error': 'Ámbito no encontrado'}), 404
 
        # Buscar las relaciones

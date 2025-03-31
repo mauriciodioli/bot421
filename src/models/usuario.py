@@ -19,6 +19,7 @@ class Usuario(db.Model):
     token = db.Column(db.String(1000), nullable=True)
     roll = db.Column(db.String(20), nullable=False, default='regular')
     refresh_token = db.Column(db.String(1000), nullable=True)
+    calendly_url = db.Column(db.String(255))  # URL de Calendly del usuario
     cuentas = relationship("Cuenta", back_populates="usuarios")
     orden = relationship("Orden", back_populates="usuarios")
     imagenes = relationship("Image", back_populates="usuarios")

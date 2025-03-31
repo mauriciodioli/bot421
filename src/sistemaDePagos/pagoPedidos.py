@@ -23,6 +23,8 @@ def sistemaDePagos_pagoPedidos():
         total = data.get('total_pago')
         ambito = data.get('ambito_btn_finalizarPago')
         botonPagoOnline = data.get('boton_pagoOnline')
+        calendly_url = data.get('calendly_url')
+        nombrePublicacionUsuario = data.get('nombrePublicacionUsuario')
         # Captura y procesa el JSON de pedidos
         pedido_data_json = data.get('pedido_data')  # JSON string enviado desde el formulario
        
@@ -55,6 +57,8 @@ def sistemaDePagos_pagoPedidos():
                 'ambito':ambito,
                 'cluster':random_number,
                 'pedido_data_json':pedido_data_json, 
+                'calendly_url':calendly_url,
+                'nombrePublicacionUsuario':nombrePublicacionUsuario,
                 'botonPagoOnline':botonPagoOnline
                                   
             }]

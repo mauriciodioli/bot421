@@ -417,7 +417,19 @@ def productosComerciales_pedidos_alta_carrito():
         ambito = data.get('ambito_btn_carrito')
         pedidos = db.session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito, Pedido.estado == 'pendiente').all()
         
-    
+        publicacion_id_btn_carrito = data.get('publicacion_id_btn_carrito')
+        # Consultar publicaciones y pedidos
+        publicacion = db.session.query(Publicacion).filter_by(id=int(publicacion_id_btn_carrito)).first()
+        if not publicacion:
+            return jsonify({'error': 'Publicacion no encontrada.'}), 404
+        else:
+            usuario = db.session.query(Usuario).filter_by(id=publicacion.user_id).first()
+            if usuario.calendly_url:
+                calendly_url = quitar_acentos(usuario.calendly_url)
+            else:
+                calendly_url = None
+                
+       
        # Procesar datos de los pedidos
         pedidos_data = [
             {
@@ -428,11 +440,13 @@ def productosComerciales_pedidos_alta_carrito():
                 'precio_venta': pedido.precio_venta,
                 'estado': pedido.estado,
                 'imagen_url': pedido.imagen,  # Incluir la URL de la imagen  
+                'calendly_url': calendly_url,
+                'nombrePublicacionUsuario': usuario.correo_electronico,
                 'pagoOnline': botonPagoOnline            
             }
             for pedido in pedidos
         ]
-        db.session.close()
+       
         # Renderizar la plantilla
         return render_template(
             'productosComerciales/pedidos/carritoCompras.html',
