@@ -114,8 +114,14 @@ def handle_message(user_id, message):
             return "Claro, ¿qué consulta tienes sobre nuestros servicios?"
 
         # ✅ Usar GPT-4
-        respuesta = respuestaIa(pregunta, selectedModel="gpt4")
+        # El contexto debe incluir lo que se ha hablado hasta ahora
+        contexto = [
+            {"role": "system", "content": "Responde como un experto en ventas sobre los servicios ofrecidos."},
+            {"role": "user", "content": message}  # Incluir el mensaje actual del usuario
+        ]
 
+        respuesta = respuestaIa(pregunta, selectedModel="gpt4", context=contexto)
+       
         # Manejar si se devuelve un dict de error
         if isinstance(respuesta, tuple):
             respuesta = respuesta[0].get("error", "No se pudo obtener una respuesta del modelo.")
