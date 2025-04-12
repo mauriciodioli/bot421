@@ -16,12 +16,15 @@ from turing.turingUser import turingUser_crear_user
 from models.turing.respuestaUsuario import RespuestaUsuario, RespuestaUsuarioSchema
 from models.turing.preguntaUsuario import PreguntaUsuario, PreguntaUsuarioSchema
 import os
+import openai
+
 
 
 
 PUBLIC_KEY_DS = os.getenv("PUBLIC_KEY_DS")
 ACCESS_TOKEN_IA = os.getenv("HUGGINGFACE_API_TOKEN")
 API_URLS = {
+    "gpt4": os.getenv("API_URL_GPT4"),
     "gpt2Model": os.getenv("API_URL_GPT2"),
     "bertModel": os.getenv("API_URL_BERT"),
     "distilbertModel": os.getenv("API_URL_DISTILBERT"),
@@ -33,6 +36,10 @@ HEADER = {
     "Content-Type": "application/json"
 }
 
+api_key = os.getenv("SECRET_KEY_GPT4")
+# Instanciamos el cliente de OpenAI
+client = openai.OpenAI(api_key=api_key)
+
 
 # Verificar que las URLs estén configuradas correctamente
 for model, url in API_URLS.items():
@@ -40,8 +47,16 @@ for model, url in API_URLS.items():
         raise ValueError(f"La URL para el modelo {model} no está configurada en el archivo .env.")
 
 
+# Define el contexto de la conversación (puedes ir agregando mensajes aquí)
+contador_preguntas = 0
+context = [  ]
+
+
+
+
+
 turingRespuestas = Blueprint('turingRespuestas', __name__)
-@turingRespuestas.route('/turing-turingRespuestas-crear', methods=['GET', 'POST'])
+@turingRespuestas.route('/turing-turingRespuestas-crear/', methods=['GET', 'POST'])
 def social_media_turing_turingRespuestas_crear():
     try:
         data = request.get_json()
@@ -97,7 +112,7 @@ def social_media_turing_turingRespuestas_crear():
         db.session.close()
 
       
-@turingRespuestas.route('/turing-testTuring-obtener-respuestas-id', methods=['POST'])
+@turingRespuestas.route('/turing-testTuring-obtener-respuestas-id/', methods=['POST'])
 def turing_testTuring_obtener_respuestas_id():
     try:
         # Obtener los datos enviados en la solicitud
@@ -134,7 +149,7 @@ def turing_testTuring_obtener_respuestas_id():
 
         # Lógica de respuesta
         if model_activado == 'true':
-            if valor_aleatorio == 'respuesta_ia':
+            if valor_aleatorio == 'respuesta_ia'or'respuesta_usuario':
                 # Respuesta generada por IA
                 if not selected_model:
                     return {'error': 'El modelo seleccionado es obligatorio cuando el modelo está activado.'}, 400
@@ -166,38 +181,73 @@ def turing_testTuring_obtener_respuestas_id():
         # Cerrar la sesión de la base de datos para liberar recursos
         db.session.close()
 
-import requests
+
 
 def respuestaIa(pregunta, selectedModel):
     try:
+        global contador_preguntas, context
         # Verificar que el modelo seleccionado es válido
         if selectedModel not in API_URLS:
             return {"error": f"Modelo '{selectedModel}' no soportado."}, 400
 
         headers = {"Authorization": f"Bearer {ACCESS_TOKEN_IA}"}
+        
+         # Incrementamos el contador de preguntas
+        contador_preguntas += 1
+        
+        # Si ya hemos hecho 6 preguntas, iniciamos el contexto con un mensaje de "system"
+        if contador_preguntas > 6:
+            context = [
+                {"role": "system", "content": "Ahora que tenemos algo de contexto, puedes responder a las preguntas de manera coherente con la conversación."},
+                *context  # Aseguramos que el contexto previo también esté presente
+            ]
 
-        # Configuración especial para DeepSeek
-        if selectedModel == 'deepSeekModel':
+        # Añadir la pregunta del usuario al contexto
+        context.append({"role": "user", "content": pregunta.descripcion})  # Asegúrate de que 'pregunta.descripcion' sea lo correcto
+        
+        if selectedModel == 'gpt4':
+            # Añadir la pregunta al contexto solo cuando sea necesario
+            context.append({"role": "user", "content": pregunta.descripcion})  # Asegúrate de que 'pregunta.descripcion' sea lo correcto
+                # Realizamos una solicitud al modelo de chat
+            response = client.chat.completions.create(
+                model="gpt-4-turbo",
+                messages=[
+                    {"role": "user", "content": pregunta.descripcion},
+                ],
+            )
+
+            print(response.choices[0].message.content)
+
+
+
+            # ✅ Acceder correctamente al contenido de la respuesta
+            if response.choices and len(response.choices) > 0:
+                respuesta = response.choices[0].message.content
+                return respuesta
+            else:
+                return "No se recibió una respuesta válida del modelo."
+
+           
+        elif selectedModel == 'deepSeekModel':
+            # Configuración especial para DeepSeek
             headers = {
                 "Authorization": f"Bearer {PUBLIC_KEY_DS}",
                 "Content-Type": "application/json"
             }
-           
-             # Definir el payload con la pregunta
+
+            # Definir el payload con la pregunta
             payload = {
                 "model": "deepseek-chat",  # Especificar el modelo
                 "messages": [{"role": "user", "content": pregunta.descripcion}],
                 "temperature": 0.7,
                 "top_p": 0.8
             }
-            
+
             # Realiza la solicitud POST
             response = requests.post(API_URLS[selectedModel], headers=headers, json=payload)
-
-           
-
+        
         else:
-            # Configurar los parámetros dependiendo del modelo
+            # Configuración para otros modelos (DistilBERT, BERT, GPT-2, etc.)
             if selectedModel == 'distilbertModel':
                 payload_respuesta = {
                     "inputs": pregunta.descripcion,
@@ -243,9 +293,13 @@ def respuestaIa(pregunta, selectedModel):
 
         return {"error": f"Error al llamar a la API: {response.text}"}, response.status_code
 
+    except Exception as e:
+        # Loguear el error para depuración
+        print(f"Error al procesar la solicitud: {str(e)}")
+        return {'error': 'Ocurrió un error al procesar la solicitud.'}, 500
     except requests.exceptions.RequestException as e:
+        # Manejo de otros errores relacionados con la solicitud HTTP
         return {"error": f"Error en la solicitud HTTP: {str(e)}"}, 500
-
 
 
 

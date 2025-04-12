@@ -24,7 +24,7 @@
 
 if (typeof localStorage.getItem('selectedModel') === 'undefined' || localStorage.getItem('selectedModel') === null) {
   // Si no está configurado o es indefinido, lo inicializa con el valor 1
-  localStorage.setItem('selectedModel', 'deepSeekModel');
+  localStorage.setItem('selectedModel', 'gpt4');
  
 } else {
   console.log('Pregunta ID ya estaba configurada:', localStorage.getItem('selectedModel'));
@@ -256,7 +256,7 @@ function obtenerRespuesta() {
   const listaPreguntas = document.getElementById("preguntas-lista"); // Asegúrate de que este ID sea correcto
   obtenerIp(function(ipCliente) {
     // Verificar que la lista tenga suficientes elementos
-
+  debugger;
     if (listaPreguntas && listaPreguntas.children.length >= 6) {
         // Calcular la posición 9 desde abajo
         
@@ -284,7 +284,7 @@ function obtenerRespuesta() {
                 };
 
                 // Realizar la solicitud con fetch
-                fetch('/turing-testTuring-obtener-respuestas-id', {
+                fetch('/turing-testTuring-obtener-respuestas-id/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'  // Especificamos que enviamos JSON
@@ -334,7 +334,7 @@ function obtenerRespuesta() {
 
 
 // Declarar variables globales
-let tiempoLectura = parseInt(localStorage.getItem('tiempoLecturaBuclePreguntas')) || 40000; // Valor inicial
+let tiempoLectura = parseInt(localStorage.getItem('tiempoLecturaBuclePreguntas')) || 1000; // Valor inicial
 let intervalo; // Guardará el ID del setInterval
 
 // Función para iniciar el bucle
@@ -462,7 +462,7 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
       };
 
       // Realizar la petición AJAX usando fetch
-      fetch('/turing-turingRespuestas-crear', {
+      fetch('/turing-turingRespuestas-crear/', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'  // Especificamos que enviamos JSON
@@ -983,6 +983,7 @@ function obtenerIp(callback) {
 document.addEventListener('DOMContentLoaded', function() {
   // Elementos de los modelos
   const conectarButton = document.getElementById('conectar');
+  const gpt4 = document.getElementById('gpt4');
   const gpt2Model = document.getElementById('gpt2Model');
   const bertModel = document.getElementById('bertModel');
   const deepSeekModel = document.getElementById('deepSeekModel');
@@ -1001,11 +1002,14 @@ document.addEventListener('DOMContentLoaded', function() {
       distilbertModel.classList.add('active');
     }else if (selectedModel === 'deepSeekModel') {
       deepSeekModel.classList.add('active');
+    }else if (selectedModel === 'gpt4') {
+      gpt4.classList.add('active');
     }
   }
 
   // Guardar modelo seleccionado
   function saveSelectedModel(model) {
+    debugger;
     selectedModel = model;
     localStorage.setItem('selectedModel', model);
 
@@ -1019,6 +1023,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Configurar eventos para cada modelo
+  if (gpt4) {
+    gpt4.addEventListener('click', () => saveSelectedModel('gpt4'));
+  }
   if (gpt2Model) {
     gpt2Model.addEventListener('click', () => saveSelectedModel('gpt2Model'));
   }

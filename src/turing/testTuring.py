@@ -15,16 +15,6 @@ from models.turing.preguntas import Pregunta, PreguntaSchema
 from models.turing.preguntaUsuario import PreguntaUsuario, PreguntaUsuarioSchema
 import os
 
-ACCESS_TOKEN_IA = os.getenv("HUGGINGFACE_API_TOKEN")
-API_URLS = {
-    "gpt2": os.getenv("API_URL_GPT2"),
-    "bert": os.getenv("API_URL_BERT"),
-    "distilbert": os.getenv("API_URL_DISTILBERT"),
-}
-# Verificar que las URLs estén configuradas correctamente
-for model, url in API_URLS.items():
-    if not url:
-        raise ValueError(f"La URL para el modelo {model} no está configurada en el archivo .env.")
 
 
 testTuring = Blueprint('testTuring', __name__)

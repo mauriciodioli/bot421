@@ -16,6 +16,7 @@ from models.usuario import Usuario
 from models.brokers import Broker
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from collections import defaultdict
+from turing.turingRespuestas import respuestaIa
 
 
 
@@ -58,7 +59,7 @@ def assign_admin():
 # API para manejar el hilo de mensajes
 
 
-@chat.route('/send_message', methods=['POST']) 
+@chat.route('/send_message/', methods=['POST']) 
 def send_message():
     data = request.get_json()
     
@@ -80,20 +81,24 @@ def send_message():
         "reply": response_message
     })
 
-
 def handle_message(user_id, message):
-    state = user_states[user_id]
-    
-    # Procesa el mensaje según el estado del usuario
+    state = user_states.get(user_id, "greeting")
+
+    # Creamos un objeto compatible con .descripcion
+    class Pregunta:
+        def __init__(self, descripcion):
+            self.descripcion = descripcion
+
+    pregunta = Pregunta(message)
+
     if state == "greeting":
         if message.lower() in ["hola", "buen día", "buenas tardes"]:
-            response_message = "¡Hola! ¿Qué se le ofrece?"
-            user_states[user_id] = "waiting_for_request"  # Cambia el estado
+            user_states[user_id] = "waiting_for_request"
+            return "¡Hola! ¿Qué se le ofrece?"
         else:
-            response_message = "Lo siento, no entiendo eso. ¿Puedes saludarme?"
-    
+            return "Lo siento, no entiendo eso. ¿Puedes saludarme?"
+
     elif state == "waiting_for_request":
-        # Manejar preguntas sobre costos
         if any(keyword in message.lower() for keyword in ["costos", "quiero saber sobre costos", "cuánto cuesta", "costos de utilización"]):
             return (
                 "Los costos de utilización son los siguientes:\n"
@@ -103,16 +108,22 @@ def handle_message(user_id, message):
                 "- Copy trading: 2% de retorno mensual y 240% + capital anual.\n"
                 "- Sistema de fichas: 0.65% por ficha."
             )
-        
+
         if "consulta" in message.lower():
             user_states[user_id] = "consultation"
             return "Claro, ¿qué consulta tienes sobre nuestros servicios?"
 
-        # Aquí se maneja la consulta
-       # admin_reply = nlp(question=message, context=context)
-       # response_message = admin_reply['answer'] if admin_reply['answer'] else "Lo siento, no tengo información sobre eso."
-    
-    return response_message if 'response_message' in locals() else "Lo siento, no entendí tu mensaje."
+        # ✅ Usar GPT-4
+        respuesta = respuestaIa(pregunta, selectedModel="gpt4")
+
+        # Manejar si se devuelve un dict de error
+        if isinstance(respuesta, tuple):
+            respuesta = respuesta[0].get("error", "No se pudo obtener una respuesta del modelo.")
+
+        return respuesta
+
+    return "Lo siento, no entendí tu mensaje."
+
 
 
 

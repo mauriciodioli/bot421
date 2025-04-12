@@ -69,7 +69,7 @@ def panel_control_sin_cuenta():
         return render_template('usuarios/logOutSystem.html',layout='layout')     
   
 
-@panelControl.route("/panel_control")
+@panelControl.route("/panel_control/")
 def panel_control():
      pais = request.args.get('country')
      layout = request.args.get('layoutOrigen')
