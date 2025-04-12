@@ -49,8 +49,8 @@ for model, url in API_URLS.items():
 
 # Define el contexto de la conversación (puedes ir agregando mensajes aquí)
 contador_preguntas = 0
-context = [  ]
 
+context = []
 
 
 
@@ -183,7 +183,7 @@ def turing_testTuring_obtener_respuestas_id():
 
 
 
-def respuestaIa(pregunta, selectedModel):
+def respuestaIa(pregunta, selectedModel, contexto=None):
     try:
         global contador_preguntas, context
         # Verificar que el modelo seleccionado es válido
