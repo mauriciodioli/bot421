@@ -50,7 +50,7 @@ document.getElementById('closeChat').addEventListener('click', function() {
 
         // Function to send message to server
         function sendMessage(userId, message) {
-            fetch('/send_message', {
+            fetch('/send_message/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: userId, message: message })
@@ -66,7 +66,7 @@ document.getElementById('closeChat').addEventListener('click', function() {
 
         function pollForMessages() {
             setInterval(function() {
-                fetch('/check_new_messages')  // Endpoint que verifica mensajes nuevos
+                fetch('/check_new_messages/')  // Endpoint que verifica mensajes nuevos
                     .then(response => response.json())
                     .then(data => {
                         if (data.newMessages) {

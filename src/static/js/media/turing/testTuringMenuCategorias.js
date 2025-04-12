@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target && event.target.classList.contains('categoria-item')) {
             const categoria = event.target.dataset.categoria;
             const preguntaSeleccionada = categoriaMenu.dataset.preguntaSeleccionada;
-
+            debugger;
             // Guardar la selección en localStorage           
             localStorage.setItem('seleccionCategoria', categoria);
 
@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const preguntaId = preguntaSeleccionada.getAttribute('data-preguntaSeleccionada');
             const categoriaId = preguntaSeleccionada.closest('.dropdown-menu')
                 ?.querySelector('.categoria-item[data-categoria]')
-                ?.getAttribute('data-categoria') || 'categoria-Todas'; // Predeterminamos "Todas" si no se seleccionó una categoría
+                ?.getAttribute('data-categoria') || 'general'; // Predeterminamos "Todas" si no se seleccionó una categoría
             seleccionarCategoria(event) 
             // Construimos el objeto de datos a enviar
             const data = {
