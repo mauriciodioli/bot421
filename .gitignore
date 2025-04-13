@@ -6,6 +6,8 @@ src/strategies/pruebasheetpython.json
 
 src/upload_to_gcs.json
 
+src/credentialIa.json
+
 # Ignore specific test files
 /src/Test/test_euler.py
 
