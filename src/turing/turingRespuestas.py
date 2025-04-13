@@ -36,7 +36,15 @@ HEADER = {
     "Content-Type": "application/json"
 }
 
-api_key = os.getenv("SECRET_KEY_GPT4")
+credentials_path = os.getenv("SECRET_KEY_GPT4")
+# Abre el archivo JSON de credenciales
+with open(credentials_path, 'r') as f:
+    credentials = json.load(f)
+
+# Accede a las credenciales y úsalo
+api_key = credentials['api_key']
+
+
 # Instanciamos el cliente de OpenAI
 client = openai.OpenAI(api_key=api_key)
 
