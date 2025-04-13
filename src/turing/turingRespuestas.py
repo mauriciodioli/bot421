@@ -216,7 +216,7 @@ def respuestaIa(pregunta, selectedModel, contexto=None):
                 ],
             )
 
-            print(response.choices[0].message.content)
+            #print(response.choices[0].message.content)
 
 
 

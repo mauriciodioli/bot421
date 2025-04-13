@@ -90,7 +90,8 @@ def handle_message(user_id, message):
             self.descripcion = descripcion
 
     pregunta = Pregunta(message)
-
+    print(f"Mensaje recibido: {pregunta.descripcion}")
+    print(f"state: {state}")
     if state == "greeting":
         if message.lower() in ["hola", "buen día", "buenas tardes"]:
             user_states[user_id] = "waiting_for_request"
@@ -120,7 +121,7 @@ def handle_message(user_id, message):
             {"role": "user", "content": message}  # Incluir el mensaje actual del usuario
         ]
 
-        respuesta = respuestaIa(pregunta, selectedModel="gpt4", context=contexto)
+        respuesta = respuestaIa(pregunta, selectedModel="gpt4", contexto=contexto)
        
         # Manejar si se devuelve un dict de error
         if isinstance(respuesta, tuple):

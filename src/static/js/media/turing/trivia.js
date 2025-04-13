@@ -47,7 +47,7 @@ function enviarRespuesta(respuesta) {
     };
 
     // Realizar la llamada AJAX con fetch
-    fetch('/turing-triviaTuring-crear', {
+    fetch('/turing-triviaTuring-crear/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

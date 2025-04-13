@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             // Llamamos a la función para enviar los datos
-           // enviarDatos('/turing-testTuring-obtener-respuestas-id', data);
+           // enviarDatos('/turing-testTuring-obtener-respuestas-id/', data);
         });
     } else {
         console.warn('No se encontró el elemento .preguntaSeleccionada-item');
