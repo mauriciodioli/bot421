@@ -36,7 +36,7 @@ HEADER = {
     "Content-Type": "application/json"
 }
 
-credentials_path = os.getenv("SECRET_KEY_GPT4")
+credentials_path = os.getenv("SECRET_KEY_GPT4_PATH")
 # Abre el archivo JSON de credenciales
 with open(credentials_path, 'r') as f:
     credentials = json.load(f)
