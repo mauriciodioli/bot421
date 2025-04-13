@@ -93,7 +93,7 @@ function obtenerPregunta() {
   if (!localStorage.getItem('seleccionCategoria')) {
       localStorage.setItem('seleccionCategoria', 'general');
   }
-
+debugger;
       // Obtiene los valores del localStorage con valores predeterminados
       const id = localStorage.getItem('pregunta_id_bucle') || 1; // ID predeterminado en caso de que sea null
       const categoria = localStorage.getItem('seleccionCategoria') || 'general'; // Categoría predeterminada
@@ -816,7 +816,7 @@ document.getElementById('enviarPreguntaBtn').onclick = function() {
     };
 
     // Realizar la petición AJAX usando fetch
-    fetch('/turing-testTuring-crear', {
+    fetch('/turing-testTuring-crear/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'  // Especificamos que enviamos JSON

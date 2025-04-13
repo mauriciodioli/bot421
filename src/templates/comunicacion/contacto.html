@@ -37,7 +37,7 @@
                     
                         <section>
                             <h2 style="color: gold;">Formulario de Contacto</h2>
-                            <form action="/enviar-email-de-contacto" method="POST">
+                            <form action="/enviar-email-de-contacto/" method="POST">
                                 <div class="form-group">
                                     <label style="color: gold;" for="nombre">Nombre:</label>
                                     <input type="text" class="form-control" id="nombre" name="nombre" required>
@@ -68,7 +68,7 @@
     </div>
 
     <!-- Widget del Chat -->
-    <div class="chat-icon" id="openChat">
+    <div class="chat-icon" id="openChat" aria-label="Abrir chat">
         💬 <!-- Aquí puedes usar un ícono de chat o una imagen -->
     </div>
 
@@ -85,14 +85,13 @@
             <button id="sendMessage">Enviar</button>
         </div>
     </div>
-    
-    
 </div>
 
 {% include 'layouts/layout_footer.html' %}
-<link rel = "stylesheet" href = {{ url_for('static',filename='css/social/chats/contacto.css')}}>
+<link rel="stylesheet" href="{{ url_for('static',filename='css/social/chats/contacto.css') }}">
 
 <script>
+    // Enviar mensaje al presionar el botón "Enviar"
     document.getElementById("sendMessage").addEventListener("click", function() {
         let message = document.getElementById("chatMessage").value;
         if (message) {
@@ -101,11 +100,18 @@
             document.getElementById("chatMessage").value = '';  // Limpiamos el campo de texto
         }
     });
-    
-    
+
+    // Enviar mensaje al presionar Enter
+    document.getElementById('chatMessage').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();  // Prevenir el salto de línea en el input
+            document.getElementById('sendMessage').click();  // Simula el clic en el botón Enviar
+        }
+    });
+
     function sendMessageToServer(message) {
         let xhr = new XMLHttpRequest();
-        xhr.open("POST", "/send_message", true);
+        xhr.open("POST", "/send_message/", true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -115,33 +121,29 @@
         };
         xhr.send(JSON.stringify({ message: message, userId: "1234" }));
     }
-    
+
     function updateChat(message, sender) {
         let chatBody = document.getElementById("chatBody");
         let newMessage = document.createElement("div");
         newMessage.innerText = message;
-    
+
         if (sender === 'user') {
             newMessage.classList.add('user-message');  // Aplica la clase para el usuario
         } else {
             newMessage.classList.add('admin-message');  // Aplica la clase para el administrador
         }
-    
+
         chatBody.appendChild(newMessage);
         chatBody.scrollTop = chatBody.scrollHeight;  // Para que siempre esté al final del chat
     }
-    
-    
-    
-    
+
     // Para abrir y cerrar el chat
     document.getElementById("closeChat").addEventListener("click", function() {
         document.getElementById("chatWidget").style.display = "none";
     });
-    
+
     document.getElementById("openChat").addEventListener("click", function() {
         document.getElementById("chatWidget").style.display = "block";
     });
-    
 </script>
 {% endblock %}
