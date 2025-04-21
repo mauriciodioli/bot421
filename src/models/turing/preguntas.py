@@ -14,13 +14,13 @@ class Pregunta(db.Model):
     
     # Columnas de la tabla
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  
-    descripcion = db.Column(db.String(500), nullable=True)
+    descripcion = db.Column(db.Text, nullable=True)  # Cambié String(500) por Text
     idioma = db.Column(db.String(500), nullable=True)
-    valor = db.Column(db.String(500), nullable=False)
+    valor = db.Column(db.Text, nullable=False)  # Cambié String(500) por Text
     estado = db.Column(db.String(500), nullable=True)
     dificultad = db.Column(db.String(500), nullable=True)  # Corrigiendo el error tipográfico
     categoria = db.Column(db.String(500), nullable=True)
-    respuesta_ia = db.Column(db.String(1000), nullable=True)
+    respuesta_ia =  db.Column(db.Text, nullable=True)
    
 
     # Constructor

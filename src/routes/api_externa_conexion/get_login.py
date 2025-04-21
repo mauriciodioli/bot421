@@ -79,6 +79,7 @@ account = "{{cuenta}}"
 market_data_recibida = []
 reporte_de_ordenes = []
 
+SHEET_PRODUCTOS_GPT = os.environ.get('SHEET_PRODUCTOS_GPT')
 
 SPREADSHEET_ID_PRUEBA = os.environ.get('SPREADSHEET_ID_PRUEBA')
 SPREADSHEET_ID_PRODUCCION = os.environ.get('SPREADSHEET_ID_PRODUCCION')  #drpiBot de produccion

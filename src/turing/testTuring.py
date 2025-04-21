@@ -10,6 +10,7 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 import random
 from datetime import datetime
+from strategies.datoSheet import leerSheet
 from turing.turingUser import turingUser_crear_user
 from models.turing.preguntas import Pregunta, PreguntaSchema
 from models.turing.preguntaUsuario import PreguntaUsuario, PreguntaUsuarioSchema
@@ -24,6 +25,7 @@ testTuring = Blueprint('testTuring', __name__)
 @testTuring.route('/turing-testTuring', methods=['GET', 'POST'])
 def social_media_turing_testTuring():
     try:
+        leerSheet(get.SHEET_PRODUCTOS_GPT, 'productos_gpt_sheet')
         return render_template('turing/testTuring.html')
     except Exception as e:
         return str(e)
@@ -33,7 +35,7 @@ def social_media_turing_testTuring():
     
     
 # Crear pregunta
-@testTuring.route('/turing-testTuring-crear', methods=['POST'])
+@testTuring.route('/turing-testTuring-crear/', methods=['POST'])
 def crear_pregunta():
     try:
         data = request.get_json()
@@ -101,8 +103,8 @@ def obtener_preguntas():
 
 
 # Leer una pregunta por ID
-@testTuring.route('/turing-testTuring-obtener-id/<int:id>/categoria/<string:categoria>', methods=['GET'])
-def obtener_pregunta(id, categoria):
+@testTuring.route('/turing-testTuring-obtener-id/<int:id>/categoria/<string:categoria>/language/<string:language>', methods=['GET'])
+def obtener_pregunta(id, categoria, language):
     try:
         # Realiza validaciones si es necesario
         if not isinstance(id, int):
@@ -113,22 +115,28 @@ def obtener_pregunta(id, categoria):
 
         # Obtener el ID máximo de la tabla Pregunta
         max_id = db.session.query(db.func.max(Pregunta.id)).scalar()
-        
+        min_id = db.session.query(db.func.min(Pregunta.id)).scalar()
         # Determinar el siguiente ID, bucle para encontrar el próximo válido
-        siguiente_id = id + 1 if id + 1 <= max_id else 1
+        if id >= max_id:
+            siguiente_id = min_id
+        else:
+            siguiente_id = id + 1
         pregunta = None
-
-        while siguiente_id <= max_id:  # Buscar pregunta existente
-            pregunta = db.session.query(Pregunta).filter(Pregunta.id == siguiente_id).first()
-
-            if pregunta:  # Si existe, salir del bucle
-                if pregunta.categoria == categoria:
-                    break
-               
-            siguiente_id += 1  # Incrementar para buscar el siguiente ID válido
-
+        
+        if categoria == 'categoria-Todas':            
+            # Buscar la pregunta con el menor ID que tenga el idioma especificado
+            pregunta = db.session.query(Pregunta).filter(Pregunta.id >= siguiente_id, Pregunta.idioma == language).order_by(Pregunta.id).first()
+        else:
+            # Buscar la pregunta con el menor ID que tenga el idioma especificado
+            pregunta = db.session.query(Pregunta).filter(Pregunta.id >= siguiente_id, Pregunta.idioma == language, Pregunta.categoria != categoria).order_by(Pregunta.id).first()
+        
+       # while siguiente_id <= max_id:  # Buscar pregunta existente   
+        #    siguiente_id += 1  # Incrementar para buscar el siguiente ID válido
+       
         if not pregunta:  # Si no se encontró ninguna pregunta válida
-            return {'error': 'Pregunta no encontrada'}, 404
+            
+            return {'error': 'Pregunta no encontrada' }, 404
+        
 
         return jsonify(serialize(pregunta,None,'respondidoPorIA'))
     
@@ -236,7 +244,7 @@ def serialize(pregunta, usuario,quienResponde):
     # Si usuario es None, omitir el campo de 'nombre'
     result = {
         'id': pregunta.id,  
-        'descripcion': pregunta.descripcion,
+        'descripcion': str(pregunta.id) + " " + pregunta.descripcion,
         'idioma': pregunta.idioma,
         'valor': pregunta.valor,
         'estado': pregunta.estado,

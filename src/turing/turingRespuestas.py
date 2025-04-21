@@ -7,6 +7,8 @@ import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,abort    
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
+from turing.conectionSheet import conectionSheet_enviar_productos
+
 import jwt
 import random
 from datetime import datetime
@@ -16,9 +18,18 @@ from turing.turingUser import turingUser_crear_user
 from models.turing.respuestaUsuario import RespuestaUsuario, RespuestaUsuarioSchema
 from models.turing.preguntaUsuario import PreguntaUsuario, PreguntaUsuarioSchema
 import os
+import re
 import openai
 
 
+# Variables globales
+total_tokens = 0
+total_gastado = 0.0
+saldo_disponible = 5.00  # configurá el saldo inicial real
+
+# Costos actuales GPT-4 Turbo (pueden cambiar)
+COSTO_INPUT = 0.01 / 1000
+COSTO_OUTPUT = 0.03 / 1000  
 
 
 PUBLIC_KEY_DS = os.getenv("PUBLIC_KEY_DS")
@@ -134,7 +145,7 @@ def turing_testTuring_obtener_respuestas_id():
             return {'error': 'El parámetro "pregunta_id" es obligatorio y debe ser un número válido.'}, 400
 
         pregunta_id = int(pregunta_id)
-        model_activado = data.get('boton_modelo_activado', 'false')
+        model_activado = data.get('boton_modelo_activado')
         selected_model = data.get('selectedModel')
         ip_cliente = data.get('ip_cliente', 'default_value')
         
@@ -193,7 +204,8 @@ def turing_testTuring_obtener_respuestas_id():
 
 def respuestaIa(pregunta, selectedModel, contexto=None):
     try:
-        global contador_preguntas, context
+        
+        global contador_preguntas, context, total_tokens, total_gastado, saldo_disponible
         # Verificar que el modelo seleccionado es válido
         if selectedModel not in API_URLS:
             return {"error": f"Modelo '{selectedModel}' no soportado."}, 400
@@ -214,26 +226,40 @@ def respuestaIa(pregunta, selectedModel, contexto=None):
         context.append({"role": "user", "content": pregunta.descripcion})  # Asegúrate de que 'pregunta.descripcion' sea lo correcto
         
         if selectedModel == 'gpt4':
-            # Añadir la pregunta al contexto solo cuando sea necesario
-            context.append({"role": "user", "content": pregunta.descripcion})  # Asegúrate de que 'pregunta.descripcion' sea lo correcto
-                # Realizamos una solicitud al modelo de chat
-            response = client.chat.completions.create(
-                model="gpt-4-turbo",
-                messages=[
-                    {"role": "user", "content": pregunta.descripcion},
-                ],
-            )
+            input_tokens = contar_tokens(pregunta.descripcion)
 
-            #print(response.choices[0].message.content)
+           # response = client.chat.completions.create(
+           #     model="gpt-4-turbo",
+           #     messages=[{"role": "user", "content": pregunta.descripcion}],
+           # )
+            respuesta='numero | pais | producto | amazon | ebay | aliexpress\n1 | Estados Unidos | zapatillas deportivas | https://www.amazon.com/s?k=wholesale+sneakers | https://www.ebay.com/sch/i.html?_nkw=wholesale+sneakers | https://www.aliexpress.com/wholesale?catId=0&initiative_id=&SearchText=wholesale+sneakers\n2 | Francia | bufandas de seda | https://www.amazon.com/s?k=wholesale+silk+scarves | https://www.ebay.com/sch/i.html?_nkw=wholesale+silk+scarves | https://www.aliexpress.com/wholesale?catId=0&initiative_id=&SearchText=wholesale+silk+scarves\n3 | Italia | bolsos de cuero | https://www.amazon.com/s?k=wholesale+leather+handbags | https://www.ebay.com/sch/i.html?_nkw=wholesale+leather+handbags | https://www.aliexpress.com/wholesale?catId=0&initiative_id=&SearchText=wholesale+leather+handbags\n4 | Japón | kimonos | https://www.amazon.com/s?k=wholesale+kimonos | https://www.ebay.com/sch/i.html?_nkw=wholesale+kimonos | https://www.aliexpress.com/wholesale?catId=0&initiative_id=&SearchText=wholesale+kimonos\n5 | Brasil | bikinis | https://www.amazon.com/s?k=wholesale+bikinis | https://www.ebay.com/sch/i.html?_nkw=wholesale+bikinis | https://www.aliexpress.com/wholesale?catId=0&initiative_id=&SearchText=wholesale+bikinis\n'
+          #  if response.choices and len(response.choices) > 0:
+           # respuesta = response.choices[0].message.content
+            output_tokens = contar_tokens(respuesta)
 
+            # Cálculo de costos
+            tokens_usados = input_tokens + output_tokens
+            costo = (input_tokens * COSTO_INPUT) + (output_tokens * COSTO_OUTPUT)
+            total_tokens += tokens_usados
+            total_gastado += costo
+            saldo_disponible -= costo
 
+            print(f"📌 Tokens usados: {tokens_usados} (input: {input_tokens}, output: {output_tokens})")
+            print(f"💸 Costo consulta: ${costo:.4f}")
+            print(f"📊 Total gastado: ${total_gastado:.4f}")
+            print(f"💰 Saldo disponible: ${saldo_disponible:.4f}")
 
-            # ✅ Acceder correctamente al contenido de la respuesta
-            if response.choices and len(response.choices) > 0:
-                respuesta = response.choices[0].message.content
-                return respuesta
-            else:
-                return "No se recibió una respuesta válida del modelo."
+            if saldo_disponible <= 0:
+                print("🚨 ¡Te quedaste sin saldo disponible para GPT!")
+
+            # Guardar en Sheet si corresponde
+            guardaEnSheet = re.match(r"^\s*sheet\b", pregunta.descripcion.strip(), re.IGNORECASE)
+            if guardaEnSheet:
+                conectionSheet_enviar_productos(respuesta)
+
+            return respuesta
+           # else:
+            #    return "No se recibió una respuesta válida del modelo."
 
            
         elif selectedModel == 'deepSeekModel':
@@ -310,6 +336,21 @@ def respuestaIa(pregunta, selectedModel, contexto=None):
         return {"error": f"Error en la solicitud HTTP: {str(e)}"}, 500
 
 
+
+def contar_tokens(texto):
+    """
+    Estimación de tokens basada en caracteres y palabras.
+    Aproximadamente: 1 token ≈ 4 caracteres o 0.75 palabras.
+    """
+    caracteres = len(texto)
+    palabras = len(texto.split())
+    
+    # Estimación conservadora
+    estimacion_por_caracteres = caracteres / 4
+    estimacion_por_palabras = palabras / 0.75
+
+    # Promedio de ambas estimaciones para mayor precisión
+    return int((estimacion_por_caracteres + estimacion_por_palabras) / 2)
 
       
   
