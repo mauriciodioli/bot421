@@ -161,7 +161,6 @@ def conectionSheet_enviar_productos(respuesta):
         
 
 
-
 def actualizar_senial(respuesta, sheetId, sheet_name): 
     try:
         if not get.sheet_manager.autenticar():
@@ -174,57 +173,55 @@ def actualizar_senial(respuesta, sheetId, sheet_name):
             print("No se recibió respuesta válida")
             return
 
-        # Obtener todos los datos (encabezado y contenido)
+        # Fecha actual
+        fecha_actual = datetime.now().strftime("%Y-%m-%d")
+
+        # Parsear respuesta en filas con estructura completa (13 col + fecha)
+        nuevas_filas_original = parsear_respuesta_13_columnas_completa(respuesta)
+        nuevas_filas = [fila + [fecha_actual] for fila in nuevas_filas_original]
+
+        if not nuevas_filas:
+            print("⚠️ No se encontraron filas válidas en la respuesta.")
+            return
+
+        # Obtener datos actuales
         datos = hoja.get_all_values()
         encabezado = datos[0]
         contenido = datos[1:]
 
-        # Crear índices actuales por (pais, fecha)
         pais_fecha_indices = {}
         pais_ultimas_filas = {}
         for i, fila in enumerate(contenido, start=2):  # desde fila 2 real
-            if len(fila) >= 7 and fila[1].strip():
-                pais = fila[1]
-                fecha = fila[6]
+            if len(fila) >= 14:
+                pais = fila[1].strip()
+                fecha = fila[13].strip()
                 pais_fecha_indices[(pais, fecha)] = i
                 pais_ultimas_filas[pais] = i
 
-        # Procesar nuevas filas
-        lines = respuesta.split("\n")[1:]  # saltar encabezado
+        # Agrupar nuevas filas por (pais, fecha)
         filas_por_pais_fecha = {}
-        fecha_actual = datetime.now().strftime("%Y-%m-%d")
-
-        for line in lines:
-            columnas = [item.strip() for item in line.split("|")]
-            if len(columnas) != 6:
-                continue
-            columnas = [extraer_link(col) for col in columnas]
-            columnas.append(fecha_actual)
-            pais = columnas[1]
+        for fila in nuevas_filas:
+            pais = fila[1]
             clave = (pais, fecha_actual)
-            filas_por_pais_fecha.setdefault(clave, []).append(columnas)
+            filas_por_pais_fecha.setdefault(clave, []).append(fila)
 
-        for (pais, fecha), nuevas_filas in filas_por_pais_fecha.items():
-            clave = (pais, fecha)
-            if clave in pais_fecha_indices:
-                ########################################################### se quita para no agregar en la misma fecha
-                #hoja.append_rows(nuevas_filas)  # misma fecha → agregar al final 
-                #####################################################################################################
-                print(f"Ya existe entrada para {pais} con fecha {fecha}, no se agrega.")
-                continue  # ❌ No agregar si ya existe esa fecha para ese país
+        # Insertar/actualizar según existencia de la clave (pais, fecha)
+        for (pais, fecha), filas in filas_por_pais_fecha.items():
+            if (pais, fecha) in pais_fecha_indices:
+                print(f"⚠️ Ya existe entrada para {pais} con fecha {fecha}, no se agrega.")
+                continue
             elif pais in pais_ultimas_filas:
                 fila_inicio = pais_ultimas_filas[pais]
-                hoja.update(f"A{fila_inicio}:G{fila_inicio + len(nuevas_filas) - 1}", nuevas_filas)
+                hoja.update(f"A{fila_inicio}", filas)
             else:
-                hoja.append_rows([[""] * 7] + nuevas_filas)  # país nuevo → fila vacía + datos
+                hoja.append_rows([[""] * 14] + filas)
 
-
-        # Reordenar hoja completa (excepto encabezado)
-        datos_actualizados = hoja.get_all_values()[1:]  # sin encabezado
+        # Reordenar hoja
+        datos_actualizados = hoja.get_all_values()[1:]
         datos_limpios = [fila for fila in datos_actualizados if any(c.strip() for c in fila)]
-        
-        # Ordenar por país (col 1) y fecha (col 6) — índice base 0
-        datos_ordenados = sorted(datos_limpios, key=lambda x: (x[1], x[6]))
+
+        # Ordenar por país (col 1) y fecha (col 14, índice 13)
+        datos_ordenados = sorted(datos_limpios, key=lambda x: (x[1], x[13]))
 
         # Insertar filas vacías entre países
         datos_finales = []
@@ -232,16 +229,16 @@ def actualizar_senial(respuesta, sheetId, sheet_name):
         for fila in datos_ordenados:
             pais = fila[1]
             if pais != ultimo_pais and ultimo_pais is not None:
-                datos_finales.append([""] * 7)  # fila vacía
+                datos_finales.append([""] * 14)
             datos_finales.append(fila)
             ultimo_pais = pais
 
-        # Sobrescribir hoja
-        hoja.update('A2:G', datos_finales)
-        print("Datos actualizados y hoja ordenada correctamente.")
+        # Escribir hoja
+        hoja.update("A2:N", datos_finales)
+        print("✅ Datos actualizados y hoja ordenada correctamente.")
 
     except Exception as e:
-        print(f"Error en el proceso de actualización: {e}")
+        print(f"❌ Error en el proceso de actualización: {e}")
 
 
 def extraer_link(texto):
@@ -250,3 +247,41 @@ def extraer_link(texto):
     return match.group(1) if match else texto.strip()
 
 
+def parsear_respuesta_13_columnas_completa(respuesta):
+    lineas = [l for l in respuesta.strip().split("\n") if "|" in l]
+    filas = []
+
+    for linea in lineas:
+        if "numero" in linea.lower() or "---" in linea:
+            continue  # saltar encabezado o separador
+
+        columnas = [extraer_link(c).strip() for c in linea.strip().split("|") if c.strip()]
+        if len(columnas) == 13:
+            link_corregido = corregir_link_aliexpress(columnas[9])  # ✅ esto sí se puede
+            fila = [
+                columnas[0],  # numero
+                columnas[1],  # pais
+                columnas[2],  # producto
+                columnas[3],  # categoria
+                columnas[4],  # descripcion
+                columnas[5],  # precio_amazon
+                columnas[6],  # precio_ebay
+                columnas[7],  # precio_aliexpress
+                columnas[8],  # proveedor_mas_barato
+                link_corregido, # link_proveedor_mas_barato
+                columnas[10], # precio_reventa_sugerido
+                columnas[11], # margen_estimado
+                columnas[12], # imagen
+               
+            ]
+            filas.append(fila)
+    return filas
+
+
+
+def corregir_link_aliexpress(url):
+    match = re.search(r"100\d{9,}", url)
+    if match:
+        product_id = match.group(0)
+        return f"https://www.aliexpress.com/i/{product_id}.html"
+    return url
