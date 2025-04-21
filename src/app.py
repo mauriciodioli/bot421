@@ -113,6 +113,7 @@ from turing.testTuring import testTuring
 from turing.turingUser import turingUser
 from turing.turingRespuestas import turingRespuestas
 from turing.triviaTuring import triviaTuring
+from turing.conectionSheet import conectionSheet
 
 from social.dpis.dpi import dpi
 
@@ -351,6 +352,7 @@ app.register_blueprint(trivia)
 app.register_blueprint(turingUser)
 app.register_blueprint(turingRespuestas)
 app.register_blueprint(triviaTuring)
+app.register_blueprint(conectionSheet)
 
 
 
