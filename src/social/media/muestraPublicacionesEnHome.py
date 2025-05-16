@@ -95,7 +95,8 @@ def obtener_publicacion_por_id(publicacion_id):
                         if imgen:
                             # Si imgen ya es binario, simplemente lo codificamos en base64
                             imagen_base64 = base64.b64encode(imgen).decode('utf-8')
-                                         
+                        else:
+                            imagen_base64 = None               
                         if filepath.startswith('static'):
                             filepath = filepath[len('static/'):]
                         imagenes.append({

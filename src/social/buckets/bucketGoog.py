@@ -12,6 +12,7 @@ from io import BytesIO
 import base64
 import urllib.parse
 import re
+from urllib.parse import urlparse
 from datetime import datetime, timedelta
 
 # Cargar las variables del archivo .env
@@ -151,75 +152,74 @@ def delete_from_gcs(blob_name):
         print(f"No se pudo eliminar el archivo {blob_name} del bucket. Error: {e}")
 
         
+from urllib.parse import urlparse
+from google.cloud import storage
+from google.api_core.exceptions import NotFound
+
+def es_url(val):
+    try:
+        result = urlparse(val)
+        return result.scheme in ('http', 'https') and result.netloc
+    except:
+        return False
+
+def tiene_https(path):
+    return path.startswith("http")
+
 def mostrar_from_gcs(blob_name):
-    # Primero, verificar si la imagen binaria está en caché
-    # Intentar obtener los datos de la imagen desde Redis
+    # Verificar caché en Redis
     cached_image = redis_client.hgetall(blob_name)
 
     if cached_image:
-        # Obtener la cadena hexadecimal de Redis
         hex_data = cached_image.get("file_data")
         file_path = cached_image.get("file_path")
-      
-        # Retornar los datos binarios de la imagen
-        # Convertir de hexadecimal a binario
+        
         if hex_data == '':
             image_data = None
             if not tiene_https(file_path):
-               file_path = '/'+file_path
-            return image_data,file_path
+                file_path = '/' + file_path
+            return image_data, file_path
+
         image_data = bytes.fromhex(hex_data)
-        return image_data,file_path  # Aquí puedes retornar la imagen o procesarla como desees
+        return image_data, file_path
 
-    # Si no está en caché, obtener la URL y la imagen desde GCS
-    client = storage.Client()
-    bucket = client.get_bucket(BUCKET_NAME)
-    blob = bucket.blob(blob_name)
+    # Si no está en Redis, obtener desde GCS o URL directa
+    if es_url(blob_name):
+        url_publica = blob_name
+        image_data = None  # No descargamos imagen si es URL externa
+        return image_data, url_publica
 
+    # Si es un blob de GCS
     try:
-       
-        # Obtener la URL pública de GCS
-        url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name}"
-       
-        # Verificar si el archivo existe en GCS
+        client = storage.Client()
+        bucket = client.bucket(BUCKET_NAME)
+        blob = bucket.blob(blob_name)
+
         if not blob.exists(client):
             print(f"El archivo {blob_name} no existe en el bucket {BUCKET_NAME}.")
-            image_data = ""
-            return image_data,url_publica
-        # Leer la imagen como binario desde GCS
+            return None
+
         image_data = blob.download_as_bytes()
-
-        # Convertir los datos binarios a hexadecimal
         hex_data = image_data.hex()
-        
-        if es_video(blob_name):
-             # Almacenar en Redis la URL y los datos hexadecimales
-            redis_client.hset(blob_name, mapping={
-                "file_path": url_publica,
-                "file_data": ""  # Almacenar los datos como una cadena vacia
-            })
-        else:
-            print(f"blob_name: {blob_name}, url_publica: {url_publica}, hex_data: {hex_data[:10]}...")
+        url_publica = f"https://storage.googleapis.com/{BUCKET_NAME}/{blob_name}"
 
-            # Almacenar en Redis la URL y los datos hexadecimales
-            redis_client.hset(blob_name, mapping={
-                "file_path": url_publica,
-                "file_data": hex_data  # Almacenar los datos como una cadena hexadecimal
-            })
+        # Guardar en Redis
+       # redis_client.hset(blob_name, mapping={
+       #     "file_path": url_publica,
+       #     "file_data": "" if es_video(blob_name) else hex_data
+       # })
+       # redis_client.expire(blob_name, 300)
 
-        # Opcional: establecer un tiempo de expiración (por ejemplo, 1 hora)
-        redis_client.expire(blob_name, 300)
- 
         print(f"Imagen y URL obtenidas y guardadas en Redis para el archivo: {blob_name}")
-        
-        return image_data,url_publica # Devolver los datos binarios de la imagen
+        return image_data, url_publica
 
     except NotFound:
         print(f"El archivo {blob_name} no existe en el bucket {BUCKET_NAME}.")
         return None
     except Exception as e:
-        print(f"No se pudo obtener la imagen y URL para el archivo {blob_name}. Error: {e}")
+        print(f"Error al obtener imagen o URL: {e}")
         return None
+
     
 def es_video(file_path):
     try:
@@ -299,3 +299,12 @@ def bucketGoog_get_download_url():
     except Exception as e:
         print(f"Error obteniendo la URL pública: {e}")  # Log para depuración
         return jsonify({"error": str(e)}), 500
+    
+def es_url(val):
+    try:
+        result = urlparse(val)
+        return result.scheme in ('http', 'https') and result.netloc
+    except:
+        return False
+def tiene_https(path):
+    return path.startswith("http")
