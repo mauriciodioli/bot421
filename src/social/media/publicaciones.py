@@ -448,7 +448,20 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
         categoria = None
         if categoriaPublicacion:
             categoria = db.session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
-       
+       # Calcular descuento aleatorio si hay precio
+        precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
+        if precio_actual:
+            if random.random() < 0.5:  # 50% de chance de aplicar descuento
+                descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
+                descuento = f"{descuento_porcentaje}% OFF"
+                precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+            else:
+                descuento = None
+                precio_original = None
+        else:
+            descuento = None
+            precio_original = None
+
           # Agregar la publicación con la primera imagen o video encontrado
         publicaciones_data.append({
             'publicacion_id': publicacion.id,
@@ -469,7 +482,10 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
             'videos': videos,      # Solo un video
             'layout': layout,
             'rating': round(random.uniform(3.0, 5.0), 1),
-            'reviews': random.randint(1, 150)
+            'reviews': random.randint(1, 150),
+            'descuento': descuento,
+            'precio': precio_actual,
+            'precio_original': precio_original
         })
 
   
@@ -477,7 +493,14 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
 
 
 
-
+def extraer_precio_y_descripcion(texto):
+    match = re.match(r"^\$ ?(\d+)(.*)", texto)
+    if match:
+        precio_actual = int(match.group(1))
+        descripcion = match.group(2).strip()
+        return precio_actual, descripcion
+    else:
+        return None, texto
 
 
 def armar_publicacion_bucket(publicaciones):
