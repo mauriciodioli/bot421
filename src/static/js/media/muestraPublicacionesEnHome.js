@@ -146,49 +146,52 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                         // Tarjeta de publicación
                       var cardHtml = `
-                                <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
-                                    <div class="card-body">
+    <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
+        <div class="card-body">
 
-                                        <!-- Botón cerrar -->
-                                        <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
-                                            <span class="text-white">&times;</span>
-                                        </a>
+            <!-- Botón cerrar -->
+            <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                <span class="text-white">&times;</span>
+            </a>
 
-                                        <!-- Badge de categoría -->
-                                        <div class="categoria-badge">${post.categoriaNombre}</div>
+            <!-- BADGES: categoría + descuento -->
+            <div class="card-badges">
+                <div class="categoria-badge">${post.categoriaNombre}</div>
+                ${post.descuento ? `<div class="descuento-badge">${post.descuento}</div>` : ''}
+            </div>
 
-                                        <!-- Imagen -->
-                                        <div class="card-media-grid-publicacion-en-ambito" onclick="abrirPublicacionHome(${post.publicacion_id}, 'layout')" style="cursor: pointer;">
-                                            ${mediaHtml}
-                                        </div>
+            <!-- Imagen -->
+            <div class="card-media-grid-publicacion-en-ambito" onclick="abrirPublicacionHome(${post.publicacion_id}, 'layout')" style="cursor: pointer;">
+                ${mediaHtml}
+            </div>
 
-                                        <!-- Título -->
-                                        <h5 class="card-title">${post.titulo}</h5>
+            <!-- Título -->
+            <h5 class="card-title">${post.titulo}</h5>
 
-                                        <!-- Estrellas (simuladas por ahora) -->
-                                        <div class="estrellas">
-                                            ${generarEstrellas(post.rating || 4)} <span class="text-muted" style="font-size: 0.9rem;">(${post.reviews || 1})</span>
-                                        </div>
+            <!-- Estrellas con cantidad -->
+            <div class="estrellas">
+                ${generarEstrellas(post.rating || 4)} <span class="text-muted" style="font-size: 0.9rem;">(${post.reviews || 1})</span>
+            </div>
 
+            <!-- Precios -->
+            ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;">$${post.precio_original}</p>` : ''}
+            ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">$${post.precio}</p>` : ''}
 
-                                        <!-- Precio simulado si lo tenés -->
-                                        ${precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${precio}</p>` : ''}
+            <!-- Descripción -->
+            <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
 
+            <!-- Fecha -->
+            <p class="card-date">${formatDate(post.fecha_creacion)}</p>
 
-                                        <!-- Descripción -->
-                                        <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${descripcion}</p>
+            <!-- Usuario -->
+            <p class="card-footer-publicacion">Publicado por: Usuario ${post.user_id}</p>
 
-                                        <!-- Fecha -->
-                                        <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+            <!-- Botón Ver más -->
+            <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+        </div>
+    </div>
+`;
 
-                                        <!-- Usuario -->
-                                        <p class="card-footer-publicacion">Publicado por: Usuario ${post.user_id}</p>
-
-                                        <!-- Botón Ver más -->
-                                        <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
-                                    </div>
-                                </div>
-                            `;
 
                         postDisplayContainer.append(cardHtml);
                     } else {
