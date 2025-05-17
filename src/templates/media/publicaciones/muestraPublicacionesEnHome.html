@@ -152,6 +152,41 @@
 
   </div>
 
+
+
+
+<!-- Nueva fila para los tabs -->
+  <div class="celda full-width">
+    <div class="tabs">
+      <input type="radio" id="tab1" name="tab-control" checked>
+      <input type="radio" id="tab2" name="tab-control">
+      <input type="radio" id="tab3" name="tab-control">
+      <ul>
+        <li title="Descripción"><label for="tab1" role="button"><span>Descripción</span></label></li>
+        <li title="Detalles"><label for="tab2" role="button"><span>Detalles</span></label></li>
+        <li title="Envío"><label for="tab3" role="button"><span>Envío</span></label></li>
+      </ul>
+      <div class="slider"><div class="indicator"></div></div>
+      <div class="content">
+        <section>
+          <h2>Descripción</h2>
+          <p>{{ post.descripcion | safe }}</p>
+        </section>
+        <section>
+          <h2>Detalles</h2>
+          <p>Aquí podrías mostrar características técnicas del producto.</p>
+        </section>
+        <section>
+          <h2>Envío</h2>
+          <p>Información de tiempos, zonas y costos de envío.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+
+
+
     <!-- Galería de imágenes y videos -->
   <div class="celda full-width">
      
@@ -190,7 +225,24 @@
 
 
   </div>
+
+
+
+        <div class="testimonials">
+        <div class="testimonial">
+            <p>"Excelente producto, superó mis expectativas."</p>
+            <h4>- Juan Pérez</h4>
+        </div>
+        <div class="testimonial">
+            <p>"Entrega rápida y atención al cliente impecable."</p>
+            <h4>- María López</h4>
+        </div>
+        </div>
+
+
+        
 </div>
+
 
 
 
@@ -201,6 +253,9 @@
 
 
 
+<a href="https://wa.me/+3934459771000"class="whatsapp-float" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">  
+</a>
 
    
 </div>
