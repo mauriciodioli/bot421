@@ -464,12 +464,14 @@ def armar_publicacion_bucket_para_dpi(publicaciones,layout):
             'color_titulo': publicacion.color_titulo,
             'fecha_creacion': publicacion.fecha_creacion,
             'estado': publicacion.estado,
-            'idioma':publicacion.idioma,
+            'idioma': publicacion.idioma,
             'imagenes': imagenes,  # Solo una imagen
-            'videos': videos,  # Solo un video
-            'layout': layout
+            'videos': videos,      # Solo un video
+            'layout': layout,
+            'rating': round(random.uniform(3.0, 5.0), 1),
+            'reviews': random.randint(1, 150)
         })
-        
+
   
     return publicaciones_data
 

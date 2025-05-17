@@ -141,7 +141,7 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                             postDisplayContainer.append(modalHtml);
                         }
-                     debugger;
+                     
                       const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
 
                         // Tarjeta de publicación
@@ -167,8 +167,9 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                                         <!-- Estrellas (simuladas por ahora) -->
                                         <div class="estrellas">
-                                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                            ${generarEstrellas(post.rating || 4)} <span class="text-muted" style="font-size: 0.9rem;">(${post.reviews || 1})</span>
                                         </div>
+
 
                                         <!-- Precio simulado si lo tenés -->
                                         ${precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${precio}</p>` : ''}
@@ -230,6 +231,26 @@ window.addEventListener("pageshow", function(event) {
         }
     }
 });
+
+
+
+function generarEstrellas(rating) {
+    const fullStar = '★';
+    const emptyStar = '☆';
+    const max = 5;
+    let estrellasHtml = '';
+
+    for (let i = 1; i <= max; i++) {
+        estrellasHtml += i <= Math.floor(rating) ? fullStar : emptyStar;
+    }
+
+    // Si hay medio punto (opcional)
+    if (rating % 1 >= 0.5 && Math.floor(rating) < max) {
+        estrellasHtml = estrellasHtml.substring(0, rating) + '½' + estrellasHtml.substring(rating + 1);
+    }
+
+    return estrellasHtml;
+}
 
 
 
