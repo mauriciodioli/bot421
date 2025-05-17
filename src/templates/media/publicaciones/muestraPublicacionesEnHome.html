@@ -29,18 +29,17 @@
           </div>
       </div>
     
-    <!-- Fila 1: Título y fecha -->
-    <div class="fila titulo-fecha">
-        <h1>{{ post.titulo }}</h1>
-        <p>{{ post.fecha_creacion }}</p>
-    </div>
+<div class="grid-malla">
 
-    <!-- Fila 2: Texto superior -->
-    <div class="fila texto-superior">
-        <p>Discover more projects by clicking on the image ↴</p>
-    </div>
 
-    <!-- Fila 3: Imagen o video principal -->
+    <!-- Columna izquierda -->
+  <div class="celda">
+   
+  <!-- Fila 2: Texto superior -->
+            <div class="fila texto-superior">
+                <p>Discover more projects by clicking on the image ↴</p>
+            </div>
+    <!-- Fila 4: Imagen o video principal -->
     <div id="principal-media" class="fila imagen-principal-muestra-despliegue-publicacion-home">
         <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
         {% if post.videos %}
@@ -64,86 +63,146 @@
             <p>No hay imágenes ni videos disponibles.</p>
         {% endif %}
     </div>
-    <!------------------------------------------------------------------------------->
-    <!------------------------------------------------------------------------------->
-    <!------------------------------------------------------------------------------->
-    {% if post.botonCompra %}
+  
 
-            <div class="fila boton-compra">
-                <form id="sistemaDePagos_get_ofertas_suscripciones" method="POST" action="/productosComerciales_pedidos_alta_carrito/" style="display: flex; align-items: center; gap: 10px;">
-                    <input type="hidden" id="ambito_btn_carrito" name="ambito_btn_carrito" value="{{ post.ambito }}">
-                    <input type="hidden" id="titulo_btn_carrito" name="titulo_btn_carrito" value="{{ post.titulo }}" >
-                    <input type="hidden" id="publicacion_id_btn_carrito" name="publicacion_id_btn_carrito" value="{{ post.publicacion_id }}" >
-                    <input type="hidden" id="texto_btn_carrito" name="texto_btn_carrito" value="{{post.texto}}" >
-                    <input type="hidden" id="precio_btn_PagoOnline" name="precio_btn_PagoOnline" value="{{post.pagoOnline}}" >
-                    <input type="hidden" id="access_token_btn_carrito1" name="access_token_btn_carrito1">
-                    <input type="hidden" id="correo_electronico_btn_carrito" name="correo_electronico_btn_carrito">   
-                
-                    <!-- Campo para la URL de la primera imagen -->
-                    {% if post.imagenes and post.imagenes[0].filepath %}
-                    <input type="hidden" id="imagen_btn_carrito" name="imagen_btn_carrito" 
-                        value="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}">
+  </div>
+
+   <!-- columana derecha -->
+  <div class="celda">
+    
+            <!-- Fila 1: Título y fecha -->
+                <div class="fila titulo-fecha">
+                    <h1>{{ post.titulo }}</h1>
+
+                    <!-- Estrellas dinámicas -->
+                    <div class="fila rating-estrellas">
+                        {{ estrellas_html | safe }}
+                    </div>
+
+                  <p>{{ post.fecha_creacion.strftime('%Y-%m-%d') }}</p>
+
+                </div>
+
+            {% if post.precio %}
+                <!-- Fila de Precios y Descuento -->
+                <div class="fila precios-publicacion">
+                    {% if post.precio_original and post.precio_original > post.precio %}
+                        <p class="precio-original">${{ post.precio_original }}</p>
+                        <p class="precio-descuento text-success fw-bold">${{ post.precio }}</p>
+                        {% if post.descuento %}
+                            <div class="descuento-badge">{{ post.descuento }}</div>
+                        {% endif %}
+                    {% else %}
+                        <p class="precio-descuento text-success fw-bold">${{ post.precio }}</p>
                     {% endif %}
+                </div>
+            {% endif %}
+
+          
+        <!-- Fila 3: Información adicional -->
+            <div class="fila informacion-adicional">
+                <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
+                <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
+              <p class="texto-publicacion-despliegue-home destacado-parrafo">
+                    {{ post.texto | safe }}
+              </p>
+
+            </div>
 
 
-                    <!-- Combo para elegir cantidad -->
-                    <div style="display: flex; align-items: center; margin-top: 20px; gap: 10px;">
-                        <label for="cantidadCompra" class="label-combo" style="margin-right: 10px;">Cantidad:</label>
-                        <input type="number" id="cantidadCompra" name="cantidadCompra" value="1" min="1" step="1" 
-                            style=" margin-top: 20px; width: 80px; height: 40px; text-align: center;">
-                        <button class="card-button btn-success long-button" 
-                                style=" margin-top: 10px; height: 40px; width: auto; padding: 0 15px; text-align: center;" 
-                                type="submit">Agregar</button>
+        <!------------------------------------------------------------------------------->
+            <!------------------------------------------------------------------------------->
+            <!------------------------------------------------------------------------------->
+            {% if post.botonCompra %}
+
+                    <div class="fila boton-compra">
+                        <form id="sistemaDePagos_get_ofertas_suscripciones" method="POST" action="/productosComerciales_pedidos_alta_carrito/" style="display: flex; align-items: center; gap: 10px;">
+                            <input type="hidden" id="ambito_btn_carrito" name="ambito_btn_carrito" value="{{ post.ambito }}">
+                            <input type="hidden" id="titulo_btn_carrito" name="titulo_btn_carrito" value="{{ post.titulo }}" >
+                            <input type="hidden" id="publicacion_id_btn_carrito" name="publicacion_id_btn_carrito" value="{{ post.publicacion_id }}" >
+                            <input type="hidden" id="texto_btn_carrito" name="texto_btn_carrito" value="{{post.texto}}" >
+                            <input type="hidden" id="precio_btn_PagoOnline" name="precio_btn_PagoOnline" value="{{post.pagoOnline}}" >
+                            <input type="hidden" id="access_token_btn_carrito1" name="access_token_btn_carrito1">
+                            <input type="hidden" id="correo_electronico_btn_carrito" name="correo_electronico_btn_carrito">   
+                        
+                            <!-- Campo para la URL de la primera imagen -->
+                            {% if post.imagenes and post.imagenes[0].filepath %}
+                            <input type="hidden" id="imagen_btn_carrito" name="imagen_btn_carrito" 
+                                value="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}">
+                            {% endif %}
+
+
+                            <!-- Combo para elegir cantidad -->
+                            <div style="display: flex; align-items: center; margin-top: 20px; gap: 10px;">
+                                <label for="cantidadCompra" class="label-combo" style="margin-right: 10px;">Cantidad:</label>
+                                <input type="number" id="cantidadCompra" name="cantidadCompra" value="1" min="1" step="1" 
+                                    style=" margin-top: 20px; width: 80px; height: 40px; text-align: center;">
+                                <button class="card-button btn-success long-button" 
+                                        style=" margin-top: 10px; height: 40px; width: auto; padding: 0 15px; text-align: center;" 
+                                        type="submit">Agregar</button>
+                            </div>
+                        
+
+                            </form>
                     </div>
                 
 
-                    </form>
-            </div>
-          
+            {% endif %}
 
-    {% endif %}
-            
+
+  </div>
+
+    <!-- Galería de imágenes y videos -->
+  <div class="celda full-width">
+     
           <!-- Fila 5: Galería de imágenes y videos -->
-<div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
-    <div class="imagenes-muestra-despliegue-publicacion-home grid-layout">
-        {% if post.imagenes or post.videos %}
-            {% for media in post.imagenes + post.videos %}
-                <div class="imagen-muestra-despliegue-publicacion-home">
-                    {% if media.filepath.endswith('.mp4') %}
-                        <video 
-                            id="videoPlayer"
-                            class="media-adaptada" 
-                            onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
-                            onmouseover="this.play()" 
-                            onmouseout="this.pause(); this.currentTime=0;" 
-                            muted 
-                            loop
-                            playsinline>
-                            <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
-                            Tu navegador no soporta el formato de video.
-                        </video>
-                    {% else %}
-                        <img 
-                            class="media-adaptada" 
-                            src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
-                            alt="{{ media.title }}" 
-                            onclick="replaceMainMedia(this.src, 'image')" />
+            <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
+                <div class="imagenes-muestra-despliegue-publicacion-home grid-layout">
+                    {% if post.imagenes or post.videos %}
+                        {% for media in post.imagenes + post.videos %}
+                            <div class="imagen-muestra-despliegue-publicacion-home">
+                                {% if media.filepath.endswith('.mp4') %}
+                                    <video 
+                                        id="videoPlayer"
+                                        class="media-adaptada" 
+                                        onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
+                                        onmouseover="this.play()" 
+                                        onmouseout="this.pause(); this.currentTime=0;" 
+                                        muted 
+                                        loop
+                                        playsinline>
+                                        <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
+                                        Tu navegador no soporta el formato de video.
+                                    </video>
+                                {% else %}
+                                    <img 
+                                        class="media-adaptada" 
+                                        src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
+                                        alt="{{ media.title }}" 
+                                        onclick="replaceMainMedia(this.src, 'image')" />
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                     {% endif %}
                 </div>
-            {% endfor %}
-        {% endif %}
-    </div>
+            </div>
+
+
+
+  </div>
 </div>
 
 
 
 
-    <!-- Fila 6: Información adicional -->
-    <div class="fila informacion-adicional">
-        <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
-        <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
-        <p class="texto-publicacion-despliegue-home">{{ post.texto | safe }}</p>
-    </div>
+
+
+   
+
+
+
+
+   
 </div>
 
 {% include 'layouts/layout_footer.html' %}
@@ -165,7 +224,8 @@
     function replaceMainMedia(src, type) {
         var container = document.getElementById('principal-media');
         if (type === 'image') {
-            container.innerHTML = '<img id="main-image" style="cursor: pointer;" onclick="cargarDatosPublicacion()" src="' + src + '" alt="Imagen seleccionada" />';
+            container.innerHTML = `<img id="main-image" class="media-principal-redondeada" style="cursor: pointer;"  onclick="cargarDatosPublicacion()"  src="${src}"  alt="Imagen seleccionada" /> `;
+
         } else if (type === 'video') {
             container.innerHTML = '<video controls id="main-video" style="cursor: pointer;"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
         }
