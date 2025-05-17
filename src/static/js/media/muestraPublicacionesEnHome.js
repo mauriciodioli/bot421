@@ -141,25 +141,54 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                             postDisplayContainer.append(modalHtml);
                         }
+                     debugger;
+                      const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
 
                         // Tarjeta de publicación
-                        var cardHtml = `
-                            <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
-                                <div class="card-body">
-                                    <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
-                                        <span class="text-white">&times;</span>
-                                    </a>
-                                    <h5 class="card-title">${post.titulo}</h5>
-                                    <h6 class="card-title">user_id: ${post.user_id}</h6>
-                                    <div class="card-media-grid-publicacion-en-ambito">
-                                        ${mediaHtml}
+                      var cardHtml = `
+                                <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
+                                    <div class="card-body">
+
+                                        <!-- Botón cerrar -->
+                                        <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                            <span class="text-white">&times;</span>
+                                        </a>
+
+                                        <!-- Badge de categoría -->
+                                        <div class="categoria-badge">${post.categoriaNombre}</div>
+
+                                        <!-- Imagen -->
+                                        <div class="card-media-grid-publicacion-en-ambito" onclick="abrirPublicacionHome(${post.publicacion_id}, 'layout')" style="cursor: pointer;">
+                                            ${mediaHtml}
+                                        </div>
+
+                                        <!-- Título -->
+                                        <h5 class="card-title">${post.titulo}</h5>
+
+                                        <!-- Estrellas (simuladas por ahora) -->
+                                        <div class="estrellas">
+                                            <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                                        </div>
+
+                                        <!-- Precio simulado si lo tenés -->
+                                        ${precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${precio}</p>` : ''}
+
+
+                                        <!-- Descripción -->
+                                        <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${descripcion}</p>
+
+                                        <!-- Fecha -->
+                                        <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+
+                                        <!-- Usuario -->
+                                        <p class="card-footer-publicacion">Publicado por: Usuario ${post.user_id}</p>
+
+                                        <!-- Botón Ver más -->
+                                        <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
                                     </div>
-                                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-                                    <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
-                                    <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
                                 </div>
-                            </div>
-                        `;
+                            `;
+
                         postDisplayContainer.append(cardHtml);
                     } else {
                         console.log('Publicación sin contenido:', post.publicacion_id);
@@ -201,6 +230,33 @@ window.addEventListener("pageshow", function(event) {
         }
     }
 });
+
+
+
+// Función para extraer precio y descripción del texto
+function extraerPrecioYDescripcion(texto) {
+    const regex = /^\$ ?(\d+)(.*)/;
+    const match = texto.match(regex);
+
+    if (match) {
+        const precio = `$${Number(match[1]).toLocaleString()}`;
+        const descripcion = match[2].trim();
+        return { precio, descripcion };
+    } else {
+        return { precio: null, descripcion: texto };
+    }
+}
+
+const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
+
+
+
+
+
+
+
+
+
 
 
 function cerrarPublicacion(publicacionId) {
