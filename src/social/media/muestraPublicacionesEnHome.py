@@ -5,6 +5,7 @@ from flask import current_app
 
 import requests
 import json
+import re
 import random  # Importar el módulo random
 from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -52,15 +53,32 @@ def media_publicaciones_detalle_dpi(publicacion_id):
 
 @muestraPublicacionesEnHome.route('/media-muestraPublicacionesEnHome-mostrar/<int:publicacion_id>/<string:layout>', methods=['GET'])
 def media_publicaciones_detalle(publicacion_id, layout):
-    # Obtener los detalles de la publicación desde la base de datos
-    # Aquí deberías hacer una consulta para obtener las imágenes y videos
-    post = obtener_publicacion_por_id(publicacion_id)  # Reemplaza con tu lógica de obtención
+    # Obtener la publicación
+    post = obtener_publicacion_por_id(publicacion_id)
+
     if post:
-        return render_template('media/publicaciones/muestraPublicacionesEnHome.html', post=post, layout=layout)
+        estrellas_html = generar_estrellas_html(post.get('rating', 4.5), post.get('reviews', 1))
+        return render_template(
+            'media/publicaciones/muestraPublicacionesEnHome.html',
+            post=post,
+            layout=layout,
+            estrellas_html=estrellas_html
+        )
     else:
-        
         return jsonify({'error': 'Publicación no encontrada'}), 404
-    
+def generar_estrellas_html(rating, reviews):
+    estrellas_html = ''
+    full_stars = int(rating)
+    half_star = 1 if (rating - full_stars) >= 0.5 else 0
+    empty_stars = 5 - full_stars - half_star
+
+    estrellas_html += '★' * full_stars
+    estrellas_html += '½' * half_star
+    estrellas_html += '☆' * empty_stars
+
+    return f'{estrellas_html} <span class="text-muted" style="font-size: 0.9rem;">({reviews})</span>'
+
+ 
 def obtener_publicacion_por_id(publicacion_id):
     try:
         publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
@@ -149,11 +167,26 @@ def obtener_publicacion_por_id(publicacion_id):
 
             # Agregar la publicación con sus imágenes y videos al diccionario
             db.session.close()
+             # Calcular descuento aleatorio si hay precio
+            precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
+            if precio_actual:
+                if random.random() < 0.5:  # 50% de chance de aplicar descuento
+                    descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
+                    descuento = f"{descuento_porcentaje}% OFF"
+                    precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                else:
+                    descuento = None
+                    precio_original = None
+            else:
+                descuento = None
+                precio_original = None
+            
+            texto = limpiar_texto(publicacion.texto)
             return {
                 'publicacion_id': publicacion.id,
                 'user_id': publicacion.user_id,
                 'titulo': publicacion.titulo,
-                'texto': publicacion.texto,
+                'texto': texto,
                 'ambito': publicacion.ambito,
                 'correo_electronico': publicacion.correo_electronico,
                 'descripcion': publicacion.descripcion,
@@ -164,7 +197,12 @@ def obtener_publicacion_por_id(publicacion_id):
                 'botonCompra': publicacion.botonCompra,  
                 'pagoOnline' : publicacion.pagoOnline,     
                 'imagenes': imagenes,
-                'videos': videos
+                'videos': videos,
+                'rating': round(random.uniform(3.0, 5.0), 1),
+                'reviews': random.randint(1, 150),
+                'descuento': descuento,
+                'precio': precio_actual,
+                'precio_original': precio_original
             }
             
         else:
@@ -173,3 +211,24 @@ def obtener_publicacion_por_id(publicacion_id):
         print(str(e))
         return None
 
+def extraer_precio_y_descripcion(texto):
+    match = re.match(r"^\$ ?(\d+)(.*)", texto)
+    if match:
+        precio_actual = int(match.group(1))
+        descripcion = match.group(2).strip()
+        return precio_actual, descripcion
+    else:
+        return None, texto
+
+
+def limpiar_texto(texto):
+    # Elimina precios, números y links al comienzo, antes del título
+    # Busca el primer bloque de texto que no sea número, precio o link
+    texto = texto.strip()
+
+    # Opción 1: cortar directamente desde donde empieza una letra mayúscula seguida de letras (ej: "Mochila")
+    match = re.search(r'\b([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+.*?)$', texto)
+    if match:
+        return match.group(1).strip()
+    
+    return texto  # Si no encuentra coincidencia, lo devuelve igual
