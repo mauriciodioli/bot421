@@ -398,6 +398,7 @@ engine = create_engine(
     max_overflow=INITIAL_MAX_OVERFLOW,
     pool_timeout=0.5,  # Tiempo máximo en segundos que se esperará por una conexión
     pool_recycle=3600,
+    pool_pre_ping=True 
     
 )
   
