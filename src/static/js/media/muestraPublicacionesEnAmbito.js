@@ -190,6 +190,10 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                                     <span class="precio-original-en-ambito">${post.precio_original}</span>
                                     <span class="precio-descuento-en-ambito">${post.precio_descuento}</span>
                                     </div>` : ''}
+                                    <div class="financiacion-info">
+                                    <i class="fas fa-credit-card"></i> Hasta 3 cuotas sin interés
+                                    </div>
+
 
                                 <p class="card-text-en-ambitos-personales text-truncated-en-ambitos-personales" id="postText-${post.publicacion_id}">
                                     ${post.texto}
@@ -286,3 +290,15 @@ function abrirPublicacionHome(publicacionId, layout) {
 
 
 
+
+
+
+
+
+
+
+if (pais === 'Argentina') {
+  cuotasHtml = `<div class="financiacion-info">💳 3, 6 o 12 cuotas con Ahora</div>`;
+} else if (pais === 'España') {
+  cuotasHtml = `<div class="financiacion-info">💳 Financiación 3 o 6 meses sin intereses</div>`;
+}

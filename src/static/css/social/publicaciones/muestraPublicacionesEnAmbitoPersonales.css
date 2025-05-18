@@ -185,6 +185,11 @@ a.btn-close-publicacion-en-ambitos-personales {
   border-radius: 10px;
   cursor: pointer;
 }
+.card-publicacion-en-ambitos-personales:hover {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+  transform: scale(1.01);
+  transition: all 0.2s ease-in-out;
+}
 
 .card-body-en-ambitos-personales {
   padding: 15px;
@@ -255,4 +260,24 @@ a.btn-close-publicacion-en-ambitos-personales {
   font-size: 0.75rem;
   padding: 2px 8px;
   border-radius: 6px;
+}
+
+
+
+
+
+
+
+.financiacion-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #00e5ff;
+  margin-top: 5px;
+}
+
+.financiacion-info i {
+  font-size: 1rem;
+  color: #00e5ff;
 }
