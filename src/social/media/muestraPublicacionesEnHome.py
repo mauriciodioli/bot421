@@ -166,7 +166,7 @@ def obtener_publicacion_por_id(publicacion_id):
                 video['filepath'] = video['filepath'].replace('\\', path_separator)
 
             # Agregar la publicación con sus imágenes y videos al diccionario
-            db.session.close()
+           
              # Calcular descuento aleatorio si hay precio
             precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
             if precio_actual:
@@ -210,7 +210,8 @@ def obtener_publicacion_por_id(publicacion_id):
     except Exception as e:
         print(str(e))
         return None
-
+    finally:
+        db.session.close()  # Cierra correctamente
 def extraer_precio_y_descripcion(texto):
     match = re.match(r"^\$ ?(\d+)(.*)", texto)
     if match:

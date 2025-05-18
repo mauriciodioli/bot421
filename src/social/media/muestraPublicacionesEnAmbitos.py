@@ -172,13 +172,14 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
                 'layout':layout
             })
 
-        db.session.close()
+       
         return resultados
 
     except Exception as e:
         print(f"Error: {str(e)}")
         return None
-
+    finally:
+        db.session.close()  # Cierra correctamente
 
 
 
@@ -272,5 +273,11 @@ def obtener_publicaciones_por_usuario_y_ambito(user_id, ambito):
     except Exception as e:
         print(str(e))
         return None
+
+
+
+
+
+
 
 
