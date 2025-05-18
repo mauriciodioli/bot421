@@ -160,28 +160,51 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                             `;
                             postDisplayContainer.append(modalHtml);
                         }
-                
+                        debugger;
+                        console.log(post);
                         var cardHtml = `
-                            <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}" style="margin-top: 100px;">
+                            <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}">
                                 <div class="card-body-en-ambitos-personales">
-                                    <h5 class="card-title-en-ambitos-personales">${post.titulo}</h5>
-                                    <h6 class="card-title-en-ambitos-personales">user_id: ${post.user_id}</h6>
-                                    <div class="card-media-grid-publicacion-en-ambitos-personales">
-                                        ${mediaHtml}
-                                    </div>
-                                    <p class="card-date-en-ambitos-personales">${formatDate(post.fecha_creacion)}</p>
-                                    <p class="card-text-en-ambitos-personales text-truncated-en-ambitos-personales" id="postText-${post.publicacion_id}">${post.texto}</p>
-                                    <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
-                                    ${post.botonCompra ? `
-                                        <button id="btn-comprar-${post.publicacion_id}" style="background-color: #28a745; color: white; font-size: 12px; padding: 5px 10px; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;"
-                                        onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'"
-                                        onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
-                                            Agregar
-                                        </button>` : ''
-                                    }
+
+                                <div class="card-badges">
+                                        <div class="categoria-badge">${post.categoriaNombre}</div>
+                                        ${post.descuento ? `<div class="descuento-badge">${post.descuento}</div>` : ''}
+                                </div>
+
+                                <div class="card-media-grid-publicacion-en-ambitos-personales">
+                                    ${mediaHtml}
+                                </div>
+
+                                <h5 class="card-title-en-ambitos-personales">${post.titulo}</h5>
+
+                                 <div class="estrellas-en-ambitos-personales">
+                                        ${generarEstrellas(post.rating || 4)} 
+                                        <span class="text-muted" style="font-size: 0.9rem;">(${post.reviews || 1})</span>
+                                </div>
+                            <!-- Precios -->
+                                        ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;">$${post.precio_original}</p>` : ''}
+                                        ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">$${post.precio}</p>` : ''}
+
+                                ${post.precio_original && post.descuento ? `
+                                    <div class="precio-en-ambito">
+                                    <span class="precio-original-en-ambito">${post.precio_original}</span>
+                                    <span class="precio-descuento-en-ambito">${post.precio_descuento}</span>
+                                    </div>` : ''}
+
+                                <p class="card-text-en-ambitos-personales text-truncated-en-ambitos-personales" id="postText-${post.publicacion_id}">
+                                    ${post.texto}
+                                </p>
+                                <a href="#" class="btn-ver-mas-en-ambitos-personales" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+
+                                ${post.botonCompra ? `
+                                    <button class="btn-comprar-en-ambito" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
+                                    Agregar
+                                    </button>` : ''}
+
                                 </div>
                             </div>
-                        `;
+                            `;
+                        
                 
                         postDisplayContainer.append(cardHtml);
                  // Desplazar la tarjeta hacia abajo si se ha mostrado una imagen
@@ -206,6 +229,23 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
     });
 }
 
+function generarEstrellas(rating) {
+    const fullStar = '★';
+    const emptyStar = '☆';
+    const max = 5;
+    let estrellasHtml = '';
+
+    for (let i = 1; i <= max; i++) {
+        estrellasHtml += i <= Math.floor(rating) ? fullStar : emptyStar;
+    }
+
+    // Si hay medio punto (opcional)
+    if (rating % 1 >= 0.5 && Math.floor(rating) < max) {
+        estrellasHtml = estrellasHtml.substring(0, rating) + '½' + estrellasHtml.substring(rating + 1);
+    }
+
+    return estrellasHtml;
+}
 
 
 

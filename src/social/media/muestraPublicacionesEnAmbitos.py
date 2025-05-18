@@ -5,6 +5,7 @@ from flask import current_app
 
 import requests
 import json
+import re
 import random  # Importar el módulo random
 from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -19,6 +20,7 @@ import base64
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.ambitoCategoria import AmbitoCategoria
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.modelMedia.image import Image
@@ -61,17 +63,32 @@ def mostrar_publicaciones_en_ambitos():
     post = armar_publicacion_bucket_para_dpi(user_id,ambito,layout,idioma,categoria)  # Reemplaza con tu lógica de obtención
     
     if post:
-        # Aquí puedes usar los parámetros adicionales si es necesario
-       return jsonify(post)
+       
+        for p in post:
+            p['estrellas_html'] = generar_estrellas_html(p.get('rating', 4.5), p.get('reviews', 1))
+    
+        return jsonify(post)
 
+      
     else:
         return jsonify({'error': 'Publicación no encontrada'}), 404
+def generar_estrellas_html(rating, reviews):
+    estrellas_html = ''
+    full_stars = int(rating)
+    half_star = 1 if (rating - full_stars) >= 0.5 else 0
+    empty_stars = 5 - full_stars - half_star
+
+    estrellas_html += '★' * full_stars
+    estrellas_html += '½' * half_star
+    estrellas_html += '☆' * empty_stars
+
+    return f'{estrellas_html} <span class="text-muted" style="font-size: 0.9rem;">({reviews})</span>'
 
 def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
     try:  
         # Obtener todas las publicaciones que coincidan con user_id y ambito
         publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, categoria_id=int(categoria)).all()
-
+        categoria = db.session.query(AmbitoCategoria).filter_by(id=int(categoria)).first()
         resultados = []
 
         for publicacion in publicaciones:
@@ -151,7 +168,21 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
                 imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
             for video in videos:
                 video['filepath'] = video['filepath'].replace('\\', path_separator)
-
+ # Calcular descuento aleatorio si hay precio
+            precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
+            if precio_actual:
+                if random.random() < 0.5:  # 50% de chance de aplicar descuento
+                    descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
+                    descuento = f"{descuento_porcentaje}% OFF"
+                    precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                else:
+                    descuento = None
+                    precio_original = None
+            else:
+                descuento = None
+                precio_original = None
+            
+            texto = limpiar_texto(publicacion.texto)
             # Agregar la publicación con su imagen y video a la lista de resultados
             resultados.append({
                 'publicacion_id': publicacion.id,
@@ -160,6 +191,7 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
                 'texto': publicacion.texto,
                 'ambito': publicacion.ambito,
                 'categoria_id': publicacion.categoria_id,
+                'categoriaNombre': categoria.nombre,
                 'correo_electronico': publicacion.correo_electronico,
                 'descripcion': publicacion.descripcion,
                 'color_texto': publicacion.color_texto,
@@ -169,6 +201,11 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
                 'imagenes': imagenes,
                 'videos': videos,
                 'botonCompra': publicacion.botonCompra,
+                'rating': round(random.uniform(3.0, 5.0), 1),
+                'reviews': random.randint(1, 150),
+                'descuento': descuento,
+                'precio': precio_actual,
+                'precio_original': precio_original,
                 'layout':layout
             })
 
@@ -183,6 +220,27 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
 
 
 
+def extraer_precio_y_descripcion(texto):
+    match = re.match(r"^\$ ?(\d+)(.*)", texto)
+    if match:
+        precio_actual = int(match.group(1))
+        descripcion = match.group(2).strip()
+        return precio_actual, descripcion
+    else:
+        return None, texto
+
+
+def limpiar_texto(texto):
+    # Elimina precios, números y links al comienzo, antes del título
+    # Busca el primer bloque de texto que no sea número, precio o link
+    texto = texto.strip()
+
+    # Opción 1: cortar directamente desde donde empieza una letra mayúscula seguida de letras (ej: "Mochila")
+    match = re.search(r'\b([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+.*?)$', texto)
+    if match:
+        return match.group(1).strip()
+    
+    return texto  # Si no encuentra coincidencia, lo devuelve igual
 
 
 
