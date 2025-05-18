@@ -24,6 +24,10 @@
 
 {% block title %}Publicación en Ámbitos{% endblock %}
 {% block content %}
+
+
+
+
 <div class="home-publicaciones-en-ambitos-personales">
     <div class="splashCarga" id="splashNotificaciones" style="display: none;">
         <div class="splash-contenido">
@@ -38,7 +42,9 @@
 </div>
 {% include 'layouts/layout_footer.html' %}
 <!-- Incluye el archivo JavaScript --> 
-<link rel =  "stylesheet" href = {{ url_for('static',filename='css/social/publicaciones/muestraPublicacionesEnAmbitoPersonales.css')}}>    
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitoPersonales.css') }}">
+
+  
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
 
 <script>

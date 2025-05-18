@@ -144,6 +144,115 @@ a.btn-close-publicacion-en-ambitos-personales {
 
 
 
-  
+/* === CONFIGURACIÓN NUEVA PARA LAS TARJETAS === */
+.card-publicacion-en-ambitos-personales {
+  width: 320px;
+  background-color: #111;
+  border: 1px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.card-publicacion-en-ambitos-personales .etiqueta-categoria {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: red;
+  color: white;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  border-radius: 5px;
+}
+
+.card-publicacion-en-ambitos-personales .descuento-tag {
+  margin-top: 30px;
+  margin-left: 10px;
+  color: #ff4444;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.card-publicacion-en-ambitos-personales img,
+.card-publicacion-en-ambitos-personales video {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.card-body-en-ambitos-personales {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-title-en-ambitos-personales {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0;
+}
+
+.estrellas-en-ambitos-personales {
+  color: #ffcc00;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
 
+.card-precio-original {
+  text-decoration: line-through;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.card-precio-descuento {
+  color: #00ff7f;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.card-date-en-ambitos-personales {
+  font-size: 0.8rem;
+  color: #00ccff;
+}
+
+.card-text-en-ambitos-personales {
+  font-size: 0.9rem;
+  color: #ddd;
+}
+
+.card-footer-en-ambitos-personales {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.card-publicacion-en-ambitos-personales button {
+  background-color: #ffea00;
+  border: none;
+  padding: 8px 12px;
+  font-weight: bold;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+
+.categoria-badge {
+  display: inline-block;
+  background-color: #b71c1c;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
