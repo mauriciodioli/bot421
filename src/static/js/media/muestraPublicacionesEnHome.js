@@ -1,3 +1,6 @@
+
+
+
 // Define la función formatDate
 function formatDate(dateString) {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -349,4 +352,11 @@ function abrirPublicacionHome(publicacionId, layout) {
         window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
     }, 500); // 500 ms de retraso para mostrar el splash
 }
+
+
+
+
+
+
+
 

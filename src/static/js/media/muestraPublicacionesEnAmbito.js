@@ -1,3 +1,18 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const banner = document.querySelector(".mobile-banner");
+    const grilla = document.getElementById("contenedor-publicacion");
+    
+    
+    if (grilla && banner && getComputedStyle(banner).display !== "none") {
+        const altura = banner.offsetHeight;
+        const espacio = 60; // margen de respiro
+        grilla.style.marginTop = `${altura + espacio}px`;
+    } else if (grilla) {
+        grilla.style.marginTop = "0px";
+    }
+});
+
+
 document.addEventListener("DOMContentLoaded", function() {
     const video = document.getElementById('main-video');
 
@@ -213,7 +228,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                         postDisplayContainer.append(cardHtml);
                  // Desplazar la tarjeta hacia abajo si se ha mostrado una imagen
                  if (post.imagenes.length > 0) {
-                    $('#card-' + post.publicacion_id).css('margin-top', '100px');
+                    $('#card-' + post.publicacion_id).css('margin-top', '10px');
                 }
             } else {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
@@ -302,3 +317,13 @@ if (pais === 'Argentina') {
 } else if (pais === 'España') {
   cuotasHtml = `<div class="financiacion-info">💳 Financiación 3 o 6 meses sin intereses</div>`;
 }
+
+
+
+
+
+
+
+
+
+
