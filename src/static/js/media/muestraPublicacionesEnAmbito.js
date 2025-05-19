@@ -1,16 +1,40 @@
 document.addEventListener("DOMContentLoaded", () => {
     const banner = document.querySelector(".mobile-banner");
     const grilla = document.getElementById("contenedor-publicacion");
-    
-    
+     debugger;
+    // Ajustar margen de la grilla principal si está presente
     if (grilla && banner && getComputedStyle(banner).display !== "none") {
         const altura = banner.offsetHeight;
-        const espacio = 60; // margen de respiro
+        const espacio = 40; // margen extra
         grilla.style.marginTop = `${altura + espacio}px`;
     } else if (grilla) {
         grilla.style.marginTop = "0px";
     }
+
+    // Esperar al render de jQuery (por seguridad)
+    $(function () {
+        const postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
+        if (postDisplayContainer.length > 0) {
+            if (banner && getComputedStyle(banner).display !== "none") {
+                const altura = banner.offsetHeight;
+                const extra = 16;
+                postDisplayContainer.css({
+                    'margin-top': `${altura + extra}px`,
+                    'transition': 'margin-top 0.3s ease' // opcional
+                });
+            } else {
+                postDisplayContainer.css('margin-top', '0px');
+            }
+        }
+    });
 });
+
+
+
+
+
+
+
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -175,7 +199,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                             `;
                             postDisplayContainer.append(modalHtml);
                         }
-                        debugger;
+                        
                         console.log(post);
                         var cardHtml = `
                             <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}">
