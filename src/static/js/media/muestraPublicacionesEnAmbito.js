@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const banner = document.querySelector(".mobile-banner");
     const grilla = document.getElementById("contenedor-publicacion");
-     debugger;
+    
     // Ajustar margen de la grilla principal si está presente
     if (grilla && banner && getComputedStyle(banner).display !== "none") {
         const altura = banner.offsetHeight;
@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     video.pause();
                 }
             } else {
+                
                 // Si el clic está fuera del centro, ejecutar cargarDatosPublicacion()
                 cargarDatosPublicacion();
             }
@@ -92,7 +93,7 @@ function cargarDatosPublicacion() {
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
-
+debugger;
     // Redirigir a la URL construida con los parámetros
     window.location.href = `/media-muestraPublicacionesEnAmbitos/?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}&categoria=${categoria}`;
 }
@@ -145,11 +146,12 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
               localStorage.setItem('dominio', ambito);
                
            }
+           
             splash.style.display = 'none'; // Ocultar el splash al terminar
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
                 postDisplayContainer.empty();
-
+                
                 response.forEach(function(post) {
                     if ((post.imagenes && post.imagenes.length > 0) || (post.videos && post.videos.length > 0)) {
                         var mediaHtml = '';
