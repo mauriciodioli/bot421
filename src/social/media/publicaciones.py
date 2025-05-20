@@ -216,7 +216,7 @@ def media_publicaciones_mostrar_home():
                     publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()
             # Armar el diccionario con todas las publicaciones, imágenes y videos
             publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
-            db.session.close()
+        
             return jsonify(publicaciones_data)
         else:
             return jsonify({'error': 'Token de acceso expirado'}), 401
@@ -224,7 +224,8 @@ def media_publicaciones_mostrar_home():
     except Exception as e:
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
-
+    finally:
+        db.session.close()
     # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 

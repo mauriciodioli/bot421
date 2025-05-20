@@ -210,7 +210,8 @@
             <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
                 <div class="imagenes-muestra-despliegue-publicacion-home grid-layout">
                     {% if post.imagenes or post.videos %}
-                        {% for media in post.imagenes + post.videos %}
+                        {% for media in post.imagenes + post.videos if media.imagen or (media.filepath and (media.filepath.endswith('.jpg') or media.filepath.endswith('.png') or media.filepath.endswith('.mp4'))) %}
+
                             <div class="imagen-muestra-despliegue-publicacion-home">
                                 {% if media.filepath.endswith('.mp4') %}
                                     <video 
@@ -296,6 +297,7 @@
     if( !localStorage.setItem('dominio', ambito)) {
      localStorage.setItem('dominio', ambito);
     }
+   
     function replaceMainMedia(src, type) {
         var container = document.getElementById('principal-media');
         if (type === 'image') {
