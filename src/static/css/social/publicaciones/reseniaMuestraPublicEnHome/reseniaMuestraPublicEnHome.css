@@ -1,0 +1,19 @@
+button.toggle-reseñas {
+  background-color: transparent;
+  border: 1px solid #444;
+  color: #ccc;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button.toggle-reseñas:hover {
+  background-color: #222;
+}
+
+.testimonial {
+  border: 1px solid #333;
+  padding: 10px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: #111;
+}

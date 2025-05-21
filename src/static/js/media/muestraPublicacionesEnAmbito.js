@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const banner = document.querySelector(".mobile-banner");
+    
     const grilla = document.getElementById("contenedor-publicacion");
     
     // Ajustar margen de la grilla principal si está presente
