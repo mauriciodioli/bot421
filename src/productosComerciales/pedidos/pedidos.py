@@ -403,12 +403,15 @@ def productosComerciales_pedidos_alta_carrito():
        # Guardar pedido en la base de datos
          # Validar y procesar el precio
         texto = data.get('texto_btn_carrito', '')  # Clave corregida
+        precio_btn_carrito = data.get('precio_btn_carrito', '')
         precio, resto = obtenerPrecio(texto) if texto else (None, None)
+        
         if not precio:
             precio = 0
-
+            if precio_btn_carrito:
+                precio = float(precio_btn_carrito.strip('$').replace(',', '').replace('.', '')) if precio_btn_carrito else None
         if not guardarPedido(data,user_id,precio):
-            return render_template('notificaciones/logeePrimero.html')
+            return render_template('notificaciones/logeePrimero.html', layout='layout')
 
        
 
@@ -737,7 +740,7 @@ def guardarPedido(data, userId, precio):
         imagen_url = data.get('imagen_btn_carrito')  # URL de la imagen enviada
         # Validar y procesar el precio
         texto = data.get('texto_btn_carrito', '')  # Clave corregida
-        precio_venta = float(precio.strip('$').replace(',', '').replace('.', '')) if precio else None
+        precio_venta = precio
         tiempo = datetime.now()
         
         # Verificar si ya existe un pedido para este usuario con el mismo producto
