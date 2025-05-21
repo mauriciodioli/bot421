@@ -58,7 +58,7 @@ def mostrar_publicaciones_en_ambitos():
     layout = data.get('layout')
     idioma = data.get('lenguaje')
     categoria = data.get('categoria')
-   
+ 
     # Ahora puedes usar publicacion_id, user_id, y ambito en tu lógica
     post = armar_publicacion_bucket_para_dpi(user_id,ambito,layout,idioma,categoria)  # Reemplaza con tu lógica de obtención
     
@@ -85,8 +85,12 @@ def generar_estrellas_html(rating, reviews):
     return f'{estrellas_html} <span class="text-muted" style="font-size: 0.9rem;">({reviews})</span>'
 
 def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
-    try:  
+      
         # Obtener todas las publicaciones que coincidan con user_id y ambito
+        if not isinstance(user_id, int):
+            user_id = int(user_id)
+
+
         publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, categoria_id=int(categoria)).all()
         categoria = db.session.query(AmbitoCategoria).filter_by(id=int(categoria)).first()
         resultados = []
@@ -191,7 +195,7 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
                 'texto': publicacion.texto,
                 'ambito': publicacion.ambito,
                 'categoria_id': publicacion.categoria_id,
-                'categoriaNombre': categoria.nombre,
+                'categoriaNombre': categoria.valor,
                 'correo_electronico': publicacion.correo_electronico,
                 'descripcion': publicacion.descripcion,
                 'color_texto': publicacion.color_texto,
@@ -212,11 +216,7 @@ def armar_publicacion_bucket_para_dpi(user_id, ambito,layout,idioma, categoria):
        
         return resultados
 
-    except Exception as e:
-        print(f"Error: {str(e)}")
-        return None
-    finally:
-        db.session.close()  # Cierra correctamente
+
 
 
 

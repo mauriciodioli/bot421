@@ -20,6 +20,8 @@ import base64
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
+from models.publicaciones.ambitoCategoria import AmbitoCategoria
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.modelMedia.image import Image
@@ -82,6 +84,9 @@ def generar_estrellas_html(rating, reviews):
 def obtener_publicacion_por_id(publicacion_id):
     try:
         publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
+        relacion = db.session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).first()
+        categoria = db.session.query(AmbitoCategoria).filter_by(id=relacion.categoria_id).first() if relacion else None
+        
         if publicacion:
             publicaciones_data = []
             
@@ -187,6 +192,7 @@ def obtener_publicacion_por_id(publicacion_id):
                 'user_id': publicacion.user_id,
                 'titulo': publicacion.titulo,
                 'texto': texto,
+                'categoria': categoria.nombre,
                 'ambito': publicacion.ambito,
                 'correo_electronico': publicacion.correo_electronico,
                 'descripcion': publicacion.descripcion,

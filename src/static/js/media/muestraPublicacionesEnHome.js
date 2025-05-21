@@ -75,11 +75,15 @@ function cargarPublicaciones(ambitoParam, layout) {
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
                 postDisplayContainer.empty();
-     
+                
+                let categoria_id = 0;
                 response.forEach(function (post) {
                    
                     if (post.imagenes.length > 0 || post.videos.length > 0) {
                         var mediaHtml = '';
+                        if (categoria_id != post.categoria_id) {
+                            categoria_id = post.categoria_id;
+                        } 
 
                         // Mostrar la primera imagen
                         if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
@@ -201,6 +205,7 @@ function cargarPublicaciones(ambitoParam, layout) {
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }
                 });
+                localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
             } else {
                 console.error("La respuesta no es un array. Recibido:", response);
             }

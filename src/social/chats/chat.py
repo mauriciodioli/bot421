@@ -16,7 +16,7 @@ from models.usuario import Usuario
 from models.brokers import Broker
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from collections import defaultdict
-from turing.turingRespuestas import respuestaIa
+#from turing.turingRespuestas import respuestaIa
 
 
 
@@ -121,13 +121,13 @@ def handle_message(user_id, message):
             {"role": "user", "content": message}  # Incluir el mensaje actual del usuario
         ]
 
-        respuesta = respuestaIa(pregunta, selectedModel="gpt4", contexto=contexto)
+       # respuesta = respuestaIa(pregunta, selectedModel="gpt4", contexto=contexto)
        
         # Manejar si se devuelve un dict de error
-        if isinstance(respuesta, tuple):
-            respuesta = respuesta[0].get("error", "No se pudo obtener una respuesta del modelo.")
+        #if isinstance(respuesta, tuple):
+        #    respuesta = respuesta[0].get("error", "No se pudo obtener una respuesta del modelo.")
 
-        return respuesta
+        #return respuesta
 
     return "Lo siento, no entendí tu mensaje."
 
