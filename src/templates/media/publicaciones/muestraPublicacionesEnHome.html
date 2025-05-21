@@ -103,6 +103,7 @@
                 <!-- Fila de Precios y Descuento -->
                 <div class="fila precios-publicacion">
                     {% if post.precio_original and post.precio_original > post.precio %}
+                    
                         <p class="precio-original">${{ post.precio_original }}</p>
                         <p class="precio-descuento text-success fw-bold">${{ post.precio }}</p>
                         {% if post.descuento %}
@@ -288,11 +289,13 @@
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
 
 <script>
+
     // Almacenar los valores en variables globales
     var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
     var userId = '{{ post.user_id }}';
     var ambito = '{{ post.ambito }}';
     var layout = '{{layout}}';
+   
     if( !localStorage.setItem('dominio', ambito)) {
      localStorage.setItem('dominio', ambito);
     }

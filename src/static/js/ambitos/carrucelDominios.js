@@ -136,19 +136,51 @@ items.forEach(item => {
   });
 
 
-   // Verifica si existe el token de acceso en localStorage
- document.addEventListener('DOMContentLoaded', () => {
-  
-  const accessToken = localStorage.getItem('access_token');
-  const container_carrucel = document.getElementById('container-carrusel');
-  
-  if (container_carrucel) {  // Asegúrate de que el contenedor exista
-    if (accessToken) {
-      container_carrucel.style.marginTop = '0px';
-    } else {
-      container_carrucel.style.marginTop = '110px';
+
+
+document.addEventListener("DOMContentLoaded", () => { 
+    const banner = document.querySelector(".banner-movil");
+    
+    const grilla = document.getElementById("contenedor-publicacion");
+    const carrusel = document.getElementById("container-carrusel");
+    const publicaciones = document.querySelector('.home-muestra-publicaciones-en-ambitos-personales-centrales');
+
+    let altura = 0;
+    let espacio = 0;
+    let espacio2 = 0;
+    if (banner && getComputedStyle(banner).display !== "none") {
+        altura = banner.offsetHeight;
+     
+     espacio = 60;
+     espacio2 = 80;
+    
+
+    if (grilla) {
+        grilla.style.marginTop = `${altura + espacio}px`;
     }
-  } else {
-    console.error('El contenedor no se encontró.');
+
+    
+        if (carrusel) {
+            carrusel.style.marginTop = `${altura + espacio2}px`;
+        }  
+      
+
+    if (publicaciones) {
+        publicaciones.style.marginTop = `${altura + espacio}px`;
+        publicaciones.style.transition = 'margin-top 0.3s ease';
+    } 
+  }else {
+    espacio = 0;
+    espacio2 = 0;
+    if (grilla) {
+        grilla.style.marginTop = `${espacio}px`;
+    }
+    if (carrusel) {
+        carrusel.style.marginTop = `${espacio2}px`;
+    }  
+    if (publicaciones) {
+        publicaciones.style.marginTop = `${espacio}px`;
+        publicaciones.style.transition = 'margin-top 0.3s ease';
+    } 
   }
 });

@@ -1,30 +1,27 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const banner = document.querySelector(".mobile-banner");
+document.addEventListener("DOMContentLoaded", () => { 
+    const banner = document.querySelector(".banner-movil");
     const grilla = document.getElementById("contenedor-publicacion");
-     debugger;
-    // Ajustar margen de la grilla principal si está presente
+
     if (grilla && banner && getComputedStyle(banner).display !== "none") {
         const altura = banner.offsetHeight;
-        const espacio = 40; // margen extra
+        const espacio = 40;
         grilla.style.marginTop = `${altura + espacio}px`;
     } else if (grilla) {
         grilla.style.marginTop = "0px";
     }
 
-    // Esperar al render de jQuery (por seguridad)
+    // Ajuste también para contenedor con jQuery
     $(function () {
         const postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
-        if (postDisplayContainer.length > 0) {
-            if (banner && getComputedStyle(banner).display !== "none") {
-                const altura = banner.offsetHeight;
-                const extra = 16;
-                postDisplayContainer.css({
-                    'margin-top': `${altura + extra}px`,
-                    'transition': 'margin-top 0.3s ease' // opcional
-                });
-            } else {
-                postDisplayContainer.css('margin-top', '0px');
-            }
+        if (postDisplayContainer.length > 0 && banner && getComputedStyle(banner).display !== "none") {
+            const altura = banner.offsetHeight;
+            const extra = 16;
+            postDisplayContainer.css({
+                'margin-top': `${altura + extra}px`,
+                'transition': 'margin-top 0.3s ease'
+            });
+        } else {
+            postDisplayContainer.css('margin-top', '0px');
         }
     });
 });
@@ -331,16 +328,33 @@ function abrirPublicacionHome(publicacionId, layout) {
 
 
 
+async function mostrarCuotasSegunPais() {
+  const response = await fetch('https://ipapi.co/json/');
+  const data = await response.json();
+  const pais = data.country_name;
 
+  let cuotasHtml = '';
 
+  if (pais === 'Argentina') {
+    cuotasHtml = `💳 3, 6 o 12 cuotas con Ahora`;
+  } else if (pais === 'España') {
+    cuotasHtml = `💳 Financiación 3 o 6 meses sin intereses`;
+  }
 
-
-
-if (pais === 'Argentina') {
-  cuotasHtml = `<div class="financiacion-info">💳 3, 6 o 12 cuotas con Ahora</div>`;
-} else if (pais === 'España') {
-  cuotasHtml = `<div class="financiacion-info">💳 Financiación 3 o 6 meses sin intereses</div>`;
+  const contenedor = document.querySelector('.financiacion-info');
+  if (contenedor) {
+    contenedor.innerHTML = cuotasHtml;
+  } else {
+    console.warn('No se encontró el contenedor .financiacion-info en el DOM');
+  }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  mostrarCuotasSegunPais();
+});
+
+
+
 
 
 
