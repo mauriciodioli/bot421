@@ -204,44 +204,44 @@
 
 
     <!-- Galería de imágenes y videos -->
-  <div class="celda full-width">
-     
-          <!-- Fila 5: Galería de imágenes y videos -->
-            <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
-                <div class="imagenes-muestra-despliegue-publicacion-home grid-layout">
-                    {% if post.imagenes or post.videos %}
-                        {% for media in post.imagenes + post.videos if media.imagen or (media.filepath and (media.filepath.endswith('.jpg') or media.filepath.endswith('.png') or media.filepath.endswith('.mp4'))) %}
+        <div class="celda full-width">
+          
+                <!-- Fila 5: Galería de imágenes y videos -->
+                  <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
+                      <div class="imagenes-muestra-despliegue-publicacion-home grid-layout">
+                          {% if post.imagenes or post.videos %}
+                              {% for media in post.imagenes + post.videos if media.imagen or (media.filepath and (media.filepath.endswith('.jpg') or media.filepath.endswith('.png') or media.filepath.endswith('.mp4'))) %}
 
-                            <div class="imagen-muestra-despliegue-publicacion-home">
-                                {% if media.filepath.endswith('.mp4') %}
-                                    <video 
-                                        id="videoPlayer"
-                                        class="media-adaptada" 
-                                        onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
-                                        onmouseover="this.play()" 
-                                        onmouseout="this.pause(); this.currentTime=0;" 
-                                        muted 
-                                        loop
-                                        playsinline>
-                                        <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
-                                        Tu navegador no soporta el formato de video.
-                                    </video>
-                                {% else %}
-                                    <img 
-                                        class="media-adaptada" 
-                                        src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
-                                        alt="{{ media.title }}" 
-                                        onclick="replaceMainMedia(this.src, 'image')" />
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
+                                  <div class="imagen-muestra-despliegue-publicacion-home">
+                                      {% if media.filepath.endswith('.mp4') %}
+                                          <video 
+                                              id="videoPlayer"
+                                              class="media-adaptada" 
+                                              onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
+                                              onmouseover="this.play()" 
+                                              onmouseout="this.pause(); this.currentTime=0;" 
+                                              muted 
+                                              loop
+                                              playsinline>
+                                              <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
+                                              Tu navegador no soporta el formato de video.
+                                          </video>
+                                      {% else %}
+                                          <img 
+                                              class="media-adaptada" 
+                                              src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
+                                              alt="{{ media.title }}" 
+                                              onclick="replaceMainMedia(this.src, 'image')" />
+                                      {% endif %}
+                                  </div>
+                              {% endfor %}
+                          {% endif %}
+                      </div>
+                  </div>
 
 
 
-  </div>
+        </div>
 
 
 
@@ -249,28 +249,28 @@
 
 
         
-</div>
-
-
-<div id="contenedor-reseñas" class="testimonials"></div>
-
-<div id="mensaje-sin-reseñas" style="display: none; margin-top: 10px;">
-  <p>Sé el primero en dejar una reseña sobre este producto.</p>
-</div>
-
-<div class="formulario-reseña">
-  <form id="form-reseña">
-    <input type="text" id="nombre-reseña" placeholder="Tu nombre" required>
-    <textarea id="comentario-reseña" placeholder="Tu comentario..." required></textarea>
-    <button type="submit">Enviar reseña</button>
-  </form>
-</div>
 
 
 
+                    <div id="contenedor-reseñas" class="testimonials"></div>
+
+                    <div id="mensaje-sin-reseñas" style="display: none; margin-top: 10px;">
+                      <p>Sé el primero en dejar una reseña sobre este producto.</p>
+                    </div>
+
+                    <div class="formulario-reseña">
+                      <form id="form-reseña">
+                        <input type="text" id="nombre-reseña" placeholder="Tu nombre" required>
+                        <textarea id="comentario-reseña" placeholder="Tu comentario..." required></textarea>
+                        <button type="submit">Enviar reseña</button>
+                      </form>
+                    </div>
 
 
-   
+
+
+
+ </div>  
 
 
 
@@ -284,9 +284,11 @@
 {% include 'layouts/layout_footer.html' %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/reseniaMuestraPublicEnHome/reseniaMuestraPublicEnHome.css') }}">
 
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/publicaciones/reseniaMuestraPublicEnHome/reseniaMuestraPublicEnHome.js') }}"></script>
 
 <script>
     // Almacenar los valores en variables globales
@@ -294,6 +296,7 @@
     var userId = '{{ post.user_id }}';
     var ambito = '{{ post.ambito }}';
     var layout = '{{layout}}';
+    const storageKey = 'reseñas_' + publicacionId;
     if( !localStorage.setItem('dominio', ambito)) {
      localStorage.setItem('dominio', ambito);
     }
@@ -332,88 +335,11 @@
     });
 
 
-
-
-
-
-
- 
-
-  const storageKey = 'reseñas_' + publicacionId;
-
-  const reseñasFijas = [
-    {
-      nombre: "Juan Pérez",
-      comentario: "Excelente producto, superó mis expectativas."
-    },
-    {
-      nombre: "María López",
-      comentario: "Entrega rápida y atención al cliente impecable."
-    }
-  ];
-
- function cargarReseñas() {
-  const contenedor = document.getElementById('contenedor-reseñas');
-  const mensaje = document.getElementById('mensaje-sin-reseñas');
-  const data = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-  contenedor.innerHTML = '';
-
-  if (data.length === 0) {
-    mensaje.style.display = 'block';
-  } else {
-    mensaje.style.display = 'none';
-    data.forEach((r, index) => {
-     contenedor.innerHTML += `
-        <div class="testimonial">
-            <p>"${r.comentario}"</p>
-            <h4>- ${r.nombre}</h4>
-            <div class="acciones-reseña">
-            <button class="icono-btn" onclick="editarReseña(${index})" title="Editar reseña">✏️</button>
-            <button class="icono-btn" onclick="eliminarReseña(${index})" title="Eliminar reseña">🗑️</button>
-            </div>
-        </div>
-        `;
-
-    });
-  }
-}
-function eliminarReseña(index) {
-  const reseñas = JSON.parse(localStorage.getItem(storageKey)) || [];
-  reseñas.splice(index, 1);
-  localStorage.setItem(storageKey, JSON.stringify(reseñas));
-  cargarReseñas();
-}
-
-function editarReseña(index) {
-  const reseñas = JSON.parse(localStorage.getItem(storageKey)) || [];
-  const nuevaNombre = prompt("Editar nombre:", reseñas[index].nombre);
-  const nuevoComentario = prompt("Editar comentario:", reseñas[index].comentario);
-
-  if (nuevaNombre && nuevoComentario) {
-    reseñas[index].nombre = nuevaNombre;
-    reseñas[index].comentario = nuevoComentario;
-    localStorage.setItem(storageKey, JSON.stringify(reseñas));
     cargarReseñas();
-  }
-}
 
 
-  document.getElementById('form-reseña').addEventListener('submit', e => {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre-reseña').value.trim();
-    const comentario = document.getElementById('comentario-reseña').value.trim();
-    if (!nombre || !comentario) return;
 
-    const nuevas = JSON.parse(localStorage.getItem(storageKey)) || [];
-    nuevas.push({ nombre, comentario });
-    localStorage.setItem(storageKey, JSON.stringify(nuevas));
 
-    document.getElementById('form-reseña').reset();
-    cargarReseñas();
-  });
-
-  window.onload = cargarReseñas;
 
 
 </script>

@@ -115,7 +115,7 @@ def obtener_publicacion_por_id(publicacion_id):
                             imagen_base64 = base64.b64encode(imgen).decode('utf-8')
                         else:
                             imagen_base64 = None   
-                            file_path = "null"  # tu placeholder local            
+                            #file_path = "null"  # tu placeholder local            
                         if filepath.startswith('static'):
                             filepath = filepath[len('static/'):]
                         imagenes.append({

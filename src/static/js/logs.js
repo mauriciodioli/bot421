@@ -6,7 +6,7 @@ function obtenerIPYRegistrarAcceso() {
         "34.123.170.104", // Otra IP reportada
         // Puedes agregar más IPs maliciosas aquí
     ];
-    debugger;
+    
     // Utiliza ipify para obtener la IP pública del cliente
     fetch('https://api.ipify.org?format=json')
     .then(response => response.json())
