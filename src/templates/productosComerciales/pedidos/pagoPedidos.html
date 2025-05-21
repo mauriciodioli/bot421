@@ -43,6 +43,10 @@
                                         <input type="email" id="emailCliente" name="emailCliente" class="form-control" placeholder="Email" required>
                                         <textarea id="comentariosCliente" name="comentariosCliente" class="form-control" placeholder="Comentarios" rows="3"></textarea>
                                     </div>
+
+                                      {% include 'productosComerciales/pedidos/seleccionPagoReserva.html' %}
+
+                                      
                                     {% if pedido.calendly_url %}
                                     <!-- Botón para abrir el modal -->
                                        <button type="button"  class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" data-bs-toggle="modal" data-bs-target="#calendlyModal">
