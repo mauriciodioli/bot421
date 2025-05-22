@@ -6,6 +6,8 @@ function abrirModal() {
 
 function cerrarModal() {
   document.getElementById('modalPago').style.display = 'none';
+  document.querySelector('.boton-confirmar').style.display = 'none';
+
   seleccion = null;
   document.querySelectorAll('.opcion').forEach(op => op.classList.remove('seleccionada'));
 }
@@ -16,9 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.opcion').forEach(o => o.classList.remove('seleccionada'));
       opcion.classList.add('seleccionada');
       seleccion = opcion.dataset.opcion;
+
+      // Mostrar botón de confirmar
+      document.querySelector('.boton-confirmar').style.display = 'block';
     });
   });
 });
+
 
 function confirmarPago() {
   if (!seleccion) {
@@ -31,11 +37,38 @@ function confirmarPago() {
       alert('Iniciando pago con PayPal...');
       // Lógica personalizada
       break;
-    case 'mercado_pago':
-      alert('Iniciando pago con Mercado Pago...');
+      case 'reserva':
+      alert('Iniciando reserva...');
+      // Lógica personalizada
       break;
-    case 'reserva':
-      alert('Reserva sin pago confirmada.');
+
+    case 'mercado_pago':
+      const formMercadoPago = document.querySelector('.pagoPedidoForm');
+
+     // if (formMercadoPago) {
+        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+        formMercadoPago.dispatchEvent(submitEvent);
+     // } else {
+     //   alert('No está disponible el pago online.');
+      //}
+      break;
+
+    case 'reservaCita':
+     
+       const calendlyData = document.getElementById('calendly-data');
+
+      if (calendlyData) {
+            const modalCalendly = new bootstrap.Modal(document.getElementById('calendlyModal'));
+            modalCalendly.show();
+      } else {
+        // Oculta el botón de "Reservar sin pagar"
+          const reservaOpcion = document.getElementById('opcion-reserva');
+          if (reservaOpcion) {
+            reservaOpcion.style.display = 'none';
+          }
+      }
+
+     
       break;
   }
 
