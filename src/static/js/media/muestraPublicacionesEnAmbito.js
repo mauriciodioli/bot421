@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     video.pause();
                 }
             } else {
+                
                 // Si el clic está fuera del centro, ejecutar cargarDatosPublicacion()
                 cargarDatosPublicacion();
             }
@@ -89,7 +90,7 @@ function cargarDatosPublicacion() {
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
-
+debugger;
     // Redirigir a la URL construida con los parámetros
     window.location.href = `/media-muestraPublicacionesEnAmbitos/?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}&categoria=${categoria}`;
 }
@@ -142,11 +143,12 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
               localStorage.setItem('dominio', ambito);
                
            }
+           
             splash.style.display = 'none'; // Ocultar el splash al terminar
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-en-ambitos-personales-centrales');
                 postDisplayContainer.empty();
-
+                
                 response.forEach(function(post) {
                     if ((post.imagenes && post.imagenes.length > 0) || (post.videos && post.videos.length > 0)) {
                         var mediaHtml = '';
@@ -309,10 +311,7 @@ function abrirPublicacionHome(publicacionId, layout) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
     const accessToken = localStorage.getItem('access_token');
 
-    if (!accessToken) {
-        alert("Para adquirir este contenido, debe iniciar sesión. Si no es usuario, regístrese.");
-        return;
-    }
+   
     
     // Mostrar el splash de espera
     var splash = document.querySelector('.splashCarga');

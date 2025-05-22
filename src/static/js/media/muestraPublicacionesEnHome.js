@@ -75,8 +75,9 @@ function cargarPublicaciones(ambitoParam, layout) {
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
                 postDisplayContainer.empty();
-                
-                let categoria_id = 0;
+               
+
+                var categoria_id = null; // Variable para almacenar la categoría actual                
                 response.forEach(function (post) {
                    
                     if (post.imagenes.length > 0 || post.videos.length > 0) {
@@ -149,8 +150,8 @@ function cargarPublicaciones(ambitoParam, layout) {
                             postDisplayContainer.append(modalHtml);
                         }
                      
-                      const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
-
+                      //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
+                       
                         // Tarjeta de publicación
                       var cardHtml = `
                                 <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
@@ -279,7 +280,7 @@ function extraerPrecioYDescripcion(texto) {
     }
 }
 
-const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
+//const { precio, descripcion } = extraerPrecioYDescripcion(texto);
 
 
 
