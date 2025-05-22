@@ -63,7 +63,7 @@ $(document).ready(function () {
             pedido_data_json: pedido_data_json,
             cluster_pedido: cluster_pedido
         };
-
+debugger;
         // Enviar datos mediante AJAX
         $.ajax({
             url: '/sistemaDePagos_create_order/',

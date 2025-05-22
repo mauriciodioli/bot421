@@ -4,7 +4,7 @@ $(document).ready(function() {
 
         // Obtener el access token almacenado en localStorage
         var access_token_btn_pocesarPedido = localStorage.getItem('access_token');
-
+       
         // Obtener datos del formulario
         var nombreCliente = $('#nombreCliente').val();
         var apellidoCliente = $('#apellidoCliente').val();
@@ -35,7 +35,7 @@ $(document).ready(function() {
             pedido_data_json: pedido_data_json,
             cluster_pedido: cluster_pedido
         };
-
+        debugger;
         // Enviar los datos mediante AJAX con el access token en la cabecera
         $.ajax({
             url: '/productosComerciales_pedidos_process_order/', // URL del backend
