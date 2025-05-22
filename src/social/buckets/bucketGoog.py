@@ -197,7 +197,10 @@ def mostrar_from_gcs(blob_name):
 
         if not blob.exists(client):
             print(f"El archivo {blob_name} no existe en el bucket {BUCKET_NAME}.")
-            return None
+            fallback_path = f"/uploads/{blob_name}"
+            return None, fallback_path
+        
+    
 
         image_data = blob.download_as_bytes()
         hex_data = image_data.hex()

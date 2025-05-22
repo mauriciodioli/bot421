@@ -119,7 +119,8 @@ def obtener_publicacion_por_id(publicacion_id):
                             # Si imgen ya es binario, simplemente lo codificamos en base64
                             imagen_base64 = base64.b64encode(imgen).decode('utf-8')
                         else:
-                            imagen_base64 = None               
+                            imagen_base64 = None   
+                            #file_path = "null"  # tu placeholder local            
                         if filepath.startswith('static'):
                             filepath = filepath[len('static/'):]
                         imagenes.append({
@@ -215,6 +216,7 @@ def obtener_publicacion_por_id(publicacion_id):
             return None
     except Exception as e:
         print(str(e))
+        db.session.close()  # Cierra correctamente
         return None
     finally:
         db.session.close()  # Cierra correctamente
