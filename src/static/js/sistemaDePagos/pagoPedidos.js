@@ -86,3 +86,77 @@ debugger;
     });
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function createOrderPaypal() {
+    return fetch('/create_orders_pypal/', {
+        method: 'POST'
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("Orden PayPal creada:", data.orderID);
+        return data.orderID;
+    })
+    .catch(err => {
+        console.error("Error al crear orden PayPal:", err);
+        alert("No se pudo crear la orden de PayPal.");
+        throw err;
+    });
+}
+
+
+
+
+function capturarOrdenPaypal(orderID) {
+    const form = document.querySelector('.pagoPedidoForm');
+    const formData = new FormData(form);
+
+    const formObj = {};
+    formData.forEach((value, key) => {
+        formObj[key] = value;
+    });
+
+    // fetch con el orderID en la URL (correcto)
+    return fetch(`/capture_order_paypal/${orderID}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formObj)
+    })
+    .then(res => res.json())
+    .then(response => {
+        console.log("Respuesta del backend:", response);
+        alert("Pago confirmado con PayPal.");
+        return response;
+    })
+    .catch(err => {
+        console.error("Error al capturar:", err);
+        alert("Error al confirmar pago con PayPal.");
+        throw err;
+    });
+}
+

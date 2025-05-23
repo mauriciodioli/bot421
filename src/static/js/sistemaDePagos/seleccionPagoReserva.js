@@ -33,12 +33,30 @@ function confirmarPago() {
   }
 
   switch (seleccion) {
-    case 'paypal':
-      alert('Iniciando pago con PayPal...');
-      // Lógica personalizada
+        case 'paypal':
+            alert('Iniciando pago con PayPal...');
+
+            createOrderPaypal().then(orderID => {
+                paypal.Buttons({
+                    createOrder: () => orderID,
+                    onApprove: (data, actions) => {
+                        capturarOrdenPaypal(data.orderID);
+                    }
+                }).render('#paypal-button-container');
+            });
+
       break;
+
+
       case 'reserva':
-      alert('Iniciando reserva...');
+        const formCliente = document.getElementById('form-cliente-pedido');
+
+        if (formCliente) {
+          const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+          formCliente.dispatchEvent(submitEvent);
+        } else {
+          alert('Formulario de cliente no disponible.');
+        } 
       // Lógica personalizada
       break;
 

@@ -48,13 +48,11 @@
 
                                       
                                    
-                                    <form class="formClientePedidoJs">
+                                    <form class="formClientePedidoJs" id="form-cliente-pedido">
                                         <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
                                         <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
                                         <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
-                                        <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">
-                                            Confirmar
-                                        </button>
+                                       
                                     </form>
                                     {% if pedido.botonPagoOnline == 'True' %}
                                         <form class="pagoPedidoForm">
@@ -119,4 +117,5 @@
 
 <script src="{{url_for('static',filename='js/sistemaDePagos/pagoPedidos.js')}}"></script>
 <script src="{{url_for('static',filename='js/productosComerciales/pedidos/procesaPedido.js')}}"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=TU_CLIENT_ID&currency=USD"></script>
 {% endblock %}
