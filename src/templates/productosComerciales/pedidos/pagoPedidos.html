@@ -47,12 +47,7 @@
                                       {% include 'productosComerciales/pedidos/seleccionPagoReserva.html' %}
 
                                       
-                                    {% if pedido.calendly_url %}
-                                    <!-- Botón para abrir el modal -->
-                                       <button type="button"  class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" data-bs-toggle="modal" data-bs-target="#calendlyModal">
-                                           Agendar Cita
-                                       </button>
-                                     {% endif %}
+                                   
                                     <form class="formClientePedidoJs">
                                         <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
                                         <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
@@ -72,9 +67,7 @@
                                             <input type="hidden" id="porcentaje_retorno" name="porcentaje_retorno" value="0">
                                             <input type="hidden" id="pedido_data_json_pagoPedido" name="pedido_data_json_pagoPedido" value="{{ pedido.pedido_data_json }}">
                                             <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
-                                            <button class="card-button btn-success carrucelPromociones long-button" style="margin-top: 20px;" type="submit">
-                                                Pagar online
-                                            </button>
+                                            
                                         </form>
                                     {% endif %}
 
