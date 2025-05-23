@@ -15,12 +15,17 @@
         <img src="/static/img/mercadopago.png" alt="Mercado Pago">
         <span>Mercado Pago</span>
       </div>
-      <div class="opcion" data-opcion="reserva">
-        <img src="/static/img/reserva.png" alt="Reserva">
-        <span>Reservar sin pagar</span>
+       <div class="opcion" data-opcion="reserva" id="opcion-reserva">
+        <img src="/static/img/paqueteria.png" alt="Reserva">
+        <span>Reservar Paquete</span>
       </div>
+     <div class="opcion" data-opcion="reservaCita" id="opcion-reserva">
+        <img src="/static/img/reserva.png" alt="Reserva">
+        <span>Reservar Cita</span>
+      </div>
+
     </div>
-    <button class="boton-confirmar" onclick="confirmarPago()">Confirmar</button>
+    <button class="boton-confirmar" style="display: none;"  onclick="confirmarPago()">Confirmar</button>
   </div>
 </div>
 
