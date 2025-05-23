@@ -54,7 +54,7 @@
                                         <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
                                        
                                     </form>
-                                    {% if pedido.botonPagoOnline == 'True' %}
+                                    
                                         <form class="pagoPedidoForm">
                                             <input type="hidden" id="accessToken_pagoPedido" name="accessToken_pagoPedido" value="">
                                             <input type="hidden" id="ambito_pagoPedido" name="ambito_pagoPedido" value="{{ pedido.ambito }}">
@@ -67,8 +67,7 @@
                                             <input type="hidden" id="cluster_pedido" name="cluster_pedido" value="{{ pedido.cluster }}">
                                             
                                         </form>
-                                    {% endif %}
-
+                                    
                                      
                                 </div>
                             </div>
@@ -106,6 +105,18 @@
 
 
 
+    <!-- Modal oculto -->
+<div id="modalPagoPaypal" class="modal-pago">
+  <div class="modal-contenido">
+    <span class="cerrar-modal" onclick="cerrarModalPago()">&times;</span>
+    <h2>Confirmar Pago</h2>
+    <div id="paypal-button-container"></div>
+  </div>
+</div>
+
+
+
+
     
 </div>
 
@@ -113,9 +124,11 @@
 {% include 'layouts/layout_footer.html' %}
 
 <!-- Script de Calendly (colocarlo fuera del modal) -->
+ <script src="https://www.paypal.com/sdk/js?client-id=AUw65LiG49k2wypTtf_g9kk1Qq9DZ1pFbWVfkpBKFUmJ9_A4GtfZuXhCZB9m0qrsuOr--wgEXjg1fk8S&currency=USD"></script>
+
 <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
 
 <script src="{{url_for('static',filename='js/sistemaDePagos/pagoPedidos.js')}}"></script>
 <script src="{{url_for('static',filename='js/productosComerciales/pedidos/procesaPedido.js')}}"></script>
-<script src="https://www.paypal.com/sdk/js?client-id=TU_CLIENT_ID&currency=USD"></script>
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/sistemaDePagos/paypalmodal.css') }}">
 {% endblock %}

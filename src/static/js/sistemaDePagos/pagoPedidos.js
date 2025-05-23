@@ -63,7 +63,7 @@ $(document).ready(function () {
             pedido_data_json: pedido_data_json,
             cluster_pedido: cluster_pedido
         };
-debugger;
+
         // Enviar datos mediante AJAX
         $.ajax({
             url: '/sistemaDePagos_create_order/',
@@ -112,8 +112,20 @@ debugger;
 
 
 function createOrderPaypal() {
-    return fetch('/create_orders_pypal/', {
-        method: 'POST'
+    const form = document.querySelector('.pagoPedidoForm');
+    const formData = new FormData(form);
+  
+    const formObj = {};
+    formData.forEach((value, key) => {
+        formObj[key] = value;
+    });
+
+    return fetch('/create_orders_paypal/', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formObj)
     })
     .then(res => res.json())
     .then(data => {
@@ -126,6 +138,7 @@ function createOrderPaypal() {
         throw err;
     });
 }
+
 
 
 
@@ -160,3 +173,62 @@ function capturarOrdenPaypal(orderID) {
     });
 }
 
+
+
+function abrirModalPago() {
+  document.getElementById("modalPagoPaypal").style.display = "block";
+
+  if (document.getElementById("paypal-button-container").childElementCount === 0) {
+    createOrderPaypal().then(orderID => {
+      paypal.Buttons({
+        createOrder: () => orderID,
+        onApprove: (data, actions) => {
+          capturarOrdenPaypal(data.orderID);
+        }
+      }).render('#paypal-button-container');
+    });
+  }
+}
+
+
+
+function abrirModalPago() {
+  const modal = document.getElementById("modalPagoPaypal");
+  modal.classList.add("activo");
+
+  const container = document.getElementById("paypal-button-container");
+  container.innerHTML = "";
+
+  createOrderPaypal().then(orderID => {
+    paypal.Buttons({
+      createOrder: () => orderID,
+      onApprove: (data, actions) => {
+        capturarOrdenPaypal(data.orderID);
+        cerrarModalPago();
+      }
+    }).render('#paypal-button-container');
+  });
+}
+
+function cerrarModalPago() {
+  document.getElementById("modalPagoPaypal").classList.remove("activo");
+}
+
+
+function cerrarModalPago() {
+    document.getElementById("modalPagoPaypal").style.display = "none";
+}
+function cerrarModal() {
+    document.getElementById("modalPago").style.display = "none";
+    document.querySelector(".boton-confirmar").style.display = "none";
+
+    seleccion = null;
+    document.querySelectorAll(".opcion").forEach(op => op.classList.remove("seleccionada"));
+}
+
+window.addEventListener("click", function(e) {
+  const modal = document.getElementById("modalPagoPaypal");
+  if (e.target === modal) {
+    cerrarModalPago();
+  }
+});

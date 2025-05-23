@@ -31,21 +31,14 @@ function confirmarPago() {
     alert('Por favor, seleccioná una opción antes de continuar.');
     return;
   }
+ 
 
   switch (seleccion) {
         case 'paypal':
-            alert('Iniciando pago con PayPal...');
+           alert('Iniciando pago con PayPal...');
 
-            createOrderPaypal().then(orderID => {
-                paypal.Buttons({
-                    createOrder: () => orderID,
-                    onApprove: (data, actions) => {
-                        capturarOrdenPaypal(data.orderID);
-                    }
-                }).render('#paypal-button-container');
-            });
-
-      break;
+            abrirModalPago();
+        break;
 
 
       case 'reserva':
