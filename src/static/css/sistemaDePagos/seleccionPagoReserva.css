@@ -98,6 +98,9 @@
   margin-top: 20px;
 }
 
+#form-cliente-pedido {
+  display: none;
+}
 
 @media (max-width: 480px) {
   .modal-contenido {

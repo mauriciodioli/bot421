@@ -35,6 +35,7 @@ from sistemaDePagos.deleteSuscripcion import deleteSuscripcion
 from sistemaDePagos.carrucelPromocionOfertas import carrucelPromocionOfertas
 from sistemaDePagos.pagoPedidos import pagoPedidos
 from sistemaDePagos.carrucelPromocionSuscripciones import carrucelPromocionSuscripciones
+from sistemaDePagos.payPal import payPal
 
 from productosComerciales.descipcionProductos import descrpcionProductos
 from productosComerciales.planes import planes
@@ -335,6 +336,8 @@ app.register_blueprint(pedido)
 app.register_blueprint(pedidos)
 app.register_blueprint(pedidoEntregaPago)
 app.register_blueprint(pagoPedidos)
+app.register_blueprint(payPal)
+
 app.register_blueprint(ventasProductosComerciales)
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
