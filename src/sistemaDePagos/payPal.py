@@ -34,7 +34,6 @@ else:
     )
 
 client = PayPalHttpClient(environment)
-
 @payPal.route("/create_orders_paypal/", methods=["POST"])
 def create_orders_paypal():
     data = request.get_json()
@@ -42,25 +41,29 @@ def create_orders_paypal():
     currency = data.get("currency_id", "USD").upper()
     amount = data.get("costo_base", "10.00")
     reason = data.get("reason", "Sin descripción")
-
     supported_currencies = ["USD", "EUR", "GBP", "MXN", "BRL"]
 
-    # Convertir de ARS a USD si es necesario
+    # ✅ Validación de monto vacío o inválido
+    if not amount or str(amount).strip() == "":
+        return jsonify({"error": "Pedido no procesado: costo_base no proporcionado."}), 400
+
+    try:
+        amount_float = float(amount)
+    except (ValueError, TypeError):
+        return jsonify({"error": "Pedido no procesado: costo_base no es un número válido."}), 400
+
+    # Conversión ARS → USD
     if currency == "ARS":
-        try:
-            amount = str(round(float(amount) / 1400, 2))  # ← tu tasa de conversión actual
-        except (ValueError, TypeError):
-            return jsonify({"error": "Monto inválido para conversión ARS → USD"}), 400
+        amount_float = round(amount_float / 1400, 2)
         currency = "USD"
 
-    # Verificación final de moneda
     if currency not in supported_currencies:
         return jsonify({
             "error": f"Moneda '{currency}' no soportada por PayPal.",
             "soportadas": supported_currencies
         }), 400
 
-    # Crear la orden
+    # Crear orden PayPal
     request_order = OrdersCreateRequest()
     request_order.prefer("return=representation")
     request_order.request_body({
@@ -68,14 +71,45 @@ def create_orders_paypal():
         "purchase_units": [{
             "amount": {
                 "currency_code": currency,
-                "value": amount
+                "value": str(amount_float)
             },
             "description": reason
         }]
     })
 
-    response = client.execute(request_order)
-    return jsonify(orderID=response.result.id)
+    try:
+        response = client.execute(request_order)
+        order_id = response.result.id
+    except Exception as e:
+        return jsonify({"error": f"No se pudo crear la orden PayPal: {str(e)}"}), 500
+
+    # ⏱ Tiempo actual
+    from datetime import datetime
+    tiempo = datetime.utcnow()
+
+    # 🛒 Procesar pedidos
+    try:
+        pedidos_str = data.get('pedido_data_json_pagoPedido')
+        pedidos = json.loads(pedidos_str)
+        cantidad_total = 0
+
+        for pedido_data in pedidos:
+            cantidad_pedido = actualizar_pedido(pedido_data, data, tiempo)
+            if isinstance(cantidad_pedido, dict):  # error
+                return jsonify(cantidad_pedido), 404
+            cantidad_total += cantidad_pedido
+
+        user_id = data.get("user_id", 1)
+        entrega = cargar_entrega_pedido(data, user_id, tiempo, cantidad_total)
+
+    except Exception as e:
+        return jsonify({"error": f"No se pudo registrar el pedido: {str(e)}"}), 500
+
+    return jsonify({
+        "orderID": order_id,
+        "estado": "pendiente",
+        "entrega_id": entrega.id if hasattr(entrega, "id") else None
+    })
 
 
 
@@ -86,3 +120,68 @@ def capture_order_paypal(order_id):
     response = client.execute(request_capture)
     return jsonify(response.result.__dict__['_dict'])
 
+
+
+def actualizar_pedido(pedido_data, data, tiempo):
+    # Consultar el pedido en la base de datos
+    pedido_existente = db.session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+
+    if not pedido_existente:
+        return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
+
+    # Actualizar solo los campos necesarios
+    pedido_existente.estado = 'terminado'
+    pedido_existente.fecha_pedido = tiempo
+    pedido_existente.fecha_entrega = tiempo
+    pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
+    pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
+    pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
+    pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
+    pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
+    pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
+    pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
+    pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
+    
+    # Guardar los cambios
+    db.session.commit()
+    return pedido_existente.cantidad
+
+    
+def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
+    try:
+        
+        nuevo_pedido_entrega_pago = PedidoEntregaPago(
+            user_id=user_id,
+            publicacion_id=1,
+            cliente_id=1,
+            ambito=data.get('ambito_pagoPedido'),
+            estado='pendiente',
+            fecha_pedido=tiempo,
+            fecha_entrega=tiempo,
+            lugar_entrega=data.get('direccionCliente', ''),
+            cantidad=cantidad,
+            precio_venta=float(data.get('final_price', '')),
+            consulta=tiempo,
+            asignado_a='',
+            talla='',
+            pais='arg',
+            provincia='',
+            region='',
+            sexo='',
+            nombreCliente=data.get('nombreCliente', ''),
+            apellidoCliente=data.get('apellidoCliente', ''),
+            emailCliente=data.get('emailCliente', ''),
+            telefonoCliente=data.get('telefonoCliente', ''),
+            comentarioCliente=data.get('comentariosCliente', ''),
+            cluster_id=int(data.get('cluster_pedido', '')),
+            pedido_data_json=data.get('pedido_data_json', '')
+        )
+        db.session.add(nuevo_pedido_entrega_pago)
+        # Antes de hacer commit, puedes imprimir la consulta SQL
+       # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
+        db.session.commit()
+        return nuevo_pedido_entrega_pago
+    except Exception as e:
+        # Rollback en caso de error
+        db.session.rollback()
+        return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500

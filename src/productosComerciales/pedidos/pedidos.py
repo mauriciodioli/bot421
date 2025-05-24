@@ -558,13 +558,18 @@ def productosComerciales_pedidos_process_order():
         imagen_url = data.get('imagen_btn_carrito', '')
         texto = data.get('texto_btn_carrito', '')
         precio_str = data.get('precio_btn_carrito', '')
+    # Validar precio_str antes de continuar
+        if not precio_str or precio_str.strip() == '':
+            return jsonify({'error': 'Pedido no procesado: precio no proporcionado.'}), 400
 
         # Procesar el precio (si es válido)
         try:
             precio_venta = float(precio_str.strip('$').replace(',', '').replace('.', '')) if precio_str else None
         except ValueError:
             return jsonify({'error': 'El precio proporcionado no es válido.'}), 400
-        
+         
+        if precio_venta is None:
+            return jsonify({'error': 'Pedido no procesado: precio no proporcionado.'}), 400
         # Obtener datos iniciales
         pedidos_str = data.get('pedido_data_json')
         pedidos = json.loads(pedidos_str)

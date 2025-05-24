@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
+    debugger;
     // Obtener los selects de ámbitos y categorías para creación y modificación
     const ambitoSelects = {
+
         crea: document.getElementById('postAmbito_creaPublicacion'),
         modifica: document.getElementById('postAmbito_modificaPublicacion')
     };
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
+            debugger;
             categoriaSelect.innerHTML = '<option value="" disabled selected>Selecciona una categoría</option>';
             data.forEach(categoria => {
                 const option = document.createElement('option');
