@@ -24,7 +24,8 @@
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/splashPages/splash.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/splashPages/splash_modal_crear_publicacion.css')}}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
-    
+    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/layouts/idiomas.css')}}">
+   
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     
@@ -103,7 +104,11 @@
                         <label for="openModalCP"  id="labelCP" style="color: #f9b746;"></label>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" onclick=cambiarIdioma(); href="#" id="languageLink">ENG</a>
+                               <div id="languageSelector" class="language-selector">
+                                    <div class="selected-language"></div>
+                                    <div class="language-dropdown" style="display: none;"></div>
+                                </div>
+
                     </li>
                     <li class="nav-item">
                         <a id="admin-link" class="nav-link dropdown-toggle" href="#" onclick="handleAdminClick(event)">Administracion</a>
@@ -440,8 +445,9 @@
 
        // Cerrar el menú desplegable al ser seleccionado
        cerrarMenuSeleccionado();
-       //cambia idioma en localstorage y en cookies
-       cambiarIdioma()
+      
+        
+
 
 
 

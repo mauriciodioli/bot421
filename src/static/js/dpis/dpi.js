@@ -909,89 +909,64 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    const selector = document.getElementById("languageSelector");
+    const selected = selector.querySelector(".selected-language");
+    const dropdown = selector.querySelector(".language-dropdown");
 
-function cambiarIdioma() {
-    document.addEventListener("DOMContentLoaded", function () {
-        var languageLink = document.getElementById("languageLink");
-        
-        // Lista de idiomas disponibles
-        const availableLanguages = ["es", "in", "fr", "de", "it", "pt"]; // Puedes agregar más idiomas aquí
-       
-        // Función para obtener el valor de una cookie
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
+    const languages = {
+        es: { name: "Español", code: "ES", flag: "https://flagcdn.com/24x18/es.png" },
+        in: { name: "English", code: "ENG", flag: "https://flagcdn.com/24x18/us.png" },
+        fr: { name: "Français", code: "FR", flag: "https://flagcdn.com/24x18/fr.png" },
+        de: { name: "Deutsch", code: "DE", flag: "https://flagcdn.com/24x18/de.png" },
+        it: { name: "Italiano", code: "IT", flag: "https://flagcdn.com/24x18/it.png" },
+        pt: { name: "Português", code: "PT", flag: "https://flagcdn.com/24x18/pt.png" }
+    };
+
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? match[2] : null;
+    }
+
+    function setLanguage(lang) {
+        const langData = languages[lang];
+        if (!langData) return;
+
+        localStorage.setItem("language", lang);
+        document.cookie = `language=${lang}; path=/; max-age=31536000`;
+
+        selected.innerHTML = `<img src="${langData.flag}"> ${langData.code}`;
+        dropdown.style.display = "none";
+
+        if (typeof cargarAmbitos === "function") cargarAmbitos();
+        if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
+    }
+
+    function buildDropdown() {
+        dropdown.innerHTML = "";
+        for (const [code, lang] of Object.entries(languages)) {
+            const option = document.createElement("div");
+            option.className = "language-option";
+            option.innerHTML = `<img src="${lang.flag}"> ${lang.name}`;
+            option.addEventListener("click", () => setLanguage(code));
+            dropdown.appendChild(option);
         }
+    }
 
-        // Función para actualizar el idioma y mostrarlo
-        function updateLanguage() {
-            let currentLanguage = localStorage.getItem("language") || getCookie("language");
-           
-            // Si no hay un idioma configurado, asignar "in" como valor inicial
-            if (!currentLanguage) {
-                currentLanguage = "in"; 
-                
-                localStorage.setItem("language", currentLanguage);
-                document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
-
-                // Actualizar el texto del enlace
-                const languageText = getLanguageText(currentLanguage);
-                languageLink.textContent = languageText;
-
-                alert(`Idioma actualizado: ${currentLanguage}`);
-            
-            } else {
-                // Pasar al siguiente idioma (cíclico)
-                let currentIndex = availableLanguages.indexOf(currentLanguage);
-                let nextIndex = (currentIndex + 1) % availableLanguages.length; // Ciclo a través de los idiomas
-                currentLanguage = availableLanguages[nextIndex];
-                debugger;
-                localStorage.setItem("language", currentLanguage);
-                document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
-
-                // Actualizar el texto del enlace
-                const languageText = getLanguageText(currentLanguage);
-                languageLink.textContent = languageText;
-
-                alert(`Idioma actualizado: ${currentLanguage}`);
-            
-            
-            }
-          
-        }
-
-        // Función para obtener el texto correspondiente a cada idioma
-        function getLanguageText(language) {
-            const languageTexts = {
-                "es": "ES",
-                "in": "ENG",
-                "fr": "FR",
-                "de": "DE",
-                "it": "IT",
-                "pt": "PT"
-            };
-            return languageTexts[language] || "ES"; // Devuelve "ES" por defecto si el idioma no está definido
-        }
-
-        // Establecer el idioma inicial y el texto del enlace
-        (function setInitialLanguage() {
-            const currentLanguage = localStorage.getItem("language") || getCookie("language") || "in";
-            const languageText = getLanguageText(currentLanguage);
-            languageLink.textContent = languageText;
-        })();
-
-        // Agregar el evento para alternar el idioma
-        languageLink.addEventListener("click", function (event) {
-            event.preventDefault(); // Evitar la recarga de la página            
-            updateLanguage();
-            cargarAmbitos(); // Llamar a las funciones necesarias         
-            cargarAmbitosCarrusel(); // Llamar a la función cuando el DOM esté listo
-        });
+    selected.addEventListener("click", () => {
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     });
-}
 
+    document.addEventListener("click", (e) => {
+        if (!selector.contains(e.target)) {
+            dropdown.style.display = "none";
+        }
+    });
 
+    const currentLang = localStorage.getItem("language") || getCookie("language") || "in";
+    setLanguage(currentLang);
+    buildDropdown();
+});
 
 
 
