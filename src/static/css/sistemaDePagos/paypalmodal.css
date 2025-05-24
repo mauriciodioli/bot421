@@ -1,0 +1,65 @@
+.modal-pago {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal-pago.activo {
+  visibility: visible;
+  opacity: 1;
+}
+
+
+
+
+.modal-contenido {
+  position: relative;
+  background-color: #111;
+  color: white;
+  padding: 30px 20px 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.6);
+  text-align: center;
+  overflow: hidden;
+}
+
+.modal-contenido h2 {
+  margin-top: 10px;
+  margin-bottom: 25px;
+  font-size: 22px;
+  color: #f3d300;
+}
+
+.cerrar-modal {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.cerrar-modal:hover {
+  color: white;
+}
+
+#paypal-button-container > div {
+  width: 100% !important;
+  max-width: 350px;
+  margin: 0 auto;
+}

@@ -31,14 +31,25 @@ function confirmarPago() {
     alert('Por favor, seleccioná una opción antes de continuar.');
     return;
   }
+ 
 
   switch (seleccion) {
-    case 'paypal':
-      alert('Iniciando pago con PayPal...');
-      // Lógica personalizada
-      break;
+        case 'paypal':
+           alert('Iniciando pago con PayPal...');
+
+            abrirModalPago();
+        break;
+
+
       case 'reserva':
-      alert('Iniciando reserva...');
+        const formCliente = document.getElementById('form-cliente-pedido');
+
+        if (formCliente) {
+          const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+          formCliente.dispatchEvent(submitEvent);
+        } else {
+          alert('Formulario de cliente no disponible.');
+        } 
       // Lógica personalizada
       break;
 
