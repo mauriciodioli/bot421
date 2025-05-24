@@ -32,6 +32,7 @@
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/splashPages/splash.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/index.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/dpis/dpi.css')}}">
+    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/layouts/idiomas.css')}}">
    
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
@@ -149,7 +150,11 @@
                             </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" onclick=cambiarIdioma(); href="#" id="languageLink">ENG</a>
+                               <div id="languageSelector" class="language-selector">
+                                    <div class="selected-language"></div>
+                                    <div class="language-dropdown" style="display: none;"></div>
+                                </div>
+
                             </li>
                        <!--
                         <li class="nav-item content">
@@ -226,7 +231,7 @@
     
 
         //esto cambia el idioma en localstorage y en cookies
-        cambiarIdioma();
+       // cambiarIdioma();
         
         // Solicitar permiso para mostrar notificaciones
         solicitarPermiso();
