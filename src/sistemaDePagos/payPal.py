@@ -10,12 +10,15 @@ from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import tokens.token as Token
 import jwt
+  # ⏱ Tiempo actual
+from datetime import datetime
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.payment_page.tarjetaUsuario import TarjetaUsuario
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment, LiveEnvironment
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
-
+from dotenv import load_dotenv
+load_dotenv()
 
 
 
@@ -34,6 +37,7 @@ else:
     )
 
 client = PayPalHttpClient(environment)
+
 @payPal.route("/create_orders_paypal/", methods=["POST"])
 def create_orders_paypal():
     data = request.get_json()
@@ -83,24 +87,24 @@ def create_orders_paypal():
     except Exception as e:
         return jsonify({"error": f"No se pudo crear la orden PayPal: {str(e)}"}), 500
 
-    # ⏱ Tiempo actual
-    from datetime import datetime
+  
     tiempo = datetime.utcnow()
 
     # 🛒 Procesar pedidos
     try:
-        pedidos_str = data.get('pedido_data_json_pagoPedido')
-        pedidos = json.loads(pedidos_str)
+     #   pedidos_str = data.get('pedido_data_json_pagoPedido')
+      #  pedidos = json.loads(pedidos_str)
         cantidad_total = 0
 
-        for pedido_data in pedidos:
-            cantidad_pedido = actualizar_pedido(pedido_data, data, tiempo)
-            if isinstance(cantidad_pedido, dict):  # error
-                return jsonify(cantidad_pedido), 404
-            cantidad_total += cantidad_pedido
+      #  for pedido_data in pedidos:
+      #      cantidad_pedido = actualizar_pedido(pedido_data, data, tiempo)
+       #     if isinstance(cantidad_pedido, dict):  # error
+       #         return jsonify(cantidad_pedido), 404
+        #    cantidad_total += cantidad_pedido
 
-        user_id = data.get("user_id", 1)
-        entrega = cargar_entrega_pedido(data, user_id, tiempo, cantidad_total)
+       # user_id = data.get("user_id", 1)
+        #entrega = cargar_entrega_pedido(data, user_id, tiempo, cantidad_total)
+        entrega = '1'
 
     except Exception as e:
         return jsonify({"error": f"No se pudo registrar el pedido: {str(e)}"}), 500
@@ -108,7 +112,8 @@ def create_orders_paypal():
     return jsonify({
         "orderID": order_id,
         "estado": "pendiente",
-        "entrega_id": entrega.id if hasattr(entrega, "id") else None
+      #  "entrega_id": entrega.id if hasattr(entrega, "id") else None
+        "entrega_id": entrega
     })
 
 
@@ -119,6 +124,7 @@ def capture_order_paypal(order_id):
     request_capture.request_body({})
     response = client.execute(request_capture)
     return jsonify(response.result.__dict__['_dict'])
+
 
 
 
@@ -185,3 +191,5 @@ def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
         # Rollback en caso de error
         db.session.rollback()
         return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500
+    finally:
+        db.session.close()  # Asegúrate de cerrar la sesión después de usarla

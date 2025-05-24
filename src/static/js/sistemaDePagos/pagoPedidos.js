@@ -114,12 +114,12 @@ $(document).ready(function () {
 function createOrderPaypal() {
     const form = document.querySelector('.pagoPedidoForm');
     const formData = new FormData(form);
-  
+    
     const formObj = {};
     formData.forEach((value, key) => {
         formObj[key] = value;
     });
-
+   
     return fetch('/create_orders_paypal/', {
         method: 'POST',
         headers: {
@@ -151,7 +151,8 @@ function capturarOrdenPaypal(orderID) {
     formData.forEach((value, key) => {
         formObj[key] = value;
     });
-
+    debugger;
+    enviarEmail(formObj);
     // fetch con el orderID en la URL (correcto)
     return fetch(`/capture_order_paypal/${orderID}`, {
         method: "POST",
@@ -192,17 +193,18 @@ function abrirModalPago() {
 
 
 
+
 function abrirModalPago() {
   const modal = document.getElementById("modalPagoPaypal");
   modal.classList.add("activo");
-
+  
   const container = document.getElementById("paypal-button-container");
   container.innerHTML = "";
-
+ 
   createOrderPaypal().then(orderID => {
     paypal.Buttons({
       createOrder: () => orderID,
-      onApprove: (data, actions) => {
+      onApprove: (data, actions) => {      
         capturarOrdenPaypal(data.orderID);
         cerrarModalPago();
       }
@@ -232,3 +234,59 @@ window.addEventListener("click", function(e) {
     cerrarModalPago();
   }
 });
+
+
+function enviarEmail(paypalData) {
+     console.log("🚀 Datos recibidos desde PayPal:", paypalData); // 🧪 Acá ves todo lo que trae
+debugger;
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+        console.error('Access token no encontrado en localStorage');
+        return;
+    }
+
+    const correo_electronico = localStorage.getItem('correo_electronico');
+    if (!correo_electronico) {
+        console.error('Correo electrónico no encontrado en localStorage');
+        return;
+    }
+
+   
+    // Extraé datos útiles del objeto completo
+    const orderID = paypalData.orderID;
+    const payerID = paypalData.payerID;
+    const productos = paypalData.productos || []; // Asegúrate de que este campo exista
+    const monto_total = paypalData.monto_total || 0; // Asegúrate de que este campo exista
+
+    const data = {
+        correo_electronico: correo_electronico,
+        orderID: orderID,
+        payerID: payerID, // si lo querés guardar o enviar
+        nombre: "Cliente DPIA",
+        mensaje: "Gracias por tu compra. Estamos procesando tu pedido.",
+        productos: productos,
+        total: monto_total
+    };
+
+    fetch('/confirmacion_pago_a_cliente/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Email enviado:', data);
+    })
+    .catch(error => {
+        console.error('Error al enviar el email:', error);
+    });
+}
+
