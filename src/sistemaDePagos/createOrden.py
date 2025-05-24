@@ -74,11 +74,12 @@ def sistemaDePagos_create_order():
         # Obtener los datos del JSON
         data = request.json
         
-        # Validar los campos obligatorios
+       
+        # Validar los campos obligatorios y que no estén vacíos
         required_fields = ['title', 'quantity', 'currency_id', 'unit_price', 'final_price', 'porcentaje_retorno']
         for field in required_fields:
-            if field not in data:
-                return jsonify({'error': f'El campo {field} es obligatorio.'}), 400
+            if field not in data or data[field] is None or str(data[field]).strip() == '':
+                return jsonify({'error': f'El campo {field} es obligatorio y no puede estar vacío.'}), 400
 
         # Procesar campos numéricos
         try:
@@ -87,6 +88,7 @@ def sistemaDePagos_create_order():
             porcentaje_retorno = float(data.get('porcentaje_retorno'))
         except ValueError:
             return jsonify({'error': 'Los valores de precio deben ser numéricos.'}), 400
+
 
 
         # Obtener datos iniciales
