@@ -11,16 +11,15 @@
                 "FLASK_DEBUG": "1",
                 "FLASK_ENV": "development",
                 "FLASK_RUN_HOST": "0.0.0.0",
-                "FLASK_RUN_PORT": "5001"
+                "FLASK_RUN_PORT": "5001",
+                "GOOGLE_APPLICATION_CREDENTIALS": "/workspaces/bot421/src/upload_to_gcs.json"
+
             },
             "args": [
                 "run"
             ],
             "jinja": true,
             "justMyCode": true,
-            //"pythonPath": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\venv\\Scripts\\python.exe",
-            //"cwd": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\src"
-            "pythonPath": "/usr/local/bin/python",           
             "cwd": "/workspaces/bot421/src"
         }
     ]

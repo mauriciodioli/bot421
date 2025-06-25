@@ -265,3 +265,295 @@ Este es un mensaje crítico.
 LEE EL SHEET POR LLAMADA DE FUNCION
 demo@gmail.com
 LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 19, 44, 6, 899626), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'in'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 19, 53, 38, 95789), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+LEE EL SHEET POR LLAMADA DE FUNCION
+Exception on /panel_control_sin_cuenta/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 2528, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1825, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.9/site-packages/flask_cors/extension.py", line 165, in wrapped_function
+    return cors_after_request(app.make_response(f(*args, **kwargs)))
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1823, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/usr/local/lib/python3.9/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+  File "/workspaces/bot421/src/panelControlBroker/panelControl.py", line 58, in panel_control_sin_cuenta
+    datos_desempaquetados = procesar_datos(app,pais, account,usuario_id,selector)
+  File "/workspaces/bot421/src/panelControlBroker/panelControl.py", line 342, in procesar_datos
+    enviar_leer_sheet(app,pais,user_id,accountCuenta,None,selector)
+  File "/workspaces/bot421/src/panelControlBroker/panelControl.py", line 301, in enviar_leer_sheet
+    ContenidoSheetList = list(ContenidoSheet)
+TypeError: 'NoneType' object is not iterable
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 19, 58, 9, 300350), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 12, 3, 531646), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 41, 3, 784345), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 46, 52, 934472), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 48, 19, 73678), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 50, 26, 375863), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 50, 52, 477714), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 51, 10, 535047), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 51, 52, 275778), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 52, 46, 31798), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 54, 30, 341681), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 54, 47, 545629), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 16, 50, 212105), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 35, 22, 230351), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 36, 24, 34967), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 36, 44, 560416), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 37, 0, 757225), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 37, 34, 389359), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 38, 22, 559284), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 43, 40, 83736), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 21, 43, 57, 412723), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 1, 59, 23, 715308), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 13, 35, 869679), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 14, 38, 404130), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 15, 27, 61625), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 24, 23, 461039), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 24, 52, 973505), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 32, 54, 91056), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 33, 24, 35945), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 36, 51, 337586), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 37, 36, 141175), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 38, 36, 918985), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 40, 35, 421799), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 48, 32, 882797), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 50, 17, 972387), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 51, 20, 569733), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 51, 44, 639918), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 52, 1, 595933), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 57, 20, 5252), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 57, 50, 973632), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 58, 34, 561380), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 2, 59, 45, 984141), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 3, 3, 44, 125481), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 3, 4, 48, 412687), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+____INTENTO ENTRAR____
+127.0.0.1
+None
+Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 'codigoPostal' in 'field list'")
+[SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
+[parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 3, 5, 11, 467741), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Error registrando acceso: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '23.22.109.80' ([Errno 111] Connection refused)")
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
