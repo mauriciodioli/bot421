@@ -11,12 +11,14 @@
                 "FLASK_DEBUG": "1",
                 "FLASK_ENV": "development",
                 "FLASK_RUN_HOST": "0.0.0.0",
-                "FLASK_RUN_PORT": "5001",
-                "GOOGLE_APPLICATION_CREDENTIALS": "/workspaces/bot421/src/upload_to_gcs.json"
+                "FLASK_RUN_PORT": "5001"
+             
 
             },
             "args": [
-                "run"
+                "run",
+                "--no-debugger",
+                "--no-reload"
             ],
             "jinja": true,
             "justMyCode": true,

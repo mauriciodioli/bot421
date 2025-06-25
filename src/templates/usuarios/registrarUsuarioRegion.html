@@ -8,21 +8,24 @@
         <!-- Contenido de la tarjeta -->
         <div id="seleccionPais">
             <label for="pais">Selecciona tu país:</label>
-            <select id="pais" class="form-select" onchange="seleccionarIdioma()">
+            <select id="pais" class="form-select">
                 <option value="">--Seleccionar--</option>
             </select>
+
+            <label for="provincia" class="mt-3">Provincia:</label>
+            <input type="text" id="provincia" class="form-control" placeholder="Escribe tu provincia">
+
+            <label for="ciudad" class="mt-3">Ciudad:</label>
+            <input type="text" id="ciudad" class="form-control" placeholder="Escribe tu ciudad">
+            
+           
+            <button type="button" class="btn btn-primary mt-3" onclick="continuarRegistro()">Continuar</button>
         </div>
-        
-        <div id="seleccionLenguaje" style="display: none;">
-            <label for="lenguaje">Selecciona tu idioma:</label>
-            <select id="lenguaje" class="form-select" onchange="mostrarCodigoPostal()">
-                <option value="">--Seleccionar--</option>
-            </select>
-        </div>
-        
+
         <div id="seleccionCodigoPostal" style="display: none;">
             <label for="codigoPostal">Ingresa tu código postal:</label>
-            <input type="text" id="codigoPostal" class="form-control" onblur="enviarDatos()">
+            <input type="text" id="codigoPostal" class="form-control">
+            <button type="button" class="btn btn-primary mt-3" onclick="enviarDatos()">Finalizar registro</button>
         </div>
 
         <!-- Campos ocultos para correo_electronico y password -->

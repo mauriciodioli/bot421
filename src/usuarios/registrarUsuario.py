@@ -77,66 +77,101 @@ def registrar_usuario():
 @registrarUsuario.route('/registro-usuario/', methods=['POST'])
 def registro_usuario():
     datos = request.get_json()
-    correo_electronico = datos['correo_electronico']   
-    password = datos['password']  
-    idioma = datos['lenguaje']
+
+    # Validación básica de campos obligatorios
+    campos_obligatorios = ['correo_electronico', 'password', 'pais', 'provincia', 'ciudad', 'codigoPostal']
+    for campo in campos_obligatorios:
+        if not datos.get(campo):
+            flash(f'El campo {campo} es obligatorio.')
+            return render_template("usuarios/registrarUsuario.html"), 400
+
+    correo_electronico = datos['correo_electronico']
+    password = datos['password']
+    idioma = datos.get('lenguaje', 'es')
     codigoPostal = datos['codigoPostal']
     pais = datos['pais']
-    region = datos['region']
+    region = datos.get('region', '')  # Puede venir vacío
     provincia = datos['provincia']
     ciudad = datos['ciudad']
-    latitud = datos['latitud']
-    longitud = datos['longitud']
-   
+    latitud = datos.get('latitud')
+    longitud = datos.get('longitud')
+
     if idioma == 'Spanish':
         idioma = 'es'
     elif idioma == 'English':
         idioma = 'in'
+
     numero_de_cuenta = ''
-    tipo_usuario= 'usuario'
-    
-    print('password:', password)
-    
+    tipo_usuario = 'usuario'
+
     # Verificar si el usuario ya está registrado
     usuario_existente = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
-
     if usuario_existente:
         flash('El correo electrónico ya está registrado.')
         return render_template("index.html")
 
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-    # Generar el token de acceso y el token de actualización
-    access_token = create_access_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'acceso','tipo_usuario':tipo_usuario}, expires_delta=timedelta(minutes=TOKEN_DURATION))
-    refresh_token = create_refresh_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'actualizacion'}, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
+    # Generar tokens
+    access_token = create_access_token(
+        identity={
+            "correo_electronico": correo_electronico,
+            "numero_de_cuenta": numero_de_cuenta,
+            "acceso": 'acceso',
+            "tipo_usuario": tipo_usuario
+        },
+        expires_delta=timedelta(minutes=TOKEN_DURATION)
+    )
+    refresh_token = create_refresh_token(
+        identity={
+            "correo_electronico": correo_electronico,
+            "numero_de_cuenta": numero_de_cuenta,
+            "acceso": 'actualizacion'
+        },
+        expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION)
+    )
 
-    usuario = Usuario(id=None, token=access_token, refresh_token=refresh_token, activo=True, correo_electronico=correo_electronico, password=hashed_password)
+    # Crear usuario y relaciones
+    usuario = Usuario(
+        id=None,
+        token=access_token,
+        refresh_token=refresh_token,
+        activo=True,
+        correo_electronico=correo_electronico,
+        password=hashed_password
+    )
     db.session.add(usuario)
-    db.session.commit()  # Esto asegura que el usuario tenga un ID asignado
-    usuarioRegion = UsuarioRegion( user_id=usuario.id, idioma=idioma, codigoPostal=codigoPostal, pais=pais, region=region, provincia=provincia, ciudad=ciudad)
+    db.session.commit()  # usuario.id asignado
+
+    usuarioRegion = UsuarioRegion(
+        user_id=usuario.id,
+        idioma=idioma,
+        codigoPostal=codigoPostal,
+        pais=pais,
+        region=region,
+        provincia=provincia,
+        ciudad=ciudad
+    )
     db.session.add(usuarioRegion)
     db.session.commit()
-    usuarioUbicacion = UsuarioUbicacion(user_id=usuario.id, id_region=usuarioRegion.id, codigoPostal=codigoPostal, latitud=latitud, longitud=longitud)
+
+    usuarioUbicacion = UsuarioUbicacion(
+        user_id=usuario.id,
+        id_region=usuarioRegion.id,
+        codigoPostal=codigoPostal,
+        latitud=latitud,
+        longitud=longitud
+    )
     db.session.add(usuarioUbicacion)
     db.session.commit()
     db.session.close()
-    # Crear una respuesta
-   
-
 
     flash('Registro como usuario exitoso.')
-    # Crear una respuesta
     response = make_response(render_template("index.html"))
-    #response = make_response(redirect(url_for('index')))  # Si 'index' es el nombre de la ruta para la página de inicio
-
-   # response = make_response(render_template("home.html", tokens=[access_token, refresh_token]))
-
-    # Configurar las cookies HTTP con los tokens
     set_access_cookies(response, access_token)
     set_refresh_cookies(response, refresh_token)
-    response.set_cookie('codigoPostal', codigoPostal, max_age=3600, path='/')  # Ajusta la duración según tus necesidades
+    response.set_cookie('codigoPostal', codigoPostal, max_age=3600, path='/')
 
-    # Devolver la respuesta con los tokens
     return response
 
 

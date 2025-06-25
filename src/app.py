@@ -711,7 +711,7 @@ def home(dominio):
 def entrada(dominio=None, pagina=None):
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    crea_tablas_DB()
+    #crea_tablas_DB()
     if not dominio:
         dominio = "inicialDominio"
     if not pagina:
@@ -748,7 +748,7 @@ def load_user(user_id):
             return None
 # Make sure this we are executing this file
 if __name__ == "__main__":
-   # app.run()
+    #app.run()
     #app.run(host='0.0.0.0', port=5001, debug=True)
     app.run(host='0.0.0.0', port=5001, debug=False)
    
