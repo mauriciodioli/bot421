@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [
     {
       "origin": ["http://127.0.0.1:5001", "https://dpia.site"],
@@ -6,4 +7,14 @@
       "maxAgeSeconds": 3600
     }
   ]
+=======
+[
+    {
+      "origin": ["http://127.0.0.1:5001", "https://dpia.site"],
+      "responseHeader": ["Content-Type", "Authorization"],
+      "method": ["GET", "POST", "PUT", "OPTIONS"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
   

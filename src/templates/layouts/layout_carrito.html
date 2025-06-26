@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,3 +49,55 @@
     
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <meta http-equiv = "X-UA-Compatible" content = "id=edge">
+    <title>System DPI</title>
+    <!-- Estilos y scripts aquí... -->
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/layouts/layout_bajo.css') }}">
+</head>
+
+<body>
+    
+    <!-- El contenido principal va aquí... -->
+
+    <!-- Layout en la parte inferior -->
+    
+    <div id="bottomLayout" class="fixed-bottom bg-dark text-white p-3 d-flex justify-content-center align-items-center">
+        <div class="custom-dropdown-menu-container text-center">
+            <button class="btn btn-sm close-layout-btn">
+                <img src="{{ url_for('static', filename='icons/clipart3496311.png') }}" alt="Select File Icon" style="width: 24px; height: 24px;">
+            </button>
+            <ul class="custom-dropdown-menu">
+                <!-- Aquí irán los elementos de la lista -->
+            </ul>
+        </div>
+    </div>
+ <!-- Distribuir las opciones aquí -->
+ 
+ 
+<!-- Contenedor principal -->
+<div id="container">
+    <!-- Otros contenidos -->
+
+    <!-- Contenedor para opciones de publicación -->
+    <div class="post-options layoutBajo">
+      
+    </div>
+
+</div>
+
+
+</div>
+    <!-- Scripts al final del body -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>   
+    <script src="{{ url_for('static', filename='js/layouts/layout_carrito.js') }}"></script>  
+    
+    
+</body>
+</html>
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

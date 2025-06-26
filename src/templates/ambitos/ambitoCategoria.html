@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout_administracion' %}
    {% extends 'layouts/layout_administracion.html' %}   
 {% endif %}
@@ -281,4 +282,289 @@ $(document).ready(function() {
 </script>
 <script src="{{ url_for('static', filename='js/ambitos/ambitoCategoria.js') }}"></script>
 
+=======
+{% if layout == 'layout_administracion' %}
+   {% extends 'layouts/layout_administracion.html' %}   
+{% endif %}
+{% block content %}
+<h2>Gestión de Categorias</h2>
+<div class="mb-3">
+  <input type="text" id="ambitoInput" class="form-control" placeholder="Ingrese el ámbito">
+  <input type="text" id="codigoPostalInput" class="form-control mt-2" placeholder="Ingrese el código postal">
+  <button id="buscarAmbito" class="btn btn-success mt-2">Buscar</button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-dark table-striped" id="tablaCategorias">
+      <thead>
+          <tr>
+              <th scope="col">Orden</th>
+              <th scope="col">Id</th>            
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Idioma</th>
+              <th scope="col">Valor</th>
+              <th scope="col">Color</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
+          </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+  </table>
+ </div>
+
+
+<!-- Formulario de creación -->
+<form id="ambitoCategoria-form">
+    <input type="hidden" id="ambitoCategoria-id" value="">
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" required class="form-control"><br>
+
+    <label for="descripcion">Descripción:</label>
+    <input type="text" id="descripcion" class="form-control"><br>
+
+    <label for="idioma">Idioma:</label>
+    <input type="text" id="idioma" class="form-control"><br>
+
+    <label for="valor">Valor:</label>
+    <input type="text" id="valor" class="form-control"><br>
+
+    <label for="color">Color:</label>
+    <input type="text" id="color" class="form-control"><br>
+
+    <label for="estado">Estado:</label>
+    <input type="text" id="estado" class="form-control"><br>
+    
+    <button type="button" class="btn btn-success" onclick="crearAmbitoCategorias()">Crear Categoria</button>
+
+</form>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmacionCrearAmbitoModal" tabindex="-1" aria-labelledby="confirmacionCrearAmbitoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="confirmacionCrearAmbitoModalLabel" style="color: black;">Confirmar Creación</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="color: black;">
+              ¿Estás seguro de que deseas crear este nuevo AmbitoCategoria con los datos ingresados?
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-success" id="confirmarCrearAmbitoCategoria" onclick="confirmarCrearAmbitoCategorias()">Confirmar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Modal de edición -->
+<div class="modal fade" id="editarAmbitoCategoriaModal" tabindex="-1" aria-labelledby="editarAmbitoCategoriaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editarAmbitoCategoriaModalLabel" style="color: black;">Editar Categoria</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editarAmbitoCategoriaForm">
+          <input type="hidden" id="AmbitoCategoria-id-editar">
+          <label for="nombre-editar" style="color: black;">Nombre:</label>
+          <input type="text" id="nombre-editar" class="form-control" required><br>
+
+          <label for="descripcion-editar" style="color: black;">Descripción:</label>
+          <input type="text" id="descripcion-editar" class="form-control"><br>
+
+          <label for="idioma-editar" style="color: black;">Idioma:</label>
+          <input type="text" id="idioma-editar" class="form-control"><br>
+
+          <label for="valor-editar" style="color: black;">Valor:</label>
+          <input type="text" id="valor-editar" class="form-control"><br>
+
+          <label for="valor-editar" style="color: black;">Color:</label>
+          <input type="text" id="color-editar" class="form-control"><br>
+
+          <label for="estado-editar" style="color: black;">Estado:</label>
+          <input type="text" id="estado-editar" class="form-control"><br>
+
+          <label for="user_id-editar" style="color: black;">User ID:</label>
+          <input type="text" id="user_id-editar" class="form-control" required><br>
+
+          <button type="button" class="btn btn-primary" onclick="actualizarAmbitoCategoria()">Actualizar Categoria</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal fade" id="eliminarAmbitoCategoriaModal" tabindex="-1" aria-labelledby="eliminarAmbitoCategoriaModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eliminarAmbitoCategoriaModalLabel" style="color: black;">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p style="color: black;">¿Está seguro de que desea eliminar el ámbito?</p>       
+        <input type="hidden" id="ambitoCategoria-nombre-eliminar" class="form-control"><br>
+      </div>
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger">Eliminar</button>
+      </div>      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- Modal de cambiar posicion -->
+<div class="modal fade" id="modalCambiarPosicion" tabindex="-1" aria-labelledby="modalCambiarPosicionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCambiarPosicionLabel" style="color: black;">Cambiar posicion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editarAmbitoForm">
+          <label for="id-ambitoCategoria-uno" style="color: black;">Id Ambito 1:</label>
+          <input type="text" id="id-ambitoCategoria-uno" class="form-control" required><br>
+
+          <label for="id-ambitoCategoria-dos" style="color: black;">Id Ambito 2:</label>
+          <input type="text" id="id-ambitoCategoria-dos" class="form-control"><br>
+
+          <button type="button" class="btn btn-primary" onclick="actualizarAmbitoCambiarPosicion()">Actualizar Ambito</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+{% include 'layouts/layout_footer.html' %}   
+
+<script>
+
+  $(document).ready(function() {
+    // Este evento se dispara cuando se abre el modal
+    $('#modalCambiarPosicion').on('show.bs.modal', function (event) {
+      // Obtener el botón que activó el modal
+      var button = $(event.relatedTarget);
+      
+      // Obtener el valor del atributo data-ambitoCategoria-id del botón
+      var ambitoCategoriaId = button.data('ambitoCategoria-id');
+      
+      // Obtener el campo de entrada en el modal y asignarle el valor
+      var modal = $(this);
+      modal.find('#id-ambitoCategoria-uno').val(ambitoCategoriaId);
+    });
+  });
+  
+
+$(document).ready(function() {
+    // Cargar los datos en el modal de edición
+    $('#editarAmbitoCategoriaModal').on('show.bs.modal', function (event) {
+
+      var button = $(event.relatedTarget); // El botón que activó el modal
+      var ambitoCategoriaId = button.data('ambitocategoria-id'); // Acceder correctamente al 'data-ambitocategoria-id'
+      var nombre = button.data('nombre');
+      var descripcion = button.data('descripcion');
+      var idioma = button.data('idioma');
+      var valor = button.data('valor');
+      var estado = button.data('estado');
+      
+      // Mostrar todos los datos en la consola
+      console.log("Datos del botón activador:");
+      console.log("ID:", ambitoCategoriaId);  // Aquí debería mostrar '18'
+      console.log("Nombre:", nombre);
+      console.log("Descripción:", descripcion);
+      console.log("Idioma:", idioma);
+      console.log("Valor:", valor);
+      console.log("Estado:", estado);
+
+      var modal = $(this);
+      modal.find('#AmbitoCategoria-id-editar').val(ambitoCategoriaId);
+      modal.find('#nombre-editar').val(nombre);
+      modal.find('#descripcion-editar').val(descripcion);
+      modal.find('#idioma-editar').val(idioma);
+      modal.find('#valor-editar').val(valor);
+      modal.find('#estado-editar').val(estado);
+  });
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    $('#eliminarAmbitoCategoriaModal').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget); // Botón que activó el modal
+      console.log("Botón activador:", button);
+  
+      var id = button.data('ambitocategoria-id'); // Corregido
+      var nombre = button.data('nombre');
+  
+      console.log("ID detectado:", id);
+      console.log("Nombre detectado:", nombre);
+  
+      var modal = $(this);
+      modal.find('#ambitoCategoria-nombre-eliminar').val(nombre);
+      
+      modal.find('.btn-danger').off('click').on('click', function() {
+          console.log("Clic en eliminar, ID:", id);
+          eliminarAmbitoCategoria(id);
+      });
+  });
+  
+  
+});
+
+
+
+
+
+$(document).ready(function() {
+  // Al abrir el modal de confirmación
+  $('#confirmacionCreaAmbitoCategoriaModal').on('show.bs.modal', function () {
+    var modal = $(this);
+    // Establecer aria-hidden="false" cuando el modal se abre
+    modal.attr('aria-hidden', 'false');
+    modal.removeAttr('inert');  // Asegúrate de que el modal no esté bloqueado por 'inert'
+    
+    // Asegúrate de que el foco se ponga en el botón de "Confirmar"
+    modal.find('.btn-success').focus();  
+  });
+
+  // Al cerrar el modal de confirmación
+  $('#confirmacionCrearAmbitoCategoriaModal').on('hidden.bs.modal', function () {
+    var modal = $(this);
+    // Volver a ocultar el modal correctamente para accesibilidad
+    modal.attr('aria-hidden', 'true');
+    modal.attr('inert', '');  // Reaplicar inert cuando el modal se cierre para bloquear interacción
+  });
+});
+
+</script>
+<script src="{{ url_for('static', filename='js/ambitos/ambitoCategoria.js') }}"></script>
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 {% endblock %}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .custom-card {
     background-color: #E6E6FA !important; /* Verde Agua */
     border: 1px solid #e0e0e0 !important; /* Borde ligero */
@@ -45,3 +46,52 @@
     box-shadow: 0 0 15px #ff0000; /* Efecto de lámpara */
 }
 
+=======
+.custom-card {
+    background-color: #E6E6FA !important; /* Verde Agua */
+    border: 1px solid #e0e0e0 !important; /* Borde ligero */
+    border-radius: 10px !important; /* Esquinas redondeadas */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra sutil */
+    margin-top: 50px; /* Ajuste de margen superior para separar del borde superior */
+}
+.custom-card-title {
+    color: #007bff !important; /* Color primario de Bootstrap */
+}
+.custom-card-text {
+    color: #6c757d !important; /* Color de texto secundario de Bootstrap */
+}
+#statusLight {
+    width: 50px;
+    height: 50px;
+    background-color: grey;
+    border-radius: 50%;
+    margin: 20px auto;
+    transition: background-color 0.3s, box-shadow 0.3s; /* Transición suave */
+}
+#statusLight.green {
+    background-color: #00ff00; /* Verde brillante */
+    box-shadow: 0 0 15px #00ff00; /* Efecto de lámpara */
+}
+#statusLight.red {
+    background-color: #ff0000; /* Rojo */
+    box-shadow: 0 0 15px #ff0000; /* Efecto de lámpara */
+}
+
+#statusLightThread {
+    width: 50px;
+    height: 50px;
+    background-color: grey;
+    border-radius: 50%;
+    margin: 20px auto;
+    transition: background-color 0.3s, box-shadow 0.3s; /* Transición suave */
+}
+#statusLightThread.green {
+    background-color: #00ff00; /* Verde brillante */
+    box-shadow: 0 0 15px #00ff00; /* Efecto de lámpara */
+}
+#statusLightThread.red {
+    background-color: #ff0000; /* Rojo */
+    box-shadow: 0 0 15px #ff0000; /* Efecto de lámpara */
+}
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

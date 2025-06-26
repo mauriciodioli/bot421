@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -129,3 +130,136 @@ button {
     font-size: 14px;
 }
 
+=======
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121111;
+}
+
+.cart-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+}
+
+.product-image {
+    width: 100px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.product-details {
+    flex: 1;
+}
+
+.product-details h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.product-details .price {
+    margin: 10px 0;
+    font-size: 16px;
+    color: #28a745;
+}
+
+.product-details label {
+    font-size: 14px;
+    color: #555;
+}
+
+.product-details input {
+    width: 60px;
+    padding: 5px;
+    margin-left: 10px;
+    text-align: center;
+}
+
+.remove-button {
+    background-color: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+.cart-summary {
+    text-align: right;
+}
+
+.cart-summary p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+#checkout-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 16px;
+}
+
+#checkout-button:hover {
+    background-color: #0056b3;
+}
+
+
+
+
+
+
+
+
+
+
+.cart-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea todo el contenido a la derecha */
+    width: 100%;
+}
+
+.summary-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea el subtotal y el total a la derecha */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 20px;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

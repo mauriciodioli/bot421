@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for message in messages%}  
@@ -65,3 +66,72 @@
 
 {% endblock %}
 
+=======
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% elif layout == 'layout_administracion' %}
+    {% extends 'layouts/layout_administracion.html' %}
+{% elif layout == 'layout_muestra_imagenes_dpi' %}
+    {% extends 'layouts/layout_muestra_imagenes_dpi.html' %}
+{% endif %}
+{% block content %}
+
+<div>
+    <div id="dragArea" class="drag-area">
+    <div id="calculator" class="calculator">
+      
+        <input type="text" id="display" class="display" disabled>
+        <div class="buttons">
+          <button class="btn btn-clear" onclick="clearDisplay()">C</button>
+          <button class="btn" onclick="appendCharacter('/')">/</button>
+          <button class="btn" onclick="appendCharacter('*')">*</button>
+          <button class="btn btn-operator" onclick="appendCharacter('-')">-</button>
+          <button class="btn" onclick="appendCharacter('7')">7</button>
+          <button class="btn" onclick="appendCharacter('8')">8</button>
+          <button class="btn" onclick="appendCharacter('9')">9</button>
+          <button class="btn btn-operator" onclick="appendCharacter('+')">+</button>
+          <button class="btn" onclick="appendCharacter('4')">4</button>
+          <button class="btn" onclick="appendCharacter('5')">5</button>
+          <button class="btn" onclick="appendCharacter('6')">6</button>
+          
+          <button class="btn" onclick="appendCharacter('1')">1</button>
+          <button class="btn" onclick="appendCharacter('2')">2</button>
+          <button class="btn" onclick="appendCharacter('3')">3</button>
+           <button class="btn btn-equal" onclick="calculateResult()">=</button>
+          <button class="btn" onclick="appendCharacter('0')">0</button>
+          <button class="btn" onclick="appendCharacter('.')">.</button>
+         
+        </div>
+      </div>
+    </div> <!-- Área para mover la calculadora -->
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/aplicaciones/calculadora.css') }}">
+<script src="{{ url_for('static', filename='js/aplicaciones/calculadora.js') }}"></script>
+
+<script>
+   
+    
+
+</script>
+
+{% endblock %}
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

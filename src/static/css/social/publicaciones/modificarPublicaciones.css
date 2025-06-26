@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .modal_modificaPublicacion {
     display: none; /* Ocultar el modal por defecto */
     position: fixed; /* Fijar el modal en la pantalla */
@@ -34,3 +35,41 @@
     cursor: pointer;
 }
 
+=======
+.modal_modificaPublicacion {
+    display: none; /* Ocultar el modal por defecto */
+    position: fixed; /* Fijar el modal en la pantalla */
+    z-index: 1000; /* Asegurarse de que el modal esté sobre otros elementos */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Habilitar el desplazamiento si el contenido es largo */
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente */
+}
+
+.modal-content_modificaPublicacion {
+    background-color: #fefefe;
+    margin: 15% auto; /* Centro del modal en la pantalla */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Ancho del modal */
+    max-width: 600px; /* Ancho máximo del modal */
+}
+
+.close_modificaPublicacion {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer; /* Asegurarse de que el cursor cambie al pasar sobre el botón */
+}
+
+.close_modificaPublicacion:hover,
+.close_modificaPublicacion:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

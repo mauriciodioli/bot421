@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends "layouts/layout_detalle_productos.html" %}
 {% block title %}Contacto{% endblock %}
 
@@ -147,3 +148,154 @@
     });
 </script>
 {% endblock %}
+=======
+{% extends "layouts/layout_detalle_productos.html" %}
+{% block title %}Contacto{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Mensajes flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    {% if category == 'success' %}
+                        <li style="color: green; background-color: #d4edda; border-color: #c3e6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% elif category == 'danger' %}
+                        <li style="color: red; background-color: #f8d7da; border-color: #f5c6cb;" class="alert alert-{{ category }}">{{ message }}</li>
+                    {% else %}
+                        <li class="alert alert-{{ category }}">{{ message }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="container-fluid" id="cardIndex">
+        <div class="container py-4 row justify-content-center m-auto">
+            <div class="row py-3 justify-content-center">
+                <div class="col-md-6 p-4 card card-body cardIndexPlanes"> 
+                    <main>
+                        <section>
+                            <h2 style="color: gold;">Información de Contacto</h2>
+                            <p>Para ponerte en contacto con nosotros, puedes utilizar la siguiente información:</p>
+                            <ul>
+                                <li>Teléfono: +543543690045</li>
+                                <li>Correo electrónico: info@serviciodpi.com</li>
+                                <li>Dirección: Calle Colombia #480, Córdoba, Argentina</li>
+                            </ul>
+                        </section>
+                    
+                        <section>
+                            <h2 style="color: gold;">Formulario de Contacto</h2>
+                            <form action="/enviar-email-de-contacto/" method="POST">
+                                <div class="form-group">
+                                    <label style="color: gold;" for="nombre">Nombre:</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <label style="color: gold;" for="email">Correo Electrónico:</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <label style="color: gold;" for="mensaje">Mensaje:</label>
+                                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-primary" value="Enviar">
+                                </div>
+                            </form>
+                            <div class="form-group">
+                                <a href="/" class="btn btn-success mt-3">Volver</a>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Widget del Chat -->
+    <div class="chat-icon" id="openChat" aria-label="Abrir chat">
+        💬 <!-- Aquí puedes usar un ícono de chat o una imagen -->
+    </div>
+
+    <div class="chat-widget" id="chatWidget" style="display:none;">
+        <div class="chat-header">
+            <span>DPI chat</span>
+            <button id="closeChat">×</button>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <!-- Aquí se mostrarán los mensajes -->
+        </div>
+        <div class="chat-footer">
+            <input type="text" name="chatMessage" id="chatMessage" placeholder="Escribe tu mensaje..." />
+            <button id="sendMessage">Enviar</button>
+        </div>
+    </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+<link rel="stylesheet" href="{{ url_for('static',filename='css/social/chats/contacto.css') }}">
+
+<script>
+    // Enviar mensaje al presionar el botón "Enviar"
+    document.getElementById("sendMessage").addEventListener("click", function() {
+        let message = document.getElementById("chatMessage").value;
+        if (message) {
+            sendMessageToServer(message);
+            updateChat(message, 'user');  // Añadimos el mensaje del usuario al chat
+            document.getElementById("chatMessage").value = '';  // Limpiamos el campo de texto
+        }
+    });
+
+    // Enviar mensaje al presionar Enter
+    document.getElementById('chatMessage').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();  // Prevenir el salto de línea en el input
+            document.getElementById('sendMessage').click();  // Simula el clic en el botón Enviar
+        }
+    });
+
+    function sendMessageToServer(message) {
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/send_message/", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+                updateChat(response.reply, 'admin');  // Añadimos la respuesta del admin al chat
+            }
+        };
+        xhr.send(JSON.stringify({ message: message, userId: "1234" }));
+    }
+
+    function updateChat(message, sender) {
+        let chatBody = document.getElementById("chatBody");
+        let newMessage = document.createElement("div");
+        newMessage.innerText = message;
+
+        if (sender === 'user') {
+            newMessage.classList.add('user-message');  // Aplica la clase para el usuario
+        } else {
+            newMessage.classList.add('admin-message');  // Aplica la clase para el administrador
+        }
+
+        chatBody.appendChild(newMessage);
+        chatBody.scrollTop = chatBody.scrollHeight;  // Para que siempre esté al final del chat
+    }
+
+    // Para abrir y cerrar el chat
+    document.getElementById("closeChat").addEventListener("click", function() {
+        document.getElementById("chatWidget").style.display = "none";
+    });
+
+    document.getElementById("openChat").addEventListener("click", function() {
+        document.getElementById("chatWidget").style.display = "block";
+    });
+</script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

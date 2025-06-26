@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Estilos generales para el modal */
 #pdfModal {
     display: none; /* Inicialmente oculto */
@@ -69,3 +70,76 @@
         height: 80vh;  /* Ajustar la altura en móviles */
     }
 }
+=======
+/* Estilos generales para el modal */
+#pdfModal {
+    display: none; /* Inicialmente oculto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    z-index: 1050; /* Asegurarse de que esté por encima de otros elementos */
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#pdfModal .modal-dialog {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+#pdfModal .modal-content {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#pdfModal .modal-body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#pdfViewer {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Estilos de botón para cerrar el modal */
+.btn-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1060;
+    background: transparent;
+    border: none;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Media queries para dispositivos móviles */
+@media (max-width: 768px) {
+    #pdfModal .modal-body {
+        padding: 10px;
+    }
+    #pdfViewer {
+        height: 80vh;  /* Ajustar la altura en móviles */
+    }
+}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

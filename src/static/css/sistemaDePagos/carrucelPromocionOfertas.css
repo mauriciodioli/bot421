@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .carousel-item.carrucelPromociones {
     display: block;
     text-align: center;
@@ -86,3 +87,93 @@
     box-shadow: 0 10px 26px #d80085;
     border-radius: 1rem;
 }
+=======
+.carousel-item.carrucelPromociones {
+    display: block;
+    text-align: center;
+    flex: 0 0 90%; /* Show one card fully and 5% of the adjacent cards */
+    margin: 0 5%;
+}
+
+.carousel-inner.carrucelPromociones {
+    display: flex;
+}
+
+.carousel-indicators {
+    bottom: -30px;
+}
+
+.long-button {
+    width: 100%;
+}
+
+.mensaje h5 {
+    margin-bottom: 20px;
+}
+
+.card.carrucelPromociones {
+    width: 18rem;
+    border: 1px solid #f3f3f3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.card-header.carrucelPromociones {
+    background-color: #424041;
+    color: #ffdb38;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.card-body.carrucelPromociones {
+    background-color: #ffffff;
+}
+
+.card-title.carrucelPromociones {
+    font-size: 1.5rem;
+    color: #000000;
+}
+
+.card-text.carrucelPromociones {
+    font-size: 1.2rem;
+    color: #000000;
+}
+
+.card-text.mensaje {
+    background-color: #f11595;
+    color: #5e3e91;
+    font-weight: bold;
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+    display: inline-block;
+}
+
+.card-text.ahorro {
+    background-color: #c98200;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0.5rem;
+    border-radius: 1.5rem;
+    display: inline-block;
+}
+
+.card.carrucelPromociones .btn-success {
+    background-color: #c98200;
+    border-color: #976303;
+    font-size: 1.2rem;
+    border-radius: 1.5rem;
+}
+
+.card.carrucelPromociones .btn-success:hover {
+    background-color: #fdcc6f;
+    border-color: #976303;
+}
+
+.shadow-tarj {
+    background-color: #ffffff;
+    box-shadow: 0 10px 26px #d80085;
+    border-radius: 1rem;
+}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

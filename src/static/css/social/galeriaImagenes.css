@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 
@@ -887,3 +888,894 @@ body {
 }
 
 
+=======
+
+
+
+
+
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #131313;
+    margin: 0;
+    padding: 0;
+}
+
+.container_galeria_imagenes {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.post-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.post-options {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    margin-top: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.option .icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+}
+
+/* General modal styles */
+.modal_creaPublicacion {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Black with opacity */
+}
+
+/* Modal content */
+.modal-content_creaPublicacion {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered horizontally */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Default width */
+    max-width: 600px; /* Maximum width */
+    border-radius: 8px; /* Rounded corners */
+    position: relative;
+}
+
+/* Close button */
+.close_creaPublicacion {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Close button on hover */
+.close_creaPublicacion:hover,
+.close_creaPublicacion:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 600px) {
+    .modal-content_creaPublicacion {
+        width: 95%; /* Full width on small screens */
+        margin-top: 10%; /* Adjust margin */
+    }
+}
+
+/* Style for the media icon button */
+.media-icon-button_creaPublicacion {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.media-icon-button_creaPublicacion img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.media-icon-button_creaPublicacion span {
+    font-size: 14px;
+}
+
+/* Style for the media container */
+.media-container_creaPublicacion {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust the size as needed */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Style for images and videos inside the container */
+.media-container_creaPublicacion img,
+.media-container_creaPublicacion video {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.cropper-container {
+    max-width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+.cropper-container img {
+    width: 100%;
+    height: auto;
+}
+
+/* Modal styles for media */
+.image-modal_creaPublicacion {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4); /* Black with opacity */
+}
+
+/* Modal content */
+.image-modal-content_creaPublicacion {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered horizontally */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Default width */
+    max-width: 600px; /* Maximum width */
+    border-radius: 8px; /* Rounded corners */
+    position: relative;
+}
+
+/* Close button */
+.close-image_creaPublicacion {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* Close button on hover */
+.close-image_creaPublicacion:hover,
+.close-image_creaPublicacion:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Media inside the modal */
+#modalImage_creaPublicacion {
+    width: 100%;
+    height: auto;
+    max-height: 80vh; /* Limit height for better view */
+    object-fit: contain; /* Maintain aspect ratio */
+}
+
+.thumbnail_creaPublicacion {
+    max-width: 100px;
+    max-height: 100px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+.icon-small {
+    width: 24px;
+    height: 24px;
+}
+/* Styles for the input group */
+.input-group_creaPublicacion {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust the gap as needed */
+}
+
+.media-icon-button_creaPublicacion {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.media-icon-button_creaPublicacion img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.emoticon-button_creaPublicacion {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+}
+
+
+.modal_creaPublicacion .text-black {
+    color: #000;
+  }
+
+  .black-text {
+    color: rgb(255, 255, 255);
+  }
+
+
+
+
+  .card-media-grid-publicacion-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .card-media-grid-publicacion-admin img,
+  .card-media-grid-publicacion-admin video {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+
+
+
+  .card-publicacion-admin {
+    width: 18rem; /* Tamaño fijo para las tarjetas */
+    overflow: hidden; /* Asegura que el contenido no se desborde fuera de la tarjeta */
+    border: 1px solid rgb(49, 49, 49); /* Borde dorado para la tarjeta */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: black; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    margin-bottom: 1rem; /* Espacio inferior entre tarjetas */
+  }
+  
+  .card-body {
+   /* color: gold; */ /* Texto dorado */
+    padding: 15px;
+  }
+  
+  .card-title {
+    margin-bottom: 10px; /* Espacio debajo del título */   
+    font-size: 1.25rem; /* Tamaño de fuente más grande */
+    color: #fff; /* Título blanco */
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-date {
+    margin-bottom: 10px; /* Espacio debajo de la fecha */
+    font-size: 0.9em; /* Tamaño del texto de la fecha */
+    color: #02ccff; /* Color del texto de la fecha */
+  }
+  
+  .card-text {
+    color: #fff; /* Texto blanco */
+    margin-bottom: 15px; /* Espacio debajo del texto de la publicación */
+    font-size: 1em; /* Tamaño del texto de la publicación */
+  }
+  
+  .card-media-grid-publicacion-admin {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  
+  .card-media-grid-publicacion-admin img,
+  .card-media-grid-publicacion-admin video {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
+    object-fit: cover;
+  }
+  
+  .btn-modificar-eliminar {
+    display: flex;
+    width: 100%;
+    border: 2px solid gold;
+    border-radius: 5px;
+  }
+  
+  .btn-modificar-eliminar button {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    color: gold;
+    background-color: black;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .btn-modificar-eliminar button:hover {
+    background-color: darkgray;
+  }
+  
+  .btn-modificar-eliminar .btn-modificar {
+    border-right: 2px solid gold;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .btn-modificar-eliminar .btn-eliminar {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+
+
+
+
+
+
+
+
+
+ /* Estilo para el fondo del modal */
+.modal-image-publicacion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Estilo para el contenido del modal */
+.modal-content-selected-emoticon {
+  background-color: rgb(0, 0, 0);
+  border-radius: 5px;
+  position: relative;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 90%; /* Limita el ancho máximo a un 90% de la pantalla */
+  max-height: 90%; /* Limita la altura máxima a un 90% de la pantalla */
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Grilla para las imágenes dentro del modal */
+.modal-image-grid {
+  display: flex;
+  flex-direction: row; /* Alinea las imágenes horizontalmente */
+  overflow-x: auto; /* Permite el desplazamiento horizontal */
+  scroll-snap-type: x mandatory; /* Ajuste para un deslizamiento más suave */
+  gap: 10px; /* Espacio entre imágenes */
+  padding: 10px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Estilo para las imágenes dentro del modal */
+.modal-image-grid img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ajusta la imagen al tamaño del contenedor sin distorsión */
+  scroll-snap-align: start; /* Alinea las imágenes al borde al deslizar */
+  border-radius: 5px;
+}
+
+/* Ajuste adicional para evitar espacio innecesario */
+.modal-content-selected-emoticon img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ajuste de la imagen sin distorsión */
+}
+
+/* Para dispositivos móviles */
+@media (max-width: 768px) {
+  .modal-content-selected-emoticon {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .modal-image-grid {
+    padding: 0;
+    gap: 5px;
+  }
+
+  .modal-image-grid img {
+    max-width: 95%;
+    max-height: 95%;
+  }
+}
+
+
+/* Estilo para el botón de cerrar */
+.modal-content-selected-emoticon .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: hsl(0, 0%, 100%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1002; /* Asegura que el botón esté por encima del contenido */
+  }
+  
+  /* Efecto hover para el botón de cerrar */
+  .modal-conten-selected-emoticont .close:hover {
+    color: #f00; /* Cambia el color al pasar el cursor */
+  }
+
+
+
+
+
+
+  .card-publicacion-admin {
+    border: 5px solid transparent; /* Borde transparente por defecto */
+    transition: border-color 0.3s;
+  }
+  
+  /* Estilos para los bordes de las tarjetas */
+.card-publicacion-admin.estado-activo {
+    border: 5px solid green;
+  }
+  
+  .card-publicacion-admin.estado-inactivo {
+    border: 5px solid red;
+  }
+  
+  .card-publicacion-admin.estado-pendiente {
+    border: 5px solid gold;
+  }
+  
+  .card-text-estado.estado-activo {
+    color: green;
+  }
+  
+  .card-text-estado.estado-inactivo {
+    color: red;
+  }
+  
+  .card-text-estado.estado-pendiente {
+    color: gold;
+  }
+
+
+
+
+
+
+  .creacion-publicacion-grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+}
+
+.media-item {
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.media-item img, .media-item video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+  
+
+/* Contenedor de la grilla del modal */
+.modal-muestra-crea-publicacion {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Imágenes dentro del modal */
+.modal-image-grid-muestra-crea-publicacion img.imagen-muestra-crea-publicacion {
+  width: 100px;  /* Ancho fijo para todas las imágenes */
+  height: 100px; /* Alto fijo para todas las imágenes */
+  object-fit: cover; /* Mantener la proporción de la imagen y recortar si es necesario */
+  border-radius: 5px; /* Bordes redondeados, opcional */
+}
+
+/* Asegurarse de que las imágenes no se agranden más allá de su tamaño original */
+.modal-image-grid-muestra-crea-publicacion img.imagen-muestra-crea-publicacion {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+
+
+
+
+/* Estilo general del modal para centrar contenido */
+.modal-muestra-crea-publicacion {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con transparencia */
+  z-index: 1000;
+}
+
+.modal-content-muestra-crea-publicacion {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow-y: auto;
+}
+
+/* Botón de cierre del modal */
+.close-muestra-crea-publicacion {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+.image-container-modal-publicacion-crear-publicacion {
+  position: relative; /* Asegúrate de que el contenedor tenga posición relativa */
+  display: inline-block; /* Asegúrate de que las imágenes se comporten como elementos en línea */
+  margin: 10px; /* Opcional: agrega margen para separar las imágenes */
+}
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.close-button-media_imagenes:hover {
+  background-color: #d32f2f;
+}
+
+
+/*AQUI SE ESTABLECEN LOS ESTILOS DE LA GALERIA DE IMAGENES DENTRO DEL ACORDEON*/
+
+.card-grid-publicaciones {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columnas en pantallas grandes */
+  gap: 15px; /* Espacio entre las tarjetas */
+}
+
+/* Adaptar el diseño para pantallas más pequeñas */
+@media (max-width: 1200px) {
+  .card-grid-publicaciones {
+      grid-template-columns: repeat(3, 1fr); /* 3 columnas para pantallas medianas */
+  }
+}
+
+@media (max-width: 900px) {
+  .card-grid-publicaciones {
+      grid-template-columns: repeat(2, 1fr); /* 2 columnas para pantallas pequeñas */
+  }
+}
+
+@media (max-width: 600px) {
+  .card-grid-publicaciones {
+      grid-template-columns: 1fr; /* 1 columna para pantallas muy pequeñas */
+  }
+}
+
+
+
+
+.media-container_creaPublicacion {
+  position: relative; /* Para que el botón de cerrar se posicione correctamente */
+  display: inline-block;
+  margin-top: 10px;
+}
+
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.close-button-media_imagenes:hover {
+  background-color: #d32f2f;
+}
+
+.media-element-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.media-preview-image, .media-preview-video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.close-button-media_imagenes {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 10; /* Asegura que el botón esté sobre la imagen */
+}
+
+.close-button-media_imagenes:hover {
+  background: darkred;
+}
+
+.media-wrapper_creaPublicacion {
+  display: inline-block; /* Asegura que los elementos se alineen en bloque, no en línea */
+  position: relative; /* Necesario para posicionar el botón de cierre */
+  margin: 5px; /* Agrega un margen para separar los elementos */
+  vertical-align: top; /* Alinea los elementos en la parte superior */
+}
+
+.thumbnail_creaPublicacion {
+  width: 100px; /* Ajusta el tamaño según tus necesidades */
+  height: 100px;
+  object-fit: cover; /* Asegura que la imagen o video se ajuste bien */
+}
+
+.close-button_creaPublicacion {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px; /* Tamaño del botón */
+  height: 24px; /* Tamaño del botón */
+  text-align: center;
+  line-height: 24px; /* Alineación vertical del texto */
+  font-size: 16px; /* Tamaño del texto */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+
+
+
+.image-wrapper img {
+  max-width: 100%;  /* Ajusta la imagen al ancho del contenedor */
+  max-height: 300px; /* Restringe la altura máxima */
+  object-fit: contain; /* Asegura que la imagen no se recorte */
+  border-radius: 5px; /* Opcional: Bordes redondeados */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+}
+.media-container_creaPublicacion {
+  max-width: 100%; /* Ajusta el tamaño del contenedor */
+  max-height: 400px; /* Altura máxima permitida */
+  overflow-y: auto; /* Habilita el desplazamiento si es necesario */
+  display: flex; /* Opcional: para alinear las imágenes */
+  flex-wrap: wrap; /* Opcional: permite múltiples filas */
+  gap: 10px; /* Espaciado entre elementos */
+}
+
+
+.media-container_creaPublicacion {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+}
+
+.media-item {
+  position: relative;
+  width: 100px; /* Ancho fijo */
+  height: 100px; /* Altura fija */
+  overflow: hidden; /* Oculta el contenido que se salga del contenedor */
+  border-radius: 5px; /* Opcional: redondear bordes */
+}
+
+.media-item img,
+.media-item video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centrar la imagen */
+  width: auto;
+  height: 100%; /* Llenar el alto de la celda */
+}
+
+
+
+#splashNotificaciones {
+  display: none; /* Oculto inicialmente */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro semitransparente */
+  z-index: 1050;
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Alineación vertical en el centro */
+  padding-top: 20%; /* Ajusta este valor para mover el contenido hacia abajo */
+}
+
+.splash-contenido {
+  text-align: center;
+  color: rgb(23, 255, 42);
+  font-family: Arial, sans-serif;
+}
+
+
+/* Spinner animado */
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-top: 5px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite; /* Animación continua */
+  margin: 0 auto 20px auto; /* Centrar y dar espacio abajo */
+}
+
+@keyframes spin {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
+}
+
+/* Animación del texto */
+.splash-texto {
+  font-size: 20px;
+  font-weight: bold;
+  animation: fadeInOut 2s ease-in-out infinite;
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+      opacity: 1;
+  }
+  50% {
+      opacity: 0.5;
+  }
+}
+
+
+/* Cambia el tamaño del spinner y texto para dispositivos pequeños */
+@media (max-width: 768px) {
+  .spinner {
+      width: 30px; /* Spinner más pequeño */
+      height: 30px;
+      border-width: 3px; /* Bordes más delgados */
+  }
+  .splash-texto {
+      font-size: 16px; /* Texto más pequeño */
+  }
+}
+
+@media (max-width: 480px) {
+  .spinner {
+      width: 20px;
+      height: 20px;
+      border-width: 2px;
+  }
+  .splash-texto {
+      font-size: 14px;
+  }
+}
+
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout'%}
 {% extends 'layouts/layout.html' %}
 {% endif %}
@@ -167,3 +168,174 @@
     
 </script>
 {% endblock %}
+=======
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<div class="producto-detalle">
+        
+            
+
+            <div class="service-item">
+                <h3 style="color: yellow;">Bot Automático</h3>
+                <p>Este bot automatizado opera tanto en mercados locales como internacionales, con un retorno mensual del 2%. Ideal para aquellos que buscan beneficios mensuales constantes con un total de 24% + capital.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/bot-automatico/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/bot-automatico/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/bot-automatico/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/bot-automatico/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/bot-automatico/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+            </div>
+            <hr class="separator">
+
+            <div class="service-item">
+                <h3 style="color: yellow;">Sistema de Operaciones</h3>
+                <p>Un sistema que permite a los usuarios operar de manera semiautomática, facilitando la toma de decisiones informadas con un máximo retorno mensual del 2%. Obtén un total de 240% + capital anual.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/sistema-operaciones/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/sistema-operaciones/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/sistema-operaciones/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/sistema-operaciones/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/sistema-operaciones/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+            </div>
+            <hr class="separator">
+
+            <div class="service-item">
+                <h3 style="color: yellow;">Cursos</h3>
+                <p>Ofrecemos una variedad de cursos online sobre trading y otros temas relevantes, con materiales de estudio y un costo mensual accesible. Ideal para mejorar tus habilidades y conocimientos.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/index-cursos/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/index-cursos/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/index-cursos/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/index-cursos/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/index-cursos/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+            </div>
+            <hr class="separator">
+
+            
+            <div class="service-item">
+                <h3 style="color: yellow;">Motor de Operaciones</h3>
+                <p>Implementa estrategias propias con un retorno mensual del 2.5%. Este servicio permite obtener beneficios anuales significativos, con un retorno de capital garantizado y un total de 300% + capital.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/motor-de-operaciones/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/motor-de-operaciones/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/motor-de-operaciones/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/motor-de-operaciones/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/motor-de-operaciones/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+             </div>
+            <hr class="separator">
+
+            <div class="service-item">
+                <h3 style="color: yellow;">Copy Trading</h3>
+                <p>Permite a los usuarios copiar estrategias de trading exitosas y subir sus propias estrategias, con un máximo retorno mensual del 2% y un total de 240% + capital anual.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/copy-trader/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/copy-trader/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/copy-trader/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/copy-trader/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/copy-trader/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+            </div>
+            <hr class="separator">
+
+            <div class="service-item">
+                <h3 style="color: yellow;">Panel de Señales</h3>
+                <p>Proporciona señales diarias para operar, ayudando a los usuarios a identificar oportunidades en el mercado. Aunque no garantiza el retorno de capital, ofrece un total de 240% anual.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/panel-manual/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/panel-manual/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/panel-manual/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/panel-manual/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/panel-manual/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+            </div>
+            <hr class="separator">
+
+            <div class="service-item">
+                <h3 style="color: yellow;">Sistema de Fichas</h3>
+                <p>Comparte tus fichas y sigue tus inversiones con un retorno del 0.65% por ficha. Este sistema facilita el seguimiento y la optimización de tus activos.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/fichas-tokens/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/fichas-tokens/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/fichas-tokens/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/fichas-tokens/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/fichas-tokens/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+            </div>
+            <hr class="separator">
+
+            
+            <div class="service-item">
+                <h3 style="color: yellow;">CF Fintech</h3>
+                <p>Una oportunidad para compartir tu negocio y recibir beneficios mensuales, con un costo inicial y un porcentaje de capital. Ideal para emprendedores en el sector financiero.</p>
+                {% if layout == 'layout' %}
+                <a href="/detalle/index-fintech/layout" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_fichas' %}
+                <a href="/detalle/index-fintech/layout_fichas" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layoutConexBroker' %}
+                <a href="/detalle/index-fintech/layoutConexBroker" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% elif layout == 'layout_signal' %}
+                <a href="/detalle/index-fintech/layout_signal" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% else %}
+                <a href="/detalle/index-fintech/layout_detalle_productos" class="btn btn-success" style="margin-top: 10px;">Ver más</a>
+                {% endif %}
+             </div>
+       
+  
+
+
+</div>
+{% include 'layouts/layout_footer.html' %}
+<script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script>
+<script>
+    
+</script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

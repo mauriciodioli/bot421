@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .admin-chat-dashboard {
     width: 30%;
     float: left;
@@ -33,3 +34,40 @@
     width: 80%;
     padding: 10px;
 }
+=======
+.admin-chat-dashboard {
+    width: 30%;
+    float: left;
+    border-right: 1px solid #ccc;
+    padding: 20px;
+}
+
+.chat-threads {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.chat-thread {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.chat-conversation {
+    width: 60%;
+    float: right;
+    padding: 20px;
+}
+
+#conversationMessages {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+#adminReplyMessage {
+    width: 80%;
+    padding: 10px;
+}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

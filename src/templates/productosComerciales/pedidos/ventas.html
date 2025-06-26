@@ -1,3 +1,4 @@
+<<<<<<< HEAD
     {% with messages = get_flashed_messages() %}
 {% if messages %}
 {% for message in messages%}  
@@ -154,3 +155,161 @@
 {% endblock %}
 
   
+=======
+    {% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% if layout == 'layout_administracion' %}
+   {% extends 'layouts/layout_administracion.html' %}    
+{% endif %}
+{% if layout == 'layout' %}
+{% extends 'layouts/layout.html'%}    
+{% endif %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="text-center text-white">Gestión de Pedidos</h2>
+  <table class="table table-dark table-striped table-hover rounded p-3">
+      <thead>
+          <tr>
+              <th>
+                  Fecha de Entrega
+                  <select id="filtroFecha" class="form-control form-control-sm" onchange="filtrarTabla()">
+                      <option value="">Todos</option>
+                      <!-- Opciones generadas dinámicamente -->
+                  </select>
+              </th>
+              <th>
+                  Nombre
+                  <select id="filtroNombre" class="form-control form-control-sm" onchange="filtrarTabla()">
+                      <option value="">Todos</option>
+                      <!-- Opciones generadas dinámicamente -->
+                  </select>
+              </th>
+              <th>
+                  Dirección
+                  <select id="filtroDireccion" class="form-control form-control-sm" onchange="filtrarTabla()">
+                      <option value="">Todos</option>
+                      <!-- Opciones generadas dinámicamente -->
+                  </select>
+              </th>
+             
+              <th>
+                  Actual
+                  <select id="filtroEstado" class="form-control form-control-sm" onchange="filtrarTabla()">
+                      <option value="">Todos</option>
+                      <option value="pendiente">Pendiente</option>
+                      <option value="entregado">Entregado</option>
+                      <option value="cancelado">Cancelado</option>
+                  </select>
+              </th>
+              
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+          </tr>
+      </thead>
+      <tbody id="tablaPedidosEntrega">
+          {% for pedido in data %}
+          <tr>
+              <td>{{ pedido.fecha_entrega.strftime('%d/%m/%Y') if pedido.fecha_entrega else '' }}</td>
+              <td>{{ pedido.nombreCliente }}</td>
+              <td>{{ pedido.lugar_entrega }}</td>              
+              <td>{{ pedido.estado }}</td>
+              <td style="color: rgb(232, 232, 95); font-weight: bold;"> $ {{ pedido.precio_venta }}</td>
+              <td>
+                <input type="checkbox" class="estado-checkbox" onchange="actualizarEstado({{ pedido.id }}, this)" 
+                       {{ 'checked' if pedido.estado == 'entregado' else '' }}>
+              </td>
+              <td>
+               
+      
+                  <button class="btn btn-primary btn-sm" onclick="mostrarDetalles({{ pedido.id }})">
+                      Detalle
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick="datosDelCliente({{ pedido.id }})">
+                    Cliente
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick="comentarDescripcionalCliente({{ pedido.cluster_id }})">
+                    Comentar
+                  </button>                             
+                  <button class="btn btn-danger btn-sm" onclick="cancelarPedido({{ pedido.id }})">
+                      Cancelar
+                  </button>
+                 
+              </td>
+          </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+</div>
+
+<!-- Modal para mostrar detalles -->
+<div class="modal fade" id="modalDetallePedido" tabindex="-1" aria-labelledby="modalDetallePedidoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content bg-dark text-white rounded">
+          <div class="modal-header border-bottom border-secondary">
+              <h5 class="modal-title" id="modalDetallePedidoLabel">Detalle del Pedido</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <table class="table table-dark table-striped table-hover rounded">
+                  <thead>
+                      <tr>
+                          <th>Nombre</th>
+                          <th>Cantidad</th>                         
+                          <th>Precio</th>
+                          <th>Sub Total</th>
+                      </tr>
+                  </thead>
+                  <tbody id="detallePedidoBody">
+                      <!-- Se llenará dinámicamente -->
+                  </tbody>
+              </table>
+          </div>
+          <!-- Aquí se mostrarán el total y la consulta -->
+          <div id="detallePedidoExtras"></div>
+          <div class="modal-footer border-top border-secondary">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal" tabindex="-1" id="modalComentario">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" style="color: black;">Comentar Descripción</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <textarea id="comentarioText" class="form-control" rows="4" placeholder="Escribe tu comentario..."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" onclick="enviarComentario()">Enviar Comentario</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% include 'layouts/layout_footer.html' %} 
+
+{% include 'layouts/layout_carrito.html' %}  
+<link rel="stylesheet" href="{{ url_for('static', filename='css/productos/ventasProductosComerciales.css') }}"> 
+<script src="{{ url_for('static', filename='js/productosComerciales/ventas/ventas.js') }}"></script>  
+{% endblock %}
+
+  
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

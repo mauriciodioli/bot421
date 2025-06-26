@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* mostrarImagen.css */
 
 .image-grid {
@@ -85,4 +86,93 @@
   .home-muestra-publicaciones-centrales-btn-eliminar {
     /* Estilos para el botón de eliminar */
   }
+=======
+/* mostrarImagen.css */
+
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+.close-button-mostrar {
+
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #ddd; /* Gris claro */
+    color: black;
+    border: none;
+    width: 30px; /* Ajusta el ancho del botón */
+    height: 30px; /* Ajusta la altura del botón */
+    border-radius: 50%; /* Hace el botón redondo */
+    padding: 8px;
+    cursor: pointer;
+    z-index: 1; /* Asegura que el botón esté adelante de la imagen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.home-muestra-publicaciones-centrales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Espacio entre elementos */
+    justify-content: space-between;
+  }
+  .home-muestra-publicaciones-centrales-imagen {
+    width: 150px; /* Tamaño fijo */
+    height: 150px; /* Tamaño fijo */
+    object-fit: cover; /* Mantiene la proporción de la imagen */
+  }
+  
+  
+  .home-muestra-publicaciones-centrales-modal {
+    /* Estilos para el modal */
+  }
+  
+  .home-muestra-publicaciones-centrales-modal-content {
+    /* Estilos para el contenido del modal */
+  }
+  
+  .home-muestra-publicaciones-centrales-modal-image-grid {
+    /* Estilos para la grilla de imágenes en el modal */
+  }
+  
+  .home-muestra-publicaciones-centrales-close {
+    /* Estilos para el botón de cerrar el modal */
+  }
+  
+  .home-muestra-publicaciones-centrales-card {
+    /* Estilos para las tarjetas de publicación */
+  }
+  
+  .home-muestra-publicaciones-centrales-card-body {
+    /* Estilos para el cuerpo de la tarjeta */
+  }
+  
+  .home-muestra-publicaciones-centrales-card-title {
+    /* Estilos para el título de la tarjeta */
+  }
+  
+  .home-muestra-publicaciones-centrales-card-text-estado {
+    /* Estilos para el texto del estado de la tarjeta */
+  }
+  
+  .home-muestra-publicaciones-centrales-card-date {
+    /* Estilos para la fecha en la tarjeta */
+  }
+  
+  .home-muestra-publicaciones-centrales-card-media-grid {
+    /* Estilos para la grilla de medios en la tarjeta */
+  }
+  
+  .home-muestra-publicaciones-centrales-btn-modificar {
+    /* Estilos para el botón de modificar */
+  }
+  
+  .home-muestra-publicaciones-centrales-btn-eliminar {
+    /* Estilos para el botón de eliminar */
+  }
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
   

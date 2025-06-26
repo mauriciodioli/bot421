@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  /* Custom CSS to handle the positioning of submenus */
  .dropdown-submenu {
   position: relative;
@@ -26,4 +27,34 @@
 
 .dropdown-submenu .dropdown-menu.show {
   display: block;
+=======
+ /* Custom CSS to handle the positioning of submenus */
+ .dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  display: none;
+  position: static; /* Change to static to align with the main dropdown */
+  left: auto;
+  top: auto;
+}
+
+.dropdown-submenu:hover .dropdown-menu {
+  display: block;
+}
+
+/* Ensure the dropdown items are not hidden behind the parent dropdown */
+.dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+
+/* Custom JavaScript for handling click instead of hover */
+.dropdown-submenu .dropdown-toggle::after {
+  transform: rotate(-90deg);
+}
+
+.dropdown-submenu .dropdown-menu.show {
+  display: block;
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 }

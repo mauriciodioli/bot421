@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout'%}
     {% extends 'layouts/layout.html' %}
 {% endif %}
@@ -83,3 +84,90 @@
 
 {% include 'layouts/layout_footer.html' %}
 {% endblock%}
+=======
+{% if layout == 'layout'%}
+    {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_detalle_productos' %}
+   {% extends 'layouts/layout_detalle_productos.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+   {% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout_dpi' %}
+   {% extends 'layouts/layout_dpi.html' %}    
+{% endif %}
+{% block content %}
+ <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        input {
+            width: 300px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        iframe {
+            margin-top: 20px;
+        }
+    </style>
+<div class="jumbotron">
+    <h1>Reproductor de YouTube</h1>
+    <p>Introduce un enlace de YouTube para reproducir el video:</p>
+    <input type="text" id="youtubeLink" placeholder="https://www.youtube.com/watch?v=ejemplo">
+    <button onclick="loadVideo()">Reproducir Video</button>
+    <div id="videoContainer">
+        <!-- Aquí se cargará el iframe del video -->
+    </div>
+</div>
+
+<script>
+    function loadVideo() {
+        const linkInput = document.getElementById('youtubeLink').value;
+        const videoContainer = document.getElementById('videoContainer');
+
+        // Validar y extraer el ID del video
+        const videoIdMatch = linkInput.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+        if (videoIdMatch && videoIdMatch[1]) {
+            const videoId = videoIdMatch[1];
+            // Crear el iframe para el video
+            videoContainer.innerHTML = `
+                <iframe 
+                    width="560" 
+                    height="315" 
+                    src="https://www.youtube.com/embed/${videoId}" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>
+            `;
+        } else {
+            alert("Por favor, introduce un enlace de YouTube válido.");
+        }
+    }
+</script>
+
+{% include 'layouts/layout_footer.html' %}
+{% endblock%}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "version": "0.2.0",
     "configurations": [
@@ -26,3 +27,32 @@
         }
     ]
 }
+=======
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_DEBUG": "1",
+                "FLASK_ENV": "development",
+                "FLASK_RUN_HOST": "0.0.0.0",
+                "FLASK_RUN_PORT": "5001"
+            },
+            "args": [
+                "run"
+            ],
+            "jinja": true,
+            "justMyCode": true,
+            //"pythonPath": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\venv\\Scripts\\python.exe",
+            //"cwd": "C:\\Users\\mDioli\\Documents\\ITCOR\\bot421\\src"
+            "pythonPath": "/usr/local/bin/python",           
+            "cwd": "/workspaces/bot421/src"
+        }
+    ]
+}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

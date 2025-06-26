@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .cart-container {
     max-width: 800px;
     margin: 20px auto;
@@ -240,3 +241,247 @@ button {
 }
 
 
+=======
+.cart-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+}
+
+
+
+
+
+
+
+
+
+.cart-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea todo el contenido a la derecha */
+    width: 100%;
+}
+
+.summary-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* Alinea el subtotal y el total a la derecha */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
+
+.buttons-container {
+    display: flex;
+    gap: 10px; /* Espacio entre los botones */
+    margin-top: 20px;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho disponible */
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+
+
+
+
+
+
+/* Estilo de la tabla y los elementos */
+.table-container {
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    padding: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.consulta-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.consulta-table td {
+    padding: 10px;
+    white-space: nowrap;
+    color: black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.price {
+    color: green;
+    font-weight: bold;
+}
+
+.product-image {
+    width: 50px;
+    height: auto;
+    border-radius: 5px;
+}
+
+.remove-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    display: none; /* Por defecto, ocultar el botón */
+}
+
+.remove-button:hover {
+    background-color: #ff1a1a;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+@media (max-width: 600px) {
+    .table-container {
+        overflow-x: scroll;
+    }
+
+    .consulta-table {
+        min-width: 700px;
+    }
+
+    .consulta-table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .remove-button {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilo para el fondo oscuro del modal */
+.modal {
+    display: none; /* Inicialmente oculto */
+    position: fixed;
+    z-index: 1; /* Asegura que el modal esté encima del contenido */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Permite scroll si el contenido es grande */
+    background-color: rgba(0, 0, 0, 0.7); /* Fondo oscuro con transparencia */
+    color: white; /* Asegúrate de que el texto sea blanco */
+    padding: 20px;
+}
+
+/* Estilo para el contenido del modal */
+.modal-content {
+    background-color: #333; /* Fondo oscuro para el contenido */
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%; /* O ajusta el tamaño como desees */
+}
+
+/* Estilo para el botón de cerrar */
+.close {
+    color: white;
+    font-size: 30px;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #f1f1f1;
+    text-decoration: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px; /* Espacio entre el input y el botón */
+}
+
+#consulta_publicaciones_data {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+    vertical-align: middle; /* Asegura que el input esté alineado con el botón */
+    line-height: 20px; /* Ajuste para igualar la altura de la lupa con el input */
+}
+
+#search_button {
+    background-color: #4CAF50; /* Color de fondo */
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px; /* Igualar la altura del botón con el input */
+}
+
+#search_button i {
+    font-size: 16px;
+}
+
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

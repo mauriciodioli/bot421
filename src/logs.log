@@ -275,6 +275,7 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 None
@@ -352,6 +353,8 @@ Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 
 [SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
 [parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 22, 20, 52, 46, 31798), 'ip': '5.90.224.61', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '12345', 'latitude': '40.8522', 'longitude': '14.2681', 'language': 'es'}]
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
+=======
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
@@ -362,6 +365,7 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 None
@@ -520,6 +524,8 @@ Error registrando acceso: (pymysql.err.OperationalError) (1054, "Unknown column 
 [SQL: INSERT INTO logs (user_id, `userCuenta`, `accountCuenta`, fecha_log, ip, funcion, archivo, linea, error, `codigoPostal`, latitude, longitude, language) VALUES (%(user_id)s, %(userCuenta)s, %(accountCuenta)s, %(fecha_log)s, %(ip)s, %(funcion)s, %(archivo)s, %(linea)s, %(error)s, %(codigoPostal)s, %(latitude)s, %(longitude)s, %(language)s)]
 [parameters: {'user_id': 28, 'userCuenta': 'usuario@example.com', 'accountCuenta': 'usuario@example.com', 'fecha_log': datetime.datetime(2025, 6, 23, 3, 5, 11, 467741), 'ip': '5.91.157.10', 'funcion': 'log_acceso', 'archivo': 'logRegister.py', 'linea': 608, 'error': 'No hubo error', 'codigoPostal': '4139', 'latitude': '41.8919', 'longitude': '12.5113', 'language': 'es'}]
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
+=======
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
@@ -535,8 +541,12 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 Error registrando acceso: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '23.22.109.80' ([Errno 111] Connection refused)")
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
+=======
+demo@gmail.com
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
@@ -552,16 +562,26 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
+=======
+demo@gmail.com
+demo@gmail.com
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
+=======
+demo@gmail.com
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 Exception on / [GET]
 Traceback (most recent call last):
   File "/usr/local/lib/python3.9/site-packages/pymysql/connections.py", line 613, in connect
@@ -1074,6 +1094,8 @@ Traceback (most recent call last):
     raise exc
 sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '127.0.0.1' ([Errno 111] Connection refused)")
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
+=======
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
@@ -1084,8 +1106,11 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 Error registrando acceso: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on '127.0.0.1' ([Errno 111] Connection refused)")
 (Background on this error at: https://sqlalche.me/e/14/e3q8)
+=======
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
@@ -1096,38 +1121,59 @@ Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 None
+=======
+demo@gmail.com
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+mauriciodioli@gmail.com
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 None
+=======
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 None
+=======
+mauriciodioli@gmail.com
+demo@gmail.com
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 None
+=======
+demo@gmail.com
+demo@gmail.com
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 Debugging message: Configuración de logger completada.
 Este es un mensaje de info.
 Este es un mensaje de advertencia.
 Este es un mensaje de error.
 Este es un mensaje crítico.
+<<<<<<< HEAD
 ____INTENTO ENTRAR____
 127.0.0.1
 None
@@ -1136,3 +1182,154 @@ ____INTENTO ENTRAR____
 127.0.0.1
 None
 emilianooliveto02@gmail.com
+=======
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+demo@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+demo@gmail.com
+demo@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+demo@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+demo@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+demo@gmail.com
+demo@gmail.com
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+demo@gmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+demo@gmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.
+LEE EL SHEET POR LLAMADA DE FUNCION
+demo@gmail.com
+LEE EL SHEET POR LLAMADA DE FUNCION
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

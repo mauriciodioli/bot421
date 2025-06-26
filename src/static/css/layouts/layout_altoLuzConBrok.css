@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .fixed-bottom-layout {
     position: fixed;
     top: 0; /* Cambiado de bottom a top */
@@ -68,3 +69,75 @@
         margin: 0 10px; /* Menor espacio entre los botones en pantallas pequeñas */
     }
 }
+=======
+.fixed-bottom-layout {
+    position: fixed;
+    top: 0; /* Cambiado de bottom a top */
+    width: 100%;
+    background-color: #f8f9fa; /* Color de fondo del layout */
+    box-shadow: 0 -2px 10px rgb(25, 255, 4);
+    padding: 0; /* Eliminar padding para que el label quepa */
+    z-index: 1000; /* Para que esté encima de otros elementos */
+    display: block; /* Cambiado de none a block para que sea visible */
+    height: 5px; /* Alto específico para el layout */
+}
+
+/* Estilo para el labelLayout */
+#labelLayout {
+    position: fixed;
+    top: 0; /* Cambiar bottom a top */
+    width: 100%;
+    background-color: #5eff00; /* Fondo */  
+    z-index: 1000;
+    height: px; 
+    display: flex; /* Usar flex para centrar el contenido */
+    align-items: center; /* Centrar verticalmente el contenido */
+    justify-content: center; /* Centrar horizontalmente el contenido */
+}
+
+/* Ajuste del label */
+#labelLayout label {
+    color: #000000; /* Color del texto */
+    font-size: 4px; /* Ajusta el tamaño de la fuente aquí */
+    margin: 0; /* Eliminar margen */
+    white-space: nowrap; /* Evitar que el texto se divida en múltiples líneas */
+}
+
+/* Cuando el layout está oculto */
+#labelLayout.hidden {
+    top: -100px; /* Se desliza hacia arriba cuando está oculto */
+}
+
+/* Ajustar el espaciado de botones */
+#labelLayout .btn {
+    flex: 1; /* Asegura que los botones ocupen el mismo espacio */
+    max-width: 10px; /* Tamaño máximo para los botones, ajustable */
+    display: flex;
+    justify-content: center; /* Centra el contenido del botón */
+    background-color: #fff; /* Fondo blanco */
+    color: #000; /* Texto negro */
+    border: 1px solid #fff; /* Bordes blancos */
+    align-items: center; /* Centra verticalmente el contenido */
+}
+
+/* Espaciado para pantallas grandes */
+@media (min-width: 992px) {
+    #labelLayout .btn {
+        margin: 0 20px; /* Mayor espacio entre los botones en pantallas grandes */
+    }
+}
+
+/* Espaciado para pantallas medianas (tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+    #labelLayout .btn {
+        margin: 0 15px; /* Espacio intermedio entre los botones */
+    }
+}
+
+/* Espaciado para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+    #labelLayout .btn {
+        margin: 0 10px; /* Menor espacio entre los botones en pantallas pequeñas */
+    }
+}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

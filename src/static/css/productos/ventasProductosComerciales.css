@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     background-color: #121212; /* Fondo negro */
     color: #fff; /* Texto blanco */
@@ -40,3 +41,47 @@ body {
 }
 
 
+=======
+body {
+    background-color: #121212; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+}
+
+.table-dark {
+    background-color: #1e1e1e;
+}
+
+.table-dark thead th {
+    background-color: #333;
+    color: #fff;
+    border-color: #444;
+}
+
+.table-dark tbody tr:hover {
+    background-color: #555;
+}
+
+.modal-content {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header, .modal-footer {
+    border-color: #444;
+}
+
+.btn-close-white {
+    filter: invert(1); /* Cambia el color del botón de cierre a blanco */
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #0056b3;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

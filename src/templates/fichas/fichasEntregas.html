@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% with messages = get_flashed_messages()%}
 {% if messages %}
 {% for message in messages%}  
@@ -158,4 +159,166 @@
 
 </div>
 {%endblock%}
+=======
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+{% if layout == 'layout'%}
+    {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+
+
+{% block content%}
+
+<div class = 'container p-4'>
+   
+    <div class="table-responsive">                  
+        <table class="table table-dark table-striped"  id="tablaDatos">
+            <thead>           
+                <tr>
+                    <th scope="col">Dias</th>               
+                    <th scope="col">Inicial</th>               
+                    <th scope="col">Capitalizacion</th>
+                    <th scope="col">Estado</th>                     
+                    <th scope="col">Operaciones</th>
+                </tr>            
+            </thead>
+            <tbody>
+                {% for ficha in fichas %}
+                    {% if fichas.user_id != usuario_id %}
+                        <tr>
+                            <td>{{ ficha.id }}</td>
+                            <td>{{ ficha.monto_efectivo }}</td>
+                            <td>{{ ficha.interes }}%</td>                            
+                            <td>{{ ficha.estado }}</td>
+                        <td class="d-flex">
+                            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#reportarFichaModal" data-ficha-id="{{ ficha.id }}" data-ficha-idFicha="{{ ficha.idFicha }}" onclick="setFichaDataReportar(this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))">Reportar</button>
+                            <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#pagarFichaModal" data-ficha-id="{{ ficha.id }}" data-ficha-idFicha="{{ ficha.idFicha }}" onclick="setFichaData(this.getAttribute('data-ficha-id'), this.getAttribute('data-ficha-idFicha'))" {% if ficha.estado == 'ACEPTADO' %}disabled{% endif %}>Pagar</button>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}            
+            </tbody>
+        </table>
+    </div>   
+</div>
+
+    <div class="modal fade" id="IngresaValorFicha" tabindex="-1" aria-labelledby="IngresaValorFichaModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content border shadow">
+                <div class="modal-header">
+                </div>
+                
+                <form id="tomarFicha" action="/fichas-tomar" method="POST">
+                    <div class="modal-body">
+                        <h6 style="color: blue; margin-bottom: 10px;">INGRESAR TOKEN</h6>
+                        <input type="text" id="tokenInput" class="form-control" name="tokenInput" placeholder="Ingresa tu token">
+                        <input type="hidden" id="access_token_forma" name="access_token_forma" >
+                        <input type="hidden" id="layoutOrigen" name="layoutOrigen" value="layout">
+                        <h2 class="modal-title text-center" id="valorllave" style="color: green;  100px; text-align: center;"></h2>
+                    
+                   
+                    </div>
+                    <div class="modal-footer">                  
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"  id="aceptarBtn">Aceptar</button>
+                    </div>
+                </form>    
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="modal fade" id="reportarFichaModal" tabindex="-1" aria-labelledby="reportarFichaModal" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="reportarFichaModal">Reportar Ficha</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="reportarFichaForm" action="/reportar-ficha" method="POST">
+            <div class="modal-body">
+                <input type="hidden" id="access_token" name="access_token">
+                <input type="hidden" id="reportarFichaId" name="reportarFichaId">
+                <input type="hidden" id="reportaridFicha" name="reportaridFicha">
+                <input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout_fichas'> 
+                                
+                <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea reportar esta ficha?</p>
+                <p class="fw-bold text-dark" style="color: black;">Si reporta esta ficha se bloqueara la cuenta del receptor</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-danger">Reportar</button>
+            </div>
+            </form>
+            
+        </div>
+        </div>
+   </div>
+
+
+  
+
+
+
+   <div class="modal fade" id="pagarFichaModal" tabindex="-1" aria-labelledby="pagarFichaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pagarFichaModalLabel">Pagar Ficha</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="pagarFichaForm">
+          <div class="modal-body">
+            <input type="hidden" id="pagar_access_token" name="pagar_access_token">
+            <input type="hidden" id="pagarFichaId" name="pagarFichaId">
+            <input type="hidden" id="pagaridFicha" name="pagaridFicha">
+            <input type="hidden" name="layoutOrigen" id="layoutOrigen" class="form-control" value='layoutConexBroker'>
+            <p class="fw-bold text-dark" style="color: black;">¿Está seguro de que desea pagar esta ficha?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Pagar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+
+
+{% include 'layouts/layout_footer.html' %}   
+<script src="{{url_for('static',filename='js/fichas/fichasEntregas.js')}}"></script>
+   
+    <script>
+
+
+
+
+
+    </script>
+        
+
+</div>
+{%endblock%}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
  

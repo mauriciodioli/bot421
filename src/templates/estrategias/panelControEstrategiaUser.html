@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     {% for message in messages %}  
@@ -825,3 +826,832 @@ if (resumenCuenta === 0) {
   
 </script>
 {% endblock %}
+=======
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}  
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+{% if layout == 'layout_detalle_productos' %}
+{% extends "layouts/layout_detalle_productos.html" %}
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+{% if layout == 'layout_administracion' %}
+{% extends 'layouts/layout_administracion.html' %}
+{% endif %}
+
+{% block content %}
+
+  <h1>Panel Control Estrategias</h1>
+ 
+ 
+  <div>
+    <div class="table-responsive">
+      <h3 class="resumen-cuenta">{{ resumenCuenta }}</h3>
+      <table class="table table-dark table-striped" id="tabla-trigger">
+        <thead>           
+          <tr>
+            <th scope="col">BOTON PANICO</th>            
+            <th scope="col">TiempoInicio</th>
+            <th scope="col">TiempoFin</th>
+            <th scope="col">Automatico</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Unid. Invers.</th>
+            <th scope="col">Acciones</th>
+          </tr>            
+        </thead>
+        <tbody>
+          <!-- Aquí se mostrarán los usuarios -->
+          {% for estrategia in datos[1] %}
+            <tr>  
+              <td> 
+              <form name="logeo" action="/botonPanico/" method="post" class="btn-guardar_inst">
+                <input type="hidden" name="account" id="account">
+                <button type="submit" id="boton-panico-estrategia-usuario-noadmin" class="btn btn-danger my-2"></button>
+              </form>
+            </td>                 
+            <td>{{ estrategia.horaInicio }}</td>          
+            <td>{{ estrategia.horaFin }}</td>
+            <td>{{ estrategia.ManualAutomatico }}</td>
+            <td>{{ estrategia.nombreEstrategia }}</td>              
+            <td id="ut-{{ estrategia.id }}" style="color: #52d36d;">{{ estrategia.ut }}</td>   
+            <td class="d-flex">
+            
+            <!-- <form method="POST" class="btn-guardar_inst">
+                <input type="hidden" name="access_token" id="access_token" value="{{ access_token }}">                       
+                <input       
+                
+                
+                
+                
+                type="hidden" name="usuario" id="usuario" value="{{ datos.0 }}">  
+                <input type="hidden" name="correo_electronico" id="correo_electronico" value="{{ correo_electronico }}">
+                <input type="hidden" name="cuenta" id="cuenta" value="{{ cuenta_estrategia }}">-->
+                <input type="hidden" name="correo_electronico" id="correo_electronico" >
+                <button type="submit" class="btn btn-primary btn-block my-2 botonM" id="boton-manual-estrategia-usuario" data-trigger-ManualAutomatico="{{ estrategia.ManualAutomatico }}" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.userCuenta }}"  data-cuenta="{{ estrategia.accountCuenta }}" data-nombreEstrategia="{{ estrategia.nombreEstrategia }}"  data-horaInicio="{{ estrategia.horaInicio }}" data-horaFin="{{ estrategia.horaFin }}" >M</button>
+                
+             
+            <!--  </form>-->
+
+                <button type="button" class="btn btn-primary my-2 botonA" id="boton-automatico-estrategia-usuario-noadmin" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">A</button>
+                <span>&nbsp;</span>
+                <span>&nbsp;</span>
+                <button type="button" class="btn btn-primary btn-block my-2" id="boton-unidadTrader-estrategia-usuario-noadmin" data-bs-toggle="modal" data-bs-target="#editarUnidadTraderModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}" data-user-ut="{{ estrategia.ut }}" onclick="cargarDatosUsuario(this.getAttribute('data-trigger-user-id'), this.getAttribute('data-user-cuenta'), this.getAttribute('data-trigger-id'))">UT</button>
+
+
+                <!--<button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal" data-bs-target="#editarEstrategiaModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" data-user-cuenta="{{ estrategia.accountCuenta }}">Editar</button> -->  
+                <button type="button" class="btn btn-danger mx-2" data-bs-toggle="modal" data-bs-target="#eliminarEstrategiaModal" data-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}" onclick="setUserData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">Eliminar</button>
+                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editarTriggerModal" data-trigger-user-id="{{ estrategia.user_id }}" data-trigger-id="{{ estrategia.id }}"  onclick="setTriggerData(this.getAttribute('data-user-id'), this.getAttribute('data-trigger-id'))">RUN EDIT</button>
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <form id="registro-usuario-form" action="/alta-estrategias-trig" method="POST">
+      <div class="form-group">
+        <div class="form-group"><input type="hidden" name="access_token_form_altaEstrategia"  id="access_token_form_altaEstrategia"  class="form-control"></div>
+        <div class="form-group"><input type="hidden" name="correo_electronico_form_altaEstrategia"  id="correo_electronico_form_altaEstrategia"  class="form-control"></div>    
+        <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layoutConexBroker'></div>  
+  
+        <input type="hidden" class="form-control" id="usuario_id" name="usuario_id" value="{{ datos.0 }}">
+      </div>         
+      <div class="form-group">
+        <input type="hidden" class="form-control" id="cuenta" name="cuenta" value="{{ cuenta_estrategia }}" required>
+      </div>    
+      <label for="estrategia">Estrategia:</label>
+      <input type="text" class="form-control" id="estrategia" name="estrategia"  required>         
+      <button type="submit" class="btn btn-primary my-2" >Registrar estrategia</button>
+      <button type="button" class="btn btn-primary my-2" data-bs-toggle="modal" data-bs-target="#seleccionarEstrategiaModal">Seleccionar Estrategia</button>
+    </form>
+  </div>
+
+
+  <div class="modal fade" id="editarEstrategiaModal" tabindex="-1" aria-labelledby="editarEstrategiaModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarEstrategiaModal" style="color: black;">Editar Estrategia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editarEstrategiaModal" action="/editar-trigger-nombre" method="POST">
+          <div class="modal-body">
+            <div class="form-group">
+              <input type="hidden" id="usuario_id" name="usuario_id" value="" />
+            </div>
+            <div class="form-group">
+              <input type="hidden" class="form-control" id="cuenta" name="cuenta">
+            </div>
+            <div class="form-group">
+              <input type="hidden" class="form-control" id="IdTrigger" name="IdTrigger">
+            </div> 
+            <div class="form-group">
+              <label for="TriggerNombre" style="color: black;">Nombre:</label>
+              <input type="text" class="form-control" id="TriggerNombre" name="TriggerNombre" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="eliminarEstrategiaModal" tabindex="-1" aria-labelledby="eliminarEstrategiaModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="eliminarEstrategiaModal">Eliminar Estrategia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="eliminarEstrategiaForm" action="/eliminar-trigger" method="POST">
+          <div class="modal-body">
+            <input type="hidden" id="eliminarEstrategiaUserId" name="user_id" value="">
+            <input type="hidden" id="eliminarEstrategiaIdTrigger" name="IdTrigger" value="">
+            <input type="hidden" id="eliminarEstrategiaToken" name="eliminarEstrategiaToken" value="">
+            <input type="hidden" id="eliminarEstrategiaCuenta" name="eliminarEstrategiaCuenta" value="">
+            
+            <p class="fw-bold text-dark" style="color:black;">¿Está seguro de que desea eliminar esta estrategia?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editarTriggerModal" tabindex="-1" aria-labelledby="editarTriggerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarTriggerModalLabel">Editar Estrategia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editarTriggerForm" action="/editar-Trigger" method="POST">
+          <div class="modal-body">
+            
+              <label for="horaInicio"  style="color:black;">Hora de inicio:</label>
+              <input type="time" id="horaInicio" name="horaInicio" required>
+            
+            
+              <label for="horaFin" style="color: black;  margin-bottom: 10px;">Hora de finalización:</label>
+              <input type="time" id="horaFin" name="horaFin" required>
+              
+              <input type="hidden" id="editarIdTrigger" name="IdTrigger" value="">
+              <input type="hidden" id="editarUserId" name="user_id" value="">
+                    
+                         
+              <select class="form-control" id="ManualAutomatico" name="ManualAutomatico">
+                <option value="MANUAL">Manual</option>
+                <option value="AUTOMATICO">Automatico</option>
+              </select>
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="modal fade" id="seleccionarEstrategiaModal" tabindex="-1" aria-labelledby="seleccionarEstrategiaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="seleccionarEstrategiaModalLabel" style="color: black;" >Seleccionar Estrategia</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <ul>
+            {% for cuenta in cuentas %}
+            <ul>
+            </ul>
+              <li>
+                <button type="button" class="btn btn-primary" onclick="seleccionarEstrategia()"></button>
+              </li>
+            
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="modal fade" id="editarUnidadTraderModal" tabindex="-1" aria-labelledby="editarUnidadTraderModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editarUnidadTraderModalLabel" style="color: black;">Monto a invertir por instrumento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Subtítulo en color azul -->
+          <h6 style="color: blue;">Monto mínimo sugerido para esta estrategia</h6>
+           <!-- Subtítulo en negrita para ARS -->
+           <strong style="color: blue;">ARG:</strong>
+          <!-- Label para el valor máximo de ARS cargado desde AJAX -->
+          <label id="montoMinimoLabelARG" style="font-size: larger;"></label>
+          <!-- Subtítulo en negrita para CEDEAR -->
+          <strong style="color: red;">CEDEAR:</strong>
+          <!-- Label para el valor máximo de CEDEAR cargado desde AJAX -->
+          <label id="montoMinimoLabelCedears" style="font-size: larger;"></label>
+          
+          <div class="form-group">
+            <input type="hidden" id="UT_usuario_id" name="UT_usuario_id" value="">
+          </div>
+          <div class="form-group">
+            <input type="hidden" class="form-control" id="UT_cuenta" name="UT_cuenta">
+          </div>
+          <div class="form-group">
+            <input type="hidden" class="form-control" id="UT_IdTrigger" name="UT_IdTrigger">
+          </div>
+          <div class="form-group">
+            <label for="TriggerNombre" style="color: black;">Cantidad:</label>
+            <input type="text" class="form-control" id="UT_unidadTrader" name="UT_unidadTrader" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" id="boton_guardar_ut" class="btn btn-primary">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+
+<!-- Modal de notificación -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: rgba(255, 255, 255, 0.9);">
+      <div class="modal-header">
+        <h5 class="modal-title" id="notificationModalLabel">Notificación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column justify-content-center align-items-center">
+        <p id="notificationMessage" class="text-success font-weight-bold h4"></p>
+        <div class="spinner-border text-success" role="status">
+          <span class="visually-hidden">Loading...</span>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <!-- Botón Cerrar con id para manejar el evento -->
+        <button type="button" id="closeNotificationButton" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% include 'layouts/layout_footer.html' %}     
+<!-- Enlaces a scripts de JavaScript -->
+<script>
+  
+  // Retrieve data from localStorage
+  var correo_electronico_estrategia = localStorage.getItem("correo_electronico");
+  var cuenta_estrategia = localStorage.getItem("cuenta");
+  access_token = localStorage.getItem("access_token");
+  selector = localStorage.getItem('selector')
+  
+
+
+  // Set values of input elements
+  document.getElementById("cuenta").value = cuenta_estrategia;
+
+  
+  
+  document.getElementById("access_token_form_altaEstrategia").value = access_token;
+  document.getElementById("correo_electronico_form_altaEstrategia").value = correo_electronico_estrategia;
+ 
+
+  document.getElementById("selector_form_reporteCuenta").value = selector;
+  document.getElementById("correo_electronico_form_reporteCuenta").value = correo_electronico_estrategia;
+
+  const editButtons = document.querySelectorAll('[data-bs-target="#editarEstrategiaModal"]');
+  editButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const userId = button.dataset.triggerUserId;
+      const Id = button.dataset.triggerId;
+      const cuenta = button.dataset.userCuenta;
+      
+      document.querySelector('#IdTrigger').value = Id;
+      document.querySelector('#usuario_id').value = userId;
+      document.querySelector('#cuenta').value = cuenta;
+    });
+  });
+
+ 
+    function setUserData(userId, triggerId) {
+      access_token = localStorage.getItem('access_token');
+      account = localStorage.getItem('cuenta');
+      document.getElementById('eliminarEstrategiaUserId').value = userId;
+      document.getElementById('eliminarEstrategiaIdTrigger').value = triggerId;
+      document.getElementById('eliminarEstrategiaCuenta').value = account
+      document.getElementById('eliminarEstrategiaToken').value = access_token
+      
+    }
+
+    function setTriggerData(userId,triggerId) {
+      document.getElementById('editarIdTrigger').value = triggerId;   
+      document.getElementById('editarUserId').value = userId;   
+     
+    }
+ 
+   document.addEventListener('DOMContentLoaded', function() {
+    //var botonAutomatico = document.getElementById('botonAutomatico');
+    var botonAutomatico = document.getElementById('boton-automatico-estrategia-usuario-noadmin');  // Elimina el punto '.'
+
+    if (botonAutomatico) {
+        botonAutomatico.addEventListener('click', function () {
+            var userId = botonAutomatico.getAttribute('data-trigger-user-id');
+            var triggerId = botonAutomatico.getAttribute('data-trigger-id');
+            var userCuenta = botonAutomatico.getAttribute('data-user-cuenta');
+
+            llamarFuncionPython(userId, triggerId, userCuenta);
+        });
+    }
+
+
+    
+      
+      
+      function llamarFuncionPython(userId, triggerId, userCuenta) {
+          var xhr = new XMLHttpRequest();
+          
+          xhr.open('POST', '/pcEstrategiaUs-boton-a-m/', true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          
+          xhr.onload = function () {
+                          if (xhr.status === 200) {
+                            var respuesta = JSON.parse(xhr.responseText);  // Parsear la respuesta JSON
+                            
+                            // Acceder y manipular los datos recibidos
+                            var operationResult = respuesta.resultado;  // Cambiar 'operation_result' por 'resultado'
+                            var triggerData = respuesta.trigger_data;  // Accede directamente a la propiedad trigger_data
+        
+                          //console.log(operationResult);  // Imprime "Operación exitosa"
+                          //console.log(triggerData);      // Imprime el contenido de trigger_data
+                            actualizarTabla(triggerData);
+                        } else {
+                            alert('Error al llamar a la función Python');
+                        }
+                    };
+                    
+                    xhr.onerror = function () {
+                        alert('Error de conexión');
+                    };
+                    
+                    var requestData = {
+                        userId: userId,
+                        triggerId: triggerId,
+                        userCuenta: userCuenta
+                    };
+                    
+                    xhr.send(JSON.stringify(requestData));
+      }
+
+      function actualizarTabla(triggerData) {
+        var tablaTrigger = document.getElementById('tabla-trigger');
+        var filas = tablaTrigger.getElementsByTagName('tr'); // Obtener todas las filas
+        
+        for (var i = 0; i < triggerData.length; i++) {
+            var trigger = triggerData[i];
+            var fila = filas[i + 1]; // Saltar la fila de encabezado
+    
+            if (fila) {  // Verificar si la fila existe
+                var celdas = fila.getElementsByTagName('td'); // Obtener todas las celdas en la fila
+                console.log(trigger.ManualAutomatico);  // Para depurar
+    
+                if (celdas[3]) {  // Verificar si la celda para "ManualAutomatico" existe antes de asignar textContent
+                    celdas[3].textContent = trigger.ManualAutomatico; // Actualizar el contenido de la columna "Automatico"
+                }
+                // Puedes actualizar otras celdas si es necesario
+            } else {
+                console.error(`La fila ${i + 1} no existe en la tabla.`);
+            }
+        }
+    }
+    
+           
+      document.querySelector('#tabla-trigger').addEventListener('click', function (event) {
+                 //AQUI SE DEBE APLICAR EL AJAX PARA ACTUALIZAR LA TABLA CON EL BOTON A 
+                 // PARA PASAR DE MANUAL A AUTOMATICO
+                 // if (event.target && event.target.classList.contains('botonA')) {
+                              // Verifica si hay filas en la tabla
+                  var tabla = document.querySelector('#tabla-trigger');
+                  if (tabla && tabla.rows.length > 0) {
+                    // Si hay filas, establece el valor del elemento "account"
+                      cuenta_estrategia = localStorage.getItem('cuenta');
+                      document.getElementById("account").value = cuenta_estrategia;
+                  } 
+                  if (event.target && event.target.classList.contains('botonM')) {
+                      // Recupera el valor del atributo data-nombre
+                      var clicBoton = event.target.getAttribute('data-nombre');
+                     
+                      // Recupera los datos del Local Storage que deseas enviar
+                      access_token = localStorage.getItem('access_token');
+                      correo_electronico = localStorage.getItem('correo_electronico');
+                     
+                      console.log("tagName:", event.target.tagName);
+                      // Recupera los datos de la fila en la que se hizo clic
+                      
+                      // Recupera los datos de la fila en la que se hizo clic
+                      var idUser = event.target.getAttribute('data-trigger-user-id');
+                      var idTrigger = event.target.getAttribute('data-trigger-id');
+                      var userCuenta = event.target.getAttribute('data-user-cuenta');
+                      var cuenta = event.target.getAttribute('data-cuenta');   
+                      var nombre = event.target.getAttribute('data-nombreEstrategia');
+                      var tiempoInicio = event.target.getAttribute('data-horaInicio');
+                      var tiempoFin = event.target.getAttribute('data-horaFin');
+                      var automatico = event.target.getAttribute('data-trigger-ManualAutomatico');
+                      alert('Esta a punto de lanzar la Estrategia!');
+                       // Establece el mensaje de notificación en el modal
+                      var notificationMessage = "Estrategia iniciada, espere...";
+                      document.getElementById("notificationMessage").innerText = notificationMessage;
+                      localStorage.setItem("idTrigger", idTrigger); 
+                      localStorage.setItem("nombreEstrategia",nombre)
+                      // Muestra el modal
+                      var notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
+                      notificationModal.show();
+                                        
+                     /* console.log("userId:", idUser);
+                      console.log("idTrigger:",idTrigger);
+                      console.log("cuenta:", cuenta);                      
+                      console.log("automatico",automatico);
+                      console.log("tiempoInicio",tiempoInicio);
+                      console.log("tiempoFin",tiempoFin);
+                      console.log("userCuenta:", userCuenta);*/
+
+                     
+                     
+                      // Reemplazamos los guiones bajos por guiones
+                      var nombreSinGuionesBajos = nombre.replace(/_/g, "-");
+                      // Luego, puedes usar el resultado en tu cadena
+                      var nombreEstrategia = '/' + nombreSinGuionesBajos + '/';
+                                            
+                          
+                          // Realiza la solicitud AJAX
+                          $.ajax({
+                            type: 'POST',
+                            url: nombreEstrategia,
+                            data: JSON.stringify({
+                                'userCuenta': userCuenta,
+                                'idTrigger': idTrigger,
+                                'access_token': access_token,
+                                'idUser': idUser,
+                                'correo_electronico': correo_electronico,
+                                'cuenta': cuenta,
+                                'tiempoInicio': tiempoInicio,
+                                'tiempoFin': tiempoFin,
+                                'automatico': automatico,
+                                'nombre': nombreSinGuionesBajos
+                            }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                // Verifica si la respuesta contiene una clave 'redirect'
+                                if (response.redirect) {
+                                    // Redirige a la URL especificada en la respuesta
+                                   // window.location.href = '/' + response.redirect;
+                                    window.location.href = response.redirect;
+                                } else {
+                                    // Maneja la respuesta de otra manera si es necesario
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.log("Estado de la solicitud: " + textStatus);
+                                console.log("Mensaje de error: " + errorThrown);
+                            }
+                        });
+                        
+                      
+                  }
+      });
+          
+              
+
+
+             
+              
+              document.getElementById('registro-usuario-form').addEventListener('submit', function(event) {
+                // Obtener el valor del campo "estrategia"
+                var estrategiaValue = document.getElementById('estrategia').value;
+          
+                // Validar si el campo "estrategia" tiene valor
+                if (!estrategiaValue) {
+                  // Si el campo "estrategia" está vacío, evitar el envío del formulario
+                  event.preventDefault();
+                  alert('Por favor, selecciona una estrategia antes de enviar el formulario.');
+                }
+              });         
+    
+  });
+  
+  
+   //#################### seleccionarEstrategia ######################//
+  function seleccionarEstrategia(estrategiaId, api_url, ws_url, nombre,descripcion) {
+    document.getElementById('estrategia').value = nombre;
+    
+
+    // Puedes almacenar el ID del usuario seleccionado en un campo oculto para enviarlo junto con el formulario de registro
+   
+    // Cierra el modal de selección de usuario
+    const modal = document.getElementById('seleccionarEstrategiaModal');
+    const bootstrapModal = bootstrap.Modal.getInstance(modal);
+    bootstrapModal.hide();
+  }
+
+  ////cuando se abre el modal se llama la funcion para cargar los usuarios
+  document.getElementById('seleccionarEstrategiaModal').addEventListener('shown.bs.modal', function () {
+    cargarEstrategias();
+  });
+  function cargarEstrategias() {
+    // Obtener el accessToken del localStorage
+    const accessToken = localStorage.getItem("access_token");
+    
+    if (!accessToken) {
+      console.error("No se encontró el accessToken en el localStorage");
+      return;
+    }
+    
+    
+   
+    // Configurar las opciones de la solicitud fetch para pedir las cuentas y mostrar el modal con las cuentas
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ accessToken: accessToken })
+    };
+     
+    fetch('/abm-estrategias-all/', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        const estrategia = data.estrategias;  // Accede a data.cuentas en lugar de data.usuarios
+  
+        const ul = document.querySelector('.modal-body ul');
+        ul.innerHTML = '';  // Limpia la lista existente
+        
+  
+        estrategia.forEach(estrategia => {
+          const li = document.createElement('li');
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'btn btn-primary';
+          button.innerText = estrategia.nombre; // Mostrar el nombre de la cuenta
+          button.addEventListener('click', () => {
+            // Llamar a seleccionarCuenta con los datos deseados
+            seleccionarEstrategia(estrategia.id, estrategia.api_url, estrategia.ws_url, estrategia.nombre,estrategia.descripcion);
+          });
+  
+          li.appendChild(button);
+          ul.appendChild(li);
+        });
+      })
+      .catch(error => console.error(error));
+  }
+  
+  //############# aqui carga la unidad de tradeo #######################
+  //########### Encuentra el modal editarUnidadTraderModal###############
+  function cargarDatosUsuario(userId, cuenta, triggerId) {
+    document.getElementById('UT_usuario_id').value = userId;
+    document.getElementById('UT_cuenta').value = cuenta;
+    document.getElementById('UT_IdTrigger').value = triggerId;
+  }
+
+
+
+
+   
+  
+
+  $(document).ready(function() {
+    $('#editarUnidadTraderModal').on('shown.bs.modal', function () {
+      var UT_usuario_id = $('#UT_usuario_id').val();
+      var UT_cuenta = $('#UT_cuenta').val();
+      var UT_IdTrigger = $('#UT_IdTrigger').val();
+
+      // Objeto con los datos a enviar
+      var datos = {
+        UT_usuario_id: UT_usuario_id,
+        UT_cuenta: UT_cuenta,
+        UT_IdTrigger: UT_IdTrigger
+      };
+
+      // Envío AJAX
+      $.ajax({
+        type: 'POST',
+        url: '/unidad-trader-mostrar/', // URL del endpoint en Flask
+        data: datos,
+        success: function(response) {         
+          // Actualiza el contenido del label con el valor máximo de ut
+          $('#montoMinimoLabelARG').text(response.max_ut_ars);
+          // Cambia el color del texto del label a rojo
+          $('#montoMinimoLabelARG').css('color', 'red');
+           // Actualiza el contenido del label con el valor máximo de UT para cedears
+          $('#montoMinimoLabelCedears').text(response.max_ut_cedears);
+          // Cambia el color del texto del label a rojo
+          $('#montoMinimoLabelCedears').css('color', 'red');
+        },
+        error: function(xhr, status, error) {
+          // Manejo de errores
+          console.error(xhr.responseText);
+          // Aquí puedes agregar código para manejar errores, como mostrar un mensaje de error al usuario
+        }
+      });
+    });
+  });
+
+
+  $(document).ready(function() {
+    $('#boton_guardar_ut').click(function() {
+      var UT_usuario_id = $('#UT_usuario_id').val();
+      var UT_cuenta = $('#UT_cuenta').val();
+      var UT_IdTrigger = $('#UT_IdTrigger').val();
+      var UT_unidadTrader = $('#UT_unidadTrader').val();
+
+      // Objeto con los datos a enviar
+      var datos = {
+        UT_usuario_id: UT_usuario_id,
+        UT_cuenta: UT_cuenta,
+        UT_IdTrigger: UT_IdTrigger,
+        UT_unidadTrader: UT_unidadTrader
+      };
+
+      // Envío AJAX
+      $.ajax({
+        type: 'POST',
+        url: '/unidad-trader-alta/', // URL del endpoint en Flask
+        data: datos,
+        success: function(response) {
+          // Manejar la respuesta del servidor
+          console.log(response);
+          $('#ut-' + response.trigger_data.id).text(response.trigger_data.ut);
+          // Por ejemplo, mostrar un mensaje de éxito al usuario
+          alert(response.resultado);
+          // Cerrar el modal después de guardar los datos
+          $('#editarUnidadTraderModal').modal('hide');
+        },
+        error: function(xhr, status, error) {
+          // Manejo de errores
+          console.error(xhr.responseText);
+          // Mostrar un mensaje de error al usuario
+          alert('Error al guardar los datos. Por favor, inténtalo de nuevo.');
+        }
+      });
+    });
+  });
+
+
+
+
+
+  let estadoListo = false; // Variable de control para saber si el estado ya es "listo"
+
+  function verificarEstado() {
+      // Si ya se verificó que el estado es "listo", no volver a preguntar
+      if (estadoListo) {
+          return;
+      }
+  
+      var userId = localStorage.getItem('usuario_id');
+      var cuenta = localStorage.getItem('cuenta');
+      var triggerId = localStorage.getItem('idTrigger');
+      var nombreEst = localStorage.getItem('nombreEstrategia')
+      var nombreEst = localStorage.getItem('nombreEstrategia')
+      var url = '/'+nombreEst+'_verificar_estado'
+      $.ajax({
+          type: 'POST',
+          url: url,
+          contentType: 'application/json',
+          data: JSON.stringify({
+              'userId': userId,
+              'idTrigger': triggerId,
+              'nombreEstrategia':nombreEst,
+              'cuenta': cuenta
+          }),
+          success: function(response) {
+              if (response.estado === 'listo') {
+                  // Los datos están listos, mostrar alerta
+                  alert(`${response.mensaje} : ${response.account}`);
+                  estadoListo = true; // Marcar como "listo" para no volver a preguntar
+                  clearInterval(interval); // Detener el sondeo
+                  // Cerrar el modal
+                  var notificationModalElement = document.getElementById('notificationModal');
+                  var notificationModal = bootstrap.Modal.getInstance(notificationModalElement);
+                  if (notificationModal) {
+                      notificationModal.hide();
+                  }  
+                  // Redirigir a la URL especificada en response.redirect
+                  if (response.redirect) {
+                    window.location.href = response.redirect; // Redirigir si hay una URL
+                   }
+              } else {
+                  console.log('Los datos todavía no están listos...');
+              }
+          },
+          error: function(error) {
+              console.error('Error:', error);
+          }
+      });
+  }
+  
+  // Iniciar el sondeo cada 60 segundos
+  const interval = setInterval(function() {
+      verificarEstado();
+  }, 30000);  // Intervalo de 30 segundos
+
+
+// Supongamos que resumenCuenta es una variable de tu lógica JS
+var resumenCuenta = {{ resumenCuenta | tojson }};
+
+
+// Si resumenCuenta es 0, almacena 'False', de lo contrario, almacena 'True'
+
+if (resumenCuenta === 0) {
+    localStorage.setItem('luzWebsocket_control', 'False');
+} else {
+    localStorage.setItem('luzWebsocket_control', 'True');
+}
+
+
+
+
+
+
+
+
+  //######################################################//
+  //##################cierra modal y cierra mdh##########//
+   // Asignar el evento de clic al botón cerrar
+   $('#closeNotificationButton').on('click', function() {
+    // Obtener los datos que quieres enviar en el POST
+    var usuario_id = localStorage.getItem('usuario_id');
+    var trigger_id = localStorage.getItem('idTrigger');
+    var account = localStorage.getItem('cuenta');
+  
+    // Enviar los datos mediante AJAX a la ruta en Flask
+    $.ajax({
+      url: '/strategies_estrategias_detenerMDHtrigger_lanzado',
+      type: 'POST',
+      data: {
+        usuario_id: usuario_id,
+        trigger_id: trigger_id,
+        account: account
+      },
+      success: function(response) {
+      
+        // Mostrar un alert cuando la estrategia se detenga correctamente
+        alert('Estrategia detenida');
+  
+        // Cerrar el modal
+        $('#notificationModal').modal('hide');
+      },
+      error: function(xhr, status, error) {
+        console.error('Error en la solicitud AJAX:', error);
+      }
+    });
+  });
+  
+</script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .mostrar-imagenes-en-modal-publicacion-crear-publicacion {
     position: fixed;
     z-index: 1000; /* Para que se muestre por encima de todo */
@@ -128,3 +129,135 @@
 .btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion:hover {
   background-color: gold;
 }
+=======
+.mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+    position: fixed;
+    z-index: 1000; /* Para que se muestre por encima de todo */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+  }
+  
+  .modal-content-mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    max-width: 600px; /* Limita el ancho del modal */
+    max-height: 80%; /* Limita la altura del modal */
+    overflow-y: auto; /* Agrega scroll si el contenido excede la altura */
+  }
+  
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .modal-image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Reemplaza 100px con el tamaño deseado */
+    gap: 10px; /* Espacio entre imágenes */
+  }
+  
+  .modal-image-grid img {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+  }
+  
+
+
+
+
+
+
+
+
+  .modal-imagen-grande {
+    position: fixed;
+    z-index: 1001; /* Asegúrate de que esté por encima del primer modal */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro semi-transparente */
+  }
+  
+  .modal-content-imagen-grande {
+    margin: 5% auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px; /* Limita el ancho máximo */
+  }
+  
+  .modal-content-imagen-grande img {
+    width: 100%; /* Imagen ajustada al contenedor */
+    height: auto;
+  }
+  
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+
+
+
+
+  /* Estilo para el contenedor de botones */
+.modal-buttons-mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Estilo para el botón de agregar imagen */
+.btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+  background-color: green;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-agregar-imagen-mostrar-imagenes-en-modal-publicacion-crear-publicacion:hover {
+  background-color: darkgreen;
+}
+
+/* Estilo para el botón de agregar video */
+.btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion {
+  background-color: yellow;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-agregar-video-mostrar-imagenes-en-modal-publicacion-crear-publicacion:hover {
+  background-color: gold;
+}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout'%}
 {% extends 'layouts/layout.html' %}
 {% endif %}
@@ -60,3 +61,67 @@
 
 </script>
 {% endblock %}
+=======
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% block title %}Productos{% endblock %}
+
+{% block content %}
+<div class="telegram-detalle" id="telegramDetalle">
+    <div class="telegram-item" id="telegramItem">
+        <h2 id="headerTitle">Enviar Mensaje a Telegram</h2>
+        <form id="telegramForm">
+            <label for="header" id="headerLabel">Encabezado:</label><br>
+            <input type="text" id="header" name="header" required placeholder="¡Hola a todos!"><br><br>
+            <label for="body" id="bodyLabel">Cuerpo del Mensaje:</label><br>
+            <textarea id="body" name="body" rows="4" required></textarea><br><br>
+            <div class="button-container">
+                <button type="submit" id="submitButton">Enviar</button>
+                <button type="button" id="emoticonButton" data-bs-toggle="modal" data-bs-target="#emoticonModal">
+                  
+                </button>
+              
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<!-- Modal for selecting emoticons -->
+<div class="modal fade" id="emoticonModal" tabindex="-1" aria-labelledby="emoticonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content"  id="emoticonModal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="emoticonModalLabel">Selecciona un Emoticón</h5>
+                <button type="button" class="btn-close" id="custom-close-button" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="emoticonEmoticons">
+                <!-- Emoticons will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'layouts/layout_footer.html' %}
+<script src="{{url_for('static',filename='js/media/telegram/telegramEnviaMensaje.js')}}"></script>
+<script> 
+
+</script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout' %}
     {% extends 'layouts/layout.html' %}
 {% elif layout == 'layout_fichas' %}
@@ -46,3 +47,53 @@
 {% include 'layouts/layout_footer.html' %}
 <script src="{{ url_for('static', filename='js/herramientasAdmin/controlMDH.js') }}"></script>
 {% endblock %}
+=======
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_administracion' %}
+    {% extends 'layouts/layout_administracion.html' %}
+{% endif %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-10 col-sm-8 col-md-6 mb-3">
+            <div class="card custom-card text-center">
+                <div class="card-body">
+                    <h5 class="card-title custom-card-title">Estado del MDH</h5>
+                    <p class="card-text custom-card-text">Presione el botón para saber si el MDH está andando. Si la luz es verde, puede operar con normalidad.</p>
+                    <button id="checkStatusButton" class="btn btn-primary">Verificar</button>
+                    <div id="statusLight"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-10 col-sm-8 col-md-6 mb-3">
+            <div class="card custom-card text-center">
+                <div class="card-body">
+                    <h5 class="card-title custom-card-title">Estado de Thread</h5>
+                    <p class="card-text custom-card-text">Presione el botón para verificar el estado de Thread.</p>
+                    <button id="checkThreadStatusButton" class="btn btn-primary">Verificar</button>
+                    <div id="statusLightThread" class="statusLight"></div>
+                    <div>
+                        <p id="horaMinutoSegundo" style="color: black;">
+                            Hora: 
+                            <span id="horaValor" style="color: green;"></span>:
+                            <span id="minutoValor" style="color: green;"></span>:
+                            <span id="segundoValor" style="color: green;"></span>
+                        </p>
+                        <p id="contadorDosMinutos" style="color: black;">Tiempo restante: <span id="contadorValor" style="color: green;">2:00</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+<script src="{{ url_for('static', filename='js/herramientasAdmin/controlMDH.js') }}"></script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

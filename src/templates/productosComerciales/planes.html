@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout' %}
     {% extends 'layouts/layout.html' %}
 {% elif layout == 'layout_fichas' %}
@@ -103,3 +104,110 @@
 <script>  
 </script>
 {% endblock %}
+=======
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% elif layout == 'layout_administracion' %}
+    {% extends 'layouts/layout_administracion.html' %}
+{% endif %}
+
+{% block title %}Muestra planes existentes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card mt-3 mx-auto">
+                <div class="card-body">
+                    <h2 class="card-title text-center text-black">Planes Existentes</h2>
+                    <div class="table-responsive">
+                        <table class="table" id="plansTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Frecuencia</th>
+                                    <th>Monto</th>
+                                    <th>Motivo</th>
+                                    <th>Frecuencia Tipo</th>
+                                    <th>Moneda</th>
+                                    <th>Repeticiones</th>
+                                    <th>Día de facturación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Contenido dinámico -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal fade" id="modificarModal" tabindex="-1" aria-labelledby="modificarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modificarModalLabel" style="color: black;">Modificar Plan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="modificarForm">
+            <div class="mb-3">
+              <label for="planFrequency" class="form-label" style="color: black;">Frecuencia</label>
+              <input type="text" class="form-control" id="planFrequency" required>
+            </div>
+            <div class="mb-3">
+              <label for="planAmount" class="form-label" style="color: black;">Monto</label>
+              <input type="text" class="form-control" id="planAmount" required>
+            </div>
+            <div class="mb-3">
+              <label for="planReason" class="form-label" style="color: black;">Razón</label>
+              <input type="text" class="form-control" id="planReason" required>
+            </div>
+            <div class="mb-3">
+              <label for="planFrequencyType" class="form-label" style="color: black;">Tipo de Frecuencia</label>
+              <input type="text" class="form-control" id="planFrequencyType" required>
+            </div>
+            <div class="mb-3">
+              <label for="planCurrencyId" class="form-label" style="color: black;">Moneda</label>
+              <input type="text" class="form-control" id="planCurrencyId" required>
+            </div>
+            <div class="mb-3">
+              <label for="planRepetitions" class="form-label" style="color: black;">Repeticiones</label>
+              <input type="text" class="form-control" id="planRepetitions" required>
+            </div>
+            <div class="mb-3">
+              <label for="planBillingDay" class="form-label" style="color: black;">Día de Facturación</label>
+              <input type="text" class="form-control" id="planBillingDay" required>
+            </div>
+            <input type="hidden" id="planId">
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          
+          <button type="button" class="btn btn-primary" onclick="submitModificarForm()">Guardar cambios</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+{% include 'layouts/layout_footer.html' %}
+<script>  
+</script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

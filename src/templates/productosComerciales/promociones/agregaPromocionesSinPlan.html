@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout' %}
     {% extends 'layouts/layout.html' %}
 {% elif layout == 'layout_fichas' %}
@@ -224,3 +225,231 @@
 {% include 'layouts/layout_footer.html' %}
 <script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script>
 {% endblock %}
+=======
+{% if layout == 'layout' %}
+    {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+    {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+    {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+    {% extends 'layouts/layout_signal.html' %}
+{% elif layout == 'layout_administracion' %}
+    {% extends 'layouts/layout_administracion.html' %}
+{% endif %}
+{% block content %}
+<style>
+    #planesTable th:nth-child(1),
+    #planesTable td:nth-child(1) {
+        display: none; /* Ocultar la primera columna */
+    }
+    #planesTable th:nth-child(2),
+    #planesTable td:nth-child(2) {
+        display: none; /* Ocultar la segunda columna */
+    }
+
+    /* Estilos para centrar los elementos */
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+   
+    body {
+        background-color: black;
+        color: white;
+    }
+    .modal-header .close {
+        color: white;
+    }
+    .modal-title {
+        color: white; /* Color blanco para el título del modal */
+    }
+    .modal-content {
+        background-color: black;
+        color: white;
+    }
+
+    .form-control {
+        color: black;
+    }
+
+    
+
+    @media (max-width: 576px) {
+        .modal-dialog {
+            max-width: 100%;
+            margin: 0;
+        }
+        .modal-content {
+            border-radius: 0;
+        }
+    }
+   
+</style>
+
+<div class="container mt-auto">
+    <!-- Tarjeta para Armar Promociones -->
+    
+    <div class="col-md-5">
+         <!-- Botón "Enviar Tabla" debajo de la tarjeta "Armar Promociones" -->
+        <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#modalAgregarPromocionSinPlan">
+           Crear promocion
+        </button>   
+     
+    </div>
+
+
+
+    
+    <!-- Tarjeta para Promociones Actuales -->
+    <div class="col-md-5">
+        <div class="card mt-3">
+            <div class="card-body">
+                <h2 class="card-title text-center text-black">Promociones Actuales</h2>
+                <div class="table-responsive">
+                    <table class="table" id="promocionesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Precio</th>
+                                <th>Descripción</th>
+                                <th>Razón</th>
+                                <th>Descuento</th>
+                                <th>Estado</th> 
+                                <th>Moneda</th> 
+                                <th>Cluster</th>                                
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Contenido dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- Modal para cargar promociones -->
+
+        <div class="modal fade" id="modalAgregarPromocionSinPlan" tabindex="-1" aria-labelledby="exampleModalLabelAgregarPromocion" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Agregar Promocion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container p-4">   
+                            <div class="table-responsive">  
+                                <form id="promotionFormAgregarPromocion">
+                                    <div class="form-group">
+                                        <label for="promotionPrice1">Precio</label>
+                                        <input type="text" class="form-control" id="promotionPrice1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionDescription1">Descripción</label>
+                                        <input type="text" class="form-control" id="promotionDescription1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionDiscount1">Descuento</label>
+                                        <input type="text" class="form-control" id="promotionDiscount1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionReason1">Razón</label>
+                                        <input type="text" class="form-control" id="promotionReason1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionStatus1">Estado</label>
+                                        <input type="text" class="form-control" id="promotionStatus1" required>
+                                    </div>                            
+                                    <div class="form-group">
+                                        <label for="promotionCurrency1">Moneda</label>
+                                        <input type="text" class="form-control" id="promotionCurrency1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionCluster1">Cluster</label>
+                                        <input type="text" class="form-control" id="promotionCluster1" required>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="savePromotionBtnAgregarPromocion">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+       
+        <div class="modal fade" id="modalModificaPromocion" tabindex="-1" aria-labelledby="ModalLabelmodalModificaPromocion" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Modifica Promocion</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container p-4">   
+                            <div class="table-responsive">  
+                                <form id="promotionFormModificaPromocion">
+                                    <div class="form-group">
+                                        <label for="promotionId">ID</label>
+                                        <input type="text" class="form-control" id="promotionId" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionPrice">Precio</label>
+                                        <input type="text" class="form-control" id="promotionPrice" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionDescription">Descripción</label>
+                                        <input type="text" class="form-control" id="promotionDescription" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionDiscount">Descuento</label>
+                                        <input type="text" class="form-control" id="promotionDiscount" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionReason">Razón</label>
+                                        <input type="text" class="form-control" id="promotionReason" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionStatus">Estado</label>
+                                        <input type="text" class="form-control" id="promotionStatus" required>
+                                    </div>                            
+                                    <div class="form-group">
+                                        <label for="promotionCurrency">Moneda</label>
+                                        <input type="text" class="form-control" id="promotionCurrency" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="promotionCluster">Cluster</label>
+                                        <input type="text" class="form-control" id="promotionCluster" required>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="savePromotionBtnModificaPromocion">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+{% include 'layouts/layout_footer.html' %}
+<script src="{{url_for('static',filename='js/promociones/promociones.js')}}"></script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

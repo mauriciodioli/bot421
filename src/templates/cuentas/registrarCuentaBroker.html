@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'layouts/layout.html' %}
 {% block content %}
 <div class="splash-container" id="splash" style="display:none">
@@ -319,4 +320,327 @@ window.addEventListener('DOMContentLoaded', cargarOpcionesCombo);
 </body>
 
 
+=======
+{% extends 'layouts/layout.html' %}
+{% block content %}
+<div class="splash-container" id="splash" style="display:none">
+  {% include 'notificaciones/splashPage.html' %}
+</div>
+  
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="flash-messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+  
+<body> 
+
+  <div class = 'container p-4' id="contenido">
+    <h2 id="mensaje" style="text-align: center;">AGREGAR CUENTA DE BROKER O VER SEÑALES</h2>
+    <h1 name = "mensaje_correo_electronico" id = "mensaje_correo_electronico" ></h1>
+    
+    <div class="container" id="cardIndex">                
+      <div class="card-body cardIndexCuentaBroker">
+          <div class="row">
+              <div class="col text-start">                  
+                  <h5 style="color: rgb(252, 252, 252);">Agregar Broker</h5>
+              </div>
+          </div>
+         
+          <div class="row mt-3">
+              <div class="col text-center">
+                  <h5 style="color: rgb(252, 252, 252);">Press Enter to add broker.</h5>
+                  <button id="btnagregarCuentaBroker" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
+                          onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                          data-bs-toggle="modal" data-bs-target="#agregarCuentaBroker">Agregar Broker</button>
+              </div>
+          </div>
+          
+      </div>
+    </div>
+
+  
+
+
+
+    <div class="container" id="cardCuentaBroker">                
+      <div class="card-body cardIndexCuentaBroker">
+          <div class="row">
+              <div class="col text-start">                  
+                  <h5 style="color: rgb(252, 252, 252);">Cuentas de Brokers Registradas</h5>
+              </div>
+          </div>
+         
+          <div class="row mt-3">
+              <div class="col text-center">
+                <h6 style="color: rgb(252, 252, 252);">Press Enter to lock the account for operation.</h6>                  
+                  <form  name="get_cuentas_de_broker_usuario" action="/get_cuentas_de_broker_usuario" method="post" class="btn-guardar_inst">
+                    <input type="hidden" name="access_token" id="access_token">
+                    <div class="col">                            
+                        <button onclick="mostrarSplash()" id="enviarSolicitud" type="submit" class="btn btn-secondary w-100" style="transition: box-shadow 0.3s;"
+                          onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                          data-bs-toggle="modal" >Cuentas existentes</button>
+                    </div>
+                  </form>
+                  
+              </div>
+          </div>
+          
+      </div>
+    </div>
+
+
+
+
+
+    <div class="container" id="cardIndex">                
+      <div class="card-body cardIndexCuentaBroker">
+          <div class="row">
+              <div class="col text-start">
+                     <h5 style="color: rgb(252, 252, 252);">Signals</h5>
+              </div>
+          </div>
+         
+          <div class="row mt-3">
+              <div class="col text-center">
+                  <h5 style="color: rgb(252, 252, 252);">Press Enter to lock the signal for operation.</h5>
+                  <button id="detener" type="button" class="btn btn-success w-100" style="transition: box-shadow 0.3s;"
+                          onmouseover="this.style.boxShadow='0 0 10px 5px red';" onmouseout="this.style.boxShadow='none';"
+                          data-bs-toggle="modal" data-bs-target="#modalSeleccionPais">Signals</button>
+              </div>
+          </div>
+          
+      </div>
+    </div>
+
+
+
+<!-- Modal Agregar cuenta broker-->
+<div class="modal fade" id="agregarCuentaBroker" tabindex="-1" aria-labelledby="agregarCuentaBrokerLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="agregarCuentaBrokerLabel" style="color: black;">Registrar Cuenta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid p-4">
+          <div class="table-responsive">
+            <form name="registrar_cuenta" action="/registrar_cuenta" method="post" class="btn-guardar_inst">
+              <input type="hidden" name="fecha" id="fecha" class="mb-3">
+              <input type="hidden" name="access_token" id="access_token" class="mb-3">
+              <input type="hidden" name="correo_electronico" id="correo_electronico" class="mb-3">
+              <input type="hidden" name="environment" id="environment" class="mb-3">
+              <input type="hidden" name="origin_page" value="registrarCuentaBroker" class="mb-3">
+
+              <div class="form-group">
+                <input type="text" name="usuario" class="form-control mb-3" placeholder="user">
+              </div>
+              <div class="form-group">
+                <input type="text" name="cuenta" class="form-control mb-3" placeholder="account">
+              </div>
+              <div class="form-group">
+                <input type="text" name="contraseña" class="form-control mb-3" placeholder="password">
+              </div>
+
+              <input type="hidden" name="broker_id" id="broker_id" class="mb-3">
+              <input type="hidden" name="broker_nombre" id="broker_nombre" class="mb-3">
+
+              <div class="form-group">
+                <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment1" id="selctorEnvironment1">
+                  <option selected>Open this select menu</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <select class="form-select mb-3" aria-label="Default select example" name="selctorEnvironment2" id="selctorEnvironment2">
+                  <option selected>Open this select menu</option>
+                  <option value="1">Simulacion</option>
+                  <option value="2">Produccion</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary my-2">Agregar cuenta</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal para seleccionar el país -->
+<div class="modal fade" id="modalSeleccionPais" tabindex="-1" aria-labelledby="modalSeleccionPais" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Encabezado del modal -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalVacioLabel">Seleccionar País</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- Cuerpo del modal (puedes dejarlo vacío o agregar contenido) -->
+       <!-- Cuerpo del modal (agrega un select para elegir entre Argentina y USA) -->
+       <div class="modal-body">
+        <p>Por favor, selecciona tu país:</p>
+        <select class="form-select mb-3" id="seleccionarPais">
+          <option value="" selected disabled>Select a Country</option> <!-- Opción sin valor por defecto -->
+          <option value="argentina">Argentina</option>
+          <option value="usa">USA</option>
+        </select>
+      </div>
+      <!-- Pie del modal (puedes dejarlo vacío o agregar botones) -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button onclick="mostrarSplash()" type="button" class="btn btn-primary" id="guardarPais">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% include 'layouts/layout_footer.html' %}   
+    <script>   
+
+      function mostrarSplash() {
+        document.getElementById("splash").style.display = "block";
+      }
+
+      document.getElementById('guardarPais').addEventListener('click', function() {
+        document.getElementById('splash').style.display = 'block';
+        document.getElementById('contenido').style.display = 'none';
+        var selectedCountry = document.getElementById('seleccionarPais').value;
+        var usuario_id =localStorage.getItem('usuario_id');
+        access_token = localStorage.getItem('access_token');
+        refresh_token = localStorage.getItem('refresh_token');
+        var selector = localStorage.getItem('selector');
+        localStorage.setItem('paisSeleccionado', selectedCountry);
+        $('#modalSeleccionPais').modal('hide'); // Esta línea cierra el modal
+         // Redirigir a la ruta /panel_control_sin_cuenta
+        layoutOrigen = 'layout'; // Cambia 'nombre_del_layout' por el valor deseado
+        var url = '/panel_control_sin_cuenta?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token+'&selector='+selector;
+        window.location.href = url;
+      });   
+  // en este script cargo el correo electrónico almacenado en el localStorage
+  access_token = localStorage.getItem("access_token");
+  correo_electronico = localStorage.getItem("correo_electronico");
+
+  let enlace_correo = "<a href='mailto:" + correo_electronico + "' style='text-decoration:none'>" + correo_electronico + "</a>";
+  document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+  document.getElementById("correo_electronico").value = correo_electronico;
+
+  $(document).ready(function() {
+    // Escuchar el evento de cambio en el combobox 1
+    $("#selctorEnvironment1").change(function() {
+      // Obtener el valor seleccionado
+      
+      var selectedValue = $(this).val();
+    
+  
+      // Asignar el valor al campo de entrada oculto "environment" en el formulario 1
+      $("input[name='broker_id']").val(selectedValue);
+    });
+  
+    // Escuchar el evento de cambio en el combobox 2
+    $("#selctorEnvironment2").change(function() {
+      // Obtener el valor seleccionado
+      var selectedValue2 = $(this).val();
+     
+  
+      // Asignar el valor al campo de entrada oculto "environment" en el formulario 2
+      $("input[name='environment']").val(selectedValue2);
+    });
+  
+    // Asignar el valor del access token al campo oculto en ambos formularios
+    $("input[name='access_token']").val(access_token);
+    $("input[name='access_token_form2']").val(access_token);
+  });
+
+
+  function cargarOpcionesCombo() {
+    // Realizar una solicitud Ajax para obtener las opciones del combo
+    fetch('/cuenta-endpoint-all/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            accessToken: access_token // Reemplaza 'TOKEN_AQUI' con el token adecuado
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const selectElement = document.getElementById('selctorEnvironment1');
+        // Limpiar las opciones existentes
+        selectElement.innerHTML = '';
+
+        // Agregar la opción inicial
+        const initialOption = document.createElement('option');
+        initialOption.value = ''; // Opcional: puedes asignar un valor específico aquí si lo necesitas
+        initialOption.textContent = 'Open this select menu';
+        selectElement.appendChild(initialOption);
+
+        // Agregar las nuevas opciones desde los datos obtenidos
+        data.endpoints.forEach(endpoint => {
+            const optionElement = document.createElement('option');
+            optionElement.value = endpoint.id; // Cambiar por el valor correcto
+            optionElement.textContent = endpoint.nombre; // Cambiar por el texto correcto
+            selectElement.appendChild(optionElement);
+        });
+
+        // Agregar un event listener para el cambio en el selector de entorno
+        selectElement.addEventListener('change', function() {
+            // Obtener el valor y el texto seleccionados
+            const selectedOption = this.options[this.selectedIndex];
+            const brokerId = selectedOption.value;
+            const brokerNombre = selectedOption.textContent;
+
+            // Actualizar los campos ocultos con los valores seleccionados
+            document.getElementById('broker_id').value = brokerId;
+            document.getElementById('broker_nombre').value = brokerNombre;
+        });
+    })
+    .catch(error => {
+      console.error('Error al cargar opciones del combo:', error);
+      alert('Hubo un problema al cargar las opciones del combo. Por favor, logee nuevamente en el sistema puede haber vencido el token de acceso o inténtalo de nuevo más tarde o contacta al soporte técnico.');
+  });
+}
+
+
+
+// Llamar a la función para cargar las opciones del combo cuando la página se cargue
+window.addEventListener('DOMContentLoaded', cargarOpcionesCombo);
+
+
+
+
+     
+    </script>
+    
+
+    </div>
+  </div>
+</body>
+
+
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 {% endblock%}

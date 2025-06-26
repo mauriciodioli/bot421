@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout' %}
 {% extends 'layouts/layout.html' %}
 {% endif %}
@@ -59,3 +60,66 @@ mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito,layout,categoria);
 </script>
 
 {% endblock %}
+=======
+{% if layout == 'layout' %}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas' %}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layout_dpi' %}
+{% extends 'layouts/layout_dpi.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+
+{% if layout == 'layout_muestra_imagenes_dpi' %}
+{% extends 'layouts/layout_muestra_imagenes_dpi.html' %}    
+{% endif %}
+
+{% block title %}Publicación en Ámbitos{% endblock %}
+{% block content %}
+
+
+
+
+<div class="home-publicaciones-en-ambitos-personales">
+    <div class="splashCarga" id="splashNotificaciones" style="display: none;">
+        <div class="splash-contenido">
+            <div class="spinner"></div>
+          </div>
+      </div>
+    
+    
+    <div class="home-muestra-publicaciones-en-ambitos-personales-centrales">
+        <!-- Aquí se insertarán las publicaciones dinámicamente -->
+    </div>
+</div>
+{% include 'layouts/layout_footer.html' %}
+<!-- Incluye el archivo JavaScript --> 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitoPersonales.css') }}">
+
+  
+<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
+
+<script>
+    var publicacionId = '{{ publicacion_id }}';
+    var userId = '{{ user_id }}'; 
+    var ambito = '{{ ambito }}'; 
+    var layout = '{{ layout }}'; 
+    var categoria = '{{ categoria }}';
+   
+mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito,layout,categoria);   
+ 
+</script>
+
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

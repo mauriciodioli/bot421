@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Navbar Pro Stylesheet *//* --- Navbar Pro --- */
 .navbar-pro {
   width: 100%;
@@ -184,4 +185,31 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px);}
   to { opacity: 1; transform: translateY(0);}
+=======
+
+
+/* Asegurarse de que el contenido no se superponga con la barra de navegación fija */
+body {
+    padding-top: 70px;
+  }
+.Nindex {
+    height: 55px;
+    width: 70px;
+    position: fixed;
+    top: 0;
+    background: url('/static/leon.png') no-repeat center left;
+    background-size: contain;
+    display: flex;
+    align-items: center;
+    padding-left: 80px; /* Ajusta según sea necesario */
+}
+
+@media (max-width: 767px) {
+    .Nindex {
+        padding-left: 10px; /* Ajusta según sea necesario para dispositivos móviles */
+    }
+}
+section[id]{
+    scroll-margin-top: 70px;
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 }

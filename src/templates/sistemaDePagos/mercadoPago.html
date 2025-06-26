@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,3 +66,72 @@
     </script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Pago</title>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="wallet_container"></div>
+    <button id="checkout-btn">Crear Preferencia de Pago</button>
+
+    <script>
+        const mp = new MercadoPago('TEST-5717567227383881-060409-86ebecdf49c0e821fe365714a8c63020-1835443126', {
+            locale: 'es-AR'
+        });
+
+        async function createPreference() {
+            try {
+                const response = await fetch('/crear_preferencia', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        // Puedes enviar datos adicionales al servidor si los necesitas
+                    })
+                });
+                
+                const data = await response.json();
+                const preferenceId = data.preference_id;
+                
+                await createCheckoutButton(preferenceId);
+            } catch (error) {
+                console.error('Error al crear la preferencia:', error);
+            }
+        }
+        
+        async function createCheckoutButton(preferenceId) {
+            const bricksBuilder = mp.bricks();
+            
+            try {
+                await bricksBuilder.create("wallet", "wallet_container", {
+                    initialization: {
+                        preferenceId: preferenceId,
+                    }
+                });
+                
+                // Si necesitas realizar más acciones después de crear el botón, puedes hacerlo aquí
+            } catch (error) {
+                console.error('Error al crear el botón de pago:', error);
+            }
+        }
+        
+        async function initializePayment() {
+            await createPreference();
+        }
+        
+        // Llamamos a la función para iniciar el proceso de pago cuando el botón es clickeado
+        document.getElementById('checkout-btn').addEventListener('click', function() {
+            initializePayment();
+        });
+        
+    </script>
+</body>
+</html>
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

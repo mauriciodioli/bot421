@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .chat-icon {
     position: fixed;
     bottom: 20px;
@@ -100,4 +101,108 @@
   .chat-body {
     max-height: 300px;
     overflow-y: auto;
+=======
+.chat-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #eeff00;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 24px;
+    text-align: center;
+}
+
+.chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.chat-header {
+    padding: 10px;
+    background-color: #21262b;
+    color: rgb(229, 250, 37);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Estilos para el botón de cerrar */
+.chat-header button {
+    background: none;
+    border: none;
+    color: #ffffff; /* Cambia el color si quieres que sea más visible */
+    font-size: 20px; /* Tamaño del texto */
+    cursor: pointer;
+    position: absolute;
+    right: 10px; /* Posición a la derecha */
+    top: 10px; /* Posición en la parte superior */
+  }
+
+  .chat-header button:hover {
+    color: #fff177; /* Cambia el color al pasar el ratón sobre la 'X' */
+  }
+
+.chat-body {
+    padding: 10px;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.chat-footer {
+    padding: 10px;
+    background-color: #eee;
+    display: flex;
+    gap: 10px;
+}
+
+#chatMessage {
+    flex-grow: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#sendMessage {
+    background-color: #21262b;
+    color: #eeff00;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.user-message {
+    background-color: #eeff00; /* Fondo amarillo para los mensajes del usuario */
+    color: black; /* Texto negro */
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+    text-align: right; /* Alineación a la derecha */
+  }
+
+  .admin-message {
+    background-color: #0000ff; /* Fondo azul para los mensajes del administrador */
+    color: white; /* Texto blanco */
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+    text-align: left; /* Alineación a la izquierda */
+  }
+ 
+  .chat-body {
+    max-height: 300px;
+    overflow-y: auto;
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
   }

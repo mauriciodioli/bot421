@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout'%}
     {% extends 'layouts/layout.html' %}
 {% endif %}
@@ -26,3 +27,33 @@
 </div>
 {% include 'layouts/layout_footer.html' %}
 {% endblock%}
+=======
+{% if layout == 'layout'%}
+    {% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+    {% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_detalle_productos' %}
+   {% extends 'layouts/layout_detalle_productos.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+   {% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout_dpi' %}
+   {% extends 'layouts/layout_dpi.html' %}    
+{% endif %}
+{% block content %}
+
+<div class="jumbotron">
+  <h1 class="display-4">No esta logueado!</h1>  
+  <h1 class="display-4">Logee Nuevamente en el sistema!</h1>  
+</div>
+{% include 'layouts/layout_footer.html' %}
+{% endblock%}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

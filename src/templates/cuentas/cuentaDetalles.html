@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/templates/cuentas/cuentaDetalles.html
 {% with messages = get_flashed_messages()%}
 {% if messages %}
 {% for message in messages%}  
@@ -48,4 +49,56 @@
         </div>
 {% include 'layouts/layout_footer.html' %}   
 {%endblock%}
+=======
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for message in messages%}  
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+{% extends 'layouts/layoutConexBroker.html'%}
+{% block content%}
+
+            <div class = 'container p-4'>                
+                  <div class = 'container p-4'>
+                <div class="table-responsive">
+                  <table class="table table-dark table-striped">
+                    <thead>           
+                        <tr>
+                            <th scope="col">account</th>
+                            <th scope="col">MiemMarket</th>
+                            <th scope="col">portfolio</th>                            
+                            <th scope="col">lastCalculation</th>
+                            <th scope="col">currenCash</th>
+                            <th scope="col">uncoveredMargin</th>
+                            <th scope="col">availabreToColateral</th>
+                            <th scope="col">name</th>
+
+                        </tr>            
+                    </thead>
+                    <tbody>
+                      
+                     
+                        <tr>
+                            <th scope="row">{{datos.accountName}}</th>
+                            <td>{{datos.marketMember}}</td>
+                            <td>{{datos.portfolio}}</td>
+                            <td>{{datos.lastCalculation}}</td>  
+                            <td>{{datos.currentCash}}</td>  
+                            <td>{{datos.uncoveredMargin}}</td> 
+                            <td>{{datos.availableToCollateral}}</td>  
+                            <td>{{datos.personName}}</td>  
+                          </tr>  
+                    </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+{% include 'layouts/layout_footer.html' %}   
+{%endblock%}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719:src/templates/cuentaDetalles.html
  

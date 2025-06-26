@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'layouts/layout_without_navbar.html' %}
 
 {% block content %}
@@ -46,4 +47,51 @@
 
 
 <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/usuarios/registrarUsuarioRegion.css') }}">
+=======
+{% extends 'layouts/layout_without_navbar.html' %}
+
+{% block content %}
+
+<h1>Registrarse como usuario</h1>
+<div id="cardIndex">
+    <div class="cardIndexPlanes">
+        <!-- Contenido de la tarjeta -->
+        <div id="seleccionPais">
+            <label for="pais">Selecciona tu país:</label>
+            <select id="pais" class="form-select" onchange="seleccionarIdioma()">
+                <option value="">--Seleccionar--</option>
+            </select>
+        </div>
+        
+        <div id="seleccionLenguaje" style="display: none;">
+            <label for="lenguaje">Selecciona tu idioma:</label>
+            <select id="lenguaje" class="form-select" onchange="mostrarCodigoPostal()">
+                <option value="">--Seleccionar--</option>
+            </select>
+        </div>
+        
+        <div id="seleccionCodigoPostal" style="display: none;">
+            <label for="codigoPostal">Ingresa tu código postal:</label>
+            <input type="text" id="codigoPostal" class="form-control" onblur="enviarDatos()">
+        </div>
+
+        <!-- Campos ocultos para correo_electronico y password -->
+        <input type="hidden" id="correo_electronico" value="{{ correo_electronico }}">
+        <input type="hidden" id="password" value="{{ password }}">
+    </div>
+</div>
+
+
+
+
+
+
+
+{% include 'layouts/layout_footer.html' %}  
+<script src="{{ url_for('static', filename='js/usuarios/usuarioUbicacion.js') }}"></script>
+<script src="{{ url_for('static', filename='js/usuarios/registrarUsuarioRegion.js') }}"></script>
+
+
+<link rel=   "stylesheet" href=" {{ url_for('static', filename='css/usuarios/registrarUsuarioRegion.css') }}">
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
 {% endblock %}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout_detalle_productos' %}
 {% extends "layouts/layout_detalle_productos.html" %}
 {% endif %}
@@ -49,3 +50,56 @@
     </div>
 </div>
 {% endblock %}
+=======
+{% if layout == 'layout_detalle_productos' %}
+{% extends "layouts/layout_detalle_productos.html" %}
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_index' %}
+{% extends 'layouts/layout_index.html' %}    
+{% endif %}
+{% block title %}Bot Automático{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div id="promotionsCarousel" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+            {% for promotion in promotions %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <div class="card">
+                    <img src="{{ promotion.image_url }}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ promotion.title }}</h5>
+                        <p class="card-text">{{ promotion.description }}</p>
+                        <p class="card-text"><strong>Price: </strong>{{ promotion.price }} ARS</p>
+                        <p class="card-text"><strong>Discount: </strong>{{ promotion.discount }}%</p>
+                        <a href="#" class="btn btn-primary">Select</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <a class="carousel-control-prev" href="#promotionsCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#promotionsCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+</div>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

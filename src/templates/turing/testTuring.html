@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends 'layouts/layout_turing.html' %}
 
 {% block content %}
@@ -401,3 +402,408 @@
 <script src="{{ url_for('static', filename='js/media/turing/trivia.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/turing/testTuringMenuCategorias.js') }}"></script>
 {% endblock %}
+=======
+{% extends 'layouts/layout_turing.html' %}
+
+{% block content %}
+<div class="splash-container" id="splash" style="display:none">
+  {% include 'notificaciones/splashPage.html' %}
+</div>
+<div class="container margin-arriba">
+  <div class="row"></div>
+  <div class="container mt-5" style="margin-top: 80px;"></div>
+  <div class="row">
+    <div class="col-md-12">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+  </div>
+ 
+     
+  <div class="splashCarga" id="splashNotificaciones" style="display: none;">
+    <div class="splash-contenido">
+        <div class="spinner"></div>
+      </div>
+  </div>
+
+  <!-- Grilla Principal -->
+  <div class="row gx-4 gy-4">
+    <!-- Panel de Preguntas -->   
+    <div class="col-md-4">
+        <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Preguntas</h3>
+        
+        <div class="panel-preguntas border p-3 shadow" style="max-height: 460px; overflow-y: scroll;" id="panel-preguntas">
+         <h3 class="text-center mb-3"></h3>
+                <ul id="preguntas-lista" class="list-group">
+               
+                </ul>
+        </div>
+
+        <!-- Panel Respuesta con margen superior -->
+        <h3 class="text-center mb-3" id="respuestaUltimaPregunta" 
+            style="position: sticky; top: 10px; background-color: gold; color: black; border: 2px solid white; z-index: 1; margin-top: 10px; cursor: pointer;">
+            Responder a Última Pregunta
+        </h3>
+    </div>
+
+    <!-- Panel de Respuesta y Acción dividido en 3 filas -->
+    <div class="col-md-4">
+        <div class="row mb-3">
+            <div class="col">
+              <div class="panel-superior border p-3 shadow position-relative" style="background-color: black; border: 2px solid white; color: white;">
+                 <!-- Botón abajo a la izquierda -->
+                 <button class="btn position-absolute" 
+                    style="top: 10px; left: 10px; background-color: #9a9a98; border: 2px solid #FFD700;"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#infoModal">
+                    Info
+                </button>
+         
+                
+                
+                
+                <!-- Botón arriba a la derecha -->
+                <button class="btn position-absolute" id="btnAbrirModalSucribe" style="top: 10px; right: 10px; background-color: #FFD700; border: 2px solid #FFD700;">Subscribe</button>
+                
+                <h4 class="fw-bold text-center">AI Level  <span id= "resutaldo_triva" style="color: #90EE90;">70%</span></h4>
+                <span id="resultado_texto" style="font-size: 28px; margin-left: 10px; float: right;"></span> <!-- Aquí se muestra "Correcto" o "Incorrecto", alineado a la derecha -->
+
+
+                <p class="text-center" style="color: rgb(0, 0, 0); position: relative; right: 10px;">
+                    ← para hacer preguntas
+                  </p>
+                  
+                
+                <!-- Botón abajo a la izquierda -->
+                <button class="btn position-absolute" 
+                style="bottom: 10px; left: 10px; background-color: #FFD700; border: 2px solid #FFD700;" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modelModal">
+                Model
+            </button>
+            
+
+              </div>
+            </div>
+          </div>
+          
+
+          <div class="row ">
+            <div class="col">
+              <div class="panel-flechas  text-center">
+                <!-- Flechas para navegación -->
+                <div class="flechas d-flex justify-content-between">
+                  <p class="text-center" style=" right: 10px;">
+                    ← pregunta ahora
+                  </p>
+                  <p class="text-center" style=" right: 10px;">
+                    quien pregunta →
+                  </p>                  
+                 
+                
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          
+          <div class="row ">
+            <div class="col">
+                <div class="panel-respuesta text-center  p-3 shadow text-center">
+                  
+                    <div class="User">
+                        <p class="text-center" style="margin: 0; font-size: 1.2em;">
+                            USER
+                        </p>                   
+                        <div id="nombre-panel-principal-superior">
+                            <!-- Aquí se cargarán el nombre -->
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+          
+          
+
+        <div class="row mb-3">
+          <div class="col">
+              <div class="panel-respuesta border p-3 shadow text-center">
+                  <div id="respuesta-estado" class="mb-3">
+                      <span id="respuesta-texto" class="fw-bold">La última respuesta fue:</span>
+                     <!-- <div id="atributos-respuesta">
+                       
+                      </div>
+                    -->
+                      <div id="respuesta-panel-principal">
+                          <!-- Aquí se cargarán las respuestas dinámicamente -->
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+        
+
+            <div class="row">
+              <div class="col">
+                  <div class="panel-inferior border p-3 shadow text-center" style="background-color: black; border: 2px solid white; color: white; position: relative;">
+                      <h4 class="fw-bold">Apuntar</h4>
+                      <p>Con los botones responde quién respondió</p>
+                      <!-- Botones rojo y verde -->
+                      <div class="botones-inferior mt-3">
+                          <button id="btnMaquina" class="btn btn-danger me-3">Maquina</button>
+                          <button id="btnHumano" class="btn btn-success">Humano</button>
+                      </div>
+                      <!-- Botones redondos dentro del panel -->
+                      <button id="btnGris" class="boton-esquina gris"></button>
+                      <button id="btnVerde" class="boton-esquina verde"></button>
+                  </div>
+              </div>
+          </div>
+      
+      
+    </div>
+
+    <!-- Panel de Chat -->
+    <div class="col-md-4">
+        <h3 class="text-center mb-3" style="position: sticky; top: 0; background-color: black; color: white; border: 2px solid white; z-index: 1;">Chat</h3>
+        <div class="panel-chat border p-3 shadow" style="max-height: 460px; overflow-y: auto;" id="panel-chat">
+          <h3 class="text-center mb-3"></h3>
+          <ul id="chat-lista" class="list-group">        
+            <li class="list-group-item d-flex align-items-center">
+              <img src="avatar.png" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px;">
+              <div>
+                
+              </div>
+            </li>
+          </ul>
+        </div>
+            <!-- Panel Respuesta con margen superior -->
+            <h3 class="text-center mb-3" id="preguntar" 
+                style="position: sticky; top: 10px; background-color: gold; color: black; border: 2px solid white; z-index: 1; margin-top: 10px; cursor: pointer;">
+                Hacer una Pregunta
+            </h3>
+      </div>
+      
+
+
+
+
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!------------------------------------------MODALES-------------------------------------------------->
+<!-- Dropdown para categorías -->
+<div 
+    id="categoriaMenu" 
+    class="dropdown-menu" 
+    style="display: none; position: absolute; z-index: 2;">
+  <p class="text-center mb-2">Seleccione una categoría:</p>
+  <ul class="list-group">
+    <li class="list-group-item categoria-item" data-categoria="categoria-Todas">Todas</li>
+    <li class="list-group-item categoria-item" data-categoria="pregunta-Privada">Personal</li>  
+    <li class="list-group-item preguntaSeleccionada-item" data-preguntaSeleccionada="pregunta-seleccionada">Selected question</li>  
+  </ul>
+   <!-- Control para modificar el tiempo de lectura -->
+  <div class="text-center mt-3">
+    <p id="tiempoLecturaActual" class="mb-1">Tiempo de lectura: 1000 ms</p> <!-- Este valor se actualiza dinámicamente -->
+    <button id="incrementarTiempo" class="btn btn-success btn-sm me-1">+</button>
+    <button id="decrementarTiempo" class="btn btn-danger btn-sm">-</button>
+  </div>
+</div>
+
+
+
+<!-- Modal para seleccionar el modelo -->
+<div class="modal fade" id="modelModal" tabindex="-1" aria-labelledby="modelModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="color: black;" id="modelModalLabel">Select a Model</h5>
+
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <ul class="list-group">                 
+                  <li class="list-group-item" data-bs-dismiss="modal" id="gpt4">GPT-4</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="gpt2Model">GPT-2</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="deepSeekModel">DEEP_SEEK</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="bertModel">BERT</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="distilbertModel">DistilBERT</li>
+                  <li class="list-group-item" data-bs-dismiss="modal" id="conectar">Connect</li>
+
+              </ul>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+<!-- Modal para información -->
+<div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="infoModalLabel" style="color: black;">Información sobre el testTuring</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p style="color: black;">El Test de Turing es una prueba desarrollada por el matemático y científico de la computación Alan Turing en 1950</p>
+        <p style="color: black;">Su propósito es determinar si una máquina puede exhibir un comportamiento inteligente indistinguible del de un ser humano.</p>
+        <p style="color: black;">El interrogador tiene una conversación con el humano y la máquina .</p>
+        <p style="color: black;">Consta de distintos tipos de preguntas</p>
+        <p style="color: black;">Presentación breve</p>
+        <p style="color: black;">Pregunta sencilla para iniciar la conversación</p>
+        <p style="color: black;">Pregunta lógica para evaluar razonamiento</p>
+        <p style="color: black;">Pregunta emocional o subjetiva</p></p></p></p>
+        <p style="color: black;">Pregunta inesperada o creativa</p></p>
+        <p style="color: black;">Pregunta ambigua o cultural</p></p>
+        <p style="color: black;">Observación final para evaluar en %</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal de agregar pregunta desde chat-->
+<div class="modal fade" id="preguntaModal" tabindex="-1" aria-labelledby="preguntaModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="preguntaModalLabel" style="color: black;">Pregunta</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <input type="text" id="preguntaInput" class="form-control" placeholder="Escribe tu pregunta..." style="color: black;">
+              
+              <!-- Checkbox para mostrar/ocultar respuestaInputForUserChat -->
+              <div class="form-check mt-3">
+                  <input class="form-check-input" type="checkbox" id="mostrarRespuestaCheckbox">
+                  <label class="form-check-label" for="mostrarRespuestaCheckbox" style="color: black;">
+                      Añadir respuesta
+                  </label>
+              </div>
+
+              <!-- Input de respuesta (oculto por defecto) -->
+              <input type="text" id="respuestaInputForUserChat" class="form-control mt-3" placeholder="Escribe tu respuesta..." style="color: black; display: none;">
+
+              <!-- Checkbox para seleccionar idioma -->
+              <div class="form-check mt-3">
+                  <input class="form-check-input" type="checkbox" id="seleccionarIdiomaCheckbox">
+                  <label class="form-check-label" for="seleccionarIdiomaCheckbox" style="color: black;">
+                      Usar idioma español
+                  </label>
+              </div>
+
+
+             <!-- Checkbox para mostrar/ocultar categoriaSelectForUserChat -->
+            <div class="form-check mt-3">
+              <input class="form-check-input" type="checkbox" id="mostrarCategoriasCheckbox">
+              <label class="form-check-label" for="mostrarCategoriasCheckbox" style="color: black;">
+                Añadir Categoría
+              </label>
+            </div>
+
+            <!-- Selección de categoría (oculta por defecto) -->
+            <select id="categoriaSelectForUserChat" class="form-control mt-3" style="color: black; display: none;">
+              <option value="" disabled selected>Selecciona una categoría...</option>
+              <option value="presentacion">Presentación breve</option>
+              <option value="pregunta-sencilla">Sencilla inicia conversación</option>
+              <option value="pregunta-logica">Lógica evalua razonamiento</option>
+              <option value="pregunta-emocional">Emocional</option>
+              <option value="pregunta-Subjetiva">Subjetiva</option>
+              <option value="pregunta-Inesperada">Inesperada</option>
+              <option value="pregunta-creativa">Creativa</option>
+              <option value="pregunta-ambigua">Ambigua</option>
+              <option value="pregunta-Cultural">Cultural</option>
+              <option value="pregunta-Libre">Libre</option>
+              <option value="pregunta-Privada">Privada</option>
+            </select>
+
+
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-primary" id="enviarPreguntaBtn">Enviar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- Modal para agregar respuesta por usuario con tiempo -->
+<div class="modal fade" id="modalrespuestaUltimaPregunta" tabindex="-1" aria-labelledby="modalrespuestaUltimaPreguntaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalrespuestaUltimaPreguntaLabel" style="color: black;">Última Pregunta - Respuesta</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="color: black; position: relative;">
+            <!-- Temporizador en la esquina superior derecha -->
+            <div id="timer" style="position: absolute; top: 10px; right: 10px; font-size: 18px; color: blue; font-weight: bold;">
+                02:00
+            </div>
+            
+            <label for="respuestaInput" class="form-label">Pregunta</label>
+            <h4 id="modalDescripcion" class="form-label"></h4>
+            
+            <input type="hidden" id="modalPreguntaId" class="form-control">
+            <div id="preguntaText" style="margin-bottom: 20px; font-weight: bold;"></div>
+            
+            <form id="respuestaForm">
+                <div class="mb-3">
+                    <label for="respuestaInput" class="form-label">Tu Respuesta</label>
+                    <input type="text" class="form-control" id="respuestaInput" placeholder="Escribe tu respuesta aquí" required>
+                </div>
+                <button type="button" class="btn btn-primary" id="enviarRespuestaBtn">Enviar Respuesta</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+{% include 'layouts/layout_footer.html' %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/media/turing/testTuring.css') }}">
+<script src="{{ url_for('static', filename='js/media/turing/testTuring.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/turing/chatTuring.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/turing/trivia.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/turing/testTuringMenuCategorias.js') }}"></script>
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

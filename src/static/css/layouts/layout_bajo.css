@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .fixed-bottom-layout {
     position: fixed;
     bottom: 0;
@@ -203,3 +204,210 @@
     overflow-y: auto;
     width: 220px; /* Ancho fijo para pantallas más grandes */
 }  
+=======
+.fixed-bottom-layout {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa; /* Color de fondo del layout */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000; /* Para que esté encima de otros elementos */
+    display: none; /* Oculto por defecto */
+}
+
+.fixed-bottom-layout.visible {
+    display: block; /* Mostrar el layout cuando esté visible */
+}
+
+
+
+#bottomLayout.visible {
+    bottom: 0; /* Se muestra cuando está visible */
+}
+#bottomLayout {
+    position: fixed;
+    bottom: 0; /* Visible desde el inicio */
+    width: 100%;
+    background-color: #f8f9fa;
+    transition: bottom 0.5s ease-in-out; /* Controla la velocidad del deslizamiento */
+    z-index: 1000;
+}
+
+#bottomLayout.hidden {
+    bottom: -100px; /* Se desliza hacia abajo cuando está oculto */
+}
+
+.fixed-bottom-layout {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000;
+    display: block;
+    transition: bottom 0.5s ease-in-out;
+}
+
+.fixed-bottom-layout.hidden {
+    bottom: -100px; /* Desliza hacia abajo cuando está oculto */
+}
+
+/* Contenedor de opciones bien distribuido */
+.post-options-layoutBajo {
+    display: flex;
+    justify-content: space-around; /* Distribuye las opciones uniformemente */
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+/* Estilo para cada opción */
+.option-layoutBajo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espacio entre la imagen y el texto */
+}
+
+.option-layoutBajo img {
+    width: 24px;
+    height: 24px;
+}
+
+.option-layoutBajo span {
+    color: #fff; /* Texto en blanco */
+}
+
+
+#bottomLayout {
+    display: flex;
+    justify-content: space-between; /* Distribuye los botones equitativamente */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 10px;
+    background-color: #333;
+}
+
+#bottomLayout .btn {
+    flex: 1; /* Asegura que los botones ocupen el mismo espacio */
+    max-width: 50px; /* Tamaño máximo para los botones, ajustable */
+    display: flex;
+    justify-content: center; /* Centra el contenido del botón */
+    background-color: #fff; /* Fondo blanco */
+    color: #000; /* Texto negro */
+    border: 2px solid #fff; /* Bordes blancos */
+    align-items: center; /* Centra verticalmente el contenido */
+}
+
+/* Espaciado para pantallas grandes */
+@media (min-width: 992px) {
+    #bottomLayout .btn {
+        margin: 0 20px; /* Mayor espacio entre los botones en pantallas grandes */
+    }
+}
+
+/* Espaciado para pantallas medianas (tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+    #bottomLayout .btn {
+        margin: 0 15px; /* Espacio intermedio entre los botones */
+    }
+}
+
+/* Espaciado para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+    #bottomLayout .btn {
+        margin: 0 10px; /* Menor espacio entre los botones en pantallas pequeñas */
+    }
+}
+
+
+
+
+
+
+
+
+/* Contenedor del menú personalizado */
+.custom-dropdown-menu-container {
+    position: relative;
+    display: inline-block;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente, si es necesario */
+}
+
+/* Botón */
+.close-layout-btn {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* Menú desplegable personalizado */
+.custom-dropdown-menu {
+    position: absolute;
+    bottom: 40px; /* Ajusta según el tamaño del botón */
+    left: 0;
+    display: none; /* Oculto por defecto */
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    list-style: none;
+    margin: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 300px; /* Altura máxima del menú */
+    overflow-y: auto; /* Scroll si hay demasiados elementos */
+    width: 220px; /* Ancho fijo para evitar desbordes */
+}
+
+/* Elementos del menú personalizado */
+.custom-dropdown-menu li {
+    padding: 6px 12px;
+    text-align: left;
+}
+
+.custom-dropdown-menu li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    display: block;
+}
+
+.custom-dropdown-menu li:hover {
+    background-color: #e6e6e6;
+}
+
+/* Línea divisoria personalizada */
+.custom-dropdown-divider {
+    margin: 5px 0;
+    border-color: #ddd;
+}
+
+/* Mostrar el menú al pasar el mouse */
+.custom-dropdown-menu-container:hover .custom-dropdown-menu {
+    display: flex; /* Muestra el menú */
+}
+
+/* Evitar que el menú se oculte al mover el mouse hacia los submenús */
+.custom-dropdown-menu {
+    pointer-events: auto; /* Permite interactuar con el menú */
+}
+
+.custom-dropdown-menu-container:hover .close-layout-btn {
+    z-index: 1001; /* Asegura que el botón no se superponga */
+}
+
+/* Ajustes generales */
+.custom-dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+    width: 220px; /* Ancho fijo para pantallas más grandes */
+}  
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

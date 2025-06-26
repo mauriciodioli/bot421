@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <html>
 <body>
     <h1>Valor del Dólar MEP</h1>
@@ -18,3 +19,25 @@
     </script>
 </body>
 </html>
+=======
+<html>
+<body>
+    <h1>Valor del Dólar MEP</h1>
+    <p id="dolar-mep-value">Cargando...</p>
+
+    <script>
+        // Realiza la petición AJAX al servidor Flask
+        fetch('/api/dolar_mep')
+            .then(response => response.json())
+            .then(data => {
+                if (data.valor_dolar_mep) {
+                    document.getElementById("dolar-mep-value").innerText = "Valor del dólar MEP: " + data.valor_dolar_mep;
+                } else {
+                    document.getElementById("dolar-mep-value").innerText = "Error al obtener el valor del dólar MEP.";
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

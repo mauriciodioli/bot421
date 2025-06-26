@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% if layout == 'layout'%}
 {% extends 'layouts/layout.html' %}
 {% endif %}
@@ -348,3 +349,355 @@
 </script>
 
 {% endblock %}
+=======
+{% if layout == 'layout'%}
+{% extends 'layouts/layout.html' %}
+{% endif %}
+
+{% if layout == 'layout_fichas'%}
+{% extends 'layouts/layout_fichas.html' %}
+{% endif %}
+
+{% if layout == 'layout_dpi'%}
+{% extends 'layouts/layout_dpi.html' %}
+{% endif %}
+
+{% if layout == 'layoutConexBroker' %}
+{% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+{% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout_muestra_imagenes_dpi' %}
+{% extends 'layouts/layout_muestra_imagenes_dpi.html' %}    
+{% endif %}
+
+{% block title %}Publicacion desplegada{% endblock %}
+{% block content %}
+<div class="publicacion-detalle">
+    <div class="splashCarga" id="splashNotificaciones" style="display: none;">
+        <div class="splash-contenido">
+            <div class="spinner"></div>
+          </div>
+      </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="grid-malla" id="contenedor-publicacion">
+
+
+    <!-- Columna izquierda -->
+  <div class="celda">
+   
+  <!-- Fila 2: Texto superior -->
+            <div class="fila texto-superior">
+                <p>Discover more projects by clicking on the image ↴</p>
+            </div>
+    <!-- Fila 4: Imagen o video principal -->
+    <div id="principal-media" class="fila imagen-principal-muestra-despliegue-publicacion-home">
+        <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
+        {% if post.videos %}
+            <!-- Mostrar el primer video si está disponible -->
+           
+            <video controls id="main-video"   onclick="cargarDatosPublicacion()">
+                {% if 'http' in post.videos[0].filepath %}
+                    <source src="{{ post.videos[0].filepath }}" type="video/mp4">
+                {% else %}
+                    <source src="{{ url_for('static', filename=post.videos[0].filepath) }}" type="video/mp4">
+                {% endif %}
+                Tu navegador no soporta el formato de video.
+            </video>
+
+        {% elif post.imagenes %}
+            <!-- Mostrar la primera imagen si no hay videos -->
+            <img id="main-image" onclick="cargarDatosPublicacion()"
+                src="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}" 
+                alt="{{ post.imagenes[0].title }}" />
+        {% else %}
+            <p>No hay imágenes ni videos disponibles.</p>
+        {% endif %}
+    </div>
+  
+
+  </div>
+
+   <!-- columana derecha -->
+  <div class="celda">
+    
+            <!-- Fila 1: Título y fecha -->
+                <div class="fila titulo-fecha">
+                    <h1>{{ post.titulo }}</h1>
+
+                    <!-- Estrellas dinámicas -->
+                    <div class="fila rating-estrellas">
+                        {{ estrellas_html | safe }}
+                    </div>
+
+                  <p>{{ post.fecha_creacion.strftime('%Y-%m-%d') }}</p>
+
+                </div>
+
+            {% if post.precio %}
+                <!-- Fila de Precios y Descuento -->
+                <div class="fila precios-publicacion">
+                    {% if post.precio_original and post.precio_original > post.precio %}
+                    
+                        <p class="precio-original">${{ post.precio_original }}</p>
+                        <p class="precio-descuento text-success fw-bold">${{ post.precio }}</p>
+                        {% if post.descuento %}
+                            <div class="descuento-badge">{{ post.descuento }}</div>
+                        {% endif %}
+                    {% else %}
+                        <p class="precio-descuento text-success fw-bold">${{ post.precio }}</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+          
+        <!-- Fila 3: Información adicional -->
+            <div class="fila informacion-adicional">
+                <p class="correo-electronico-publicacion-despliegue-home">{{ post.correo_electronico }}</p>
+                <p class="ambito-publicacion-despliegue-home"><strong>Ámbito:</strong> {{ post.ambito }}</p>
+              <p class="texto-publicacion-despliegue-home destacado-parrafo">
+                    {{ post.texto | safe }}
+              </p>
+
+            </div>
+
+
+        <!------------------------------------------------------------------------------->
+            <!------------------------------------------------------------------------------->
+            <!------------------------------------------------------------------------------->
+            {% if post.botonCompra %}
+
+                    <div class="fila boton-compra">
+                        <form id="sistemaDePagos_get_ofertas_suscripciones" method="POST" action="/productosComerciales_pedidos_alta_carrito/" style="display: flex; align-items: center; gap: 10px;">
+                            <input type="hidden" id="ambito_btn_carrito" name="ambito_btn_carrito" value="{{ post.ambito }}">
+                            <input type="hidden" id="titulo_btn_carrito" name="titulo_btn_carrito" value="{{ post.titulo }}" >
+                            <input type="hidden" id="publicacion_id_btn_carrito" name="publicacion_id_btn_carrito" value="{{ post.publicacion_id }}" >
+                            <input type="hidden" id="texto_btn_carrito" name="texto_btn_carrito" value="{{post.texto}}" >
+                            <input type="hidden" id="precio_btn_carrito" name="precio_btn_carrito" value="{{post.precio}}" >
+                            <input type="hidden" id="precio_btn_PagoOnline" name="precio_btn_PagoOnline" value="{{post.pagoOnline}}" >
+                            <input type="hidden" id="access_token_btn_carrito1" name="access_token_btn_carrito1">
+                            <input type="hidden" id="correo_electronico_btn_carrito" name="correo_electronico_btn_carrito">   
+                        
+                            <!-- Campo para la URL de la primera imagen -->
+                            {% if post.imagenes and post.imagenes[0].filepath %}
+                            <input type="hidden" id="imagen_btn_carrito" name="imagen_btn_carrito" 
+                                value="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}">
+                            {% endif %}
+
+
+                          <!-- Combo para elegir cantidad -->
+                        <form id="form-agregar">
+                        <div class="compra-responsive">
+                            <label for="cantidadCompra">Cantidad:</label>
+                            <input type="number" id="cantidadCompra" name="cantidadCompra" value="1" min="1" step="1">
+                            <button type="submit" id="boton-agregar">Agregar</button>
+                        </div>
+                        </form>
+
+                        
+
+                            </form>
+                    </div>
+                
+
+            {% endif %}
+
+
+  </div>
+
+
+
+
+<!-- Nueva fila para los tabs -->
+  <div class="celda full-width">
+    <div class="tabs">
+      <input type="radio" id="tab1" name="tab-control" checked>
+      <input type="radio" id="tab2" name="tab-control">
+      <input type="radio" id="tab3" name="tab-control">
+      <ul>
+        <li title="Descripción"><label for="tab1" role="button"><span>Descripción</span></label></li>
+        <li title="Detalles"><label for="tab2" role="button"><span>Detalles</span></label></li>
+        <li title="Envío"><label for="tab3" role="button"><span>Envío</span></label></li>
+      </ul>
+      <div class="slider"><div class="indicator"></div></div>
+      <div class="content">
+        <section>
+          <h2>Descripción</h2>
+          <p>{{ post.descripcion | safe }}</p>
+        </section>
+        <section>
+          <h2>Detalles</h2>
+          <p>Aquí podrías mostrar características técnicas del producto.</p>
+        </section>
+        <section>
+          <h2>Envío</h2>
+          <p>Información de tiempos, zonas y costos de envío.</p>
+        </section>
+      </div>
+    </div>
+  </div>
+
+
+
+
+    <!-- Galería de imágenes y videos -->
+        <div class="celda full-width">
+          
+                <!-- Fila 5: Galería de imágenes y videos -->
+                  <div class="fila imagenes-videos-muestra-despliegue-publicacion-home">
+                      <div class="imagenes-muestra-despliegue-publicacion-home grid-layout">
+                          {% if post.imagenes or post.videos %}
+                              {% for media in post.imagenes + post.videos if media.imagen or (media.filepath and (media.filepath.endswith('.jpg') or media.filepath.endswith('.png') or media.filepath.endswith('.mp4'))) %}
+
+                                  <div class="imagen-muestra-despliegue-publicacion-home">
+                                      {% if media.filepath.endswith('.mp4') %}
+                                          <video 
+                                              id="videoPlayer"
+                                              class="media-adaptada" 
+                                              onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
+                                              onmouseover="this.play()" 
+                                              onmouseout="this.pause(); this.currentTime=0;" 
+                                              muted 
+                                              loop
+                                              playsinline>
+                                              <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
+                                              Tu navegador no soporta el formato de video.
+                                          </video>
+                                      {% else %}
+                                          <img 
+                                              class="media-adaptada" 
+                                              src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" 
+                                              alt="{{ media.title }}" 
+                                              onclick="replaceMainMedia(this.src, 'image')" />
+                                      {% endif %}
+                                  </div>
+                              {% endfor %}
+                          {% endif %}
+                      </div>
+                  </div>
+
+
+
+        </div>
+
+
+
+     
+
+
+        
+
+
+
+                    <div id="contenedor-reseñas" class="testimonials"></div>
+
+                    <div id="mensaje-sin-reseñas" style="display: none; margin-top: 10px;">
+                      <p>Sé el primero en dejar una reseña sobre este producto.</p>
+                    </div>
+
+                    <div class="formulario-reseña">
+                      <form id="form-reseña">
+                        <input type="text" id="nombre-reseña" placeholder="Tu nombre" required>
+                        <textarea id="comentario-reseña" placeholder="Tu comentario..." required></textarea>
+                        <button type="submit">Enviar reseña</button>
+                      </form>
+                    </div>
+
+
+
+
+
+ </div>  
+
+
+
+<a href="https://wa.me/+393445977100"class="whatsapp-float" target="_blank">
+  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">  
+</a>
+
+   
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/reseniaMuestraPublicEnHome/reseniaMuestraPublicEnHome.css') }}">
+
+<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
+<script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/publicaciones/reseniaMuestraPublicEnHome/reseniaMuestraPublicEnHome.js') }}"></script>
+
+<script>
+
+    // Almacenar los valores en variables globales
+    var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
+    var userId = '{{ post.user_id }}';
+    var ambito = '{{ post.ambito }}';
+    var layout = '{{layout}}';
+    const storageKey = 'reseñas_' + publicacionId;
+    if( !localStorage.setItem('dominio', ambito)) {
+     localStorage.setItem('dominio', ambito);
+    }
+   
+    function replaceMainMedia(src, type) {
+        var container = document.getElementById('principal-media');
+        if (type === 'image') {
+            container.innerHTML = `<img id="main-image" class="media-principal-redondeada" style="cursor: pointer;"  onclick="cargarDatosPublicacion()"  src="${src}"  alt="Imagen seleccionada" /> `;
+
+        } else if (type === 'video') {
+            container.innerHTML = '<video controls id="main-video" style="cursor: pointer;"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
+        }
+        // Desplazar suavemente hacia el contenedor de la imagen principal
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+     
+            // Calcular la distancia adicional a desplazar para dejar espacio para el texto
+            var offset = container.getBoundingClientRect().top - 230; // Ajusta el valor -50 si es necesario para dejar espacio
+            window.scrollBy(0, offset);
+       
+    }
+
+    
+
+    function abrirPublicacionEnAmbitos(publicacionId, userId, ambito,layout) {
+        mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito,layout);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!localStorage.getItem('access_token')) {
+            const botonCompra = document.querySelector('.fila.boton-compra');
+            if (botonCompra) {
+                botonCompra.style.display = 'none';
+            }
+        }
+    });
+
+
+    cargarReseñas();
+
+
+
+
+
+
+</script>
+
+{% endblock %}
+>>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
