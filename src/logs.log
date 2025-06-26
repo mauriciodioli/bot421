@@ -1333,3 +1333,8 @@ LEE EL SHEET POR LLAMADA DE FUNCION
 demo@gmail.com
 LEE EL SHEET POR LLAMADA DE FUNCION
 >>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
+Debugging message: Configuración de logger completada.
+Este es un mensaje de info.
+Este es un mensaje de advertencia.
+Este es un mensaje de error.
+Este es un mensaje crítico.

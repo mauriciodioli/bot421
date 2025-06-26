@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #modalContent {
     color: black; /* Cambiar el color del texto a negro */
     display: flex; /* Mostrar como flexbox para controlar el diseño */
@@ -52,59 +51,4 @@
     color: rgb(34, 7, 133);
     font-weight: bold;
 }  
-=======
-#modalContent {
-    color: black; /* Cambiar el color del texto a negro */
-    display: flex; /* Mostrar como flexbox para controlar el diseño */
-}
-
-
-.table-container {
-    flex: 1; /* Hace que los contenedores ocupen el mismo ancho */
-    margin-right: 10px; /* Añade espacio entre las tablas */
-}
-
-.table-ventas,
-.table-compras {
-    width: 100%; /* Hace que las tablas ocupen todo el ancho del contenedor */
-}
-#precioLA  {
-    color: green;
-}
-
-#listadoPreciosLabel{
-    color: green;
-}
-
-
-#fechaActual {
-    color: rgb(34, 7, 133);
-}
-#encabezado {
-    color: rgb(34, 7, 133);
-}
-#precio-venta-rojo {
-    color: rgb(133, 7, 7);
-}
-#precio-compra-verde {
-    color: rgb(5, 148, 0);
-}
-/* Estilos para el precio de compra */
-.compra-btn {
-    color: green; /* Color verde para el precio de compra */
-}
-
-/* Estilos para el precio de venta */
-.venta-btn {
-    color: red; /* Color rojo para el precio de venta */
-}
-
-.modal-title.black-text {
-    color: black;
-  }
-#ValorPrecioLimite {
-    color: rgb(34, 7, 133);
-    font-weight: bold;
-}  
->>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
   

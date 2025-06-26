@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
@@ -77,84 +76,4 @@
  </body>          
            
 {%endblock%}
-=======
-{% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-
-{% if layout == 'layout' %}
-    {% extends 'layouts/layout.html' %}
-{% elif layout == 'layout_signal' %}
-    {% extends 'layouts/layout_signal.html' %}
-{% elif layout == 'layout_fichas' %}
-    {% extends 'layouts/layout_fichas.html' %}
-{% elif layout == 'layoutConexBroker' %}
-    {% extends 'layouts/layoutConexBroker.html' %}
-{% endif %}
-
-
-
-{% block content %}
-<body>
-    <style>
-        .flecha {
-            font-size: 20px; /* Ajusta el tamaño de la flecha según tus necesidades */
-            display: inline-block;
-            margin-left: 5px; /* Espacio entre el interés y la flecha */
-        }
-
-        .flecha.up {
-            color: green;
-        }
-
-        .flecha.down {
-            color: red;
-        }
-    </style>
-
-    <div class="container d-flex justify-content-center" id="cardIndex">           
-        <div class="card card-body " id="cardIndexFichas">
-            <h2>Caucion:</h2>
-            <h4 class="planes-titulo" style="color: gold; font-size: 24px;">
-                Operar ésta caución hoy
-                <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Disponible hoy</span>
-            </h4>
-            <h4 class="planes-titulo" style="color: {{ 'green' if size > 0 else 'red' }}; font-size: 24px;">
-                Comprar este simbolo
-                <span class="planes-sub-titulo" style="color: white; font-size: 18px;">En su Broker</span>
-                <span class="flecha" style="color: {{ 'green' if size > 0 else 'red' }};"></span>
-            </h4>
-            <hr class="separator">
-            <p style="margin-bottom: 5px; color: gold;">{{ Symbol }}</p>
-            <p style="margin-bottom: 5px;">Valor variable: 
-                <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Si</span>
-            </p>
-            <p style="margin-bottom: 5px;">Precio de caucion : 
-                {{ price }} 
-                <span style="color: white; background-color: red; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Operando</span>
-            </p>
-            <p style="margin-bottom: 5px;">MARKET: 
-                {{ price }} 
-                <span style="color: white; background-color: green; border-radius: 5px; font-size: 14px; padding-left: 10px; padding-right: 10px;">Cuenta</span>
-            </p>
-            <div class="card-corner-band">
-                <div class="card-corner-text">NUEVO</div>
-            </div>
-        </div>
-    </div>
-    
-</div>
-{% include 'layouts/layout_footer.html' %}   
-   
- </body>          
-           
-{%endblock%}
->>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
  

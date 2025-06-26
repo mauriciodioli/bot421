@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!-- Botón que abre el modal -->
 <button class="boton-continuar" onclick="abrirModal()">Continuar</button>
 
@@ -31,38 +30,4 @@
 </div>
 
  <link rel="stylesheet" href="{{ url_for('static', filename='css/sistemaDePagos/seleccionPagoReserva.css') }}">
-=======
-<!-- Botón que abre el modal -->
-<button class="boton-continuar" onclick="abrirModal()">Continuar</button>
-
-<!-- Modal -->
-<div id="modalPago" class="modal-seleccion">
-  <div class="modal-contenido">
-    <span class="cerrar" onclick="cerrarModal()">&times;</span>
-    <h2>Método de Pago</h2>
-    <div class="opciones-pago">
-      <div class="opcion" data-opcion="paypal">
-        <img src="/static/img/paypal.png" alt="PayPal">
-        <span>PayPal</span>
-      </div>
-      <div class="opcion" data-opcion="mercado_pago">
-        <img src="/static/img/mercadopago.png" alt="Mercado Pago">
-        <span>Mercado Pago</span>
-      </div>
-       <div class="opcion" data-opcion="reserva" id="opcion-reserva">
-        <img src="/static/img/paqueteria.png" alt="Reserva">
-        <span>Reservar Paquete</span>
-      </div>
-     <div class="opcion" data-opcion="reservaCita" id="opcion-reserva">
-        <img src="/static/img/reserva.png" alt="Reserva">
-        <span>Reservar Cita</span>
-      </div>
-
-    </div>
-    <button class="boton-confirmar" style="display: none;"  onclick="confirmarPago()">Confirmar</button>
-  </div>
-</div>
-
- <link rel="stylesheet" href="{{ url_for('static', filename='css/sistemaDePagos/seleccionPagoReserva.css') }}">
->>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
  <script src="{{ url_for('static', filename='js/sistemaDePagos/seleccionPagoReserva.js') }}"></script>

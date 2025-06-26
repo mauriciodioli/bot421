@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* Estilos para el contenedor del menú */
 .custom-dropdown-menu-container {
     position: relative;
@@ -50,56 +49,3 @@
     margin: 5px 0;
     border-top: 1px solid #ddd;
 }
-=======
-/* Estilos para el contenedor del menú */
-.custom-dropdown-menu-container {
-    position: relative;
-    display: inline-block;
-}
-
-/* Estilos para el menú desplegable */
-.custom-dropdown-menu {
-    display: none;
-    list-style-type: none;
-    padding-left: 0;
-    margin-top: 0;
-    max-height: 300px; /* Altura máxima del menú */
-    overflow-y: auto; /* Barra de desplazamiento si el contenido es mayor que la altura */
-    position: absolute; /* Para que se muestre sobre otros elementos */
-    background-color: #fff; /* Fondo blanco */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
-    width: 200px; /* Ancho del menú */
-    z-index: 1050; /* Asegura que el menú esté por encima de otros elementos */
-    top: 100%; /* Abajo del contenedor, si lo quieres al revés cambia a -100% */
-    left: 0; /* Alinea el menú con el borde izquierdo del contenedor */
-}
-
-/* Mostrar el menú cuando se pasa el mouse por encima del contenedor */
-.custom-dropdown-menu-container:hover .custom-dropdown-menu {
-    display: block;
-}
-
-/* Estilos para los elementos del menú */
-.custom-dropdown-menu li {
-    padding: 10px;
-    background-color: #f9f9f9;
-}
-
-/* Estilo para los enlaces dentro del menú */
-.custom-dropdown-menu li a {
-    text-decoration: none;
-    color: black;
-    display: block;
-}
-
-/* Efecto hover para los elementos del menú */
-.custom-dropdown-menu li:hover {
-    background-color: #ddd;
-}
-
-/* Estilo para los divisores */
-.custom-dropdown-menu .dropdown-divider {
-    margin: 5px 0;
-    border-top: 1px solid #ddd;
-}
->>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719

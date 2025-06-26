@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {% extends "layouts/layout.html" %}
 {% block title %}Cuenta Demo{% endblock %}
 {% block content %}
@@ -62,68 +61,3 @@
 
 {% include 'layouts/layout_footer.html' %}
 {% endblock %}
-=======
-{% extends "layouts/layout.html" %}
-{% block title %}Cuenta Demo{% endblock %}
-{% block content %}
-<div class="container my-5">
-    <div class="container-fluid" id="cardIndex">
-        <div class="container py-4 row justify-content-center m-auto">
-            <div class="row py-3 justify-content-center">
-                <div class="col-md-6 p-4 card card-body cardIndexPlanes"> 
-                    <h2 class="card-title">Cuenta Demo</h2>
-                    <h4 class="planes-titulo" style="color: gold; font-size: 24px;">Crear las credenciales de Acceso</h4>
-                    <p  style="color: #7fff7f;">Puedes operar en una cuenta simulada con dinero simulado</p>
-                    <p style="color: #7fff7f;">* Crea una cuenta simulada</p>
-                    <p style="color: #7fff7f;">* Ve a herramientas</p>
-                    <p style="color: #7fff7f;">* Ingresa los datos proporcionados</p>
-                    <p style="color: #7fff7f;">* Selecciona Remarket </p>
-                    <p style="color: #7fff7f;">* Selecciona Simulacion</p>
-                    <p style="color: #7fff7f;">* Agrega cuenta</p>
-                    <p style="color: #7fff7f;">* Ve al boton Cuentas existentes para logear</p>
-                    <hr class="separator">
-                    <h4 class="planes-titulo" style="color: white; font-size: 24px;">link de acceso <span class="planes-sub-titulo" style="color: white; font-size: 18px;">en el siguiente link</span></h4>
-                   <!-- Button trigger modal -->
-                    <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#remarketModal">Remarket</a>
-                    <hr class="separator">
-                    
-                    <p style="color: #7fff7f;">link de prueba de MatbaRofex</p>
-                    <p  style="color: #7fff7f;">Aqui puede ver los instrumentos que puede operar en demo</p>
-                   
-                    <a href="https://matbarofex.primary.ventures/futuros/financieros" class="btn btn-success" target="_blank">MatbaRofex</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="remarketModal" tabindex="-1" aria-labelledby="remarketModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content custom-modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="remarketModalLabel">Instrucciones</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Una vez creada la cuenta, logee en Herramientas y seleccione Simulación.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-        <a href="https://remarkets.primary.ventures/index.html" class="btn btn-success" target="_blank" rel="noopener noreferrer">Ir a Remarket</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<style>
-.custom-modal-content .modal-header,
-.custom-modal-content .modal-body,
-.custom-modal-content .modal-footer {
-    color: black;
-}
-</style>
-
-{% include 'layouts/layout_footer.html' %}
-{% endblock %}
->>>>>>> c771be39e03a9cc8cb8ab015daa471515565c719
