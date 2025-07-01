@@ -2,47 +2,97 @@ document.addEventListener('DOMContentLoaded', cargarPaises);
 
 async function cargarPaises() {
     try {
-        const response = await fetch('https://restcountries.com/v3.1/all');
-        const paises = await response.json();
-        const selectPais = document.getElementById('pais');
-        window.paisesData = {}; 
+        const response = await fetch('https://countriesnow.space/api/v0.1/countries/info?returns=name,unicodeFlag,dialCode');
+        const data = await response.json();
+        
+        if (!data.error && data.data) {
+            const paises = data.data;
+            const selectPais = document.getElementById('pais');
+            window.paisesData = {}; 
 
-        paises.sort((a, b) => a.name.common.localeCompare(b.name.common));
+            // Ordenar países alfabéticamente
+            paises.sort((a, b) => a.name.localeCompare(b.name));
 
-        paises.forEach(pais => {
-            const option = document.createElement('option');
-            option.value = pais.cca2; 
-            option.textContent = pais.name.common; 
-            selectPais.appendChild(option);
+            paises.forEach(pais => {
+                const option = document.createElement('option');
+                option.value = pais.name; // CountriesNow usa el nombre como identificador
+                option.textContent = `${pais.unicodeFlag || ''} ${pais.name}`.trim(); 
+                selectPais.appendChild(option);
 
-            window.paisesData[pais.cca2] = {
-                nombre: pais.name.common,
-                idiomas: Object.values(pais.languages || {})
-            };
-        });
+                // Almacenar datos del país para uso posterior
+                window.paisesData[pais.name] = {
+                    nombre: pais.name,
+                    bandera: pais.unicodeFlag,
+                    codigoTelefono: pais.dialCode
+                };
+            });
+
+            // Cargar idiomas para todos los países
+            await cargarIdiomasPaises();
+        }
     } catch (error) {
         console.error('Error al cargar los países:', error);
+        // Fallback en caso de error
+        mostrarErrorCargaPaises();
     }
 }
 
+async function cargarIdiomasPaises() {
+    try {
+        // CountriesNow tiene un endpoint específico para idiomas
+        const response = await fetch('https://countriesnow.space/api/v0.1/countries/languages');
+        const data = await response.json();
+        
+        if (!data.error && data.data) {
+            data.data.forEach(paisIdioma => {
+                if (window.paisesData[paisIdioma.country]) {
+                    window.paisesData[paisIdioma.country].idiomas = paisIdioma.languages;
+                }
+            });
+        }
+    } catch (error) {
+        console.error('Error al cargar idiomas:', error);
+        // Agregar idiomas por defecto si falla
+        Object.keys(window.paisesData).forEach(pais => {
+            if (!window.paisesData[pais].idiomas) {
+                window.paisesData[pais].idiomas = ['English']; // Idioma por defecto
+            }
+        });
+    }
+}
+
+function mostrarErrorCargaPaises() {
+    const selectPais = document.getElementById('pais');
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'Error al cargar países. Intente más tarde.';
+    selectPais.appendChild(option);
+}
+
 function seleccionarIdioma() {
-    const paisCodigo = document.getElementById('pais').value;
-    const datosPais = window.paisesData[paisCodigo];
+    const paisNombre = document.getElementById('pais').value;
+    const datosPais = window.paisesData[paisNombre];
     const selectLenguaje = document.getElementById('lenguaje');
     
     selectLenguaje.innerHTML = '<option value="">--Seleccionar--</option>';
 
-    if (datosPais) {
+    if (datosPais && datosPais.idiomas) {
         datosPais.idiomas.forEach(idioma => {
             const option = document.createElement('option');
             option.value = idioma;
             option.textContent = idioma;
             selectLenguaje.appendChild(option);
         });
+    } else {
+        // Si no hay idiomas disponibles, agregar inglés como opción
+        const option = document.createElement('option');
+        option.value = 'English';
+        option.textContent = 'English';
+        selectLenguaje.appendChild(option);
     }
 
     // Actualizar etiquetas
-    document.querySelector('label[for="pais"]').textContent = `País seleccionado: ${window.paisesData[paisCodigo].nombre}`;
+    document.querySelector('label[for="pais"]').textContent = `País seleccionado: ${datosPais.nombre}`;
     document.querySelector('label[for="lenguaje"]').textContent = 'Selecciona tu idioma:';
 
     // Pasar a la siguiente sección
