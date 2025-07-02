@@ -16,14 +16,15 @@
     <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
     <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
     <!--font-awesome-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <!--CSS PERSONALIZADO -->
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/main.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/navbar.css')}}">
-    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/profile.css')}}">
+    <!-- <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/profile.css')}}"> -->
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/loginSistema.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/tarjetasPlanes.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/sobreNosotros.css')}}">
@@ -65,115 +66,73 @@
 
             
       
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <div class="container-fluid">
-                <!-- Logo -->
-                <div class="LogoDpi"></div>
-        
-                <!-- Botón para colapsar menú -->
-                <button class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarNav"
-                        aria-controls="navbarNav"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-        
-                <!-- Menú -->
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mb-2 mb-lg-0">
-                        <li class="nav-item content">
-                            <a class="nav-link active" href="/">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8 .5l6 6V15a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6.5l6-6zM13 6.707l-5-5-5 5V14h3v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h3V6.707z"/>
-                                </svg>
-                               
-                            </a>
-                        </li>
-                                             
-                        
-                        
-                        <li class="nav-item">
-                            <a class="nav-link" id="openModalSignals">Signals</a>
-                        </li>
-                        <li class="nav-item dropdown" id='AdministrarDominiosLayout'>
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Domains</a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" id='Social' href="#">Social</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" id='Educativo' href="#">Educational</a></li>
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Laboral' href="#">Work</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Negocio' href="#">Business</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Artes' href="#">Creations</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Deporte' href="#">Sports</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Familia' href="#">Family</a></li>                          
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" id='Amistad' href="#">Friendship</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Personal' href="#">Personal</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Salud' href="#">Health</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Filantropia' href="#">Philanthropy</a></li>                          
-                                <li><hr class="dropdown-divider"></li> 
-                                <li><a class="dropdown-item" id='Naturaleza' href="#">Nature</a></li>
-                                <li><hr class="dropdown-divider"></li> 
-                                <li class="nav-item content">
-                                    <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
-                                </li>
-                            </ul>
+ <!-- Navbar Principal -->
+    <div class="custom-navbar">
+        <div class="custom-navbar-container">
+            <!-- Logo a la izquierda -->
+            <div class="custom-logo">
+                <a href="/" class="custom-logo-link">
+                    <div class="custom-logo-icon">DPI</div>
+                    <span class="custom-logo-text">DataPoint Intelligence</span>
+                </a>
+            </div>
 
-                           
+            <!-- Menú hamburguesa para móvil -->
+            <div class="custom-toggle" id="mobile-menu">
+                <span class="custom-bar"></span>
+                <span class="custom-bar"></span>
+                <span class="custom-bar"></span>
+            </div>
 
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#ingreso">Login</a>
-                        </li>
+            <!-- Navegación central y botones de auth -->
+            <div class="custom-menu" id="navbar-menu">
+                <!-- Navegación central -->
+                <div class="custom-nav">
+                    <a href="/" class="custom-nav-link active">
+                        <span>Inicio</span>
+                    </a>
+                    
+                    <div class="custom-dropdown">
+                        <a href="#" class="custom-nav-link custom-dropdown-toggle">
+                            <span>Categorias</span>
+                            <i class="fas fa-chevron-down custom-arrow"></i>
+                        </a>
+                        <div class="custom-dropdown-menu">
+                            <a href="#" class="custom-dropdown-item" data-domain="tecnologia">Tecnologia</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="social">Social</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="educativo">Educativo</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="laboral">Laboral</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="negocio">Negocios</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="artes">Creaciones</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="deporte">Deportes</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="familia">Familia</a>
+                            <a href="#" class="custom-dropdown-item" data-domain="salud">Salud</a>
+                        </div>
+                    </div>
+                </div>
 
-                       
-                     
-                            <li class="nav-item">
-                                <a class="nav-link" href="/registrar_usuario">Register</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="openModalCP">CP</a>                           
-                            </li>
-                            <li class="nav-item">                          
-                                <label for="openModalCP"  id="labelCP" style="color: #f9b746;"></label>
-                            </li>
-
-                            <li class="nav-item">
-                               <div id="languageSelector" class="language-selector">
-                                    <div class="selected-language"></div>
-                                    <div class="language-dropdown" style="display: none;"></div>
-                                </div>
-
-                            </li>
-                       <!--
-                        <li class="nav-item content">
-                            <a class="nav-link active" href="/subirVideoYtube/">Videos</a>
-                        </li>
-                       --> 
-                       
-                    </ul>
+                <!-- Botones de autenticación a la derecha -->
+                <div class="custom-auth">
+                    <a href="#ingreso" class="custom-btn custom-login-btn">
+                        <span>Iniciar Sesión</span>
+                    </a>
+                    <a href="/registrar_usuario" class="custom-btn custom-register-btn">
+                        <span>Registrarse</span>
+                    </a>
                 </div>
             </div>
-        </nav>
-        
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top NdpiLogo " > 
-        </nav>
-     
+        </div>
+    </div>
+
+    <!-- Espaciador para contenido fijo -->
+    <div class="custom-spacer"></div>
+
+    <!-- Input hidden para compatibilidad con tu sistema -->
+    <input type="hidden" class="text" id="domain" name="domain" value="laboral">
 
 
 <!-- Banner azul responsive -->
-  {% include 'ambitos/barraAzul.html' %}
+  <!-- {% include 'ambitos/barraAzul.html' %} -->
 
 
 
@@ -223,7 +182,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
     <script src="{{ url_for('static', filename='js/usuarios/usuarioUbicacion.js') }}"></script>
-  
+    <script src="{{ url_for('static', filename='js/layouts/layout_dpi.js') }}"></script>
     
   
 

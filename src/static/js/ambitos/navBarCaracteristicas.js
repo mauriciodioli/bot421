@@ -6,22 +6,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if (firstItem) {
         updateColor(firstItem);
     }
-
-    // Aseguramos que la lógica solo se ejecute una vez para el primer ítem
-    // Esto solo se ejecutará una vez en el evento 'DOMContentLoaded'
 });
 
-
 function updateColor(element) {
-   
     console.log(element);
     if (!element) return; // Evita errores si no se pasa un elemento
     
     // Obtener el id del elemento
     let id = element.id;
     let colorElementCategoria = element.getAttribute('data-color');
-    //console.log('ID obtenido:', id);
-   
 
     let navTabs = document.querySelector('.nav-tabs');
     let homeTab = document.querySelector('#home-tab'); // Selecciona el botón "Home"
@@ -35,157 +28,73 @@ function updateColor(element) {
     homeTab.classList.add('border-' + colorElementCategoria);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Agregar un manejador de eventos de clic al botón
-$('#caracteristicas-tab').on('click', function() {
+// ELIMINAR LOS HANDLERS DUPLICADOS Y USAR SOLO UNO
+// Manejador único para el botón de categorías
+$('#caracteristicas-tab').off('click').on('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    console.log('Clic en categorías detectado'); // Debug
     
     // Llamar a la función para cargar los ámbitos
-    banderaCategorias = localStorage.getItem('banderaCategorias');
+    let banderaCategorias = localStorage.getItem('banderaCategorias');
     if (banderaCategorias == 'True') {
+        console.log('Cargando categorías...'); // Debug
         cargarAmbitosCategorias();   
         localStorage.setItem('banderaCategorias', 'False');
-    }  
-});
-
-
-
-
-const dropdownMenuCategorias = $('.categoria-dropdown-menu');
-dropdownMenuCategorias.empty();
-// Función para cargar los ámbitos desde el servidor
-function cargarAmbitosCategorias() {
-   
-    // Datos del formulario o de algún elemento que necesites enviar
-    let ambito = localStorage.getItem('dominio');
-    const cp = localStorage.getItem('codigoPostal');
+    }
     
-    if(ambito == 'inicialDominio'){ ambito = 'Laboral';}
-    const formData = new FormData();
-    formData.append('ambito', ambito);  // Cambia 'nombre_del_ambito' con el valor que necesites
-    formData.append('cp', cp);  // Cambia 'codigo_postal' con el valor correspondiente
-
-    fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
-        method: 'POST',
-        body: formData,  // Enviar los datos del formulario
-        headers: {
-            'Accept': 'application/json',  // Esperar JSON de respuesta
-            // Si el backend requiere algún tipo de encabezado adicional (como tokens de autenticación), agrégalo aquí
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Aquí manejas la respuesta de la API, por ejemplo, agregando los elementos a la interfaz
-        if (!data || !Array.isArray(data.categorias)) {
-            throw new Error("La respuesta de la API no contiene 'categorias' o no es un array.");
-        }
-        // Limpiar el menú y el contenedor de tarjetas antes de agregar nuevos elementos
-        dropdownMenuCategorias.empty();
- 
-
-        // Agregar las categorías obtenidas al dropdown
-        data.categorias.forEach((categoria, index) => {
-            // Agregar la categoría al menú desplegable
-            // Asigna un valor predeterminado en caso de que no esté definido
-            const color = categoria.color || 'orange'; // O cualquier color predeterminado que desees
-            const listItem = `
-                        <li style="padding: 10px;">
-                            <a href="#" class="categoria-dropdown-item" id="${categoria.id}" data-value="${categoria.valor}" data-color="${color}" style="color: ${color}; padding: 10px;">
-                                ${categoria.nombre}
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    `;
-
-        
-            dropdownMenuCategorias.append(listItem);
-
-         
-        });
-
-      
-
-        // Eliminar el último separador
-        dropdownMenuCategorias.children('li').last().remove();
-         // Agregar evento para cerrar el dropdown al hacer clic en una categoría
-       
-           
-       
-    })
-    .catch(error => {
-        console.error('Error al cargar las categorías:', error);
-    });
-}
-
-
-
-
-
-
-
-
-// Asegurar que al hacer clic en el botón de categoría, se vuelva a mostrar
-$('.categoria-dropdown-toggle').on('click', function (e) {
-    e.stopPropagation(); // Evita que el evento se propague y lo cierre inmediatamente
-    $('.categoria-dropdown-menu').toggleClass('show'); // Alterna visibilidad
+    // Alternar la visibilidad del dropdown
+    const dropdownMenu = $('.categoria-dropdown-menu');
+    const isVisible = dropdownMenu.hasClass('show');
+    
+    if (isVisible) {
+        dropdownMenu.removeClass('show');
+        $(this).removeClass('active');
+        console.log('Cerrando dropdown'); // Debug
+    } else {
+        dropdownMenu.addClass('show');
+        $(this).addClass('active');
+        console.log('Abriendo dropdown'); // Debug
+    }
 });
-
-
 
 // Delegación de eventos para manejar clics en los ítems del menú desplegable
-$('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (e) {
-//$(document).on('click', '#navBar-' + ambitoId + ' .categoria-dropdown-item', function (e) {
-
-    e.preventDefault(); // Previene el comportamiento predeterminado
+$('.categoria-dropdown-menu').off('click').on('click', '.categoria-dropdown-item', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
    
     let categoriaId = $(this).attr('id');
     let categoriaNombre = $(this).data('value');
     
     console.log("Categoría seleccionada:", categoriaNombre);
-    console.log("Clic detectado"); // Para verificar si el clic está siendo detectado
+    console.log("Clic detectado");
+    
     // Cerrar el menú desplegable correctamente
-    $('.categoria-dropdown-menu').removeClass('show'); // Alternativa sin Bootstrap
- //   $('.categoria-dropdown-toggle').dropdown('hide');  // Si usas Bootstrap (el botón que activa el menú)
+    $('.categoria-dropdown-menu').removeClass('show');
+    $('#caracteristicas-tab').removeClass('active');
    
-    const selectedCategory = this.id; // Obtiene el valor de data-value
+    const selectedCategory = this.id;
   
     // Guardar el dominio en localStorage
     localStorage.setItem('categoria', selectedCategory);
     var domain = localStorage.getItem('dominio');
+    
     // Actualizar el input oculto
-    const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
+    const hiddenInput = $('#domain');
     if (hiddenInput.length) {
         hiddenInput.val(selectedCategory);
     }
-    $('#home-tab').text(this.dataset.value);  // Cambiar el texto del botón con el valor de 'selectedCategory'
-    // Mostrar en consola
-  
-    console.log('Dominio enviado desde categorias---------------:', domain);
-    console.log('Categorias---------------:', selectedCategory);
-    // Llamar a la función para manejar el dominio seleccionado
     
+    $('#home-tab').text(this.dataset.value);
+    
+    // Mostrar en consola
+    console.log('Dominio enviado desde categorias:', domain);
+    console.log('Categorias:', selectedCategory);
+    
+    // Llamar a la función para manejar el dominio seleccionado
     if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
-       
         cargarPublicaciones(domain, 'layout');
     }
     if (document.querySelector('#navBarCaracteristicas-index')) {
@@ -193,18 +102,76 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
         enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
     } 
     
-    
     // Marcar el ítem como activo
     $('.categoria-dropdown-item').removeClass('active');
     $(this).addClass('active');
      
-    updateColor($(this)[0]); // Convierte jQuery a elemento DOM puro
-
+    updateColor($(this)[0]);
 });
 
+// Cerrar el dropdown cuando se hace clic fuera de él
+$(document).off('click.dropdown').on('click.dropdown', function(e) {
+    if (!$(e.target).closest('.nav-item.dropdown').length) {
+        $('.categoria-dropdown-menu').removeClass('show');
+        $('#caracteristicas-tab').removeClass('active');
+    }
+});
 
+// Función para cargar los ámbitos desde el servidor
+function cargarAmbitosCategorias() {
+    let ambito = localStorage.getItem('dominio');
+    const cp = localStorage.getItem('codigoPostal');
+    
+    if(ambito == 'inicialDominio'){ ambito = 'Laboral';}
+    
+    // Limpiar completamente el dropdown antes de cargar nuevas categorías
+    const dropdownMenuCategorias = $('.categoria-dropdown-menu');
+    dropdownMenuCategorias.empty();
+    
+    const formData = new FormData();
+    formData.append('ambito', ambito);
+    formData.append('cp', cp);
 
+    console.log('Cargando subcategorías para:', ambito);
 
+    fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Subcategorías recibidas:', data);
+        
+        if (!data || !Array.isArray(data.categorias)) {
+            throw new Error("La respuesta de la API no contiene 'categorias' o no es un array.");
+        }
+        
+        // Limpiar nuevamente por seguridad
+        dropdownMenuCategorias.empty();
+
+        // Agregar las categorías obtenidas al dropdown
+        data.categorias.forEach((categoria, index) => {
+            const color = categoria.color || 'orange';
+            const listItem = `
+                <li style="padding: 10px;">
+                    <a href="#" class="categoria-dropdown-item" id="${categoria.id}" data-value="${categoria.valor}" data-color="${color}" style="color: ${color}; padding: 10px;">
+                        ${categoria.nombre}
+                    </a>
+                </li>
+                ${index < data.categorias.length - 1 ? '<li><hr class="dropdown-divider"></li>' : ''}
+            `;
+            dropdownMenuCategorias.append(listItem);
+        });
+        
+        console.log('Subcategorías cargadas correctamente');
+    })
+    .catch(error => {
+        console.error('Error al cargar las categorías:', error);
+    });
+}
 
 
 
@@ -252,34 +219,6 @@ $('.card-container').on('click', '.card', function () {
 
 // Llamar a la función para cargar los ámbitos al cargar la página
 cargarAmbitosCategorias();
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
