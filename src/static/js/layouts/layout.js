@@ -1,10 +1,9 @@
+// ===== LAYOUT.JS UNIFICADO =====
+// Combina toda la funcionalidad de layout.js y layout_dpi.js
 
-
-
-
-// Definir la función que manejará el clic en "Administración"
+// ===== FUNCIONES DE ADMINISTRACIÓN =====
 function handleAdminClick(event) {
-    event.preventDefault(); // Evita el comportamiento predeterminado del enlace
+    event.preventDefault();
     
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -25,13 +24,13 @@ function handleAdminClick(event) {
     })
     .then(response => {
         if (response.ok) {
-            return response.text(); // Recibe el HTML de la respuesta
+            return response.text();
         } else {
             throw new Error('Error en la solicitud');
         }
     })
     .then(html => {
-        document.body.innerHTML = html; // Reemplaza el contenido actual por el nuevo HTML
+        document.body.innerHTML = html;
     })
     .catch(error => {
         console.error('Error:', error);
@@ -39,119 +38,7 @@ function handleAdminClick(event) {
     });
 }
 
-// Asociar la función al enlace después de que el DOM esté cargado
-document.addEventListener('DOMContentLoaded', function () {
-    const adminLink = document.getElementById('admin-link');
-    if (adminLink) {
-        adminLink.addEventListener('click', handleAdminClick);
-    } else {
-        console.error("No se encontró el elemento con ID 'admin-link'.");
-    }
-});
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('ventas-link').addEventListener('click', function (event) {
-        event.preventDefault(); // Evitar comportamiento por defecto del enlace
-        const form = document.getElementById('ventas-form');
-        // Asignar valores dinámicos al formulario (si es necesario)
-        let access_token = localStorage.getItem("access_token")
-    
-        var ambito = localStorage.getItem("dominio");
-        
-        document.getElementById('access_token_form_Ventas').value = access_token;
-        document.getElementById('ambito_form_Ventas').value = ambito;
-        // Enviar el formulario
-        form.submit();
-    });
-
-});
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('compras-link').addEventListener('click', function (event) {
-        event.preventDefault(); // Evitar comportamiento por defecto del enlace
-        const form = document.getElementById('compras-form');
-        // Asignar valores dinámicos al formulario (si es necesario)
-        let access_token = localStorage.getItem("access_token")
-    
-        var ambito = localStorage.getItem("dominio");
-        
-        document.getElementById('access_token_btn_compras').value = access_token;
-        document.getElementById('ambito_btn_compras').value = ambito;
-        // Enviar el formulario
-        form.submit();
-    });
-
-});
-
-
-document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('consultas-link').addEventListener('click', function (event) {
-     
-        event.preventDefault(); // Evitar comportamiento por defecto del enlace
-        const form = document.getElementById('consultas-form');
-        // Asignar valores dinámicos al formulario (si es necesario)
-        let access_token = localStorage.getItem("access_token")
-    
-        var ambito = localStorage.getItem("dominio");
-        
-        document.getElementById('access_token_btn_consultas').value = access_token;
-        document.getElementById('ambito_btn_consultas').value = ambito;
-        // Enviar el formulario
-        form.submit();
-    });
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Función para obtener el valor de una cookie
+// ===== FUNCIÓN PARA COOKIES =====
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -159,211 +46,448 @@ function getCookie(name) {
     return null;
 }
 
+// ===== FUNCIÓN PARA CARGAR PUBLICACIONES POR CATEGORÍA =====
+async function cargarPublicacionesPorCategoria(domain) {
+    try {
+        const splashNotificaciones = document.getElementById('splashNotificaciones');
+        if (splashNotificaciones) {
+            splashNotificaciones.style.display = 'block';
+        }
+        
+        const galeriaURL = '/media-publicaciones-mostrar-dpi/';
+        const access_token = 'access_dpi_token_usuario_anonimo';
+        const cp = localStorage.getItem('codigoPostal');
+        const lenguaje = localStorage.getItem('language') || 'in';
+        
+        console.log('Cargando publicaciones para dominio:', domain);
+        
+        $.ajax({
+            type: 'POST',
+            url: galeriaURL,
+            dataType: 'json',
+            headers: { 'Authorization': 'Bearer ' + access_token },
+            data: { 
+                ambitos: domain,
+                categoria: '1',
+                lenguaje: lenguaje,
+                cp: cp || ''
+            },
+            success: function (response) {
+                if (splashNotificaciones) {
+                    splashNotificaciones.style.display = 'none';
+                }
+                
+                if (Array.isArray(response) && response.length > 0) {
+                    var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
+                    postDisplayContainer.empty();
 
-var currentLanguage = 'in';
+                    response.forEach(function(post) {
+                        if (post.imagenes.length > 0 || post.videos.length > 0) {
+                            var mediaHtml = '';
 
-// Obtener el enlace para cambiar el idioma
-  var languageLink = document.getElementById("languageLink");
+                            if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                                if (post.imagenes[0].imagen != null) {
+                                    var firstImageBase64 = post.imagenes[0].imagen;
+                                    var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                                } else {
+                                    var firstImageUrl = post.imagenes[0].filepath;
+                                    mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                                }
+                            } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                                var firstVideoUrl = post.videos[0].filepath;
+                                mediaHtml += `
+                                    <video controls style="cursor: pointer;" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
+                                        <source src="${firstVideoUrl}" type="video/mp4">
+                                        Tu navegador no soporta la reproducción de videos.
+                                    </video>
+                                `;
+                            }
 
-// Si no existe la cookie "language", se crea y se establece "in" como idioma
-if (!getCookie("language")) {
-    document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`; // Validez de 1 año
-    currentLanguage = "in";
-    localStorage.setItem("language", currentLanguage);
-    // Cambiar el texto del enlace según el idioma
-    languageLink.textContent = "ENG";  // Cambiar solo a "ENG"
-} else {
-    // Si ya existe la cookie, obtener el valor y poner el texto de acuerdo a ella
-    currentLanguage = getCookie("language");
-    localStorage.setItem("language", currentLanguage);
-    if (languageLink) {
-        languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
-    } else {
-        console.error("Element with ID 'languageLink' not found.");
+                            var cardHtml = `
+                                <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
+                                    <div class="card-body">
+                                        <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                            <span class="text-white">&times;</span>
+                                        </a>
+                                        <h5 class="card-title">${post.titulo}</h5>
+                                        <div class="card-media-grid-publicacion-en-ambito">
+                                            ${mediaHtml}
+                                        </div>
+                                        <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                        <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
+                                        <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                                    </div>
+                                </div>
+                            `;
+
+                            postDisplayContainer.append(cardHtml);
+                        }
+                    });
+                } else {
+                    var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
+                    postDisplayContainer.empty();
+                    postDisplayContainer.append(`
+                        <div class="alert alert-info text-center">
+                            <h4>Selecciona una subcategoría</h4>
+                            <p>Has seleccionado "${domain}". Ahora elige una subcategoría específica para ver las publicaciones.</p>
+                        </div>
+                    `);
+                }
+            },
+            error: function (xhr, status, error) {
+                if (splashNotificaciones) {
+                    splashNotificaciones.style.display = 'none';
+                }
+                console.error('Error al cargar publicaciones:', error);
+                
+                var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
+                postDisplayContainer.empty();
+                postDisplayContainer.append(`
+                    <div class="alert alert-warning text-center">
+                        <h4>Selecciona una subcategoría</h4>
+                        <p>Para ver publicaciones específicas, elige una subcategoría del menú "Categorías".</p>
+                    </div>
+                `);
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error en la petición:', error);
     }
-    
 }
 
+// ===== EVENT LISTENERS PRINCIPALES =====
+document.addEventListener('DOMContentLoaded', function () {
+    
+    // ===== NAVBAR FUNCTIONALITY =====
+    const mobileMenu = document.getElementById("mobile-menu");
+    const navbarMenu = document.getElementById("navbar-menu");
+    const navbar = document.querySelector(".custom-navbar");
+    const dropdowns = document.querySelectorAll(".custom-dropdown");
 
+    // Toggle menú móvil
+    if (mobileMenu && navbarMenu) {
+        mobileMenu.addEventListener("click", () => {
+            mobileMenu.classList.toggle("active");
+            navbarMenu.classList.toggle("active");
 
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const selector = document.getElementById("languageSelector");
-    const selected = selector.querySelector(".selected-language");
-    const dropdown = selector.querySelector(".language-dropdown");
-    const languageLink = document.getElementById("languageLink");
-
-    const languages = {
-        es: { name: "Español", code: "ES", flag: "https://flagcdn.com/24x18/es.png" },
-        in: { name: "English", code: "ENG", flag: "https://flagcdn.com/24x18/us.png" },
-        fr: { name: "Français", code: "FR", flag: "https://flagcdn.com/24x18/fr.png" },
-        de: { name: "Deutsch", code: "DE", flag: "https://flagcdn.com/24x18/de.png" },
-        it: { name: "Italiano", code: "IT", flag: "https://flagcdn.com/24x18/it.png" },
-        pt: { name: "Português", code: "PT", flag: "https://flagcdn.com/24x18/pt.png" }
-    };
-
-    const availableLanguages = Object.keys(languages);
-
-    function getCookie(name) {
-        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
+            if (navbarMenu.classList.contains("active")) {
+                document.body.style.overflow = "hidden";
+            } else {
+                document.body.style.overflow = "";
+            }
+        });
     }
 
-    function setLanguage(lang) {
-        const langData = languages[lang];
-        if (!langData) return;
+    // Manejar dropdowns
+    dropdowns.forEach((dropdown) => {
+        const toggle = dropdown.querySelector(".custom-dropdown-toggle");
 
-        // Guardar
-        localStorage.setItem("language", lang);
-        document.cookie = `language=${lang}; path=/; max-age=31536000`;
+        dropdown.addEventListener("mouseenter", () => {
+            if (window.innerWidth > 768) {
+                dropdown.classList.add("show");
+            }
+        });
 
-        // Mostrar en selector visual
-        selected.innerHTML = `<img src="${langData.flag}"> ${langData.code}`;
+        dropdown.addEventListener("mouseleave", () => {
+            if (window.innerWidth > 768) {
+                dropdown.classList.remove("show");
+            }
+        });
 
-        // Mostrar en <a id="languageLink">
-        if (languageLink) {
-            languageLink.textContent = langData.code;
+        if (toggle) {
+            toggle.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                dropdown.classList.toggle("show");
+                dropdown.classList.toggle("active");
+
+                dropdowns.forEach((otherDropdown) => {
+                    if (otherDropdown !== dropdown) {
+                        otherDropdown.classList.remove("show");
+                        otherDropdown.classList.remove("active");
+                    }
+                });
+            });
         }
-
-        // Cerrar dropdown
-        dropdown.style.display = "none";
-
-        // Funciones del sistema
-        if (typeof cargarAmbitos === "function") cargarAmbitos();
-        if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
-    }
-
-    function buildDropdown() {
-        dropdown.innerHTML = "";
-        for (const [code, lang] of Object.entries(languages)) {
-            const option = document.createElement("div");
-            option.className = "language-option";
-            option.innerHTML = `<img src="${lang.flag}"> ${lang.name}`;
-            option.addEventListener("click", () => setLanguage(code));
-            dropdown.appendChild(option);
-        }
-    }
-
-    selected.addEventListener("click", () => {
-        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
     });
 
+    // Cerrar dropdowns al hacer clic fuera
     document.addEventListener("click", (e) => {
-        if (!selector.contains(e.target) && e.target !== languageLink) {
-            dropdown.style.display = "none";
-        }
+        dropdowns.forEach((dropdown) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove("show");
+                dropdown.classList.remove("active");
+            }
+        });
     });
 
-    // Clic sobre <a id="languageLink"> para cambiar idioma cíclicamente
-    if (languageLink) {
-        languageLink.addEventListener("click", function (event) {
-            event.preventDefault();
-
-            const currentLang = localStorage.getItem("language") || getCookie("language") || "in";
-            const currentIndex = availableLanguages.indexOf(currentLang);
-            const nextIndex = (currentIndex + 1) % availableLanguages.length;
-            const nextLang = availableLanguages[nextIndex];
-
-            setLanguage(nextLang);
+    // Efecto scroll en navbar
+    if (navbar) {
+        window.addEventListener("scroll", () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > 50) {
+                navbar.classList.add("scrolled");
+            } else {
+                navbar.classList.remove("scrolled");
+            }
         });
     }
 
-    // Inicializar
-    const currentLang = localStorage.getItem("language") || getCookie("language") || "in";
-    setLanguage(currentLang);
-    buildDropdown();
-});
+    // Cerrar menú móvil al redimensionar ventana
+    window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) {
+            if (mobileMenu) mobileMenu.classList.remove("active");
+            if (navbarMenu) navbarMenu.classList.remove("active");
+            document.body.style.overflow = "";
 
+            dropdowns.forEach((dropdown) => {
+                dropdown.classList.remove("active");
+            });
+        }
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
- function cargaCodigoPostalLayout(){
-    // Obtener referencia al label
-    const labelCP = document.getElementById("labelCP");
-
-    // Obtener el valor almacenado en localStorage
-    const cpValue = localStorage.getItem("codigoPostal");
-
-    // Si hay un valor en localStorage, asignarlo al label
-    if (cpValue) {
-        labelCP.textContent = cpValue;
-    }
- 
-
- }
- 
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    cargaCodigoPostalLayout();
-    // Inicializamos el modal fuera del listener
-    const modalElement = document.getElementById('modalSeleccionCodigoPostal');
-    const myModal = new bootstrap.Modal(modalElement);
+    // ===== CÓDIGO POSTAL SIMPLE =====
+    const codigoPostalInput = document.getElementById('codigoPostalSimple');
     
-    // Obtener el enlace "Signals"
-    document.getElementById('openModalCP').addEventListener('click', function (e) {
-        // Prevenir el comportamiento por defecto (enlace)
-        e.preventDefault();
-
-        // Cargar el código postal desde el localStorage si existe
-        const codigoPostalGuardado = localStorage.getItem('codigoPostal');
-        const codigoPostalModal = document.getElementById('codigoPostalModal');
-        if (codigoPostalGuardado) {
-            // Mostrar el código postal guardado en el campo del modal
-            codigoPostalModal.value = codigoPostalGuardado;
-        } else {
-            // Si no hay código postal en localStorage, dejar el campo vacío
-            codigoPostalModal.value = '';
+    if (codigoPostalInput) {
+        const savedCP = localStorage.getItem('codigoPostal');
+        if (savedCP) {
+            codigoPostalInput.value = savedCP;
         }
 
-        // Asegurarse de que solo se ingresen números
-        codigoPostalModal.addEventListener('input', function(event) {
-            // Reemplazar todo lo que no sea un número
-            event.target.value = event.target.value.replace(/[^0-9]/g, '');
+        codigoPostalInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            e.target.value = value;
+            
+            if (value) {
+                localStorage.setItem('codigoPostal', value);
+                console.log('CP guardado:', value);
+            }
         });
 
-        // Abrir el modal
-        myModal.show();
-    });
-});
-// Función para guardar el código postal en el localStorage y las cookies
-function guardarCodigoPostal() {
-    const codigoPostal = document.getElementById('codigoPostalModal').value;
+        codigoPostalInput.addEventListener('blur', function(e) {
+            const value = e.target.value.trim();
+            if (value) {
+                localStorage.setItem('codigoPostal', value);
+                console.log('CP guardado (blur):', value);
+            }
+        });
 
-    // Validar si el campo no está vacío y contiene solo números
-    if (codigoPostal && !isNaN(codigoPostal)) {
-        // Guardar el código postal en el localStorage
-        localStorage.setItem('codigoPostal', codigoPostal);
-        document.cookie = `codigoPostal=${codigoPostal}; max-age=3600; path=/; SameSite=Lax`;
-        console.log("Cookies accesibles por JS después de setear:", document.cookie);
-        cargaCodigoPostalLayout();
-        // Cerrar el modal
-        const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
-        myModal.hide();  // Aquí se cierra el modal
-
-    } else {
-        alert('Por favor ingresa un código postal válido (solo números)');
+        codigoPostalInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const value = e.target.value.trim();
+                if (value) {
+                    localStorage.setItem('codigoPostal', value);
+                    console.log('CP guardado (enter):', value);
+                    
+                    if (typeof cargarAmbitosCategorias === 'function') {
+                        setTimeout(() => {
+                            cargarAmbitosCategorias();
+                        }, 100);
+                    }
+                }
+            }
+        });
     }
-}
 
-// Función para permitir solo números en el input
-document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
-    // Reemplazar todo lo que no sea un número
-    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    // ===== MANEJAR CLICS EN CATEGORÍAS PRINCIPALES SOLAMENTE =====
+    // CAMBIAR este selector para que NO interfiera con las subcategorías
+    const categoryLinks = document.querySelectorAll('.custom-dropdown-item[data-domain]');
+        
+    categoryLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const domain = this.getAttribute('data-domain');
+            const categoryName = this.textContent.trim();
+            
+            console.log('Categoría principal seleccionada:', domain, categoryName); // Debug
+            
+            localStorage.setItem('dominio', domain);
+            localStorage.setItem('banderaCategorias', 'True');
+            
+            const ambitoActual = document.getElementById('ambitoActual');
+            if (ambitoActual) {
+                ambitoActual.innerHTML = `<a style='text-decoration:none; color:orange;'>${categoryName}</a>`;
+            }
+            
+            const domainInput = document.getElementById('domain');
+            if (domainInput) {
+                domainInput.value = domain;
+            }
+            
+            setTimeout(() => {
+                if (typeof cargarAmbitosCategorias === 'function') {
+                    cargarAmbitosCategorias();
+                } else {
+                    console.warn('Función cargarAmbitosCategorias no disponible');
+                }
+            }, 100);
+            
+            const dropdown = this.closest('.custom-dropdown');
+            if (dropdown) {
+                dropdown.classList.remove('show');
+            }
+            
+            cargarPublicacionesPorCategoria(domain);
+            
+            const seccionPublicaciones = document.getElementById('domains-publicaciones');
+            if (seccionPublicaciones) {
+                seccionPublicaciones.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+
+    // ===== NO TOCAR LAS SUBCATEGORÍAS - las maneja navBarCaracteristicas.js =====
+
+    // ===== ADMIN LINK =====
+    const adminLink = document.getElementById('admin-link');
+    if (adminLink) {
+        adminLink.addEventListener('click', handleAdminClick);
+    }
+
+    // ===== VENTAS LINK =====
+    const ventasLink = document.getElementById('ventas-link');
+    if (ventasLink) {
+        ventasLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            const form = document.getElementById('ventas-form');
+            let access_token = localStorage.getItem("access_token");
+            var ambito = localStorage.getItem("dominio");
+            
+            document.getElementById('access_token_form_Ventas').value = access_token;
+            document.getElementById('ambito_form_Ventas').value = ambito;
+            form.submit();
+        });
+    }
+
+    // ===== COMPRAS LINK =====
+    const comprasLink = document.getElementById('compras-link');
+    if (comprasLink) {
+        comprasLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            const form = document.getElementById('compras-form');
+            let access_token = localStorage.getItem("access_token");
+            var ambito = localStorage.getItem("dominio");
+            
+            document.getElementById('access_token_btn_compras').value = access_token;
+            document.getElementById('ambito_btn_compras').value = ambito;
+            form.submit();
+        });
+    }
+
+    // ===== CONSULTAS LINK =====
+    const consultasLink = document.getElementById('consultas-link');
+    if (consultasLink) {
+        consultasLink.addEventListener('click', function (event) {
+            event.preventDefault();
+            const form = document.getElementById('consultas-form');
+            let access_token = localStorage.getItem("access_token");
+            var ambito = localStorage.getItem("dominio");
+            
+            document.getElementById('access_token_btn_consultas').value = access_token;
+            document.getElementById('ambito_btn_consultas').value = ambito;
+            form.submit();
+        });
+    }
+
+    // ===== INICIALIZACIÓN DE IDIOMA =====
+    var currentLanguage = 'in';
+    var languageLink = document.getElementById("languageLink");
+
+    if (!getCookie("language")) {
+        document.cookie = `language=${currentLanguage}; path=/; max-age=31536000`;
+        currentLanguage = "in";
+        localStorage.setItem("language", currentLanguage);
+        if (languageLink) {
+            languageLink.textContent = "ENG";
+        }
+    } else {
+        currentLanguage = getCookie("language");
+        localStorage.setItem("language", currentLanguage);
+        if (languageLink) {
+            languageLink.textContent = currentLanguage === "in" ? "ENG" : "ES";
+        }
+    }
+
+    // ===== SELECTOR DE IDIOMA =====
+    const selector = document.getElementById("languageSelector");
+    const selected = selector?.querySelector(".selected-language");
+    const dropdown = selector?.querySelector(".language-dropdown");
+
+    if (selector && selected && dropdown) {
+        const languages = {
+            es: { name: "Español", code: "ES", flag: "https://flagcdn.com/24x18/es.png" },
+            in: { name: "English", code: "ENG", flag: "https://flagcdn.com/24x18/us.png" },
+            fr: { name: "Français", code: "FR", flag: "https://flagcdn.com/24x18/fr.png" },
+            de: { name: "Deutsch", code: "DE", flag: "https://flagcdn.com/24x18/de.png" },
+            it: { name: "Italiano", code: "IT", flag: "https://flagcdn.com/24x18/it.png" },
+            pt: { name: "Português", code: "PT", flag: "https://flagcdn.com/24x18/pt.png" }
+        };
+
+        const availableLanguages = Object.keys(languages);
+
+        function setLanguage(lang) {
+            const langData = languages[lang];
+            if (!langData) return;
+
+            localStorage.setItem("language", lang);
+            document.cookie = `language=${lang}; path=/; max-age=31536000`;
+
+            selected.innerHTML = `<img src="${langData.flag}"> ${langData.code}`;
+
+            if (languageLink) {
+                languageLink.textContent = langData.code;
+            }
+
+            dropdown.style.display = "none";
+
+            if (typeof cargarAmbitos === "function") cargarAmbitos();
+            if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
+        }
+
+        function buildDropdown() {
+            dropdown.innerHTML = "";
+            for (const [code, lang] of Object.entries(languages)) {
+                const option = document.createElement("div");
+                option.className = "language-option";
+                option.innerHTML = `<img src="${lang.flag}"> ${lang.name}`;
+                option.addEventListener("click", () => setLanguage(code));
+                dropdown.appendChild(option);
+            }
+        }
+
+        selected.addEventListener("click", () => {
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!selector.contains(e.target) && e.target !== languageLink) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        if (languageLink) {
+            languageLink.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                const currentLang = localStorage.getItem("language") || getCookie("language") || "in";
+                const currentIndex = availableLanguages.indexOf(currentLang);
+                const nextIndex = (currentIndex + 1) % availableLanguages.length;
+                const nextLang = availableLanguages[nextIndex];
+
+                setLanguage(nextLang);
+            });
+        }
+
+        const currentLang = localStorage.getItem("language") || getCookie("language") || "in";
+        setLanguage(currentLang);
+        buildDropdown();
+    }
 });
 
 

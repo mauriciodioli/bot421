@@ -293,6 +293,63 @@ body {
   display: block;
 }
 
+/* Input de código postal SIMPLE - DESDE CERO */
+.custom-postal-input {
+  margin-left: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.custom-postal-field {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: #1e293b;
+  font-size: 0.875rem;
+  font-weight: 500;
+  width: 130px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.custom-postal-field::placeholder {
+  color: #64748b;
+  font-weight: 400;
+}
+
+.custom-postal-field:focus {
+  border-color: var(--primary-color);
+  background: white;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.custom-postal-field:hover {
+  border-color: var(--primary-color);
+  background: white;
+}
+
+/* Responsive para input */
+@media (max-width: 768px) {
+  .custom-postal-input {
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+  
+  .custom-postal-field {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* ELIMINAR TODO EL CSS ANTERIOR DEL MODAL Y BOTÓN CP */
+/* Comentar o eliminar estas secciones:
+.custom-postal-display { ... }
+.custom-postal-label { ... }
+@keyframes fadeInScale { ... }
+*/
+
 /* Responsive Design */
 @media (min-width: 768px) {
   .custom-logo-text {
@@ -406,6 +463,26 @@ body {
 
   .custom-logo-text {
     display: none;
+  }
+
+  /* Código postal display */
+  .custom-postal-display {
+    margin: 0.5rem 0;
+    width: 100%;
+    justify-content: center;
+    order: -1; /* Aparece antes en mobile */
+  }
+  
+  .custom-postal-display .custom-nav-link {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    min-width: 80px;
+  }
+  
+  .custom-postal-label {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    min-width: 60px;
   }
 }
 
