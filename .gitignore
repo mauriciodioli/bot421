@@ -14,7 +14,7 @@ src/credentialIa.json
 # Ignore __pycache__ folders and .pyc files
 __pycache__/
 *.pyc
-logs.log
-.env
+src/logs.log
+
 # Ignore workspace file
 bot421.code-workspace

@@ -103,13 +103,7 @@ jobs:
         script: |
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip uninstall -y websocket-client
           docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) pip install websocket-client==0.57.0
-          # Dynamically find the _app.py path
-          WS_APP_PATH=$(docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) find /usr -path '*/websocket/_app.py' | head -n 1)
-          if [ -z "$WS_APP_PATH" ]; then
-            echo "_app.py not found. Check websocket-client installation and Python version."
-            exit 1
-          fi
-          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sed -i 's/isAlive/is_alive/g' "$WS_APP_PATH"
+          docker exec -i $(docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}) sed -i 's/isAlive/is_alive/g' /usr/local/lib/python3.9/site-packages/websocket/_app.py
 
     - name: Modify service.py in pyRofex library
       uses: appleboy/ssh-action@master
