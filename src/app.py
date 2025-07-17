@@ -141,6 +141,7 @@ from models.ficha import ficha
 from models.trazaFicha import trazaFicha
 from models.operacion import operacion
 from models.brokers import brokers
+from models.codigoPostal import codigoPostal
 from models.operacionHF import operacionHF
 from models.logs import logs
 from models.creaTablas import creaTabla
@@ -273,6 +274,7 @@ app.register_blueprint(cuenta)
 app.register_blueprint(cuentas)
 app.register_blueprint(endPointBrokers)
 app.register_blueprint(brokers)
+app.register_blueprint(codigoPostal)
 app.register_blueprint(orden)
 app.register_blueprint(comprar)
 app.register_blueprint(operacion)

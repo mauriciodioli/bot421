@@ -330,12 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             codigoPostalModal.value = '';
         }
 
-        // Asegurarse de que solo se ingresen números
-        codigoPostalModal.addEventListener('input', function(event) {
-            // Reemplazar todo lo que no sea un número
-            event.target.value = event.target.value.replace(/[^0-9]/g, '');
-        });
-
+  
         // Abrir el modal
         myModal.show();
     });
@@ -345,7 +340,7 @@ function guardarCodigoPostal() {
     const codigoPostal = document.getElementById('codigoPostalModal').value;
 
     // Validar si el campo no está vacío y contiene solo números
-    if (codigoPostal && !isNaN(codigoPostal)) {
+   // if (codigoPostal) {
         // Guardar el código postal en el localStorage
         localStorage.setItem('codigoPostal', codigoPostal);
         document.cookie = `codigoPostal=${codigoPostal}; max-age=3600; path=/; SameSite=Lax`;
@@ -355,16 +350,11 @@ function guardarCodigoPostal() {
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal
 
-    } else {
-        alert('Por favor ingresa un código postal válido (solo números)');
-    }
+ //   } else {
+ //       alert('Por favor ingresa un código postal válido (solo números)');
+  //  }
 }
 
-// Función para permitir solo números en el input
-document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
-    // Reemplazar todo lo que no sea un número
-    event.target.value = event.target.value.replace(/[^0-9]/g, '');
-});
 
 
 

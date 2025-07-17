@@ -359,17 +359,7 @@ document.getElementById('openModalCP').addEventListener('click', function (e) {
     myModal.show();
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('codigoPostalModal');
-    if (input) {
-        input.addEventListener('input', function(event) {
-            // Reemplazar todo lo que no sea un número
-            event.target.value = event.target.value.replace(/[^0-9]/g, '');
-        });
-    } else {
-        console.log("El elemento con id 'codigoPostalModal' no existe.");
-    }
-});
+
 
 
 // Función para guardar el código postal en el localStorage
@@ -378,7 +368,7 @@ function guardarCodigoPostal() {
     const codigoPostal = document.getElementById('codigoPostalModal').value;
    
     // Validar si el campo no está vacío y contiene solo números
-    if (codigoPostal && !isNaN(codigoPostal)) {
+    if (codigoPostal) {
         // Guardar el código postal en el localStorage
         localStorage.setItem('codigoPostal', codigoPostal);
         console.log('Código Postal guardado en localStorage:', codigoPostal);
@@ -394,13 +384,13 @@ function guardarCodigoPostal() {
         alert('Por favor ingresa un código postal válido (solo números)');
     }
 }
-document.addEventListener('DOMContentLoaded', function() {
+//document.addEventListener('DOMContentLoaded', function() {
     // Función para permitir solo números en el input
-    document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
+  //  document.getElementById('codigoPostalModal').addEventListener('input', function(event) {
         // Reemplazar todo lo que no sea un número
-        event.target.value = event.target.value.replace(/[^0-9]/g, '');
-    });
-});
+    //    event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    //});
+//});
 
 
 

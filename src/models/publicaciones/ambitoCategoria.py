@@ -21,6 +21,9 @@ class AmbitoCategoria(db.Model):
     valor = db.Column(db.String(500), nullable=True)
     color = db.Column(db.String(50), nullable=True)
     estado = db.Column(db.String(500), nullable=True)
+    ambito_general_id = db.Column(db.Integer, db.ForeignKey('ambito_general.id'), nullable=True)
+    ambito_general = relationship("AmbitoGeneral", lazy='joined')
+
     
     
     # Constructor
@@ -50,3 +53,6 @@ class MerShema(ma.Schema):
     class Meta:       
         fields = ("id", "nombre", "descripcion", "idioma","color" "valor", "estado")  # Campos a serializar
 
+
+from models.publicaciones.categoria_general import CategoriaGeneral
+from models.publicaciones.ambito_general import AmbitoGeneral

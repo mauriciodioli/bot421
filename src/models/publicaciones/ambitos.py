@@ -4,6 +4,7 @@ from utils.db import db
 from sqlalchemy import inspect, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 ma = Marshmallow()
 
 
@@ -20,7 +21,8 @@ class Ambitos(db.Model):
     idioma = db.Column(db.String(500), nullable=True)
     valor = db.Column(db.String(500), nullable=True)
     estado = db.Column(db.String(500), nullable=True)
-    
+    categoria_general_id = db.Column(db.Integer, db.ForeignKey('categoria_general.id'), nullable=True)
+    categoria_general = relationship("CategoriaGeneral", lazy='joined')
     
     # Constructor
     def __init__(self, nombre, descripcion, idioma=None, valor=None, estado=None):
@@ -48,3 +50,6 @@ class MerShema(ma.Schema):
     class Meta:       
         fields = ("id", "nombre", "descripcion", "idioma", "valor", "estado")  # Campos a serializar
 
+
+from models.publicaciones.categoria_general import CategoriaGeneral
+from models.publicaciones.ambito_general import AmbitoGeneral

@@ -33,7 +33,50 @@ def obtener_usuarios_modal():
         abort(500)  # Devuelve un código de estado de error 500 si hay problemas con la base de datos
         
         
+     
         
+@usuario.route("/usuarios-generales/", methods=["GET"])
+def usuarios_generales():
+    try:
+     
+
+        # Filtrar UsuarioRegion con ese código postal
+        usuario_regiones = db.session.query(UsuarioRegion).all()
+
+        if not usuario_regiones:
+            return render_template("notificaciones/noPoseeDatos.html", layout='layout_administracion')
+
+        # Obtener los IDs de usuario asociados a ese código postal
+        usuarios_ids = [ur.user_id for ur in usuario_regiones]
+        
+        # Filtrar los usuarios que coinciden con los IDs obtenidos
+        usuarios = db.session.query(Usuario).filter(Usuario.id.in_(usuarios_ids)).all()
+
+        # Crear una estructura de datos que agrupe los usuarios con su información de UsuarioRegion
+        usuarios_con_region = [
+            {
+                "usuario": usuario,
+                "regiones": [ur for ur in usuario_regiones if ur.user_id == usuario.id],
+                "codigo_postal": usuario_regiones[0].codigoPostal,  # Obtener código postal de UsuarioRegion
+                "pais": usuario_regiones[0].pais,  # Obtener país de UsuarioRegion
+                "idioma": usuario_regiones[0].idioma  # Obtener idioma de UsuarioRegion
+            }
+            for usuario in usuarios
+        ]
+
+        return render_template(
+            "/usuarios/usuarios.html",
+            datos=usuarios_con_region,  # Enviamos la lista de usuarios con sus regiones
+            layout='layout_administracion'
+        )
+
+    except Exception as e:
+        print(f'Error en la consulta: {e}')
+        return "Problemas con la base de datos", 500
+
+    finally:
+        db.session.close()  # Cierra la sesión para evitar conexiones abiertas
+       
         
 @usuario.route("/usuarios/", methods=["GET"])
 def usuarios():

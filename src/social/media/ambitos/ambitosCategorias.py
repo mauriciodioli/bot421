@@ -8,6 +8,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
+from sqlalchemy import func
 from models.usuario import Usuario
 from models.publicaciones.ambitos import Ambitos
 from models.publicaciones.ambito_usuario import Ambito_usuario
@@ -40,10 +41,7 @@ def social_media_ambitosCategorias_categoria_mostrar():
         if not ambito_nombre:
             ambito_nombre = 'Laboral'
         # Buscar el ámbito
-        ambitos = db.session.query(Ambitos).filter(
-            Ambitos.valor == ambito_nombre,
-            Ambitos.idioma == idioma
-        ).first()
+        ambitos = (db.session.query(Ambitos).filter(func.lower(Ambitos.valor) == ambito_nombre.lower(),Ambitos.idioma == idioma).first())
 
         if not ambitos:           
             return jsonify({'error': 'Ámbito no encontrado'}), 404
