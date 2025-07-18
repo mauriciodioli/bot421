@@ -220,6 +220,9 @@ $('.card-container').on('click', '.card', function () {
     // Guardar el dominio en localStorage
     localStorage.setItem('categoria', selectedCategory);
     var domain = localStorage.getItem('dominio');
+    // Guardar también en cookie (expira en 30 días)
+    document.cookie = `categoria=${encodeURIComponent(dominio)}; path=/; max-age=${60 * 60 * 24 * 30}`;
+
     // Actualizar el input oculto
     const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
     if (hiddenInput.length) {

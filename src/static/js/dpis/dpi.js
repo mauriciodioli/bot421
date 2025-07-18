@@ -612,7 +612,7 @@ function enviarDominioAJAX(domain) {
 
     var galeriaURL = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
-
+    debugger;
     if ( !localStorage.getItem('dominio')) {
         
         localStorage.setItem('dominio', domain);
@@ -653,7 +653,7 @@ function enviarDominioAJAX(domain) {
                         codigoPostal: cp,                         
                         lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
                 success: function (response) {
-                
+                    
                     $('#ambitoActual').focus();
                         console.log("Respuesta del servidor:", response);
                     if (response.length == 0) {

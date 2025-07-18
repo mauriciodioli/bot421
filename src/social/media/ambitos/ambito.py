@@ -11,7 +11,10 @@ import jwt
 from models.usuario import Usuario
 from models.publicaciones.ambitos import Ambitos
 from models.publicaciones.ambito_usuario import Ambito_usuario
-
+from sqlalchemy.orm import aliased
+from models.publicaciones.categoria_general import CategoriaGeneral, CategoriaTraduccion
+from models.publicaciones.ambito_general import AmbitoGeneral,AmbitoTraduccion
+from models.publicaciones.publicaciones import Publicacion
 
 ambito = Blueprint('ambito', __name__)
 
@@ -107,7 +110,6 @@ def crear_ambito():
 def informe_ambito():
     return render_template('ambitos/informe_ambitos.html', layout='layout_administracion')
 
-# Obtener todos los ambitos
 @ambito.route('/social-media-publicaciones-obtener-ambitos/', methods=['GET'])
 def obtener_ambitos():
     try:

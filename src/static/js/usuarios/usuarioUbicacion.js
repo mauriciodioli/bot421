@@ -175,6 +175,7 @@ function sendLocationToServer(latitude, longitude, language) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
+                debugger;
                 console.log("Ubicación e idioma actualizados en el servidor:", xhr.responseText);
             } else {
                 console.error("Error en la actualización:", xhr.status, xhr.responseText);

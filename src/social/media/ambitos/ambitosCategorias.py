@@ -6,6 +6,7 @@ import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,abort    
 from utils.db import db
+from sqlalchemy import and_
 import routes.api_externa_conexion.get_login as get
 import jwt
 from sqlalchemy import func
@@ -18,6 +19,12 @@ from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
 from models.publicaciones.publicacionCodigoPostal import PublicacionCodigoPostal
 
 
+from sqlalchemy.orm import aliased
+from models.publicaciones.categoria_general import CategoriaGeneral, CategoriaTraduccion
+from models.publicaciones.ambito_general import AmbitoGeneral,AmbitoTraduccion
+from models.publicaciones.publicaciones import Publicacion
+
+
 ambitosCategorias = Blueprint('ambitosCategorias', __name__)
 
 
@@ -27,48 +34,66 @@ def social_media_social_categorias():
     print('social_media_social_categorias')
     return render_template('ambitos/ambitoCategoria.html', layout='layout_administracion')
 
-
-
 @ambitosCategorias.route('/social-media-ambitosCategorias-categoria-mostrar/', methods=['POST'])
 def social_media_ambitosCategorias_categoria_mostrar():
     try:
-        # Obtener el valor de la cookie "language"
-        idioma = request.cookies.get('language', 'in')  # Valor por defecto "in"
-
-        # Obtener los datos del formulario
-        ambito_nombre = request.form.get('ambito')
+        idioma = request.cookies.get('language', 'in')  # Idioma destino (ej: 'in')
+        ambito_nombre = request.form.get('ambito') or 'Laboral'
         codigo_postal = request.form.get('cp')
-        if not ambito_nombre:
-            ambito_nombre = 'Laboral'
-        # Buscar el ámbito
-        ambitos = (db.session.query(Ambitos).filter(func.lower(Ambitos.valor) == ambito_nombre.lower(),Ambitos.idioma == idioma).first())
 
-        if not ambitos:           
+        print(f"[DEBUG] idioma recibido: {idioma}")
+        print(f"[DEBUG] código postal recibido: {codigo_postal}")
+        print(f"[DEBUG] ambito_nombre recibido: {ambito_nombre}")
+
+        # Paso 1: buscar el ambito_id general desde cualquier idioma
+        ambito_trad = db.session.query(AmbitoTraduccion).filter(
+            func.lower(AmbitoTraduccion.valor) == ambito_nombre.lower()
+        ).first()
+
+        if not ambito_trad:
+            print("[DEBUG] Ámbito no encontrado en ninguna traducción")
             return jsonify({'error': 'Ámbito no encontrado'}), 404
 
-       # Buscar las relaciones
-        relations = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambitos.id).all()
+        print(f"[DEBUG] ambito_id encontrado: {ambito_trad.ambito_id}")
 
-        # Obtener todos los ids de las categorías que necesitamos
-        categoria_ids = [relation.ambitoCategoria_id for relation in relations]
+        # Paso 2: buscar el ámbito real (con traducción deseada)
+        ambitos = db.session.query(Ambitos).filter_by(
+            ambito_general_id=ambito_trad.ambito_id,
+            idioma=idioma,
+            estado='activo'
+        ).first()
 
-        # Obtener todas las categorías asociadas de una vez
-        categorias_map = {categoria.id: categoria for categoria in db.session.query(AmbitoCategoria).filter(AmbitoCategoria.id.in_(categoria_ids)).all()}
+        if not ambitos:
+            print("[DEBUG] Ámbito no encontrado en el idioma solicitado")
+            return jsonify({'error': 'Ámbito no encontrado en idioma'}), 404
 
-        # Lista para almacenar las categorías
+        print(f"[DEBUG] Ámbito encontrado: {ambitos.id} | {ambitos.valor}")
+
+        # Paso 3: buscar las relaciones
+        relations = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambitos.id, estado='ACTIVO').all()
+        print(f"[DEBUG] Relaciones encontradas: {len(relations)}")
+
+        # Paso 4: traer las categorías asociadas
+        categoria_ids = [rel.ambitoCategoria_id for rel in relations]
+
+        categorias_map = {
+            c.id: c for c in db.session.query(AmbitoCategoria).filter(
+                AmbitoCategoria.id.in_(categoria_ids),
+                AmbitoCategoria.estado == 'activo'
+            ).all()
+        }
+
+        # Paso 5: armar la lista final
         categorias = []
-
-        # Ahora, simplemente accedemos al diccionario de categorías
         for relation in relations:
             categoria = categorias_map.get(relation.ambitoCategoria_id)
-            if categoria:  # Verificar que la categoría exista
+            if categoria:
                 categorias.append(categoria)
 
-
-        # Serializar los datos
+        # Paso 6: serializar
         categorias_data = [{
-            'id': categoria.id,     
-            'ambito': ambito_nombre,     
+            'id': categoria.id,
+            'ambito': ambitos.valor,
             'nombre': categoria.nombre,
             'descripcion': categoria.descripcion,
             'idioma': categoria.idioma,
@@ -76,15 +101,17 @@ def social_media_ambitosCategorias_categoria_mostrar():
             'color': categoria.color,
             'estado': categoria.estado
         } for categoria in categorias]
-      
+
+        print(f"[DEBUG] Total categorías devueltas: {len(categorias_data)}")
         return jsonify({'categorias': categorias_data})
 
     except Exception as e:
-        print(f'Error al obtener los ámbitos: {e}')
+        print(f"[ERROR] {e}")
         return jsonify({'error': 'Problemas con la base de datos'}), 500
 
     finally:
         db.session.close()
+
 
 
 
