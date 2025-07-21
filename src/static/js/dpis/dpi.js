@@ -1,7 +1,7 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    
+    console.log("DOM listo");
     
 
 //eventos para la carga de los items de los dominios
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Función para cargar los ámbitos desde el servidor
         window.cargarAmbitos = function () {
-          
+        
             fetch('/social-media-publicaciones-obtener-ambitos/', {
                 method: 'GET',
                 headers: {
@@ -233,6 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Llamar a la función para cargar los ámbitos al cargar la página
+        
         cargarAmbitos();
         localStorage.setItem('banderaCategorias', 'True');
 
@@ -411,10 +412,12 @@ function mostrarSplash() {
     refresh_token = 'access_dpi_refresh_token';
     var selector = localStorage.getItem('selector');
     localStorage.setItem('paisSeleccionado', selectedCountry);
+     
     $('#modalSeleccionPais').modal('hide'); // Esta línea cierra el modal
      // Redirigir a la ruta /panel_control_sin_cuenta
     layoutOrigen = 'layout_dpi'; // Cambia 'nombre_del_layout' por el valor deseado
     var url = '/panel_control_sin_cuenta/?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token+'&selector='+selector;
+    console.log("Enviando AJAX");
     window.location.href = url;
   });   
 // en este script cargo el correo electrónico almacenado en el localStorage
@@ -450,6 +453,7 @@ $("input[name='access_token_form2']").val(access_token);
 
 
 function cargarOpcionesCombo() {
+
 // Realizar una solicitud Ajax para obtener las opciones del combo
 fetch('/cuenta-endpoint-all/', {
     method: 'POST',
@@ -590,6 +594,7 @@ function toggleSplash(section, splashElement) {
 }
 
 function enviarDominioAJAX(domain) {
+    console.log("Dominio:", domain);
     localStorage.setItem('banderaCategorias', 'True');
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
@@ -828,6 +833,7 @@ function abrirPublicacionHome(publicacionId) {
     }
 
     toggleSplash(targetSection, splash);
+    console.log("Enviando AJAX");
    // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
     window.location.href = `/media-muestraPublicacionesEnDpi-mostrar/${publicacionId}`;
 }
@@ -960,11 +966,6 @@ document.addEventListener("DOMContentLoaded", function () {
     setLanguage(currentLang);
     buildDropdown();
 });
-
-
-
-
-
 
 
 

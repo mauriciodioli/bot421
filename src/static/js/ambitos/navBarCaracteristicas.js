@@ -105,11 +105,7 @@ function cargarAmbitosCategorias() {
         //dropdownMenuCategorias = $('#caracteristicas-tab').siblings('.categoria-dropdown-menu');
 
         
-        if (typeof $ === 'function') {
-            console.log("jQuery está disponible");
-        } else {
-            console.warn("jQuery NO está cargado");
-        }
+      
 
         // Agregar las categorías obtenidas al dropdown
         data.categorias.forEach((categoria, index) => {
