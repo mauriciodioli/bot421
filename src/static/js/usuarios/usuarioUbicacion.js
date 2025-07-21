@@ -1,6 +1,10 @@
-let lastLatitude = null;
-let lastLongitude = null;
-let lastLanguage = null; // Para evitar enviar datos repetidos
+if (typeof window.lastLatitude === 'undefined') {
+    window.lastLatitude = null;
+    window.lastLongitude = null;
+    window.lastLanguage = null; // Para evitar enviar datos repetidos
+}
+
+
 
 // Función para obtener la ubicación
 
@@ -26,11 +30,12 @@ function successCallback(position) {
     document.getElementById("status").innerText = `Ubicación actual: Lat ${latitude}, Lng ${longitude}`;
     
     // Si la ubicación ha cambiado, obtener el idioma y enviarlo al servidor
-    if (lastLatitude !== latitude || lastLongitude !== longitude) {
-        lastLatitude = latitude;
-        lastLongitude = longitude;
-        getLanguageFromLocation(latitude, longitude);
-    }
+    if (window.lastLatitude !== latitude || window.lastLongitude !== longitude) {
+            window.lastLatitude = latitude;
+            window.lastLongitude = longitude;
+            getLanguageFromLocation(latitude, longitude);
+        }
+
 }
 
 // Error al obtener ubicación
@@ -66,11 +71,11 @@ function getLanguageFromLocation(latitude, longitude) {
                 document.getElementById("status").innerText = `Ubicación detectada: ${data.address.country} - Idioma: ${language}`;
 
                 // Solo enviar si el idioma ha cambiado
-                if (lastLanguage !== language) {
-                    lastLanguage = language;
+               if (window.lastLanguage !== language) {
+                    window.lastLanguage = language;
                     sendLocationToServer(latitude, longitude, language);
-
                 }
+
             }
         })
         .catch(error => console.error("Error obteniendo detalles de la ubicación:", error));

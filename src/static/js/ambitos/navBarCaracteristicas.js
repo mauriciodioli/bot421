@@ -1,3 +1,5 @@
+let categoriasCache = {};
+
 document.addEventListener('DOMContentLoaded', function () {
     // Seleccionamos el primer ítem que tiene el atributo 'data-color'
     const firstItem = document.querySelector('.categoria-dropdown-item[data-color]');
@@ -100,7 +102,14 @@ function cargarAmbitosCategorias() {
         }
         // Limpiar el menú y el contenedor de tarjetas antes de agregar nuevos elementos
         dropdownMenuCategorias.empty();
- 
+        //dropdownMenuCategorias = $('#caracteristicas-tab').siblings('.categoria-dropdown-menu');
+
+        
+        if (typeof $ === 'function') {
+            console.log("jQuery está disponible");
+        } else {
+            console.warn("jQuery NO está cargado");
+        }
 
         // Agregar las categorías obtenidas al dropdown
         data.categorias.forEach((categoria, index) => {
@@ -216,12 +225,12 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
 // Delegación de eventos para manejar clics en las tarjetas
 $('.card-container').on('click', '.card', function () {
     const selectedCategory = $(this).find('.card-number').text().replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
-
+  
     // Guardar el dominio en localStorage
     localStorage.setItem('categoria', selectedCategory);
     var domain = localStorage.getItem('dominio');
     // Guardar también en cookie (expira en 30 días)
-    document.cookie = `categoria=${encodeURIComponent(dominio)}; path=/; max-age=${60 * 60 * 24 * 30}`;
+    document.cookie = `categoria=${encodeURIComponent(domain)}; path=/; max-age=${60 * 60 * 24 * 30}`;
 
     // Actualizar el input oculto
     const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
@@ -290,6 +299,10 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
+    cp = localStorage.getItem('codigoPostal');
+        if (!cp){
+            cp = '1';
+        }
 
     if (!splash || !targetSection) {
         console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
@@ -324,12 +337,13 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
                 dataType: 'json', // Asegúrate de que el backend devuelva un JSON
                 headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
                 data: { ambitos: domain,
-                        categoria: selectedCategory, 
+                        categoria: selectedCategory,
+                        codigoPostal: cp,   
                         lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
                 success: function (response) {
                 // console.log('Respuesta del servidor:', response[0].ambito);
                   
-
+                 
                     splash.style.display = 'none'; // Ocultar el splash al terminar
                     if (Array.isArray(response)) {
                         var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
@@ -424,3 +438,135 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const botonCategorias = document.getElementById("caracteristicas-tab");
+
+    if (botonCategorias) {
+        botonCategorias.addEventListener("click", function () {
+            const dropdownMenu = botonCategorias.parentElement.querySelector(".dropdown-menu");
+
+            if (dropdownMenu) {
+                dropdownMenu.innerHTML = "";  // Limpia todos los <li>
+                console.log("Dropdown de categorías limpiado");
+
+                const domain = localStorage.getItem('dominio');
+                const selectedCategory = localStorage.getItem('categoria'); 
+
+                // 🔁 USAR CACHE SI EXISTE
+                if (categoriasCache[domain]) {
+          //          console.log("⚡ Usando categorías en caché para:", domain);
+                    renderizarCategorias(categoriasCache[domain], selectedCategory);
+                } else {
+           //         console.log("🌐 Cargando categorías desde servidor para:", domain);
+                    cargarCategorias(domain, selectedCategory);
+                }
+
+            } else {
+                console.warn("No se encontró el menú desplegable");
+            }
+        });
+    }
+});
+
+function cargarCategorias(domain, selectedCategory) {
+    //console.log("[INIT] Ejecutando cargarCategorias()");
+   // console.log("➡️ Dominio (ámbito):", domain);
+   // console.log("➡️ Categoría seleccionada:", selectedCategory);
+
+    const cp = localStorage.getItem("codigoPostal") || "";
+    const idioma = localStorage.getItem("language") || "in";
+
+   // console.log("📦 Enviando datos:", { ambito: domain, cp: cp, idioma: idioma });
+
+    fetch("/social-media-ambitosCategorias-categoria-mostrar/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+            ambito: domain,
+            cp: cp,
+            idioma: idioma
+        })
+    })
+    .then(response => {
+       // console.log("✅ Respuesta recibida del backend:", response.status);
+        return response.json();
+    })
+    .then(data => {
+        //console.log("📨 Datos parseados del backend:", data);
+
+        if (!data || !Array.isArray(data.categorias)) {
+            console.error("[ERROR] La respuesta no contiene 'categorias' como array");
+            return;
+        }
+
+        // 💾 Guardar en cache
+        categoriasCache[domain] = data.categorias;
+
+        renderizarCategorias(data.categorias, selectedCategory);
+    })
+    .catch(error => {
+        console.error("[ERROR] Fallo al cargar categorías:", error);
+    });
+}
+
+function renderizarCategorias(categorias, selectedCategory) {
+    const dropdownMenu = document.querySelector('.categoria-dropdown-menu');
+    if (!dropdownMenu) {
+        console.warn("[ERROR] No se encontró el dropdown .categoria-dropdown-menu");
+        return;
+    }
+
+    dropdownMenu.innerHTML = "";
+    console.log(`🎯 Agregando ${categorias.length} categorías al dropdown`);
+
+    categorias.forEach((categoria, index) => {
+        const color = categoria.color || 'gray';
+
+        const li = document.createElement("li");
+        li.style.padding = "10px";
+
+        const a = document.createElement("a");
+        a.href = "#";
+        a.className = "categoria-dropdown-item";
+        a.id = categoria.id;
+        a.dataset.value = categoria.valor;
+        a.dataset.color = color;
+        a.style.color = color;
+        a.style.padding = "10px";
+        a.textContent = categoria.nombre;
+
+        if (categoria.valor === selectedCategory) {
+            a.classList.add("active");
+        }
+
+        li.appendChild(a);
+        dropdownMenu.appendChild(li);
+
+        const divider = document.createElement("li");
+        divider.innerHTML = `<hr class="dropdown-divider">`;
+        dropdownMenu.appendChild(divider);
+    });
+
+    if (dropdownMenu.lastChild?.tagName === 'LI') {
+        dropdownMenu.lastChild.remove();
+    }
+
+    const botonCategorias = document.getElementById("caracteristicas-tab");
+    const dropdownInstance = bootstrap.Dropdown.getOrCreateInstance(botonCategorias);
+    dropdownInstance.show();
+
+   // console.log("✅ Categorías agregadas correctamente al dropdown.");
+}

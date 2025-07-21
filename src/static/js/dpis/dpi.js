@@ -612,7 +612,7 @@ function enviarDominioAJAX(domain) {
 
     var galeriaURL = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
-    debugger;
+
     if ( !localStorage.getItem('dominio')) {
         
         localStorage.setItem('dominio', domain);
@@ -633,7 +633,7 @@ function enviarDominioAJAX(domain) {
     document.getElementById("ambitoActual").innerHTML = ambito_actual;
     // Obtener ubicación antes de ejecutar AJAX
     let existe = localStorage.getItem('language');
-    debugger;
+
     if (!existe){
         getLocation();
     } 
@@ -866,6 +866,7 @@ var currentLanguage = navigator.language.split('-')[0].toLowerCase();
 // Obtener el enlace para cambiar el idioma
 const languageLink = document.getElementById("languageLink");
 
+
 document.addEventListener("DOMContentLoaded", function () {
     
     // Si no existe la cookie "language", intenta obtener la ubicación y luego establecer el idioma
@@ -891,7 +892,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-        languageLink.textContent = currentLanguage;  // Cambiar solo a "ENG"
+       if (languageLink) {
+                languageLink.textContent = currentLanguage;
+        }
 
     }, 1000); // 1000 milisegundos = 1 segundo
 });

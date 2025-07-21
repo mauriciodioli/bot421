@@ -242,6 +242,8 @@ def media_publicaciones_mostrar_dpi():
         idioma = request.form.get('lenguaje')
         codigoPostal = request.cookies.get('codigoPostal')
         if codigoPostal == None:
+            codigoPostal = request.form.get('codigoPostal')
+        if codigoPostal == None:
             codigoPostal = '1'
         if ambitos == 'inicialDominio':
             ambitos = 'Laboral'
