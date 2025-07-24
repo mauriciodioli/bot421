@@ -11,7 +11,7 @@ from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import routes.api_externa_conexion.validaInstrumentos as val
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
-
+from utils.db_session import get_db_session 
 import asyncio
 import websockets
 import websocket
@@ -48,10 +48,10 @@ def suscripcion_instrumentos():
 @suscripciones.route("/suscripcionDb/" )
 def suscripcionDb():
     try:
-       
-         all_ins = db.session.query(InstrumentoSuscriptos).all()
-         db.session.close()
-         return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
+         with get_db_session() as session:
+            all_ins = session.query(InstrumentoSuscriptos).all()
+          
+            return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
     except:        
         return render_template("errorLogueo.html" )
     
@@ -59,20 +59,21 @@ def suscripcionDb():
 def suscDelete():
     try:
          if request.method == 'POST':
-            id = request.form['id']            
-            dato = InstrumentoSuscriptos.query.get(id)
-            print(dato)
-            db.session.delete(dato)
-            db.session.commit()
-            
-            flash('Operation Removed successfully')
-            all_ins = db.session.query(InstrumentoSuscriptos).all()
-            db.session.close()
-            return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
+            id = request.form['id']      
+            with get_db_session() as session:      
+                dato = session.query(InstrumentoSuscriptos).get(id)
+                print(dato)
+                session.delete(dato)
+                session.commit()
+                
+                flash('Operation Removed successfully')
+                all_ins = session.query(InstrumentoSuscriptos).all()
+                
+                return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
     except: 
             flash('Operation No Removed')       
-            all_ins = db.session.query(InstrumentoSuscriptos).all()
-            db.session.close()
+            all_ins = session.query(InstrumentoSuscriptos).all()
+          
             return render_template("instrumentos/suscripciones_db.html", datos =  all_ins)
 
 @suscripciones.route('/ajax', methods=['POST'])

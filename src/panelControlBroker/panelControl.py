@@ -7,7 +7,7 @@ import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify, abort,current_app
 from models.instrumento import Instrumento
-
+from utils.db_session import get_db_session 
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
@@ -136,10 +136,10 @@ def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id,accountCuenta):
 
     with app.app_context():
         # Consultar todas las órdenes de la cuenta
-       
-        ordenes_cuenta = db.session.query(Orden).filter_by(user_id=user_id).all()
-        valor_usuario_ut = db.session.query(UnidadTrader).filter_by(usuario_id=user_id,).first()
-        db.session.close()
+      with get_db_session() as session:
+        ordenes_cuenta = session.query(Orden).filter_by(user_id=user_id).all()
+        valor_usuario_ut = session.query(UnidadTrader).filter_by(usuario_id=user_id,).first()
+      
         if not valor_usuario_ut:
             unidadTrader = 0
         else:

@@ -19,6 +19,7 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.operacion import Operacion
+from utils.db_session import get_db_session 
 
 
 load_dotenv()
@@ -98,11 +99,12 @@ def leerSheet(sheetId,sheet_name):
             
 
 def leerDb(app):
-     with app.app_context():   
-        all_ins = db.session.query(InstrumentoSuscriptos).all()
-        db.session.close()
-        print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS")
-        return all_ins
+     with app.app_context(): 
+         with get_db_session() as session:  
+            all_ins = session.query(InstrumentoSuscriptos).all()
+           
+            print("FUN_ cargaSymbolParaValidarDb en estrategiaSheetWS")
+            return all_ins
 
 
 def promedio_no_vacio(valores):
@@ -468,26 +470,27 @@ def datoSheet_enviar_senial():
             if access_token and Token.validar_expiracion_token(access_token=access_token):
                 app = current_app._get_current_object()
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                usuario = db.session.query(Usuario).filter_by(id=user_id).first()
-               
-
-                # Llamar a la función para actualizar la señal
-                modifico = actualizar_senial(symbol, trade_en_curso, signal, ut, pais, get.SPREADSHEET_ID_PRUEBA, 'bot')
+                with get_db_session() as session:
+                    usuario = session.query(Usuario).filter_by(id=user_id).first()
                 
-                if modifico:
-                    # Si la señal fue 'closed.', actualiza la operación, si no, agrega una nueva operación
-                    if signal == 'closed.':
-                        actualiza_operacion(symbol, signal, user_id, trade_en_curso)
+
+                    # Llamar a la función para actualizar la señal
+                    modifico = actualizar_senial(symbol, trade_en_curso, signal, ut, pais, get.SPREADSHEET_ID_PRUEBA, 'bot')
+                    
+                    if modifico:
+                        # Si la señal fue 'closed.', actualiza la operación, si no, agrega una nueva operación
+                        if signal == 'closed.':
+                            actualiza_operacion(symbol, signal, user_id, trade_en_curso)
+                        else:
+                            agrega_operacion(symbol, signal, user_id, trade_en_curso)
+                        
+                        # Retornar un mensaje exitoso
+                        return jsonify({'message': 'Señal agregada con éxito'}), 200
                     else:
-                        agrega_operacion(symbol, signal, user_id, trade_en_curso)
-                    db.session.close()
-                    # Retornar un mensaje exitoso
-                    return jsonify({'message': 'Señal agregada con éxito'}), 200
-                else:
-                    return jsonify({'error': 'Error al actualizar señal, no se encontró el símbolo'}), 500
+                        return jsonify({'error': 'Error al actualizar señal, no se encontró el símbolo'}), 500
 
     except Exception as e:
-        db.session.rollback()
+       
         return jsonify({'error': str(e)}), 500
 
 

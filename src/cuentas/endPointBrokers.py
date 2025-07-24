@@ -3,7 +3,7 @@
 from pipes import Template
 from unittest import result
 from flask import current_app
-
+from utils.db_session import get_db_session 
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -21,13 +21,13 @@ endPointBrokers = Blueprint('endPointBrokers',__name__)
 def cuentas_endPointBrokers():
     try:
          # Filtrar los TriggerEstrategia que tengan manualAutomatico igual a "AUTOMATICO"
+         with get_db_session() as session:
+            todos_brokers = session.query(Broker).all()        
         
-         todos_brokers = db.session.query(Broker).all()        
-       
-         total_brokers = len(todos_brokers)  # Obtener el total de instancias de TriggerEstrategia
-         db.session.close()
-         
-         return render_template("brokers/broker.html", layout='layout_administracion', datos=todos_brokers)
+            total_brokers = len(todos_brokers)  # Obtener el total de instancias de TriggerEstrategia
+          
+            
+            return render_template("brokers/broker.html", layout='layout_administracion', datos=todos_brokers)
     except:        
         return render_template("notificaciones/noPoseeDatos.html" )
 
@@ -47,34 +47,33 @@ def cuentas_endPointBrokers_alta():
         
         # crea_tabla_cuenta()
          try:     
+            with get_db_session() as session:
+                endpoint = Broker( 
+                            id=None,   
+                            api_url=api_url,
+                            ws_url=ws_url,
+                            nombre=nombre,
+                            descripcion=descripcion                
+                            )
             
-            endpoint = Broker( 
-                        id=None,   
-                        api_url=api_url,
-                        ws_url=ws_url,
-                        nombre=nombre,
-                        descripcion=descripcion                
-                        )
-          
-            db.session.add(endpoint)  # Agregar la instancia de Cuenta a la sesión
-            db.session.commit()  # Confirmar los cambios
-            db.session.refresh(endpoint)  # Actualizar la instancia desde la base de datos para obtener el ID generado
-            endpoint_id = endpoint.id  # Obtener el ID generado
-           
-           
-            print("endPoint registrado exitosamente id !",endpoint_id)
-         #   todasLasCuentas = get_cuentas_de_broker(user_id)
+                session.add(endpoint)  # Agregar la instancia de Cuenta a la sesión
+                session.commit()  # Confirmar los cambios
+                session.refresh(endpoint)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+                endpoint_id = endpoint.id  # Obtener el ID generado
             
-            todos_brokers = db.session.query(Broker).all()
             
-            db.session.close()
-            print("Cuenta registrada exitosamente!")            
+                print("endPoint registrado exitosamente id !",endpoint_id)
+            #   todasLasCuentas = get_cuentas_de_broker(user_id)
+                
+                todos_brokers = session.query(Broker).all()
+                
+             
+                print("Cuenta registrada exitosamente!")            
 
-            return render_template("brokers/broker.html",datos = todos_brokers)
+                return render_template("brokers/broker.html",datos = todos_brokers)
              
          except:               
-                db.session.rollback()  # Hacer rollback de la sesión
-                db.session.close()
+               
                 print("No se pudo registrar la cuenta.")
                 return 'problemas con la base de datos'
 
@@ -85,21 +84,23 @@ def cuentas_endPointBrokers_eliminar():
     try:
          if request.method == 'POST':
             id = request.form['eliminarEndPointId']  
-            dato = db.session.query(Broker).get(id)  
-            
-            print(dato)
-            db.session.delete(dato)
-            db.session.commit()
-            flash('Operation Removed successfully')
-            todos_brokers = db.session.query(Broker).all()
-            db.session.close()
-            return render_template("cuentas/cuentasDeUsuario.html", datos =  todos_brokers)
+            with get_db_session() as session:
+                dato = session.query(Broker).get(id)  
+                
+                print(dato)
+                session.delete(dato)
+                session.commit()
+                flash('Operation Removed successfully')
+                todos_brokers = session.query(Broker).all()
+                session.close()
+                return render_template("cuentas/cuentasDeUsuario.html", datos =  todos_brokers)
     except: 
-            flash('Operation No Removed')       
-            todos_brokers = db.session.query(Broker).all()
-            db.session.close()
+            flash('Operation No Removed')  
+            with get_db_session() as session:     
+                todos_brokers = session.query(Broker).all()
             
-            return render_template('cuentas/cuentasDeUsuario.html', datos=todos_brokers) 
+                
+                return render_template('cuentas/cuentasDeUsuario.html', datos=todos_brokers) 
 
 
 @endPointBrokers.route("/cuentas-editar-endpoint", methods=["POST"])
@@ -117,12 +118,12 @@ def cuentas_editar_endpoint():
             endpoint.ws_url = ws_url
             endpoint.nombre = nombre
             endpoint.descripcion = descripcion
-
-            db.session.commit()
-            flash('Los cambios se han guardado correctamente')
-            todos_brokers = db.session.query(Broker).all()
-            db.session.close()
-            return render_template("cuentas/cuentasDeUsuario.html", datos =  todos_brokers)
+            with get_db_session() as session:
+                session.commit()
+                flash('Los cambios se han guardado correctamente')
+                todos_brokers = session.query(Broker).all()
+               
+                return render_template("cuentas/cuentasDeUsuario.html", datos =  todos_brokers)
     except Exception as e:
         flash('Error al guardar los cambios: ' + str(e))
   
@@ -137,28 +138,28 @@ def cuenta_endpoint_all():
         
         try:
             user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+            with get_db_session() as session:     
+                endPointBrokers = session.query(Broker).all()
+              
+                if endPointBrokers:
+                    data = []  # Lista para almacenar los datos de las cuentas
                     
-            endPointBrokers = db.session.query(Broker).all()
-            db.session.close()
-            if endPointBrokers:
-                data = []  # Lista para almacenar los datos de las cuentas
-                
-                for cuenta in endPointBrokers:
-                    data.append({
-                        'id': cuenta.id,
-                        'nombre': cuenta.nombre,
-                        # Agrega otros campos que desees incluir en las opciones del combo
-                    })
-                
-                return jsonify({'endpoints': data})  # Devolver los datos en formato JSON
-                
-            else:
-                return jsonify({'message': 'No se encontraron cuentas asociadas a este usuario.'}), 404
+                    for cuenta in endPointBrokers:
+                        data.append({
+                            'id': cuenta.id,
+                            'nombre': cuenta.nombre,
+                            # Agrega otros campos que desees incluir en las opciones del combo
+                        })
+                    
+                    return jsonify({'endpoints': data})  # Devolver los datos en formato JSON
+                    
+                else:
+                    return jsonify({'message': 'No se encontraron cuentas asociadas a este usuario.'}), 404
               
         except Exception as e:
             print("Error:", str(e))
             print("No se pudo registrar la cuenta.")
-            db.session.rollback()  # Hacer rollback de la sesión
+            session.rollback()  # Hacer rollback de la sesión
             return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
     return render_template('notificaciones/tokenVencidos.html',layout = 'layout')     
@@ -168,22 +169,26 @@ def cuenta_endpoint_all():
 def cuentas_Usuario_Broker():
    try:
       if request.method == 'GET': 
-           cuentasBroker = db.session.query(Cuenta).all()
-           db.session.close()
-           return render_template("/cuentas/cuentasUsuariosBrokers.html",datos = cuentasBroker)
+           with get_db_session() as session:
+            cuentasBroker = session.query(Cuenta).all()
+          
+            return render_template("/cuentas/cuentasUsuariosBrokers.html",datos = cuentasBroker)
    except:
        print('no hay usuarios') 
    return 'problemas con la base de datos'
 
-@endPointBrokers.route("/eliminar-broker-administracion/",  methods=["POST"])
+@endPointBrokers.route("/eliminar-broker-administracion/", methods=["POST"])
 def eliminar_cuenta_broker_administracion():
-
     cuenta_id = request.form['eliminarCuentaId']
-    cuenta = Cuenta.query.get(cuenta_id)
-    db.session.delete(cuenta)
-    db.session.commit()
-    flash('Cuenta eliminada correctamente.')
-    cuentas = db.session.query(Cuenta).all()
-    db.session.close()
-    return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentas)
+    with get_db_session() as session:
+        cuenta = session.query(Cuenta).get(cuenta_id)
+        if cuenta:
+            session.delete(cuenta)
+            session.commit()
+            flash('Cuenta eliminada correctamente.')
+        else:
+            flash('Cuenta no encontrada.')
+
+        cuentas = session.query(Cuenta).all()
+        return render_template("/cuentas/cuntasUsuariosBrokers.html", datos=cuentas)
 

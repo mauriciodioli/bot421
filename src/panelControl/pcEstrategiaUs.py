@@ -2,7 +2,7 @@
 from pipes import Template
 from unittest import result
 from flask import current_app
-
+from utils.db_session import get_db_session 
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -27,35 +27,36 @@ def pcEstrategiaUs_boton_a_m():
     return jsonify({'resultado': 'Operación exitosa', 'trigger_data': resultado})
 
 def cargaModo(user_id, trigger_id, user_cuenta):
-    triggerEstrategia = db.session.query(TriggerEstrategia).filter_by(id=trigger_id).first()
-    
-     
-    #print( triggerEstrategia.ManualAutomatico)
-    if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
-        triggerEstrategia.ManualAutomatico = "MANUAL"
-    else:     
-        triggerEstrategia.ManualAutomatico = "AUTOMATICO"   
-   
-    db.session.commit()
-    triggerEstrategia_list = db.session.query(TriggerEstrategia).filter_by(user_id=user_id).all()
-     
-    # Construir una lista de diccionarios con los datos que deseas devolver
-    trigger_data = []
-    for trigger in triggerEstrategia_list:
+    with get_db_session() as session:
+        triggerEstrategia = session.query(TriggerEstrategia).filter_by(id=trigger_id).first()
         
-       trigger_data.append({
-            'id' : trigger.id,
-            'userId': trigger.user_id,
-            'userCuenta':  trigger.userCuenta,
-            'accountCuenta': trigger.accountCuenta,
-            'horaInicio': trigger.horaInicio.strftime('%H:%M:%S'),  # Convertir time a cadena
-            'horaFin': trigger.horaFin.strftime('%H:%M:%S'),  # Convertir time a cadena
-            'ManualAutomatico': trigger.ManualAutomatico,
-            'nombreEstrategia': trigger.nombreEstrategia,
+        
+        #print( triggerEstrategia.ManualAutomatico)
+        if triggerEstrategia.ManualAutomatico == "AUTOMATICO":
+            triggerEstrategia.ManualAutomatico = "MANUAL"
+        else:     
+            triggerEstrategia.ManualAutomatico = "AUTOMATICO"   
+    
+        session.commit()
+        triggerEstrategia_list = session.query(TriggerEstrategia).filter_by(user_id=user_id).all()
+        
+        # Construir una lista de diccionarios con los datos que deseas devolver
+        trigger_data = []
+        for trigger in triggerEstrategia_list:
             
-            # Agregar más campos aquí
-        })
-    
-    db.session.close()
-    
-    return trigger_data
+            trigger_data.append({
+                    'id' : trigger.id,
+                    'userId': trigger.user_id,
+                    'userCuenta':  trigger.userCuenta,
+                    'accountCuenta': trigger.accountCuenta,
+                    'horaInicio': trigger.horaInicio.strftime('%H:%M:%S'),  # Convertir time a cadena
+                    'horaFin': trigger.horaFin.strftime('%H:%M:%S'),  # Convertir time a cadena
+                    'ManualAutomatico': trigger.ManualAutomatico,
+                    'nombreEstrategia': trigger.nombreEstrategia,
+                    
+                    # Agregar más campos aquí
+                })
+        
+       
+        
+        return trigger_data

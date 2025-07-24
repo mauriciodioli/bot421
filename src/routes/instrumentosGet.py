@@ -7,6 +7,7 @@ from models.instrumento import Instrumento
 from models.instrumentosSuscriptos import InstrumentoSuscriptos
 from utils.db import db
 from datetime import datetime
+from utils.db_session import get_db_session 
 
 
 instrumentosGet = Blueprint('instrumentosGet',__name__)
@@ -36,11 +37,11 @@ def guarda_instrumento():
         print(especie)
         print(c_compra)
         print(p_compra)
-       
-        new_mer = InstrumentoGet(especie,c_compra,p_compra,p_venta,c_venta,ultimo,var,apertura,minimo,maximo,cierre_anterior,volumen,vol_monto,vwap,idsegmento,idmarket)
-        db.session.add(new_mer)
-        db.session.commit()
-        db.session.close()
+        with get_db_session() as session:
+            new_mer = InstrumentoGet(especie,c_compra,p_compra,p_venta,c_venta,ultimo,var,apertura,minimo,maximo,cierre_anterior,volumen,vol_monto,vwap,idsegmento,idmarket)
+            session.add(new_mer)
+            session.commit()
+           
     # jsonify puede devolver datos en lista, dict y otros formatos
     # print json content
     
@@ -48,28 +49,28 @@ def guarda_instrumento():
     return redirect('/index')
 
 def guarda_instrumento_para_suscripcion_ws(message):
-    
-     ob = db.session.query(InstrumentoSuscriptos).filter_by(symbol=message).first()
-     
-     print("salida query",ob)   
-     if ob is None:
-        symbol = message     
-        tiempo =  datetime.now()
-        timestamp = tiempo.microsecond        
-        new_ins = InstrumentoSuscriptos(symbol,timestamp)
-        print(new_ins)
-        db.session.add(new_ins)
-        db.session.commit()
-        db.session.close()
+     with get_db_session() as session:
+        ob = session.query(InstrumentoSuscriptos).filter_by(symbol=message).first()
+        
+        print("salida query",ob)   
+        if ob is None:
+            symbol = message     
+            tiempo =  datetime.now()
+            timestamp = tiempo.microsecond        
+            new_ins = InstrumentoSuscriptos(symbol,timestamp)
+            print(new_ins)
+            session.add(new_ins)
+            session.commit()
+          
       
   
 def get_instrumento_para_suscripcion_ws():
      
      susc = []
-    
-     all_ins = db.session.query(InstrumentoSuscriptos).all()
-     for instrumentoSuscriptos in all_ins:
-         susc.append(instrumentoSuscriptos.symbol)	
+     with get_db_session() as session:
+        all_ins = session.query(InstrumentoSuscriptos).all()
+        for instrumentoSuscriptos in all_ins:
+            susc.append(instrumentoSuscriptos.symbol)	
          
     # for datos in susc:
      #  print(datos)

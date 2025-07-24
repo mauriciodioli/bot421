@@ -2,7 +2,7 @@ from flask import Blueprint, render_template,current_app ,session,request, make_
 from utils.common import Marshmallow, db, get
 import routes.instrumentosGet as instrumentosGet
 import routes.api_externa_conexion.validaInstrumentos as val
-
+from utils.db_session import get_db_session 
 import strategies.datoSheet as datoSheet
 from models.servidores.servidorAws import ServidorAws
 import routes.instrumentos as inst
@@ -45,17 +45,17 @@ def actualiza_horario():
         hora_guardada = request.cookies.get('horaGuardada')
         hora_diferencia = request.cookies.get('diferenciaHoraria')
         # Si necesitas hacer algo con las horas almacenadas
+        with get_db_session() as session:
+            if hora_seleccionada:
+                servidor = cargarDatosServidor(request, hora_seleccionada)
+                if servidor:
+                    session.add(servidor)  # Agrega la instancia a la sesión
+                    session.commit()  # Comitea los cambios
+                  
+                print(f'Hora de diferencia almacenada: {hora_seleccionada}')
             
-        if hora_seleccionada:
-            servidor = cargarDatosServidor(request, hora_seleccionada)
-            if servidor:
-                db.session.add(servidor)  # Agrega la instancia a la sesión
-                db.session.commit()  # Comitea los cambios
-                db.session.close()  # Cierro la sesión
-            print(f'Hora de diferencia almacenada: {hora_seleccionada}')
-        
 
-        
+            
         return response
     
     return render_template('automatizacion/actualizaHorarioShedule.html', layout='layout_administracion')
@@ -109,89 +109,90 @@ from datetime import datetime
 
 def cargarDatosServidor(request, hora_diferencia):
     try:
-        # Comprobación si el servidor ya existe
-        servidor = db.session.query(ServidorAws).filter_by(nombre=request.form.get('nombre_servidor_contenedor')).first()
+        with get_db_session() as session:
+            # Comprobación si el servidor ya existe
+            servidor = session.query(ServidorAws).filter_by(nombre=request.form.get('nombre_servidor_contenedor')).first()
 
-        if servidor:
-            # Actualiza la diferencia horaria si es necesario
-            if servidor.diferencia_horaria != hora_diferencia:
-                servidor.diferencia_horaria = hora_diferencia                
-                print(f"Diferencia horaria actualizada a: {hora_diferencia} para el servidor: {servidor.nombre}")
-            return servidor  # Retorna la instancia actualizada
-        else:
-            # Si el servidor no existe, crea uno nuevo
-            url = 'http://127.0.0.1:5001/index'
-            ws_url = 'ssh -i .\bot421dbversion2.pem ubuntu@144.223.20.210'
-            nombre = request.form.get('nombre_servidor_contenedor')
-            descripcion = request.form.get('descripcion')
-            instance_id = request.form.get('instancia_id')  # Obtén el valor del formulario
-
-            if not instance_id:
-                print("Error: instance_id es requerido y no puede ser None.")
-                return None  # O maneja el error de otra manera
-
-            # Obtén fecha y hora
-            fecha_generacion = request.form.get('fecha_generacion')
-            hora_generacion = request.form.get('hora_generacion')
-
-            # Convertir fecha y hora a objetos datetime
-            if fecha_generacion:
-                fecha_generacion = datetime.strptime(fecha_generacion, '%Y-%m-%d').date()  # Convertir a objeto date
-            if hora_generacion:
-                hora_generacion = datetime.strptime(hora_generacion, '%H:%M:%S').time()  # Convertir a objeto time
-
-            # Combina fecha y hora en un objeto datetime
-            if fecha_generacion and hora_generacion:
-                hora_generacion = datetime.combine(fecha_generacion, hora_generacion)  # Combina ambos en un datetime
-
-            hora_clientes = datetime.now()  # Considerar zona horaria si es necesario
-            hora_servidor_str = request.form.get('hora_servidor')
-
-            # Supongamos que quieres convertir hora_servidor también
-            if hora_servidor_str:
-                # Convertir a un objeto datetime. Usamos la fecha actual como base para la hora.
-                hora_actual = datetime.now()
-                hora_servidor = datetime.combine(hora_actual.date(), datetime.strptime(hora_servidor_str, '%H:%M').time())
+            if servidor:
+                # Actualiza la diferencia horaria si es necesario
+                if servidor.diferencia_horaria != hora_diferencia:
+                    servidor.diferencia_horaria = hora_diferencia                
+                    print(f"Diferencia horaria actualizada a: {hora_diferencia} para el servidor: {servidor.nombre}")
+                return servidor  # Retorna la instancia actualizada
             else:
-                hora_servidor = None  # o un valor por defecto que tenga sentido para tu lógica
+                # Si el servidor no existe, crea uno nuevo
+                url = 'http://127.0.0.1:5001/index'
+                ws_url = 'ssh -i .\bot421dbversion2.pem ubuntu@144.223.20.210'
+                nombre = request.form.get('nombre_servidor_contenedor')
+                descripcion = request.form.get('descripcion')
+                instance_id = request.form.get('instancia_id')  # Obtén el valor del formulario
 
-            hora_invierno = datetime.now()  # Considerar zona horaria si es necesario
-            hora_verano = datetime.now()  # Considerar zona horaria si es necesario
-            estado = request.form.get('estado')
+                if not instance_id:
+                    print("Error: instance_id es requerido y no puede ser None.")
+                    return None  # O maneja el error de otra manera
 
-            # Crea una instancia de ServidorAws con todos los atributos
-            servidor = ServidorAws(
-                        url=url,
-                        ws_url=ws_url,
-                        nombre=nombre,
-                        descripcion=descripcion,                    
-                        ip_address=None,
-                        region=None, 
-                        instance_type=None,
-                        operating_system=None, 
-                        instance_state=None, 
-                        instance_id= request.form.get('instancia_id'),
-                        uptime=None, 
-                        cpu_usage=None,
-                        memory_usage=None, 
-                        last_status_check=None, 
-                        fecha_generacion=None, 
-                        diferencia_horaria=hora_diferencia, 
-                        estado=None)
+                # Obtén fecha y hora
+                fecha_generacion = request.form.get('fecha_generacion')
+                hora_generacion = request.form.get('hora_generacion')
 
-            # Configuración de otros atributos
-            servidor.set_hora_clientes(hora_clientes)
-            servidor.set_hora_servidor(hora_servidor)
-            servidor.set_hora_invierno(hora_invierno)
-            servidor.set_hora_verano(hora_verano)
-            servidor.set_estado(estado)
+                # Convertir fecha y hora a objetos datetime
+                if fecha_generacion:
+                    fecha_generacion = datetime.strptime(fecha_generacion, '%Y-%m-%d').date()  # Convertir a objeto date
+                if hora_generacion:
+                    hora_generacion = datetime.strptime(hora_generacion, '%H:%M:%S').time()  # Convertir a objeto time
 
-            db.session.add(servidor)
-            db.session.commit()
-            return servidor  # Retorna la instancia creada
+                # Combina fecha y hora en un objeto datetime
+                if fecha_generacion and hora_generacion:
+                    hora_generacion = datetime.combine(fecha_generacion, hora_generacion)  # Combina ambos en un datetime
+
+                hora_clientes = datetime.now()  # Considerar zona horaria si es necesario
+                hora_servidor_str = request.form.get('hora_servidor')
+
+                # Supongamos que quieres convertir hora_servidor también
+                if hora_servidor_str:
+                    # Convertir a un objeto datetime. Usamos la fecha actual como base para la hora.
+                    hora_actual = datetime.now()
+                    hora_servidor = datetime.combine(hora_actual.date(), datetime.strptime(hora_servidor_str, '%H:%M').time())
+                else:
+                    hora_servidor = None  # o un valor por defecto que tenga sentido para tu lógica
+
+                hora_invierno = datetime.now()  # Considerar zona horaria si es necesario
+                hora_verano = datetime.now()  # Considerar zona horaria si es necesario
+                estado = request.form.get('estado')
+
+                # Crea una instancia de ServidorAws con todos los atributos
+                servidor = ServidorAws(
+                            url=url,
+                            ws_url=ws_url,
+                            nombre=nombre,
+                            descripcion=descripcion,                    
+                            ip_address=None,
+                            region=None, 
+                            instance_type=None,
+                            operating_system=None, 
+                            instance_state=None, 
+                            instance_id= request.form.get('instancia_id'),
+                            uptime=None, 
+                            cpu_usage=None,
+                            memory_usage=None, 
+                            last_status_check=None, 
+                            fecha_generacion=None, 
+                            diferencia_horaria=hora_diferencia, 
+                            estado=None)
+
+                # Configuración de otros atributos
+                servidor.set_hora_clientes(hora_clientes)
+                servidor.set_hora_servidor(hora_servidor)
+                servidor.set_hora_invierno(hora_invierno)
+                servidor.set_hora_verano(hora_verano)
+                servidor.set_estado(estado)
+
+                session.add(servidor)
+                session.commit()
+                return servidor  # Retorna la instancia creada
     except SQLAlchemyError as e:
         print(f"Error al crear o actualizar instancias de ServidorAws: {e}")
-        db.session.rollback()  # Rollback en caso de error
+     
         return None
 
   

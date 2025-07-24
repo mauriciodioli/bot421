@@ -8,7 +8,7 @@ import routes.api_externa_conexion.validaInstrumentos as val
 from routes.api_externa_conexion.cuenta import obtenerSaldoCuenta
 import routes.instrumentos as inst
 import strategies.gestion_estrategias.unidad_trader as utABM
-
+from utils.db_session import get_db_session 
 from datetime import datetime
 import enum
 from models.instrumentoEstrategiaUno import InstrumentoEstrategiaUno
@@ -40,35 +40,36 @@ class States(enum.Enum):
 def estrategias_usuario_general():
     try:
       if request.method == 'GET': 
-      # Obtener todos los TriggerEstrategia
-        estrategias = db.session.query(TriggerEstrategia).all()
+        with get_db_session() as session:
+        # Obtener todos los TriggerEstrategia
+            estrategias = session.query(TriggerEstrategia).all()
 
-        # Crear un diccionario para almacenar las unidades filtradas por trigger_id
-        db.session.close()
-        ut_por_trigger = {}
+            # Crear un diccionario para almacenar las unidades filtradas por trigger_id
+             
+            ut_por_trigger = {}
+            
+            for trigger in estrategias:
+                # Obtener 'ut' para el trigger actual
+                ut_objects = session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
+                
+                # Inicializar una lista para almacenar los valores de 'ut'
+                ut_values = []
+                
+                # Iterar sobre los objetos UnidadTrader y recopilar los valores de 'ut'
+                for ut_object in ut_objects:
+                    ut_values.append(ut_object.ut)
+                    print("Valor de 'ut':", ut_object.ut)
+                
+                # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
+                if not ut_values:
+                    # Si la lista está vacía, asignar 0 al atributo 'ut'
+                    trigger.ut = 0
+                else:
+                    # Si la lista no está vacía, asignar los valores recopilados al atributo 'ut'
+                    trigger.ut =  ut_object.ut
+            
         
-        for trigger in estrategias:
-            # Obtener 'ut' para el trigger actual
-            ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
-            
-            # Inicializar una lista para almacenar los valores de 'ut'
-            ut_values = []
-            
-            # Iterar sobre los objetos UnidadTrader y recopilar los valores de 'ut'
-            for ut_object in ut_objects:
-                ut_values.append(ut_object.ut)
-                print("Valor de 'ut':", ut_object.ut)
-            
-            # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
-            if not ut_values:
-                # Si la lista está vacía, asignar 0 al atributo 'ut'
-                trigger.ut = 0
-            else:
-                # Si la lista no está vacía, asignar los valores recopilados al atributo 'ut'
-                trigger.ut =  ut_object.ut
-        
-      
-        return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,estrategias], layout='layout_administracion')
+            return render_template("/estrategias/panelControEstrategiaUser.html", datos=[0,estrategias], layout='layout_administracion')
 
           
     except:
@@ -111,46 +112,47 @@ def estrategias_usuario_nadmin():
             app = current_app._get_current_object()  
             
             usuario_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']                    
-            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id, TriggerEstrategia.accountCuenta == account).all()
-          
-         
-            db.session.close()
-            ut_por_trigger = {}
-            try:
-                reporte = obtenerSaldoCuenta(account=account)
-                resumenCuenta = reporte.get("currentCash", 0)  # Obtener el valor, o 0 si no existe la clave
-            except Exception as e:
-                resumenCuenta = 0  # En caso de error, asignar 0
+            with get_db_session() as session:
+                estrategias = session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id, TriggerEstrategia.accountCuenta == account).all()
+            
+            
+                 
+                ut_por_trigger = {}
+                try:
+                    reporte = obtenerSaldoCuenta(account=account)
+                    resumenCuenta = reporte.get("currentCash", 0)  # Obtener el valor, o 0 si no existe la clave
+                except Exception as e:
+                    resumenCuenta = 0  # En caso de error, asignar 0
 
-            # Verificar si el valor es None o 0
-            if resumenCuenta is None or resumenCuenta == 0:
-                resumenCuenta = 0    
-            for trigger in estrategias:
-                # Obtener 'ut' para el trigger actual
-                ut_objects = db.session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
-                
-                # Inicializar una lista para almacenar los valores de 'ut'
-                ut_values = []
-                
-                # Iterar sobre los objetos UnidadTrader y recopilar los valores de 'ut'
-                for ut_object in ut_objects:
-                    ut_values.append(ut_object.ut)
-                    print("Valor de 'ut':", ut_object.ut)
-                
-                # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
-                if not ut_values:
-                    # Si la lista está vacía, asignar 0 al atributo 'ut'
-                    trigger.ut = 0
-                else:
-                    # Si la lista no está vacía, asignar los valores recopilados al atributo 'ut'
-                    trigger.ut =  ut_object.ut
-        
-# Ahora cada objeto en 'trigger_estrategias' tiene un atributo 'ut' que contiene los valores de 'ut' asociados, o 0 si no hay ningún valor
+                # Verificar si el valor es None o 0
+                if resumenCuenta is None or resumenCuenta == 0:
+                    resumenCuenta = 0    
+                for trigger in estrategias:
+                    # Obtener 'ut' para el trigger actual
+                    ut_objects = session.query(UnidadTrader).filter_by(trigger_id=trigger.id).all()
+                    
+                    # Inicializar una lista para almacenar los valores de 'ut'
+                    ut_values = []
+                    
+                    # Iterar sobre los objetos UnidadTrader y recopilar los valores de 'ut'
+                    for ut_object in ut_objects:
+                        ut_values.append(ut_object.ut)
+                        print("Valor de 'ut':", ut_object.ut)
+                    
+                    # Asignar los valores de 'ut' al atributo 'ut' del objeto 'trigger'
+                    if not ut_values:
+                        # Si la lista está vacía, asignar 0 al atributo 'ut'
+                        trigger.ut = 0
+                    else:
+                        # Si la lista no está vacía, asignar los valores recopilados al atributo 'ut'
+                        trigger.ut =  ut_object.ut
+            
+    # Ahora cada objeto en 'trigger_estrategias' tiene un atributo 'ut' que contiene los valores de 'ut' asociados, o 0 si no hay ningún valor
 
-           
-                   
-            #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta=resumenCuenta, layout='layoutConexBroker')
+            
+                    
+                #return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,ut_por_trigger])
+                return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta=resumenCuenta, layout='layoutConexBroker')
           else:
                return render_template('notificaciones/tokenVencidos.html', layout='layout')  
     except:
@@ -162,14 +164,15 @@ def estrategias_usuario_nadmin():
 def estrategias_usuario():
     try:
       if request.method == 'POST': 
-            usuario_id = request.form['usuario_id']                      
-            estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
-            db.session.close()
-            for estrategia in estrategias:
-                print("ID:", estrategia.id)
-                print("Name:", estrategia.userCuenta)
-                # Print other attributes as needed
-                print()
+            usuario_id = request.form['usuario_id']      
+            with get_db_session() as session:                
+                estrategias = session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == usuario_id).all()
+                 
+                for estrategia in estrategias:
+                    print("ID:", estrategia.id)
+                    print("Name:", estrategia.userCuenta)
+                    # Print other attributes as needed
+                    print()
             return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layout')
     
     except:
@@ -239,18 +242,19 @@ def eliminar_trigger():
     access_token = request.form['eliminarEstrategiaToken']
     account = request.form['eliminarEstrategiaCuenta']
     if access_token and Token.validar_expiracion_token(access_token=access_token): 
-        Trigger = db.session.query(TriggerEstrategia).get(IdTrigger)
-        utABM.eliminarUT(IdTrigger)
-        if eliminarArhivoEstrategia(Trigger.nombreEstrategia):        
-            db.session.delete(Trigger)
-            db.session.commit()
-            
-            
-            flash('Trigger eliminado correctamente.')
-        estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
-      
-        db.session.close()   
-        return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
+        with get_db_session() as session:
+            Trigger = session.query(TriggerEstrategia).get(IdTrigger)
+            utABM.eliminarUT(IdTrigger)
+            if eliminarArhivoEstrategia(Trigger.nombreEstrategia):        
+                session.delete(Trigger)
+                session.commit()
+                
+                
+                flash('Trigger eliminado correctamente.')
+            estrategias = session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
+        
+           
+            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
     else:
          flash('El token a expirado')
          return render_template('notificaciones/tokenVencidos.html',layout = 'layout') 
@@ -258,16 +262,16 @@ def eliminar_trigger():
 def editar_trigger_nombre():
     IdTrigger = request.form['IdTrigger']
     usuario_id = request.form['usuario_id']  
+    with get_db_session() as session:
+        Trigger = session.query(TriggerEstrategia).get(IdTrigger)
+        Trigger.nombreEstrategia = request.form['TriggerNombre']
     
-    Trigger = TriggerEstrategia.query.get(IdTrigger)
-    Trigger.nombreEstrategia = request.form['TriggerNombre']
-   
-    db.session.commit()
-   
-    flash('Estrategia editado correctamente.')
+        session.commit()
     
-    estrategias = db.session.query(TriggerEstrategia).all()
-    db.session.close()
+        flash('Estrategia editado correctamente.')
+        
+        estrategias = session.query(TriggerEstrategia).all()
+       
     return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
     
 @estrategias.route("/editar-Trigger/", methods = ["POST"] )
@@ -285,18 +289,18 @@ def editar_Trigger():
             hora_inicio = datetime(year=2023, month=7, day=3, hour=int(horaInicioSalvar), minute=int(minutosInicioSalvar))
             hora_fin = datetime(year=2023, month=7, day=3, hour=int(horaFinSalvar), minute=int(minutosFinSalvar))
             
-            
-            Trigger = TriggerEstrategia.query.get(IdTrigger)            
-            Trigger.ManualAutomatico = ManualAutomatico
-            Trigger.horaInicio = hora_inicio
-            Trigger.horaFin = hora_fin
-            
-            db.session.commit()
-            
-            flash('Estrategia editada correctamente.')
-            estrategias = db.session.query(TriggerEstrategia).all()
-            db.session.close()
-            return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
+            with get_db_session() as session:
+                Trigger = session.query(TriggerEstrategia).get(IdTrigger)            
+                Trigger.ManualAutomatico = ManualAutomatico
+                Trigger.horaInicio = hora_inicio
+                Trigger.horaFin = hora_fin
+                
+                session.commit()
+                
+                flash('Estrategia editada correctamente.')
+                estrategias = session.query(TriggerEstrategia).all()
+                 
+                return render_template("/estrategias/panelControEstrategiaUser.html",datos = [usuario_id,estrategias],resumenCuenta='', layout='layoutConexBroker')
                     
     except:
                 print('no hay estrategias')
@@ -306,33 +310,34 @@ def editar_Trigger():
 
 def altaEstrategiaApp(account, nombreEstrategia):
     try:
-        # Verificar si ya existe una estrategia con el mismo nombre
-        existing_estrategia = db.session.query(AltaEstrategiaApp).filter_by(nombreEstrategia=nombreEstrategia).first()
-        
-        # Si existe una estrategia con el mismo nombre, no agregar y retornar False
-        if existing_estrategia:
-            print(f"Estrategia con nombre '{nombreEstrategia}' ya existe.")
-            return False
+        with get_db_session() as session:
+            # Verificar si ya existe una estrategia con el mismo nombre
+            existing_estrategia = session.query(AltaEstrategiaApp).filter_by(nombreEstrategia=nombreEstrategia).first()
+            
+            # Si existe una estrategia con el mismo nombre, no agregar y retornar False
+            if existing_estrategia:
+                print(f"Estrategia con nombre '{nombreEstrategia}' ya existe.")
+                return False
 
-        # Obtener la fecha actual como una cadena de texto
-        fecha_actual_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            # Obtener la fecha actual como una cadena de texto
+            fecha_actual_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        # Crear una instancia de AltaEstrategiaApp
-        estrategia = AltaEstrategiaApp(
-            id=None,
-            accountCuenta=account,
-            nombreEstrategia=nombreEstrategia,
-            estado='INICIADO',
-            descripcion='NO SE AGREGÓ AÚN',
-            fecha=fecha_actual_str
-        )
+            # Crear una instancia de AltaEstrategiaApp
+            estrategia = AltaEstrategiaApp(
+                id=None,
+                accountCuenta=account,
+                nombreEstrategia=nombreEstrategia,
+                estado='INICIADO',
+                descripcion='NO SE AGREGÓ AÚN',
+                fecha=fecha_actual_str
+            )
 
-        # Agregar la instancia de AltaEstrategiaApp a la sesión
-        db.session.add(estrategia)
-        # Confirmar los cambios
-        db.session.commit()
+            # Agregar la instancia de AltaEstrategiaApp a la sesión
+            session.add(estrategia)
+            # Confirmar los cambios
+            session.commit()
 
-        return True
+            return True
 
     except OperationalError as e:
         # Manejar la excepción de error operacional (tabla ya existe)
@@ -493,112 +498,113 @@ def alta_estrategias_trig():
             access_token = request.form['access_token_form_altaEstrategia']
             layouts = request.form['layoutOrigen']
             archivoEstrategia = request.form['estrategia']
-            #nombreEstrategia = request.form['nombreEstrategia']
-            cuentas = db.session.query(Cuenta).filter_by(user_id=user_id, accountCuenta=account).first()
-            nombre_broker = db.session.query(Broker.nombre).filter_by(id=cuentas.broker_id).first()
-            estrategias = db.session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
-            ruta_estrategia = archivoEstrategia+'-001'
-            if estrategias is None or  len(estrategias) == 0:
-                if nombre_broker:
+            with get_db_session() as session:
+                #nombreEstrategia = request.form['nombreEstrategia']
+                cuentas = session.query(Cuenta).filter_by(user_id=user_id, accountCuenta=account).first()
+                nombre_broker = session.query(Broker.nombre).filter_by(id=cuentas.broker_id).first()
+                estrategias = session.query(TriggerEstrategia).filter_by(accountCuenta=account).all()
+                ruta_estrategia = archivoEstrategia+'-001'
+                if estrategias is None or  len(estrategias) == 0:
+                    if nombre_broker:
+                        
+                        nombre_broker = nombre_broker[0].replace(" ", "_")
+                        nombreEstrategia = nombre_broker+'_'+account+'_001'
                     
+                else:    
+                    # Lista para almacenar los nombres
+                    # Lista para almacenar los últimos tres números de los nombres
+                    ultimos_tres_numeros = []
+
+                    # Itera sobre los resultados y extrae los tres últimos dígitos de cada nombre
+                    for trigger_estrategia in estrategias:
+                        nombre = trigger_estrategia.nombreEstrategia
+                        # Supongamos que los tres últimos números están al final del nombre
+                        numero = nombre[-3:]  # Extrae los últimos tres caracteres del nombre
+                        ultimos_tres_numeros.append(numero)
+                    # Encuentra el número más alto en la lista ultimos_tres_numeros
+                # Convierte los números de cadena a enteros
+                    numeros_enteros = [int(numero) for numero in ultimos_tres_numeros]
+
+                    # Encuentra el número más alto en la lista numeros_enteros
+                    numero_mas_alto = max(numeros_enteros) 
+                    # Convertir a entero, sumar uno y convertir de nuevo a cadena
+                    numero_nuevo = str(int(numero_mas_alto) + 1)
+
+                    # Asegurarse de que el número tenga tres dígitos utilizando zfill
+                    numero_nuevo = numero_nuevo.zfill(3) 
+                
                     nombre_broker = nombre_broker[0].replace(" ", "_")
-                    nombreEstrategia = nombre_broker+'_'+account+'_001'
-                   
-            else:    
-                # Lista para almacenar los nombres
-                # Lista para almacenar los últimos tres números de los nombres
-                ultimos_tres_numeros = []
 
-                # Itera sobre los resultados y extrae los tres últimos dígitos de cada nombre
-                for trigger_estrategia in estrategias:
-                    nombre = trigger_estrategia.nombreEstrategia
-                    # Supongamos que los tres últimos números están al final del nombre
-                    numero = nombre[-3:]  # Extrae los últimos tres caracteres del nombre
-                    ultimos_tres_numeros.append(numero)
-                # Encuentra el número más alto en la lista ultimos_tres_numeros
-            # Convierte los números de cadena a enteros
-                numeros_enteros = [int(numero) for numero in ultimos_tres_numeros]
-
-                # Encuentra el número más alto en la lista numeros_enteros
-                numero_mas_alto = max(numeros_enteros) 
-                # Convertir a entero, sumar uno y convertir de nuevo a cadena
-                numero_nuevo = str(int(numero_mas_alto) + 1)
-
-                # Asegurarse de que el número tenga tres dígitos utilizando zfill
-                numero_nuevo = numero_nuevo.zfill(3) 
-            
-                nombre_broker = nombre_broker[0].replace(" ", "_")
-
-                nombreEstrategia = nombre_broker+'_'+account+'_'+numero_nuevo
-              
-           
-            generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
-           
-            #######################################################################
-            # Aquí cargo los datos a la tabla para actualizar app.py#
-            #######################################################################
-            
-            altaEstrategiaApp(account,nombreEstrategia)
-         
-            if cuentas:
-                print("Datos de la cuenta:")
-                print("ID:", cuentas.id)
-                print("User ID:", cuentas.user_id)
-                print("User Cuenta:", cuentas.userCuenta)
-                print("Password Cuenta:", cuentas.passwordCuenta)
-                print("Account Cuenta:", cuentas.accountCuenta)                
-                nombreEstrategia = nombreEstrategia
-                hora_inicio = datetime(year=2023, month=7, day=3, hour=int(15), minute=int(00))
-                hora_fin = datetime(year=2023, month=7, day=3, hour=int(17), minute=int(00))
-                triggerEstrategia = TriggerEstrategia( 
-                        id=None,   
-                        user_id=user_id,
-                        userCuenta=cuentas.userCuenta,
-                        passwordCuenta=cuentas.passwordCuenta,
-                        accountCuenta=cuentas.accountCuenta, 
-                        horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
-                        horaFin=hora_fin,  # Ejemplo de hora de fin (17:00)     
-                        ManualAutomatico = 'AUTOMATICO',
-                        nombreEstrategia = nombreEstrategia    
-                        )
+                    nombreEstrategia = nombre_broker+'_'+account+'_'+numero_nuevo
                 
             
-                db.session.add(triggerEstrategia)  # Agregar la instancia de Cuenta a la sesión
-                db.session.commit()  # Confirmar los cambios
-                db.session.refresh(triggerEstrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
-                triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
-                estrategias = db.session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == user_id,TriggerEstrategia.accountCuenta == cuentas.accountCuenta).all()
-                
+                generarArchivoEstrategia(nombreEstrategia,ruta_estrategia,archivoEstrategia)
+            
                 #######################################################################
-                # Aquí debes tener los datos que deseas pasar a la función crear_ficha#
+                # Aquí cargo los datos a la tabla para actualizar app.py#
                 #######################################################################
-                fichaStatic = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').all()
-                # Cerrar la sesión
-                db.session.close()
-                if not fichaStatic:
-                    reporte = obtenerSaldoCuenta(account=cuentas.accountCuenta)   
-                    valor = reporte['availableToCollateral'] 
-                    cash = reporte['currentCash'] 
-                    total_cuenta = int(valor) + int(cash)
-                    data = {
-                        'valor': total_cuenta,
-                        'accessToken': access_token,
-                        'cuenta': cuentas.accountCuenta,
-                        'correoElectronico': correo_electronico,
-                        'total_cuenta': total_cuenta,
-                        'layoutOrigen': layouts,
-                        'estado_ficha' :'STATIC'
-                    }
-
-                    # URL a la que enviar la solicitud POST
-                    url = url_for('fichas.crear_ficha', _external=True)  # Utiliza _external=True para obtener la URL completa
-
                 
-                    # Realizar la solicitud POST con los datos
-                    response = requests.post(url, json=data)
+                altaEstrategiaApp(account,nombreEstrategia)
+            
+                if cuentas:
+                    print("Datos de la cuenta:")
+                    print("ID:", cuentas.id)
+                    print("User ID:", cuentas.user_id)
+                    print("User Cuenta:", cuentas.userCuenta)
+                    print("Password Cuenta:", cuentas.passwordCuenta)
+                    print("Account Cuenta:", cuentas.accountCuenta)                
+                    nombreEstrategia = nombreEstrategia
+                    hora_inicio = datetime(year=2023, month=7, day=3, hour=int(15), minute=int(00))
+                    hora_fin = datetime(year=2023, month=7, day=3, hour=int(17), minute=int(00))
+                    triggerEstrategia = TriggerEstrategia( 
+                            id=None,   
+                            user_id=user_id,
+                            userCuenta=cuentas.userCuenta,
+                            passwordCuenta=cuentas.passwordCuenta,
+                            accountCuenta=cuentas.accountCuenta, 
+                            horaInicio=hora_inicio,  # Ejemplo de hora de inicio (15:00)
+                            horaFin=hora_fin,  # Ejemplo de hora de fin (17:00)     
+                            ManualAutomatico = 'AUTOMATICO',
+                            nombreEstrategia = nombreEstrategia    
+                            )
+                    
                 
-                return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias],layout='layoutConexBroker')
-           
+                    session.add(triggerEstrategia)  # Agregar la instancia de Cuenta a la sesión
+                    session.commit()  # Confirmar los cambios
+                    session.refresh(triggerEstrategia)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+                    triggerEstrategia_id = triggerEstrategia.id  # Obtener el ID generado
+                    estrategias = session.query(TriggerEstrategia).join(Usuario).filter(TriggerEstrategia.user_id == user_id,TriggerEstrategia.accountCuenta == cuentas.accountCuenta).all()
+                    
+                    #######################################################################
+                    # Aquí debes tener los datos que deseas pasar a la función crear_ficha#
+                    #######################################################################
+                    fichaStatic = session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').all()
+                    # Cerrar la sesión
+                    
+                    if not fichaStatic:
+                        reporte = obtenerSaldoCuenta(account=cuentas.accountCuenta)   
+                        valor = reporte['availableToCollateral'] 
+                        cash = reporte['currentCash'] 
+                        total_cuenta = int(valor) + int(cash)
+                        data = {
+                            'valor': total_cuenta,
+                            'accessToken': access_token,
+                            'cuenta': cuentas.accountCuenta,
+                            'correoElectronico': correo_electronico,
+                            'total_cuenta': total_cuenta,
+                            'layoutOrigen': layouts,
+                            'estado_ficha' :'STATIC'
+                        }
+
+                        # URL a la que enviar la solicitud POST
+                        url = url_for('fichas.crear_ficha', _external=True)  # Utiliza _external=True para obtener la URL completa
+
+                    
+                        # Realizar la solicitud POST con los datos
+                        response = requests.post(url, json=data)
+                    
+                    return render_template("/estrategias/panelControEstrategiaUser.html", datos=[user_id, estrategias],layout='layoutConexBroker')
+            
     except:
         print('no hay estrategias')
     flash('No se puede regitrar la estrategia.')

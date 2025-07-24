@@ -10,7 +10,7 @@ import routes.api_externa_conexion.validaInstrumentos as valida
 import time
 from flask_paginate import Pagination, get_page_parameter
 import re
-
+from utils.db_session import get_db_session 
 
 from utils.db import db
 
@@ -37,12 +37,13 @@ def Getinstrumentos(account=None):
 ################delete de Instrumento##################
 @instrumentos.route("/delete/<string:id>")
 def delete_mer(id):
-    dato = db.session.query(Instrumento).get(id)
-    db.session.delete(dato)
-    db.session.commit()
-    db.session.close()
-    flash('Operation Removed successfully')
-    return redirect('/')
+    with get_db_session() as session:
+        dato = session.query(Instrumento).get(id)
+        session.delete(dato)
+        session.commit()
+        session.close()
+        flash('Operation Removed successfully')
+        return redirect('/')
 
 def instrument_por_symbol_para_sugerir_ut(symbol,account):
     try:
@@ -181,11 +182,12 @@ def add_instrumento(string):
     idmarket = string.split(',')[2]
     print(especie)
     new_mer = Instrumento(especie,c_compra,p_compra,p_venta,c_venta,ultimo,var,apertura,minimo,maximo,cierre_anterior,volumen,vol_monto,vwap,idsegmento,idmarket)
-    db.session.add(new_mer)
-    db.session.commit()
-    db.session.close()
-    flash('Operation Added successfully')
-    return redirect('/')
+    with get_db_session() as session:
+        session.add(new_mer)
+        session.commit()
+      
+        flash('Operation Added successfully')
+        return redirect('/')
 
 # Creating simple Routes
 @instrumentos.route("/add_inst",methods=['POST'])
@@ -200,49 +202,50 @@ def add_inst():
 
 @instrumentos.route("/eliminar/<id>" )
 def eliminar(id):
-    dato = Instrumento.query.get(id)
-    db.session.delete(dato)
-    db.session.commit()
-    db.session.close()
-    flash('Operation Removed successfully')
-    ###url_for('index') redirecciona a la funcion index
-    return redirect('index')    
+    with get_db_session() as session:
+        dato = session.query(Instrumento).get(id)
+        session.delete(dato)
+        session.commit()
+     
+        flash('Operation Removed successfully')
+        ###url_for('index') redirecciona a la funcion index
+        return redirect('index')    
     
 
 ################editar Instrumento##################
 @instrumentos.route("/editar/<id>", methods=['POST',"GET"])
 def get_instrumento(id):
-   
-    dato = Instrumento.query.get(id)
-    print(dato)
-    if request.method == "POST":       
-        instrumento = Instrumento.query.filter_by(id=id).first()  
-        instrumento.especie = request.form["especie"]
-        instrumento.c_compra = request.form["c_compra"]
-        instrumento.p_compra = request.form["p_compra"]
-        instrumento.p_venta = request.form["p_venta"]
-        instrumento.c_venta = request.form["c_venta"]
-        instrumento.ultimo = request.form["ultimo"]
-        instrumento.var = request.form["var"]
-        instrumento.apertura = request.form["apertura"]
-        instrumento.minimo = request.form["minimo"]
-        instrumento.maximo = request.form["maximo"]
-        instrumento.cierre_anterior = request.form["cierre_anterior"]
-        instrumento.volumen = request.form["volumen"]
-        instrumento.vol_monto = request.form["vol_monto"]
-        instrumento.vwap = request.form["vwap"]
-        instrumento.idsegmento = request.form["idsegmento"]
-        instrumento.idmarket = request.form["idmarket"]
-       
-        db.session.commit()
-        db.session.close()
-        flash('Operation successfully')
-        return redirect('index')
-   
+    with get_db_session() as session:
+        dato = session.query(Instrumento).get(id)
+        print(dato)
+        if request.method == "POST":       
+            instrumento =  session.query(Instrumento).filter_by(id=id).first()  
+            instrumento.especie = request.form["especie"]
+            instrumento.c_compra = request.form["c_compra"]
+            instrumento.p_compra = request.form["p_compra"]
+            instrumento.p_venta = request.form["p_venta"]
+            instrumento.c_venta = request.form["c_venta"]
+            instrumento.ultimo = request.form["ultimo"]
+            instrumento.var = request.form["var"]
+            instrumento.apertura = request.form["apertura"]
+            instrumento.minimo = request.form["minimo"]
+            instrumento.maximo = request.form["maximo"]
+            instrumento.cierre_anterior = request.form["cierre_anterior"]
+            instrumento.volumen = request.form["volumen"]
+            instrumento.vol_monto = request.form["vol_monto"]
+            instrumento.vwap = request.form["vwap"]
+            instrumento.idsegmento = request.form["idsegmento"]
+            instrumento.idmarket = request.form["idmarket"]
+        
+            session.commit()
+            
+            flash('Operation successfully')
+            return redirect('index')
+    
    
     
-    registroAEditar = db.session.query(Instrumento).get(dato.id)
-    db.session.close()
+    registroAEditar = session.query(Instrumento).get(dato.id)
+  
     return render_template("editarInstrumento.html", dato = registroAEditar)
   
  

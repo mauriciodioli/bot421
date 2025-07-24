@@ -18,6 +18,7 @@ from flask_jwt_extended import (
     
 )
 import requests
+from utils.db_session import get_db_session 
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from models.instrumento import Instrumento
@@ -45,9 +46,10 @@ def refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta):
             if repuesta_cuenta and 'accountData' in repuesta_cuenta:
                 reporte = repuesta_cuenta['accountData']
                 available_to_collateral = reporte['availableToCollateral']
-                fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-                
-                calculoInteres(fichas_usuario,available_to_collateral)
+                with get_db_session() as session:
+                    fichas_usuario = session.query(Ficha).filter(Ficha.user_id == user_id).all()
+                    
+                    calculoInteres(fichas_usuario,available_to_collateral)
                 
                     
             else:
@@ -55,7 +57,9 @@ def refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta):
                 pass
 
       except Exception as e:
-            db.session.rollback()
+            print(f"Error al refrescar el valor actual de la cuenta: {e}")
+            return jsonify({'error': 'Error al refrescar el valor actual de la cuenta'}), 500
+            # Manejo de errores, como registrar el error o enviar una notificación.
     # Aquí puedes agregar código adicional si deseas manejar la excepción de alguna manera.
         
 
@@ -81,61 +85,61 @@ def fichas_asignar():
                 
         
             
-            
-            
-                    # Obtener todas las TrazaFichas con sus Fichas relacionadas
-                traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+                with get_db_session() as session:
+                
+                        # Obtener todas las TrazaFichas con sus Fichas relacionadas
+                    traza_fichas_con_fichas = session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
 
-                    # Puedes acceder a las fichas relacionadas de cada TrazaFicha en el bucle
-                    
-            
-            
-                try:
-                    for traza_ficha in traza_fichas_con_fichas:
-                            ficha_relacionada = traza_ficha.ficha
+                        # Puedes acceder a las fichas relacionadas de cada TrazaFicha en el bucle
                         
-                            llave_bytes = ficha_relacionada.llave
-                            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+                
+                
+                    try:
+                        for traza_ficha in traza_fichas_con_fichas:
+                                ficha_relacionada = traza_ficha.ficha
+                            
+                                llave_bytes = ficha_relacionada.llave
+                                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-                            # Luego, si necesitas obtener la llave original como bytes nuevamente
-                            llave_original_bytes = bytes.fromhex(llave_hex)
-                            #obtenemos el valor
-                            decoded_token = jwt.decode(ficha_relacionada.token, llave_original_bytes, algorithms=['HS256'])
-                                
-                            #obtenemos el numero
-                            random_number = decoded_token.get('random_number')
-                            if int(llave_ficha) == random_number:  
-                                if traza_ficha.estado == 'ACEPTADA':
-                                    if user_id != traza_ficha.user_id_traspaso:         
-                                        #print("Llave correcta para la ficha")
-                                        ficha_asignada = TrazaFicha(                                
-                                            user_id_traspaso=user_id,
-                                            fecha_traspaso=datetime.now(),                              
-                                            estado_traza="PENDIENTE"
-                                        )
-
+                                # Luego, si necesitas obtener la llave original como bytes nuevamente
+                                llave_original_bytes = bytes.fromhex(llave_hex)
+                                #obtenemos el valor
+                                decoded_token = jwt.decode(ficha_relacionada.token, llave_original_bytes, algorithms=['HS256'])
                                     
-                                        # Guarda la nueva ficha en la base de datos
-                                        db.session.add(ficha_asignada)
-                                        db.session.commit()
+                                #obtenemos el numero
+                                random_number = decoded_token.get('random_number')
+                                if int(llave_ficha) == random_number:  
+                                    if traza_ficha.estado == 'ACEPTADA':
+                                        if user_id != traza_ficha.user_id_traspaso:         
+                                            #print("Llave correcta para la ficha")
+                                            ficha_asignada = TrazaFicha(                                
+                                                user_id_traspaso=user_id,
+                                                fecha_traspaso=datetime.now(),                              
+                                                estado_traza="PENDIENTE"
+                                            )
+
                                         
+                                            # Guarda la nueva ficha en la base de datos
+                                            session.add(ficha_asignada)
+                                            session.commit()
+                                            
+                                        
+                                            break 
                                     
-                                        break 
-                                
-                                    
-                            else:
-                            # Ninguna ficha tiene una llave que coincida con la proporcionada
-                              print("no es la llave correcta")
-                    print("Llave ")
-                except Exception as e:
-                    db.session.rollback()      
-            
-            
-                #consultas de las neuvas fichas aceptadas
-                ficha_aceptadas =  db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
-            
-                db.session.close()    
-                return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
+                                        
+                                else:
+                                    # Ninguna ficha tiene una llave que coincida con la proporcionada
+                                    print("no es la llave correcta")
+                        print("Llave ")
+                    except Exception as e:
+                      print(f"Error al procesar las fichas: {e}")  
+                
+                
+                    #consultas de las neuvas fichas aceptadas
+                    ficha_aceptadas =  session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
+                
+                   
+                    return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
         return render_template('notificaciones/tokenVencidos.html',layout = 'layout')       
     except:  
         print("retorno incorrecto")  
@@ -167,63 +171,65 @@ def fichas_tomar():
     
         
         
-        
-            fichas = Ficha.query.filter_by().all()
-        
-        
-            try:
-                for ficha in fichas:
-                    if ficha.estado == 'PENDIENTE':
-                        llave_bytes = ficha.llave
-                        llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+            with get_db_session() as session:
+                fichas = session.query(Ficha).all()
 
-                        # Luego, si necesitas obtener la llave original como bytes nuevamente
-                        llave_original_bytes = bytes.fromhex(llave_hex)
-                        #obtenemos el valor
-                        decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                            
-                        #obtenemos el numero
-                        random_number = decoded_token.get('random_number')
-                        if int(llave_ficha) == random_number:                
-                            #print("Llave correcta para la ficha")
-                            nueva_ficha = TrazaFicha(
-                                idFicha=ficha.id,
-                                user_id_traspaso=user_id,
-                                cuenta_broker_id_traspaso=ficha.cuenta_broker_id,
-                                token=ficha.token,
-                                fecha_traspaso=datetime.now(),
-                                fecha_habilitacion=datetime.now(),
-                                fecha_denuncia=None,
-                                fecha_baja=None,
-                                user_id_denuncia=None,
-                                user_id_alta=ficha.user_id,
-                                user_id_baja=None,
-                                estado_traza="ACEPTADO"
-                            )
+            
+            
+                try:
+                    for ficha in fichas:
+                        if ficha.estado == 'PENDIENTE':
+                            llave_bytes = ficha.llave
+                            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-                        
-                            # Guarda la nueva ficha en la base de datos
-                            db.session.add(nueva_ficha)
-                            db.session.commit()
-                            #modifico el estado del usuario anterior
-                            ficha.estado="ACEPTADO"
-                            # Guarda la nueva ficha en la base de datos
-                            db.session.add(ficha)
-                            db.session.commit()
-                        
-                            break 
-                        
+                            # Luego, si necesitas obtener la llave original como bytes nuevamente
+                            llave_original_bytes = bytes.fromhex(llave_hex)
+                            #obtenemos el valor
+                            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                                
+                            #obtenemos el numero
+                            random_number = decoded_token.get('random_number')
+                            if int(llave_ficha) == random_number:                
+                                #print("Llave correcta para la ficha")
+                                nueva_ficha = TrazaFicha(
+                                    idFicha=ficha.id,
+                                    user_id_traspaso=user_id,
+                                    cuenta_broker_id_traspaso=ficha.cuenta_broker_id,
+                                    token=ficha.token,
+                                    fecha_traspaso=datetime.now(),
+                                    fecha_habilitacion=datetime.now(),
+                                    fecha_denuncia=None,
+                                    fecha_baja=None,
+                                    user_id_denuncia=None,
+                                    user_id_alta=ficha.user_id,
+                                    user_id_baja=None,
+                                    estado_traza="ACEPTADO"
+                                )
+
                             
-                    else:
-                    # Ninguna ficha tiene una llave que coincida con la proporcionada
-                      print("no es la llave correcta")
-                print("Llave ")
-            except Exception as e:
-                db.session.rollback()      
+                                # Guarda la nueva ficha en la base de datos
+                                session.add(nueva_ficha)
+                                session.commit()
+                                #modifico el estado del usuario anterior
+                                ficha.estado="ACEPTADO"
+                                # Guarda la nueva ficha en la base de datos
+                                session.add(ficha)
+                                session.commit()
+                            
+                                break 
+                            
+                                
+                        else:
+                            # Ninguna ficha tiene una llave que coincida con la proporcionada
+                            print("no es la llave correcta")
+                    print("Llave ")
+                except Exception as e:
+                    print(f"Error al procesar las fichas: {e}")
+                    return jsonify({'error': 'Error al procesar las fichas'}), 500
         
         
             #consultas de las neuvas fichas aceptadas
-            ficha_aceptadas =  db.session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
+            ficha_aceptadas =  session.query(TrazaFicha).filter(TrazaFicha.user_id_traspaso == user_id).all()
         
                 
             return render_template("fichas/fichasListado.html", datos=ficha_aceptadas, layout = layouts)
@@ -262,83 +268,85 @@ def crear_ficha():
             token_generado = token_con_llave[:-64]
             llave_generada = token_con_llave[-64:]
             llave_bytes = llave_generada.encode('utf-8')
-            #cuenta_id = Cuenta.query.filter_by(accountCuenta=cuenta).first()
-            cuenta_id = db.session.query(Cuenta).filter_by(accountCuenta=cuenta).first()
-            # almacenar el valor en el token
-            # Ahora puedes crear una nueva ficha
-            valorPorCien = valor * 100
-            porcentajeCreacion = valorPorCien / total_cuenta  
-            nueva_ficha = Ficha(
-                user_id=userid,
-                cuenta_broker_id=cuenta_id.id,  
-                activo=True,  
-                token=token_generado, 
-                llave = llave_bytes,
-                monto_efectivo=valor,
-                porcentaje_creacion=porcentajeCreacion, 
-                valor_cuenta_creacion=total_cuenta, 
-                valor_cuenta_actual=total_cuenta,  
-                estado=estado_ficha,  
-                fecha_generacion=datetime.now(), 
-                interes=0.0 
-            )
-
-            # Almacenar el token en la base de datos
-            db.session.add(nueva_ficha)
-            db.session.commit()
             
-                     # Consulta todas las fichas del usuario dado
-            #fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
-            #total_cuenta = available_to_collateral + portfolio
-            total_para_fichas =  total_cuenta * 0.6
-            print(total_para_fichas)
-        
-            fichas_usuario = Ficha.query.filter_by(user_id=userid, estado='PENDIENTE').all()
-            fichas_json = []
-            try:
-                for ficha in fichas_usuario:
-                    print(ficha.token)
-                    llave_bytes = ficha.llave
-                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+            with get_db_session() as session:
+                #cuenta_id = Cuenta.query.filter_by(accountCuenta=cuenta).first()
+                cuenta_id = session.query(Cuenta).filter_by(accountCuenta=cuenta).first()
+                # almacenar el valor en el token
+                # Ahora puedes crear una nueva ficha
+                valorPorCien = valor * 100
+                porcentajeCreacion = valorPorCien / total_cuenta  
+                nueva_ficha = Ficha(
+                    user_id=userid,
+                    cuenta_broker_id=cuenta_id.id,  
+                    activo=True,  
+                    token=token_generado, 
+                    llave = llave_bytes,
+                    monto_efectivo=valor,
+                    porcentaje_creacion=porcentajeCreacion, 
+                    valor_cuenta_creacion=total_cuenta, 
+                    valor_cuenta_actual=total_cuenta,  
+                    estado=estado_ficha,  
+                    fecha_generacion=datetime.now(), 
+                    interes=0.0 
+                )
 
-                    # Luego, si necesitas obtener la llave original como bytes nuevamente
-                    llave_original_bytes = bytes.fromhex(llave_hex)
-                    #obtenemos el valor
-                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                    
-                    #obtenemos el numero
-                    random_number = decoded_token.get('random_number')
-                    # Agregamos random_number a la ficha
-                    ficha.random_number = random_number
-                    
-                    # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
-                    fecha_generacion = ficha.fecha_generacion
+                # Almacenar el token en la base de datos
+                session.add(nueva_ficha)
+                session.commit()
+                
+                        # Consulta todas las fichas del usuario dado
+                #fichas_usuario = Ficha.query.filter_by(user_id=userid).all()
+                #total_cuenta = available_to_collateral + portfolio
+                total_para_fichas =  total_cuenta * 0.6
+                print(total_para_fichas)
+            
+                fichas_usuario = session.query(Ficha).filter_by(user_id=userid, estado='PENDIENTE').all()
+                fichas_json = []
+                try:
+                    for ficha in fichas_usuario:
+                        print(ficha.token)
+                        llave_bytes = ficha.llave
+                        llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-                    # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
-                    fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
-                    # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
-                    # Añadir la ficha a la lista
-                    fichas_json.append({
-                        'id': ficha.id,
-                        'fecha_generacion': fecha_formateada,
-                        'user_id': ficha.user_id,
-                        'monto_efectivo': ficha.monto_efectivo,
-                        'interes': ficha.interes,
-                        'estado': ficha.estado,
-                        'random_number': ficha.random_number
-                    })
-                db.session.commit()
-                db.session.close()
-            except Exception as e:
-               db.session.rollback() 
-            return jsonify({
-                                "fichas": fichas_json, 
-                                "total_para_fichas": total_para_fichas, 
-                                "total_cuenta": total_cuenta, 
-                                "layout": layouts
-                            })
+                        # Luego, si necesitas obtener la llave original como bytes nuevamente
+                        llave_original_bytes = bytes.fromhex(llave_hex)
+                        #obtenemos el valor
+                        decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                        
+                        #obtenemos el numero
+                        random_number = decoded_token.get('random_number')
+                        # Agregamos random_number a la ficha
+                        ficha.random_number = random_number
+                        
+                        # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
+                        fecha_generacion = ficha.fecha_generacion
 
-          
+                        # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
+                        fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
+                        # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
+                        # Añadir la ficha a la lista
+                        fichas_json.append({
+                            'id': ficha.id,
+                            'fecha_generacion': fecha_formateada,
+                            'user_id': ficha.user_id,
+                            'monto_efectivo': ficha.monto_efectivo,
+                            'interes': ficha.interes,
+                            'estado': ficha.estado,
+                            'random_number': ficha.random_number
+                        })
+                    session.commit()
+                 
+                except Exception as e:
+                   
+                    return jsonify({
+                                        "fichas": fichas_json, 
+                                        "total_para_fichas": total_para_fichas, 
+                                        "total_cuenta": total_cuenta, 
+                                        "layout": layouts
+                                    })
+
+            
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -375,64 +383,65 @@ def fichasToken_fichas_generar():
             #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
             total_cuenta = available_to_collateral + portfolio
             total_para_fichas =  total_cuenta * 0.6
-            fichas_usuario = db.session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
-            datos_fichas = []  # Lista para almacenar los datos de cada ficha
+            with get_db_session() as session:
+                fichas_usuario = session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
+                datos_fichas = []  # Lista para almacenar los datos de cada ficha
 
-           
-            try:
-               
-                for ficha in fichas_usuario:
-                    #print(ficha.monto_efectivo)
-                    total_para_fichas=total_para_fichas - ficha.monto_efectivo
-                    diferencia = available_to_collateral - ficha.valor_cuenta_creacion
-                    porcien= diferencia*100
-                    interes = porcien/available_to_collateral
-                    interes = int(interes)
-                    ficha.interes = interes
-                    
-                # print(interes)  
-                    llave_bytes = ficha.llave
-                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-                    # Luego, si necesitas obtener la llave original como bytes nuevamente
-                    llave_original_bytes = bytes.fromhex(llave_hex)
-                    #obtenemos el valor
-                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                    
-                    #obtenemos el numero
-                    random_number = decoded_token.get('random_number')
-                    # Agregamos random_number a la ficha
-                    ficha.random_number = random_number
-                    ficha.interes = interes
-                     # Agregar los datos de la ficha a la lista
-                    datos_fichas.append({
-                        "id": ficha.id,
-                        "user_id": ficha.user_id,
-                        "broker_id": ficha.broker_id,
-                        "cuenta_broker_id": ficha.cuenta_broker_id,
-                        "activo": ficha.activo,
-                        "token": ficha.token,
-                        "llave": ficha.llave.hex(),  # Convertir a hexadecimal
-                        "monto_efectivo": ficha.monto_efectivo,
-                        "porcentaje_creacion": ficha.porcentaje_creacion,
-                        "valor_cuenta_creacion": ficha.valor_cuenta_creacion,
-                        "valor_cuenta_actual": ficha.valor_cuenta_actual,
-                        "estado": ficha.estado,
-                        "fecha_generacion": ficha.fecha_generacion,
-                        "interes": ficha.interes,
-                        "random_number": ficha.random_number
-                    })
-                    db.session.commit()
-            except Exception as e:
-                db.session.rollback()   
             
-        
-            # print(total_para_fichas)    
-            db.session.close()
-            print("Datos de las fichas antes de enviar:")
-            for ficha in datos_fichas:
-                print(ficha)
-            return render_template("fichas/fichasGenerar.html", datos=datos_fichas,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
+                try:
+                
+                    for ficha in fichas_usuario:
+                        #print(ficha.monto_efectivo)
+                        total_para_fichas=total_para_fichas - ficha.monto_efectivo
+                        diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                        porcien= diferencia*100
+                        interes = porcien/available_to_collateral
+                        interes = int(interes)
+                        ficha.interes = interes
+                        
+                    # print(interes)  
+                        llave_bytes = ficha.llave
+                        llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                        # Luego, si necesitas obtener la llave original como bytes nuevamente
+                        llave_original_bytes = bytes.fromhex(llave_hex)
+                        #obtenemos el valor
+                        decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                        
+                        #obtenemos el numero
+                        random_number = decoded_token.get('random_number')
+                        # Agregamos random_number a la ficha
+                        ficha.random_number = random_number
+                        ficha.interes = interes
+                        # Agregar los datos de la ficha a la lista
+                        datos_fichas.append({
+                            "id": ficha.id,
+                            "user_id": ficha.user_id,
+                            "broker_id": ficha.broker_id,
+                            "cuenta_broker_id": ficha.cuenta_broker_id,
+                            "activo": ficha.activo,
+                            "token": ficha.token,
+                            "llave": ficha.llave.hex(),  # Convertir a hexadecimal
+                            "monto_efectivo": ficha.monto_efectivo,
+                            "porcentaje_creacion": ficha.porcentaje_creacion,
+                            "valor_cuenta_creacion": ficha.valor_cuenta_creacion,
+                            "valor_cuenta_actual": ficha.valor_cuenta_actual,
+                            "estado": ficha.estado,
+                            "fecha_generacion": ficha.fecha_generacion,
+                            "interes": ficha.interes,
+                            "random_number": ficha.random_number
+                        })
+                        session.commit()
+                except Exception as e:
+                    session.rollback()   
+                
+            
+                # print(total_para_fichas)    
+                session.close()
+                print("Datos de las fichas antes de enviar:")
+                for ficha in datos_fichas:
+                    print(ficha)
+                return render_template("fichas/fichasGenerar.html", datos=datos_fichas,total_para_fichas=total_para_fichas,total_cuenta=total_cuenta, layout = layouts)
         else:
              flash('token vencido') 
              return render_template('usuarios/logOutSystem.html')  
@@ -460,108 +469,25 @@ def fichasToken_fichas_pagar():
         user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                
         # Buscar y eliminar la ficha
-          # Buscar y eliminar la ficha
-        ficha = db.session.query(Ficha).filter_by(id=id_ficha).first()
-     
-        if ficha:
-            if ficha.estado == 'ENTREGADO':                          
-                ficha.estado = 'PAGADO'
-                db.session.add(ficha)
-                db.session.commit()
-                flash('Ficha pagada correctamente.')
-                mensaje = "La ficha ha sido pagada correctamente."
-        else:
-            mensaje = "No se encontró la ficha o no tienes permisos para acpetarla."
-        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id,
-                                                        Ficha.estado != 'STATIC',
-                                                        Ficha.estado != 'PAGADO',
-                                                        Ficha.estado != 'ACEPTADO').all()
-
-        db.session.close()
-       
-        fichas_json = []
-
-        for ficha in fichas_usuario:
-        # print(ficha.token)
-            llave_bytes = ficha.llave
-            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-            # Luego, si necesitas obtener la llave original como bytes nuevamente
-            llave_original_bytes = bytes.fromhex(llave_hex)
-            #obtenemos el valor
-            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-            
-            #obtenemos el numero
-            random_number = decoded_token.get('random_number')
-            # Agregamos random_number a la ficha
-            ficha.random_number = random_number
-            # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
-            fecha_generacion = ficha.fecha_generacion
-
-            # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
-            fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
-            # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
-            # Añadir la ficha a la lista
-           
+        with get_db_session() as session:
+            ficha = session.query(Ficha).filter_by(id=id_ficha).first()
         
-           
-            ficha_dict = {
-                "id": ficha.id,
-                "fecha_generacion": ficha.fecha_generacion.strftime('%Y-%m-%d %H:%M:%S'),
-                "monto_efectivo": ficha.monto_efectivo,
-                "interes": ficha.interes,
-                "estado": ficha.estado,
-                "random_number": ficha.random_number  # Asegúrate de que este valor esté disponible
-            }
-            fichas_json.append(ficha_dict)
-            
-        return jsonify({
-                            "fichas": fichas_json,                           
-                            "layout": layouts
-                        })
-    flash('token vencido') 
-    return render_template('usuarios/logOutSystem.html') 
+            if ficha:
+                if ficha.estado == 'ENTREGADO':                          
+                    ficha.estado = 'PAGADO'
+                    session.add(ficha)
+                    session.commit()
+                    flash('Ficha pagada correctamente.')
+                    mensaje = "La ficha ha sido pagada correctamente."
+            else:
+                mensaje = "No se encontró la ficha o no tienes permisos para acpetarla."
+            fichas_usuario = session.query(Ficha).filter(Ficha.user_id == user_id,
+                                                            Ficha.estado != 'STATIC',
+                                                            Ficha.estado != 'PAGADO',
+                                                            Ficha.estado != 'ACEPTADO').all()
 
-
-@fichas.route("/entregar-ficha/",  methods=["POST"])
-def entregar_ficha():
-  if request.method == 'POST':
-    access_token = request.form['access_token']
-    account = request.form['eliminarFichaCuenta']
-    layouts = request.form['layoutOrigen']
-    if access_token and Token.validar_expiracion_token(access_token=access_token): 
-        app = current_app._get_current_object()
-            
-        ficha_id = request.form['eliminarFichaId']
-       
-        user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-               
-        # Buscar y eliminar la ficha
-        ficha = db.session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()          
+          
         
-        if ficha:
-          if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
-                    db.session.delete(ficha)
-                    db.session.commit()
-                   
-
-                    flash('Ficha eliminada correctamente.')
-                    mensaje = "La ficha ha sido eliminada correctamente."
-        else:
-            mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
-        fichas_usuario = []  # o asigna la lista que corresponda
-
-        fichas_usuario = db.session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
-        db.session.close()
-        pyRofexInicializada = get.ConexionesBroker.get(account)
-        if pyRofexInicializada:
-            repuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
-            reporte = repuesta_cuenta['accountData']
-            available_to_collateral = reporte['availableToCollateral']
-            portfolio = reporte['portfolio']
-            
-            total_cuenta = available_to_collateral + portfolio
-            total_para_fichas =  total_cuenta * 0.6
             fichas_json = []
 
             for ficha in fichas_usuario:
@@ -585,28 +511,111 @@ def entregar_ficha():
                 fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
                 # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
                 # Añadir la ficha a la lista
-                fichas_json.append({
-                    'id': ficha.id,
-                    'fecha_generacion': fecha_formateada,
-                    'user_id': ficha.user_id,
-                    'monto_efectivo': ficha.monto_efectivo,
-                    'interes': ficha.interes,
-                    'estado': ficha.estado,
-                    'random_number': ficha.random_number
-                })
-        
-            if not fichas_usuario:
-                fichas_usuario = []
-        
-
+            
+            
+            
+                ficha_dict = {
+                    "id": ficha.id,
+                    "fecha_generacion": ficha.fecha_generacion.strftime('%Y-%m-%d %H:%M:%S'),
+                    "monto_efectivo": ficha.monto_efectivo,
+                    "interes": ficha.interes,
+                    "estado": ficha.estado,
+                    "random_number": ficha.random_number  # Asegúrate de que este valor esté disponible
+                }
+                fichas_json.append(ficha_dict)
+                
             return jsonify({
-                            "fichas": fichas_json, 
-                            "total_para_fichas": total_para_fichas, 
-                            "total_cuenta": total_cuenta, 
-                            "layout": layouts
+                                "fichas": fichas_json,                           
+                                "layout": layouts
+                            })
+    flash('token vencido') 
+    return render_template('usuarios/logOutSystem.html') 
+
+
+@fichas.route("/entregar-ficha/",  methods=["POST"])
+def entregar_ficha():
+  if request.method == 'POST':
+    access_token = request.form['access_token']
+    account = request.form['eliminarFichaCuenta']
+    layouts = request.form['layoutOrigen']
+    if access_token and Token.validar_expiracion_token(access_token=access_token): 
+        app = current_app._get_current_object()
+            
+        ficha_id = request.form['eliminarFichaId']
+       
+        user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+        with get_db_session() as session:     
+            # Buscar y eliminar la ficha
+            ficha = session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()          
+            
+            if ficha:
+                if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
+                            session.delete(ficha)
+                            session.commit()
+                        
+
+                            flash('Ficha eliminada correctamente.')
+                            mensaje = "La ficha ha sido eliminada correctamente."
+                else:
+                    mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
+                fichas_usuario = []  # o asigna la lista que corresponda
+
+                fichas_usuario = session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
+               
+                pyRofexInicializada = get.ConexionesBroker.get(account)
+                if pyRofexInicializada:
+                    repuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
+                    reporte = repuesta_cuenta['accountData']
+                    available_to_collateral = reporte['availableToCollateral']
+                    portfolio = reporte['portfolio']
+                    
+                    total_cuenta = available_to_collateral + portfolio
+                    total_para_fichas =  total_cuenta * 0.6
+                    fichas_json = []
+
+                    for ficha in fichas_usuario:
+                    # print(ficha.token)
+                        llave_bytes = ficha.llave
+                        llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                        # Luego, si necesitas obtener la llave original como bytes nuevamente
+                        llave_original_bytes = bytes.fromhex(llave_hex)
+                        #obtenemos el valor
+                        decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                        
+                        #obtenemos el numero
+                        random_number = decoded_token.get('random_number')
+                        # Agregamos random_number a la ficha
+                        ficha.random_number = random_number
+                        # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
+                        fecha_generacion = ficha.fecha_generacion
+
+                        # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
+                        fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
+                        # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
+                        # Añadir la ficha a la lista
+                        fichas_json.append({
+                            'id': ficha.id,
+                            'fecha_generacion': fecha_formateada,
+                            'user_id': ficha.user_id,
+                            'monto_efectivo': ficha.monto_efectivo,
+                            'interes': ficha.interes,
+                            'estado': ficha.estado,
+                            'random_number': ficha.random_number
                         })
-        else:
-            return render_template('notificaciones/noPoseeDatos.html')
+                
+                    if not fichas_usuario:
+                        fichas_usuario = []
+                
+
+                    return jsonify({
+                                    "fichas": fichas_json, 
+                                    "total_para_fichas": total_para_fichas, 
+                                    "total_cuenta": total_cuenta, 
+                                    "layout": layouts
+                                })
+            else:
+                return render_template('notificaciones/noPoseeDatos.html')
         
         
     flash('token vencido') 
@@ -622,34 +631,34 @@ def fichasToken_fichas_entregar():
         
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            
-            # Consulta todas las fichas del usuario dado
-            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, 
-                                                            Ficha.estado != 'STATIC',
-                                                            Ficha.estado != 'ACEPTADO',
-                                                            Ficha.estado != 'PAGADO').all()
+            with get_db_session() as session:
+                # Consulta todas las fichas del usuario dado
+                fichas_usuario = session.query(Ficha).filter(Ficha.user_id == user_id, 
+                                                                Ficha.estado != 'STATIC',
+                                                                Ficha.estado != 'ACEPTADO',
+                                                                Ficha.estado != 'PAGADO').all()
 
-            for ficha in fichas_usuario:
-                diferencia = ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
-                interes = int((diferencia * 100) / ficha.valor_cuenta_actual)
-                ficha.interes = interes
+                for ficha in fichas_usuario:
+                    diferencia = ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+                    interes = int((diferencia * 100) / ficha.valor_cuenta_actual)
+                    ficha.interes = interes
+                    
+                    llave_bytes = ficha.llave
+                    llave_original_bytes = bytes.fromhex(llave_bytes.hex())
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    ficha.random_number = decoded_token.get('random_number')
                 
-                llave_bytes = ficha.llave
-                llave_original_bytes = bytes.fromhex(llave_bytes.hex())
-                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                ficha.random_number = decoded_token.get('random_number')
-             
-            # Guardamos los cambios
-            db.session.commit()
+                # Guardamos los cambios
+                session.commit()
+                
             
-           
-            # Renderizar la plantilla con los datos de ambas tablas
-            return render_template(
-                "fichas/fichasEntregas.html", 
-                fichas=fichas_usuario,                
-                usuario_id=user_id, 
-                layout=layouts
-            )
+                # Renderizar la plantilla con los datos de ambas tablas
+                return render_template(
+                    "fichas/fichasEntregas.html", 
+                    fichas=fichas_usuario,                
+                    usuario_id=user_id, 
+                    layout=layouts
+                )
         
         flash('token vencido') 
         return render_template('usuarios/logOutSystem.html')
@@ -669,39 +678,39 @@ def fichasToken_fichas_listar():
         
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            
-            # Consulta todas las fichas del usuario dado
-            fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.estado != 'STATIC').all()
+            with get_db_session() as session:
+                # Consulta todas las fichas del usuario dado
+                fichas_usuario = session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.estado != 'STATIC').all()
 
-            for ficha in fichas_usuario:
-                diferencia = ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
-                interes = int((diferencia * 100) / ficha.valor_cuenta_actual)
-                ficha.interes = interes
+                for ficha in fichas_usuario:
+                    diferencia = ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+                    interes = int((diferencia * 100) / ficha.valor_cuenta_actual)
+                    ficha.interes = interes
+                    
+                    llave_bytes = ficha.llave
+                    llave_original_bytes = bytes.fromhex(llave_bytes.hex())
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    ficha.random_number = decoded_token.get('random_number')
                 
-                llave_bytes = ficha.llave
-                llave_original_bytes = bytes.fromhex(llave_bytes.hex())
-                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                ficha.random_number = decoded_token.get('random_number')
-             
-            # Guardamos los cambios
-            db.session.commit()
-            
-            # Obtener todas las TrazaFichas con sus Fichas relacionadas
-            traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).filter(
-                TrazaFicha.user_id_traspaso == user_id
-            ).options(joinedload(TrazaFicha.ficha)).all()
-    
-            # Renderizar la plantilla con los datos de ambas tablas
-            return render_template(
-                "fichas/fichasAdminUsuario.html", 
-                fichas=fichas_usuario, 
-                traza_fichas=traza_fichas_con_fichas,
-                usuario_id=user_id, 
-                layout=layouts
-            )
+                # Guardamos los cambios
+                session.commit()
+                
+                # Obtener todas las TrazaFichas con sus Fichas relacionadas
+                traza_fichas_con_fichas = session.query(TrazaFicha).join(Ficha).filter(
+                    TrazaFicha.user_id_traspaso == user_id
+                ).options(joinedload(TrazaFicha.ficha)).all()
         
-        flash('token vencido') 
-        return render_template('usuarios/logOutSystem.html')
+                # Renderizar la plantilla con los datos de ambas tablas
+                return render_template(
+                    "fichas/fichasAdminUsuario.html", 
+                    fichas=fichas_usuario, 
+                    traza_fichas=traza_fichas_con_fichas,
+                    usuario_id=user_id, 
+                    layout=layouts
+                )
+            
+            flash('token vencido') 
+            return render_template('usuarios/logOutSystem.html')
         
     except:  
       print("retorno incorrecto")  
@@ -722,75 +731,76 @@ def fichasToken_fichas_listar_sin_cuenta():
         if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 # Consulta todas las fichas del usuario dado
-                fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.estado != 'STATIC').all()
+                with get_db_session() as session:
+                    fichas_usuario = session.query(Ficha).filter(Ficha.user_id == user_id, Ficha.estado != 'STATIC').all()
 
-                try:
-                    for ficha in fichas_usuario:
-                        #print(ficha.monto_efectivo)
-                    
-                        diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
-                        porcien= diferencia*100
-                        interes = porcien/ficha.valor_cuenta_actual
-                        interes = int(interes)
-                        ficha.interes = interes
-                    # print(interes)  
-                        llave_bytes = ficha.llave
+                    try:
+                        for ficha in fichas_usuario:
+                            #print(ficha.monto_efectivo)
+                        
+                            diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+                            porcien= diferencia*100
+                            interes = porcien/ficha.valor_cuenta_actual
+                            interes = int(interes)
+                            ficha.interes = interes
+                        # print(interes)  
+                            llave_bytes = ficha.llave
+                            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                            # Luego, si necesitas obtener la llave original como bytes nuevamente
+                            llave_original_bytes = bytes.fromhex(llave_hex)
+                            #obtenemos el valor
+                            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                            
+                            #obtenemos el numero
+                            random_number = decoded_token.get('random_number')
+                            valorInicial = decoded_token.get('valor')
+                            # Agregamos random_number a la ficha
+                            ficha.random_number = random_number
+                            session.commit()
+                        
+                    except Exception as e:
+                        session.rollback()   
+                    traza_fichas_con_fichas = []  # o asigna la lista que corresponda
+                    # Obtener todas las TrazaFichas con sus Fichas relacionadas
+                    #traza_fichas_con_fichas = session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+                # Filtramos las TrazaFichas por el user_id_traspaso
+                    traza_fichas_con_fichas = session.query(TrazaFicha).join(Ficha).filter(TrazaFicha.user_id_traspaso == user_id).options(joinedload(TrazaFicha.ficha)).all()
+
+                    for traza_ficha in traza_fichas_con_fichas:
+                        ficha_relacionada = traza_ficha.ficha
+                        llave_bytes = ficha_relacionada.llave
                         llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
                         # Luego, si necesitas obtener la llave original como bytes nuevamente
                         llave_original_bytes = bytes.fromhex(llave_hex)
                         #obtenemos el valor
-                        decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                        
+                        decoded_token = jwt.decode(ficha_relacionada.token, llave_original_bytes, algorithms=['HS256'])
+                            
                         #obtenemos el numero
                         random_number = decoded_token.get('random_number')
                         valorInicial = decoded_token.get('valor')
                         # Agregamos random_number a la ficha
-                        ficha.random_number = random_number
-                        db.session.commit()
-                       
-                except Exception as e:
-                    db.session.rollback()   
-                traza_fichas_con_fichas = []  # o asigna la lista que corresponda
-                # Obtener todas las TrazaFichas con sus Fichas relacionadas
-                #traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
-               # Filtramos las TrazaFichas por el user_id_traspaso
-                traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).filter(TrazaFicha.user_id_traspaso == user_id).options(joinedload(TrazaFicha.ficha)).all()
+                        ficha_relacionada.random_number = random_number
 
-                for traza_ficha in traza_fichas_con_fichas:
-                    ficha_relacionada = traza_ficha.ficha
-                    llave_bytes = ficha_relacionada.llave
-                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+                        # Imprimir todos los campos de Ficha
+                        #print("Campos de Ficha:")
+                        #print(f"  ID: {ficha_relacionada.id}")
+                        #print(f"  User ID: {ficha_relacionada.user_id}")
+                        #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+                        #print(f"  Activo: {ficha_relacionada.activo}")
+                        #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+                        #print(f" interes: {ficha_relacionada.interes}")
+                        #print(f"  estado: {ficha_relacionada.estado}")
+                        #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
+                        # ... Agrega más campos según sea necesario
 
-                    # Luego, si necesitas obtener la llave original como bytes nuevamente
-                    llave_original_bytes = bytes.fromhex(llave_hex)
-                    #obtenemos el valor
-                    decoded_token = jwt.decode(ficha_relacionada.token, llave_original_bytes, algorithms=['HS256'])
-                        
-                    #obtenemos el numero
-                    random_number = decoded_token.get('random_number')
-                    valorInicial = decoded_token.get('valor')
-                    # Agregamos random_number a la ficha
-                    ficha_relacionada.random_number = random_number
-
-                    # Imprimir todos los campos de Ficha
-                    #print("Campos de Ficha:")
-                    #print(f"  ID: {ficha_relacionada.id}")
-                    #print(f"  User ID: {ficha_relacionada.user_id}")
-                    #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
-                    #print(f"  Activo: {ficha_relacionada.activo}")
-                    #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
-                    #print(f" interes: {ficha_relacionada.interes}")
-                    #print(f"  estado: {ficha_relacionada.estado}")
-                    #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
-                    # ... Agrega más campos según sea necesario
-
-                    #print("\n")  
-                
-                        
+                        #print("\n")  
                     
-                db.session.close()   
-                return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
+                            
+                        
+                   
+                    return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
         flash('token vencido') 
         return render_template('usuarios/logOutSystem.html')
     
@@ -812,32 +822,33 @@ def fichasToken_fichas_all():
             
             try:
                 user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                usuario = Usuario.query.get(user_id)         
-                cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-                db.session.close()
-                if cuentas:
-                    data = []  # Lista para almacenar los datos de las cuentas
-                    
-                    for cuenta in cuentas:
-                        password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                        data.append({
-                            'id': cuenta.id,
-                            'user_id': cuenta.user_id,
-                            'accountCuenta': cuenta.accountCuenta,
-                            'userCuenta': cuenta.userCuenta,
-                            'passwordCuenta': password_cuenta,
-                            'selector': cuenta.selector
-                        })
-                    
-                    return jsonify({'cuentas': data})  # Devolver los datos en formato JSON
+                with get_db_session() as session:
+                    usuario = session.query(Usuario).get(user_id)         
+                    cuentas = session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
+                    session.close()
+                    if cuentas:
+                        data = []  # Lista para almacenar los datos de las cuentas
+                        
+                        for cuenta in cuentas:
+                            password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                            data.append({
+                                'id': cuenta.id,
+                                'user_id': cuenta.user_id,
+                                'accountCuenta': cuenta.accountCuenta,
+                                'userCuenta': cuenta.userCuenta,
+                                'passwordCuenta': password_cuenta,
+                                'selector': cuenta.selector
+                            })
+                        
+                        return jsonify({'cuentas': data})  # Devolver los datos en formato JSON
                 
-                else:
-                    return jsonify({'message': 'No se encontraron cuentas asociadas a este usuario.'}), 404
+                    else:
+                        return jsonify({'message': 'No se encontraron cuentas asociadas a este usuario.'}), 404
                   
             except Exception as e:
                 print("Error:", str(e))
                 print("No se pudo registrar la cuenta.")
-                db.session.rollback()  # Hacer rollback de la sesión
+             
                 return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
         flash('token vencido') 
        # return render_template('notificaciones/tokenVencidos.html',layout = layouts)      
@@ -848,9 +859,10 @@ def fichasToken_fichas_all():
 def fichasToken_fichas_usuarios_get():
    try:
       if request.method == 'GET': 
-           cuentasBroker = db.session.query(Cuenta).all()
-           db.session.close()
-           return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentasBroker)
+          with get_db_session() as session:
+            cuentasBroker = session.query(Cuenta).all()
+            session.close()
+            return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentasBroker)
    except:
        print('no hay usuarios') 
    return 'problemas con la base de datos'
@@ -867,79 +879,79 @@ def eliminar_ficha():
         ficha_id = request.form['eliminarFichaId']
        
         user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-               
-        # Buscar y eliminar la ficha
-        ficha = db.session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()          
-        
-        if ficha:
-          if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
-                    db.session.delete(ficha)
-                    db.session.commit()
-                   
-
-                    flash('Ficha eliminada correctamente.')
-                    mensaje = "La ficha ha sido eliminada correctamente."
-        else:
-            mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
-        fichas_usuario = []  # o asigna la lista que corresponda
-
-        fichas_usuario = db.session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
-        db.session.close()
-        pyRofexInicializada = get.ConexionesBroker.get(account)
-        if pyRofexInicializada:
-            repuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
-            reporte = repuesta_cuenta['accountData']
-            available_to_collateral = reporte['availableToCollateral']
-            portfolio = reporte['portfolio']
+        with get_db_session() as session:    
+            # Buscar y eliminar la ficha
+            ficha = session.query(Ficha).filter_by(id=ficha_id, user_id=user_id).first()          
             
-            total_cuenta = available_to_collateral + portfolio
-            total_para_fichas =  total_cuenta * 0.6
-            fichas_json = []
+            if ficha:
+                if ficha.estado == 'PENDIENTE' or ficha.estado == 'ENTREGADO':
+                            session.delete(ficha)
+                            session.commit()
+                        
 
-            for ficha in fichas_usuario:
-            # print(ficha.token)
-                llave_bytes = ficha.llave
-                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+                            flash('Ficha eliminada correctamente.')
+                            mensaje = "La ficha ha sido eliminada correctamente."
+                else:
+                    mensaje = "No se encontró la ficha o no tienes permisos para eliminarla."
+            fichas_usuario = []  # o asigna la lista que corresponda
 
-                # Luego, si necesitas obtener la llave original como bytes nuevamente
-                llave_original_bytes = bytes.fromhex(llave_hex)
-                #obtenemos el valor
-                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+            fichas_usuario = session.query(Ficha).filter_by(user_id=user_id, estado='PENDIENTE').all()
+            session.close()
+            pyRofexInicializada = get.ConexionesBroker.get(account)
+            if pyRofexInicializada:
+                repuesta_cuenta = pyRofexInicializada['pyRofex'].get_account_report(account=account,environment=account)
+                reporte = repuesta_cuenta['accountData']
+                available_to_collateral = reporte['availableToCollateral']
+                portfolio = reporte['portfolio']
                 
-                #obtenemos el numero
-                random_number = decoded_token.get('random_number')
-                # Agregamos random_number a la ficha
-                ficha.random_number = random_number
-                # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
-                fecha_generacion = ficha.fecha_generacion
+                total_cuenta = available_to_collateral + portfolio
+                total_para_fichas =  total_cuenta * 0.6
+                fichas_json = []
 
-                # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
-                fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
-                # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
-                # Añadir la ficha a la lista
-                fichas_json.append({
-                    'id': ficha.id,
-                    'fecha_generacion': fecha_formateada,
-                    'user_id': ficha.user_id,
-                    'monto_efectivo': ficha.monto_efectivo,
-                    'interes': ficha.interes,
-                    'estado': ficha.estado,
-                    'random_number': ficha.random_number
-                })
-        
-            if not fichas_usuario:
-                fichas_usuario = []
-        
+                for ficha in fichas_usuario:
+                # print(ficha.token)
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
 
-            return jsonify({
-                            "fichas": fichas_json, 
-                            "total_para_fichas": total_para_fichas, 
-                            "total_cuenta": total_cuenta, 
-                            "layout": layouts
-                        })
-        else:
-            return render_template('notificaciones/noPoseeDatos.html')
-        
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    # Agregamos random_number a la ficha
+                    ficha.random_number = random_number
+                    # Suponiendo que ficha.fecha_generacion ya es un objeto datetime
+                    fecha_generacion = ficha.fecha_generacion
+
+                    # Formatear la fecha a 'YYYY-MM-DD HH:MM:SS'
+                    fecha_formateada = fecha_generacion.strftime('%Y-%m-%d %H:%M:%S')
+                    # Luego, convertimos las fichas a un formato que se pueda enviar como JSON
+                    # Añadir la ficha a la lista
+                    fichas_json.append({
+                        'id': ficha.id,
+                        'fecha_generacion': fecha_formateada,
+                        'user_id': ficha.user_id,
+                        'monto_efectivo': ficha.monto_efectivo,
+                        'interes': ficha.interes,
+                        'estado': ficha.estado,
+                        'random_number': ficha.random_number
+                    })
+            
+                if not fichas_usuario:
+                    fichas_usuario = []
+            
+
+                return jsonify({
+                                "fichas": fichas_json, 
+                                "total_para_fichas": total_para_fichas, 
+                                "total_cuenta": total_cuenta, 
+                                "layout": layouts
+                            })
+            else:
+                return render_template('notificaciones/noPoseeDatos.html')
+            
         
     flash('token vencido') 
     return render_template('usuarios/logOutSystem.html')      
@@ -956,78 +968,79 @@ def reportar_ficha():
         id_ficha = request.form['reportaridFicha']
        
         user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-               
-        # Buscar y eliminar la ficha
-        ficha = Ficha.query.filter_by(id=id_ficha).first()
-        trazaficha = TrazaFicha.query.filter_by(id=ficha_id).first()
-        
-        if ficha:
-            if ficha.estado != 'ENTREGADO':
-                ficha.estado = 'REPORTADO'
-                trazaficha.estado_traza = 'REPORTADO'
-                db.session.commit()
-               
-                flash('Ficha reportada correctamente.')
-                mensaje = "La ficha ha sido reportada correctamente."
-        else:
-            mensaje = "No se encontró la ficha o no tienes permisos para reportar."
-        fichas_usuario = []  # o asigna la lista que corresponda
-
-        fichas_usuario = db.session.query(Ficha).filter(Ficha.user_id == user_id).all()
-         
-        try:
-            for ficha in fichas_usuario:
-                #print(ficha.monto_efectivo)
-               
-                diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
-                porcien= diferencia*100
-                interes = porcien/ficha.valor_cuenta_actual
-                interes = int(interes)
-                ficha.interes = interes
-            # print(interes)  
-                llave_bytes = ficha.llave
-                llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-                # Luego, si necesitas obtener la llave original como bytes nuevamente
-                llave_original_bytes = bytes.fromhex(llave_hex)
-                #obtenemos el valor
-                decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                
-                #obtenemos el numero
-                random_number = decoded_token.get('random_number')
-                valorInicial = decoded_token.get('valor')
-                # Agregamos random_number a la ficha
-                ficha.random_number = random_number
-                db.session.commit()
-               
-        except Exception as e:
-               db.session.rollback()   
-        
-           # Obtener todas las TrazaFichas con sus Fichas relacionadas
-        traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
-
-        for traza_ficha in traza_fichas_con_fichas:
-            ficha_relacionada = traza_ficha.ficha
-     
-
-            # Imprimir todos los campos de Ficha
-            #print("Campos de Ficha:")
-            #print(f"  ID: {ficha_relacionada.id}")
-            #print(f"  User ID: {ficha_relacionada.user_id}")
-            #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
-            #print(f"  Activo: {ficha_relacionada.activo}")
-            #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
-            #print(f" interes: {ficha_relacionada.interes}")
-            #print(f"  estado: {ficha_relacionada.estado}")
-            #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
-            # ... Agrega más campos según sea necesario
-
-            #print("\n")  
-          
-                
+        with get_db_session() as session:       
+            # Buscar y eliminar la ficha
+            ficha = session.query(Ficha).filter_by(id=id_ficha).first()
+            trazaficha = session.query(TrazaFicha).filter_by(id=ficha_id).first()
             
-        db.session.close()    
-        return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
+            if ficha:
+                if ficha.estado != 'ENTREGADO':
+                    ficha.estado = 'REPORTADO'
+                    trazaficha.estado_traza = 'REPORTADO'
+                    session.commit()
+                
+                    flash('Ficha reportada correctamente.')
+                    mensaje = "La ficha ha sido reportada correctamente."
+            else:
+                mensaje = "No se encontró la ficha o no tienes permisos para reportar."
+            fichas_usuario = []  # o asigna la lista que corresponda
+
+            fichas_usuario = session.query(Ficha).filter(Ficha.user_id == user_id).all()
+         
+            try:
+                for ficha in fichas_usuario:
+                    #print(ficha.monto_efectivo)
+                
+                    diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+                    porcien= diferencia*100
+                    interes = porcien/ficha.valor_cuenta_actual
+                    interes = int(interes)
+                    ficha.interes = interes
+                # print(interes)  
+                    llave_bytes = ficha.llave
+                    llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                    # Luego, si necesitas obtener la llave original como bytes nuevamente
+                    llave_original_bytes = bytes.fromhex(llave_hex)
+                    #obtenemos el valor
+                    decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                    
+                    #obtenemos el numero
+                    random_number = decoded_token.get('random_number')
+                    valorInicial = decoded_token.get('valor')
+                    # Agregamos random_number a la ficha
+                    ficha.random_number = random_number
+                    session.commit()
+                
+            except Exception as e:
+                print("Error al calcular el interés:", str(e))
+                return render_template('notificaciones/errorOperacionSinCuenta.html', layout = layouts)
+           
+           # Obtener todas las TrazaFichas con sus Fichas relacionadas
+            traza_fichas_con_fichas = session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+
+            for traza_ficha in traza_fichas_con_fichas:
+                ficha_relacionada = traza_ficha.ficha
+        
+
+                # Imprimir todos los campos de Ficha
+                #print("Campos de Ficha:")
+                #print(f"  ID: {ficha_relacionada.id}")
+                #print(f"  User ID: {ficha_relacionada.user_id}")
+                #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+                #print(f"  Activo: {ficha_relacionada.activo}")
+                #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+                #print(f" interes: {ficha_relacionada.interes}")
+                #print(f"  estado: {ficha_relacionada.estado}")
+                #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
+                # ... Agrega más campos según sea necesario
+
+                #print("\n")  
+            
+                    
+                
+           
+            return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
     flash('token vencido') 
     return render_template('usuarios/logOutSystem.html') 
    
@@ -1045,65 +1058,67 @@ def recibir_ficha():
         user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                
         # Buscar y eliminar la ficha
-          # Buscar y eliminar la ficha
-        traza_ficha = db.session.query(TrazaFicha).filter_by(id=ficha_id, user_id_traspaso=user_id).first() 
-        ficha = db.session.query(Ficha).filter_by(id=traza_ficha.idFicha).first()
-     
-        if traza_ficha:
-            if traza_ficha.estado_traza == 'ACEPTADO':
-                db.session.delete(traza_ficha)              
-                ficha.estado = 'ENTREGADO'
-                db.session.add(ficha)
-                db.session.commit()
-                flash('Ficha recibida correctamente.')
-                mensaje = "La trazaficha ha sido eliminada correctamente."
-        else:
-            mensaje = "No se encontró la ficha o no tienes permisos para acpetarla."
-        traza_fichas_con_fichas = []  # o asigna la lista que corresponda
-
-       
+        with get_db_session() as session:
+            traza_ficha = session.query(TrazaFicha).filter_by(id=ficha_id, user_id_traspaso=user_id).first() 
+            ficha = session.query(Ficha).filter_by(id=traza_ficha.idFicha).first()
         
-       
-              # Obtener todas las TrazaFichas con sus Fichas relacionadas
-        traza_fichas_con_fichas = db.session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
-        db.session.close()
-        for traza_ficha in traza_fichas_con_fichas:
-            ficha_relacionada = traza_ficha.ficha
-     
+            if traza_ficha:
+                if traza_ficha.estado_traza == 'ACEPTADO':
+                    session.delete(traza_ficha)              
+                    ficha.estado = 'ENTREGADO'
+                    session.add(ficha)
+                    session.commit()
+                    flash('Ficha recibida correctamente.')
+                    mensaje = "La trazaficha ha sido eliminada correctamente."
+            else:
+                mensaje = "No se encontró la ficha o no tienes permisos para acpetarla."
+            traza_fichas_con_fichas = []  # o asigna la lista que corresponda
 
-            # Imprimir todos los campos de Ficha
-            #print("Campos de Ficha:")
-            #print(f"  ID: {ficha_relacionada.id}")
-            #print(f"  User ID: {ficha_relacionada.user_id}")
-            #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
-            #print(f"  Activo: {ficha_relacionada.activo}")
-            #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
-            #print(f" interes: {ficha_relacionada.interes}")
-            #print(f"  estado: {ficha_relacionada.estado}")
-            #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
-            # ... Agrega más campos según sea necesario
+        
+            
+        
+                # Obtener todas las TrazaFichas con sus Fichas relacionadas
+            traza_fichas_con_fichas = session.query(TrazaFicha).join(Ficha).options(joinedload(TrazaFicha.ficha)).all()
+            session.close()
+            for traza_ficha in traza_fichas_con_fichas:
+                ficha_relacionada = traza_ficha.ficha
+        
 
-            #print("\n")  
-          
+                # Imprimir todos los campos de Ficha
+                #print("Campos de Ficha:")
+                #print(f"  ID: {ficha_relacionada.id}")
+                #print(f"  User ID: {ficha_relacionada.user_id}")
+                #print(f"  Cuenta Broker ID: {ficha_relacionada.cuenta_broker_id}")
+                #print(f"  Activo: {ficha_relacionada.activo}")
+                #print(f"  monto_efectivo: {ficha_relacionada.monto_efectivo}")
+                #print(f" interes: {ficha_relacionada.interes}")
+                #print(f"  estado: {ficha_relacionada.estado}")
+                #print(f" user_id_traspaso: {traza_ficha.user_id_traspaso}")
+                # ... Agrega más campos según sea necesario
+
+                #print("\n")  
+            
+                    
                 
-            
-            
-        return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
+                
+            return render_template("fichas/fichasListado.html", datos=traza_fichas_con_fichas,usuario_id= user_id,layout = layouts)
     flash('token vencido') 
     return render_template('usuarios/logOutSystem.html')  
 
 
 def obtenerCuentaDb(user_id=None):
-    cuenta = db.session.query(Cuenta).filter_by(user_id=user_id).first()
-    return cuenta.accountCuenta
+    with get_db_session() as session:
+        cuenta = session.query(Cuenta).filter_by(user_id=user_id).first()
+        return cuenta.accountCuenta
 
 def calculoInteres(fichas_usuario,available_to_collateral):
-    for ficha in fichas_usuario:
-        diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
-        porcien= diferencia*100
-        interes = porcien/ficha.valor_cuenta_actual
-        interes = int(interes)
-        ficha.interes = interes
-        ficha.valor_cuenta_actual = available_to_collateral
-        db.session.commit()
-    return interes
+    with get_db_session() as session:
+        for ficha in fichas_usuario:
+            diferencia =  ficha.valor_cuenta_actual - ficha.valor_cuenta_creacion
+            porcien= diferencia*100
+            interes = porcien/ficha.valor_cuenta_actual
+            interes = int(interes)
+            ficha.interes = interes
+            ficha.valor_cuenta_actual = available_to_collateral
+            session.commit()
+        return interes

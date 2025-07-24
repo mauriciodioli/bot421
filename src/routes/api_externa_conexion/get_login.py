@@ -36,7 +36,7 @@ from models.ConexionPyRofex import ConexionPyRofex
 from pyRofex.clients.rest_rfx import RestClient
 from pyRofex.clients.websocket_rfx import WebSocketClient
 from pyRofex.components.globals import environment_config
-
+from utils.db_session import get_db_session 
 import automatizacion.programar_trigger as trigger
 import automatizacion.shedule_triggers as shedule_triggers
 import threading
@@ -255,131 +255,130 @@ def loginExtAutomatico():
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
                 exp_timestamp = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['exp']
           
-                if accountCuenta is not None and accountCuenta != '':   
-                   cuentas = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
-                 
-                 
-                   passwordCuenta = cuentas.passwordCuenta
-                   passwordCuenta = passwordCuenta.decode('utf-8')
+                if accountCuenta is not None and accountCuenta != '':
+                   with get_db_session() as session:    
+                    cuentas = session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
                     
-                   if  simuladoOproduccion !='':
-                        if simuladoOproduccion =='smulado':
-                            try:
-                                            environment =pyRofexInicializada.Environment.REMARKET
+                    
+                    passwordCuenta = cuentas.passwordCuenta
+                    passwordCuenta = passwordCuenta.decode('utf-8')
+                        
+                    if  simuladoOproduccion !='':
+                            if simuladoOproduccion =='smulado':
+                                try:
+                                                environment =pyRofexInicializada.Environment.REMARKET
+                                                
+                                            #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
+                                            #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
+                                            #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environment)
+                                            #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environment) 
+                                            #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
                                             
-                                          #  WsEndPoint ='wss://api.remarkets.primary.com.ar/'
-                                          #  urlEndPoint= 'https://api.remarkets.primary.com.ar/'
-                                          #  pyRofexInicializada._set_environment_parameter("url", urlEndPoint,environment)
-                                          #  pyRofexInicializada._set_environment_parameter("ws",WsEndPoint,environment) 
-                                          #  pyRofexInicializada._set_environment_parameter("proprietary", "PBCP", environment)
-                                         
-                                            pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
-                                            conexion(app,pyRofexInicializada,selector) 
-                                            refrescoValorActualCuentaFichas(user_id)                                    
-                                            print("está logueado en simulado en REMARKET")
-                                            if rutaDeLogeo == 'Home':  
-                                                resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': cuentas.userCuenta, 'selector': selector}))
-                                                resp.headers['Content-Type'] = 'application/json'
-                                                set_access_cookies(resp, access_token)
-                                                set_refresh_cookies(resp, refresh_token)
-                                                return resp
-                                            else:                                          
-                                                resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                                resp.headers['Content-Type'] = 'application/json'
-                                                set_access_cookies(resp, access_token)
-                                                set_refresh_cookies(resp, refresh_token)
-                                                return resp
-                            except:
-                                #  print("contraseña o usuario incorrecto")
-                              flash('Loggin Incorrect')
-                              return render_template("errorLogueo.html")
-                        else:
-                            exp_date = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
-                            fecha_actual =   datetime.now()
-                            fecha_actual_utc = fecha_actual.astimezone(timezone.utc)
-                            endPoint = inicializar_variables(cuentas.accountCuenta)
-                            global api_url, ws_url                          
-                            api_url = endPoint[0]
-                            ws_url = endPoint[1]
-                            session['api_url']=endPoint[0]
-                            session['ws_url']=endPoint[1]
-                            print('###########################################################################')
-                            print('#####################LOGEO AUTOMATICO######################################')
-                            print('###########################################################################')
-                          #  print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
-                            if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_____
-                                
-                                
-                                if (len(ConexionesBroker) > 0 and accountCuenta in ConexionesBroker):                                    
-                                        #if  ConexionesBroker[accountCuenta].get('identificador') == True:
-                                            pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
-                                            repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
-                                            SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)
-                                            actualiza_luz_web_socket(ws_url,accountCuenta,user_id,True)
-                                         
-                                            if repuesta_operacion:
-                                                pass
-                                else:
-                                                                              
-                                        conexionShedule(app,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
-                                        pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
-                                        accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
-                                        actualiza_luz_web_socket(ws_url,accountCuenta,user_id,True)
-                                         
-                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
-                                        ConexionesBroker[accountCuenta]['identificador'] = True
-                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                        resp.headers['Content-Type'] = 'application/json'
-                                        set_access_cookies(resp, access_token)
-                                        set_refresh_cookies(resp, refresh_token)
-                                        return resp
-                                      
-                                if rutaDeLogeo != 'Home':  
-                                        pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
-                                        accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
-                                        ####### TEMPORALMENTE COMPROBAR SI SE DESSUCRIBE POR ERROR DE WS#####
-                                       # SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
-                                        refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
-                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                        resp.headers['Content-Type'] = 'application/json'
-                                        set_access_cookies(resp, access_token)
-                                        set_refresh_cookies(resp, refresh_token)
-                                        return resp
-                                    
-                                else:
-                                        
-                                        resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                        resp.headers['Content-Type'] = 'application/json'
-                                        set_access_cookies(resp, access_token)
-                                        set_refresh_cookies(resp, refresh_token)
-                                        return resp 
+                                                pyRofexInicializada.initialize(user=cuentas.userCuenta,password=passwordCuenta,account=cuentas.accountCuenta,environment=environment )
+                                                conexion(app,pyRofexInicializada,selector) 
+                                                refrescoValorActualCuentaFichas(user_id)                                    
+                                                print("está logueado en simulado en REMARKET")
+                                                if rutaDeLogeo == 'Home':  
+                                                    resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': cuentas.userCuenta, 'selector': selector}))
+                                                    resp.headers['Content-Type'] = 'application/json'
+                                                    set_access_cookies(resp, access_token)
+                                                    set_refresh_cookies(resp, refresh_token)
+                                                    return resp
+                                                else:                                          
+                                                    resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                                    resp.headers['Content-Type'] = 'application/json'
+                                                    set_access_cookies(resp, access_token)
+                                                    set_refresh_cookies(resp, refresh_token)
+                                                    return resp
+                                except:
+                                    #  print("contraseña o usuario incorrecto")
+                                    flash('Loggin Incorrect')
+                                    return render_template("errorLogueo.html")
                             else:
-                                 
-                                  # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
-                                  # Supongamos que accountCuenta, user, y selector son los datos que quieres enviar
-                                  cuenta = {
-                                        'accountCuenta': account,
-                                        'user': user,
-                                        'selector': selector
-                                  }
-                                  # Crear una respuesta JSON con los datos de la cuenta y la redirección
-                                  resp_data = {
-                                        'redirect': 'panel_control_broker',
-                                        'cuenta': cuenta  # Aquí incluimos los datos de la cuenta en el cuerpo de la respuesta
-                                  }
-                                  # Crear la respuesta utilizando jsonify y make_response
-                                  resp = make_response(jsonify(resp_data))
-                                  #resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
-                                  resp.headers['Content-Type'] = 'application/json'
-                                  set_access_cookies(resp, access_token)
-                                  set_refresh_cookies(resp, refresh_token)
-                                  return resp 
+                                exp_date = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)
+                                fecha_actual =   datetime.now()
+                                fecha_actual_utc = fecha_actual.astimezone(timezone.utc)
+                                endPoint = inicializar_variables(cuentas.accountCuenta)
+                                global api_url, ws_url                          
+                                api_url = endPoint[0]
+                                ws_url = endPoint[1]
+                                session['api_url']=endPoint[0]
+                                session['ws_url']=endPoint[1]
+                                print('###########################################################################')
+                                print('#####################LOGEO AUTOMATICO######################################')
+                                print('###########################################################################')
+                            #  print('88888888888888888888888888888888 fecha_actual ',fecha_actual,'22222222222 exp_date',exp_date)
+                                if fecha_actual_utc < exp_date:#hay que corregir el direccionamiento de esto_____
+                                    
+                                    
+                                    if (len(ConexionesBroker) > 0 and accountCuenta in ConexionesBroker):                                    
+                                            #if  ConexionesBroker[accountCuenta].get('identificador') == True:
+                                                pyRofexInicializada = ConexionesBroker.get(accountCuenta)['pyRofex']
+                                                repuesta_operacion = pyRofexInicializada.get_account_report(account=accountCuenta, environment=accountCuenta)
+                                                SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta,user_id,selector)
+                                                actualiza_luz_web_socket(ws_url,accountCuenta,user_id,True)
+                                            
+                                                if repuesta_operacion:
+                                                    pass
+                                    else:
+                                                                                
+                                            conexionShedule(app,Cuenta=Cuenta, account=accountCuenta, idUser=user_id, correo_electronico=correo_electronico, selector=selector)           
+                                            pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
+                                            accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                            actualiza_luz_web_socket(ws_url,accountCuenta,user_id,True)
+                                            
+                                            refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
+                                            ConexionesBroker[accountCuenta]['identificador'] = True
+                                            resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                            resp.headers['Content-Type'] = 'application/json'
+                                            set_access_cookies(resp, access_token)
+                                            set_refresh_cookies(resp, refresh_token)
+                                            return resp
+                                        
+                                    if rutaDeLogeo != 'Home':  
+                                            pyRofexInicializada = ConexionesBroker[accountCuenta]['pyRofex']
+                                            accountCuenta1 = ConexionesBroker[accountCuenta]['cuenta']
+                                            ####### TEMPORALMENTE COMPROBAR SI SE DESSUCRIBE POR ERROR DE WS#####
+                                        # SuscripcionDeSheet(app,pyRofexInicializada,accountCuenta1,user_id)
+                                            refrescoValorActualCuentaFichas(user_id,pyRofexInicializada,accountCuenta1)
+                                            resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                            resp.headers['Content-Type'] = 'application/json'
+                                            set_access_cookies(resp, access_token)
+                                            set_refresh_cookies(resp, refresh_token)
+                                            return resp
+                                        
+                                    else:
+                                            
+                                            resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                            resp.headers['Content-Type'] = 'application/json'
+                                            set_access_cookies(resp, access_token)
+                                            set_refresh_cookies(resp, refresh_token)
+                                            return resp 
+                                else:
+                                    
+                                    # return render_template('paneles/panelDeControlBroker.html', cuenta=[accountCuenta, user, selector])
+                                    # Supongamos que accountCuenta, user, y selector son los datos que quieres enviar
+                                    cuenta = {
+                                            'accountCuenta': account,
+                                            'user': user,
+                                            'selector': selector
+                                    }
+                                    # Crear una respuesta JSON con los datos de la cuenta y la redirección
+                                    resp_data = {
+                                            'redirect': 'panel_control_broker',
+                                            'cuenta': cuenta  # Aquí incluimos los datos de la cuenta en el cuerpo de la respuesta
+                                    }
+                                    # Crear la respuesta utilizando jsonify y make_response
+                                    resp = make_response(jsonify(resp_data))
+                                    #resp = make_response(jsonify({'redirect': 'panel_control_broker'}))
+                                    resp.headers['Content-Type'] = 'application/json'
+                                    set_access_cookies(resp, access_token)
+                                    set_refresh_cookies(resp, refresh_token)
+                                    return resp 
                 else: 
                     return render_template('home.html', cuenta=[accountCuenta,user,simuladoOproduccion]) 
             else:
                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
-        finally:
-            db.session.close()  # Asegura que la sesión de la base de datos se cierre, incluso si ocurre un error.           
       
 
 
@@ -556,12 +555,12 @@ def inicializar_variables(accountCuenta):
     valores = []  # Inicializar la lista
     
         # Buscar la cuenta asociada a la cuentaCuenta proporcionada
-    cuenta = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
+    cuenta = session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
     
     if cuenta:
         # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
-        broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
-        db.session.close()
+        broker = session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
+      
         if broker:
               # Agregar los valores de api_url y ws_url a la lista 'valores'
             valores = [broker.api_url, broker.ws_url]

@@ -14,7 +14,7 @@ from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 import routes.api_externa_conexion.validaInstrumentos as val
-
+from utils.db_session import get_db_session 
 import time
 import os
 import routes.api_externa_conexion.wsocket as getWs
@@ -155,53 +155,54 @@ def envio_notificacion_tlegram_desde_seniales_sin_cuenta():
                 asyncio.run(telegram_notifier.enviar_mensaje_async(chat_id, ticker, ut1, signal))
              #   asyncio.run(telegram_notifier.enviar_mensaje_async('-1001285216353', ticker, ut1, signal))
                  # Intentamos encontrar el registro con el symbol específico
-                orden_existente = db.session.query(Orden).filter_by(symbol=ticker).first()
-          
-                if orden_existente:
-                    # Si el registro existe, lo actualizamos
-                    orden_existente.user_id = userId
-                    orden_existente.userCuenta = cuentaUser
-                    orden_existente.ut = ut1
-                    orden_existente.senial = signal
-                    orden_existente.clOrdId_alta_timestamp=datetime.now()
-                    orden_existente.status = 'terminado'              
-                else:
-                    # Si no existe, creamos un nuevo registro
-                    nueva_orden = Orden(
-                        user_id=userId,
-                        userCuenta=cuentaUser,
-                        accountCuenta="sin cuenta broker",
-                        clOrdId_alta=random.randint(1,100000),
-                        clOrdId_baja='',
-                        clientId=0,
-                        wsClOrdId_timestamp=datetime.now(),
-                        clOrdId_alta_timestamp=datetime.now(),
-                        clOrdId_baja_timestamp=None,
-                        proprietary=True,
-                        marketId='',
-                        symbol=ticker,
-                        tipo="sin tipo",
-                        tradeEnCurso="si",
-                        ut=ut1,
-                        senial=signal,
-                        status='operado'
-                    )
+                with get_db_session() as session:
+                  orden_existente = session.query(Orden).filter_by(symbol=ticker).first()
+            
+                  if orden_existente:
+                      # Si el registro existe, lo actualizamos
+                      orden_existente.user_id = userId
+                      orden_existente.userCuenta = cuentaUser
+                      orden_existente.ut = ut1
+                      orden_existente.senial = signal
+                      orden_existente.clOrdId_alta_timestamp=datetime.now()
+                      orden_existente.status = 'terminado'              
+                  else:
+                      # Si no existe, creamos un nuevo registro
+                      nueva_orden = Orden(
+                          user_id=userId,
+                          userCuenta=cuentaUser,
+                          accountCuenta="sin cuenta broker",
+                          clOrdId_alta=random.randint(1,100000),
+                          clOrdId_baja='',
+                          clientId=0,
+                          wsClOrdId_timestamp=datetime.now(),
+                          clOrdId_alta_timestamp=datetime.now(),
+                          clOrdId_baja_timestamp=None,
+                          proprietary=True,
+                          marketId='',
+                          symbol=ticker,
+                          tipo="sin tipo",
+                          tradeEnCurso="si",
+                          ut=ut1,
+                          senial=signal,
+                          status='operado'
+                      )
+                    
+                      session.add(nueva_orden)
+                  if signal == 'closed.' :                  
+                        session.delete(orden_existente)
+                  session.commit() 
+                      #get.current_session = session
+                
+                
                   
-                    db.session.add(nueva_orden)
-                if signal == 'closed.' :                  
-                      db.session.delete(orden_existente)
-                db.session.commit() 
-                    #get.current_session = db.session
-                db.session.close()
-              
+                  if selector == 'vacio':
+                    selector = 'produccion'
+                  datos_desempaquetados = procesar_datos(app,pais, None,userId,selector)
                 
-                if selector == 'vacio':
-                  selector = 'produccion'
-                datos_desempaquetados = procesar_datos(app,pais, None,userId,selector)
-              
+                  
                 
-              
-                return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+                  return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
             else: 
               return render_template('notificaciones/tokenVencidos.html',layout = layouts)       
         else:
@@ -249,55 +250,56 @@ def operaciones_desde_seniales_sin_cuenta():
             if access_token and Token.validar_expiracion_token(access_token=access_token): 
                 app = current_app._get_current_object()  
                 userId = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                # Intentamos encontrar el registro con el symbol específico
-                orden_existente = db.session.query(Orden).filter_by(symbol=ticker, user_id=userId, accountCuenta="sin cuenta broker").first()
-          
+                with get_db_session() as session:
+                  # Intentamos encontrar el registro con el symbol específico
+                  orden_existente = session.query(Orden).filter_by(symbol=ticker, user_id=userId, accountCuenta="sin cuenta broker").first()
+            
 
-                if orden_existente:
-                    # Si el registro existe, lo actualizamos
-                    orden_existente.user_id = userId
-                    orden_existente.userCuenta = cuentaUser
-                    orden_existente.ut = ut1
-                    orden_existente.senial = signal
-                    orden_existente.clOrdId_alta_timestamp=datetime.now()
-                    orden_existente.status = 'terminado'              
-                else:
-                    # Si no existe, creamos un nuevo registro
-                    nueva_orden = Orden(
-                        user_id=userId,
-                        userCuenta=cuentaUser,
-                        accountCuenta="sin cuenta broker",
-                        clOrdId_alta=random.randint(1,100000),
-                        clOrdId_baja='',
-                        clientId=0,
-                        wsClOrdId_timestamp=datetime.now(),
-                        clOrdId_alta_timestamp=datetime.now(),
-                        clOrdId_baja_timestamp=None,
-                        proprietary=True,
-                        marketId='',
-                        symbol=ticker,
-                        tipo="sin tipo",
-                        tradeEnCurso="si",
-                        ut=ut1,
-                        senial=signal,
-                        status='operado'
-                    )
+                  if orden_existente:
+                      # Si el registro existe, lo actualizamos
+                      orden_existente.user_id = userId
+                      orden_existente.userCuenta = cuentaUser
+                      orden_existente.ut = ut1
+                      orden_existente.senial = signal
+                      orden_existente.clOrdId_alta_timestamp=datetime.now()
+                      orden_existente.status = 'terminado'              
+                  else:
+                      # Si no existe, creamos un nuevo registro
+                      nueva_orden = Orden(
+                          user_id=userId,
+                          userCuenta=cuentaUser,
+                          accountCuenta="sin cuenta broker",
+                          clOrdId_alta=random.randint(1,100000),
+                          clOrdId_baja='',
+                          clientId=0,
+                          wsClOrdId_timestamp=datetime.now(),
+                          clOrdId_alta_timestamp=datetime.now(),
+                          clOrdId_baja_timestamp=None,
+                          proprietary=True,
+                          marketId='',
+                          symbol=ticker,
+                          tipo="sin tipo",
+                          tradeEnCurso="si",
+                          ut=ut1,
+                          senial=signal,
+                          status='operado'
+                      )
+                    
+                      session.add(nueva_orden)
+                  if signal == 'closed.' :                  
+                        session.delete(orden_existente)
+                  session.commit() 
+                      #get.current_session = session
+                  session
+                
                   
-                    db.session.add(nueva_orden)
-                if signal == 'closed.' :                  
-                      db.session.delete(orden_existente)
-                db.session.commit() 
-                    #get.current_session = db.session
-                db.session.close()
-              
+                  if selector == 'vacio':
+                    selector = 'produccion'
+                  datos_desempaquetados = procesar_datos(app,pais, None,userId,selector)
                 
-                if selector == 'vacio':
-                  selector = 'produccion'
-                datos_desempaquetados = procesar_datos(app,pais, None,userId,selector)
-              
+                  
                 
-              
-                return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
+                  return render_template("/paneles/panelSignalSinCuentas.html", datos = datos_desempaquetados)
             else: 
               return render_template('notificaciones/tokenVencidos.html',layout = layouts)       
         else:
@@ -418,47 +420,48 @@ def operaciones_desde_seniales():
                                                     orderStatus = orden['status']
                                                     break
                                               
-                                        if orderStatus != 'REJECTED':     
-                                            # Intentamos encontrar el registro con el symbol específico
-                                            orden_existente = db.session.query(Orden).filter_by(symbol=symbol,user_id=user_id,accountCuenta=cuentaAcount).first()
+                                        if orderStatus != 'REJECTED':  
+                                          with get_db_session() as session:   
+                                              # Intentamos encontrar el registro con el symbol específico
+                                              orden_existente = session.query(Orden).filter_by(symbol=symbol,user_id=user_id,accountCuenta=cuentaAcount).first()
 
-                                            if orden_existente:
-                                                # Si el registro existe, lo actualizamos
-                                                orden_existente.user_id = user_id
-                                                orden_existente.userCuenta = cuentaAcount
-                                                orden_existente.ut = cantidad_a_comprar_abs
-                                                orden_existente.senial = signal
-                                                orden_existente.clOrdId_alta = clOrdId
-                                                orden_existente.clOrdId_alta_timestamp=datetime.now()
-                                                orden_existente.status =  orderStatus
-                                            else:
-                                                # Si no existe, creamos un nuevo registro
-                                                nueva_orden = Orden(
-                                                    user_id=user_id,
-                                                    userCuenta=cuentaA,
-                                                    accountCuenta=cuentaAcount,
-                                                    clOrdId_alta=clOrdId,
-                                                    clOrdId_baja='',
-                                                    clientId=0,
-                                                    wsClOrdId_timestamp=datetime.now(),
-                                                    clOrdId_alta_timestamp=datetime.now(),
-                                                    clOrdId_baja_timestamp=None,
-                                                    proprietary=True,
-                                                    marketId='',
-                                                    symbol=symbol,
-                                                    tipo=tipo_orden,
-                                                    tradeEnCurso="si",
-                                                    ut=cantidad_a_comprar_abs,
-                                                    senial=signal,
-                                                    status= orderStatus
-                                                )
-                                                db.session.add(nueva_orden)
-                                                
-                                            if signal == 'closed.':
-                                              db.session.delete(orden_existente)   
-                                            db.session.commit()  
-                                                #get.current_session = db.session
-                                            db.session.close()
+                                              if orden_existente:
+                                                  # Si el registro existe, lo actualizamos
+                                                  orden_existente.user_id = user_id
+                                                  orden_existente.userCuenta = cuentaAcount
+                                                  orden_existente.ut = cantidad_a_comprar_abs
+                                                  orden_existente.senial = signal
+                                                  orden_existente.clOrdId_alta = clOrdId
+                                                  orden_existente.clOrdId_alta_timestamp=datetime.now()
+                                                  orden_existente.status =  orderStatus
+                                              else:
+                                                  # Si no existe, creamos un nuevo registro
+                                                  nueva_orden = Orden(
+                                                      user_id=user_id,
+                                                      userCuenta=cuentaA,
+                                                      accountCuenta=cuentaAcount,
+                                                      clOrdId_alta=clOrdId,
+                                                      clOrdId_baja='',
+                                                      clientId=0,
+                                                      wsClOrdId_timestamp=datetime.now(),
+                                                      clOrdId_alta_timestamp=datetime.now(),
+                                                      clOrdId_baja_timestamp=None,
+                                                      proprietary=True,
+                                                      marketId='',
+                                                      symbol=symbol,
+                                                      tipo=tipo_orden,
+                                                      tradeEnCurso="si",
+                                                      ut=cantidad_a_comprar_abs,
+                                                      senial=signal,
+                                                      status= orderStatus
+                                                  )
+                                                  session.add(nueva_orden)
+                                                  
+                                              if signal == 'closed.':
+                                                session.delete(orden_existente)   
+                                              session.commit()  
+                                                  #get.current_session = session
+                                         
                                         else:  
                                           print("No se pudo enviar la orden debido a REJECTED")
                                           return jsonify({'success': True})
@@ -499,9 +502,9 @@ def operaciones_desde_seniales():
 
       # Crear un nuevo registro en Logs
       new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
-      db.session.add(new_log)
-      db.session.commit()
-      db.session.close()
+      session.add(new_log)
+      session.commit()
+      session
     return render_template('notificaciones/errorOperacion.html')
 
 ######## FALTA IMPLEMENTAR LAS OPERACIONES AUTOMATICAS DESDE PANEL CON CUENTA #############
@@ -522,8 +525,8 @@ def operaciones_automatico_desde_senial_con_cuenta():
 
       # Crear un nuevo registro en Logs
     #  new_log = Logs(user_id=user_id,userCuenta=cuentaA, accountCuenta=cuentaA,fecha_log=datetime.now(), ip=request.remote_addr, funcion='operaciones_desde_seniales', archivo='operaciones',linea=100, error=error_msg )
-    #  db.session.add(new_log)
-      #db.session.commit()
+    #  session.add(new_log)
+      #session.commit()
       
   return render_template('notificaciones/errorOperacion.html')
 def calculaUt(precios,valor_cantidad,valor_monto,signal):
@@ -566,20 +569,21 @@ def calculaUt(precios,valor_cantidad,valor_monto,signal):
 
 def obtenerCuentaBroker(user_id):
    todasLasCuentas = []
-   usuario = db.session.query(Usuario).get(user_id)  
-# Buscar todas las cuentas asociadas a ese usuario
-   cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-   db.session.close()
-   if cuentas:
-      print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
-                  
-      for cuenta in cuentas:
-        todasLasCuentas.append(cuenta.accountCuenta)
-        password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-        todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta,'selector':cuenta.selector})
-     
-        print(cuenta.accountCuenta)
-   return cuenta.accountCuenta    
+   with get_db_session() as session:
+      usuario = session.query(Usuario).get(user_id)  
+    # Buscar todas las cuentas asociadas a ese usuario
+      cuentas = session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
+      session
+      if cuentas:
+          print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+                      
+          for cuenta in cuentas:
+            todasLasCuentas.append(cuenta.accountCuenta)
+            password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+            todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta,'selector':cuenta.selector})
+        
+            print(cuenta.accountCuenta)
+      return cuenta.accountCuenta    
  
                	
 @operaciones.route("/comprar",  methods=["POST"])
@@ -878,50 +882,51 @@ def cargar_ordenes_db(cuentaAcount=None,
                       accountCuenta=None):
     try:
         if signal != '':
-          # Intentamos encontrar el registro con el symbol específico
-          orden_existente = db.session.query(Orden).filter_by(symbol=symbol, user_id=user_id, accountCuenta=accountCuenta).first()
+          with get_db_session() as session:
+            # Intentamos encontrar el registro con el symbol específico
+            orden_existente = session.query(Orden).filter_by(symbol=symbol, user_id=user_id, accountCuenta=accountCuenta).first()
 
-          if orden_existente:
-                # Si el registro existe, lo actualizamos
-                orden_existente.user_id = user_id
-                orden_existente.userCuenta = cuentaAcount
-                orden_existente.accountCuenta = accountCuenta
-                orden_existente.ut = cantidad_a_comprar_abs
-                orden_existente.senial = signal
-                orden_existente.clOrdId_alta = clOrdId
-                orden_existente.clOrdId_alta_timestamp = datetime.now()
-                orden_existente.status = orderStatus
-              
-          else:
-              # Si no existe, creamos un nuevo registro
-              nueva_orden = Orden(
-                  user_id=user_id,
-                  userCuenta=cuentaAcount,
-                  accountCuenta=accountCuenta,
-                  clOrdId_alta=clOrdId,
-                  clOrdId_baja='',
-                  clientId=0,
-                  wsClOrdId_timestamp=datetime.now(),
-                  clOrdId_alta_timestamp=datetime.now(),
-                  clOrdId_baja_timestamp=None,
-                  proprietary=True,
-                  marketId='',
-                  symbol=symbol,
-                  tipo=tipo_orden,
-                  tradeEnCurso="si",
-                  ut=cantidad_a_comprar_abs,
-                  senial=signal,
-                  status=orderStatus
-              )
-              db.session.add(nueva_orden)
-    
-          # Confirmamos los cambios en la base de datos
-          db.session.commit()
-          return True
+            if orden_existente:
+                  # Si el registro existe, lo actualizamos
+                  orden_existente.user_id = user_id
+                  orden_existente.userCuenta = cuentaAcount
+                  orden_existente.accountCuenta = accountCuenta
+                  orden_existente.ut = cantidad_a_comprar_abs
+                  orden_existente.senial = signal
+                  orden_existente.clOrdId_alta = clOrdId
+                  orden_existente.clOrdId_alta_timestamp = datetime.now()
+                  orden_existente.status = orderStatus
+                
+            else:
+                # Si no existe, creamos un nuevo registro
+                nueva_orden = Orden(
+                    user_id=user_id,
+                    userCuenta=cuentaAcount,
+                    accountCuenta=accountCuenta,
+                    clOrdId_alta=clOrdId,
+                    clOrdId_baja='',
+                    clientId=0,
+                    wsClOrdId_timestamp=datetime.now(),
+                    clOrdId_alta_timestamp=datetime.now(),
+                    clOrdId_baja_timestamp=None,
+                    proprietary=True,
+                    marketId='',
+                    symbol=symbol,
+                    tipo=tipo_orden,
+                    tradeEnCurso="si",
+                    ut=cantidad_a_comprar_abs,
+                    senial=signal,
+                    status=orderStatus
+                )
+                session.add(nueva_orden)
+      
+            # Confirmamos los cambios en la base de datos
+            session.commit()
+            return True
     
     except Exception as e:
         # En caso de error, hacemos rollback de la sesión y capturamos el error
-        db.session.rollback()
+     
         print(f"Error al cargar la orden en la base de datos: {str(e)}")
         return False
 

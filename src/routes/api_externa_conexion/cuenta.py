@@ -2,7 +2,7 @@
 from pipes import Template
 from unittest import result
 from flask import current_app,session
-
+from utils.db_session import get_db_session 
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -181,109 +181,109 @@ def reporteCuenta():
             user_id = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
             #cuentas.indiceCuentas()            
             reporte = obtenerSaldoCuenta(account=cuenta)
-          
-            if reporte!=None:
-                available_to_collateral = reporte['availableToCollateral']
-                portfolio = reporte['portfolio']
-            else:
-                available_to_collateral = 1
-                portfolio = 0
-       
-            # Consulta todas las fichas del usuario dado
-            #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
-            total_cuenta = round(available_to_collateral + portfolio,2)
-           
-            ficha = db.session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').first()
+            with get_db_session() as session:
+                if reporte!=None:
+                    available_to_collateral = reporte['availableToCollateral']
+                    portfolio = reporte['portfolio']
+                else:
+                    available_to_collateral = 1
+                    portfolio = 0
+        
+                # Consulta todas las fichas del usuario dado
+                #fichas_usuario = Ficha.query.filter_by(user_id=user_id).all()
+                total_cuenta = round(available_to_collateral + portfolio,2)
             
-            try:
+                ficha = session.query(Ficha).filter_by(user_id=user_id, estado='STATIC').first()
                 
-                    #print(ficha.monto_efectivo)     
-                    if ficha == None:
-                          diferencia = 1
-                    else:                    
-                          diferencia = available_to_collateral - ficha.valor_cuenta_creacion
-                    porcien= diferencia*100
-                    interes = round(porcien/available_to_collateral,0)
-                    interes = int(interes)
-                    if ficha != None:
-                        ficha.interes = interes                    
-                        
-                        interes_ganado = round(ficha.valor_cuenta_creacion * (interes / 100),2)
-                        total_mas_interes = round(ficha.valor_cuenta_creacion + interes_ganado, 2)
-                        dias = calcular_dias_desde_traspaso(ficha.fecha_generacion)
-                        llave_bytes = ficha.llave
-                        llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
-
-                        # Luego, si necesitas obtener la llave original como bytes nuevamente
-                        llave_original_bytes = bytes.fromhex(llave_hex)
-                        #obtenemos el valor
-                        decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
-                        
-                        #obtenemos el numero
-                        random_number = decoded_token.get('random_number')
-                        # Agregamos random_number a la ficha
-                        ficha.random_number = random_number
+                try:
                     
-                        db.session.commit()
-                        db.session.close()
+                        #print(ficha.monto_efectivo)     
+                        if ficha == None:
+                            diferencia = 1
+                        else:                    
+                            diferencia = available_to_collateral - ficha.valor_cuenta_creacion
+                        porcien= diferencia*100
+                        interes = round(porcien/available_to_collateral,0)
+                        interes = int(interes)
+                        if ficha != None:
+                            ficha.interes = interes                    
+                            
+                            interes_ganado = round(ficha.valor_cuenta_creacion * (interes / 100),2)
+                            total_mas_interes = round(ficha.valor_cuenta_creacion + interes_ganado, 2)
+                            dias = calcular_dias_desde_traspaso(ficha.fecha_generacion)
+                            llave_bytes = ficha.llave
+                            llave_hex = llave_bytes.hex()  # Convertimos los bytes a representación hexadecimal
+
+                            # Luego, si necesitas obtener la llave original como bytes nuevamente
+                            llave_original_bytes = bytes.fromhex(llave_hex)
+                            #obtenemos el valor
+                            decoded_token = jwt.decode(ficha.token, llave_original_bytes, algorithms=['HS256'])
+                            
+                            #obtenemos el numero
+                            random_number = decoded_token.get('random_number')
+                            # Agregamos random_number a la ficha
+                            ficha.random_number = random_number
+                        
+                            session.commit()
+                            
+                        else:
+                            interes_ganado = 0
+                            total_mas_interes = 0
+                            total_operaciones = 0
+                            porcentaje_ganadores = 0
+                            porcentaje_perdedores = 0
+                            suma_ganadores = 0
+                            suma_perdedores = 0
+                            
+                except Exception as e:
+                   print("Error al calcular el interés:", e)
+                
+                respuesta_cuenta =  get.ConexionesBroker[cuenta]['pyRofex'].get_account_position(account=cuenta, environment=cuenta)
+                reporte = respuesta_cuenta['positions'] 
+                # En tu vista o función de Python
+                if reporte is not None:
+                    # Calcular suma de ganadores y perdedores
+                    suma_ganadores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] > 0)
+                    suma_perdedores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] <= 0)
+
+                    # Total de operaciones
+                    total_operaciones = suma_ganadores + suma_perdedores
+
+                    # Evitar división por cero
+                    if suma_ganadores != 0:
+                    
+                        if suma_perdedores != 0:
+                            numerador = suma_ganadores / suma_perdedores
+                            divisor = abs(numerador) + 1
+                            porcentaje_ganadores = round(abs((numerador / divisor) * 100), 3)
+                        else:
+                            porcentaje_ganadores = round(abs((suma_ganadores /suma_ganadores) * 100), 3)
+                            # Calcular porcentaje de perdedores
+                        
+                        if suma_ganadores != 0:
+                                numerador1 = suma_perdedores / suma_ganadores
+                                divisor1 = abs(numerador1) + 1
+                                porcentaje_perdedores = round(abs((numerador1 / divisor1) * 100), 3)
+                        else:
+                            porcentaje_ganadores = round(abs((suma_perdedores /suma_perdedores) * 100), 3)
                     else:
-                        interes_ganado = 0
-                        total_mas_interes = 0
-                        total_operaciones = 0
                         porcentaje_ganadores = 0
                         porcentaje_perdedores = 0
-                        suma_ganadores = 0
-                        suma_perdedores = 0
+                            
                         
-            except Exception as e:
-                db.session.rollback() 
-             
-            respuesta_cuenta =  get.ConexionesBroker[cuenta]['pyRofex'].get_account_position(account=cuenta, environment=cuenta)
-            reporte = respuesta_cuenta['positions'] 
-            # En tu vista o función de Python
-            if reporte is not None:
-                # Calcular suma de ganadores y perdedores
-                suma_ganadores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] > 0)
-                suma_perdedores = sum(instrumento['totalDiff'] for instrumento in reporte if instrumento['totalDiff'] <= 0)
-
-                # Total de operaciones
-                total_operaciones = suma_ganadores + suma_perdedores
-
-                # Evitar división por cero
-                if suma_ganadores != 0:
                 
-                    if suma_perdedores != 0:
-                        numerador = suma_ganadores / suma_perdedores
-                        divisor = abs(numerador) + 1
-                        porcentaje_ganadores = round(abs((numerador / divisor) * 100), 3)
-                    else:
-                        porcentaje_ganadores = round(abs((suma_ganadores /suma_ganadores) * 100), 3)
-                        # Calcular porcentaje de perdedores
-                    
-                    if suma_ganadores != 0:
-                            numerador1 = suma_perdedores / suma_ganadores
-                            divisor1 = abs(numerador1) + 1
-                            porcentaje_perdedores = round(abs((numerador1 / divisor1) * 100), 3)
-                    else:
-                        porcentaje_ganadores = round(abs((suma_perdedores /suma_perdedores) * 100), 3)
-                else:
-                    porcentaje_ganadores = 0
-                    porcentaje_perdedores = 0
-                           
-                    
-               
-                return render_template("cuentas/cuentaReporte.html",    
-                                       interes=interes,
-                                       dias=dias,
-                                       total_cuenta=total_cuenta,
-                                       total_mas_interes=total_mas_interes,
-                                       interes_ganado=interes_ganado,
-                                       suma_ganadores=round(suma_ganadores,2), 
-                                       suma_perdedores=round(suma_perdedores,2), 
-                                       porcentaje_ganadores = porcentaje_ganadores, 
-                                       porcentaje_perdedores = porcentaje_perdedores,
-                                       total_operaciones = round(total_operaciones,2), 
-                                       layout = layouts)
+                    return render_template("cuentas/cuentaReporte.html",    
+                                        interes=interes,
+                                        dias=dias,
+                                        total_cuenta=total_cuenta,
+                                        total_mas_interes=total_mas_interes,
+                                        interes_ganado=interes_ganado,
+                                        suma_ganadores=round(suma_ganadores,2), 
+                                        suma_perdedores=round(suma_perdedores,2), 
+                                        porcentaje_ganadores = porcentaje_ganadores, 
+                                        porcentaje_perdedores = porcentaje_perdedores,
+                                        total_operaciones = round(total_operaciones,2), 
+                                        layout = layouts)
         else:
              flash('token expirado') 
              return render_template("usuarios/logOutSystem.html")   
@@ -349,54 +349,54 @@ def registrar_cuenta():
 
         if access_token and Token.validar_expiracion_token(access_token=access_token):
             app = current_app._get_current_object()
-
+    
             try:
                 user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                usuario = db.session.query(Usuario).filter_by(id=user_id).first()
+                with get_db_session() as session:
+                    usuario = session.query(Usuario).filter_by(id=user_id).first()
 
-                # Validar si la cuenta ya existe
-                cuenta_existente = db.session.query(Cuenta).filter_by(
-                    accountCuenta=accountCuenta_encoded,
-                    userCuenta=userCuenta_encoded,
-                    broker_id=broker_id
-                ).first()
+                    # Validar si la cuenta ya existe
+                    cuenta_existente = session.query(Cuenta).filter_by(
+                        accountCuenta=accountCuenta_encoded,
+                        userCuenta=userCuenta_encoded,
+                        broker_id=broker_id
+                    ).first()
 
-                if cuenta_existente:
-                    flash('La cuenta ya está registrada para este usuario y broker.')
+                    if cuenta_existente:
+                        flash('La cuenta ya está registrada para este usuario y broker.')
+                        return render_template('cuentas/registrarCuentaBroker.html')
+
+                    # Definir selectorStr según el valor de selector
+                    selectorStr = 'simulado' if selector == '1' else 'produccion'
+
+                    # Crear nueva cuenta si no existe
+                    cuenta = Cuenta(
+                        id=None,
+                        user_id=user_id,
+                        userCuenta=userCuenta_encoded,
+                        passwordCuenta=passwordCuenta_encoded,
+                        accountCuenta=accountCuenta_encoded,
+                        broker_id=broker_id,
+                        selector=selectorStr
+                    )
+
+                    cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
+                    session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
+                    session.commit()  # Confirmar los cambios
+
+                    todasLasCuentas = get_cuentas_de_broker(user_id)
+                    for cuenta in todasLasCuentas:
+                        print(cuenta['accountCuenta'])
+                        passwordCuenta = cuenta['passwordCuenta']
+                        passwordCuenta_decoded = passwordCuenta
+                        print(passwordCuenta_decoded)
+
+                   
+                    flash('Se registró correctamente la cuenta, ahora ir a cuentas existentes.')
                     return render_template('cuentas/registrarCuentaBroker.html')
 
-                # Definir selectorStr según el valor de selector
-                selectorStr = 'simulado' if selector == '1' else 'produccion'
-
-                # Crear nueva cuenta si no existe
-                cuenta = Cuenta(
-                    id=None,
-                    user_id=user_id,
-                    userCuenta=userCuenta_encoded,
-                    passwordCuenta=passwordCuenta_encoded,
-                    accountCuenta=accountCuenta_encoded,
-                    broker_id=broker_id,
-                    selector=selectorStr
-                )
-
-                cuenta.user = usuario  # Asignar el objeto Usuario a la propiedad user de la instancia de Cuenta
-                db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
-                db.session.commit()  # Confirmar los cambios
-
-                todasLasCuentas = get_cuentas_de_broker(user_id)
-                for cuenta in todasLasCuentas:
-                    print(cuenta['accountCuenta'])
-                    passwordCuenta = cuenta['passwordCuenta']
-                    passwordCuenta_decoded = passwordCuenta
-                    print(passwordCuenta_decoded)
-
-                db.session.close()
-                flash('Se registró correctamente la cuenta, ahora ir a cuentas existentes.')
-                return render_template('cuentas/registrarCuentaBroker.html')
-
             except Exception as e:
-                db.session.rollback()
-                db.session.close()
+               
                 flash('No se pudo registrar la cuenta, ocurrió un error.')
                 print("Error al registrar la cuenta:", e)
 
@@ -422,35 +422,34 @@ def registrar_cuenta_administracion():
 
        
          try:     
-            usuario = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()  # Obtener el objeto Usuario correspondiente al user_id
+            with get_db_session() as session:
+                usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()  # Obtener el objeto Usuario correspondiente al user_id
 
-            cuenta = Cuenta( 
-                        id=None,   
-                        user_id=usuario.id,
-                        userCuenta=userCuenta_encoded,
-                        passwordCuenta=passwordCuenta_encoded,
-                        accountCuenta=accountCuenta_encoded                
-                        )
-          
-            db.session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
-            db.session.commit()  # Confirmar los cambios
-            db.session.refresh(cuenta)  # Actualizar la instancia desde la base de datos para obtener el ID generado
-            cuenta_id = cuenta.id  # Obtener el ID generado
-           
-            print("Auomatico registrada exitosamente!")
-            print("automatico registrada usuario id !",cuenta_id)
-         #   todasLasCuentas = get_cuentas_de_broker(user_id)
+                cuenta = Cuenta( 
+                            id=None,   
+                            user_id=usuario.id,
+                            userCuenta=userCuenta_encoded,
+                            passwordCuenta=passwordCuenta_encoded,
+                            accountCuenta=accountCuenta_encoded                
+                            )
             
-            cuentasBroker = db.session.query(Cuenta).all()
+                session.add(cuenta)  # Agregar la instancia de Cuenta a la sesión
+                session.commit()  # Confirmar los cambios
+                session.refresh(cuenta)  # Actualizar la instancia desde la base de datos para obtener el ID generado
+                cuenta_id = cuenta.id  # Obtener el ID generado
             
-            db.session.close()
-            print("Cuenta registrada exitosamente!")            
+                print("Auomatico registrada exitosamente!")
+                print("automatico registrada usuario id !",cuenta_id)
+            #   todasLasCuentas = get_cuentas_de_broker(user_id)
+                
+                cuentasBroker = session.query(Cuenta).all()
+              
+                print("Cuenta registrada exitosamente!")            
 
-            return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentasBroker)
-             
+                return render_template("/cuentas/cuntasUsuariosBrokers.html",datos = cuentasBroker)
+                
          except:               
-                db.session.rollback()  # Hacer rollback de la sesión
-                db.session.close()
+              
                 print("No se pudo registrar la cuenta.")
                 return 'problemas con la base de datos'
   
@@ -459,44 +458,45 @@ def get_cuentas_de_broker(user_id):
     
     todasCuentas = []
     try:
-        # Obtener el objeto Usuario correspondiente al user_id
-        usuario = db.session.query(Usuario).filter_by(id=user_id).first()         
-        # Buscar todas las cuentas asociadas a ese usuario       
-        cuentas = db.session.query(Cuenta).filter(Cuenta.user_id == user_id).all()
+        with get_db_session() as session:
+            # Obtener el objeto Usuario correspondiente al user_id
+            usuario = session.query(Usuario).filter_by(id=user_id).first()         
+            # Buscar todas las cuentas asociadas a ese usuario       
+            cuentas = session.query(Cuenta).filter(Cuenta.user_id == user_id).all()
 
-        # Obtener todos los IDs de los brokers asociados a las cuentas
-        broker_ids = [cuenta.broker_id for cuenta in cuentas if cuenta.broker_id is not None]
+            # Obtener todos los IDs de los brokers asociados a las cuentas
+            broker_ids = [cuenta.broker_id for cuenta in cuentas if cuenta.broker_id is not None]
 
-        # Obtener todos los brokers correspondientes a los IDs obtenidos
-        brokers = db.session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
+            # Obtener todos los brokers correspondientes a los IDs obtenidos
+            brokers = session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
 
-       # Crear un diccionario que mapee IDs de broker a nombres de broker
-        id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
-     
+        # Crear un diccionario que mapee IDs de broker a nombres de broker
+            id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
         
-        if cuentas:
-            print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
-            for cuenta in cuentas:
-                password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                
-                # Obtener el nombre del broker asociado a esta cuenta (si existe)
-                nombre_broker = id_nombre_broker.get(cuenta.broker_id)
-                
-                todasCuentas.append({
-                    'id': cuenta.id,
-                    'accountCuenta': cuenta.accountCuenta,
-                    'userCuenta': cuenta.userCuenta,
-                    'passwordCuenta': password_cuenta,
-                    'selector': cuenta.selector,
-                    'broker_id': cuenta.broker_id,
-                    'nombre_broker': nombre_broker  # Agregar el nombre del broker
-                })
-                
-            print(cuenta.accountCuenta)  
-           
-            return todasCuentas 
-        else:
-            print("El usuario", usuario.correo_electronico, "no tiene ninguna cuenta asociada.")
+            
+            if cuentas:
+                print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+                for cuenta in cuentas:
+                    password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                    
+                    # Obtener el nombre del broker asociado a esta cuenta (si existe)
+                    nombre_broker = id_nombre_broker.get(cuenta.broker_id)
+                    
+                    todasCuentas.append({
+                        'id': cuenta.id,
+                        'accountCuenta': cuenta.accountCuenta,
+                        'userCuenta': cuenta.userCuenta,
+                        'passwordCuenta': password_cuenta,
+                        'selector': cuenta.selector,
+                        'broker_id': cuenta.broker_id,
+                        'nombre_broker': nombre_broker  # Agregar el nombre del broker
+                    })
+                    
+                print(cuenta.accountCuenta)  
+            
+                return todasCuentas 
+            else:
+                print("El usuario", usuario.correo_electronico, "no tiene ninguna cuenta asociada.")
     except:
         print("No se pudo obtener las cuentas del usuario.")
         return False 
@@ -516,58 +516,58 @@ def get_cuentas_de_broker_usuario():
             
             try:
                user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+               with get_db_session() as session:
+                # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                    # Obtener el objeto Usuario correspondiente al user_id
+                usuario = session.query(Usuario).filter_by(id=user_id).first()         
+                # Buscar todas las cuentas asociadas a ese usuario
+                cuentas = session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
+                # Obtener el objeto Usuario correspondiente al user_id     
 
-              # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                # Obtener el objeto Usuario correspondiente al user_id
-               usuario = db.session.query(Usuario).filter_by(id=user_id).first()         
-              # Buscar todas las cuentas asociadas a ese usuario
-               cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-               # Obtener el objeto Usuario correspondiente al user_id     
+                # Obtener todos los IDs de los brokers asociados a las cuentas
+                broker_ids = [cuenta.broker_id for cuenta in cuentas if cuenta.broker_id is not None]
 
-               # Obtener todos los IDs de los brokers asociados a las cuentas
-               broker_ids = [cuenta.broker_id for cuenta in cuentas if cuenta.broker_id is not None]
+                # Obtener todos los brokers correspondientes a los IDs obtenidos
+                brokers = session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
 
-               # Obtener todos los brokers correspondientes a los IDs obtenidos
-               brokers = db.session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
-
-               # Crear un diccionario que mapee IDs de broker a nombres de broker
-               id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
-     
+                # Crear un diccionario que mapee IDs de broker a nombres de broker
+                id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
         
-               if cuentas:
-                  print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
-                  for cuenta in cuentas:
-                     password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                     
-                     # Obtener el nombre del broker asociado a esta cuenta (si existe)
-                     nombre_broker = id_nombre_broker.get(cuenta.broker_id)
-                     
-                     todasLasCuentas.append({
-                           'id': cuenta.id,
-                           'accountCuenta': cuenta.accountCuenta,
-                           'userCuenta': cuenta.userCuenta,
-                           'passwordCuenta': password_cuenta,
-                           'selector': cuenta.selector,
-                           'broker_id': cuenta.broker_id,
-                           'nombre_broker': nombre_broker  # Agregar el nombre del broker
-                     })
-                     
-                     print(cuenta.accountCuenta)  
-               else:
-                  print("El usuario", usuario.correo_electronico, "no tiene ninguna cuenta asociada.")
-                  flash('No registra cuenta para el usuario: ' + usuario.correo_electronico)
-                  return render_template("cuentas/registrarCuentaBroker.html")
-                  
-         
+            
+                if cuentas:
+                    print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+                    for cuenta in cuentas:
+                        password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                        
+                        # Obtener el nombre del broker asociado a esta cuenta (si existe)
+                        nombre_broker = id_nombre_broker.get(cuenta.broker_id)
+                        
+                        todasLasCuentas.append({
+                            'id': cuenta.id,
+                            'accountCuenta': cuenta.accountCuenta,
+                            'userCuenta': cuenta.userCuenta,
+                            'passwordCuenta': password_cuenta,
+                            'selector': cuenta.selector,
+                            'broker_id': cuenta.broker_id,
+                            'nombre_broker': nombre_broker  # Agregar el nombre del broker
+                        })
+                        
+                        print(cuenta.accountCuenta)  
+                else:
+                    print("El usuario", usuario.correo_electronico, "no tiene ninguna cuenta asociada.")
+                    flash('No registra cuenta para el usuario: ' + usuario.correo_electronico)
+                    return render_template("cuentas/registrarCuentaBroker.html")
+                    
+            
     
        
             except Exception as e:
                      print("Error:", str(e))
                      print("No se pudo registrar la cuenta.")
-                     db.session.rollback()  # Hacer rollback de la sesión
+                    
                      return render_template("notificaciones/errorLogueo.html")
               
-            db.session.close()
+          
             return render_template('cuentas/cuentasDeUsuario.html', datos=todasLasCuentas)
       else:
          flash('token expirado') 
@@ -584,37 +584,37 @@ def get_cuentas_de_broker_usuario_Abm():
             
             try:
                user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+               with get_db_session() as session:
+                # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                    # Obtener el objeto Usuario correspondiente al user_id
+                usuario =  session.query(Usuario).filter_by(id=user_id).first()         
+                # Buscar todas las cuentas asociadas a ese usuario
+                cuentas = session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
 
-              # user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                # Obtener el objeto Usuario correspondiente al user_id
-               usuario =  db.session.query(Usuario).filter_by(id=user_id).first()         
-              # Buscar todas las cuentas asociadas a ese usuario
-               cuentas = db.session.query(Cuenta).join(Usuario).filter(Cuenta.user_id == user_id).all()
-
-               if cuentas:
-                  print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
-                  
-                  for cuenta in cuentas:
-                   todasLasCuentas.append(cuenta.accountCuenta)
-                   password_cuenta = cuenta.passwordCuenta.decode('utf-8')
-                   todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta})
-     
-                   print(cuenta.accountCuenta)	
-                  
-                
-               else:
-                  print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
-                  flash('No registra cuenta para el usuario: '+ usuario.correo_electronico)
-                  return render_template("cuentas/registrarCuentaBroker.html")
-                  
+                if cuentas:
+                    print("El usuario", usuario.correo_electronico, "tiene las siguientes cuentas asociadas:")
+                    
+                    for cuenta in cuentas:
+                        todasLasCuentas.append(cuenta.accountCuenta)
+                        password_cuenta = cuenta.passwordCuenta.decode('utf-8')
+                        todasLasCuentas.append({'id': cuenta.id, 'accountCuenta': cuenta.accountCuenta,'userCuenta':cuenta.userCuenta,'passwordCuenta':password_cuenta})
+            
+                        print(cuenta.accountCuenta)	
+                    
+                    
+                else:
+                    print("El usuario", usuario.nombre, "no tiene ninguna cuenta asociada.")
+                    flash('No registra cuenta para el usuario: '+ usuario.correo_electronico)
+                    return render_template("cuentas/registrarCuentaBroker.html")
+                    
          
     
        
             except:
                      print("No se pudo registrar la cuenta.")
-                     db.session.rollback()  # Hacer rollback de la sesión
+                 
                      return render_template("errorLogueo.html")
-            db.session.close()
+          
             return render_template('cuentas/cuentasDeUsuarioAbm.html', datos=todasLasCuentas)
          else:
             flash('token expirado') 
@@ -624,20 +624,21 @@ def get_cuentas_de_broker_usuario_Abm():
 def delete_cuenta_usuario_broker():
     try:
          if request.method == 'POST':
-            id = request.form['id']            
-            dato = db.session.query(Cuenta).filter_by(id=id).first()          
-            db.session.delete(dato)
-            db.session.commit()
-            flash('Operation Removed successfully')
-            all_cuenta = db.session.query(Cuenta).all()
-            db.session.close()
-            return render_template("notificaciones/logeeNuevamente.html",layout =  'layout')
+            id = request.form['id'] 
+            with get_db_session() as session:           
+                dato = session.query(Cuenta).filter_by(id=id).first()          
+                session.delete(dato)
+                session.commit()
+                flash('Operation Removed successfully')
+                all_cuenta = session.query(Cuenta).all()
+               
+                return render_template("notificaciones/logeeNuevamente.html",layout =  'layout')
     except: 
-            flash('Operation No Removed')       
-            all_cuenta = db.session.query(Cuenta).all()
-            db.session.close()
+            flash('Operation No Removed')    
+            with get_db_session() as session:   
+                all_cuenta = session.query(Cuenta).all()
             
-            return render_template("notificaciones/logeeNuevamente.html",layout =  'layout') 
+                return render_template("notificaciones/logeeNuevamente.html",layout =  'layout') 
          
 @cuenta.route("/logOutAccount/", methods=['POST'])   
 def logOutAccount():
@@ -676,32 +677,32 @@ def get_pass_cuenta_de_broker(user_id,account):
         todasCuentas = []
         from models.cuentas import Cuenta
         try:
-            
-            todasLasCuentas = db.session.query(Cuenta).filter_by(user_id=user_id).all()
-            broker_ids = [todasLasCuentas.broker_id for todasLasCuentas in todasLasCuentas if todasLasCuentas.broker_id is not None]
-            brokers = db.session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
-            db.session.close()
-            id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
-            if todasLasCuentas:
-                for cuenta in todasLasCuentas:
-                    password_cuenta = cuenta.passwordCuenta  # No es necesario decodificar la contraseña aquí
-                    nombre_broker = id_nombre_broker.get(cuenta.broker_id)
-                    todasCuentas.append({
-                        'id': cuenta.id,
-                        'accountCuenta': cuenta.accountCuenta,
-                        'userCuenta': cuenta.userCuenta,
-                        'passwordCuenta': password_cuenta,
-                        'selector': cuenta.selector,
-                        'broker_id': cuenta.broker_id,
-                        'nombre_broker': nombre_broker
-                    })
-            
-                for cuentas in todasCuentas:          
-                        if cuentas['accountCuenta'] == account:
-                              userCuenta = cuentas['userCuenta']
-                              passwordCuenta = cuentas['passwordCuenta']
-                              passwordCuenta_decoded = passwordCuenta.decode('utf-8')                             
-                              return cuentas
+            with get_db_session() as session:
+                todasLasCuentas = session.query(Cuenta).filter_by(user_id=user_id).all()
+                broker_ids = [todasLasCuentas.broker_id for todasLasCuentas in todasLasCuentas if todasLasCuentas.broker_id is not None]
+                brokers = session.query(Broker).filter(Broker.id.in_(broker_ids)).all()
+               
+                id_nombre_broker = {broker.id: broker.nombre for broker in brokers}
+                if todasLasCuentas:
+                    for cuenta in todasLasCuentas:
+                        password_cuenta = cuenta.passwordCuenta  # No es necesario decodificar la contraseña aquí
+                        nombre_broker = id_nombre_broker.get(cuenta.broker_id)
+                        todasCuentas.append({
+                            'id': cuenta.id,
+                            'accountCuenta': cuenta.accountCuenta,
+                            'userCuenta': cuenta.userCuenta,
+                            'passwordCuenta': password_cuenta,
+                            'selector': cuenta.selector,
+                            'broker_id': cuenta.broker_id,
+                            'nombre_broker': nombre_broker
+                        })
+                
+                    for cuentas in todasCuentas:          
+                            if cuentas['accountCuenta'] == account:
+                                userCuenta = cuentas['userCuenta']
+                                passwordCuenta = cuentas['passwordCuenta']
+                                passwordCuenta_decoded = passwordCuenta.decode('utf-8')                             
+                                return cuentas
         except Exception as e:
             print("Error al obtener las cuentas del usuario:", e)
             
