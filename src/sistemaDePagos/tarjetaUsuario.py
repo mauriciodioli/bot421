@@ -14,6 +14,7 @@ import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.payment_page.tarjetaUsuario import TarjetaUsuario
+from utils.db_session import get_db_session 
 
 
 
@@ -21,28 +22,29 @@ tarjetaUsuario = Blueprint('tarjetaUsuario',__name__)
 
 def altaTarjeta(data):
     try:
-        # Verificar si ya existe una tarjeta con el mismo número de tarjeta y usuario
-        tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(
-            user_id=int(data['user_id']),
-            numeroTarjeta=data['numeroTarjeta']           
-        ).first()
+        with get_db_session() as session:
+            # Verificar si ya existe una tarjeta con el mismo número de tarjeta y usuario
+            tarjeta_existente = session.query(TarjetaUsuario).filter_by(
+                user_id=int(data['user_id']),
+                numeroTarjeta=data['numeroTarjeta']           
+            ).first()
 
-        if tarjeta_existente:
-            return jsonify({"message": "Ya existe una tarjeta con este número para este usuario"}), 400
+            if tarjeta_existente:
+                return jsonify({"message": "Ya existe una tarjeta con este número para este usuario"}), 400
 
-        nueva_tarjeta = TarjetaUsuario(
-            user_id=data['user_id'],
-            numeroTarjeta=data['numeroTarjeta'],
-            fecha_vencimiento=data['fecha_vencimiento'],
-            cvv=data['cvv'],
-            nombreApellidoTarjeta=data['nombreApellidoTarjeta'],
-            correo_electronico=data['correo_electronico'],
-            accountCuenta=None
-        )
+            nueva_tarjeta = TarjetaUsuario(
+                user_id=data['user_id'],
+                numeroTarjeta=data['numeroTarjeta'],
+                fecha_vencimiento=data['fecha_vencimiento'],
+                cvv=data['cvv'],
+                nombreApellidoTarjeta=data['nombreApellidoTarjeta'],
+                correo_electronico=data['correo_electronico'],
+                accountCuenta=None
+            )
 
-        db.session.add(nueva_tarjeta)
-        db.session.commit()
-        db.session.close()
+            session.add(nueva_tarjeta)
+            session.commit()
+       
         return jsonify({"message": "Tarjeta creada con éxito", "tarjeta": nueva_tarjeta.id}), 201
 
     except Exception as e:
@@ -50,34 +52,34 @@ def altaTarjeta(data):
 
 def bajaTarjeta(id):
     try:
-        tarjeta = db.session.query(TarjetaUsuario).get_or_404(id)
-        db.session.delete(tarjeta)
-        db.session.commit()
+        with get_db_session() as session:
+            tarjeta = session.query(TarjetaUsuario).get_or_404(id)
+            session.delete(tarjeta)
+            session.commit()
     except Exception as e:
-        db.session.rollback()
+      
         raise e
-    finally:
-        db.session.close()
+  
 
     return jsonify({"message": "Tarjeta eliminada con éxito"}), 200
 
 def modificarTarjeta(id):
     try:
         data = request.json
-        tarjeta = db.session.query(TarjetaUsuario).get_or_404(id)
-        
-        tarjeta.numeroTarjeta = data['numeroTarjeta']
-        tarjeta.fecha_vencimiento = data['fecha_vencimiento']
-        tarjeta.cvv = data['cvv']
-        tarjeta.nombreApellidoTarjeta = data['nombreApellidoTarjeta']
-        tarjeta.correo_electronico = data['correo_electronico']
-        tarjeta.accountCuenta = data.get('accountCuenta', tarjeta.accountCuenta)
-        
-        db.session.commit()
+        with get_db_session() as session:
+            tarjeta = session.query(TarjetaUsuario).get_or_404(id)
+            
+            tarjeta.numeroTarjeta = data['numeroTarjeta']
+            tarjeta.fecha_vencimiento = data['fecha_vencimiento']
+            tarjeta.cvv = data['cvv']
+            tarjeta.nombreApellidoTarjeta = data['nombreApellidoTarjeta']
+            tarjeta.correo_electronico = data['correo_electronico']
+            tarjeta.accountCuenta = data.get('accountCuenta', tarjeta.accountCuenta)
+            
+            session.commit()
     except Exception as e:
-        db.session.rollback()
+        
         raise e
-    finally:
-        db.session.close()
+   
 
     return jsonify({"message": "Tarjeta actualizada con éxito"}), 200

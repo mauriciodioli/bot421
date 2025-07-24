@@ -18,6 +18,7 @@ import routes.api_externa_conexion.get_login as get
 import jwt
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from utils.db_session import get_db_session 
 
 # Configurar la aplicación Flask
 app = Flask(__name__)
@@ -176,22 +177,22 @@ def reset_password():
         if current_time > timestamp + expiry:
             return jsonify({'error': 'El código de verificación ha expirado. Solicite uno nuevo.'}), 400
 
-       
-        # Obtener al usuario y verificar si la nueva contraseña es igual a la anterior
-        usuario = db.session.query(Usuario).filter_by(correo_electronico=email).first()
-        if usuario:
-            if bcrypt.checkpw(new_password.encode('utf-8'), usuario.password):
-                return jsonify({'error': 'La nueva contraseña no puede ser igual a la anterior.'}), 400
+        with get_db_session() as session:
+            # Obtener al usuario y verificar si la nueva contraseña es igual a la anterior
+            usuario = session.query(Usuario).filter_by(correo_electronico=email).first()
+            if usuario:
+                if bcrypt.checkpw(new_password.encode('utf-8'), usuario.password):
+                    return jsonify({'error': 'La nueva contraseña no puede ser igual a la anterior.'}), 400
 
-            # Cambiar la contraseña
-            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
-            usuario.password = hashed_password
-            db.session.commit()
-            db.session.close()
-            flash('Contraseña cambiada exitosamente.')
-            return jsonify({'message': 'Contraseña cambiada exitosamente.'})
-        else:
-            return jsonify({'error': 'No se encontró ningún usuario con el correo electrónico proporcionado.'}), 404
+                # Cambiar la contraseña
+                hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+                usuario.password = hashed_password
+                session.commit()
+                session.close()
+                flash('Contraseña cambiada exitosamente.')
+                return jsonify({'message': 'Contraseña cambiada exitosamente.'})
+            else:
+                return jsonify({'error': 'No se encontró ningún usuario con el correo electrónico proporcionado.'}), 404
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500

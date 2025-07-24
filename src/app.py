@@ -6,7 +6,7 @@ from config import DATABASE_CONNECTION_URI
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.exc import SQLAlchemyError
 
-from utils.db_session import get_db_session  # Asegurate de tener este import
+from utils.db_session import get_db_session 
 # Importar create_engine y NullPool
 import logging
 import datetime
@@ -621,31 +621,32 @@ def send_local_storage():
 
     Logs.eliminar_logs_antiguos(5)
 
-    session = get_db_session()  # ✅ Sesión segura
+   
     try:
         if access_token:
-            if Token.validar_expiracion_token(access_token=access_token):                     
-                usuario_obj = session.query(Usuario).filter_by(id=user_id).first()
-                registrar_acceso(data, usuario_obj, True)
+            with get_db_session() as session:
+                if Token.validar_expiracion_token(access_token=access_token):                     
+                    usuario_obj = session.query(Usuario).filter_by(id=user_id).first()
+                    registrar_acceso(data, usuario_obj, True)
 
-                redirect_route = 'home' if correo_electronico else 'index'
-                app.logger.info(correo_electronico or '____INTENTO ENTRAR____')
-                return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
+                    redirect_route = 'home' if correo_electronico else 'index'
+                    app.logger.info(correo_electronico or '____INTENTO ENTRAR____')
+                    return jsonify(success=True, ruta=redirect_route, dominio=ruta_de_logeo)
 
-            elif refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
-                decoded_token = decode_token(refresh_token)
-                user_id = decoded_token.get("sub")
+                elif refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
+                    decoded_token = decode_token(refresh_token)
+                    user_id = decoded_token.get("sub")
 
-                nuevo_access_token = generar_nuevo_token_acceso_vencido(user_id)
-                usuario_obj = session.query(Usuario).filter_by(id=user_id).first()
-                registrar_acceso(data, usuario_obj, True)
+                    nuevo_access_token = generar_nuevo_token_acceso_vencido(user_id)
+                    usuario_obj = session.query(Usuario).filter_by(id=user_id).first()
+                    registrar_acceso(data, usuario_obj, True)
 
-                app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
-                return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
+                    app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
+                    return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
 
-            else:
-                app.logger.warning("El token ha expirado y no hay refresh_token válido")
-                return jsonify(success=False, ruta='index', message="Requiere autenticación nuevamente")
+                else:
+                    app.logger.warning("El token ha expirado y no hay refresh_token válido")
+                    return jsonify(success=False, ruta='index', message="Requiere autenticación nuevamente")
 
         else:
             app.logger.info('____INTENTO ENTRAR____') 
@@ -672,27 +673,28 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
     fecha = datetime.datetime.utcnow()
 
     try:
-        log = Logs(
-            user_id=usuario_id,
-            userCuenta=correo_electronico,
-            accountCuenta=correo_electronico,
-            fecha_log=fecha,
-            ip=ip,
-            funcion='log_acceso',
-            archivo='logRegister.py',
-            linea=608,
-            error='No hubo error' if exito else motivo_fallo,
-            codigoPostal=codigoPostal,
-            latitude=latitude,
-            longitude=longitude,
-            language=language
-        )
+        with get_db_session() as session:
+            log = Logs(
+                user_id=usuario_id,
+                userCuenta=correo_electronico,
+                accountCuenta=correo_electronico,
+                fecha_log=fecha,
+                ip=ip,
+                funcion='log_acceso',
+                archivo='logRegister.py',
+                linea=608,
+                error='No hubo error' if exito else motivo_fallo,
+                codigoPostal=codigoPostal,
+                latitude=latitude,
+                longitude=longitude,
+                language=language
+            )
 
-        db.session.add(log)
-        db.session.commit()
+            session.add(log)
+            session.commit()
        
     except SQLAlchemyError as e:
-        db.session.rollback()
+    
         app.logger.error(f"Error registrando acceso: {e}")
 
   
@@ -722,30 +724,32 @@ def entrada(dominio=None, pagina=None):
 
 @login_manager.user_loader
 def load_user(user_id):
-    try:
-        monitor_pool_state(db.engine)
-        # Realiza la consulta para obtener el usuario
-        user = db.session.query(Usuario).filter_by(id=user_id).first()
-        db.session.close()
-        return user
-    
-    except OperationalError as e:
-        # Manejar el error de conexión y reconfigurar si es necesario
-        app.logger.error(f"Error de conexión a la base de datos: {e}")
-        
-        # Volver a crear la sesión
-      
-        db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión   
-        # Reintenta la consulta después de reconfigurar
+    with get_db_session() as session:
         try:
-            # Reintenta la consulta después de reconfigurar
-            user = db.session.query(Usuario).filter_by(id=user_id).first()
-            db.session.close()
+            monitor_pool_state(db.engine)
+        
+            # Realiza la consulta para obtener el usuario
+            user = session.query(Usuario).filter_by(id=user_id).first()
+          
             return user
+        
         except OperationalError as e:
-            app.logger.error(f"Error de conexión a la base de datos tras reintentar: {e}")
-            db.session.close()
-            return None
+            # Manejar el error de conexión y reconfigurar si es necesario
+            app.logger.error(f"Error de conexión a la base de datos: {e}")
+            
+            # Volver a crear la sesión
+        
+            db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión   
+            # Reintenta la consulta después de reconfigurar
+            try:
+                # Reintenta la consulta después de reconfigurar
+                user = db.session.query(Usuario).filter_by(id=user_id).first()
+             
+                return user
+            except OperationalError as e:
+                app.logger.error(f"Error de conexión a la base de datos tras reintentar: {e}")
+              
+                return None
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()

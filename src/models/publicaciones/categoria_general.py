@@ -2,6 +2,7 @@
 from utils.db import db
 import unidecode
 import re
+from utils.db_session import get_db_session 
 
 # =======================
 # Categorías
@@ -40,14 +41,15 @@ def normalizar_slug(texto):
 
 def get_or_create_categoria(valor_original, idioma):
     slug = normalizar_slug(valor_original)
-    categoria = db.session.query(CategoriaGeneral).filter_by(slug=slug).first()
-    if not categoria:
-        categoria = CategoriaGeneral(slug=slug)
-        db.session.add(categoria)
-        db.session.flush()
+    with get_db_session() as session:
+        categoria = session.query(CategoriaGeneral).filter_by(slug=slug).first()
+        if not categoria:
+            categoria = CategoriaGeneral(slug=slug)
+            session.add(categoria)
+            session.flush()
 
-    traduccion = db.session.query(CategoriaTraduccion).filter_by(categoria_id=categoria.id, idioma=idioma).first()
-    if not traduccion:
-        nueva = CategoriaTraduccion(categoria_id=categoria.id, idioma=idioma, valor=valor_original.strip())
-        db.session.add(nueva)
-    return categoria.id
+        traduccion = session.query(CategoriaTraduccion).filter_by(categoria_id=categoria.id, idioma=idioma).first()
+        if not traduccion:
+            nueva = CategoriaTraduccion(categoria_id=categoria.id, idioma=idioma, valor=valor_original.strip())
+            session.add(nueva)
+        return categoria.id

@@ -10,7 +10,7 @@ import redis
 import mimetypes
 from PIL import Image as PILImage  # Renombrar la clase Image de Pillow
 import ffmpeg
-
+from utils.db_session import get_db_session 
 from flask import Blueprint,current_app
 from social.buckets.bucketGoog import upload_to_gcs
 from models.modelMedia.image import Image
@@ -32,54 +32,67 @@ cargaAutomatica = Blueprint('cargaAutomatica', __name__)
 
 BUCKET_NAME = 'nombre-de-tu-bucket'
 
-
 def ArrancaSheduleCargaAutomatica(id_publicacion):
     # Asegúrate de que este código esté dentro del contexto de la aplicación
     with current_app.app_context():
-        # Obtén la primera publicación de la lista de publicaciones
-       
+        # Usamos la sesión con contexto seguro
+        with get_db_session() as session:
+            # Paso 1: Buscar asociaciones con la publicación
+            imagenes_ids = session.query(Public_imagen_video).filter(
+                Public_imagen_video.publicacion_id == id_publicacion
+            ).all()
 
-        # Asegúrate de que 'publicacion_id' existe en el diccionario
-        imagenes_ids = db.session.query(Public_imagen_video).filter(Public_imagen_video.publicacion_id == id_publicacion).all()
+            total_por_publicacion = []
 
-        if imagenes_ids:
-            imagen_ids_lista = [imagen.imagen_id for imagen in imagenes_ids if imagen.imagen_id > 0]
-            video_ids_lista = [video.video_id for video in imagenes_ids if video.video_id > 0]
-            
-            # Paso 2: Recuperar las imágenes con los ids obtenidos
-            if imagen_ids_lista:
-                total_por_publicacion = db.session.query(Image).filter(Image.id.in_(imagen_ids_lista)).all()
-            
-            # Paso 3: Recuperar los videos con los ids obtenidos
-            if video_ids_lista:
-                total_por_publicacion = db.session.query(Video).filter(Video.id.in_(video_ids_lista)).all()
-       
-        """ Inicia un hilo que, después de 2 minutos, sube los archivos a Google Cloud Storage. """
+            if imagenes_ids:
+                imagen_ids_lista = [img.imagen_id for img in imagenes_ids if img.imagen_id > 0]
+                video_ids_lista = [vid.video_id for vid in imagenes_ids if vid.video_id > 0]
+
+                # Paso 2: Recuperar imágenes
+                if imagen_ids_lista:
+                    imagenes = session.query(Image).filter(Image.id.in_(imagen_ids_lista)).all()
+                    for img in imagenes:
+                        total_por_publicacion.append({
+                            "filepath": img.filepath,
+                            "title": img.title
+                        })
+
+                # Paso 3: Recuperar videos
+                if video_ids_lista:
+                    videos = session.query(Video).filter(Video.id.in_(video_ids_lista)).all()
+                    for vid in videos:
+                        total_por_publicacion.append({
+                            "filepath": vid.filepath,
+                            "title": vid.title
+                        })
+
+        # 👇 A partir de acá, la sesión ya está cerrada, pero tenés todo lo necesario en memoria
         def delayed_execution():
-            time.sleep(17)  # Esperar 2 minutos
-          
-            for img in total_por_publicacion:
-                # Asegúrate de acceder a los atributos del objeto 'img' correctamente
-                file_path_local = img.filepath  # Accede al atributo 'filepath' directamente
-                blob_name_gcs = img.title      # Accede al atributo 'title' directamente  
-                # Obtener la nueva ruta absoluta del archivo comprimido
+            time.sleep(17)  # Esperar unos segundos
+
+            for item in total_por_publicacion:
+                file_path_local = item["filepath"]
+                blob_name_gcs = item["title"]
+
                 temp_file_path = os.path.join('static', 'uploads', f"{blob_name_gcs}")
                 absolute_file_path = os.path.abspath(temp_file_path)
-                comprimir_video_ffmpeg(absolute_file_path,blob_name_gcs,0.5)
-                url = upload_to_gcs(absolute_file_path, blob_name_gcs)                
-                # Liberar la memoria de Redis
-                redis_client.hdel(blob_name_gcs, "file_path", "file_data")  # Eliminar los datos en Redis
-                print(f"Memoria de Redis liberada para la clave ")
-               # Eliminar el archivo temporal después de la carga
+
+                comprimir_video_ffmpeg(absolute_file_path, blob_name_gcs, 0.5)
+                url = upload_to_gcs(absolute_file_path, blob_name_gcs)
+
+                # Limpiar Redis
+                redis_client.hdel(blob_name_gcs, "file_path", "file_data")
+
                 if os.path.exists(absolute_file_path):
                     os.remove(absolute_file_path)
                     print(f"Archivo temporal eliminado: {absolute_file_path}")
-            print("Todas las imágenes han sido subidas a Google Cloud Storage.")
 
-        # Crear un thread en segundo plano
-        # Crear y arrancar el hilo en segundo plano (sin daemon para que termine antes de finalizar la aplicación)
+            print("✅ Todas las imágenes y videos fueron subidos correctamente.")
+
+        # Iniciar el thread en segundo plano
         hilo = threading.Thread(target=delayed_execution)
         hilo.start()
+
         
 def ArrancaSheduleCargaAutomatica_video_by_name(blob_name_gcs):
     # Asegúrate de que este código esté dentro del contexto de la aplicación

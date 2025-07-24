@@ -29,6 +29,7 @@ from models.modelMedia.video import Video
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from social.buckets.bucketGoog import mostrar_from_gcs
+from utils.db_session import get_db_session 
 from google.api_core.exceptions import NotFound
 
 
@@ -90,144 +91,144 @@ def generar_estrellas_html(rating, reviews):
  
 def obtener_publicacion_por_id(publicacion_id):
     try:
-        publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
-        relacion = db.session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).first()
-        categoria = db.session.query(AmbitoCategoria).filter_by(id=relacion.categoria_id).first() if relacion else None
-        if not categoria:
-            return 'noPoseeCategoria'
-        if publicacion:
-            publicaciones_data = []
+        with get_db_session() as session:
+            publicacion = session.query(Publicacion).filter_by(id=publicacion_id).first()
+            relacion = session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).first()
+            categoria = session.query(AmbitoCategoria).filter_by(id=relacion.categoria_id).first() if relacion else None
+            if not categoria:
+                return 'noPoseeCategoria'
+            if publicacion:
+                publicaciones_data = []
+                
+                # Obtener la ruta completa de la carpeta 'static/uploads'
+                uploads_folder = os.path.join(current_app.root_path, 'static', 'uploads')
+
+                # Obtener todas las imágenes en la carpeta 'static/uploads'
+                image_files = [file for file in os.listdir(uploads_folder) if file.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
+
+                # Crear las rutas completas de las imágenes sin codificación de caracteres
+                image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
+
+                # Obtener todas las imágenes y videos asociados a esta publicación
+                imagenes_videos = session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
+                
+                imagenes = []
+                videos = []
+
+                for iv in imagenes_videos:
+                    # Obtener la información de las imágenes
+                    if iv.imagen_id:
+                        imagen = session.query(Image).filter_by(id=iv.imagen_id).first()
+                        if imagen:
+                            # Quitar 'static/' del inicio del filepath si existe
+                            filepath = imagen.filepath
+                            imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
+                            imgen,file_path = mostrar_from_gcs(imagen_url)  # Asegúrate de definir esta función
+                        
+                            if imgen:
+                                # Si imgen ya es binario, simplemente lo codificamos en base64
+                                imagen_base64 = base64.b64encode(imgen).decode('utf-8')
+                            else:
+                                imagen_base64 = None   
+                                #file_path = "null"  # tu placeholder local            
+                            if filepath.startswith('static'):
+                                filepath = filepath[len('static/'):]
+                            imagenes.append({
+                                'id': imagen.id,
+                                'title': imagen.title,
+                                'description': imagen.description,
+                                'imagen': imagen_base64,
+                                'filepath': file_path,
+                                'randomNumber': imagen.randomNumber,
+                                'colorDescription': imagen.colorDescription,
+                                'size': imagen.size                      
+                            })
+
+                    # Obtener la información de los videos
+                    if iv.video_id:
+                        video = session.query(Video).filter_by(id=iv.video_id).first()
+                        if video:
+                            filepath = video.filepath
+                            video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
+                            
+                            file_data, file_path  = mostrar_from_gcs(video_url)
+                            
+                            if file_data:
+                                # Convertir la imagen a base64 solo si hemos obtenido datos binarios
+                                video_base64 = base64.b64encode(file_data).decode('utf-8')
+                            else:
+                                video_base64 = None
+                            
+                            
+                            
+                            if filepath.startswith('static/'):
+                                filepath = filepath[len('static/'):]
+                            videos.append({
+                                'id': video.id,
+                                'title': video.title,
+                                'description': video.description,
+                                'filepath': file_path,  # Usar la URL de GCS o el path procesado
+                                'video': video_base64 if file_data else None,  # La imagen en base64
+                                'mimetype': video.mimetype,  # Asignar correctamente el tipo MIME
+                                'randomNumber': video.randomNumber,
+                                'colorDescription': video.colorDescription,
+                                'size': video.size
+                            })
+                # Ajustar las rutas de archivos según el sistema operativo
+                path_separator = '/'
+                for imagen in imagenes:
+                    imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
+                for video in videos:
+                    video['filepath'] = video['filepath'].replace('\\', path_separator)
+
+                # Agregar la publicación con sus imágenes y videos al diccionario
             
-            # Obtener la ruta completa de la carpeta 'static/uploads'
-            uploads_folder = os.path.join(current_app.root_path, 'static', 'uploads')
-
-            # Obtener todas las imágenes en la carpeta 'static/uploads'
-            image_files = [file for file in os.listdir(uploads_folder) if file.endswith(('.png', '.jpg', '.jpeg', '.gif'))]
-
-            # Crear las rutas completas de las imágenes sin codificación de caracteres
-            image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
-
-            # Obtener todas las imágenes y videos asociados a esta publicación
-            imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
-            
-            imagenes = []
-            videos = []
-
-            for iv in imagenes_videos:
-                # Obtener la información de las imágenes
-                if iv.imagen_id:
-                    imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
-                    if imagen:
-                        # Quitar 'static/' del inicio del filepath si existe
-                        filepath = imagen.filepath
-                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                        imgen,file_path = mostrar_from_gcs(imagen_url)  # Asegúrate de definir esta función
-                    
-                        if imgen:
-                            # Si imgen ya es binario, simplemente lo codificamos en base64
-                            imagen_base64 = base64.b64encode(imgen).decode('utf-8')
-                        else:
-                            imagen_base64 = None   
-                            #file_path = "null"  # tu placeholder local            
-                        if filepath.startswith('static'):
-                            filepath = filepath[len('static/'):]
-                        imagenes.append({
-                            'id': imagen.id,
-                            'title': imagen.title,
-                            'description': imagen.description,
-                            'imagen': imagen_base64,
-                            'filepath': file_path,
-                            'randomNumber': imagen.randomNumber,
-                            'colorDescription': imagen.colorDescription,
-                            'size': imagen.size                      
-                        })
-
-                # Obtener la información de los videos
-                if iv.video_id:
-                    video = db.session.query(Video).filter_by(id=iv.video_id).first()
-                    if video:
-                        filepath = video.filepath
-                        video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
-                        
-                        file_data, file_path  = mostrar_from_gcs(video_url)
-                        
-                        if file_data:
-                            # Convertir la imagen a base64 solo si hemos obtenido datos binarios
-                            video_base64 = base64.b64encode(file_data).decode('utf-8')
-                        else:
-                            video_base64 = None
-                        
-                        
-                        
-                        if filepath.startswith('static/'):
-                            filepath = filepath[len('static/'):]
-                        videos.append({
-                            'id': video.id,
-                            'title': video.title,
-                            'description': video.description,
-                            'filepath': file_path,  # Usar la URL de GCS o el path procesado
-                            'video': video_base64 if file_data else None,  # La imagen en base64
-                            'mimetype': video.mimetype,  # Asignar correctamente el tipo MIME
-                            'randomNumber': video.randomNumber,
-                            'colorDescription': video.colorDescription,
-                            'size': video.size
-                        })
-            # Ajustar las rutas de archivos según el sistema operativo
-            path_separator = '/'
-            for imagen in imagenes:
-                imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
-            for video in videos:
-                video['filepath'] = video['filepath'].replace('\\', path_separator)
-
-            # Agregar la publicación con sus imágenes y videos al diccionario
-           
-             # Calcular descuento aleatorio si hay precio
-            precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
-            if precio_actual:
-                if random.random() < 0.5:  # 50% de chance de aplicar descuento
-                    descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
-                    descuento = f"{descuento_porcentaje}% OFF"
-                    precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                # Calcular descuento aleatorio si hay precio
+                precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
+                if precio_actual:
+                    if random.random() < 0.5:  # 50% de chance de aplicar descuento
+                        descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
+                        descuento = f"{descuento_porcentaje}% OFF"
+                        precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                    else:
+                        descuento = None
+                        precio_original = None
                 else:
                     descuento = None
                     precio_original = None
+                
+                texto = limpiar_texto(publicacion.texto)
+                return {
+                    'publicacion_id': publicacion.id,
+                    'user_id': publicacion.user_id,
+                    'titulo': publicacion.titulo,
+                    'texto': texto,
+                    'categoria': categoria.nombre,
+                    'ambito': publicacion.ambito,
+                    'correo_electronico': publicacion.correo_electronico,
+                    'descripcion': publicacion.descripcion,
+                    'color_texto': publicacion.color_texto,
+                    'color_titulo': publicacion.color_titulo,
+                    'fecha_creacion': publicacion.fecha_creacion,
+                    'estado': publicacion.estado,  
+                    'botonCompra': publicacion.botonCompra,  
+                    'pagoOnline' : publicacion.pagoOnline,     
+                    'imagenes': imagenes,
+                    'videos': videos,
+                    'rating': round(random.uniform(3.0, 5.0), 1),
+                    'reviews': random.randint(1, 150),
+                    'descuento': descuento,
+                    'precio': precio_actual,
+                    'precio_original': precio_original
+                }
+                
             else:
-                descuento = None
-                precio_original = None
-            
-            texto = limpiar_texto(publicacion.texto)
-            return {
-                'publicacion_id': publicacion.id,
-                'user_id': publicacion.user_id,
-                'titulo': publicacion.titulo,
-                'texto': texto,
-                'categoria': categoria.nombre,
-                'ambito': publicacion.ambito,
-                'correo_electronico': publicacion.correo_electronico,
-                'descripcion': publicacion.descripcion,
-                'color_texto': publicacion.color_texto,
-                'color_titulo': publicacion.color_titulo,
-                'fecha_creacion': publicacion.fecha_creacion,
-                'estado': publicacion.estado,  
-                'botonCompra': publicacion.botonCompra,  
-                'pagoOnline' : publicacion.pagoOnline,     
-                'imagenes': imagenes,
-                'videos': videos,
-                'rating': round(random.uniform(3.0, 5.0), 1),
-                'reviews': random.randint(1, 150),
-                'descuento': descuento,
-                'precio': precio_actual,
-                'precio_original': precio_original
-            }
-            
-        else:
-            return None
+                return None
     except Exception as e:
         print(str(e))
-        db.session.close()  # Cierra correctamente
+       
         return None
-    finally:
-        db.session.close()  # Cierra correctamente
+   
 def extraer_precio_y_descripcion(texto):
     match = re.match(r"^\$ ?(\d+)(.*)", texto)
     if match:

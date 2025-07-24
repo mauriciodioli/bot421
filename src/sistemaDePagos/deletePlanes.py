@@ -24,6 +24,7 @@ from config import MERCADOPAGO_URL
 from config import MERCADOPAGO_KEY_API #para produccion
 from config import sdk_produccion # test
 from config import sdk_prueba # test
+from utils.db_session import get_db_session 
 
 
 #mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
@@ -55,16 +56,17 @@ def deletePlanes_preapproval_plan(plan_id):
 
             try:
                 user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                plan = db.session.query(Plan).filter_by(idPlan=plan_id).first()
+                with get_db_session() as session:
+                    plan = session.query(Plan).filter_by(idPlan=plan_id).first()
 
-                if plan is None:
-                    return jsonify({"error": "Plan no encontrado o no autorizado"}), 404
+                    if plan is None:
+                        return jsonify({"error": "Plan no encontrado o no autorizado"}), 404
 
-                db.session.delete(plan)
-                db.session.commit()
-                db.session.close()
+                    session.delete(plan)
+                    session.commit()
+                 
 
-                return jsonify({"success": True, "message": "Plan eliminado correctamente"})
+                    return jsonify({"success": True, "message": "Plan eliminado correctamente"})
             except jwt.ExpiredSignatureError:
                 return jsonify({"error": "Token expirado"}), 401
             except jwt.InvalidTokenError:

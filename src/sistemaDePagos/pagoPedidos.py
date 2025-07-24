@@ -5,7 +5,7 @@ import tokens.token as Token
 import jwt
 import random
 from models.payment_page.Promotion import Promotion
-
+from utils.db_session import get_db_session 
 
 pagoPedidos = Blueprint('pagoPedidos',__name__)
 
@@ -35,8 +35,6 @@ def sistemaDePagos_pagoPedidos():
             user_id = decoded_token.get("sub")
             
            #promociones_todas = db.session.query(Promotion).all()
-            db.session.close()
-
            # Crear un diccionario vacío para agrupar las promociones por cluster
             #promociones_por_cluster = {}
 

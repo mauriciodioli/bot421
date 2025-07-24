@@ -12,7 +12,7 @@ from flask import (
     make_response
 )
 from flask import request, make_response, jsonify
-
+from utils.db_session import get_db_session 
 from flask_jwt_extended import (
     create_access_token, 
     create_refresh_token, 
@@ -96,48 +96,48 @@ def registro_usuario():
     tipo_usuario= 'usuario'
     
     print('password:', password)
+    with get_db_session() as session:
+        # Verificar si el usuario ya está registrado
+        usuario_existente = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
+
+        if usuario_existente:
+            flash('El correo electrónico ya está registrado.')
+            return render_template("index.html")
+
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        # Generar el token de acceso y el token de actualización
+        access_token = create_access_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'acceso','tipo_usuario':tipo_usuario}, expires_delta=timedelta(minutes=TOKEN_DURATION))
+        refresh_token = create_refresh_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'actualizacion'}, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
+
+        usuario = Usuario(id=None, token=access_token, refresh_token=refresh_token, activo=True, correo_electronico=correo_electronico, password=hashed_password)
+        session.add(usuario)
+        session.commit()  # Esto asegura que el usuario tenga un ID asignado
+        usuarioRegion = UsuarioRegion( user_id=usuario.id, idioma=idioma, codigoPostal=codigoPostal, pais=pais, region=region, provincia=provincia, ciudad=ciudad)
+        session.add(usuarioRegion)
+        session.commit()
+        usuarioUbicacion = UsuarioUbicacion(user_id=usuario.id, id_region=usuarioRegion.id, codigoPostal=codigoPostal, latitud=latitud, longitud=longitud)
+        session.add(usuarioUbicacion)
+        session.commit()
+        session.close()
+        # Crear una respuesta
     
-    # Verificar si el usuario ya está registrado
-    usuario_existente = db.session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
-
-    if usuario_existente:
-        flash('El correo electrónico ya está registrado.')
-        return render_template("index.html")
-
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
-    # Generar el token de acceso y el token de actualización
-    access_token = create_access_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'acceso','tipo_usuario':tipo_usuario}, expires_delta=timedelta(minutes=TOKEN_DURATION))
-    refresh_token = create_refresh_token(identity={"correo_electronico": correo_electronico, "numero_de_cuenta": numero_de_cuenta, "acceso": 'actualizacion'}, expires_delta=timedelta(minutes=REFRESH_TOKEN_DURATION))
-
-    usuario = Usuario(id=None, token=access_token, refresh_token=refresh_token, activo=True, correo_electronico=correo_electronico, password=hashed_password)
-    db.session.add(usuario)
-    db.session.commit()  # Esto asegura que el usuario tenga un ID asignado
-    usuarioRegion = UsuarioRegion( user_id=usuario.id, idioma=idioma, codigoPostal=codigoPostal, pais=pais, region=region, provincia=provincia, ciudad=ciudad)
-    db.session.add(usuarioRegion)
-    db.session.commit()
-    usuarioUbicacion = UsuarioUbicacion(user_id=usuario.id, id_region=usuarioRegion.id, codigoPostal=codigoPostal, latitud=latitud, longitud=longitud)
-    db.session.add(usuarioUbicacion)
-    db.session.commit()
-    db.session.close()
-    # Crear una respuesta
-   
 
 
-    flash('Registro como usuario exitoso.')
-    # Crear una respuesta
-    response = make_response(render_template("index.html"))
-    #response = make_response(redirect(url_for('index')))  # Si 'index' es el nombre de la ruta para la página de inicio
+        flash('Registro como usuario exitoso.')
+        # Crear una respuesta
+        response = make_response(render_template("index.html"))
+        #response = make_response(redirect(url_for('index')))  # Si 'index' es el nombre de la ruta para la página de inicio
 
-   # response = make_response(render_template("home.html", tokens=[access_token, refresh_token]))
+    # response = make_response(render_template("home.html", tokens=[access_token, refresh_token]))
 
-    # Configurar las cookies HTTP con los tokens
-    set_access_cookies(response, access_token)
-    set_refresh_cookies(response, refresh_token)
-    response.set_cookie('codigoPostal', codigoPostal, max_age=3600, path='/')  # Ajusta la duración según tus necesidades
+        # Configurar las cookies HTTP con los tokens
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
+        response.set_cookie('codigoPostal', codigoPostal, max_age=3600, path='/')  # Ajusta la duración según tus necesidades
 
-    # Devolver la respuesta con los tokens
-    return response
+        # Devolver la respuesta con los tokens
+        return response
 
 
 

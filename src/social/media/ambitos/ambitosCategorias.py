@@ -17,6 +17,7 @@ from models.publicaciones.ambitoCategoria import AmbitoCategoria
 from models.publicaciones.ambitoCategoriaRelation import AmbitoCategoriaRelation
 from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
 from models.publicaciones.publicacionCodigoPostal import PublicacionCodigoPostal
+from utils.db_session import get_db_session 
 
 
 from sqlalchemy.orm import aliased
@@ -44,63 +45,63 @@ def social_media_ambitosCategorias_categoria_mostrar():
         print(f"[DEBUG] idioma recibido: {idioma}")
         print(f"[DEBUG] código postal recibido: {codigo_postal}")
         print(f"[DEBUG] ambito_nombre recibido: {ambito_nombre}")
+        with get_db_session() as session:
+            # Paso 1: Buscar el ámbito directamente
+            ambito = session.query(Ambitos).filter(
+                func.lower(Ambitos.valor) == ambito_nombre.lower(),
+                Ambitos.idioma == idioma,
+                Ambitos.estado == 'ACTIVO'
+            ).first()
 
-        # Paso 1: Buscar el ámbito directamente
-        ambito = db.session.query(Ambitos).filter(
-            func.lower(Ambitos.valor) == ambito_nombre.lower(),
-            Ambitos.idioma == idioma,
-            Ambitos.estado == 'ACTIVO'
-        ).first()
+            if not ambito:
+                print("[DEBUG] Ámbito no encontrado directamente, devolviendo error.")
+                return jsonify({'error': 'Ámbito no encontrado en este idioma'}), 404
 
-        if not ambito:
-            print("[DEBUG] Ámbito no encontrado directamente, devolviendo error.")
-            return jsonify({'error': 'Ámbito no encontrado en este idioma'}), 404
+            print(f"[DEBUG] Ámbito encontrado: {ambito.id} | {ambito.valor}")
 
-        print(f"[DEBUG] Ámbito encontrado: {ambito.id} | {ambito.valor}")
+            # Paso 2: Buscar relaciones con categorías
+            relaciones = session.query(AmbitoCategoriaRelation).filter_by(
+                ambito_id=ambito.id,
+                estado='ACTIVO'
+            ).all()
 
-        # Paso 2: Buscar relaciones con categorías
-        relaciones = db.session.query(AmbitoCategoriaRelation).filter_by(
-            ambito_id=ambito.id,
-            estado='ACTIVO'
-        ).all()
+            print(f"[DEBUG] Relaciones encontradas: {len(relaciones)}")
 
-        print(f"[DEBUG] Relaciones encontradas: {len(relaciones)}")
+            if not relaciones:
+                print("[DEBUG] No hay relaciones de categoría para este ámbito")
+                return jsonify({'categorias': []})
 
-        if not relaciones:
-            print("[DEBUG] No hay relaciones de categoría para este ámbito")
-            return jsonify({'categorias': []})
+            categoria_ids = [rel.ambitoCategoria_id for rel in relaciones]
 
-        categoria_ids = [rel.ambitoCategoria_id for rel in relaciones]
+            # Paso 3: Buscar categorías asociadas
+            categorias = session.query(AmbitoCategoria).filter(
+                AmbitoCategoria.id.in_(categoria_ids),
+                AmbitoCategoria.estado == 'ACTIVO',
+                AmbitoCategoria.idioma == idioma
+            ).all()
 
-        # Paso 3: Buscar categorías asociadas
-        categorias = db.session.query(AmbitoCategoria).filter(
-            AmbitoCategoria.id.in_(categoria_ids),
-            AmbitoCategoria.estado == 'ACTIVO',
-            AmbitoCategoria.idioma == idioma
-        ).all()
+            print(f"[DEBUG] Categorías encontradas: {len(categorias)}")
 
-        print(f"[DEBUG] Categorías encontradas: {len(categorias)}")
+            # Paso 4: Serializar
+            categorias_data = [{
+                'id': c.id,
+                'ambito': ambito.valor,
+                'nombre': c.nombre,
+                'descripcion': c.descripcion,
+                'idioma': c.idioma,
+                'valor': c.valor,
+                'color': c.color,
+                'estado': c.estado
+            } for c in categorias]
 
-        # Paso 4: Serializar
-        categorias_data = [{
-            'id': c.id,
-            'ambito': ambito.valor,
-            'nombre': c.nombre,
-            'descripcion': c.descripcion,
-            'idioma': c.idioma,
-            'valor': c.valor,
-            'color': c.color,
-            'estado': c.estado
-        } for c in categorias]
-
-        return jsonify({'categorias': categorias_data})
+            return jsonify({'categorias': categorias_data})
 
     except Exception as e:
         print(f"[ERROR] {e}")
         return jsonify({'error': 'Problemas con la base de datos'}), 500
 
     finally:
-        db.session.close()
+        session.close()
 
 
 
@@ -124,41 +125,41 @@ def social_media_ambitos_crear_categoria():
         # Validar campos obligatorios
         if not nombre or not descripcion:
             return jsonify({"error": "Los campos 'nombre' y 'descripcion' son obligatorios"}), 400
+        with get_db_session() as session:
+            # Buscar si ya existe un ámbito con ese nombre e idioma
+            existing_ambito = session.query(AmbitoCategoria).filter_by(nombre=nombre, idioma=idioma).first()
+            if existing_ambito:
+                session.close()
+                return jsonify({"error": "La categoría ya existe en este idioma"}), 400
+            ambito = session.query(Ambitos).filter_by(valor=nombreAmbito,idioma=idioma).first()
+            # Crear la nueva categoría
+            nuevo_ambito_categoria = AmbitoCategoria(
+                nombre=nombre,
+                descripcion=descripcion,
+                idioma=idioma,
+                valor=valor,
+                color=color,
+                estado=estado
+            )
+            session.add(nuevo_ambito_categoria)
+            session.commit()  # Confirmar antes de usar el ID generado
 
-        # Buscar si ya existe un ámbito con ese nombre e idioma
-        existing_ambito = db.session.query(AmbitoCategoria).filter_by(nombre=nombre, idioma=idioma).first()
-        if existing_ambito:
-            db.session.close()
-            return jsonify({"error": "La categoría ya existe en este idioma"}), 400
-        ambito = db.session.query(Ambitos).filter_by(valor=nombreAmbito,idioma=idioma).first()
-        # Crear la nueva categoría
-        nuevo_ambito_categoria = AmbitoCategoria(
-            nombre=nombre,
-            descripcion=descripcion,
-            idioma=idioma,
-            valor=valor,
-            color=color,
-            estado=estado
-        )
-        db.session.add(nuevo_ambito_categoria)
-        db.session.commit()  # Confirmar antes de usar el ID generado
+            # Crear la relación en Ambito_Categoria_Relation
+            ambito_categoria = AmbitoCategoriaRelation(
+                ambito_id=ambito.id,  # Usamos el ID generado correctamente
+                ambitoCategoria_id=nuevo_ambito_categoria.id,               
+                estado=estado
+            )
+            session.add(ambito_categoria)
+            session.commit()
 
-        # Crear la relación en Ambito_Categoria_Relation
-        ambito_categoria = AmbitoCategoriaRelation(
-            ambito_id=ambito.id,  # Usamos el ID generado correctamente
-            ambitoCategoria_id=nuevo_ambito_categoria.id,               
-            estado=estado
-        )
-        db.session.add(ambito_categoria)
-        db.session.commit()
-
-        # Serializar y devolver el nuevo ámbito
-        resultado = serializar_ambito(nuevo_ambito_categoria)
-        db.session.close()
-        return jsonify(resultado), 201
+            # Serializar y devolver el nuevo ámbito
+            resultado = serializar_ambito(nuevo_ambito_categoria)
+          
+            return jsonify(resultado), 201
 
     except Exception as e:
-        db.session.rollback()  # Deshacer cambios en caso de error
+       
         return jsonify({"error": str(e)}), 500
 
 
@@ -166,67 +167,66 @@ def social_media_ambitos_crear_categoria():
 @ambitosCategorias.route('/social-media-ambitos-actualizar-categoria/<int:id>', methods=['PUT'])
 def social_media_ambitos_actualizar_categoria(id):
     try:
-        # Obtener el ambito existente
-        ambitoCategoria = db.session.query(AmbitoCategoria).filter_by(id=id).first() 
+        with get_db_session() as session:
+            # Obtener el ambito existente
+            ambitoCategoria = session.query(AmbitoCategoria).filter_by(id=id).first() 
 
-        # Verificar si el ambito existe
-        if not ambitoCategoria:
-            return jsonify({"error": "Ambito no encontrado"}), 404
+            # Verificar si el ambito existe
+            if not ambitoCategoria:
+                return jsonify({"error": "Ambito no encontrado"}), 404
 
-        # Obtener los datos del cuerpo de la solicitud
-        data = request.get_json()
+            # Obtener los datos del cuerpo de la solicitud
+            data = request.get_json()
 
-        # Actualizar los campos del ambito
-        ambitoCategoria.nombre = data.get('nombre', ambitoCategoria.nombre)
-        ambitoCategoria.descripcion = data.get('descripcion', ambitoCategoria.descripcion)
-        ambitoCategoria.idioma = data.get('idioma', ambitoCategoria.idioma)
-        ambitoCategoria.valor = data.get('valor', ambitoCategoria.valor)
-        ambitoCategoria.color = data.get('color', ambitoCategoria.color)
-        ambitoCategoria.estado = data.get('estado', ambitoCategoria.estado)
-      
-        # Guardar los cambios en la base de datos
-        db.session.commit()
-       
-        resultado = serializar_ambito(ambitoCategoria)
+            # Actualizar los campos del ambito
+            ambitoCategoria.nombre = data.get('nombre', ambitoCategoria.nombre)
+            ambitoCategoria.descripcion = data.get('descripcion', ambitoCategoria.descripcion)
+            ambitoCategoria.idioma = data.get('idioma', ambitoCategoria.idioma)
+            ambitoCategoria.valor = data.get('valor', ambitoCategoria.valor)
+            ambitoCategoria.color = data.get('color', ambitoCategoria.color)
+            ambitoCategoria.estado = data.get('estado', ambitoCategoria.estado)
+        
+            # Guardar los cambios en la base de datos
+            session.commit()
+        
+            resultado = serializar_ambito(ambitoCategoria)
 
-        return jsonify(resultado), 200
+            return jsonify(resultado), 200
     except Exception as e:
-        db.session.rollback()
+        session.rollback()
         return jsonify({"error": str(e)}), 500
-    finally:
-        db.session.close()  # ✅ Se ejecuta siempre
+    
 
 @ambitosCategorias.route('/social-media-publicaciones-ambitosCategorias-delete/<int:id>', methods=['DELETE'])
 def social_media_publicaciones_ambitosCategorias_delete(id):
     try:
-        # Buscar el ámbito por su ID
-        ambitoCategoria = db.session.query(AmbitoCategoria).filter_by(id=id).first()
+        with get_db_session() as session:
+            # Buscar el ámbito por su ID
+            ambitoCategoria = session.query(AmbitoCategoria).filter_by(id=id).first()
 
-        # Verificar si el ámbito existe antes de proceder
-        if not ambitoCategoria:
-            return jsonify({"error": "Ámbito no encontrado"}), 404
+            # Verificar si el ámbito existe antes de proceder
+            if not ambitoCategoria:
+                return jsonify({"error": "Ámbito no encontrado"}), 404
 
-        # Buscar y eliminar relaciones asociadas
-        relaciones = db.session.query(AmbitoCategoriaRelation).filter_by(ambitoCategoria_id=id).all()
-        for relacion in relaciones:
-            db.session.delete(relacion)
+            # Buscar y eliminar relaciones asociadas
+            relaciones = session.query(AmbitoCategoriaRelation).filter_by(ambitoCategoria_id=id).all()
+            for relacion in relaciones:
+                session.delete(relacion)
 
-        # Eliminar el ámbito
-        db.session.delete(ambitoCategoria)
+            # Eliminar el ámbito
+            session.delete(ambitoCategoria)
 
-        # Confirmar los cambios en la base de datos
-        db.session.commit()
+            # Confirmar los cambios en la base de datos
+            session.commit()
 
-        return jsonify({"message": "Ámbito y usuarios asociados eliminados exitosamente"}), 200
+            return jsonify({"message": "Ámbito y usuarios asociados eliminados exitosamente"}), 200
 
     except Exception as e:
         # Si ocurre un error, revertir los cambios pendientes
-        db.session.rollback()
+        session.rollback()
         return jsonify({"error": str(e)}), 500
 
-    finally:
-        # Cerrar la sesión al final del proceso
-        db.session.close()
+   
 
 
 @ambitosCategorias.route('/social-media-publicaciones-obtener-ambitosCategorias/', methods=['POST'])
@@ -240,42 +240,41 @@ def obtener_ambitosCategorias():
             return jsonify({"error": "Falta el campo 'ambito' en la solicitud"}), 400
         
         ambito_valor = data['ambito']
+        with get_db_session() as session:
+            # Obtener el ámbito por su valor
+            ambito = session.query(Ambitos).filter_by(valor=ambito_valor).first()
+            if not ambito:
+                session.close()
+                return jsonify({"error": "Ámbito no encontrado"}), 404
+            
+            # Obtener todas las relaciones del ámbito con sus categorías
+            relations = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito.id).all()
+            
+            # Obtener los IDs de las categorías relacionadas
+            categoria_ids = [relation.ambitoCategoria_id for relation in relations]
+            
+            # Consultar las categorías correspondientes
+            ambitosCategorias = session.query(AmbitoCategoria).filter(AmbitoCategoria.id.in_(categoria_ids)).all()
 
-        # Obtener el ámbito por su valor
-        ambito = db.session.query(Ambitos).filter_by(valor=ambito_valor).first()
-        if not ambito:
-            db.session.close()
-            return jsonify({"error": "Ámbito no encontrado"}), 404
-        
-        # Obtener todas las relaciones del ámbito con sus categorías
-        relations = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito.id).all()
-        
-        # Obtener los IDs de las categorías relacionadas
-        categoria_ids = [relation.ambitoCategoria_id for relation in relations]
-        
-        # Consultar las categorías correspondientes
-        ambitosCategorias = db.session.query(AmbitoCategoria).filter(AmbitoCategoria.id.in_(categoria_ids)).all()
-
-        # Convertir los objetos a diccionarios serializables
-        resultado = [
-            {
-                "id": categoria.id,              
-                "nombre": categoria.nombre,
-                "descripcion": categoria.descripcion,
-                "idioma": categoria.idioma,
-                "valor": categoria.valor,
-                "color": categoria.color,
-                "estado": categoria.estado,
-            }
-            for categoria in ambitosCategorias
-        ]
-        return jsonify(resultado), 200
+            # Convertir los objetos a diccionarios serializables
+            resultado = [
+                {
+                    "id": categoria.id,              
+                    "nombre": categoria.nombre,
+                    "descripcion": categoria.descripcion,
+                    "idioma": categoria.idioma,
+                    "valor": categoria.valor,
+                    "color": categoria.color,
+                    "estado": categoria.estado,
+                }
+                for categoria in ambitosCategorias
+            ]
+            return jsonify(resultado), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-    finally:
-        db.session.remove()  # Asegura que la sesión se cierre siempre
+   
 
 
 def serializar_ambito(ambito):

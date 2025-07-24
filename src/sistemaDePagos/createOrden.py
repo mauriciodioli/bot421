@@ -24,6 +24,7 @@ from config import MERCADOPAGO_URL
 from config import MERCADOPAGO_KEY_API #para produccion
 from config import sdk_produccion # test
 from config import sdk_prueba # test
+from utils.db_session import get_db_session 
 
 #mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
 
@@ -62,83 +63,83 @@ def sistemaDePagos_create_order():
         decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
         user_id = decoded_token.get("sub")
         numero_de_cuenta = decoded_token.get("numero_de_cuenta")
-
-        # Buscar el usuario en la base de datos
-        user = Usuario.query.filter_by(id=user_id).first()
-        if not user:
-            return jsonify({'error': 'Usuario no encontrado.'}), 404
+        with get_db_session() as session:
+            # Buscar el usuario en la base de datos
+            user = session.query(Usuario).filter_by(id=user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
+            
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
+      
+            # Obtener los datos del JSON
+            data = request.json
+            
         
-        if not user.activo:
-            return jsonify({'error': 'El usuario no está activo.'}), 403
+            # Validar los campos obligatorios y que no estén vacíos
+            required_fields = ['title', 'quantity', 'currency_id', 'unit_price', 'final_price', 'porcentaje_retorno']
+            for field in required_fields:
+                if field not in data or data[field] is None or str(data[field]).strip() == '':
+                    return jsonify({'error': f'El campo {field} es obligatorio y no puede estar vacío.'}), 400
 
-        # Obtener los datos del JSON
-        data = request.json
-        
-       
-        # Validar los campos obligatorios y que no estén vacíos
-        required_fields = ['title', 'quantity', 'currency_id', 'unit_price', 'final_price', 'porcentaje_retorno']
-        for field in required_fields:
-            if field not in data or data[field] is None or str(data[field]).strip() == '':
-                return jsonify({'error': f'El campo {field} es obligatorio y no puede estar vacío.'}), 400
-
-        # Procesar campos numéricos
-        try:
-            costo_base = float(data.get('unit_price'))
-            final_price = float(data.get('final_price'))
-            porcentaje_retorno = float(data.get('porcentaje_retorno'))
-        except ValueError:
-            return jsonify({'error': 'Los valores de precio deben ser numéricos.'}), 400
+            # Procesar campos numéricos
+            try:
+                costo_base = float(data.get('unit_price'))
+                final_price = float(data.get('final_price'))
+                porcentaje_retorno = float(data.get('porcentaje_retorno'))
+            except ValueError:
+                return jsonify({'error': 'Los valores de precio deben ser numéricos.'}), 400
 
 
 
-        # Obtener datos iniciales
-        pedidos_str = data.get('pedido_data_json')
-        pedidos = json.loads(pedidos_str)
+            # Obtener datos iniciales
+            pedidos_str = data.get('pedido_data_json')
+            pedidos = json.loads(pedidos_str)
 
-        # Valores comunes a todos los pedidos (no se alteran)
-        tiempo = datetime.utcnow()  # Fecha y hora actual
-        cantidad = 0
-        # Actualizar el pedido
-        for pedido_data in pedidos:
-            cantidad_pedido = actualizar_pedido(pedido_data, data, tiempo)
-            if isinstance(cantidad_pedido, dict):  # Si hubo un error
-                return jsonify(cantidad_pedido), 404
-            cantidad += cantidad_pedido
-        cargar_entrega_pedido(data, user_id, tiempo, cantidad)
+            # Valores comunes a todos los pedidos (no se alteran)
+            tiempo = datetime.utcnow()  # Fecha y hora actual
+            cantidad = 0
+            # Actualizar el pedido
+            for pedido_data in pedidos:
+                cantidad_pedido = actualizar_pedido(pedido_data, data, tiempo)
+                if isinstance(cantidad_pedido, dict):  # Si hubo un error
+                    return jsonify(cantidad_pedido), 404
+                cantidad += cantidad_pedido
+            cargar_entrega_pedido(data, user_id, tiempo, cantidad)
 
-        # Preparar datos para la preferencia
-        preference_data = {
-            "items": [
-                {
-                    "title": data['title'],
-                    "quantity": data['quantity'],
-                    "unit_price": final_price,
-                    "currency_id": data['currency_id']
-                }
-            ],
-            "back_urls": {
-                "success": SUCCESS_URL,
-                "failure": FAILURE_URL,
-                "pending": PENDING_URL
-            },
-            "notification_url": NOTIFICATION_URL,
-            "auto_return": "approved"
-        }
+            # Preparar datos para la preferencia
+            preference_data = {
+                "items": [
+                    {
+                        "title": data['title'],
+                        "quantity": data['quantity'],
+                        "unit_price": final_price,
+                        "currency_id": data['currency_id']
+                    }
+                ],
+                "back_urls": {
+                    "success": SUCCESS_URL,
+                    "failure": FAILURE_URL,
+                    "pending": PENDING_URL
+                },
+                "notification_url": NOTIFICATION_URL,
+                "auto_return": "approved"
+            }
 
-        # Encabezados de la solicitud
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': f'Bearer {sdk_produccion}',  # Token de acceso
-            'X-Idempotency-Key': '123546'
-        }
+            # Encabezados de la solicitud
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': f'Bearer {sdk_produccion}',  # Token de acceso
+                'X-Idempotency-Key': '123546'
+            }
 
-        # Crear preferencia
-        url = f"{MERCADOPAGO_URL}/checkout/preferences"
-        preference_response = create_preference(preference_data, headers, url)
-        init_point = preference_response.get("init_point")
+            # Crear preferencia
+            url = f"{MERCADOPAGO_URL}/checkout/preferences"
+            preference_response = create_preference(preference_data, headers, url)
+            init_point = preference_response.get("init_point")
 
-        # Devolver la URL de inicialización
-        return jsonify({"init_point": init_point})
+            # Devolver la URL de inicialización
+            return jsonify({"init_point": init_point})
 
     except requests.HTTPError as e:
         return jsonify({"error": str(e)}), e.response.status_code
@@ -244,65 +245,66 @@ def create_preference(preference_data, headers, url):
 
 
 def actualizar_pedido(pedido_data, data, tiempo):
-    # Consultar el pedido en la base de datos
-    pedido_existente = db.session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+    with get_db_session() as session:
+        # Consultar el pedido en la base de datos
+        pedido_existente = session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
 
-    if not pedido_existente:
-        return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
+        if not pedido_existente:
+            return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
 
-    # Actualizar solo los campos necesarios
-    pedido_existente.estado = 'terminado'
-    pedido_existente.fecha_pedido = tiempo
-    pedido_existente.fecha_entrega = tiempo
-    pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
-    pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
-    pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
-    pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
-    pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
-    pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
-    pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
-    pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
-    
-    # Guardar los cambios
-    db.session.commit()
-    return pedido_existente.cantidad
+        # Actualizar solo los campos necesarios
+        pedido_existente.estado = 'terminado'
+        pedido_existente.fecha_pedido = tiempo
+        pedido_existente.fecha_entrega = tiempo
+        pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
+        pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
+        pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
+        pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
+        pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
+        pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
+        pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
+        pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
+        
+        # Guardar los cambios
+        session.commit()
+        return pedido_existente.cantidad
 
     
 def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
     try:
-        
-        nuevo_pedido_entrega_pago = PedidoEntregaPago(
-            user_id=user_id,
-            publicacion_id=1,
-            cliente_id=1,
-            ambito=data.get('ambito_pagoPedido'),
-            estado='pendiente',
-            fecha_pedido=tiempo,
-            fecha_entrega=tiempo,
-            lugar_entrega=data.get('direccionCliente', ''),
-            cantidad=cantidad,
-            precio_venta=float(data.get('final_price', '')),
-            consulta=tiempo,
-            asignado_a='',
-            talla='',
-            pais='arg',
-            provincia='',
-            region='',
-            sexo='',
-            nombreCliente=data.get('nombreCliente', ''),
-            apellidoCliente=data.get('apellidoCliente', ''),
-            emailCliente=data.get('emailCliente', ''),
-            telefonoCliente=data.get('telefonoCliente', ''),
-            comentarioCliente=data.get('comentariosCliente', ''),
-            cluster_id=int(data.get('cluster_pedido', '')),
-            pedido_data_json=data.get('pedido_data_json', '')
-        )
-        db.session.add(nuevo_pedido_entrega_pago)
-        # Antes de hacer commit, puedes imprimir la consulta SQL
-       # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
-        db.session.commit()
-        return nuevo_pedido_entrega_pago
+        with get_db_session() as session:
+            nuevo_pedido_entrega_pago = PedidoEntregaPago(
+                user_id=user_id,
+                publicacion_id=1,
+                cliente_id=1,
+                ambito=data.get('ambito_pagoPedido'),
+                estado='pendiente',
+                fecha_pedido=tiempo,
+                fecha_entrega=tiempo,
+                lugar_entrega=data.get('direccionCliente', ''),
+                cantidad=cantidad,
+                precio_venta=float(data.get('final_price', '')),
+                consulta=tiempo,
+                asignado_a='',
+                talla='',
+                pais='arg',
+                provincia='',
+                region='',
+                sexo='',
+                nombreCliente=data.get('nombreCliente', ''),
+                apellidoCliente=data.get('apellidoCliente', ''),
+                emailCliente=data.get('emailCliente', ''),
+                telefonoCliente=data.get('telefonoCliente', ''),
+                comentarioCliente=data.get('comentariosCliente', ''),
+                cluster_id=int(data.get('cluster_pedido', '')),
+                pedido_data_json=data.get('pedido_data_json', '')
+            )
+            session.add(nuevo_pedido_entrega_pago)
+            # Antes de hacer commit, puedes imprimir la consulta SQL
+        # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
+            session.commit()
+            return nuevo_pedido_entrega_pago
     except Exception as e:
         # Rollback en caso de error
-        db.session.rollback()
+       
         return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500

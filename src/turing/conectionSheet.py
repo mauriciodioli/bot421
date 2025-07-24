@@ -22,7 +22,7 @@ import tokens.token as Token
 import jwt
 from models.usuario import Usuario
 from models.operacion import Operacion
-
+from utils.db_session import get_db_session 
 
 load_dotenv()
 #import drive
@@ -154,7 +154,7 @@ def conectionSheet_enviar_productos(respuesta):
             return jsonify({'error': 'Error al actualizar respuesta, no se encontró el sheet'}), 500
 
     except Exception as e:
-        db.session.rollback()
+      
         return jsonify({'error': str(e)}), 500
 
 

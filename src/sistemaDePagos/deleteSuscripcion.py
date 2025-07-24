@@ -29,6 +29,7 @@ from config import MERCADOPAGO_URL
 from config import MERCADOPAGO_KEY_API #para produccion
 from config import sdk_produccion # test
 from config import sdk_prueba # test
+from utils.db_session import get_db_session 
 
 
 #mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
@@ -83,28 +84,28 @@ def deleteSuscripcion_order_suscripcion(preapproval_id):
         try:
             response = requests.put(url, json=payload, headers=headers)
             json_content = response.json()
-            #carga suscripcion en tabla suscripcion plan usuario
-            suscripciones = db.session.query(SuscripcionPlanUsuario).filter_by(user_id=user_id).all()
-             
-            db.session.close()
+            with get_db_session() as session:
+                #carga suscripcion en tabla suscripcion plan usuario
+                suscripciones = session.query(SuscripcionPlanUsuario).filter_by(user_id=user_id).all()
+                
+         
+                # Serializar los planes
+                suscripciones_serializados = [
+                    {
+                        'payer_id': suscripcion.payer_id,
+                        'accountCuenta': suscripcion.accountCuenta,
+                        'status': suscripcion.status,
+                        'reason': suscripcion.reason,
+                        'date_created': suscripcion.date_created,
+                        'frequency': suscripcion.frequency,
+                        'quotas': suscripcion.quotas,
+                        'pending_charge_amount': suscripcion.pending_charge_amount,
+                        'payment_method_id': suscripcion.payment_method_id,
+                        'billing_day': suscripcion.billing_day
+                    } for suscripcion in suscripciones
+                ]
 
-            # Serializar los planes
-            suscripciones_serializados = [
-                {
-                    'payer_id': suscripcion.payer_id,
-                    'accountCuenta': suscripcion.accountCuenta,
-                    'status': suscripcion.status,
-                    'reason': suscripcion.reason,
-                    'date_created': suscripcion.date_created,
-                    'frequency': suscripcion.frequency,
-                    'quotas': suscripcion.quotas,
-                    'pending_charge_amount': suscripcion.pending_charge_amount,
-                    'payment_method_id': suscripcion.payment_method_id,
-                    'billing_day': suscripcion.billing_day
-                } for suscripcion in suscripciones
-            ]
-
-            return jsonify({'suscripciones': suscripciones_serializados, 'layout': layout})
+                return jsonify({'suscripciones': suscripciones_serializados, 'layout': layout})
             
         except Exception as e:
             print("Excepción al cancelar la suscripción: ", str(e))

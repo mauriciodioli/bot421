@@ -41,7 +41,7 @@ import sys
 import os
 # Añadir el directorio actual al sys.path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
+from utils.db_session import get_db_session 
 from publicaciones import armar_publicacion_bucket_para_dpi
 from social.media.publicaciones import cargarImagen_crearPublicacion
 from social.media.publicaciones import cargarVideo_crearPublicacion
@@ -131,74 +131,74 @@ def creaPublicacionesPartes_testCgs():
 
 def armar_publicacion_bucket(publicaciones):
     publicaciones_data = []
+    with get_db_session() as session:
+        for publicacion in publicaciones:
+            # Obtener todas las imágenes y videos asociados a esta publicación
+            imagenes_videos = session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
 
-    for publicacion in publicaciones:
-        # Obtener todas las imágenes y videos asociados a esta publicación
-        imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
+            imagenes = []
+            videos = []
 
-        imagenes = []
-        videos = []
+            for iv in imagenes_videos:
+                # Obtener la información de las imágenes
+                if iv.imagen_id:
+                    try:
+                        imagen = session.query(Image).filter_by(id=iv.imagen_id).first()
+                        
+                        if imagen:
+                            # Generar la URL pública desde GCS
+                            filepath = imagen.filepath
+                            imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
+                            imagen_url = mostrar_from_gcs(imagen_url)
+                            if imagen_url:                         
+                                imagenes.append({
+                                    'id': imagen.id,
+                                    'title': imagen.title,
+                                    'description': imagen.description,
+                                    'filepath': imagen_url,  # Usar la URL de GCS
+                                    'randomNumber': imagen.randomNumber,
+                                    'size': imagen.size
+                                })
+                    except Exception as e:
+                        logging.error(f"Error al obtener información de la imagen {iv.imagen_id}: {e}")
 
-        for iv in imagenes_videos:
-            # Obtener la información de las imágenes
-            if iv.imagen_id:
-                try:
-                    imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
-                    
-                    if imagen:
-                        # Generar la URL pública desde GCS
-                        filepath = imagen.filepath
-                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                        imagen_url = mostrar_from_gcs(imagen_url)
-                        if imagen_url:                         
-                            imagenes.append({
-                                'id': imagen.id,
-                                'title': imagen.title,
-                                'description': imagen.description,
-                                'filepath': imagen_url,  # Usar la URL de GCS
-                                'randomNumber': imagen.randomNumber,
-                                'size': imagen.size
-                            })
-                except Exception as e:
-                    logging.error(f"Error al obtener información de la imagen {iv.imagen_id}: {e}")
+                # Obtener la información de los videos
+                if iv.video_id:
+                    try:
+                        video = session.query(Video).filter_by(id=iv.video_id).first()
+                        if video:
+                            filepath = video.filepath
+                            video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
+                            video_url = mostrar_from_gcs(video_url)
+                            if video_url:
+                                videos.append({
+                                    'id': video.id,
+                                    'title': video.title,
+                                    'description': video.description,
+                                    'filepath': video_url,
+                                    'size': video.size
+                                })
+                    except Exception as e:
+                        logging.error(f"Error al obtener información del video {iv.video_id}: {e}")
 
-            # Obtener la información de los videos
-            if iv.video_id:
-                try:
-                    video = db.session.query(Video).filter_by(id=iv.video_id).first()
-                    if video:
-                        filepath = video.filepath
-                        video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
-                        video_url = mostrar_from_gcs(video_url)
-                        if video_url:
-                            videos.append({
-                                'id': video.id,
-                                'title': video.title,
-                                'description': video.description,
-                                'filepath': video_url,
-                                'size': video.size
-                            })
-                except Exception as e:
-                    logging.error(f"Error al obtener información del video {iv.video_id}: {e}")
+            # Agregar la publicación con sus imágenes y videos al diccionario
+            publicaciones_data.append({
+                'publicacion_id': publicacion.id,
+                'user_id': publicacion.user_id,
+                'titulo': publicacion.titulo,
+                'texto': publicacion.texto,
+                'ambito': publicacion.ambito,
+                'correo_electronico': publicacion.correo_electronico,
+                'descripcion': publicacion.descripcion,
+                'color_texto': publicacion.color_texto,
+                'color_titulo': publicacion.color_titulo,
+                'fecha_creacion': publicacion.fecha_creacion,
+                'estado': publicacion.estado,
+                'imagenes': imagenes,
+                'videos': videos
+            })
 
-        # Agregar la publicación con sus imágenes y videos al diccionario
-        publicaciones_data.append({
-            'publicacion_id': publicacion.id,
-            'user_id': publicacion.user_id,
-            'titulo': publicacion.titulo,
-            'texto': publicacion.texto,
-            'ambito': publicacion.ambito,
-            'correo_electronico': publicacion.correo_electronico,
-            'descripcion': publicacion.descripcion,
-            'color_texto': publicacion.color_texto,
-            'color_titulo': publicacion.color_titulo,
-            'fecha_creacion': publicacion.fecha_creacion,
-            'estado': publicacion.estado,
-            'imagenes': imagenes,
-            'videos': videos
-        })
-
-    return publicaciones_data
+        return publicaciones_data
 
 
 
@@ -346,88 +346,88 @@ def social_publicaciones_crear_publicacion_partes():
             layout = request.form.get('layout')
             ambito = request.form.get('ambito')  
                
+            with get_db_session() as session:
+                total_publicaciones = session.query(Publicacion).filter_by(user_id=user_id).count()
+                #if total_publicaciones >= 20:
+                #    return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
             
-            total_publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id).count()
-            #if total_publicaciones >= 20:
-            #    return jsonify({'error': 'El usuario ha alcanzado el límite de publicaciones'}), 400
-          
-          
-           # Recibir los metadatos de los archivos
-            uploaded_files_metadata = request.form.getlist('uploadedFilesMetadata')  # Obtiene todos los valores de este campo
             
-            # Parsear los metadatos JSON de cada archivo
-            file_metadata_list = [json.loads(file_metadata) for file_metadata in uploaded_files_metadata]
-
-            # Ahora `file_metadata_list` contiene los metadatos de los archivos
-            print(file_metadata_list)
-          
-          
-            # Guardar la publicación en la base de datos
-            id_publicacion = guardarPublicacion(request, user_id)
-            # Procesar archivos multimedia
-            if id_publicacion is True:
-                return jsonify({'message': 'Publicación no creada, ya existe ese nombre'}), 400
-          
-            
-            for index, file in enumerate(file_metadata_list):
-                filename_pre = file.get("fileName")
-                size = file.get("fileSize")               
-                content_type = file.get("content_type")  # Tipo de contenido MIME
-                print(f"Índice: {index}, Archivo: {filename_pre}, Tamaño: {size} bytes, Content-Type: {content_type}")
-                # Verifica si el archivo tiene un nombre
-                if filename_pre == '':
-                    continue
-
-                # Asegúrate de usar un nombre de archivo seguro
-                filename =  secure_filename(filename_pre).replace("_", "")
-                # Decide si el archivo es una imagen o un video
-                file_ext = filename.rsplit('.', 1)[-1].lower()
-                if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
-                    # Llama a la función de carga de imagen
-                    color_texto = request.form.get('color_texto')
-                    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-                    file_path = cargarImagen_crearPublicacion(
-                                                    app, 
-                                                    request, 
-                                                    filename, 
-                                                    id_publicacion, 
-                                                    color_texto, 
-                                                    titulo_publicacion, 
-                                                    content_type,
-                                                    userid=user_id, 
-                                                    index=index,
-                                                    size=size)
-
-
-                    app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
-                elif file_ext in {'mp4', 'avi', 'mov'}:
-                    # Llama a la función de carga de video
-                    color_texto = request.form.get('color_texto')   
-                    titulo_publicacion = request.form.get('postTitle_creaPublicacion')
-                    file_path = cargarVideo_crearPublicacion(
-                                                        app,
-                                                        '',                                                         
-                                                        filename, 
-                                                        id_publicacion,
-                                                        color_texto, 
-                                                        titulo_publicacion,
-                                                        content_type,
-                                                        user_id,
-                                                        index,
-                                                        size
-                                                        )
+            # Recibir los metadatos de los archivos
+                uploaded_files_metadata = request.form.getlist('uploadedFilesMetadata')  # Obtiene todos los valores de este campo
                 
+                # Parsear los metadatos JSON de cada archivo
+                file_metadata_list = [json.loads(file_metadata) for file_metadata in uploaded_files_metadata]
 
-              # Obtener todas las publicaciones del usuario
-            publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id,ambito=ambito).all()
-           
-            # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
-            db.session.close()
-           # ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
-   
-            #print(publicaciones_data)
-            return jsonify(publicaciones_data)
+                # Ahora `file_metadata_list` contiene los metadatos de los archivos
+                print(file_metadata_list)
+            
+            
+                # Guardar la publicación en la base de datos
+                id_publicacion = guardarPublicacion(request, user_id)
+                # Procesar archivos multimedia
+                if id_publicacion is True:
+                    return jsonify({'message': 'Publicación no creada, ya existe ese nombre'}), 400
+            
+                
+                for index, file in enumerate(file_metadata_list):
+                    filename_pre = file.get("fileName")
+                    size = file.get("fileSize")               
+                    content_type = file.get("content_type")  # Tipo de contenido MIME
+                    print(f"Índice: {index}, Archivo: {filename_pre}, Tamaño: {size} bytes, Content-Type: {content_type}")
+                    # Verifica si el archivo tiene un nombre
+                    if filename_pre == '':
+                        continue
+
+                    # Asegúrate de usar un nombre de archivo seguro
+                    filename =  secure_filename(filename_pre).replace("_", "")
+                    # Decide si el archivo es una imagen o un video
+                    file_ext = filename.rsplit('.', 1)[-1].lower()
+                    if file_ext in {'png', 'jpg', 'jpeg', 'gif'}:
+                        # Llama a la función de carga de imagen
+                        color_texto = request.form.get('color_texto')
+                        titulo_publicacion = request.form.get('postTitle_creaPublicacion')
+                        file_path = cargarImagen_crearPublicacion(
+                                                        app, 
+                                                        request, 
+                                                        filename, 
+                                                        id_publicacion, 
+                                                        color_texto, 
+                                                        titulo_publicacion, 
+                                                        content_type,
+                                                        userid=user_id, 
+                                                        index=index,
+                                                        size=size)
+
+
+                        app.logger.info(f'Se cargó una imagen: {filename}, índice: {index}')
+                    elif file_ext in {'mp4', 'avi', 'mov'}:
+                        # Llama a la función de carga de video
+                        color_texto = request.form.get('color_texto')   
+                        titulo_publicacion = request.form.get('postTitle_creaPublicacion')
+                        file_path = cargarVideo_crearPublicacion(
+                                                            app,
+                                                            '',                                                         
+                                                            filename, 
+                                                            id_publicacion,
+                                                            color_texto, 
+                                                            titulo_publicacion,
+                                                            content_type,
+                                                            user_id,
+                                                            index,
+                                                            size
+                                                            )
+                    
+
+                # Obtener todas las publicaciones del usuario
+                publicaciones_user = session.query(Publicacion).filter_by(user_id=user_id,ambito=ambito).all()
+            
+                # Armar el diccionario con todas las publicaciones, imágenes y videos
+                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
+               
+            # ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
+    
+                #print(publicaciones_data)
+                return jsonify(publicaciones_data)
     except Exception as e:
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
@@ -466,64 +466,65 @@ def guardarPublicacion(request, user_id):
         latitud = request.form.get('latitud')
         longitud = request.form.get('longitud') 
         pagoOnline = False
+        with get_db_session() as session:
+            # Verificar si ya existe una publicación con el mismo título para el mismo usuario
+            publicacion_existente = session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
+            
+            if publicacion_existente:
+                # Si existe, devolver un mensaje sugiriendo cambiar el nombre
+                return True
+            if botonCompra == 'True':
+                botonCompra = True
+            else:
+                botonCompra = False
         
-        # Verificar si ya existe una publicación con el mismo título para el mismo usuario
-        publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
-        
-        if publicacion_existente:
-            # Si existe, devolver un mensaje sugiriendo cambiar el nombre
-             return True
-        if botonCompra == 'True':
-            botonCompra = True
-        else:
-            botonCompra = False
-       
-        # Crear una nueva publicación si no existe una con el mismo nombre
-        nueva_publicacion = Publicacion(
-            user_id=user_id,             
-            titulo=post_title,
-            texto=post_text,
-            ambito=ambito,
-            categoria_id=int(categoria_id),
-            correo_electronico=correo_electronico,
-            descripcion=post_descripcion,
-            color_texto=color_texto,
-            color_titulo=color_titulo,
-            fecha_creacion=datetime.now(),
-            estado=estado,
-            botonCompra=botonCompra,
-            idioma=idioma,
-            codigoPostal=codigoPostal,            
-            pagoOnline=pagoOnline
-        )
-        
-        db.session.add(nueva_publicacion)
-        db.session.commit()
-        #guardar la ubicacion publicacion
-        publicacion_id = publicacionUbicacion(nueva_publicacion.id,codigoPostal,user_id)
-        publicacionCategoriaPublicacion(categoria_id,nueva_publicacion.id)
-        #guardar 
-        return nueva_publicacion.id
+            # Crear una nueva publicación si no existe una con el mismo nombre
+            nueva_publicacion = Publicacion(
+                user_id=user_id,             
+                titulo=post_title,
+                texto=post_text,
+                ambito=ambito,
+                categoria_id=int(categoria_id),
+                correo_electronico=correo_electronico,
+                descripcion=post_descripcion,
+                color_texto=color_texto,
+                color_titulo=color_titulo,
+                fecha_creacion=datetime.now(),
+                estado=estado,
+                botonCompra=botonCompra,
+                idioma=idioma,
+                codigoPostal=codigoPostal,            
+                pagoOnline=pagoOnline
+            )
+            
+            session.add(nueva_publicacion)
+            session.commit()
+            #guardar la ubicacion publicacion
+            publicacion_id = publicacionUbicacion(nueva_publicacion.id,codigoPostal,user_id)
+            publicacionCategoriaPublicacion(categoria_id,nueva_publicacion.id)
+            #guardar 
+            return nueva_publicacion.id
         
     except Exception as e:
         print(str(e))
-        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+     
         return jsonify({'error': 'Ocurrió un error al guardar la publicación.'}), 500
    
 
 def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_video_id,media_type,size=0):
-    nuevo_ids= Public_imagen_video(
-        publicacion_id=id_publicacion,
-        imagen_id=nueva_imagen_id,
-        video_id=nuevo_video_id,
-        fecha_creacion=datetime.now(),
-        media_type=media_type,
-        size=float(size)
-    )
-    db.session.add(nuevo_ids)
-    db.session.commit()
-    db.session.close()
-    return True
+    with get_db_session() as session:
+        nuevo_ids= Public_imagen_video(
+            publicacion_id=id_publicacion,
+            imagen_id=nueva_imagen_id,
+            video_id=nuevo_video_id,
+            fecha_creacion=datetime.now(),
+            media_type=media_type,
+            size=float(size)
+        )
+        session.add(nuevo_ids)
+        session.commit()
+       
+        return True
 
 def show_publicacion_galeriaimagenes(request, media_files,id_publicacion):
      return render_template('publicaciones/publicacionesGaleriaImagenes.html', media_files=media_files,id_publicacion=id_publicacion)
@@ -576,18 +577,19 @@ def es_video(file_path):
 
 def publicacionCategoriaPublicacion(categoria_id,publicacion_id):
     try:
-        new_categoria_publicacion = CategoriaPublicacion(
-            categoria_id=int(categoria_id),
-            publicacion_id=publicacion_id,
-            estado='activo'
-        )
-        db.session.add(new_categoria_publicacion)
-        db.session.commit()
-        
-        return True
+        with get_db_session() as session:
+            new_categoria_publicacion = CategoriaPublicacion(
+                categoria_id=int(categoria_id),
+                publicacion_id=publicacion_id,
+                estado='activo'
+            )
+            session.add(new_categoria_publicacion)
+            session.commit()
+            
+            return True
     except Exception as e:
         print(str(e))
-        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+      
         return False
     
 
@@ -595,34 +597,34 @@ def publicacionCategoriaPublicacion(categoria_id,publicacion_id):
 def publicacionUbicacion(nueva_publicacion_id,codigoPostal,user_id):
     try:
         # Buscar si el usuario ya tiene una ubicación guardada
-       
-        usuarioRegion = db.session.query(UsuarioRegion).filter_by(user_id=user_id).first()
-        usuario_ubicacion = db.session.query(UsuarioUbicacion).filter_by(user_id=user_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
-        publicacion_ubicacion = db.session.query(UsuarioPublicacionUbicacion).filter_by(id=nueva_publicacion_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
-        if publicacion_ubicacion:
-            return True
-        else:
-            
-            if usuario_ubicacion:
-                id_ubicaion = usuario_ubicacion.id
+        with get_db_session() as session:
+            usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=user_id).first()
+            usuario_ubicacion = session.query(UsuarioUbicacion).filter_by(user_id=user_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
+            publicacion_ubicacion = session.query(UsuarioPublicacionUbicacion).filter_by(id=nueva_publicacion_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
+            if publicacion_ubicacion:
+                return True
             else:
-                # Si no existe, creamos un nuevo registro de ubicación
-                id_ubicaion = 0
                 
-            new_publicacion_ubicacion = UsuarioPublicacionUbicacion(
-                        user_id = user_id,
-                        id_region = usuarioRegion.id,
-                        id_publicacion = nueva_publicacion_id,
-                        id_ubicacion = id_ubicaion,
-                        codigoPostal = codigoPostal,
-                    )
-            db.session.add(new_publicacion_ubicacion)
+                if usuario_ubicacion:
+                    id_ubicaion = usuario_ubicacion.id
+                else:
+                    # Si no existe, creamos un nuevo registro de ubicación
+                    id_ubicaion = 0
+                    
+                new_publicacion_ubicacion = UsuarioPublicacionUbicacion(
+                            user_id = user_id,
+                            id_region = usuarioRegion.id,
+                            id_publicacion = nueva_publicacion_id,
+                            id_ubicacion = id_ubicaion,
+                            codigoPostal = codigoPostal,
+                        )
+                session.add(new_publicacion_ubicacion)
 
-        db.session.commit()
-        
-        return True
+            session.commit()
+            
+            return True
     except Exception as e:
         print(str(e))
-        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+       
         return False
             

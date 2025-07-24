@@ -14,10 +14,13 @@ import jwt
 from datetime import datetime
 from models.usuario import Usuario
 from models.cuentas import Cuenta
+from models.pedidos.pedido import Pedido
+from models.pedidos.pedidoEntregaPago import PedidoEntregaPago
 from models.payment_page.tarjetaUsuario import TarjetaUsuario
 from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment, LiveEnvironment
 from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
 from dotenv import load_dotenv
+from utils.db_session import get_db_session 
 load_dotenv()
 
 
@@ -129,67 +132,67 @@ def capture_order_paypal(order_id):
 
 
 def actualizar_pedido(pedido_data, data, tiempo):
-    # Consultar el pedido en la base de datos
-    pedido_existente = db.session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+    with get_db_session() as session:
+        # Consultar el pedido en la base de datos
+        pedido_existente = session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
 
-    if not pedido_existente:
-        return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
+        if not pedido_existente:
+            return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
 
-    # Actualizar solo los campos necesarios
-    pedido_existente.estado = 'terminado'
-    pedido_existente.fecha_pedido = tiempo
-    pedido_existente.fecha_entrega = tiempo
-    pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
-    pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
-    pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
-    pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
-    pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
-    pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
-    pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
-    pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
-    
-    # Guardar los cambios
-    db.session.commit()
-    return pedido_existente.cantidad
+        # Actualizar solo los campos necesarios
+        pedido_existente.estado = 'terminado'
+        pedido_existente.fecha_pedido = tiempo
+        pedido_existente.fecha_entrega = tiempo
+        pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
+        pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
+        pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
+        pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
+        pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
+        pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
+        pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
+        pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
+        
+        # Guardar los cambios
+        session.commit()
+        return pedido_existente.cantidad
 
     
 def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
     try:
-        
-        nuevo_pedido_entrega_pago = PedidoEntregaPago(
-            user_id=user_id,
-            publicacion_id=1,
-            cliente_id=1,
-            ambito=data.get('ambito_pagoPedido'),
-            estado='pendiente',
-            fecha_pedido=tiempo,
-            fecha_entrega=tiempo,
-            lugar_entrega=data.get('direccionCliente', ''),
-            cantidad=cantidad,
-            precio_venta=float(data.get('final_price', '')),
-            consulta=tiempo,
-            asignado_a='',
-            talla='',
-            pais='arg',
-            provincia='',
-            region='',
-            sexo='',
-            nombreCliente=data.get('nombreCliente', ''),
-            apellidoCliente=data.get('apellidoCliente', ''),
-            emailCliente=data.get('emailCliente', ''),
-            telefonoCliente=data.get('telefonoCliente', ''),
-            comentarioCliente=data.get('comentariosCliente', ''),
-            cluster_id=int(data.get('cluster_pedido', '')),
-            pedido_data_json=data.get('pedido_data_json', '')
-        )
-        db.session.add(nuevo_pedido_entrega_pago)
-        # Antes de hacer commit, puedes imprimir la consulta SQL
-       # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
-        db.session.commit()
-        return nuevo_pedido_entrega_pago
+        with get_db_session() as session:
+            nuevo_pedido_entrega_pago = PedidoEntregaPago(
+                user_id=user_id,
+                publicacion_id=1,
+                cliente_id=1,
+                ambito=data.get('ambito_pagoPedido'),
+                estado='pendiente',
+                fecha_pedido=tiempo,
+                fecha_entrega=tiempo,
+                lugar_entrega=data.get('direccionCliente', ''),
+                cantidad=cantidad,
+                precio_venta=float(data.get('final_price', '')),
+                consulta=tiempo,
+                asignado_a='',
+                talla='',
+                pais='arg',
+                provincia='',
+                region='',
+                sexo='',
+                nombreCliente=data.get('nombreCliente', ''),
+                apellidoCliente=data.get('apellidoCliente', ''),
+                emailCliente=data.get('emailCliente', ''),
+                telefonoCliente=data.get('telefonoCliente', ''),
+                comentarioCliente=data.get('comentariosCliente', ''),
+                cluster_id=int(data.get('cluster_pedido', '')),
+                pedido_data_json=data.get('pedido_data_json', '')
+            )
+            session.add(nuevo_pedido_entrega_pago)
+            # Antes de hacer commit, puedes imprimir la consulta SQL
+        # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
+            session.commit()
+            return nuevo_pedido_entrega_pago
     except Exception as e:
         # Rollback en caso de error
-        db.session.rollback()
+  
         return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500
-    finally:
-        db.session.close()  # Asegúrate de cerrar la sesión después de usarla
+  

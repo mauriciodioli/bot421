@@ -16,6 +16,7 @@ from models.usuario import Usuario
 from models.brokers import Broker
 from models.payment_page.tarjetaUsuario import TarjetaUsuario
 import mercadopago
+from utils.db_session import get_db_session 
 
 from config import DOMAIN # mercado pago
 from config import MERCADOPAGO_URL
@@ -56,9 +57,9 @@ def pyment_page_carga_numero_tarjeta():
             correo_electronico = decoded_token.get("correo_electronico")
             numero_de_cuenta = decoded_token.get("numero_de_cuenta")
             user_id = decoded_token.get("sub")
-
-            tarjeta_existente = db.session.query(TarjetaUsuario).filter_by(user_id=user_id).first()
-            db.session.close()
+            with get_db_session() as session:
+                tarjeta_existente = session.query(TarjetaUsuario).filter_by(user_id=user_id).first()
+               
          return jsonify({"message": "Tarjeta creada con éxito", "tarjeta": tarjeta_existente.numeroTarjeta}), 201
 
     

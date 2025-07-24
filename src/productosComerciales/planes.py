@@ -16,7 +16,7 @@ import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.payment_page.plan import Plan
-
+from utils.db_session import get_db_session 
 
 
 #mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
@@ -30,24 +30,25 @@ def productosComerciales_planes_muestra():
 @planes.route('/productosComerciales_planes_muestra_planes/', methods=['GET'])
 def productosComerciales_planes_muestra_planes():
     try:
-        planes = db.session.query(Plan).all()
-        db.session.close()
+        with get_db_session() as session:
+            planes = session.query(Plan).all()
+           
 
-        # Serializar los planes
-        planes_serializados = [
-            {
-                'id': plan.idPlan,
-                'frequency': plan.frequency,
-                'amount': plan.amount,
-                'reason': plan.reason,
-                'frequency_type': plan.frequency_type,
-                'currency_id': plan.currency_id,
-                'repetitions': plan.repetitions,
-                'billing_day': plan.billing_day
-            } for plan in planes
-        ]
+            # Serializar los planes
+            planes_serializados = [
+                {
+                    'id': plan.idPlan,
+                    'frequency': plan.frequency,
+                    'amount': plan.amount,
+                    'reason': plan.reason,
+                    'frequency_type': plan.frequency_type,
+                    'currency_id': plan.currency_id,
+                    'repetitions': plan.repetitions,
+                    'billing_day': plan.billing_day
+                } for plan in planes
+            ]
 
-        return jsonify({'planes': planes_serializados})
+            return jsonify({'planes': planes_serializados})
     except Exception as e:
-        db.session.rollback()
+      
         return jsonify({'error': str(e)}), 500

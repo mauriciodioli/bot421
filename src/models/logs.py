@@ -5,7 +5,7 @@ from sqlalchemy import inspect, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
-
+from utils.db_session import get_db_session 
 ma = Marshmallow()
 
 logs = Blueprint('logs', __name__)
@@ -56,21 +56,21 @@ class Logs(db.Model):
         fecha_limite = datetime.now() - timedelta(days=dias)
 
         try:
-            logs_antiguos = db.session.query(cls).filter(cls.fecha_log < fecha_limite).all()
+            with get_db_session() as session:
+                logs_antiguos = session.query(cls).filter(cls.fecha_log < fecha_limite).all()
 
-            if logs_antiguos:  # Solo eliminar si hay registros
-                for log in logs_antiguos:
-                    db.session.delete(log)
-                
-                db.session.commit()
-                print(f"{len(logs_antiguos)} logs eliminados con éxito.")
+                if logs_antiguos:  # Solo eliminar si hay registros
+                    for log in logs_antiguos:
+                        session.delete(log)
+                    
+                    session.commit()
+                    print(f"{len(logs_antiguos)} logs eliminados con éxito.")
 
         except SQLAlchemyError as e:
-            db.session.rollback()  # Revierte en caso de error
+          
             print(f"Error eliminando logs antiguos: {e}")
 
-        finally:
-            db.session.close()  # Asegura que la sesión se cierre siempre
+       
 
 class MerSchema(ma.Schema):
     class Meta:

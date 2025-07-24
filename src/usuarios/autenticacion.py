@@ -35,6 +35,7 @@ from models.usuarioUbicacion import UsuarioUbicacion
 from models.cuentas import Cuenta
 from routes.api_externa_conexion.cuenta import cuenta
 from utils.db import db
+from utils.db_session import get_db_session 
 import jwt
 from contextlib import contextmanager
 from sqlalchemy.orm import sessionmaker
@@ -103,8 +104,9 @@ def logOutSystem():
 
 # muestra todos los usuarios
 @autenticacion.route("/usuarios-listado")
-def usuarios_listado():   
-    all_usr = Usuario.query.all()    
+def usuarios_listado(): 
+    with get_db_session() as session:  
+        all_usr = session.query(Usuario).all()    
     return render_template("usuarios.html", datos=all_usr)
 
 
@@ -196,31 +198,30 @@ def loginIndex():
         if access_token:
             app = current_app._get_current_object()             
             try:
-                # Decodificar el token y obtener el id del usuario
-                user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                user = db.session.query(Usuario).filter_by(id=user_id).first()
+                with get_db_session() as session:
+                    # Decodificar el token y obtener el id del usuario
+                    user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
+                    user = session.query(Usuario).filter_by(id=user_id).first()
+                    
+                    if len(user.cuentas) > 0:
+                        user_cuenta = user.cuentas[0].userCuenta
+                    else:
+                        user_cuenta = 'null'
                 
-                if len(user.cuentas) > 0:
-                    user_cuenta = user.cuentas[0].userCuenta
-                else:
-                    user_cuenta = 'null'
-              
-                # Si el usuario existe, redirigirlo a la página de inicio
-                if user:
-                    resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': user_cuenta, 'selector': selector}))
-                    resp.headers['Content-Type'] = 'application/json'
-                    set_access_cookies(resp, access_token)
-                    set_refresh_cookies(resp, refresh_token)
-                    return resp
+                    # Si el usuario existe, redirigirlo a la página de inicio
+                    if user:
+                        resp = make_response(jsonify({'redirect': 'home', 'cuenta': account, 'userCuenta': user_cuenta, 'selector': selector}))
+                        resp.headers['Content-Type'] = 'application/json'
+                        set_access_cookies(resp, access_token)
+                        set_refresh_cookies(resp, refresh_token)
+                        return resp
                     
             except jwt.ExpiredSignatureError:
                 print("El token ha expirado")
                 return redirect(url_for('autenticacion.index'))
             except jwt.InvalidTokenError:
                 print("El token es inválido")
-            finally:
-                db.session.close()  # Se asegura de cerrar la sesión de la base de datos
-
+         
         return render_template('error.html', error_message="Error de autenticación")
 
 
@@ -247,9 +248,10 @@ def refresh():
     # Generar el token y actualizar la base de datos con el nuevo token
     token = generate_token(username)
     with db.cursor() as cursor:
-        cursor.execute('UPDATE usuarios SET token=%s WHERE username=%s', (token, username))
-        db.session.commit()
-        db.session.close()
+        with get_db_session() as session:
+            cursor.execute('UPDATE usuarios SET token=%s WHERE username=%s', (token, username))
+            session.commit()
+            session.close()
 
     response = make_response(jsonify({'mensaje': 'Token refrescado'}))
     response.set_cookie('token', token, httponly=True)
@@ -273,7 +275,7 @@ def load_user(user_id):
 @contextmanager
 def session_scope():
     """Proporciona un alcance de sesión que se maneja automáticamente."""
-    session = db.session
+    session = session
     try:
         yield session
         session.commit()
@@ -293,7 +295,7 @@ def loginUsuario():
         longitud = request.form['longitud']
 
         # Consolidar la consulta dentro de un solo contexto de sesión
-        with session_scope() as session:
+        with get_db_session() as session:
             usuario = session.query(Usuario).filter_by(correo_electronico=correo_electronico).first()
             
             # Validar usuario y contraseña
@@ -311,8 +313,8 @@ def loginUsuario():
 
             # Almacenar el refresh token en la base de datos
             usuario.refresh_token = refresh_token
-            session.add(usuario)  # Usa `session.add` en lugar de `db.session.add`
-            session.commit()      # Usa `session.commit` en lugar de `db.session.commit`
+            session.add(usuario)  # Usa `session.add` en lugar de `session.add`
+            session.commit()      # Usa `session.commit` en lugar de `session.commit`
 
             # Obtener información de ubicación y región
             usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=usuario.id).first()

@@ -19,6 +19,7 @@ from models.usuario import Usuario
 from models.brokers import Broker
 from models.payment_page.plan import Plan
 from models.pedidos.pedido import Pedido
+from utils.db_session import get_db_session 
 
 
 from models.pedidos.pedidoEntregaPago import PedidoEntregaPago
@@ -52,92 +53,93 @@ def media_consultaPublicaciones_muestra():
         user_id = decoded_token.get("sub")
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
+        with get_db_session() as session:
+            # Buscar usuario
+            user = session.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
 
-        # Buscar usuario
-        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
-        if not user:
-            return jsonify({'error': 'Usuario no encontrado.'}), 404
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
 
-        if not user.activo:
-            return jsonify({'error': 'El usuario no está activo.'}), 403
+            # Obtener y validar el ámbito
+            ambito = data.get('ambito_btn_consultas')
+            if not ambito:
+                return jsonify({'error': 'Ámbito no proporcionado.'}), 400
 
-        # Obtener y validar el ámbito
-        ambito = data.get('ambito_btn_consultas')
-        if not ambito:
-            return jsonify({'error': 'Ámbito no proporcionado.'}), 400
-
-        # Filtro de publicaciones
-        publicaciones = db.session.query(Publicacion).with_entities(
-                                Publicacion.id,
-                                Publicacion.user_id,
-                                Publicacion.titulo,
-                                Publicacion.correo_electronico,
-                                Publicacion.descripcion,
-                                Publicacion.fecha_creacion,                                
-                                Publicacion.texto,
-                                Publicacion.imagen
-                            ).filter(
-                                Publicacion.user_id == user_id,
-                                Publicacion.ambito == ambito,
-                                Publicacion.estado == 'activo',
-                                Publicacion.botonCompra.is_(True)  # Ignora NULL automáticamente
-                            ).all()
+            # Filtro de publicaciones
+            publicaciones = session.query(Publicacion).with_entities(
+                                    Publicacion.id,
+                                    Publicacion.user_id,
+                                    Publicacion.titulo,
+                                    Publicacion.correo_electronico,
+                                    Publicacion.descripcion,
+                                    Publicacion.fecha_creacion,                                
+                                    Publicacion.texto,
+                                    Publicacion.imagen
+                                ).filter(
+                                    Publicacion.user_id == user_id,
+                                    Publicacion.ambito == ambito,
+                                    Publicacion.estado == 'activo',
+                                    Publicacion.botonCompra.is_(True)  # Ignora NULL automáticamente
+                                ).all()
 
 
 
-        # Procesar los datos
-        data = []
-        if not publicaciones:
+            # Procesar los datos
+            data = []
+            if not publicaciones:
+                return render_template(
+                                'media/publicaciones/consultasPublicaciones.html',
+                                data='',
+                                layout='layout'
+                            )
+            for publicacion in publicaciones:
+                precio, resto = obtenerPrecio(publicacion.texto) if publicacion.texto else (None, None)
+                data.append({
+                    'id': publicacion.id,
+                    'user_id': publicacion.user_id,
+                    'nombre_producto': publicacion.titulo,
+                    'texto': publicacion.texto,
+                    'precio_venta': precio,  # Corregido
+                    'correoElectronico': publicacion.correo_electronico,  # Corregido
+                    'descripcion': publicacion.descripcion,
+                    'fechaCreacion': publicacion.fecha_creacion,
+                    'imagen_url':publicacion.imagen
+                })
+           
             return render_template(
-                            'media/publicaciones/consultasPublicaciones.html',
-                            data='',
-                            layout='layout'
-                        )
-        for publicacion in publicaciones:
-            precio, resto = obtenerPrecio(publicacion.texto) if publicacion.texto else (None, None)
-            data.append({
-                'id': publicacion.id,
-                'user_id': publicacion.user_id,
-                'nombre_producto': publicacion.titulo,
-                'texto': publicacion.texto,
-                'precio_venta': precio,  # Corregido
-                'correoElectronico': publicacion.correo_electronico,  # Corregido
-                'descripcion': publicacion.descripcion,
-                'fechaCreacion': publicacion.fecha_creacion,
-                'imagen_url':publicacion.imagen
-            })
-        db.session.close()
-        return render_template(
-            'media/publicaciones/consultasPublicaciones.html',
-            data=data,
-            layout='layout'
-        )
+                'media/publicaciones/consultasPublicaciones.html',
+                data=data,
+                layout='layout'
+            )
 
     except Exception as e:
         print("Error:", str(e))
-        db.session.rollback()
-        db.session.close()
+      
         return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
 
 @consultaPublicaciones.route('/obtener_detalle_publicacion/<int:id>', methods=['GET'])
 def obtener_detalle_publicacion(id):
     try:
-        publicacion = db.session.query(Publicacion).filter(Publicacion.id == id).first()
-        
-        if not publicacion:
-            return jsonify({'error': 'Publicación no encontrada'}), 404
-        
-        detalle = {
-            'user_id': publicacion.user_id,
-            'nombre_producto': publicacion.titulo,
-            'texto': publicacion.texto,
-            'correoElectronico': publicacion.correo_electronico,
-            'descripcion': publicacion.descripcion,
-            'fechaCreacion': publicacion.fecha_creacion
-        }
-        db.session.close()
-        return jsonify(detalle)  # Devuelve JSON
+        with get_db_session() as session:
+            # Obtener la publicación por ID
+            publicacion = session.query(Publicacion).filter(Publicacion.id == id).first()
+            
+            if not publicacion:
+                return jsonify({'error': 'Publicación no encontrada'}), 404
+            
+            detalle = {
+                'user_id': publicacion.user_id,
+                'nombre_producto': publicacion.titulo,
+                'texto': publicacion.texto,
+                'correoElectronico': publicacion.correo_electronico,
+                'descripcion': publicacion.descripcion,
+                'fechaCreacion': publicacion.fecha_creacion
+            }
+          
+            return jsonify(detalle)  # Devuelve JSON
 
     except Exception as e:
         return jsonify({'error': 'Error al obtener los datos de la publicación'}), 500
@@ -164,65 +166,63 @@ def media_consultaPublicaciones_lupa_muestra():
         user_id = decoded_token.get("sub")
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
+        with get_db_session() as session:
+            # Buscar usuario
+            user = session.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
 
-        # Buscar usuario
-        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
-        if not user:
-            return jsonify({'error': 'Usuario no encontrado.'}), 404
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
 
-        if not user.activo:
-            return jsonify({'error': 'El usuario no está activo.'}), 403
+            # Obtener y validar el ámbito
+            ambito = data.get('ambito')
+            if not ambito:
+                return jsonify({'error': 'Ámbito no proporcionado.'}), 400
+            id_consulta = int(data.get('consulta'))
+            # Filtro de publicaciones
+            publicaciones = session.query(Publicacion).with_entities(
+                Publicacion.id,
+                Publicacion.user_id,
+                Publicacion.titulo,
+                Publicacion.correo_electronico,
+                Publicacion.descripcion,
+                Publicacion.fecha_creacion,                                
+                Publicacion.texto,
+                Publicacion.imagen
+            ).filter(
+                Publicacion.user_id == id_consulta,
+                Publicacion.ambito == ambito,
+                Publicacion.estado == 'activo',
+                Publicacion.botonCompra.is_(True)  # Ignora NULL automáticamente
+            ).all()
 
-        # Obtener y validar el ámbito
-        ambito = data.get('ambito')
-        if not ambito:
-            return jsonify({'error': 'Ámbito no proporcionado.'}), 400
-        id_consulta = int(data.get('consulta'))
-        # Filtro de publicaciones
-        publicaciones = db.session.query(Publicacion).with_entities(
-            Publicacion.id,
-            Publicacion.user_id,
-            Publicacion.titulo,
-            Publicacion.correo_electronico,
-            Publicacion.descripcion,
-            Publicacion.fecha_creacion,                                
-            Publicacion.texto,
-            Publicacion.imagen
-        ).filter(
-            Publicacion.user_id == id_consulta,
-            Publicacion.ambito == ambito,
-            Publicacion.estado == 'activo',
-            Publicacion.botonCompra.is_(True)  # Ignora NULL automáticamente
-        ).all()
+            # Procesar los datos
+            data = []
+            if not publicaciones:
+                return jsonify({'data': []})  # Si no hay publicaciones, regresa un array vacío
 
-        # Procesar los datos
-        data = []
-        if not publicaciones:
-            return jsonify({'data': []})  # Si no hay publicaciones, regresa un array vacío
+            for publicacion in publicaciones:
+                precio, resto = obtenerPrecio(publicacion.texto) if publicacion.texto else (None, None)
+                data.append({
+                    'id': publicacion.id,
+                    'user_id': publicacion.user_id,
+                    'nombre_producto': publicacion.titulo,
+                    'texto': publicacion.texto,
+                    'precio_venta': precio,
+                    'correoElectronico': publicacion.correo_electronico,
+                    'descripcion': publicacion.descripcion,
+                    'fechaCreacion': publicacion.fecha_creacion,
+                    'imagen_url': publicacion.imagen
+                })
+            
 
-        for publicacion in publicaciones:
-            precio, resto = obtenerPrecio(publicacion.texto) if publicacion.texto else (None, None)
-            data.append({
-                'id': publicacion.id,
-                'user_id': publicacion.user_id,
-                'nombre_producto': publicacion.titulo,
-                'texto': publicacion.texto,
-                'precio_venta': precio,
-                'correoElectronico': publicacion.correo_electronico,
-                'descripcion': publicacion.descripcion,
-                'fechaCreacion': publicacion.fecha_creacion,
-                'imagen_url': publicacion.imagen
-            })
-        
-        db.session.close()
-
-        # Regresa los datos en formato JSON
-        return jsonify({'data': data, 'layout': 'layout'})
+            # Regresa los datos en formato JSON
+            return jsonify({'data': data, 'layout': 'layout'})
 
     except Exception as e:
         print("Error:", str(e))
-        db.session.rollback()
-        db.session.close()
+       
         return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
 

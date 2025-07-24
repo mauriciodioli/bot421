@@ -25,7 +25,7 @@ import bcrypt
 from datetime import datetime, timedelta
 
 from flask_login import LoginManager, login_required, login_user, UserMixin
-
+from utils.db_session import get_db_session 
 import jwt
 import os
 import redis
@@ -39,6 +39,8 @@ from utils.db import db
 import json
 import uuid
 from usuarios.autenticacion import autenticacion
+from models.usuarioUbicacion import UsuarioUbicacion
+from models.usuarioRegion import UsuarioRegion
 
 # Configuración del Blueprint para el registro de usuarios
 usuarioUbicacionC = Blueprint("usuarioUbicacionC", __name__)
@@ -113,37 +115,38 @@ def usuarios_update_location():
 def update_user_location_db(user_id, latitude, longitude):
     """ Guarda o actualiza la ubicación del usuario en la base de datos si han pasado 24 horas """
     try:
-        # Buscar si el usuario ya tiene una ubicación guardada
-        usuario = db.session.query(Usuario).filter_by(id=user_id).first()
-        usuarioRegion = db.session.query(UsuarioRegion).filter_by(user_id=user_id).first()
-        usuario_ubicacion = db.session.query(UsuarioUbicacion).filter_by(user_id=user_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
+        with get_db_session() as session:
+            # Buscar si el usuario ya tiene una ubicación guardada
+            usuario = session.query(Usuario).filter_by(id=user_id).first()
+            usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=user_id).first()
+            usuario_ubicacion = session.query(UsuarioUbicacion).filter_by(user_id=user_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
 
-        if usuario_ubicacion:
-            # Si el registro existe, actualizamos la latitud y longitud
-            usuario_ubicacion.latitud = latitude
-            usuario_ubicacion.longitud = longitude
-        else:
-            # Si no existe, creamos un nuevo registro de ubicación
-            codigo_postal = usuario.codigoPostal
-            id_region = usuarioRegion.id
-            nuevo_registro = UsuarioUbicacion(
-                user_id=user_id, 
-                id_region=id_region, 
-                codigoPostal=codigo_postal, 
-                latitud=latitude, 
-                longitud=longitude
-            )
-            db.session.add(nuevo_registro)
+            if usuario_ubicacion:
+                # Si el registro existe, actualizamos la latitud y longitud
+                usuario_ubicacion.latitud = latitude
+                usuario_ubicacion.longitud = longitude
+            else:
+                # Si no existe, creamos un nuevo registro de ubicación
+                codigo_postal = usuario.codigoPostal
+                id_region = usuarioRegion.id
+                nuevo_registro = UsuarioUbicacion(
+                    user_id=user_id, 
+                    id_region=id_region, 
+                    codigoPostal=codigo_postal, 
+                    latitud=latitude, 
+                    longitud=longitude
+                )
+                session.add(nuevo_registro)
 
-        db.session.commit()
-        return jsonify({
-            "status": "Ubicación guardada o actualizada en la base de datos", 
-            "latitude": latitude, 
-            "longitude": longitude, 
-            "user_id": user_id
-        })
+            session.commit()
+            return jsonify({
+                "status": "Ubicación guardada o actualizada en la base de datos", 
+                "latitude": latitude, 
+                "longitude": longitude, 
+                "user_id": user_id
+            })
     
     except Exception as e:
-        db.session.rollback()
+        
         return jsonify({"status": "Error al guardar ubicación", "error": str(e)})
 

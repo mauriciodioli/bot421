@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 import pyRofex
 from models.usuario import Usuario
 from models.brokers import Broker
+from utils.db_session import get_db_session 
 
 
 ma = Marshmallow()
@@ -52,27 +53,27 @@ class Cuenta(db.Model):
             
     def inicializar_variables(accountCuenta):
         valores = []  # Inicializar la lista
-        
+        with get_db_session() as session:
             # Buscar la cuenta asociada a la cuentaCuenta proporcionada
-        cuenta = db.session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
-        
-        if cuenta:
-            # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
-            broker = db.session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
-            db.session.close()
-            if broker:
-                # Agregar los valores de api_url y ws_url a la lista 'valores'
-                valores = [broker.api_url, broker.ws_url]
-                # Hacer algo con el objeto Broker encontrado
-                print(f"El broker asociado a la cuenta es: {broker.nombre}")
-            else:
-                print("No se encontró el broker asociado a la cuenta.")
-        else:
-            db.session.close()
-            print("No se encontró la cuenta.")
-
+            cuenta = session.query(Cuenta).filter(Cuenta.accountCuenta == accountCuenta).first()
             
-        return valores
+            if cuenta:
+                # Si se encontró la cuenta, obtener el objeto Broker asociado usando su broker_id
+                broker = session.query(Broker).filter(Broker.id == cuenta.broker_id).first()
+                
+                if broker:
+                    # Agregar los valores de api_url y ws_url a la lista 'valores'
+                    valores = [broker.api_url, broker.ws_url]
+                    # Hacer algo con el objeto Broker encontrado
+                    print(f"El broker asociado a la cuenta es: {broker.nombre}")
+                else:
+                    print("No se encontró el broker asociado a la cuenta.")
+            else:
+               
+                print("No se encontró la cuenta.")
+
+                
+            return valores
     
     @classmethod
     def getReporteCuenta(cls, userCuenta, passwordCuenta_decoded,account,selector):      

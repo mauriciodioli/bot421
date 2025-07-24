@@ -3,7 +3,7 @@
 from pipes import Template
 from unittest import result
 from flask import current_app
-
+from utils.db_session import get_db_session 
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
@@ -43,45 +43,45 @@ def productosComerciales_pedidos_muestra():
         
         try:
             user_id = jwt.decode(access_token.encode(), app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                          
-            user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
-            
-            if not user:
-                return jsonify({'error': 'Usuario no encontrado.'}), 404
+            with get_db_session() as session:              
+                user = session.query(Usuario).filter(Usuario.id == user_id).first()
+                
+                if not user:
+                    return jsonify({'error': 'Usuario no encontrado.'}), 404
 
-            if user.activo:
-                ambito = request.json.get('dominio')
+                if user.activo:
+                    ambito = request.json.get('dominio')
+                    
+                    # Filtro de pedidos
+                    pedidos = session.query(Pedido).filter(
+                        and_(Pedido.user_id == user_id, Pedido.ambito == ambito)
+                    ).all()
+                    
+                    # Procesar los datos
+                    data = []  # Lista para almacenar los datos de los pedidos
+                    for pedido in pedidos:
+                        data.append({
+                            'id': pedido.id,
+                            'user_id': pedido.user_id,
+                            'nombre_producto': pedido.nombre_producto,
+                            'fecha_pedido': pedido.fecha_pedido,
+                            'precio_venta': pedido.precio_venta,
+                            'estado': pedido.estado
+                        })
+                    
+                    return render_template(
+                        'productosComerciales/pedidos/pedidos.html',
+                        data=data,
+                        layout='layout'
+                    )
                 
-                # Filtro de pedidos
-                pedidos = db.session.query(Pedido).filter(
-                    and_(Pedido.user_id == user_id, Pedido.ambito == ambito)
-                ).all()
-                
-                # Procesar los datos
-                data = []  # Lista para almacenar los datos de los pedidos
-                for pedido in pedidos:
-                    data.append({
-                        'id': pedido.id,
-                        'user_id': pedido.user_id,
-                        'nombre_producto': pedido.nombre_producto,
-                        'fecha_pedido': pedido.fecha_pedido,
-                        'precio_venta': pedido.precio_venta,
-                        'estado': pedido.estado
-                    })
-                
-                return render_template(
-                    'productosComerciales/pedidos/pedidos.html',
-                    data=data,
-                    layout='layout'
-                )
-            
-            else:
-                return jsonify({'message': 'El usuario no está activo.'}), 403
+                else:
+                    return jsonify({'message': 'El usuario no está activo.'}), 403
               
         except Exception as e:
             print("Error:", str(e))
-            db.session.rollback()  # Hacer rollback de la sesión
-            db.session.close()  # Cerrar la sesión
+            session.rollback()  # Hacer rollback de la sesión
+            session.close()  # Cerrar la sesión
             return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
     return jsonify({'error': 'Token inválido o expirado.'}), 401
@@ -115,74 +115,74 @@ def productosComerciales_pedidos_mostrar_carrito():
         user_id = decoded_token.get("sub")
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
-       
-        # Buscar usuario
-        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
-        if not user:
-            return jsonify({'error': 'Usuario no encontrado.'}), 404
+        with get_db_session() as session:
+            # Buscar usuario
+            user = session.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
 
-        if not user.activo:
-            return jsonify({'error': 'El usuario no está activo.'}), 403
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
 
-       
-        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado='pendiente').all()
         
-        if not pedidos:
-            return render_template(
-                'productosComerciales/pedidos/carritoCompras.html',
-                data='',
-                layout='layout'
-            )
-        
-        # Consultar publicaciones y pedidos
-        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
-        if publicaciones:
-            # Verificar asociaciones
-            ids_publicaciones = {publicacion.id for publicacion in publicaciones}
-            pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
-
-            if not pedidos_con_publicaciones:
+            pedidos = session.query(Pedido).filter_by(user_id=user_id, ambito=ambito, estado='pendiente').all()
+            
+            if not pedidos:
                 return render_template(
                     'productosComerciales/pedidos/carritoCompras.html',
                     data='',
                     layout='layout'
                 )
-                
-        
-   
+            
+            # Consultar publicaciones y pedidos
+            publicaciones = session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
+            if publicaciones:
+                # Verificar asociaciones
+                ids_publicaciones = {publicacion.id for publicacion in publicaciones}
+                pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
 
-         # Procesar datos de los pedidos
-        pedidos_data = [
-            {
-                'id': pedido.id,
-                'user_id': pedido.user_id,
-                'nombre_producto': pedido.nombre_producto,
-                'fecha_pedido': pedido.fecha_pedido,
-                'precio_venta': pedido.precio_venta,
-                'estado': pedido.estado,
-                'ambito': quitar_acentos(pedido.ambito),  # Se llama directamente la función aquí
-                'cantidad': pedido.cantidad,
-                'imagen_url': pedido.imagen,  # Incluir la URL de la imagen   
-                'pagoOnline': pedido.pagoOnline       
-            }
-            for pedido in pedidos
-        ]
+                if not pedidos_con_publicaciones:
+                    return render_template(
+                        'productosComerciales/pedidos/carritoCompras.html',
+                        data='',
+                        layout='layout'
+                    )
+                    
+            
+    
 
-        db.session.close()
-        # Renderizar la plantilla
-        return render_template(
-            'productosComerciales/pedidos/carritoCompras.html',
-            data=pedidos_data,
-            layout='layout'
-        )
+            # Procesar datos de los pedidos
+            pedidos_data = [
+                {
+                    'id': pedido.id,
+                    'user_id': pedido.user_id,
+                    'nombre_producto': pedido.nombre_producto,
+                    'fecha_pedido': pedido.fecha_pedido,
+                    'precio_venta': pedido.precio_venta,
+                    'estado': pedido.estado,
+                    'ambito': quitar_acentos(pedido.ambito),  # Se llama directamente la función aquí
+                    'cantidad': pedido.cantidad,
+                    'imagen_url': pedido.imagen,  # Incluir la URL de la imagen   
+                    'pagoOnline': pedido.pagoOnline       
+                }
+                for pedido in pedidos
+            ]
+
+           
+            # Renderizar la plantilla
+            return render_template(
+                'productosComerciales/pedidos/carritoCompras.html',
+                data=pedidos_data,
+                layout='layout'
+            )
 
    except Exception as e:
         print("Error:", str(e))
-        db.session.rollback()  # Rollback de la sesión en caso de error
+       
         return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
    finally:
-        db.session.close()  # Cerrar la sesión siempre
+        session.close()  # Cerrar la sesión siempre
 
 
 @pedidos.route('/productosComerciales_pedidos_compras/', methods=['POST'])
@@ -207,66 +207,65 @@ def productosComerciales_pedidos_compras():
         user_id = decoded_token.get("sub")
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
-       
-        # Buscar usuario
-        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
-        if not user:
-            return jsonify({'error': 'Usuario no encontrado.'}), 404
+        with get_db_session() as session:
+            # Buscar usuario
+            user = session.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
 
-        if not user.activo:
-            return jsonify({'error': 'El usuario no está activo.'}), 403
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
 
-        # Obtener pedidos
-        ambito = data.get('ambito_btn_compras')
-         
-        # Consultar publicaciones y pedidos
-        publicaciones = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
-        pedidos = db.session.query(Pedido).filter_by(user_id=user_id, ambito=ambito).filter(
-                                Pedido.estado.in_(["entregado", "terminado"])
-                            ).all()
+            # Obtener pedidos
+            ambito = data.get('ambito_btn_compras')
+            
+            # Consultar publicaciones y pedidos
+            publicaciones = session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
+            pedidos = session.query(Pedido).filter_by(user_id=user_id, ambito=ambito).filter(
+                                    Pedido.estado.in_(["entregado", "terminado"])
+                                ).all()
 
-        # Verificar asociaciones
-        ids_publicaciones = {publicacion.id for publicacion in publicaciones}
-        pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
+            # Verificar asociaciones
+            ids_publicaciones = {publicacion.id for publicacion in publicaciones}
+            pedidos_con_publicaciones = [pedido for pedido in pedidos if pedido.publicacion_id in ids_publicaciones]
 
-        if pedidos_con_publicaciones:
+            if pedidos_con_publicaciones:
+                return render_template(
+                    'productosComerciales/pedidos/compras.html',
+                    data='',
+                    layout='layout'
+                )
+
+        
+        
+        # Procesar datos de los pedidos
+            pedidos_data = [
+                {
+                    'id': pedido.id,
+                    'user_id': pedido.user_id,
+                    'nombre_producto': pedido.nombre_producto,
+                    'fecha_pedido': pedido.fecha_pedido,
+                    'precio_venta': pedido.precio_venta,
+                    'respuesta': pedido.respuesta,
+                    'estado': pedido.estado,
+                    'imagen_url': pedido.imagen  # Incluir la URL de la imagen                
+                }
+                for pedido in pedidos
+            ]
+           
+            # Renderizar la plantilla
             return render_template(
                 'productosComerciales/pedidos/compras.html',
-                data='',
+                data=pedidos_data,
                 layout='layout'
             )
 
-      
-       
-       # Procesar datos de los pedidos
-        pedidos_data = [
-            {
-                'id': pedido.id,
-                'user_id': pedido.user_id,
-                'nombre_producto': pedido.nombre_producto,
-                'fecha_pedido': pedido.fecha_pedido,
-                'precio_venta': pedido.precio_venta,
-                'respuesta': pedido.respuesta,
-                'estado': pedido.estado,
-                'imagen_url': pedido.imagen  # Incluir la URL de la imagen                
-            }
-            for pedido in pedidos
-        ]
-        db.session.close()
-        # Renderizar la plantilla
-        return render_template(
-            'productosComerciales/pedidos/compras.html',
-            data=pedidos_data,
-            layout='layout'
-        )
-
    except Exception as e:
         print("Error:", str(e))
-        db.session.rollback()  # Rollback de la sesión en caso de error
+     
         return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
-   finally:
-        db.session.close()  # Cerrar la sesión siempre
+   
 
 ################################################################################################
 #########################RETORNA DATOS PEDIDOS DESDE LAYOUT CARRITO SOLAMENTE##################
@@ -291,42 +290,39 @@ def productosComerciales_pedidos_mostrar_layout_carrito():
         user_id = decoded_token.get("sub")
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
-        
-        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
-        if not user:
-            return jsonify({'error': 'Usuario no encontrado.'}), 404
+        with get_db_session() as session:
+            user = session.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
 
-        if not user.activo:
-            return jsonify({'error': 'El usuario no está activo.'}), 403
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
 
-        ambito = data.get('ambito_carrito')
-        pedidos = db.session.query(Pedido).filter(Pedido.user_id == user_id, Pedido.ambito == ambito).all()
+            ambito = data.get('ambito_carrito')
+            pedidos = session.query(Pedido).filter(Pedido.user_id == user_id, Pedido.ambito == ambito).all()
 
-        pedidos_data = [
-            {
-                'id': pedido.id,
-                'user_id': pedido.user_id,
-                'nombre_producto': pedido.nombre_producto,
-                'fecha_pedido': pedido.fecha_pedido,
-                'precio_venta': pedido.precio_venta,
-                'estado': pedido.estado,
-                'ambito': pedido.ambito,
-                'imagen_url': pedido.imagen
-            }
-            for pedido in pedidos
-        ]
-        db.session.close()
+            pedidos_data = [
+                {
+                    'id': pedido.id,
+                    'user_id': pedido.user_id,
+                    'nombre_producto': pedido.nombre_producto,
+                    'fecha_pedido': pedido.fecha_pedido,
+                    'precio_venta': pedido.precio_venta,
+                    'estado': pedido.estado,
+                    'ambito': pedido.ambito,
+                    'imagen_url': pedido.imagen
+                }
+                for pedido in pedidos
+            ]
+       
 
-        # Enviar solo los datos del carrito como JSON
-        return jsonify({'pedidos_data': pedidos_data})
+            # Enviar solo los datos del carrito como JSON
+            return jsonify({'pedidos_data': pedidos_data})
 
     except Exception as e:
         print("Error:", str(e))
-        db.session.rollback()
+       
         return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
-
-    finally:
-        db.session.close()
 
 
 
@@ -347,24 +343,23 @@ def productosComerciales_pedidos_eliminar_carrito():
         
         if not pedido_id:
             return jsonify({'error': 'ID de pedido no proporcionado.'}), 400
-        
-        # Buscar y eliminar el pedido
-        pedido = db.session.query(Pedido).filter_by(id=pedido_id).first()
-        if not pedido:
-            return jsonify({'error': 'Pedido no encontrado.'}), 404
-        
-        db.session.delete(pedido)
-        db.session.commit()
-        
-        return jsonify({'success': True, 'message': 'Pedido eliminado correctamente.'})
+        with get_db_session() as session:
+            # Buscar y eliminar el pedido
+            pedido = session.query(Pedido).filter_by(id=pedido_id).first()
+            if not pedido:
+                return jsonify({'error': 'Pedido no encontrado.'}), 404
+            
+            session.delete(pedido)
+            session.commit()
+            
+            return jsonify({'success': True, 'message': 'Pedido eliminado correctamente.'})
     
     except Exception as e:
         print("Error al eliminar pedido:", str(e))
-        db.session.rollback()
+      
         return jsonify({'error': 'Hubo un error al eliminar el pedido.'}), 500
     
-    finally:
-        db.session.close()
+  
 
 @pedidos.route('/productosComerciales_pedidos_alta_carrito/', methods=['POST'])
 def productosComerciales_pedidos_alta_carrito():
@@ -390,80 +385,79 @@ def productosComerciales_pedidos_alta_carrito():
         user_id = decoded_token.get("sub")
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
-       
-        # Buscar usuario
-        user = db.session.query(Usuario).filter(Usuario.id == user_id).first()
-        if not user:
-            return jsonify({'error': 'Usuario no encontrado.'}), 404
+        with get_db_session() as session:
+            # Buscar usuario
+            user = session.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
 
-        if not user.activo:
-            return jsonify({'error': 'El usuario no está activo.'}), 403
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
 
-        ####### guardar pedido en db ###########
-       # Guardar pedido en la base de datos
-         # Validar y procesar el precio
-        texto = data.get('texto_btn_carrito', '')  # Clave corregida
-        precio_btn_carrito = data.get('precio_btn_carrito', '')
-        precio, resto = obtenerPrecio(texto) if texto else (None, None)
+            ####### guardar pedido en db ###########
+        # Guardar pedido en la base de datos
+            # Validar y procesar el precio
+            texto = data.get('texto_btn_carrito', '')  # Clave corregida
+            precio_btn_carrito = data.get('precio_btn_carrito', '')
+            precio, resto = obtenerPrecio(texto) if texto else (None, None)
+            
+            if not precio:
+                precio = 0
+                if precio_btn_carrito:
+                    precio = float(precio_btn_carrito.strip('$').replace(',', '').replace('.', '')) if precio_btn_carrito else None
+            if not guardarPedido(data,user_id,precio):
+                return render_template('notificaciones/logeePrimero.html', layout='layout')
+
         
-        if not precio:
-            precio = 0
-            if precio_btn_carrito:
-                precio = float(precio_btn_carrito.strip('$').replace(',', '').replace('.', '')) if precio_btn_carrito else None
-        if not guardarPedido(data,user_id,precio):
-            return render_template('notificaciones/logeePrimero.html', layout='layout')
-
-       
 
 
-        # Obtener pedidos
-        ambito = data.get('ambito_btn_carrito')
-        pedidos = db.session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito, Pedido.estado == 'pendiente').all()
-        
-        publicacion_id_btn_carrito = data.get('publicacion_id_btn_carrito')
-        # Consultar publicaciones y pedidos
-        publicacion = db.session.query(Publicacion).filter_by(id=int(publicacion_id_btn_carrito)).first()
-        if not publicacion:
-            return jsonify({'error': 'Publicacion no encontrada.'}), 404
-        else:
-            usuario = db.session.query(Usuario).filter_by(id=publicacion.user_id).first()
-            if usuario.calendly_url:
-                calendly_url = quitar_acentos(usuario.calendly_url)
+            # Obtener pedidos
+            ambito = data.get('ambito_btn_carrito')
+            pedidos = session.query(Pedido).filter( Pedido.user_id == user_id, Pedido.ambito == ambito, Pedido.estado == 'pendiente').all()
+            
+            publicacion_id_btn_carrito = data.get('publicacion_id_btn_carrito')
+            # Consultar publicaciones y pedidos
+            publicacion = session.query(Publicacion).filter_by(id=int(publicacion_id_btn_carrito)).first()
+            if not publicacion:
+                return jsonify({'error': 'Publicacion no encontrada.'}), 404
             else:
-                calendly_url = None
-                
-       
-       # Procesar datos de los pedidos
-        pedidos_data = [
-            {
-                'id': pedido.id,
-                'user_id': pedido.user_id,
-                'nombre_producto': pedido.nombre_producto,
-                'fecha_pedido': pedido.fecha_pedido,
-                'precio_venta': pedido.precio_venta,
-                'estado': pedido.estado,
-                'imagen_url': pedido.imagen,  # Incluir la URL de la imagen  
-                'calendly_url': calendly_url,
-                'nombrePublicacionUsuario': usuario.correo_electronico,
-                'pagoOnline': botonPagoOnline            
-            }
-            for pedido in pedidos
-        ]
-       
-        # Renderizar la plantilla
-        return render_template(
-            'productosComerciales/pedidos/carritoCompras.html',
-            data=pedidos_data,
-            layout='layout'
-        )
+                usuario = session.query(Usuario).filter_by(id=publicacion.user_id).first()
+                if usuario.calendly_url:
+                    calendly_url = quitar_acentos(usuario.calendly_url)
+                else:
+                    calendly_url = None
+                    
+        
+        # Procesar datos de los pedidos
+            pedidos_data = [
+                {
+                    'id': pedido.id,
+                    'user_id': pedido.user_id,
+                    'nombre_producto': pedido.nombre_producto,
+                    'fecha_pedido': pedido.fecha_pedido,
+                    'precio_venta': pedido.precio_venta,
+                    'estado': pedido.estado,
+                    'imagen_url': pedido.imagen,  # Incluir la URL de la imagen  
+                    'calendly_url': calendly_url,
+                    'nombrePublicacionUsuario': usuario.correo_electronico,
+                    'pagoOnline': botonPagoOnline            
+                }
+                for pedido in pedidos
+            ]
+        
+            # Renderizar la plantilla
+            return render_template(
+                'productosComerciales/pedidos/carritoCompras.html',
+                data=pedidos_data,
+                layout='layout'
+            )
 
     except Exception as e:
         print("Error:", str(e))
-        db.session.rollback()  # Rollback de la sesión en caso de error
+      
         return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
-    finally:
-        db.session.close()  # Cerrar la sesión siempre
+   
 
 
 
@@ -497,23 +491,24 @@ def productosComerciales_pedidos_alta_carrito_checkBox(pedido_id):
         if not user_id:
             return jsonify({'success': False, 'error': 'Token inválido: falta el user_id.'}), 401
         publicacion_id = int(data.get('publicacion_id')) if data.get('publicacion_id') else data.get('publicacion_id')
-        # Buscar el pedido
-        publicacion = db.session.get(Publicacion, publicacion_id)
+        with get_db_session() as session:  
+            # Buscar el pedido
+            publicacion = session.get(Publicacion, publicacion_id)
 
-        if not publicacion:
-            return jsonify({'success': False, 'error': 'publicacion no encontrada.'}), 404
+            if not publicacion:
+                return jsonify({'success': False, 'error': 'publicacion no encontrada.'}), 404
 
-         ####### guardar pedido en db ###########
-       # Guardar pedido en la base de datos
-         # Validar y procesar el precio
-        texto = publicacion.texto  # Clave corregida
-        precio, resto = obtenerPrecio(texto) if texto else (None, None)
-        cantidad = data.get('cantidadCompra', 1)
-        emailCliente = data.get('correo_electronico_cbox', '')        
-        if not guardarPedidoDesdeConsultasChecbox(publicacion, user_id, precio,cantidad,emailCliente):
-            return jsonify({'success': False, 'message': 'No se pudo guardar el pedido. Inicia sesión e inténtalo de nuevo.'}), 403
+            ####### guardar pedido en db ###########
+        # Guardar pedido en la base de datos
+            # Validar y procesar el precio
+            texto = publicacion.texto  # Clave corregida
+            precio, resto = obtenerPrecio(texto) if texto else (None, None)
+            cantidad = data.get('cantidadCompra', 1)
+            emailCliente = data.get('correo_electronico_cbox', '')        
+            if not guardarPedidoDesdeConsultasChecbox(publicacion, user_id, precio,cantidad,emailCliente):
+                return jsonify({'success': False, 'message': 'No se pudo guardar el pedido. Inicia sesión e inténtalo de nuevo.'}), 403
 
-        return jsonify({'success': True, 'message': 'Pedido agregado correctamente.'})
+            return jsonify({'success': True, 'message': 'Pedido agregado correctamente.'})
     except Exception as e:
         current_app.logger.error(f"Error al actualizar pedido: {str(e)}")
         return jsonify({'success': False, 'message': 'Error al procesar la solicitud.'}), 500
@@ -596,74 +591,75 @@ def productosComerciales_pedidos_process_order():
 
     except Exception as e:
         # Rollback en caso de error
-        db.session.rollback()
-        return jsonify({'error': f'Ocurrió un error: {str(e)}'}), 500
-    finally:
-        db.session.close()  # Asegúrate de cerrar la sesión de la base de datos
+        print(f"Error al procesar el pedido: {str(e)}")
+        return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
+    
 
 
 def actualizar_pedido(pedido_data, data, tiempo):
-    # Consultar el pedido en la base de datos
-    pedido_existente = db.session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
-
-    if not pedido_existente:
-        return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
-
-    # Actualizar solo los campos necesarios
-    pedido_existente.estado = 'terminado'
-    pedido_existente.fecha_pedido = tiempo
-    pedido_existente.fecha_entrega = tiempo
-    pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
-    pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
-    pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
-    pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
-    pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
-    pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
-    pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
-    pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
     
-    # Guardar los cambios
-    db.session.commit()
-    return pedido_existente.cantidad
+    with get_db_session() as session:  
+        # Consultar el pedido en la base de datos
+        pedido_existente = session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+
+        if not pedido_existente:
+            return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
+
+        # Actualizar solo los campos necesarios
+        pedido_existente.estado = 'terminado'
+        pedido_existente.fecha_pedido = tiempo
+        pedido_existente.fecha_entrega = tiempo
+        pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
+        pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
+        pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
+        pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
+        pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
+        pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
+        pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
+        pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
+        
+        # Guardar los cambios
+        session.commit()
+        return pedido_existente.cantidad
 
     
 def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
     try:
-        
-        nuevo_pedido_entrega_pago = PedidoEntregaPago(
-            user_id=user_id,
-            publicacion_id=1,
-            cliente_id=1,
-            ambito=data.get('ambito_pagoPedido'),
-            estado='pendiente',
-            fecha_pedido=tiempo,
-            fecha_entrega=tiempo,
-            lugar_entrega=data.get('direccionCliente', ''),
-            cantidad=cantidad,
-            precio_venta=float(data.get('final_price', '')),
-            consulta=tiempo,
-            asignado_a='',
-            talla='',
-            pais='arg',
-            provincia='',
-            region='',
-            sexo='',
-            nombreCliente=data.get('nombreCliente', ''),
-            apellidoCliente=data.get('apellidoCliente', ''),
-            emailCliente=data.get('emailCliente', ''),
-            telefonoCliente=data.get('telefonoCliente', ''),
-            comentarioCliente=data.get('comentariosCliente', ''),
-            cluster_id=int(data.get('cluster_pedido', '')),
-            pedido_data_json=data.get('pedido_data_json', '')
-        )
-        db.session.add(nuevo_pedido_entrega_pago)
-        # Antes de hacer commit, puedes imprimir la consulta SQL
-       # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
-        db.session.commit()
-        return nuevo_pedido_entrega_pago
+        with get_db_session() as session:
+            nuevo_pedido_entrega_pago = PedidoEntregaPago(
+                user_id=user_id,
+                publicacion_id=1,
+                cliente_id=1,
+                ambito=data.get('ambito_pagoPedido'),
+                estado='pendiente',
+                fecha_pedido=tiempo,
+                fecha_entrega=tiempo,
+                lugar_entrega=data.get('direccionCliente', ''),
+                cantidad=cantidad,
+                precio_venta=float(data.get('final_price', '')),
+                consulta=tiempo,
+                asignado_a='',
+                talla='',
+                pais='arg',
+                provincia='',
+                region='',
+                sexo='',
+                nombreCliente=data.get('nombreCliente', ''),
+                apellidoCliente=data.get('apellidoCliente', ''),
+                emailCliente=data.get('emailCliente', ''),
+                telefonoCliente=data.get('telefonoCliente', ''),
+                comentarioCliente=data.get('comentariosCliente', ''),
+                cluster_id=int(data.get('cluster_pedido', '')),
+                pedido_data_json=data.get('pedido_data_json', '')
+            )
+            session.add(nuevo_pedido_entrega_pago)
+            # Antes de hacer commit, puedes imprimir la consulta SQL
+        # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
+            session.commit()
+            return nuevo_pedido_entrega_pago
     except Exception as e:
         # Rollback en caso de error
-        db.session.rollback()
+     
         return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500
    
 def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailCliente):
@@ -688,49 +684,49 @@ def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailClient
        # if producto_existente:
         #    print(f"Pedido duplicado detectado para user_id={userId} y nombre_producto={data.get('titulo_btn_carrrito')}.")
          #   return None  # No guardar duplicados
+        with get_db_session() as session:
+            # Crear el nuevo pedido
+            nuevo_pedido = Pedido(
+                user_id=userId,
+                publicacion_id=int(data.id),
+                ambito=data.ambito,
+                estado='pendiente',
+                fecha_pedido=tiempo,
+                fecha_entrega=tiempo,
+                fecha_consulta=tiempo,
+                fecha_baja=tiempo,
+                lugar_entrega='',
+                nombreCliente ='',
+                apellidoCliente = '',
+                telefonoCliente = '',
+                comentarioCliente = '',
+                emailCliente = emailCliente,
+                cantidad=int(cantidad),
+                precio_costo=precio_venta,
+                precio_venta=precio_venta,
+                ganancia=precio_venta,
+                diferencia=precio_venta,
+                nombre_producto=data.titulo,
+                descripcion=texto,
+                consulta='',
+                respuesta='',
+                asignado_a='gerente',
+                tamaño='',
+                provincia='',
+                region='',
+                sexo='',
+                imagen=data.imagen,
+                pagoOnline=data.pagoOnline 
+            )
 
-        # Crear el nuevo pedido
-        nuevo_pedido = Pedido(
-            user_id=userId,
-            publicacion_id=int(data.id),
-            ambito=data.ambito,
-            estado='pendiente',
-            fecha_pedido=tiempo,
-            fecha_entrega=tiempo,
-            fecha_consulta=tiempo,
-            fecha_baja=tiempo,
-            lugar_entrega='',
-            nombreCliente ='',
-            apellidoCliente = '',
-            telefonoCliente = '',
-            comentarioCliente = '',
-            emailCliente = emailCliente,
-            cantidad=int(cantidad),
-            precio_costo=precio_venta,
-            precio_venta=precio_venta,
-            ganancia=precio_venta,
-            diferencia=precio_venta,
-            nombre_producto=data.titulo,
-            descripcion=texto,
-            consulta='',
-            respuesta='',
-            asignado_a='gerente',
-            tamaño='',
-            provincia='',
-            region='',
-            sexo='',
-            imagen=data.imagen,
-            pagoOnline=data.pagoOnline 
-        )
-
-        # Guardar en la base de datos
-        db.session.add(nuevo_pedido)
-        db.session.commit()
-        return nuevo_pedido
+            # Guardar en la base de datos
+            session.add(nuevo_pedido)
+            session.commit()
+            return nuevo_pedido
     
     except Exception as e:
         print(f"Error al guardar pedido: {e}")
-        db.session.rollback()  # Revertir cambios en caso de error
+        
         return None  # Indica fallo
 def guardarPedido(data, userId, precio):
     try:
@@ -756,48 +752,49 @@ def guardarPedido(data, userId, precio):
          #   return None  # No guardar duplicados
         botonPagoOnline = data.get('precio_btn_PagoOnline')
         pagoOnline = botonPagoOnline.lower() == "true" if botonPagoOnline else False
-        # Crear el nuevo pedido
-        nuevo_pedido = Pedido(
-            user_id=userId,
-            publicacion_id=int(data.get('publicacion_id_btn_carrito')),
-            ambito=data.get('ambito_btn_carrito'),
-            estado='pendiente',
-            fecha_pedido=tiempo,
-            fecha_entrega=tiempo,
-            fecha_consulta=tiempo,
-            fecha_baja=tiempo,
-            lugar_entrega='',
-            nombreCliente ='',
-            apellidoCliente = '',
-            telefonoCliente = '',
-            comentarioCliente = '',
-            emailCliente = '',
-            cantidad=data.get('cantidadCompra', 1),
-            precio_costo=precio_venta,
-            precio_venta=precio_venta,
-            ganancia=precio_venta,
-            diferencia=precio_venta,
-            nombre_producto=data.get('titulo_btn_carrito'),
-            descripcion=texto,
-            consulta='',
-            respuesta='',
-            asignado_a='gerente',
-            tamaño='',
-            provincia='',
-            region='',
-            sexo='',
-            imagen=imagen_url,
-            pagoOnline=pagoOnline
-        )
+        with get_db_session() as session:
+            # Crear el nuevo pedido
+            nuevo_pedido = Pedido(
+                user_id=userId,
+                publicacion_id=int(data.get('publicacion_id_btn_carrito')),
+                ambito=data.get('ambito_btn_carrito'),
+                estado='pendiente',
+                fecha_pedido=tiempo,
+                fecha_entrega=tiempo,
+                fecha_consulta=tiempo,
+                fecha_baja=tiempo,
+                lugar_entrega='',
+                nombreCliente ='',
+                apellidoCliente = '',
+                telefonoCliente = '',
+                comentarioCliente = '',
+                emailCliente = '',
+                cantidad=data.get('cantidadCompra', 1),
+                precio_costo=precio_venta,
+                precio_venta=precio_venta,
+                ganancia=precio_venta,
+                diferencia=precio_venta,
+                nombre_producto=data.get('titulo_btn_carrito'),
+                descripcion=texto,
+                consulta='',
+                respuesta='',
+                asignado_a='gerente',
+                tamaño='',
+                provincia='',
+                region='',
+                sexo='',
+                imagen=imagen_url,
+                pagoOnline=pagoOnline
+            )
 
-        # Guardar en la base de datos
-        db.session.add(nuevo_pedido)
-        db.session.commit()
-        return nuevo_pedido
+            # Guardar en la base de datos
+            session.add(nuevo_pedido)
+            session.commit()
+            return nuevo_pedido
     
     except Exception as e:
         print(f"Error al guardar pedido: {e}")
-        db.session.rollback()  # Revertir cambios en caso de error
+      
         return None  # Indica fallo
 
         

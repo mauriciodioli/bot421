@@ -181,52 +181,51 @@ def media_publicaciones_mostrar_home():
 
             # Inicializar la lista de publicaciones
             publicaciones = []
+            with get_db_session() as session:
+            # Obtener todas las publicaciones del usuario
+                publicacion_estados = session.query(Estado_publi_usu).filter_by(user_id=user_id).all()
 
-           # Obtener todas las publicaciones del usuario
-            publicacion_estados = db.session.query(Estado_publi_usu).filter_by(user_id=user_id).all()
-
-            if publicacion_estados:
-                # Iterar sobre cada estado de publicación
-                for estado_publicacion in publicacion_estados:
-                    # Comparar la fecha de hoy con la fecha de eliminación
-                    fecha_eliminado = estado_publicacion.fecha_eliminado
-                    if fecha_eliminado:
-                        dias_diferencia = (datetime.today().date() - fecha_eliminado).days
-                        if dias_diferencia > 30:
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
+                if publicacion_estados:
+                    # Iterar sobre cada estado de publicación
+                    for estado_publicacion in publicacion_estados:
+                        # Comparar la fecha de hoy con la fecha de eliminación
+                        fecha_eliminado = estado_publicacion.fecha_eliminado
+                        if fecha_eliminado:
+                            dias_diferencia = (datetime.today().date() - fecha_eliminado).days
+                            if dias_diferencia > 30:
+                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
+                                if publicacion:
+                                    # Agrega la publicación a la lista de publicaciones
+                                    publicaciones.append(publicacion)
+                        
+                        # Si el estado no es "eliminado", obtén la publicación correspondiente
+                        if estado_publicacion.estado != 'eliminado':
+                            publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
                             if publicacion:
                                 # Agrega la publicación a la lista de publicaciones
                                 publicaciones.append(publicacion)
-                    
-                    # Si el estado no es "eliminado", obtén la publicación correspondiente
-                    if estado_publicacion.estado != 'eliminado':
-                        publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
-                        if publicacion:
-                            # Agrega la publicación a la lista de publicaciones
-                            publicaciones.append(publicacion)
 
-            else:
-                if categoria == '1':
-                    ambito_id = db.session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()
-                    categoriaRelation = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
-                    categoria_id = db.session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
-                    # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()
                 else:
-                    # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()
-            # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
-        
-            return jsonify(publicaciones_data)
+                    if categoria == '1':
+                        ambito_id = session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()
+                        categoriaRelation = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
+                        categoria_id = session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
+                        # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                        publicaciones = session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()
+                    else:
+                        # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                        publicaciones = session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()
+                # Armar el diccionario con todas las publicaciones, imágenes y videos
+                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
+            
+                return jsonify(publicaciones_data)
         else:
             return jsonify({'error': 'Token de acceso expirado'}), 401
 
     except Exception as e:
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
-    finally:
-        db.session.close()
+    
     # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
@@ -267,67 +266,67 @@ def media_publicaciones_mostrar_dpi():
 
             # Inicializar la lista de publicaciones
             publicaciones = []
+            with get_db_session() as session:
+            # Obtener todas las publicaciones del usuario
+                publicacion_estados = session.query(Estado_publi_usu).all()
 
-           # Obtener todas las publicaciones del usuario
-            publicacion_estados = db.session.query(Estado_publi_usu).all()
-
-            if publicacion_estados:
-                # Iterar sobre cada estado de publicación
-                for estado_publicacion in publicacion_estados:
-                    # Comparar la fecha de hoy con la fecha de eliminación
-                    fecha_eliminado = estado_publicacion.fecha_eliminado
-                    if fecha_eliminado:
-                        dias_diferencia = (datetime.today().date() - fecha_eliminado).days
-                        if dias_diferencia > 30:
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
+                if publicacion_estados:
+                    # Iterar sobre cada estado de publicación
+                    for estado_publicacion in publicacion_estados:
+                        # Comparar la fecha de hoy con la fecha de eliminación
+                        fecha_eliminado = estado_publicacion.fecha_eliminado
+                        if fecha_eliminado:
+                            dias_diferencia = (datetime.today().date() - fecha_eliminado).days
+                            if dias_diferencia > 30:
+                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
+                                if publicacion:
+                                    # Agrega la publicación a la lista de publicaciones
+                                    publicaciones.append(publicacion)
+                        
+                        # Si el estado no es "eliminado", obtén la publicación correspondiente
+                        if estado_publicacion.estado != 'eliminado':
+                            if codigoPostal == '1':
+                                
+                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
+                            else: 
+                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,codigoPostal = codigoPostal,categoria_id = int(categoria)).first()
                             if publicacion:
                                 # Agrega la publicación a la lista de publicaciones
                                 publicaciones.append(publicacion)
-                    
-                    # Si el estado no es "eliminado", obtén la publicación correspondiente
-                    if estado_publicacion.estado != 'eliminado':
-                        if codigoPostal == '1':
-                            
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
-                        else: 
-                            publicacion = db.session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,codigoPostal = codigoPostal,categoria_id = int(categoria)).first()
-                        if publicacion:
-                            # Agrega la publicación a la lista de publicaciones
-                            publicaciones.append(publicacion)
 
-            else:
-                if codigoPostal == '1':
-                    if isinstance(categoria, str) and not categoria.isdigit():
-                        ambitosCategorias = db.session.query(AmbitoCategoria).filter_by(valor=categoria).first()
-                        categoria_id = ambitosCategorias.id
-                        if not ambitosCategorias:
-                                db.session.close()
-                                raise ValueError(f"No se encontró una categoría con el valor: {categoria}")  # O maneja la excepción de otra forma
-                    else:
-                        categoria_id = int(categoria)
-                             # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                    publicaciones = db.session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = categoria_id ).all()
-                else: 
-                  if isinstance(categoria, str) and not categoria.isdigit():
-                        ambitosCategorias = db.session.query(AmbitoCategoria).filter_by(valor=categoria).first()
-                        categoria_id = ambitosCategorias.id
-                  else:
-                     categoria_id = int(categoria)
-                  publicaciones = db.session.query(Publicacion).filter(
-                                Publicacion.estado == 'activo',
-                                Publicacion.ambito == ambitos,
-                                Publicacion.idioma == idioma,
-                                Publicacion.categoria_id == categoria_id,
-                                Publicacion.codigoPostal.in_([codigoPostal, '1'])  # Código postal debe ser uno de estos valores
-                            ).all()
-              
-            # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
-            db.session.close()
-            return jsonify(publicaciones_data)
+                else:
+                    if codigoPostal == '1':
+                        if isinstance(categoria, str) and not categoria.isdigit():
+                            ambitosCategorias = session.query(AmbitoCategoria).filter_by(valor=categoria).first()
+                            categoria_id = ambitosCategorias.id
+                            if not ambitosCategorias:
+                                    session.close()
+                                    raise ValueError(f"No se encontró una categoría con el valor: {categoria}")  # O maneja la excepción de otra forma
+                        else:
+                            categoria_id = int(categoria)
+                                # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
+                        publicaciones = session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = categoria_id ).all()
+                    else: 
+                        if isinstance(categoria, str) and not categoria.isdigit():
+                                ambitosCategorias = session.query(AmbitoCategoria).filter_by(valor=categoria).first()
+                                categoria_id = ambitosCategorias.id
+                        else:
+                            categoria_id = int(categoria)
+                        publicaciones = session.query(Publicacion).filter(
+                                        Publicacion.estado == 'activo',
+                                        Publicacion.ambito == ambitos,
+                                        Publicacion.idioma == idioma,
+                                        Publicacion.categoria_id == categoria_id,
+                                        Publicacion.codigoPostal.in_([codigoPostal, '1'])  # Código postal debe ser uno de estos valores
+                                    ).all()
+                    
+                # Armar el diccionario con todas las publicaciones, imágenes y videos
+                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
+                
+                return jsonify(publicaciones_data)
 
     except Exception as e:
-        db.session.close()
+       
         # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
 
@@ -486,75 +485,75 @@ def extraer_precio_y_descripcion(texto):
 
 def armar_publicacion_bucket(publicaciones):
     publicaciones_data = []
+    with get_db_session() as session:
+        for publicacion in publicaciones:
+            # Obtener todas las imágenes y videos asociados a esta publicación
+            imagenes_videos = session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
 
-    for publicacion in publicaciones:
-        # Obtener todas las imágenes y videos asociados a esta publicación
-        imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
+            imagenes = []
+            videos = []
 
-        imagenes = []
-        videos = []
+            for iv in imagenes_videos:
+                # Obtener la información de las imágenes
+                if iv.imagen_id:
+                    try:
+                        imagen = session.query(Image).filter_by(id=iv.imagen_id).first()
+                        
+                        if imagen:
+                            # Generar la URL pública desde GCS
+                            filepath = imagen.filepath
+                            imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
+                            imagen_url = mostrar_from_gcs(imagen_url)
+                            if imagen_url:                         
+                                imagenes.append({
+                                    'id': imagen.id,
+                                    'title': imagen.title,
+                                    'description': imagen.description,
+                                    'filepath': imagen_url,  # Usar la URL de GCS
+                                    'randomNumber': imagen.randomNumber,
+                                    'size': imagen.size
+                                })
+                    except Exception as e:
+                        logging.error(f"Error al obtener información de la imagen {iv.imagen_id}: {e}")
 
-        for iv in imagenes_videos:
-            # Obtener la información de las imágenes
-            if iv.imagen_id:
-                try:
-                    imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
-                    
-                    if imagen:
-                        # Generar la URL pública desde GCS
-                        filepath = imagen.filepath
-                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')   
-                        imagen_url = mostrar_from_gcs(imagen_url)
-                        if imagen_url:                         
-                            imagenes.append({
-                                'id': imagen.id,
-                                'title': imagen.title,
-                                'description': imagen.description,
-                                'filepath': imagen_url,  # Usar la URL de GCS
-                                'randomNumber': imagen.randomNumber,
-                                'size': imagen.size
-                            })
-                except Exception as e:
-                    logging.error(f"Error al obtener información de la imagen {iv.imagen_id}: {e}")
+                # Obtener la información de los videos
+                if iv.video_id:
+                    try:
+                        video = session.query(Video).filter_by(id=iv.video_id).first()
+                        if video:
+                            filepath = video.filepath
+                            video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
+                            video_url = mostrar_from_gcs(video_url)
+                            if video_url:
+                                videos.append({
+                                    'id': video.id,
+                                    'title': video.title,
+                                    'description': video.description,
+                                    'filepath': video_url,
+                                    'size': video.size
+                                })
+                    except Exception as e:
+                        logging.error(f"Error al obtener información del video {iv.video_id}: {e}")
 
-            # Obtener la información de los videos
-            if iv.video_id:
-                try:
-                    video = db.session.query(Video).filter_by(id=iv.video_id).first()
-                    if video:
-                        filepath = video.filepath
-                        video_url = filepath.replace('static\\uploads\\', '').replace('static\\uploads\\', '')     # Asegúrate de que la barra final se mantenga si es necesario
-                        video_url = mostrar_from_gcs(video_url)
-                        if video_url:
-                            videos.append({
-                                'id': video.id,
-                                'title': video.title,
-                                'description': video.description,
-                                'filepath': video_url,
-                                'size': video.size
-                            })
-                except Exception as e:
-                    logging.error(f"Error al obtener información del video {iv.video_id}: {e}")
+            # Agregar la publicación con sus imágenes y videos al diccionario
+            publicaciones_data.append({
+                'publicacion_id': publicacion.id,
+                'user_id': publicacion.user_id,
+                'titulo': publicacion.titulo,
+                'texto': publicacion.texto,
+                'ambito': publicacion.ambito,
+                'correo_electronico': publicacion.correo_electronico,
+                'descripcion': publicacion.descripcion,
+                'color_texto': publicacion.color_texto,
+                'color_titulo': publicacion.color_titulo,
+                'fecha_creacion': publicacion.fecha_creacion,
+                'estado': publicacion.estado,
+                'idioma':publicacion.idioma,
+                'imagenes': imagenes,
+                'videos': videos
+            })
 
-        # Agregar la publicación con sus imágenes y videos al diccionario
-        publicaciones_data.append({
-            'publicacion_id': publicacion.id,
-            'user_id': publicacion.user_id,
-            'titulo': publicacion.titulo,
-            'texto': publicacion.texto,
-            'ambito': publicacion.ambito,
-            'correo_electronico': publicacion.correo_electronico,
-            'descripcion': publicacion.descripcion,
-            'color_texto': publicacion.color_texto,
-            'color_titulo': publicacion.color_titulo,
-            'fecha_creacion': publicacion.fecha_creacion,
-            'estado': publicacion.estado,
-            'idioma':publicacion.idioma,
-            'imagenes': imagenes,
-            'videos': videos
-        })
-
-    return publicaciones_data
+        return publicaciones_data
 
 
 
@@ -575,67 +574,67 @@ def armar_publicacion(publicaciones):
 
     # Crear las rutas completas de las imágenes sin codificación de caracteres
     image_paths = [os.path.join('uploads', filename).replace(os.sep, '/') for filename in image_files]
+    with get_db_session() as session:
+        for publicacion in publicaciones:
+            # Obtener todas las imágenes y videos asociados a esta publicación
+            imagenes_videos = session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
+            
+            imagenes = []
+            videos = []
 
-    for publicacion in publicaciones:
-        # Obtener todas las imágenes y videos asociados a esta publicación
-        imagenes_videos = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion.id).all()
-        
-        imagenes = []
-        videos = []
+            for iv in imagenes_videos:
+                # Obtener la información de las imágenes
+                if iv.imagen_id:
+                    imagen = session.query(Image).filter_by(id=iv.imagen_id).first()
+                    if imagen:
+                        imagenes.append({
+                            'id': imagen.id,
+                            'title': imagen.title,
+                            'description': imagen.description,
+                            'filepath': imagen.filepath,
+                            'randomNumber': imagen.randomNumber,  
+                            'size': imagen.size                      
+                        })
 
-        for iv in imagenes_videos:
-            # Obtener la información de las imágenes
-            if iv.imagen_id:
-                imagen = db.session.query(Image).filter_by(id=iv.imagen_id).first()
-                if imagen:
-                    imagenes.append({
-                        'id': imagen.id,
-                        'title': imagen.title,
-                        'description': imagen.description,
-                        'filepath': imagen.filepath,
-                        'randomNumber': imagen.randomNumber,  
-                        'size': imagen.size                      
-                    })
+                # Obtener la información de los videos
+                if iv.video_id:
+                    video = session.query(Video).filter_by(id=iv.video_id).first()
+                    if video:
+                        videos.append({
+                            'id': video.id,
+                            'title': video.title,
+                            'description': video.description,
+                            'filepath': video.filepath,
+                            'size': video.size
+                        })
 
-            # Obtener la información de los videos
-            if iv.video_id:
-                video = db.session.query(Video).filter_by(id=iv.video_id).first()
-                if video:
-                    videos.append({
-                        'id': video.id,
-                        'title': video.title,
-                        'description': video.description,
-                        'filepath': video.filepath,
-                        'size': video.size
-                    })
+            # Ajustar las rutas de archivos según el sistema operativo
+            path_separator = '/'
+            for imagen in imagenes:
+                imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
+            
+            for video in videos:
+                video['filepath'] = video['filepath'].replace('\\', path_separator)
 
-        # Ajustar las rutas de archivos según el sistema operativo
-        path_separator = '/'
-        for imagen in imagenes:
-            imagen['filepath'] = imagen['filepath'].replace('\\', path_separator)
-        
-        for video in videos:
-            video['filepath'] = video['filepath'].replace('\\', path_separator)
+            # Agregar la publicación con sus imágenes y videos al diccionario
+            publicaciones_data.append({
+                'publicacion_id': publicacion.id,
+                'user_id': publicacion.user_id,
+                'titulo': publicacion.titulo,
+                'texto': publicacion.texto,
+                'ambito': publicacion.ambito,
+                'correo_electronico': publicacion.correo_electronico,
+                'descripcion': publicacion.descripcion,
+                'color_texto': publicacion.color_texto,
+                'color_titulo': publicacion.color_titulo,
+                'fecha_creacion': publicacion.fecha_creacion, 
+                'estado': publicacion.estado,    
+                'idioma':publicacion.idioma,       
+                'imagenes': imagenes,
+                'videos': videos
+            })
 
-        # Agregar la publicación con sus imágenes y videos al diccionario
-        publicaciones_data.append({
-            'publicacion_id': publicacion.id,
-            'user_id': publicacion.user_id,
-            'titulo': publicacion.titulo,
-            'texto': publicacion.texto,
-            'ambito': publicacion.ambito,
-            'correo_electronico': publicacion.correo_electronico,
-            'descripcion': publicacion.descripcion,
-            'color_texto': publicacion.color_texto,
-            'color_titulo': publicacion.color_titulo,
-            'fecha_creacion': publicacion.fecha_creacion, 
-            'estado': publicacion.estado,    
-            'idioma':publicacion.idioma,       
-            'imagenes': imagenes,
-            'videos': videos
-        })
-
-    return publicaciones_data
+        return publicaciones_data
 
 @publicaciones.route('/media-publicaciones-cambiar-estado', methods=['POST'])
 def media_publicaciones_cambiar_estado():
@@ -646,24 +645,23 @@ def media_publicaciones_cambiar_estado():
     # Validar los datos
     if not publicacion_id or not nuevo_estado:
         return jsonify({'error': 'Faltan parámetros'}), 400
-    
-    # Buscar la publicación en la base de datos
-    publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()    
-    if not publicacion:
-        return jsonify({'error': 'Publicación no encontrada'}), 404
-    
-    # Refrescar para asegurar que la instancia esté actualizada
-    db.session.refresh(publicacion)
-    
-    # Actualizar el estado de la publicación
-    publicacion.estado = nuevo_estado
-    try:
-        db.session.commit()
-    except StaleDataError:
-        db.session.rollback()  # Revertir en caso de error
-        return jsonify({'error': 'No se pudo actualizar el estado, verifique si los datos cambiaron'}), 409
-    finally:
-        db.session.close()
+    with get_db_session() as session:
+        # Buscar la publicación en la base de datos
+        publicacion = session.query(Publicacion).filter_by(id=publicacion_id).first()    
+        if not publicacion:
+            return jsonify({'error': 'Publicación no encontrada'}), 404
+        
+        # Refrescar para asegurar que la instancia esté actualizada
+        session.refresh(publicacion)
+        
+        # Actualizar el estado de la publicación
+        publicacion.estado = nuevo_estado
+        try:
+            session.commit()
+        except StaleDataError:
+          
+            return jsonify({'error': 'No se pudo actualizar el estado, verifique si los datos cambiaron'}), 409
+       
     
     return jsonify({'success': True, 'nuevoEstado': nuevo_estado}), 200
 
@@ -681,30 +679,30 @@ def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_
     randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
     
     try:
-        imagen_existente = db.session.query(Image).filter_by(title=filename).first()
-        if imagen_existente:
-            cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
-            return filename
-        else:
-            nueva_imagen = Image(
-                user_id=userid,
-                title=nombre_archivo,
-                description=descriptionImagen,
-                colorDescription=color_texto,
-                filepath=filename,
-                randomNumber=randomNumber_,
-                size=float(size),
-                mimetype=mimetype
-            )
-            db.session.add(nueva_imagen)
-            db.session.commit()
-            
-            cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
-            return filename
+        with get_db_session() as session:
+            imagen_existente = session.query(Image).filter_by(title=filename).first()
+            if imagen_existente:
+                cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
+                return filename
+            else:
+                nueva_imagen = Image(
+                    user_id=userid,
+                    title=nombre_archivo,
+                    description=descriptionImagen,
+                    colorDescription=color_texto,
+                    filepath=filename,
+                    randomNumber=randomNumber_,
+                    size=float(size),
+                    mimetype=mimetype
+                )
+                session.add(nueva_imagen)
+                session.commit()
+                
+                cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
+                return filename
     except Exception as db_error:
         app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
-        db.session.rollback()  # Deshacer cambios en caso de error
-        db.session.close()  # Asegurarse de cerrar la sesión incluso si ocurre un error
+     
 
         raise  # Propagar el error para que pueda ser manejado por capas superiores
       
@@ -719,35 +717,35 @@ def cargarVideo_crearPublicacion(app, request, filename, id_publicacion, color_t
     randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
     
     try:
-        video_existente = db.session.query(Video).filter_by(title=filename,size=size).first()
+        with get_db_session() as session:
+            video_existente = session.query(Video).filter_by(title=filename,size=size).first()
 
-        if video_existente:
-            print("Video already exists, saving relation to publicacion_media")
-            # Si la imagen ya existe, solo guarda la relación en publicacion_media
-            
-            cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
+            if video_existente:
+                print("Video already exists, saving relation to publicacion_media")
+                # Si la imagen ya existe, solo guarda la relación en publicacion_media
+                
+                cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
+                return filename
+            else:
+                print("Creating new video")
+                nuevo_video = Video(
+                    user_id=userid,
+                    title=nombre_archivo,
+                    description=descriptionVideo,
+                    colorDescription=color_texto,
+                    filepath=filename,
+                    randomNumber=randomNumber_,
+                    size=float(size),
+                    mimetype=mimetype
+                )
+                session.add(nuevo_video)
+                session.commit()
+                print("Saving relation to publicacion_media")
+                cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
             return filename
-        else:
-            print("Creating new video")
-            nuevo_video = Video(
-                user_id=userid,
-                title=nombre_archivo,
-                description=descriptionVideo,
-                colorDescription=color_texto,
-                filepath=filename,
-                randomNumber=randomNumber_,
-                size=float(size),
-                mimetype=mimetype
-            )
-            db.session.add(nuevo_video)
-            db.session.commit()
-            print("Saving relation to publicacion_media")
-            cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
-        return filename
     except Exception as db_error:
         app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
-        db.session.rollback()  # Deshacer cambios en caso de error
-        db.session.close()  # Asegurarse de cerrar la sesión incluso si ocurre un error
+      
 
         raise  # Propagar el error para que pueda ser manejado por capas superiores
 
@@ -779,53 +777,54 @@ def guardarPublicacion(request, user_id):
         estado = request.form.get('postEstado_creaPublicacion')
         botonCompra = request.form.get('postBotonCompra_creaPublicacion')
         codigoPostal = request.cookies.get('codigoPostal')
-        
-        # Verificar si ya existe una publicación con el mismo título para el mismo usuario
-        publicacion_existente = db.session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
-        
-        if publicacion_existente:
-            # Si existe, devolver un mensaje sugiriendo cambiar el nombre
-             return None
-        
-        # Crear una nueva publicación si no existe una con el mismo nombre
-        nueva_publicacion = Publicacion(
-            user_id=user_id,             
-            titulo=post_title,
-            texto=post_text,
-            ambito=ambito,
-            correo_electronico=correo_electronico,
-            descripcion=post_descripcion,
-            color_texto=color_texto,
-            color_titulo=color_titulo,
-            fecha_creacion=datetime.now(),
-            estado=estado,
-            codigoPostal=codigoPostal,
-            botonCompra=bool(botonCompra)
-        )
-        
-        db.session.add(nueva_publicacion)
-        db.session.commit()
-        return nueva_publicacion.id
-        
+        with get_db_session() as session:
+            # Verificar si ya existe una publicación con el mismo título para el mismo usuario
+            publicacion_existente = session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
+            
+            if publicacion_existente:
+                # Si existe, devolver un mensaje sugiriendo cambiar el nombre
+                return None
+            
+            # Crear una nueva publicación si no existe una con el mismo nombre
+            nueva_publicacion = Publicacion(
+                user_id=user_id,             
+                titulo=post_title,
+                texto=post_text,
+                ambito=ambito,
+                correo_electronico=correo_electronico,
+                descripcion=post_descripcion,
+                color_texto=color_texto,
+                color_titulo=color_titulo,
+                fecha_creacion=datetime.now(),
+                estado=estado,
+                codigoPostal=codigoPostal,
+                botonCompra=bool(botonCompra)
+            )
+            
+            session.add(nueva_publicacion)
+            session.commit()
+            return nueva_publicacion.id
+            
     except Exception as e:
         print(str(e))
-        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+     
         return jsonify({'error': 'Ocurrió un error al guardar la publicación.'}), 500
    
 
 def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_video_id,media_type,size=0):
-    nuevo_ids= Public_imagen_video(
-        publicacion_id=id_publicacion,
-        imagen_id=nueva_imagen_id,
-        video_id=nuevo_video_id,
-        fecha_creacion=datetime.now(),
-        media_type=media_type,
-        size=float(size)
-    )
-    db.session.add(nuevo_ids)
-    db.session.commit()
-    db.session.close()
-    return True
+    with get_db_session() as session:
+        nuevo_ids= Public_imagen_video(
+            publicacion_id=id_publicacion,
+            imagen_id=nueva_imagen_id,
+            video_id=nuevo_video_id,
+            fecha_creacion=datetime.now(),
+            media_type=media_type,
+            size=float(size)
+        )
+        session.add(nuevo_ids)
+        session.commit()
+    
+        return True
 
 def show_publicacion_galeriaimagenes(request, media_files,id_publicacion):
      return render_template('publicaciones/publicacionesGaleriaImagenes.html', media_files=media_files,id_publicacion=id_publicacion)
@@ -860,9 +859,10 @@ def social_imagenes_eliminar_publicacion():
         try:
             # Ejemplo de eliminación (ajustar según tu implementación)
             with app.app_context():
-                eliminar_relacion_categorias_publicaciones(publicacion_id)
-                eliminar_publicacion_y_medios(publicacion_id, user_id)
-                db.session.close()
+                with get_db_session() as session:
+                    eliminar_relacion_categorias_publicaciones(publicacion_id)
+                    eliminar_publicacion_y_medios(publicacion_id, user_id)
+                  
             return jsonify({'success': True}), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 500
@@ -872,68 +872,70 @@ def social_imagenes_eliminar_publicacion():
 def eliminar_relacion_categorias_publicaciones(publicacion_id):
     try:
         publicacion_id = int(publicacion_id)
-        # Eliminar la relación entre la publicación y las categorías
-        db.session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).delete()
-        db.session.commit()
-        return True
+        with get_db_session() as session:
+            # Eliminar la relación entre la publicación y las categorías
+            session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).delete()
+            session.commit()
+            return True
     except Exception as e:
         print(str(e))
-        db.session.rollback()  # Asegúrate de hacer rollback en caso de error
+     
         return False
 
 def eliminar_publicacion_y_medios(publicacion_id, user_id):
     try:
-        publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
-        if publicacion:
-            publicacion_id = int(publicacion_id)
-            usuario_publicacion_ubicacion = db.session.query(UsuarioPublicacionUbicacion).filter_by(id_publicacion=publicacion_id).first()
-            if usuario_publicacion_ubicacion:
-                 db.session.delete(usuario_publicacion_ubicacion)  
-            # Obtener los registros de medios relacionados en la tabla intermedia
-            publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id).all()
-            
-            # Eliminar la publicación
-            db.session.delete(publicacion)          
-          
-            for p in publicacion_imagen_video:
-                # Verificar si la imagen está asociada a más de una publicación
-                imagen_en_multiples_publicaciones = (
-                    db.session.query(func.count(Public_imagen_video.publicacion_id))
-                    .filter_by(imagen_id=p.imagen_id)
-                    .scalar() > 1
-                )
-                if not imagen_en_multiples_publicaciones:
-                    # Eliminar la imagen asociada, si no está en otras publicaciones
-                    imagen = db.session.query(Image).filter_by(id=p.imagen_id, user_id=user_id).first()
-                    if imagen:
-                        db.session.delete(imagen)
-                      #  eliminar_desde_archivo(imagen.title, user_id)
-                        delete_from_gcs(imagen.title)
+        with get_db_session() as session:
+            publicacion = session.query(Publicacion).filter_by(id=publicacion_id, user_id=user_id).first()
+            if publicacion:
+                publicacion_id = int(publicacion_id)
+                usuario_publicacion_ubicacion = session.query(UsuarioPublicacionUbicacion).filter_by(id_publicacion=publicacion_id).first()
+                if usuario_publicacion_ubicacion:
+                    session.delete(usuario_publicacion_ubicacion)  
+                # Obtener los registros de medios relacionados en la tabla intermedia
+                publicacion_imagen_video = session.query(Public_imagen_video).filter_by(publicacion_id=publicacion_id).all()
                 
-                # Verificar si el video está asociado a más de una publicación
-                video_en_multiples_publicaciones = (
-                    db.session.query(func.count(Public_imagen_video.publicacion_id))
-                    .filter_by(video_id=p.video_id)
-                    .scalar() > 1
-                )
-                if not video_en_multiples_publicaciones:
-                    # Eliminar el video asociado, si no está en otras publicaciones
-                    video = db.session.query(Video).filter_by(id=p.video_id, user_id=user_id).first()
-                    if video:
-                        db.session.delete(video)
-                        #eliminar_desde_archivo(video.title, user_id)
-                        delete_from_gcs(video.title)
-                    
-                # Eliminar el registro de la tabla intermedia
-                db.session.delete(p)
+                # Eliminar la publicación
+                session.delete(publicacion)          
             
-            # Commit de todas las eliminaciones en una sola transacción
-            db.session.commit()
-            db.session.close()
-            return True
+                for p in publicacion_imagen_video:
+                    # Verificar si la imagen está asociada a más de una publicación
+                    imagen_en_multiples_publicaciones = (
+                        session.query(func.count(Public_imagen_video.publicacion_id))
+                        .filter_by(imagen_id=p.imagen_id)
+                        .scalar() > 1
+                    )
+                    if not imagen_en_multiples_publicaciones:
+                        # Eliminar la imagen asociada, si no está en otras publicaciones
+                        imagen = session.query(Image).filter_by(id=p.imagen_id, user_id=user_id).first()
+                        if imagen:
+                            session.delete(imagen)
+                        #  eliminar_desde_archivo(imagen.title, user_id)
+                            delete_from_gcs(imagen.title)
+                    
+                    # Verificar si el video está asociado a más de una publicación
+                    video_en_multiples_publicaciones = (
+                        session.query(func.count(Public_imagen_video.publicacion_id))
+                        .filter_by(video_id=p.video_id)
+                        .scalar() > 1
+                    )
+                    if not video_en_multiples_publicaciones:
+                        # Eliminar el video asociado, si no está en otras publicaciones
+                        video = session.query(Video).filter_by(id=p.video_id, user_id=user_id).first()
+                        if video:
+                            session.delete(video)
+                            #eliminar_desde_archivo(video.title, user_id)
+                            delete_from_gcs(video.title)
+                        
+                    # Eliminar el registro de la tabla intermedia
+                    session.delete(p)
+                
+                # Commit de todas las eliminaciones en una sola transacción
+                session.commit()
+                
+                return True
 
     except Exception as e:
-        db.session.rollback()  # Revertir cambios en caso de error
+    
         print(f"Error al eliminar la publicación y medios: {e}")
         return False
 
@@ -1002,36 +1004,35 @@ def borrado_logicopublicacion(publicacion_id, user_id, estado):
     try:
         # Inicializa una lista vacía para almacenar las publicaciones
         publicaciones = []
+        with get_db_session() as session:
+            # Obtén todos los estados de la publicación con el publicacion_id y user_id dados
+            publicacion_estados = session.query(Estado_publi_usu).filter_by(publicacion_id=publicacion_id, user_id=user_id).all()
 
-        # Obtén todos los estados de la publicación con el publicacion_id y user_id dados
-        publicacion_estados = db.session.query(Estado_publi_usu).filter_by(publicacion_id=publicacion_id, user_id=user_id).all()
-
-        nuevo_estado = Estado_publi_usu(
-            publicacion_id=publicacion_id,
-            user_id=user_id,
-            estado=estado,
-            visto=False,  # Puedes cambiar esto según tus necesidades
-            gusto='',  # Puedes cambiar esto según tus necesidades
-            tiempo_visto='',  # Puedes cambiar esto según tus necesidades
-            fecha_visto=datetime.now(),  # Puedes cambiar esto según tus necesidades
-            fecha_eliminado=datetime.now(),  # Puedes cambiar esto según tus necesidades
-            fecha_gustado=datetime.now()  # Puedes cambiar esto según tus necesidades
-        )
-        
-        # Agregar el nuevo estado a la base de datos
-        db.session.add(nuevo_estado)
-        db.session.commit()
-        
-        publicaciones.append(nuevo_estado)  
-                    
-        return True
+            nuevo_estado = Estado_publi_usu(
+                publicacion_id=publicacion_id,
+                user_id=user_id,
+                estado=estado,
+                visto=False,  # Puedes cambiar esto según tus necesidades
+                gusto='',  # Puedes cambiar esto según tus necesidades
+                tiempo_visto='',  # Puedes cambiar esto según tus necesidades
+                fecha_visto=datetime.now(),  # Puedes cambiar esto según tus necesidades
+                fecha_eliminado=datetime.now(),  # Puedes cambiar esto según tus necesidades
+                fecha_gustado=datetime.now()  # Puedes cambiar esto según tus necesidades
+            )
+            
+            # Agregar el nuevo estado a la base de datos
+            session.add(nuevo_estado)
+            session.commit()
+            
+            publicaciones.append(nuevo_estado)  
+                        
+            return True
         
     except Exception as e:
-        db.session.rollback()
+       
         print(f"Error: {e}")
         return False
-    finally:
-        db.session.close()
+   
 
 
 
@@ -1052,77 +1053,77 @@ def publicaciones_modificar_publicaciones():
         botonPagoOnline = request.form.get('postPagoOnline_modificaPublicacion')
         # Obtener archivos subidos si es necesario
         archivos = request.files.getlist('mediaFile_modificaPublicacion')
+        with get_db_session() as session:
+            # Obtener el encabezado Authorization
+            authorization_header = request.headers.get('Authorization')
+            if not authorization_header:
+                return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+            
+            # Verificar formato del encabezado Authorization
+            parts = authorization_header.split()
+            if len(parts) != 2 or parts[0].lower() != 'bearer':
+                return jsonify({'error': 'Formato de token de acceso no válido'}), 401
+            
+            # Obtener el token de acceso
+            access_token = parts[1]
 
-        # Obtener el encabezado Authorization
-        authorization_header = request.headers.get('Authorization')
-        if not authorization_header:
-            return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+            # Validar y decodificar el token
+            if Token.validar_expiracion_token(access_token=access_token):  
+                app = current_app._get_current_object()
+                decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+                user_id = decoded_token.get("sub")
+            else:
+               
+                return jsonify({'error': 'Token de acceso expirado o inválido'}), 401
+
+            # Verificar si la publicación existe y pertenece al usuario
+            publicacion = session.query(Publicacion).filter_by(id=post_id, user_id=user_id).first()
+            if not publicacion:
+            
+                return jsonify({'error': 'Publicación no encontrada o no autorizada'}), 404
+            
+            categoriPublicacion = session.query(CategoriaPublicacion).filter(
+                    CategoriaPublicacion.id == int(categoria),
+                    CategoriaPublicacion.publicacion_id == publicacion.id
+                ).first()
+
+            if not categoriPublicacion:
+                new_categoriPublicacion = CategoriaPublicacion(
+                    publicacion_id=publicacion.id,
+                    categoria_id=int(categoria),
+                    estado='activo'
+                )   
+                session.add(new_categoriPublicacion)
+            else:
+                categoriPublicacion.categoria_id = int(categoria)
+
+            session.commit()
+
+            
+            # Eliminar todas las etiquetas HTML
+            texto_limpio = re.sub(r'<[^>]*>', '', texto) if texto else ''
+            
+            # Actualizar la publicación
+            publicacion.titulo = titulo
+            publicacion.texto = texto_limpio
+            publicacion.descripcion = descripcion
+            publicacion.estado = estado
+            publicacion.ambito = ambito
+            publicacion.categoria_id = int(categoria) if categoria else categoria
+            publicacion.idioma = idioma
+            publicacion.codigoPostal = codigoPostal
+            publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
+            publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
+            publicacion.pagoOnline  = botonPagoOnline.lower() == "true" if botonPagoOnline else False
+
         
-        # Verificar formato del encabezado Authorization
-        parts = authorization_header.split()
-        if len(parts) != 2 or parts[0].lower() != 'bearer':
-            return jsonify({'error': 'Formato de token de acceso no válido'}), 401
-        
-        # Obtener el token de acceso
-        access_token = parts[1]
-
-        # Validar y decodificar el token
-        if Token.validar_expiracion_token(access_token=access_token):  
-            app = current_app._get_current_object()
-            decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
-            user_id = decoded_token.get("sub")
-        else:
-            db.session.close()
-            return jsonify({'error': 'Token de acceso expirado o inválido'}), 401
-
-        # Verificar si la publicación existe y pertenece al usuario
-        publicacion = db.session.query(Publicacion).filter_by(id=post_id, user_id=user_id).first()
-        if not publicacion:
-            db.session.close()
-            return jsonify({'error': 'Publicación no encontrada o no autorizada'}), 404
-        
-        categoriPublicacion = db.session.query(CategoriaPublicacion).filter(
-                CategoriaPublicacion.id == int(categoria),
-                CategoriaPublicacion.publicacion_id == publicacion.id
-            ).first()
-
-        if not categoriPublicacion:
-            new_categoriPublicacion = CategoriaPublicacion(
-                publicacion_id=publicacion.id,
-                categoria_id=int(categoria),
-                estado='activo'
-            )   
-            db.session.add(new_categoriPublicacion)
-        else:
-            categoriPublicacion.categoria_id = int(categoria)
-
-        db.session.commit()
-
-        
-        # Eliminar todas las etiquetas HTML
-        texto_limpio = re.sub(r'<[^>]*>', '', texto) if texto else ''
-        
-        # Actualizar la publicación
-        publicacion.titulo = titulo
-        publicacion.texto = texto_limpio
-        publicacion.descripcion = descripcion
-        publicacion.estado = estado
-        publicacion.ambito = ambito
-        publicacion.categoria_id = int(categoria) if categoria else categoria
-        publicacion.idioma = idioma
-        publicacion.codigoPostal = codigoPostal
-        publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
-        publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
-        publicacion.pagoOnline  = botonPagoOnline.lower() == "true" if botonPagoOnline else False
-
-       
-        db.session.commit()
-        db.session.close()
-        return jsonify({"mensaje": "Publicación modificada con éxito!"})
+            session.commit()
+          
+            return jsonify({"mensaje": "Publicación modificada con éxito!"})
 
     except Exception as e:
         print(str(e))
-        db.session.rollback()
+        session.rollback()
         return jsonify({'error': 'Ocurrió un error al modificar la publicación.'}), 500
 
             
@@ -1174,35 +1175,35 @@ def eliminar_desde_db_imagen_video(data, user_id):
 
         publicacion_id = int(publicacion_id)
         multimedia_id = int(id_imagen) if str(id_imagen).isdigit() else id_imagen
+        with get_db_session() as session:
+            # Buscar imagen o video
+            multimedia = (
+                session.query(Image).filter_by(id=multimedia_id, user_id=user_id).first()
+                or session.query(Video).filter_by(id=multimedia_id, user_id=user_id).first()
+            )
 
-        # Buscar imagen o video
-        multimedia = (
-            db.session.query(Image).filter_by(id=multimedia_id, user_id=user_id).first()
-            or db.session.query(Video).filter_by(id=multimedia_id, user_id=user_id).first()
-        )
+            if not multimedia:
+                raise ValueError(f"Multimedia con ID {multimedia_id} no encontrado.")
 
-        if not multimedia:
-            raise ValueError(f"Multimedia con ID {multimedia_id} no encontrado.")
+            # Obtener los registros de la tabla intermedia
+            publicacion_imagen_video = session.query(Public_imagen_video).filter_by(
+                publicacion_id=publicacion_id, imagen_id=multimedia_id
+            ).all()
 
-        # Obtener los registros de la tabla intermedia
-        publicacion_imagen_video = db.session.query(Public_imagen_video).filter_by(
-            publicacion_id=publicacion_id, imagen_id=multimedia_id
-        ).all()
+            if len(publicacion_imagen_video) < 2:
+                # Eliminar el registro multimedia si no está asociado a otras publicaciones
+                session.delete(multimedia)
+                delete_from_gcs(multimedia.title)
 
-        if len(publicacion_imagen_video) < 2:
-            # Eliminar el registro multimedia si no está asociado a otras publicaciones
-            db.session.delete(multimedia)
-            delete_from_gcs(multimedia.title)
+            # Eliminar los registros de la tabla intermedia
+            for item in publicacion_imagen_video:
+                session.delete(item)
 
-        # Eliminar los registros de la tabla intermedia
-        for item in publicacion_imagen_video:
-            db.session.delete(item)
-
-        db.session.commit()
-        return True
+            session.commit()
+            return True
 
     except Exception as e:
-        db.session.rollback()
+       
         # Log del error para depuración
         print(f"Error eliminando multimedia: {e}")
         raise e

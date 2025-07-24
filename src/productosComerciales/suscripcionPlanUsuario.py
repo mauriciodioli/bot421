@@ -16,7 +16,7 @@ import jwt
 from models.usuario import Usuario
 from models.brokers import Broker
 from models.payment_page.suscripcionPlanUsuario import SuscripcionPlanUsuario
-
+from utils.db_session import get_db_session 
 
 
 #mp = MercadoPago("CLIENT_ID", "CLIENT_SECRET")
@@ -42,39 +42,40 @@ def productosComerciales_suscripciones_muestra_suscripciones():
         if Token.validar_expiracion_token(access_token=access_token):
             app = current_app._get_current_object()
             user_id = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-            usuario = db.session.query(Usuario).filter_by(id=user_id).first()
+            with get_db_session() as session:
+                usuario = session.query(Usuario).filter_by(id=user_id).first()
 
-            # Recuperar las suscripciones
-            if usuario.roll == 'ADMINISTRADOR':
-                suscripciones = db.session.query(SuscripcionPlanUsuario).all()
-            else:
-                suscripciones = db.session.query(SuscripcionPlanUsuario).filter_by(user_id=user_id).all()
+                # Recuperar las suscripciones
+                if usuario.roll == 'ADMINISTRADOR':
+                    suscripciones = session.query(SuscripcionPlanUsuario).all()
+                else:
+                    suscripciones = session.query(SuscripcionPlanUsuario).filter_by(user_id=user_id).all()
 
-            db.session.close()
+              
 
-            # Serializar los planes
-            suscripciones_serializados = [
-                {
-                    'payer_id': suscripcion.payer_id,
-                    'accountCuenta': suscripcion.accountCuenta,
-                    'status': suscripcion.status,
-                    'reason': suscripcion.reason,
-                    'date_created': suscripcion.date_created,
-                    'frequency': suscripcion.frequency,
-                    'quotas': suscripcion.quotas,
-                    'pending_charge_amount': suscripcion.pending_charge_amount,
-                    'payment_method_id': suscripcion.payment_method_id,
-                    'billing_day': suscripcion.billing_day,
-                    'preapproval_plan_id': suscripcion.preapproval_plan_id
-                }
-                for suscripcion in suscripciones
-            ]
+                # Serializar los planes
+                suscripciones_serializados = [
+                    {
+                        'payer_id': suscripcion.payer_id,
+                        'accountCuenta': suscripcion.accountCuenta,
+                        'status': suscripcion.status,
+                        'reason': suscripcion.reason,
+                        'date_created': suscripcion.date_created,
+                        'frequency': suscripcion.frequency,
+                        'quotas': suscripcion.quotas,
+                        'pending_charge_amount': suscripcion.pending_charge_amount,
+                        'payment_method_id': suscripcion.payment_method_id,
+                        'billing_day': suscripcion.billing_day,
+                        'preapproval_plan_id': suscripcion.preapproval_plan_id
+                    }
+                    for suscripcion in suscripciones
+                ]
 
-            return jsonify({'suscripciones': suscripciones_serializados, 'layout': layout})
+                return jsonify({'suscripciones': suscripciones_serializados, 'layout': layout})
 
         # Token inválido o expirado
         return jsonify({'error': 'Invalid or expired access token'}), 403
 
     except Exception as e:
-        db.session.rollback()
+     
         return jsonify({'error': str(e)}), 500

@@ -4,6 +4,7 @@ from flask import Blueprint
 from utils.db import db
 import unidecode
 import re
+from utils.db_session import get_db_session 
 
 
 
@@ -47,14 +48,15 @@ def normalizar_slug(texto):
 
 def get_or_create_ambito(valor_original, idioma):
     slug = normalizar_slug(valor_original)
-    ambito = db.session.query(AmbitoGeneral).filter_by(slug=slug).first()
-    if not ambito:
-        ambito = AmbitoGeneral(slug=slug)
-        db.session.add(ambito)
-        db.session.flush()
+    with get_db_session() as session:
+        ambito = session.query(AmbitoGeneral).filter_by(slug=slug).first()
+        if not ambito:
+            ambito = AmbitoGeneral(slug=slug)
+            session.add(ambito)
+            session.flush()
 
-    traduccion = db.session.query(AmbitoTraduccion).filter_by(ambito_id=ambito.id, idioma=idioma).first()
-    if not traduccion:
-        nueva = AmbitoTraduccion(ambito_id=ambito.id, idioma=idioma, valor=valor_original.strip())
-        db.session.add(nueva)
-    return ambito.id
+        traduccion = session.query(AmbitoTraduccion).filter_by(ambito_id=ambito.id, idioma=idioma).first()
+        if not traduccion:
+            nueva = AmbitoTraduccion(ambito_id=ambito.id, idioma=idioma, valor=valor_original.strip())
+            session.add(nueva)
+        return ambito.id

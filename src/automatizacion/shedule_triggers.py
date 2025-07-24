@@ -15,7 +15,7 @@ from models.triggerEstrategia import TriggerEstrategia
 from models.servidores.servidorAws import ServidorAws
 from datetime import datetime, timedelta, time
 from sqlalchemy.exc import SQLAlchemyError  # Importar para el manejo de errores
-
+from utils.db_session import get_db_session 
 import smtplib
 import schedule
 import functools
