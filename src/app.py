@@ -6,6 +6,7 @@ from config import DATABASE_CONNECTION_URI
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.exc import SQLAlchemyError
 
+from utils.db_session import get_db_session  # Asegurate de tener este import
 # Importar create_engine y NullPool
 import logging
 import datetime
@@ -602,7 +603,6 @@ def logs():
 
 
 
-
 @app.route("/send_local_storage/", methods=["POST"])
 def send_local_storage():
     data = request.json
@@ -616,17 +616,17 @@ def send_local_storage():
     cuenta = data.get('cuenta')
     user_id = data.get('usuario_id')        
     simuladoOproduccion = data.get('simuladoOproduccion')
-    client_ip = request.remote_addr  # Obtiene la IP del cliente
+    client_ip = request.remote_addr
     data['client_ip'] = client_ip
 
-    # Elimina los logs antiguos cada 5 días
     Logs.eliminar_logs_antiguos(5)
 
+    session = get_db_session()  # ✅ Sesión segura
     try:
         if access_token:
             if Token.validar_expiracion_token(access_token=access_token):                     
-                usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
-                registrar_acceso(data, usuario_obj, True)  # Acceso exitoso
+                usuario_obj = session.query(Usuario).filter_by(id=user_id).first()
+                registrar_acceso(data, usuario_obj, True)
 
                 redirect_route = 'home' if correo_electronico else 'index'
                 app.logger.info(correo_electronico or '____INTENTO ENTRAR____')
@@ -634,11 +634,11 @@ def send_local_storage():
 
             elif refresh_token and Token.validar_expiracion_token(access_token=refresh_token):
                 decoded_token = decode_token(refresh_token)
-                user_id = decoded_token.get("sub")  # "sub" contiene la identidad del usuario en JWT
+                user_id = decoded_token.get("sub")
 
                 nuevo_access_token = generar_nuevo_token_acceso_vencido(user_id)
-                usuario_obj = db.session.query(Usuario).filter_by(id=user_id).first()
-                registrar_acceso(data, usuario_obj, True)  # Acceso exitoso
+                usuario_obj = session.query(Usuario).filter_by(id=user_id).first()
+                registrar_acceso(data, usuario_obj, True)
 
                 app.logger.info(f"Nuevo access_token generado para: {correo_electronico}")
                 return jsonify(success=True, ruta='home', access_token=nuevo_access_token)
@@ -657,9 +657,7 @@ def send_local_storage():
         app.logger.error(f"Error al procesar la solicitud: {e}")
         return jsonify(success=False, message="Hubo un error en la solicitud")
 
-    finally:
-        # Siempre cierra la sesión después de la operación
-        db.session.close()
+    
 
 
 def registrar_acceso(request, usuario, exito, motivo_fallo=None):

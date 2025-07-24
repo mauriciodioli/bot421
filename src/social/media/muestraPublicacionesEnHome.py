@@ -57,8 +57,12 @@ def media_publicaciones_detalle_dpi(publicacion_id):
 def media_publicaciones_detalle(publicacion_id, layout):
     # Obtener la publicación
     post = obtener_publicacion_por_id(publicacion_id)
-
+    
     if post:
+        
+        if post == 'noPoseeCategoria':
+            return render_template('notificaciones/noPoseeDatos.html', layout='layout_dpi')
+        
         estrellas_html = generar_estrellas_html(post.get('rating', 4.5), post.get('reviews', 1))
         return render_template(
             'media/publicaciones/muestraPublicacionesEnHome.html',
@@ -67,6 +71,9 @@ def media_publicaciones_detalle(publicacion_id, layout):
             estrellas_html=estrellas_html
         )
     else:
+        return render_template('notificaciones/noPoseeDatos.html',layout='layout_dpi')
+    
+            
         return jsonify({'error': 'Publicación no encontrada'}), 404
 def generar_estrellas_html(rating, reviews):
     estrellas_html = ''
@@ -86,7 +93,8 @@ def obtener_publicacion_por_id(publicacion_id):
         publicacion = db.session.query(Publicacion).filter_by(id=publicacion_id).first()
         relacion = db.session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).first()
         categoria = db.session.query(AmbitoCategoria).filter_by(id=relacion.categoria_id).first() if relacion else None
-        
+        if not categoria:
+            return 'noPoseeCategoria'
         if publicacion:
             publicaciones_data = []
             

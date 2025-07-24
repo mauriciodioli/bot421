@@ -291,7 +291,13 @@ cargarAmbitosCategorias();
 
 
 
-function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {    
+function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) { 
+     // Bloqueo de duplicación
+    //if (sessionStorage.getItem('dominioCategoriaCargado')) {
+      //  console.log("enviarDominioAJAXDesdeCategorias ya ejecutado, se evita la duplicación.");
+       // return;
+   // }
+    sessionStorage.setItem('dominioCategoriaCargado', 'true');   
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
     const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida

@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 import base64
 import logging
+from utils.db_session import get_db_session
 # Librerías externas
 import requests
 import jwt
@@ -68,16 +69,17 @@ try:
     print("Conexión a Redis exitosa")
 except redis.ConnectionError:
     print("No se pudo conectar a Redis")
-@publicaciones.route('/media-publicaciones-mostrar/', methods=['POST'])
+
+
+@publicaciones.route('/media-publicaciones-mostrar/', methods=['POST']) 
 def media_publicaciones_mostrar():
     try:
-        
         layout = request.form.get('layout')
         ambito = request.form.get('ambito')
         idioma = request.form.get('lenguaje')
         codigoPostal = request.form.get('codigoPostal')
         categoria = request.form.get('categoria')
-        
+
         if categoria == None or categoria == 'undefined' or categoria == 'null':
             categoria = '1' 
         if codigoPostal == None:
@@ -86,66 +88,65 @@ def media_publicaciones_mostrar():
             codigoPostal = '1'
         if ambito == 'laboral':
             ambito = 'Laboral'
-        # Obtener el encabezado Authorization
+
         authorization_header = request.headers.get('Authorization')
         if not authorization_header:
             return jsonify({'error': 'Token de acceso no proporcionado'}), 401
-        
-        # Verificar formato del encabezado Authorization
+
         parts = authorization_header.split()
         if len(parts) != 2 or parts[0].lower() != 'bearer':
             return jsonify({'error': 'Formato de token de acceso no válido'}), 401
-        
-        # Obtener el token de acceso
+
         access_token = parts[1]
         if Token.validar_expiracion_token(access_token=access_token):  
             app = current_app._get_current_object()                    
             decoded_token = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
             user_id = decoded_token.get("sub")
-            
-            if codigoPostal == '1':
-                # Obtener todas las publicaciones del usuario
-                publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
-            else:
-                if categoria == '1':
-                    ambito_id = db.session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()
-                    categoriaRelation = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
-                    if categoriaRelation == None:                        
-                        publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal).all()  
-            
-                    else:
-                        categoria_id = db.session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
-                        publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()  
-            
-                else:
-                    if not categoria.isdigit():
-                        ambito_id = db.session.query(Ambitos).filter_by(valor=ambito, idioma=idioma).first()
-                        
-                        if ambito_id:  # Verificar que se encontró el ámbito antes de acceder a .id
-                            categoriaRelation = db.session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).all()
-                        
-                            for categoriaR in categoriaRelation:
-                                categoria_id = db.session.query(AmbitoCategoria).filter_by(id=categoriaR.ambitoCategoria_id, valor=categoria).first()
-                                if categoria_id:
-                                    publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()  
-                                    break  # Detener el bucle si se encuentra una coincidencia
 
+            with get_db_session() as session:
+
+                if codigoPostal == '1':
+                    publicaciones_user = session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma).all()
+                else:
+                    if categoria == '1':
+                        ambito_id = session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()
+                        categoriaRelation = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
+                        if categoriaRelation == None:                        
+                            publicaciones_user = session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal).all()  
+                        else:
+                            categoria_id = session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
+                            publicaciones_user = session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()  
                     else:
-                    # Obtener todas las publicaciones del usuario
-                             publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()  
-            
-                    if len(publicaciones_user)==0:
-                        publicaciones_user = db.session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito, idioma=idioma, codigoPostal='1').all()
-            
-            # Armar el diccionario con todas las publicaciones, imágenes y videos
-            publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
-            db.session.close()
-            #print(publicaciones_data)
-            return jsonify(publicaciones_data)
+                        if not categoria.isdigit():
+                            ambito_id = session.query(Ambitos).filter_by(valor=ambito, idioma=idioma).first()
+                            if ambito_id:
+                                categoriaRelation = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).all()
+                                for categoriaR in categoriaRelation:
+                                    categoria_id = session.query(AmbitoCategoria).filter_by(id=categoriaR.ambitoCategoria_id, valor=categoria).first()
+                                    if categoria_id:
+                                        publicaciones_user = session.query(Publicacion).filter_by(
+                                            user_id=user_id, ambito=ambito, idioma=idioma,
+                                            codigoPostal=codigoPostal, categoria_id=categoria_id.id
+                                        ).all()  
+                                        break
+                        else:
+                            publicaciones_user = session.query(Publicacion).filter_by(
+                                user_id=user_id, ambito=ambito, idioma=idioma,
+                                codigoPostal=codigoPostal, categoria_id=int(categoria)
+                            ).all()  
+
+                        if len(publicaciones_user) == 0:
+                            publicaciones_user = session.query(Publicacion).filter_by(
+                                user_id=user_id, ambito=ambito, idioma=idioma,
+                                codigoPostal='1'
+                            ).all()
+
+                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user, layout)
+                return jsonify(publicaciones_data)
 
     except Exception as e:
-        # Manejo genérico de excepciones, devolver un mensaje de error
         return jsonify({'error': str(e)}), 500
+
 
     # Respuesta por defecto en caso de que algo falle sin lanzar una excepción
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
@@ -355,144 +356,121 @@ def media_publicaciones_mostrar_dpi():
 
 
 
-
-def armar_publicacion_bucket_para_dpi(publicaciones,layout):
+def armar_publicacion_bucket_para_dpi(publicaciones, layout):
     publicaciones_data = []
 
-    for publicacion in publicaciones:
-        # Obtener solo la primera imagen o video asociado a la publicación
-        imagen_video = (
-            db.session.query(Public_imagen_video)
-            .filter_by(publicacion_id=publicacion.id)
-            .order_by(Public_imagen_video.id.asc())  # Ordena para obtener el primero
-            .first()
-        )
-        
-       
-        
-        # Inicializar listas para imágenes y videos
-        imagenes = []
-        videos = []
+    with get_db_session() as session:
+        for publicacion in publicaciones:
+            imagen_video = (
+                session.query(Public_imagen_video)
+                .filter_by(publicacion_id=publicacion.id)
+                .order_by(Public_imagen_video.id.asc())
+                .first()
+            )
 
-        if imagen_video:
-            # Si hay una imagen asociada
-            if imagen_video.imagen_id:
-                try:
-                    imagen = db.session.query(Image).filter_by(id=imagen_video.imagen_id).first()
-                    if imagen:
-                        
-                        filepath = imagen.filepath
-                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
-                        
-                        if publicacion.imagen:
-                            file_path = publicacion.imagen
-                            file_data = None
-                        else:                           
-                            file_data, file_path  = mostrar_from_gcs(imagen_url)
-                        
-                        if file_data:
-                            # Convertir la imagen a base64 solo si hemos obtenido datos binarios
-                            imagen_base64 = base64.b64encode(file_data).decode('utf-8')
-                        else:
-                            imagen_base64 = None
-                                
-                        if imagen_url:
-                            imagenes.append({
+            imagenes = []
+            videos = []
+
+            if imagen_video:
+                if imagen_video.imagen_id:
+                    try:
+                        imagen = session.query(Image).filter_by(id=imagen_video.imagen_id).first()
+                        if imagen:
+                            filepath = imagen.filepath
+                            imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
+                            if publicacion.imagen:
+                                file_path = publicacion.imagen
+                                file_data = None
+                            else:
+                                file_data, file_path = mostrar_from_gcs(imagen_url)
+                            imagen_base64 = base64.b64encode(file_data).decode('utf-8') if file_data else None
+                            if imagen_url:
+                                imagenes.append({
                                     'id': imagen.id,
                                     'title': imagen.title,
                                     'description': imagen.description,
-                                    'filepath': file_path,  # Usar la URL de GCS o el path procesado
-                                    'imagen': imagen_base64 if file_data else None,  # La imagen en base64
-                                    'mimetype': 'image/jpeg',  # Asignar correctamente el tipo MIME
+                                    'filepath': file_path,
+                                    'imagen': imagen_base64,
+                                    'mimetype': 'image/jpeg',
                                     'randomNumber': imagen.randomNumber,
                                     'size': imagen.size
                                 })
-                except Exception as e:
-                    logging.error(f"Error al obtener información de la imagen {imagen_video.imagen_id}: {e}")
+                    except Exception as e:
+                        logging.error(f"Error imagen {imagen_video.imagen_id}: {e}")
 
-            # Si hay un video asociado
-            if imagen_video.video_id:
-                try:
-                    video = db.session.query(Video).filter_by(id=imagen_video.video_id).first()
-                    if video:
-                        filepath = video.filepath
-                        video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
-                        
-                        file_data, file_path  = mostrar_from_gcs(video_url)
-                        
-                        if file_data:
-                            # Convertir la imagen a base64 solo si hemos obtenido datos binarios
-                            video_base64 = base64.b64encode(file_data).decode('utf-8')
-                        else:
-                            video_base64 = None
-                            
-                        if video_url:
-                            videos.append({
-                                'id': video.id,
-                                'title': video.title,
-                                'description': video.description,
-                                'video': video_base64 if file_data else None,  # La imagen en base64
-                                'filepath': file_path,
-                                'mimetype': video.mimetype,  # Tipo MIME correcto
-                                'size': video.size
-                            })
-                except Exception as e:
-                    logging.error(f"Error al obtener información del video {imagen_video.video_id}: {e}")
-       
-        if not publicacion.imagen:
-            if imagenes:
-                # Asigna la URL de la primera imagen si existen imágenes
-                publicacion.imagen = imagenes[0]['filepath']  # Usar la URL de la primera imagen
-            elif videos:
-                # Si no hay imagen, asigna la URL del primer video si existen videos
-                publicacion.imagen = videos[0]['filepath']  # Usar la URL del primer video
-            db.session.commit()   
-        categoriaPublicacion = db.session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion.id).first()
-        categoria = None
-        if categoriaPublicacion:
-            categoria = db.session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
-       # Calcular descuento aleatorio si hay precio
-        precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
-        if precio_actual:
-            if random.random() < 0.5:  # 50% de chance de aplicar descuento
-                descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
-                descuento = f"{descuento_porcentaje}% OFF"
-                precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                if imagen_video.video_id:
+                    try:
+                        video = session.query(Video).filter_by(id=imagen_video.video_id).first()
+                        if video:
+                            filepath = video.filepath
+                            video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
+                            file_data, file_path = mostrar_from_gcs(video_url)
+                            video_base64 = base64.b64encode(file_data).decode('utf-8') if file_data else None
+                            if video_url:
+                                videos.append({
+                                    'id': video.id,
+                                    'title': video.title,
+                                    'description': video.description,
+                                    'video': video_base64,
+                                    'filepath': file_path,
+                                    'mimetype': video.mimetype,
+                                    'size': video.size
+                                })
+                    except Exception as e:
+                        logging.error(f"Error video {imagen_video.video_id}: {e}")
+
+            if not publicacion.imagen:
+                if imagenes:
+                    publicacion.imagen = imagenes[0]['filepath']
+                elif videos:
+                    publicacion.imagen = videos[0]['filepath']
+                session.commit()  # se hace dentro del contexto seguro
+
+            categoriaPublicacion = session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion.id).first()
+            categoria = None
+            if categoriaPublicacion:
+                categoria = session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
+
+            precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
+            if precio_actual:
+                if random.random() < 0.5:
+                    descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
+                    descuento = f"{descuento_porcentaje}% OFF"
+                    precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                else:
+                    descuento = None
+                    precio_original = None
             else:
                 descuento = None
                 precio_original = None
-        else:
-            descuento = None
-            precio_original = None
 
-          # Agregar la publicación con la primera imagen o video encontrado
-        publicaciones_data.append({
-            'publicacion_id': publicacion.id,
-            'user_id': publicacion.user_id,
-            'titulo': publicacion.titulo,
-            'texto': publicacion.texto,
-            'ambito': publicacion.ambito,
-            'categoriaNombre': categoria.nombre if categoria else None,
-            'categoria_id': categoria.id if categoria else None,
-            'correo_electronico': publicacion.correo_electronico,
-            'descripcion': publicacion.descripcion,
-            'color_texto': publicacion.color_texto,
-            'color_titulo': publicacion.color_titulo,
-            'fecha_creacion': publicacion.fecha_creacion,
-            'estado': publicacion.estado,
-            'idioma': publicacion.idioma,
-            'imagenes': imagenes,  # Solo una imagen
-            'videos': videos,      # Solo un video
-            'layout': layout,
-            'rating': round(random.uniform(3.0, 5.0), 1),
-            'reviews': random.randint(1, 150),
-            'descuento': descuento,
-            'precio': precio_actual,
-            'precio_original': precio_original
-        })
+            publicaciones_data.append({
+                'publicacion_id': publicacion.id,
+                'user_id': publicacion.user_id,
+                'titulo': publicacion.titulo,
+                'texto': publicacion.texto,
+                'ambito': publicacion.ambito,
+                'categoriaNombre': categoria.nombre if categoria else None,
+                'categoria_id': categoria.id if categoria else None,
+                'correo_electronico': publicacion.correo_electronico,
+                'descripcion': publicacion.descripcion,
+                'color_texto': publicacion.color_texto,
+                'color_titulo': publicacion.color_titulo,
+                'fecha_creacion': publicacion.fecha_creacion,
+                'estado': publicacion.estado,
+                'idioma': publicacion.idioma,
+                'imagenes': imagenes,
+                'videos': videos,
+                'layout': layout,
+                'rating': round(random.uniform(3.0, 5.0), 1),
+                'reviews': random.randint(1, 150),
+                'descuento': descuento,
+                'precio': precio_actual,
+                'precio_original': precio_original
+            })
 
-  
     return publicaciones_data
+
 
 
 
