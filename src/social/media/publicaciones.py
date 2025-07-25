@@ -275,28 +275,26 @@ def media_publicaciones_mostrar_dpi():
                 publicacion_estados = session.query(Estado_publi_usu).all()
 
                 if publicacion_estados:
-                    # Iterar sobre cada estado de publicación
-                    for estado_publicacion in publicacion_estados:
-                        # Comparar la fecha de hoy con la fecha de eliminación
-                        fecha_eliminado = estado_publicacion.fecha_eliminado
-                        if fecha_eliminado:
-                            dias_diferencia = (datetime.today().date() - fecha_eliminado).days
-                            if dias_diferencia > 30:
-                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
-                                if publicacion:
-                                    # Agrega la publicación a la lista de publicaciones
-                                    publicaciones.append(publicacion)
-                        
-                        # Si el estado no es "eliminado", obtén la publicación correspondiente
-                        if estado_publicacion.estado != 'eliminado':
-                            if codigoPostal == '1':
-                                
-                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,categoria_id = int(categoria)).first()
-                            else: 
-                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, ambito=ambitos,idioma = idioma,codigoPostal = codigoPostal,categoria_id = int(categoria)).first()
-                            if publicacion:
-                                # Agrega la publicación a la lista de publicaciones
-                                publicaciones.append(publicacion)
+                    publicacion_estados = session.query(Estado_publi_usu).all()
+
+                    # IDs a excluir
+                    eliminadas_ids = set()
+
+                    for estado in publicacion_estados:
+                        if estado.estado == 'eliminado' and estado.fecha_eliminado:
+                            dias = (datetime.today().date() - estado.fecha_eliminado).days
+                            if dias <= 30:
+                                eliminadas_ids.add(estado.publicacion_id)
+
+                    # Traer publicaciones válidas
+                    publicaciones = session.query(Publicacion).filter(
+                        Publicacion.estado == 'activo',
+                        Publicacion.ambito == ambitos,
+                        Publicacion.idioma == idioma,
+                        Publicacion.codigoPostal == codigoPostal,
+                        Publicacion.categoria_id == int(categoria),
+                        ~Publicacion.id.in_(eliminadas_ids)
+                    ).all()
 
                 else:
                     if codigoPostal == '1':
@@ -434,12 +432,13 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
             if categoriaPublicacion:
                 categoria = session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
 
-            precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
-            if precio_actual:
+            precio_actual, descripcion, precio_num  = extraer_precio_y_descripcion(publicacion.texto)
+            if precio_num:
                 if random.random() < 0.5:
                     descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
                     descuento = f"{descuento_porcentaje}% OFF"
-                    precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                    precio_original_num = round(precio_num / (1 - descuento_porcentaje / 100), 2)
+                    precio_original = f"{precio_actual.split()[0]} {precio_original_num}"  # usa el mismo símbolo
                 else:
                     descuento = None
                     precio_original = None
@@ -477,14 +476,43 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
 
 
 
+
+
 def extraer_precio_y_descripcion(texto):
-    match = re.match(r"^\$ ?(\d+)(.*)", texto)
+    SIMBOLOS = {
+        "EUR": "€",
+        "€": "€",
+        "USD": "$",
+        "$": "$",
+        "ARS": "$",
+        "GBP": "£",
+        "£": "£",
+        "COP": "$",
+        "BRL": "R$",
+        "MXN": "$",
+        "AUD": "A$",
+        "CAD": "C$"
+    }
+
+    patron = r"^.*?(EUR|€|USD|\$|ARS|GBP|£|COP|BRL|MXN|AUD|CAD)[\s\u202f]*([\d]+(?:[.,]\d{1,2})?)[\s\u202f]*(.*)$"
+    match = re.match(patron, texto.strip(), re.IGNORECASE)
+
     if match:
-        precio_actual = int(match.group(1))
-        descripcion = match.group(2).strip()
-        return precio_actual, descripcion
-    else:
-        return None, texto
+        raw_symbol = match.group(1) or "$"
+        simbolo = SIMBOLOS.get(raw_symbol.upper(), "$")
+        numero_str = match.group(2).replace(",", ".")
+        descripcion = match.group(3).strip()
+
+        try:
+            numero = float(numero_str)
+        except ValueError:
+            return None, descripcion, None
+
+        precio_actual = f"{simbolo} {numero:.2f}"
+        return precio_actual, descripcion, numero
+
+    return None, texto.strip(), None
+
 
 
 def armar_publicacion_bucket(publicaciones):

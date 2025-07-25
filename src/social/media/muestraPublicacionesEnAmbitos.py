@@ -162,15 +162,19 @@ def armar_publicacion_bucket_para_dpi(session, user_id, ambito, layout, idioma, 
             for vid in videos:
                 vid['filepath'] = vid['filepath'].replace('\\', '/')
 
-            precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
-            if precio_actual and random.random() < 0.5:
-                descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
-                descuento = f"{descuento_porcentaje}% OFF"
-                precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+            precio_actual, descripcion, precio_num  = extraer_precio_y_descripcion(publicacion.texto)
+            if precio_num:
+                if random.random() < 0.5:
+                    descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
+                    descuento = f"{descuento_porcentaje}% OFF"
+                    precio_original_num = round(precio_num / (1 - descuento_porcentaje / 100), 2)
+                    precio_original = f"{precio_actual.split()[0]} {precio_original_num}"  # usa el mismo símbolo
+                else:
+                    descuento = None
+                    precio_original = None   
             else:
                 descuento = None
                 precio_original = None
-
             resultados.append({
                 'publicacion_id': publicacion.id,
                 'user_id': publicacion.user_id,
@@ -203,14 +207,43 @@ def armar_publicacion_bucket_para_dpi(session, user_id, ambito, layout, idioma, 
 
 
 
+
+
 def extraer_precio_y_descripcion(texto):
-    match = re.match(r"^\$ ?(\d+)(.*)", texto)
+    SIMBOLOS = {
+        "EUR": "€",
+        "€": "€",
+        "USD": "$",
+        "$": "$",
+        "ARS": "$",
+        "GBP": "£",
+        "£": "£",
+        "COP": "$",
+        "BRL": "R$",
+        "MXN": "$",
+        "AUD": "A$",
+        "CAD": "C$"
+    }
+
+    patron = r"^.*?(EUR|€|USD|\$|ARS|GBP|£|COP|BRL|MXN|AUD|CAD)[\s\u202f]*([\d]+(?:[.,]\d{1,2})?)[\s\u202f]*(.*)$"
+    match = re.match(patron, texto.strip(), re.IGNORECASE)
+
     if match:
-        precio_actual = int(match.group(1))
-        descripcion = match.group(2).strip()
-        return precio_actual, descripcion
-    else:
-        return None, texto
+        raw_symbol = match.group(1) or "$"
+        simbolo = SIMBOLOS.get(raw_symbol.upper(), "$")
+        numero_str = match.group(2).replace(",", ".")
+        descripcion = match.group(3).strip()
+
+        try:
+            numero = float(numero_str)
+        except ValueError:
+            return None, descripcion, None
+
+        precio_actual = f"{simbolo} {numero:.2f}"
+        return precio_actual, descripcion, numero
+
+    return None, texto.strip(), None
+
 
 
 def limpiar_texto(texto):
