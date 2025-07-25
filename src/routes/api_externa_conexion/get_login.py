@@ -379,6 +379,9 @@ def loginExtAutomatico():
                     return render_template('home.html', cuenta=[accountCuenta,user,simuladoOproduccion]) 
             else:
                   return jsonify({'redirect': url_for('panelControl.panel_control')}) 
+        except jwt.ExpiredSignatureError:
+            flash("El token ha expirado")
+            return render_template('notificaciones/errorLogueo.html')      
       
 
 

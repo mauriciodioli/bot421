@@ -186,24 +186,28 @@ def media_publicaciones_mostrar_home():
                 publicacion_estados = session.query(Estado_publi_usu).filter_by(user_id=user_id).all()
 
                 if publicacion_estados:
-                    # Iterar sobre cada estado de publicación
-                    for estado_publicacion in publicacion_estados:
-                        # Comparar la fecha de hoy con la fecha de eliminación
-                        fecha_eliminado = estado_publicacion.fecha_eliminado
-                        if fecha_eliminado:
-                            dias_diferencia = (datetime.today().date() - fecha_eliminado).days
-                            if dias_diferencia > 30:
-                                publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
-                                if publicacion:
-                                    # Agrega la publicación a la lista de publicaciones
-                                    publicaciones.append(publicacion)
-                        
-                        # Si el estado no es "eliminado", obtén la publicación correspondiente
-                        if estado_publicacion.estado != 'eliminado':
-                            publicacion = session.query(Publicacion).filter_by(id=estado_publicacion.publicacion_id, user_id=user_id,idioma=idioma, codigoPostal=codigoPostal).first()
-                            if publicacion:
-                                # Agrega la publicación a la lista de publicaciones
-                                publicaciones.append(publicacion)
+                        publicacion_estados = session.query(Estado_publi_usu).filter_by(user_id=user_id).all()
+
+                        # IDs a excluir
+                        eliminadas_ids = set()
+
+                        for estado in publicacion_estados:
+                            if estado.estado == 'eliminado' and estado.fecha_eliminado:
+                                dias = (datetime.today().date() - estado.fecha_eliminado).days
+                                if dias <= 30:
+                                    eliminadas_ids.add(estado.publicacion_id)
+
+                        # Traer publicaciones válidas
+                        publicaciones = session.query(Publicacion).filter(
+                            Publicacion.estado == 'activo',
+                            Publicacion.ambito == ambito,
+                            Publicacion.idioma == idioma,
+                            Publicacion.codigoPostal == codigoPostal,
+                            Publicacion.categoria_id == int(categoria),
+                            ~Publicacion.id.in_(eliminadas_ids)
+                        ).all()
+
+
 
                 else:
                     if categoria == '1':
