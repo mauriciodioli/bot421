@@ -463,8 +463,9 @@ def close_listener(dbapi_connection, connection_record):
 
 @app.teardown_appcontext
 def teardown_db(exception):
-    # Cierra la sesión de la base de datos y libera recursos
-    db.session.remove()
+    with get_db_session() as session:
+        # Cierra la sesión de la base de datos y libera recursos
+        session.remove()
 # Escuchar cuando se devuelve una conexión al pool
 @event.listens_for(Pool, "checkin")
 def checkin_listener(dbapi_connection, connection_record):
@@ -739,11 +740,11 @@ def load_user(user_id):
             
             # Volver a crear la sesión
         
-            db.session.execute('SELECT 1')  # Consulta trivial para verificar la conexión   
+            session.execute('SELECT 1')  # Consulta trivial para verificar la conexión   
             # Reintenta la consulta después de reconfigurar
             try:
                 # Reintenta la consulta después de reconfigurar
-                user = db.session.query(Usuario).filter_by(id=user_id).first()
+                user = session.query(Usuario).filter_by(id=user_id).first()
              
                 return user
             except OperationalError as e:

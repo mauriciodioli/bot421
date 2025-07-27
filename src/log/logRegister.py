@@ -8,6 +8,7 @@ import requests
 import json
 from utils.db import db
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from utils.db_session import get_db_session 
 import logging
 import time
 from sqlalchemy.exc import SQLAlchemyError
@@ -47,33 +48,31 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
     fecha = datetime.datetime.utcnow()
 
     try:
-        log = Logs(
-            user_id=usuario_id,
-            userCuenta=correo_electronico,
-            accountCuenta=correo_electronico,
-            fecha_log=fecha,
-            ip=ip,
-            funcion='log_acceso',
-            archivo='logRegister.py',
-            linea=608,
-            error='No hubo error' if exito else motivo_fallo,
-            codigoPostal=codigoPostal,
-            latitude=latitude,
-            longitude=longitude,
-            language=language
-        )
+        with get_db_session() as session:
+            log = Logs(
+                user_id=usuario_id,
+                userCuenta=correo_electronico,
+                accountCuenta=correo_electronico,
+                fecha_log=fecha,
+                ip=ip,
+                funcion='log_acceso',
+                archivo='logRegister.py',
+                linea=608,
+                error='No hubo error' if exito else motivo_fallo,
+                codigoPostal=codigoPostal,
+                latitude=latitude,
+                longitude=longitude,
+                language=language
+            )
 
-        db.session.add(log)
-        db.session.commit()
+            session.add(log)
+            session.commit()
        
 
-    except SQLAlchemyError as e:
-        db.session.rollback()
+    except SQLAlchemyError as e:       
         app.logger.error(f"Error registrando acceso: {e}")
 
-    finally:
-        db.session.close()  # Libera la conexión del pool correctamente
-
+ 
 
 
 
