@@ -750,6 +750,11 @@ def load_user(user_id):
                 app.logger.error(f"Error de conexión a la base de datos tras reintentar: {e}")
               
                 return None
+            
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"}), 200
+
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()
