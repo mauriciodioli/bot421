@@ -7,6 +7,7 @@ from unittest import result
 import requests
 import json
 from utils.db import db
+from utils.db_session import get_db_session
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 import logging
 import time
@@ -23,15 +24,16 @@ logRegister = Blueprint('logRegister',__name__)
 @contextmanager
 def session_scope():
     """Proporciona un contexto para una sesión de base de datos."""
-    session = db.session()
-    try:
-        yield session
-        session.commit()  # Se hace commit al final del contexto
-    except Exception:
-        session.rollback()  # Si hay un error, se hace rollback
-        raise
-    finally:
-        session.close()  # Se cierra la sesión al finalizar el contexto
+    with get_db_session() as session:
+        session = session()
+        try:
+            yield session
+            session.commit()  # Se hace commit al final del contexto
+        except Exception:
+            session.rollback()  # Si hay un error, se hace rollback
+            raise
+        finally:
+            session.close()  # Se cierra la sesión al finalizar el contexto
 
 
 
@@ -47,34 +49,32 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
     fecha = datetime.datetime.utcnow()
 
     try:
-        log = Logs(
-            user_id=usuario_id,
-            userCuenta=correo_electronico,
-            accountCuenta=correo_electronico,
-            fecha_log=fecha,
-            ip=ip,
-            funcion='log_acceso',
-            archivo='logRegister.py',
-            linea=608,
-            error='No hubo error' if exito else motivo_fallo,
-            codigoPostal=codigoPostal,
-            latitude=latitude,
-            longitude=longitude,
-            language=language
-        )
+        with get_db_session() as session:
+            log = Logs(
+                user_id=usuario_id,
+                userCuenta=correo_electronico,
+                accountCuenta=correo_electronico,
+                fecha_log=fecha,
+                ip=ip,
+                funcion='log_acceso',
+                archivo='logRegister.py',
+                linea=608,
+                error='No hubo error' if exito else motivo_fallo,
+                codigoPostal=codigoPostal,
+                latitude=latitude,
+                longitude=longitude,
+                language=language
+            )
 
-        db.session.add(log)
-        db.session.commit()
-       
+            session.add(log)
+            session.commit()
+        
 
     except SQLAlchemyError as e:
-        db.session.rollback()
-        app.logger.error(f"Error registrando acceso: {e}")
+           
+            app.logger.error(f"Error registrando acceso: {e}")
 
-    finally:
-        db.session.close()  # Libera la conexión del pool correctamente
-
-
+ 
 
 
 
