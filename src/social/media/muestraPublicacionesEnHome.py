@@ -184,12 +184,13 @@ def obtener_publicacion_por_id(publicacion_id):
                 # Agregar la publicación con sus imágenes y videos al diccionario
             
                 # Calcular descuento aleatorio si hay precio
-                precio_actual, descripcion = extraer_precio_y_descripcion(publicacion.texto)
+                precio_actual, descripcion, precio_numero = extraer_precio_y_descripcion(publicacion.texto)
+           
                 if precio_actual:
                     if random.random() < 0.5:  # 50% de chance de aplicar descuento
                         descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
                         descuento = f"{descuento_porcentaje}% OFF"
-                        precio_original = round(precio_actual / (1 - descuento_porcentaje / 100))
+                        precio_original = round(float(precio_numero) / (1 - descuento_porcentaje / 100))
                     else:
                         descuento = None
                         precio_original = None
@@ -218,7 +219,7 @@ def obtener_publicacion_por_id(publicacion_id):
                     'rating': round(random.uniform(3.0, 5.0), 1),
                     'reviews': random.randint(1, 150),
                     'descuento': descuento,
-                    'precio': precio_actual,
+                    'precio': precio_numero,
                     'precio_original': precio_original
                 }
                 
@@ -230,13 +231,40 @@ def obtener_publicacion_por_id(publicacion_id):
         return None
    
 def extraer_precio_y_descripcion(texto):
-    match = re.match(r"^\$ ?(\d+)(.*)", texto)
+    SIMBOLOS = {
+            "EUR": "€",
+            "€": "€",
+            "USD": "$",
+            "$": "$",
+            "ARS": "$",
+            "GBP": "£",
+            "£": "£",
+            "COP": "$",
+            "BRL": "R$",
+            "MXN": "$",
+            "AUD": "A$",
+            "CAD": "C$"
+        }
+    patron = r"^(EUR|€|USD|\$|ARS|GBP|£|COP|BRL|MXN|AUD|CAD)[\s\u202f]*([\d]+(?:[.,]\d{1,2})?)\b(.*)$"
+
+    #patron = r"^.*?(EUR|€|USD|\$|ARS|GBP|£|COP|BRL|MXN|AUD|CAD)[\s\u202f]*([\d]+(?:[.,]\d{1,2})?)[\s\u202f]*(.*)$"
+    match = re.match(patron, texto.strip(), re.IGNORECASE)
+
     if match:
-        precio_actual = int(match.group(1))
-        descripcion = match.group(2).strip()
-        return precio_actual, descripcion
-    else:
-        return None, texto
+        raw_symbol = match.group(1) or "$"
+        simbolo = SIMBOLOS.get(raw_symbol.upper(), "$")
+        numero_str = match.group(2).replace(",", ".")
+        descripcion = match.group(3).strip()
+
+        try:
+            numero = float(numero_str)
+        except ValueError:
+            return None, descripcion, None
+
+        precio_actual = f"{simbolo} {numero:.2f}"
+        return precio_actual, descripcion, numero
+
+    return None, texto.strip(), None
 
 
 def limpiar_texto(texto):

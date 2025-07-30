@@ -493,8 +493,9 @@ def extraer_precio_y_descripcion(texto):
         "AUD": "A$",
         "CAD": "C$"
     }
+    patron = r"^(EUR|€|USD|\$|ARS|GBP|£|COP|BRL|MXN|AUD|CAD)[\s\u202f]*([\d]+(?:[.,]\d{1,2})?)\b(.*)$"
 
-    patron = r"^.*?(EUR|€|USD|\$|ARS|GBP|£|COP|BRL|MXN|AUD|CAD)[\s\u202f]*([\d]+(?:[.,]\d{1,2})?)[\s\u202f]*(.*)$"
+    #patron = r"^.*?(EUR|€|USD|\$|ARS|GBP|£|COP|BRL|MXN|AUD|CAD)[\s\u202f]*([\d]+(?:[.,]\d{1,2})?)[\s\u202f]*(.*)$"
     match = re.match(patron, texto.strip(), re.IGNORECASE)
 
     if match:
