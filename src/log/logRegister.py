@@ -69,20 +69,12 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 
             session.add(log)
             session.commit()
-<<<<<<< HEAD
        
 
     except SQLAlchemyError as e:       
         app.logger.error(f"Error registrando acceso: {e}")
 
  
-=======
-        
-
-    except SQLAlchemyError as e:
-           
-            app.logger.error(f"Error registrando acceso: {e}")
->>>>>>> 3a8e120283fe8fd612e00370cd8d771f0cbd2dcc
 
  
 
