@@ -11,7 +11,7 @@ jobs:
   deploy-to-cluster:
     runs-on: ubuntu-latest
     env:
-      EC2_HOST: ec2-3-90-202-72.compute-1.amazonaws.com # IMAGEN PRODUCCION
+      EC2_HOST: ec2-35-174-246-114.compute-1.amazonaws.com # IMAGEN PRODUCCION
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
