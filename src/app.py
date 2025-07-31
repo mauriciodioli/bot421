@@ -412,7 +412,7 @@ engine = create_engine(
 
 db = SQLAlchemy(app)
 db.init_app(app)
-#db.session.configure(bind=engine)
+#session.configure(bind=engine)
 
 ma = Marshmallow(app)
 
@@ -463,9 +463,15 @@ def close_listener(dbapi_connection, connection_record):
 
 @app.teardown_appcontext
 def teardown_db(exception):
+<<<<<<< HEAD
     with get_db_session() as session:
         # Cierra la sesión de la base de datos y libera recursos
         session.remove()
+=======
+    # Cierra la sesión de la base de datos y libera recursos
+    with get_db_session() as session:
+      session.remove()
+>>>>>>> 3a8e120283fe8fd612e00370cd8d771f0cbd2dcc
 # Escuchar cuando se devuelve una conexión al pool
 @event.listens_for(Pool, "checkin")
 def checkin_listener(dbapi_connection, connection_record):

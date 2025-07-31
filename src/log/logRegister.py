@@ -7,6 +7,7 @@ from unittest import result
 import requests
 import json
 from utils.db import db
+from utils.db_session import get_db_session
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
 from utils.db_session import get_db_session 
 import logging
@@ -24,15 +25,16 @@ logRegister = Blueprint('logRegister',__name__)
 @contextmanager
 def session_scope():
     """Proporciona un contexto para una sesión de base de datos."""
-    session = db.session()
-    try:
-        yield session
-        session.commit()  # Se hace commit al final del contexto
-    except Exception:
-        session.rollback()  # Si hay un error, se hace rollback
-        raise
-    finally:
-        session.close()  # Se cierra la sesión al finalizar el contexto
+    with get_db_session() as session:
+        session = session()
+        try:
+            yield session
+            session.commit()  # Se hace commit al final del contexto
+        except Exception:
+            session.rollback()  # Si hay un error, se hace rollback
+            raise
+        finally:
+            session.close()  # Se cierra la sesión al finalizar el contexto
 
 
 
@@ -67,13 +69,22 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 
             session.add(log)
             session.commit()
+<<<<<<< HEAD
        
 
     except SQLAlchemyError as e:       
         app.logger.error(f"Error registrando acceso: {e}")
 
  
+=======
+        
 
+    except SQLAlchemyError as e:
+           
+            app.logger.error(f"Error registrando acceso: {e}")
+>>>>>>> 3a8e120283fe8fd612e00370cd8d771f0cbd2dcc
+
+ 
 
 
 
