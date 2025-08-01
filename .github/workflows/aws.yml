@@ -11,7 +11,7 @@ jobs:
   deploy-to-cluster:
     runs-on: ubuntu-latest
     env:
-      EC2_HOST: ec2-3-90-202-72.compute-1.amazonaws.com # IMAGEN PRODUCCION
+      EC2_HOST: ec2-35-174-246-114.compute-1.amazonaws.com # IMAGEN PRODUCCION
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
@@ -72,7 +72,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
-          docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
+          docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }} gunicorn -w 8 -b 0.0.0.0:5001 index:app
+
 
     - name: Wait until container is running
       run: |

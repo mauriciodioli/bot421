@@ -592,8 +592,14 @@ function toggleSplash(section, splashElement) {
         section.style.paddingBottom = "0";
     }
 }
+let ajaxInProgress = false;
 
 function enviarDominioAJAX(domain) {
+    if (ajaxInProgress) {
+        console.log("AJAX ya en curso, evitando llamada duplicada");
+        return; // Evita llamadas simultáneas
+    }
+    ajaxInProgress = true;
     console.log("Dominio:", domain);
     localStorage.setItem('banderaCategorias', 'True');
     // Elementos relevantes
