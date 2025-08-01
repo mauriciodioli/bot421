@@ -463,9 +463,9 @@ def close_listener(dbapi_connection, connection_record):
 
 @app.teardown_appcontext
 def teardown_db(exception):
-    # Cierra la sesión de la base de datos y libera recursos
     with get_db_session() as session:
-      session.remove()
+        # Cierra la sesión de la base de datos y libera recursos
+        session.remove()
 # Escuchar cuando se devuelve una conexión al pool
 @event.listens_for(Pool, "checkin")
 def checkin_listener(dbapi_connection, connection_record):
@@ -751,6 +751,11 @@ def load_user(user_id):
                 app.logger.error(f"Error de conexión a la base de datos tras reintentar: {e}")
               
                 return None
+            
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "ok"}), 200
+
 # Make sure this we are executing this file
 if __name__ == "__main__":
    # app.run()

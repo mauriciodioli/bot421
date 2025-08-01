@@ -26,7 +26,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ .
 
 
+# Capa 7: Setear variable de entorno para producción (sobreescribible)
+ENV DPIA_ENV=production
+
+# Capa 8: CMD condicional usando sh  -w 8 --threads 2 --timeout 90
+#CMD ["/bin/sh", "-c", "if [ \"$DPIA_ENV\" = 'production' ]; then PYTHONPATH=src gunicorn -w 4 -b 0.0.0.0:5001 wsgi:app; else python app.py; fi"]
+
+CMD ["/bin/sh", "-c", "if [ \"$DPIA_ENV\" = 'production' ]; then PYTHONPATH=src gunicorn -w 6 -k gevent -b 0.0.0.0:5001 wsgi:app --worker-connections 1000 --timeout 60 --keep-alive 5; else python app.py; fi"]
+
 # Capa 7: Comando por defecto para ejecutar la aplicación
-CMD ["python", "./app.py"]
+#CMD ["python", "./app.py"]
 
 

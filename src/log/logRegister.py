@@ -9,6 +9,7 @@ import json
 from utils.db import db
 from utils.db_session import get_db_session
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify
+from utils.db_session import get_db_session 
 import logging
 import time
 from sqlalchemy.exc import SQLAlchemyError
@@ -68,11 +69,12 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 
             session.add(log)
             session.commit()
-        
+       
 
-    except SQLAlchemyError as e:
-           
-            app.logger.error(f"Error registrando acceso: {e}")
+    except SQLAlchemyError as e:       
+        app.logger.error(f"Error registrando acceso: {e}")
+
+ 
 
  
 

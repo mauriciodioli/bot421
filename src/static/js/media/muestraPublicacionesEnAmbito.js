@@ -220,7 +220,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                                         <span class="text-muted" style="font-size: 0.9rem;">(${post.reviews || 1})</span>
                                 </div>
                             <!-- Precios -->
-                                        ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;">$${post.precio_original}</p>` : ''}
+                                        ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;">${post.precio_original}</p>` : ''}
                                         ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${post.precio}</p>` : ''}
 
                                 ${post.precio_original && post.descuento ? `

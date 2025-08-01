@@ -50,10 +50,10 @@ SECRET_KEY = 'supersecreto'
 
 # Duración de los tokens
 #TOKEN_DURATION =   3 #  24 hs en minutos
-TOKEN_DURATION =   129600 #  24 hs en minutos
+TOKEN_DURATION =   129600  # en minutos (3 meses)
 
 #REFRESH_TOKEN_DURATION = 16  # minutos
-REFRESH_TOKEN_DURATION = 129600  # minutos
+REFRESH_TOKEN_DURATION = 129600  # en minutos 3 meses
 
 # Inicializar el objeto login_manager
 login_manager = LoginManager()
