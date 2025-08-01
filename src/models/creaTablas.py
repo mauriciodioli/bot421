@@ -25,6 +25,7 @@ from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.servidores.servidorAws import ServidorAws
 from models.codigoPostal import CodigoPostal
+from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal
 
 from datetime import datetime
 from flask import Blueprint,flash
@@ -59,6 +60,8 @@ def crea_tablas_DB():
     Estado_publi_usu.crear_tabla_estado_publi_usu()
     ServidorAws.crear_tabla_servidor_aws()
     CodigoPostal.crear_tabla_codigo_postal()
+    AmbitoCodigoPostal.crear_tabla_ambitoCodigoPostal()
+    
     flash('Tablas creadas exitosamente', 'success')
     print('tablas creadas exitosamente')
     

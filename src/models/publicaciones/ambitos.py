@@ -23,7 +23,8 @@ class Ambitos(db.Model):
     estado = db.Column(db.String(500), nullable=True)
     categoria_general_id = db.Column(db.Integer, db.ForeignKey('categoria_general.id'), nullable=True)
     categoria_general = relationship("CategoriaGeneral", lazy='joined')
-    
+     # ✅ RELACIÓN CORRECTA con la tabla intermedia (sin secondary)
+    relaciones_codigo_postal = db.relationship("AmbitoCodigoPostal", backref="ambito", lazy=True)
     # Constructor
     def __init__(self, nombre, descripcion, idioma=None, valor=None, estado=None):
         self.nombre = nombre
@@ -53,3 +54,4 @@ class MerShema(ma.Schema):
 
 from models.publicaciones.categoria_general import CategoriaGeneral
 from models.publicaciones.ambito_general import AmbitoGeneral
+from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal

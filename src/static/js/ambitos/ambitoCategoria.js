@@ -216,6 +216,8 @@ function actualizarAmbitoCategoria() {
 }
 
 
+obtenerAmbitosCategoria(); // Llamar a la función para cargar los ámbitos al inicio
+
 // Función para obtener todos los ambitosCategorias
 function obtenerAmbitosCategoria() {
     let ambito = localStorage.getItem("dominio") || "";

@@ -43,9 +43,10 @@
           <td>{{ usuario_region.usuario.id }}</td>
           <td>{{ usuario_region.usuario.correo_electronico }}</td>  
           <td>{{ usuario_region.usuario.roll }}</td>
-          <td>{{ usuario_region.codigo_postal }}</td>  <!-- Mostrar Código Postal -->
-          <td>{{ usuario_region.pais }}</td>  <!-- Mostrar País -->
-          <td>{{ usuario_region.idioma }}</td>  <!-- Mostrar Idioma -->
+          <td>{{ usuario_region.regiones[0].codigoPostal }}</td>
+          <td>{{ usuario_region.regiones[0].pais }}</td>
+          <td>{{ usuario_region.regiones[0].idioma }}</td>
+
           <td class="d-flex">
             <button 
                         type="button" 

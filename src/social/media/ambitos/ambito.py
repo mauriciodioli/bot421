@@ -23,21 +23,22 @@ ambito = Blueprint('ambito', __name__)
 
 @ambito.route('/social-media-ambitos-ambitos/')
 def social_media_ambitos_ambitos():
-    try:      
-          # Obtener el valor de la cookie "language"
-        idioma = request.cookies.get('language', 'in')  # Por defecto "in" si no se encuentra la cookie
+    try:
+        idioma = request.cookies.get('language', 'in')  # Idioma por defecto
         with get_db_session() as session:
-            datos = session.query(Ambitos).filter_by(idioma=idioma).all()
-        
-            accion = 'crear'
+            ambitos_db = session.query(Ambitos).filter_by(idioma=idioma).all()
+            datos = [serializar_ambito(a) for a in ambitos_db]  # <-- SERIALIZACIÓN AQUÍ
             
-            return render_template('media/publicaciones/ambitos/ambitos.html', 
-                                datos=datos, 
-                                layout='layout_administracion', 
-                                accion=accion)
+            return render_template(
+                'media/publicaciones/ambitos/ambitos.html', 
+                datos=datos, 
+                layout='layout_administracion', 
+                accion='crear'
+            )
     except Exception as e:
         print(f'Error al obtener los ámbitos: {e}')
         return 'Problemas con la base de datos', 500
+
  
 
 

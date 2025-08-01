@@ -71,15 +71,8 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-<<<<<<< HEAD
-          docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
-          docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 --restart always docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }} gunicorn -w 8 -b 0.0.0.0:5001 index:app
-
-
-=======
           docker pull docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}       
           docker run -d --name ${{ env.DEPLOYMENT_VERSION }} -p 5000:5001 -e DPIA_ENV=production --restart always  docker.io/${{ github.repository_owner }}/202302i:${{ github.sha }}
->>>>>>> 6824151d1dca2a31d0c3508fdfa881b9c40fc697
     - name: Wait until container is running
       run: |
         until docker ps -q --filter name=${{ env.DEPLOYMENT_VERSION }}; do

@@ -152,6 +152,7 @@ from models.publicaciones.ambitos import ambitos
 from models.publicaciones.ambito_usuario import ambito_usuario
 from models.publicaciones.ambitoCategoria import ambitoCategoria
 from models.publicaciones.ambitoCategoriaRelation import ambitoCategoriaRelation
+from models.publicaciones.ambito_codigo_postal import ambito_codigo_postal
 from models.publicaciones.categoriaPublicacion import categoriaPublicacion
 from models.publicaciones.publicacionCodigoPostal import publicacionCodigoPostal
 from models.turing.preguntaUsuario import preguntaUsuario
@@ -328,6 +329,7 @@ app.register_blueprint(ambito)
 app.register_blueprint(ambito_usuario)
 app.register_blueprint(ambitoCategoria)
 app.register_blueprint(ambitoCategoriaRelation)
+app.register_blueprint(ambito_codigo_postal)
 app.register_blueprint(categoriaPublicacion)
 app.register_blueprint(ambitosCategorias)
 app.register_blueprint(publicacionCodigoPostal)
@@ -714,7 +716,7 @@ def home(dominio):
 def entrada(dominio=None, pagina=None):
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    #crea_tablas_DB()
+    crea_tablas_DB()
     if not dominio:
         dominio = "inicialDominio"
     if not pagina:

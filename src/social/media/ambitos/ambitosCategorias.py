@@ -100,8 +100,7 @@ def social_media_ambitosCategorias_categoria_mostrar():
         print(f"[ERROR] {e}")
         return jsonify({'error': 'Problemas con la base de datos'}), 500
 
-    finally:
-        session.close()
+ 
 
 
 
@@ -240,6 +239,7 @@ def obtener_ambitosCategorias():
             return jsonify({"error": "Falta el campo 'ambito' en la solicitud"}), 400
         
         ambito_valor = data['ambito']
+        cp = data['cp']
         with get_db_session() as session:
             # Obtener el ámbito por su valor
             ambito = session.query(Ambitos).filter_by(valor=ambito_valor).first()
@@ -254,7 +254,7 @@ def obtener_ambitosCategorias():
             categoria_ids = [relation.ambitoCategoria_id for relation in relations]
             
             # Consultar las categorías correspondientes
-            ambitosCategorias = session.query(AmbitoCategoria).filter(AmbitoCategoria.id.in_(categoria_ids)).all()
+            ambitosCategorias = session.query(AmbitoCategoria).filter(AmbitoCategoria.id.in_(categoria_ids),).all()
 
             # Convertir los objetos a diccionarios serializables
             resultado = [

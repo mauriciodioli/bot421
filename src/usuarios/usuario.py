@@ -55,15 +55,16 @@ def usuarios_generales():
 
             # Crear una estructura de datos que agrupe los usuarios con su información de UsuarioRegion
             usuarios_con_region = [
-                {
-                    "usuario": usuario,
-                    "regiones": [ur for ur in usuario_regiones if ur.user_id == usuario.id],
-                    "codigo_postal": usuario_regiones[0].codigoPostal,  # Obtener código postal de UsuarioRegion
-                    "pais": usuario_regiones[0].pais,  # Obtener país de UsuarioRegion
-                    "idioma": usuario_regiones[0].idioma  # Obtener idioma de UsuarioRegion
-                }
-                for usuario in usuarios
-            ]
+                    {
+                        "usuario": serializar_usuario(usuario),
+                        "regiones": [serializar_region(ur) for ur in usuario_regiones if ur.user_id == usuario.id],
+                        "codigo_postal": usuario_regiones[0].codigoPostal,
+                        "pais": usuario_regiones[0].pais,
+                        "idioma": usuario_regiones[0].idioma
+                    }
+                    for usuario in usuarios
+                ]
+
 
             return render_template(
                 "/usuarios/usuarios.html",
@@ -101,14 +102,15 @@ def usuarios():
             # Crear una estructura de datos que agrupe los usuarios con su información de UsuarioRegion
             usuarios_con_region = [
                 {
-                    "usuario": usuario,
-                    "regiones": [ur for ur in usuario_regiones if ur.user_id == usuario.id],
-                    "codigo_postal": usuario_regiones[0].codigoPostal,  # Obtener código postal de UsuarioRegion
-                    "pais": usuario_regiones[0].pais,  # Obtener país de UsuarioRegion
-                    "idioma": usuario_regiones[0].idioma  # Obtener idioma de UsuarioRegion
+                    "usuario": serializar_usuario(usuario),
+                    "regiones": [serializar_region(ur) for ur in usuario_regiones if ur.user_id == usuario.id],
+                    "codigo_postal": usuario_regiones[0].codigoPostal,
+                    "pais": usuario_regiones[0].pais,
+                    "idioma": usuario_regiones[0].idioma
                 }
                 for usuario in usuarios
             ]
+
 
             return render_template(
                 "/usuarios/usuarios.html",
@@ -238,3 +240,22 @@ def editar_usuario():
         return "Problemas con la base de datos", 500
 
   
+
+def serializar_region(region):
+    return {
+        "id": region.id,
+        "user_id": region.user_id,
+        "idioma": region.idioma,
+        "codigo_postal": region.codigoPostal,
+        "pais": region.pais,
+        "region": region.region,
+        "provincia": region.provincia,
+        "ciudad": region.ciudad,
+    }
+
+def serializar_usuario(usuario):
+    return {
+        "id": usuario.id,
+        "correo_electronico": usuario.correo_electronico,
+        "roll": usuario.roll,
+    }

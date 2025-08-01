@@ -5,6 +5,8 @@ from sqlalchemy import inspect,Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
 
+
+
 ma = Marshmallow()
 codigoPostal = Blueprint('codigoPostal', __name__)
 
@@ -14,6 +16,10 @@ class CodigoPostal(db.Model):
     codigoPostal = db.Column(db.String(20), unique=True, nullable=False)
     ciudad = db.Column(db.String(100), nullable=True)
     pais = db.Column(db.String(100), nullable=True)
+    # RELACIÓN con la tabla intermedia
+    relaciones_ambito = db.relationship("AmbitoCodigoPostal", backref="codigo_postal", lazy=True)
+
+
 
     def __init__(self, codigoPostal, ciudad=None, pais=None):
         self.codigoPostal = codigoPostal
@@ -35,3 +41,5 @@ class MerShema(ma.Schema):
 
 mer_schema = MerShema()
 mer_shema = MerShema(many=True)
+
+from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal  # import directo
