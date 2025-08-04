@@ -30,6 +30,7 @@ from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from social.buckets.bucketGoog import mostrar_from_gcs
 from utils.db_session import get_db_session 
+from social.media.publicaciones import retorna_simbolo_desde_codigo_postal
 from google.api_core.exceptions import NotFound
 
 
@@ -185,6 +186,7 @@ def obtener_publicacion_por_id(publicacion_id):
             
                 # Calcular descuento aleatorio si hay precio
                 precio_actual, descripcion, precio_numero = extraer_precio_y_descripcion(publicacion.texto)
+                simbolo = retorna_simbolo_desde_codigo_postal(session,publicacion.codigoPostal,publicacion.idioma)
            
                 if precio_actual:
                     if random.random() < 0.5:  # 50% de chance de aplicar descuento
@@ -219,6 +221,7 @@ def obtener_publicacion_por_id(publicacion_id):
                     'rating': round(random.uniform(3.0, 5.0), 1),
                     'reviews': random.randint(1, 150),
                     'descuento': descuento,
+                    'simbolo':simbolo,
                     'precio': precio_numero,
                     'precio_original': precio_original
                 }

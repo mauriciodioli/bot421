@@ -105,12 +105,12 @@
                     {% if post.precio_original and post.precio_original > post.precio %}
                     
                         <p class="precio-original">${{ post.precio_original }}</p>
-                        <p class="precio-descuento text-success fw-bold">${{ post.precio }}</p>
+                        <p class="precio-descuento text-success fw-bold">{{ post.simbolo }}{{ post.precio }}</p>
                         {% if post.descuento %}
                             <div class="descuento-badge">{{ post.descuento }}</div>
                         {% endif %}
                     {% else %}
-                        <p class="precio-descuento text-success fw-bold">${{ post.precio }}</p>
+                        <p class="precio-descuento text-success fw-bold">{{ post.simbolo }}{{ post.precio }}</p>
                     {% endif %}
                 </div>
             {% endif %}

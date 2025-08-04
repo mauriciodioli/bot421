@@ -716,7 +716,7 @@ def home(dominio):
 def entrada(dominio=None, pagina=None):
       # Llama a la tarea Celery
     #trigger.llama_tarea_cada_24_horas_estrategias('1',app)
-    crea_tablas_DB()
+    #crea_tablas_DB()
     if not dominio:
         dominio = "inicialDominio"
     if not pagina:

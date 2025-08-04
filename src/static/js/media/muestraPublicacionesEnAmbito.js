@@ -221,7 +221,7 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                                 </div>
                             <!-- Precios -->
                                         ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;">${post.precio_original}</p>` : ''}
-                                        ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${post.precio}</p>` : ''}
+                                        ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${post.simbolo}${post.precio}</p>` : ''}
 
                                 ${post.precio_original && post.descuento ? `
                                     <div class="precio-en-ambito">

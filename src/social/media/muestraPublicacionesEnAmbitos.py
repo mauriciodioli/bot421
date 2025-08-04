@@ -29,6 +29,7 @@ from models.modelMedia.video import Video
 from datetime import datetime
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from social.buckets.bucketGoog import mostrar_from_gcs
+from social.media.publicaciones import retorna_simbolo_desde_codigo_postal
 
 muestraPublicacionesEnAmbitos = Blueprint('muestraPublicacionesEnAmbitos',__name__)
 
@@ -161,14 +162,13 @@ def armar_publicacion_bucket_para_dpi(session, user_id, ambito, layout, idioma, 
                 img['filepath'] = img['filepath'].replace('\\', '/')
             for vid in videos:
                 vid['filepath'] = vid['filepath'].replace('\\', '/')
-
-            precio_actual, descripcion, precio_num  = extraer_precio_y_descripcion(publicacion.texto)
-            if precio_num:
+            simbolo = retorna_simbolo_desde_codigo_postal(session,publicacion.codigoPostal,publicacion.idioma)
+            if publicacion.precio:
                 if random.random() < 0.5:
                     descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
                     descuento = f"{descuento_porcentaje}% OFF"
-                    precio_original_num = round(precio_num / (1 - descuento_porcentaje / 100), 2)
-                    precio_original = f"{precio_actual.split()[0]} {precio_original_num}"  # usa el mismo símbolo
+                    precio_original_num = round(publicacion.precio / (1 - descuento_porcentaje / 100), 2)
+                    precio_original = f"{simbolo} {precio_original_num}"  # usa el mismo símbolo
                 else:
                     descuento = None
                     precio_original = None   
@@ -195,7 +195,8 @@ def armar_publicacion_bucket_para_dpi(session, user_id, ambito, layout, idioma, 
                 'rating': round(random.uniform(3.0, 5.0), 1),
                 'reviews': random.randint(1, 150),
                 'descuento': descuento,
-                'precio': precio_actual,
+                'precio': publicacion.precio,
+                'simbolo':simbolo,
                 'precio_original': precio_original,
                 'layout': layout
             })

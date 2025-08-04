@@ -27,6 +27,7 @@ from models.publicaciones.ambitoCategoria import AmbitoCategoria
 from models.publicaciones.ambitoCategoriaRelation import AmbitoCategoriaRelation
 from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
 from models.publicaciones.estado_publi_usu import Estado_publi_usu
+from models.codigoPostal import CodigoPostal
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.usuarioPublicacionUbicacion import UsuarioPublicacionUbicacion
 from models.modelMedia.image import Image
@@ -431,14 +432,13 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
             categoria = None
             if categoriaPublicacion:
                 categoria = session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
-
-            precio_actual, descripcion, precio_num  = extraer_precio_y_descripcion(publicacion.texto)
-            if precio_num:
+            simbolo = retorna_simbolo_desde_codigo_postal(session,publicacion.codigoPostal,publicacion.idioma)
+            if publicacion.precio:
                 if random.random() < 0.5:
                     descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
                     descuento = f"{descuento_porcentaje}% OFF"
-                    precio_original_num = round(precio_num / (1 - descuento_porcentaje / 100), 2)
-                    precio_original = f"{precio_actual.split()[0]} {precio_original_num}"  # usa el mismo símbolo
+                    precio_original_num = round(publicacion.precio / (1 - descuento_porcentaje / 100), 2)
+                    precio_original = f"{simbolo} {precio_original_num}"  # usa el mismo símbolo
                 else:
                     descuento = None
                     precio_original = None
@@ -467,7 +467,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'rating': round(random.uniform(3.0, 5.0), 1),
                 'reviews': random.randint(1, 150),
                 'descuento': descuento,
-                'precio': precio_actual,
+                'precio': publicacion.precio,
                 'precio_original': precio_original
             })
 
@@ -478,7 +478,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
 
 
 
-def extraer_precio_y_descripcion(texto):
+def extraer_precio_y_descripcion(publicacion_id,texto):
     SIMBOLOS = {
         "EUR": "€",
         "€": "€",
@@ -510,9 +510,56 @@ def extraer_precio_y_descripcion(texto):
             return None, descripcion, None
 
         precio_actual = f"{simbolo} {numero:.2f}"
+       
         return precio_actual, descripcion, numero
 
     return None, texto.strip(), None
+
+
+def retorna_simbolo_desde_codigo_postal(session, codigo_postal,idioma):
+    
+    simbolos_por_moneda = {
+        "USD": "$", "EUR": "€", "ARS": "$", "GBP": "£",
+        "BRL": "R$", "MXN": "$", "AUD": "A$", "CAD": "C$", "PLN": "zł"
+    }
+
+    moneda_por_pais = {
+        "Argentina": "ARS",
+        "Italia": "EUR",
+        "Polonia": "PLN",
+        "Estados Unidos": "USD",
+        "Reino Unido": "GBP",
+        "Brasil": "BRL",
+        "México": "MXN",
+        "Canadá": "CAD"
+        # Agregá más si necesitás
+    }
+
+    moneda_por_idioma = {
+        "es": "ARS", "it": "EUR", "en": "USD", "pt": "BRL", "pl": "PLN"
+    }
+
+    
+    entry = session.query(CodigoPostal).filter_by(codigoPostal=codigo_postal).first()
+
+    pais = entry.pais if entry and entry.pais else None
+    moneda = moneda_por_pais.get(pais)
+
+    if not moneda and idioma:
+        moneda = moneda_por_idioma.get(idioma)
+
+    simbolo = simbolos_por_moneda.get(moneda, "$")
+    return simbolo
+
+
+
+
+
+
+
+
+
+
 
 
 
