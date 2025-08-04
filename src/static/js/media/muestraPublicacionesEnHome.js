@@ -183,7 +183,7 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                                         <!-- Precios -->
                                         ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;">${post.precio_original}</p>` : ''}
-                                        ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${post.precio}</p>` : ''}
+                                        ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${post.simbolo}${post.precio}</p>` : ''}
 
                                         <!-- Descripción -->
                                         <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>

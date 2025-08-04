@@ -185,14 +185,13 @@ def obtener_publicacion_por_id(publicacion_id):
                 # Agregar la publicación con sus imágenes y videos al diccionario
             
                 # Calcular descuento aleatorio si hay precio
-                precio_actual, descripcion, precio_numero = extraer_precio_y_descripcion(publicacion.texto)
                 simbolo = retorna_simbolo_desde_codigo_postal(session,publicacion.codigoPostal,publicacion.idioma)
            
-                if precio_actual:
+                if publicacion.precio:
                     if random.random() < 0.5:  # 50% de chance de aplicar descuento
                         descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
                         descuento = f"{descuento_porcentaje}% OFF"
-                        precio_original = round(float(precio_numero) / (1 - descuento_porcentaje / 100))
+                        precio_original = round(float(publicacion.precio) / (1 - descuento_porcentaje / 100))
                     else:
                         descuento = None
                         precio_original = None
@@ -222,7 +221,7 @@ def obtener_publicacion_por_id(publicacion_id):
                     'reviews': random.randint(1, 150),
                     'descuento': descuento,
                     'simbolo':simbolo,
-                    'precio': precio_numero,
+                    'precio': publicacion.precio,
                     'precio_original': precio_original
                 }
                 

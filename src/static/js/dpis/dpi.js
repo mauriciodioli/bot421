@@ -744,6 +744,10 @@ function enviarDominioAJAX(domain) {
                                                     ${mediaHtml}
                                                 </div>
                                                 <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                                <!-- Precios -->
+                                                ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;">${post.precio_original}</p>` : ''}
+                                                ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${post.simbolo}${post.precio}</p>` : ''}
+
                                                 <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
                                                 <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
 

@@ -29,7 +29,7 @@
         <div class="product-details">
             
             <h2>{{ pedido.nombre_producto }}</h2>
-            <p class="price">Precio: $<span class="unit-price">{{ pedido.precio_venta }}</span></p>
+            <p class="price">Precio: <span class="unit-price">{{ pedido.simbolo }}{{ pedido.precio_venta }}</span></p>
             <label for="quantity-{{ pedido.id }}">Cantidad:</label>
            
             <input type="number" id="quantity-{{ pedido.id }}" name="quantity" class="quantity-input" value="{{ pedido.cantidad or 1 }}" min="1">
@@ -40,8 +40,8 @@
     {% endfor %}
     <div class="cart-summary">
         <div class="summary-details">
-            <p>Subtotal: $<span id="subtotal"></span></p>
-            <p>Total: $<span id="total"></span></p>
+            <p>Subtotal:{{ simbolo }} <span id="subtotal"></span></p>
+            <p>Total:{{ simbolo }} <span id="total"></span></p>
         </div>
     
         <div class="buttons-container">

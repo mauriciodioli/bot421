@@ -23,6 +23,8 @@ from models.pedidos.pedido import Pedido
 
 from models.pedidos.pedidoEntregaPago import PedidoEntregaPago
 from models.publicaciones.publicaciones import Publicacion
+from social.media.publicaciones import retorna_simbolo_desde_codigo_postal
+
 
 
 
@@ -399,13 +401,8 @@ def productosComerciales_pedidos_alta_carrito():
             # Validar y procesar el precio
             texto = data.get('texto_btn_carrito', '')  # Clave corregida
             precio_btn_carrito = data.get('precio_btn_carrito', '')
-            precio, resto = obtenerPrecio(texto) if texto else (None, None)
-            
-            if not precio:
-                precio = 0
-                if precio_btn_carrito:
-                    precio = float(precio_btn_carrito.strip('$').replace(',', '').replace('.', '')) if precio_btn_carrito else None
-            if not guardarPedido(data,user_id,precio):
+              
+            if not guardarPedido(data,user_id,float(precio_btn_carrito)):
                 return render_template('notificaciones/logeePrimero.html', layout='layout')
 
         
@@ -418,6 +415,9 @@ def productosComerciales_pedidos_alta_carrito():
             publicacion_id_btn_carrito = data.get('publicacion_id_btn_carrito')
             # Consultar publicaciones y pedidos
             publicacion = session.query(Publicacion).filter_by(id=int(publicacion_id_btn_carrito)).first()
+           
+            simbolo = retorna_simbolo_desde_codigo_postal(session,publicacion.codigoPostal,publicacion.idioma)
+         
             if not publicacion:
                 return jsonify({'error': 'Publicacion no encontrada.'}), 404
             else:
@@ -440,6 +440,7 @@ def productosComerciales_pedidos_alta_carrito():
                     'imagen_url': pedido.imagen,  # Incluir la URL de la imagen  
                     'calendly_url': calendly_url,
                     'nombrePublicacionUsuario': usuario.correo_electronico,
+                    'simbolo':simbolo,
                     'pagoOnline': botonPagoOnline            
                 }
                 for pedido in pedidos
@@ -449,6 +450,7 @@ def productosComerciales_pedidos_alta_carrito():
             return render_template(
                 'productosComerciales/pedidos/carritoCompras.html',
                 data=pedidos_data,
+                simbolo=simbolo,
                 layout='layout'
             )
 

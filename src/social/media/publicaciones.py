@@ -467,6 +467,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'rating': round(random.uniform(3.0, 5.0), 1),
                 'reviews': random.randint(1, 150),
                 'descuento': descuento,
+                'simbolo':simbolo,
                 'precio': publicacion.precio,
                 'precio_original': precio_original
             })
