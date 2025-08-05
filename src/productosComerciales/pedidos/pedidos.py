@@ -98,7 +98,8 @@ def productosComerciales_pedidos_mostrar_carrito():
         access_token = data.get('access_token_btn_carrito_bajo') or data.get('access_token_btn_carrito')
         ambito = data.get('ambito_btn_carrito_bajo') or data.get('ambito_btn_carrito')
 
-        
+        codigoPostal = request.cookies.get('codigoPostal')
+        idioma = request.cookies.get('language')
         
       
         if not access_token:
@@ -137,6 +138,7 @@ def productosComerciales_pedidos_mostrar_carrito():
                 )
             
             # Consultar publicaciones y pedidos
+            simbolo = retorna_simbolo_desde_codigo_postal(session,codigoPostal,idioma)
             publicaciones = session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
             if publicaciones:
                 # Verificar asociaciones
@@ -147,6 +149,7 @@ def productosComerciales_pedidos_mostrar_carrito():
                     return render_template(
                         'productosComerciales/pedidos/carritoCompras.html',
                         data='',
+                        simbolo=simbolo,
                         layout='layout'
                     )
                     
@@ -164,7 +167,8 @@ def productosComerciales_pedidos_mostrar_carrito():
                     'estado': pedido.estado,
                     'ambito': quitar_acentos(pedido.ambito),  # Se llama directamente la función aquí
                     'cantidad': pedido.cantidad,
-                    'imagen_url': pedido.imagen,  # Incluir la URL de la imagen   
+                    'imagen_url': pedido.imagen,  # Incluir la URL de la imagen  
+                    'simbolo':simbolo, 
                     'pagoOnline': pedido.pagoOnline       
                 }
                 for pedido in pedidos
@@ -175,16 +179,15 @@ def productosComerciales_pedidos_mostrar_carrito():
             return render_template(
                 'productosComerciales/pedidos/carritoCompras.html',
                 data=pedidos_data,
+                simbolo=simbolo,
                 layout='layout'
             )
 
    except Exception as e:
-        print("Error:", str(e))
-       
+        print("Error:", str(e))       
         return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
 
-   finally:
-        session.close()  # Cerrar la sesión siempre
+  
 
 
 @pedidos.route('/productosComerciales_pedidos_compras/', methods=['POST'])

@@ -35,7 +35,7 @@ function confirmarPago() {
 
   switch (seleccion) {
         case 'paypal':
-           alert('Iniciando pago con PayPal...');
+          // alert('Iniciando pago con PayPal...');
 
             abrirModalPago();
         break;

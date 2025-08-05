@@ -63,7 +63,13 @@ function showError(message) {
 let guardada = localStorage.getItem("date")
 access_token = localStorage.getItem("access_token")  
 correo_electronico = localStorage.getItem("correo_electronico")  
-  
+
+let codigo_postal = localStorage.getItem('codigoPostal')
+if (codigo_postal) {
+    // Aquí se almacena la cookie con 'codigoPostal'
+    document.cookie = `codigoPostal=${codigo_postal}; path=/; max-age=31536000`; // max-age=31536000 es 1 año
+}
+
 // Verificar si el access_token está presente y no ha expirado
 
 if (!access_token || !correo_electronico || tokenExpirado(access_token)) {
@@ -84,6 +90,7 @@ if (!access_token || !correo_electronico || tokenExpirado(access_token)) {
 // console.log("entra en scriptt en archivo login.html y guarda la token: ",tokenGuardado)//muestra localStorage    
 if (!access_token || tokenExpirado(access_token)) {
   // Obtener los tokens desde el diccionario de contexto de Flask
+ 
   {% if tokens is defined %}
     access_token = "{{ tokens[0] }}";
     const refresh_token = "{{ tokens[1] }}";
@@ -111,7 +118,8 @@ if (!access_token || tokenExpirado(access_token)) {
     if (codigoPostal) {  
       localStorage.setItem("codigoPostal", codigoPostal);  
     }
-  
+  // Si 'codigoPostal' está presente, almacenarlo en las cookies
+ 
   {% endif %}
 }else {
 // Token válido, usarlo para la solicitud AJAX

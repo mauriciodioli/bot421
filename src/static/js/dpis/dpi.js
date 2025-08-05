@@ -599,7 +599,7 @@ function enviarDominioAJAX(domain) {
         console.log("AJAX ya en curso, evitando llamada duplicada");
         return; // Evita llamadas simultáneas
     }
-    ajaxInProgress = true;
+    ajaxInProgress = false;
     console.log("Dominio:", domain);
     localStorage.setItem('banderaCategorias', 'True');
     // Elementos relevantes

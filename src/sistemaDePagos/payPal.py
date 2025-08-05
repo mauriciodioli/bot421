@@ -63,6 +63,11 @@ def create_orders_paypal():
     if currency == "ARS":
         amount_float = round(amount_float / 1400, 2)
         currency = "USD"
+        
+    # Conversión PLN → USD
+    if currency == "ZŁ":
+        amount_float = round(amount_float / 4.0, 2)
+        currency = "USD"
 
     if currency not in supported_currencies:
         return jsonify({

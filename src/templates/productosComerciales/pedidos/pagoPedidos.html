@@ -13,7 +13,7 @@
 
 <div class="container mt-auto">
     <div class="text-center mensaje">
-        <h5>Ingresa tus datos para recibir tu pedido!</h5>
+        <h5 data-translate="ingresa_tus_datos">Ingresa tus datos para recibir tu pedido!</h5>
     </div>
     <div class="row justify-content-center">
         <!-- Columna izquierda vacía -->
@@ -26,22 +26,22 @@
                     {% for pedido in pedidos %}
                         <div class="col-md-12">
                             <div class="card  carrucelPromociones text-center shadow-tarj">
-                                <div class="card-header  carrucelPromociones">
-                                    Datos del pedido
+                                <div class="card-header carrucelPromociones">
+                                    <span data-translate="datos_del_pedido">Datos del pedido</span>
                                 </div>
                                 <div class="card-body  carrucelPromociones">
-                                    <h5 class="card-title  carrucelPromociones">{{ pedido.reason }}</h5>
-                                    <p class="card-text  carrucelPromociones">{{ pedido.price }} {{ pedido.currency_id }} c/u</p>
+                                  
+                                    <p class="card-text  carrucelPromociones">{{ pedido.currency_id }} {{ pedido.price }} </p>
                                     {% if pedido.discount > 0 %}
                                         <p class="card-text ahorro">Descuento: {{ pedido.discount }}%</p>
                                     {% endif %}
                                     <div id="datosCliente">
-                                        <input type="text" id="nombreCliente" name="nombreCliente" class="form-control" placeholder="Nombre" required>
-                                        <input type="text" id="apellidoCliente" name="apellidoCliente" class="form-control" placeholder="Apellido" required>
-                                        <input type="text" id="direccionCliente" name="direccionCliente" class="form-control" placeholder="Dirección" required>
-                                        <input type="text" id="telefonoCliente" name="telefonoCliente" class="form-control" placeholder="Teléfono" required>
-                                        <input type="email" id="emailCliente" name="emailCliente" class="form-control" placeholder="Email" required>
-                                        <textarea id="comentariosCliente" name="comentariosCliente" class="form-control" placeholder="Comentarios" rows="3"></textarea>
+                                        <input type="text" id="nombreCliente" name="nombreCliente" class="form-control"  required data-translate="nombre">
+                                        <input type="text" id="apellidoCliente" name="apellidoCliente" class="form-control" required data-translate="apellido">
+                                        <input type="text" id="direccionCliente" name="direccionCliente" class="form-control"  required data-translate="direccion">
+                                        <input type="text" id="telefonoCliente" name="telefonoCliente" class="form-control"  required data-translate="telefono">
+                                        <input type="email" id="emailCliente" name="emailCliente" class="form-control"  required data-translate="email">
+                                        <textarea id="comentariosCliente" name="comentariosCliente" class="form-control"  rows="3" data-translate="comentarios"></textarea>
                                     </div>
 
                                       {% include 'productosComerciales/pedidos/seleccionPagoReserva.html' %}
@@ -127,7 +127,7 @@
  <script src="https://www.paypal.com/sdk/js?client-id=AUw65LiG49k2wypTtf_g9kk1Qq9DZ1pFbWVfkpBKFUmJ9_A4GtfZuXhCZB9m0qrsuOr--wgEXjg1fk8S&currency=USD"></script>
 
 <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
-
+<script src="{{url_for('static',filename='js/i18n.js')}}"></script>
 <script src="{{url_for('static',filename='js/sistemaDePagos/pagoPedidos.js')}}"></script>
 <script src="{{url_for('static',filename='js/productosComerciales/pedidos/procesaPedido.js')}}"></script>
  <link rel="stylesheet" href="{{ url_for('static', filename='css/sistemaDePagos/paypalmodal.css') }}">

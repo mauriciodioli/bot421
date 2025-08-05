@@ -1,33 +1,39 @@
 <!-- Botón que abre el modal -->
-<button class="boton-continuar" onclick="abrirModal()">Continuar</button>
+<button class="boton-continuar" onclick="abrirModal()" data-translate="continuar">Continuar</button>
 
 <!-- Modal -->
 <div id="modalPago" class="modal-seleccion">
   <div class="modal-contenido">
     <span class="cerrar" onclick="cerrarModal()">&times;</span>
-    <h2>Método de Pago</h2>
+    <h2 data-translate="metodo_pago">Método de Pago</h2>
+
     <div class="opciones-pago">
       <div class="opcion" data-opcion="paypal">
         <img src="/static/img/paypal.png" alt="PayPal">
-        <span>PayPal</span>
-      </div>
-      <div class="opcion" data-opcion="mercado_pago">
-        <img src="/static/img/mercadopago.png" alt="Mercado Pago">
-        <span>Mercado Pago</span>
-      </div>
-       <div class="opcion" data-opcion="reserva" id="opcion-reserva">
-        <img src="/static/img/paqueteria.png" alt="Reserva">
-        <span>Reservar Paquete</span>
-      </div>
-     <div class="opcion" data-opcion="reservaCita" id="opcion-reserva">
-        <img src="/static/img/reserva.png" alt="Reserva">
-        <span>Reservar Cita</span>
+        <span data-translate="paypal">PayPal</span>
       </div>
 
+      <div class="opcion" data-opcion="mercado_pago">
+        <img src="/static/img/mercadopago.png" alt="Mercado Pago">
+        <span data-translate="mercado_pago">Mercado Pago</span>
+      </div>
+
+      <div class="opcion" data-opcion="reserva" id="opcion-reserva">
+        <img src="/static/img/paqueteria.png" alt="Reserva">
+        <span data-translate="reservar_paquete">Reservar Paquete</span>
+      </div>
+
+      <div class="opcion" data-opcion="reservaCita" id="opcion-reserva">
+        <img src="/static/img/reserva.png" alt="Reserva">
+        <span data-translate="reservar_cita">Reservar Cita</span>
+      </div>
     </div>
-    <button class="boton-confirmar" style="display: none;"  onclick="confirmarPago()">Confirmar</button>
+
+    <button class="boton-confirmar" style="display: none;" onclick="confirmarPago()" data-translate="confirmar">Confirmar</button>
   </div>
 </div>
 
+
  <link rel="stylesheet" href="{{ url_for('static', filename='css/sistemaDePagos/seleccionPagoReserva.css') }}">
  <script src="{{ url_for('static', filename='js/sistemaDePagos/seleccionPagoReserva.js') }}"></script>
+ <script src="{{url_for('static',filename='js/i18n.js')}}"></script>
