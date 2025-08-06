@@ -90,7 +90,7 @@ def generar_estrellas_html(rating, reviews):
 def armar_publicacion_bucket_para_dpi(session, user_id, ambito, layout, idioma, categoria):
     if not isinstance(user_id, int):
         user_id = int(user_id)
-    with get_db_session() as session:
+  
         publicaciones = session.query(Publicacion).filter_by(
             user_id=user_id,
             ambito=ambito,

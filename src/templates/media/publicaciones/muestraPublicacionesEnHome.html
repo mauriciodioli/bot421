@@ -52,34 +52,34 @@
   <div class="celda">
    
   <!-- Fila 2: Texto superior -->
-            <div class="fila texto-superior">
-                <p>Discover more projects by clicking on the image ↴</p>
-            </div>
-    <!-- Fila 4: Imagen o video principal -->
-    <div id="principal-media" class="fila imagen-principal-muestra-despliegue-publicacion-home">
-        <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
-        {% if post.videos %}
-            <!-- Mostrar el primer video si está disponible -->
-           
-            <video controls id="main-video"   onclick="cargarDatosPublicacion()">
-                {% if 'http' in post.videos[0].filepath %}
-                    <source src="{{ post.videos[0].filepath }}" type="video/mp4">
-                {% else %}
-                    <source src="{{ url_for('static', filename=post.videos[0].filepath) }}" type="video/mp4">
-                {% endif %}
-                Tu navegador no soporta el formato de video.
-            </video>
+          <div class="fila texto-superior" onclick="cargarDatosPublicacion()" style="cursor: pointer;">
+                <p data-translate="discover_projects">Discover more projects by clicking here</p>
+          </div>
 
-        {% elif post.imagenes %}
-            <!-- Mostrar la primera imagen si no hay videos -->
-            <img id="main-image" onclick="cargarDatosPublicacion()"
-                src="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}" 
-                alt="{{ post.imagenes[0].title }}" />
-        {% else %}
-            <p>No hay imágenes ni videos disponibles.</p>
-        {% endif %}
-    </div>
-  
+    <!-- Fila 4: Imagen o video principal -->
+                <div id="principal-media" class="fila imagen-principal-muestra-despliegue-publicacion-home">
+                    <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
+
+                    {% if post.videos %}
+                        <!-- Mostrar el primer video si está disponible -->
+                        <img src="/static/img/video-preview.jpg"
+                            alt="Vista previa del video"
+                            style="cursor: pointer;"
+                            onclick="agrandarImagenVideoPublicacion('video', `{% if 'http' in post.videos[0].filepath %}{{ post.videos[0].filepath }}{% else %}{{ url_for('static', filename=post.videos[0].filepath) }}{% endif %}`)" />
+                    
+                    {% elif post.imagenes %}
+                        <!-- Mostrar la primera imagen si no hay videos -->
+                        <img id="main-image"
+                            src="{% if 'http' in post.imagenes[0].filepath %}{{ post.imagenes[0].filepath }}{% else %}{{ url_for('static', filename=post.imagenes[0].filepath) }}{% endif %}"
+                            alt="{{ post.imagenes[0].title }}"
+                            style="cursor: pointer;"
+                            onclick="agrandarImagenVideoPublicacion('imagen', this.src)" />
+                    
+                    {% else %}
+                        <p>No hay imágenes ni videos disponibles.</p>
+                    {% endif %}
+                </div>
+
 
   </div>
 
@@ -281,17 +281,37 @@
 </a>
 
    
+
+
+
+
+
+
+
+<div id="media-modal" class="media-modal" onclick="cerrarModal()">
+  <span class="media-close" onclick="cerrarModal()">×</span>
+  <img id="media-modal-img" class="media-modal-content" style="display:none;">
+  <video id="media-modal-video" class="media-modal-content" controls style="display:none;"></video>
+  <iframe id="media-modal-iframe" class="media-modal-content" frameborder="0" allowfullscreen style="display:none;"></iframe>
+</div>
+
+
+
+
+
 </div>
 
 {% include 'layouts/layout_footer.html' %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnHomeAgrandaImagenes.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/reseniaMuestraPublicEnHome/reseniaMuestraPublicEnHome.css') }}">
 
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
+<script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbitoAgrandaImagenes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/publicaciones/reseniaMuestraPublicEnHome/reseniaMuestraPublicEnHome.js') }}"></script>
-
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 <script>
 
     // Almacenar los valores en variables globales
@@ -305,22 +325,37 @@
     }
    
     function replaceMainMedia(src, type) {
-        var container = document.getElementById('principal-media');
-        if (type === 'image') {
-            container.innerHTML = `<img id="main-image" class="media-principal-redondeada" style="cursor: pointer;"  onclick="cargarDatosPublicacion()"  src="${src}"  alt="Imagen seleccionada" /> `;
+    var container = document.getElementById('principal-media');
 
-        } else if (type === 'video') {
-            container.innerHTML = '<video controls id="main-video" style="cursor: pointer;"><source src="' + src + '" type="video/mp4">Tu navegador no soporta el formato de video.</video>';
-        }
-        // Desplazar suavemente hacia el contenedor de la imagen principal
-        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-     
-            // Calcular la distancia adicional a desplazar para dejar espacio para el texto
-            var offset = container.getBoundingClientRect().top - 230; // Ajusta el valor -50 si es necesario para dejar espacio
-            window.scrollBy(0, offset);
-       
+    if (type === 'image') {
+        container.innerHTML = `
+            <img id="main-image"
+                 class="media-principal-redondeada"
+                 style="cursor: pointer;"
+                 onclick="agrandarImagenVideoPublicacion('imagen', this.src)"
+                 src="${src}"
+                 alt="Imagen seleccionada" />
+        `;
+    } else if (type === 'video') {
+        container.innerHTML = `
+            <video controls
+                   id="main-video"
+                   style="cursor: pointer;"
+                   onclick="agrandarImagenVideoPublicacion('video', this.querySelector('source').src)">
+                <source src="${src}" type="video/mp4">
+                Tu navegador no soporta el formato de video.
+            </video>
+        `;
     }
+
+    // Desplazar suavemente hacia el contenedor de la imagen principal
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Calcular la distancia adicional a desplazar para dejar espacio para el texto
+    var offset = container.getBoundingClientRect().top - 230;
+    window.scrollBy(0, offset);
+}
+
 
     
 

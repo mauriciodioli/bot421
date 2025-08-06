@@ -191,8 +191,7 @@ def social_media_ambitos_actualizar_categoria(id):
             resultado = serializar_ambito(ambitoCategoria)
 
             return jsonify(resultado), 200
-    except Exception as e:
-        session.rollback()
+    except Exception as e:       
         return jsonify({"error": str(e)}), 500
     
 
@@ -222,8 +221,7 @@ def social_media_publicaciones_ambitosCategorias_delete(id):
 
     except Exception as e:
         # Si ocurre un error, revertir los cambios pendientes
-        session.rollback()
-        return jsonify({"error": str(e)}), 500
+         return jsonify({"error": str(e)}), 500
 
    
 

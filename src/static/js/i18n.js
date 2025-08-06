@@ -17,7 +17,9 @@ const translations = {
         "paypal": "PayPal",
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Reservar Paquete",
-        "reservar_cita": "Reservar Cita"
+        "reservar_cita": "Reservar Cita",
+        "discover_projects": "Descubrí más proyectos haciendo clic aquí",
+        "categorias": "Categorías"
             },
     "in": {
         "ingresa_tus_datos": "Enter your details to receive your order!",
@@ -35,7 +37,9 @@ const translations = {
         "paypal": "PayPal",
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Reserve Package",
-        "reservar_cita": "Book Appointment"
+        "reservar_cita": "Book Appointment",
+         "discover_projects": "Discover more projects by clicking here",
+        "categorias": "Categories"
     },
     "pt": {
         "ingresa_tus_datos": "Digite seus dados para receber seu pedido!",
@@ -53,7 +57,9 @@ const translations = {
         "paypal": "PayPal",
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Reservar Pacote",
-        "reservar_cita": "Agendar Consulta"
+        "reservar_cita": "Agendar Consulta",
+         "discover_projects": "Descubra mais projetos clicando aqui",
+        "categorias": "Categorias"
 
     },
     "it": {
@@ -72,7 +78,9 @@ const translations = {
         "paypal": "PayPal",
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Prenota Pacchetto",
-        "reservar_cita": "Prenota Appuntamento"
+        "reservar_cita": "Prenota Appuntamento",
+         "discover_projects": "Scopri altri progetti cliccando qui",
+         "categorias": "Categorie"
 
     },
     "pl": {
@@ -91,7 +99,9 @@ const translations = {
         "paypal": "PayPal",
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Zarezerwuj Paczkę",
-        "reservar_cita": "Zarezerwuj Wizytę"
+        "reservar_cita": "Zarezerwuj Wizytę",
+         "discover_projects": "Odkryj więcej projektów, klikając tutaj",
+        "categorias":"Kategorie"
 
     },
     "fr": {
@@ -110,7 +120,9 @@ const translations = {
         "paypal": "PayPal",
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Réserver le Colis",
-        "reservar_cita": "Réserver un Rendez-vous"
+        "reservar_cita": "Réserver un Rendez-vous",
+        "discover_projects": "Découvrez plus de projets en cliquant ici",
+        "categorias":"Catégories"
 
     },
     "de": {
@@ -129,7 +141,9 @@ const translations = {
         "paypal": "PayPal",
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Paket Reservieren",
-        "reservar_cita": "Termin Vereinbaren"
+        "reservar_cita": "Termin Vereinbaren",
+         "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
+        "categorias":"Kategorien"
 
     }
 };
@@ -164,7 +178,7 @@ function translate(lang) {
 
 
 // Detectar el idioma desde las cookies (si no existe, predeterminado a español)
-debugger;
+
 let currentLang = getCookie('language') 
                || localStorage.getItem('language') 
                || navigator.language?.split('-')[0]  // ej: 'en-US' → 'en'
