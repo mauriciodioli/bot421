@@ -195,12 +195,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const languageLink = document.getElementById("languageLink");
 
     const languages = {
-        es: { name: "Español", code: "ES", flag: "https://flagcdn.com/24x18/es.png" },
         in: { name: "English", code: "ENG", flag: "https://flagcdn.com/24x18/us.png" },
+        pl: { name: "Poland", code: "PL", flag: "https://flagcdn.com/24x18/pl.png" },       
         fr: { name: "Français", code: "FR", flag: "https://flagcdn.com/24x18/fr.png" },
+        es: { name: "Español", code: "ES", flag: "https://flagcdn.com/24x18/es.png" },
         de: { name: "Deutsch", code: "DE", flag: "https://flagcdn.com/24x18/de.png" },
         it: { name: "Italiano", code: "IT", flag: "https://flagcdn.com/24x18/it.png" },
         pt: { name: "Português", code: "PT", flag: "https://flagcdn.com/24x18/pt.png" }
+       
     };
 
     const availableLanguages = Object.keys(languages);

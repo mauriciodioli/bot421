@@ -19,6 +19,7 @@ const translations = {
         "reservar_paquete": "Reservar Paquete",
         "reservar_cita": "Reservar Cita",
         "discover_projects": "Descubrí más proyectos haciendo clic aquí",
+        "carrito_compras": "Carrito de Compras",
         "categorias": "Categorías"
             },
     "in": {
@@ -39,6 +40,7 @@ const translations = {
         "reservar_paquete": "Reserve Package",
         "reservar_cita": "Book Appointment",
          "discover_projects": "Discover more projects by clicking here",
+         "carrito_compras": "Shopping Cart",
         "categorias": "Categories"
     },
     "pt": {
@@ -58,7 +60,8 @@ const translations = {
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Reservar Pacote",
         "reservar_cita": "Agendar Consulta",
-         "discover_projects": "Descubra mais projetos clicando aqui",
+        "discover_projects": "Descubra mais projetos clicando aqui",
+        "carrito_compras": "Carrinho de Compras",
         "categorias": "Categorias"
 
     },
@@ -79,8 +82,9 @@ const translations = {
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Prenota Pacchetto",
         "reservar_cita": "Prenota Appuntamento",
-         "discover_projects": "Scopri altri progetti cliccando qui",
-         "categorias": "Categorie"
+        "discover_projects": "Scopri altri progetti cliccando qui",
+        "carrito_compras": "Carrello",
+        "categorias": "Categorie"
 
     },
     "pl": {
@@ -100,7 +104,8 @@ const translations = {
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Zarezerwuj Paczkę",
         "reservar_cita": "Zarezerwuj Wizytę",
-         "discover_projects": "Odkryj więcej projektów, klikając tutaj",
+        "discover_projects": "Odkryj więcej projektów, klikając tutaj",
+        "carrito_compras": "Koszyk zakupowy",
         "categorias":"Kategorie"
 
     },
@@ -122,6 +127,7 @@ const translations = {
         "reservar_paquete": "Réserver le Colis",
         "reservar_cita": "Réserver un Rendez-vous",
         "discover_projects": "Découvrez plus de projets en cliquant ici",
+        "carrito_compras": "Panier",
         "categorias":"Catégories"
 
     },
@@ -143,6 +149,7 @@ const translations = {
         "reservar_paquete": "Paket Reservieren",
         "reservar_cita": "Termin Vereinbaren",
          "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
+         "carrito_compras": "Warenkorb",
         "categorias":"Kategorien"
 
     }

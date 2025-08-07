@@ -63,6 +63,10 @@ def create_orders_paypal():
     if currency == "ARS":
         amount_float = round(amount_float / 1400, 2)
         currency = "USD"
+    
+    if currency in ["€", "EUR"]:    
+        amount_float = round(amount_float * 1.1, 2)  # ejemplo: 1 EUR = 1.10 USD (ajustá la tasa)   
+        currency = "USD"
         
     # Conversión PLN → USD
     if currency == "ZŁ":

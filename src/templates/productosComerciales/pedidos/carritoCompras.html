@@ -18,7 +18,8 @@
 {% block content%}
 
 <div class="cart-container"> 
-    <h3 style="color:black;">Carrito de Compras</h3>
+    <h3 style="color:black;" data-translate="carrito_compras">Carrito de Compras</h3>
+
     {% for pedido in data %}
     <div class="cart-item" data-precio="{{ pedido.precio_venta }}" data-id="{{ pedido.id }}">
         {% if pedido.imagen_url %}
@@ -83,6 +84,7 @@
 <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/productos/carritoCompras.css')}}"> 
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/carritoCompras.js') }}"></script>
 <script src="{{ url_for('static', filename='js/productosComerciales/pedidos/pedido.js') }}"></script>
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 <script>
     // Convertir 'data' a JSON de forma segura para evitar errores de sintaxis
     var data = {{ data|tojson }};
