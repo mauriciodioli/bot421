@@ -262,14 +262,17 @@ document.addEventListener("DOMContentLoaded", () => {
  
  
  // Obtener el enlace "Signals"
-document.getElementById('openModalSignals').addEventListener('click', function (e) {
-    // Prevenir el comportamiento por defecto (enlace)
+const btnSignals = document.getElementById('openModalSignals');
+if (btnSignals) {
+  btnSignals.addEventListener('click', function (e) {
     e.preventDefault();
-    // Abrir el modal
-    var modalSeleccionPais = new bootstrap.Modal(document.getElementById('modalSeleccionPais'));
+    const modalSeleccionPais = new bootstrap.Modal(
+      document.getElementById('modalSeleccionPais')
+    );
     modalSeleccionPais.show();
-});
- 
+  });
+}
+
  
  
  
@@ -395,60 +398,32 @@ function guardarCodigoPostal() {
 
 
 
+document.addEventListener('DOMContentLoaded', () => {
+  const btnGuardarPais = document.getElementById('guardarPais');
 
+  if (btnGuardarPais) {
+    btnGuardarPais.addEventListener('click', function () {
+      document.getElementById('splash').style.display = 'block';
 
-function mostrarSplash() {
-    document.getElementById("splash").style.display = "block";
+      const selectedCountry = document.getElementById('seleccionarPais').value;
+      localStorage.setItem('paisSeleccionado', selectedCountry);
+
+      const usuario_id = 'demo';
+      const access_token = 'access_dpi_token_usuario_anonimo';
+      const refresh_token = 'access_dpi_refresh_token';
+      const selector = localStorage.getItem('selector');
+
+      $('#modalSeleccionPais').modal('hide');
+
+      const layoutOrigen = 'layout_dpi';
+      const url = `/panel_control_sin_cuenta/?country=${selectedCountry}&layoutOrigen=${layoutOrigen}&usuario_id=${usuario_id}&access_token=${access_token}&refresh_token=${refresh_token}&selector=${selector}`;
+      
+      console.log("Enviando AJAX");
+      window.location.href = url;
+    });
+  } else {
+    console.warn("No se encontró el elemento con ID 'guardarPais'.");
   }
-
-  document.getElementById('guardarPais').addEventListener('click', function() {
-    
-    document.getElementById('splash').style.display = 'block';
-   
-    var selectedCountry = document.getElementById('seleccionarPais').value;
-    localStorage.setItem('paisSeleccionado',selectedCountry)
-    var usuario_id ='demo';
-    access_token = 'access_dpi_token_usuario_anonimo';
-    refresh_token = 'access_dpi_refresh_token';
-    var selector = localStorage.getItem('selector');
-    localStorage.setItem('paisSeleccionado', selectedCountry);
-     
-    $('#modalSeleccionPais').modal('hide'); // Esta línea cierra el modal
-     // Redirigir a la ruta /panel_control_sin_cuenta
-    layoutOrigen = 'layout_dpi'; // Cambia 'nombre_del_layout' por el valor deseado
-    var url = '/panel_control_sin_cuenta/?country=' + selectedCountry + '&layoutOrigen=' + layoutOrigen+ '&usuario_id=' + usuario_id+'&access_token='+access_token+'&refresh_token='+refresh_token+'&selector='+selector;
-    console.log("Enviando AJAX");
-    window.location.href = url;
-  });   
-// en este script cargo el correo electrónico almacenado en el localStorage
-access_token = 'access_dpi';
-correo_electronico = 'desde_dpi_acceso_anonimo';
-
-$(document).ready(function() {
-// Escuchar el evento de cambio en el combobox 1
-$("#selctorEnvironment1").change(function() {
-  // Obtener el valor seleccionado
-  
-  var selectedValue = $(this).val();
-
-
-  // Asignar el valor al campo de entrada oculto "environment" en el formulario 1
-  $("input[name='broker_id']").val(selectedValue);
-});
-
-// Escuchar el evento de cambio en el combobox 2
-$("#selctorEnvironment2").change(function() {
-  // Obtener el valor seleccionado
-  var selectedValue2 = $(this).val();
- 
-
-  // Asignar el valor al campo de entrada oculto "environment" en el formulario 2
-  $("input[name='environment']").val(selectedValue2);
-});
-
-// Asignar el valor del access token al campo oculto en ambos formularios
-$("input[name='access_token']").val(access_token);
-$("input[name='access_token_form2']").val(access_token);
 });
 
 
@@ -881,6 +856,12 @@ var currentLanguage = navigator.language.split('-')[0].toLowerCase();
 
 // Obtener el enlace para cambiar el idioma
 const languageLink = document.getElementById("languageLink");
+// dpi.js (u otros)
+(function () {
+  const el = (window.dpia && window.dpia.languageLink) || document.getElementById('languageLink');
+  if (!el) return; // en esta vista no está, salimos sin romper nada
+  // …tu lógica usando `el`…
+})();
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -924,12 +905,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const dropdown = selector.querySelector(".language-dropdown");
 
     const languages = {
-        es: { name: "Español", code: "ES", flag: "https://flagcdn.com/24x18/es.png" },
         in: { name: "English", code: "ENG", flag: "https://flagcdn.com/24x18/us.png" },
+        pl: { name: "Poland", code: "PL", flag: "https://flagcdn.com/24x18/pl.png" },       
         fr: { name: "Français", code: "FR", flag: "https://flagcdn.com/24x18/fr.png" },
+        es: { name: "Español", code: "ES", flag: "https://flagcdn.com/24x18/es.png" },
         de: { name: "Deutsch", code: "DE", flag: "https://flagcdn.com/24x18/de.png" },
         it: { name: "Italiano", code: "IT", flag: "https://flagcdn.com/24x18/it.png" },
         pt: { name: "Português", code: "PT", flag: "https://flagcdn.com/24x18/pt.png" }
+       
     };
 
     function getCookie(name) {

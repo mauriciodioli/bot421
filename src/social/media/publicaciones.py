@@ -197,7 +197,8 @@ def media_publicaciones_mostrar_home():
                                 dias = (datetime.today().date() - estado.fecha_eliminado).days
                                 if dias <= 30:
                                     eliminadas_ids.add(estado.publicacion_id)
-
+                        categoria = safe_int(categoria, 0)           
+                        
                         # Traer publicaciones válidas
                         publicaciones = session.query(Publicacion).filter(
                             Publicacion.estado == 'activo',
@@ -286,14 +287,17 @@ def media_publicaciones_mostrar_dpi():
                             dias = (datetime.today().date() - estado.fecha_eliminado).days
                             if dias <= 30:
                                 eliminadas_ids.add(estado.publicacion_id)
-
+                    if categoria:
+                        categoriaid = session.query(AmbitoCategoria).filter_by(valor=categoria).first()
+                    else:
+                        categoriaid=0
                     # Traer publicaciones válidas
                     publicaciones = session.query(Publicacion).filter(
                         Publicacion.estado == 'activo',
                         Publicacion.ambito == ambitos,
                         Publicacion.idioma == idioma,
                         Publicacion.codigoPostal == codigoPostal,
-                        Publicacion.categoria_id == int(categoria),
+                        Publicacion.categoria_id == categoriaid.id,
                         ~Publicacion.id.in_(eliminadas_ids)
                     ).all()
 
@@ -337,7 +341,11 @@ def media_publicaciones_mostrar_dpi():
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
 
-
+def safe_int(value, default=0):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
 
 
 

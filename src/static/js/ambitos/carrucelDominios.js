@@ -62,7 +62,7 @@ window.cargarAmbitosCarrusel = function () {
                 
                 // Llamar a enviarDominioAJAX si está definida
                 if (typeof enviarDominioAJAX === 'function') {
-                    debugger;
+                   
                     enviarDominioAJAX(valor);
                 } else {
                     console.warn('La función enviarDominioAJAX no está definida.');

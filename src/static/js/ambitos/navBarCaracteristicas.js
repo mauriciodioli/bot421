@@ -75,73 +75,107 @@ $('#caracteristicas-tab').on('click', function() {
 const dropdownMenuCategorias = $('.categoria-dropdown-menu');
 dropdownMenuCategorias.empty();
 // Función para cargar los ámbitos desde el servidor
-function cargarAmbitosCategorias() {
-   
-    // Datos del formulario o de algún elemento que necesites enviar
-    let ambito = localStorage.getItem('dominio');
-    const cp = localStorage.getItem('codigoPostal');
-    
-    if(ambito == 'inicialDominio'){ ambito = 'Laboral';}
-    const formData = new FormData();
-    formData.append('ambito', ambito);  // Cambia 'nombre_del_ambito' con el valor que necesites
-    formData.append('cp', cp);  // Cambia 'codigo_postal' con el valor correspondiente
+async function cargarAmbitosCategorias() {
+  // 1) Referencia al menú; si no está, salimos sin romper nada
+  const dropdownMenuCategorias = $('#caracteristicas-tab').siblings('.categoria-dropdown-menu');
+  if (!dropdownMenuCategorias.length) {
+    console.warn("dropdownMenuCategorias no encontrado");
+    return;
+  }
 
-    fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
-        method: 'POST',
-        body: formData,  // Enviar los datos del formulario
-        headers: {
-            'Accept': 'application/json',  // Esperar JSON de respuesta
-            // Si el backend requiere algún tipo de encabezado adicional (como tokens de autenticación), agrégalo aquí
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Aquí manejas la respuesta de la API, por ejemplo, agregando los elementos a la interfaz
-        if (!data || !Array.isArray(data.categorias)) {
-            throw new Error("La respuesta de la API no contiene 'categorias' o no es un array.");
-        }
-        // Limpiar el menú y el contenedor de tarjetas antes de agregar nuevos elementos
-        dropdownMenuCategorias.empty();
-        //dropdownMenuCategorias = $('#caracteristicas-tab').siblings('.categoria-dropdown-menu');
+  // 2) Armar payload con FormData (lo que ya usas)
+  let ambito = localStorage.getItem('dominio');
+  const cpRaw = localStorage.getItem('codigoPostal');
 
-        
-      
+  if (ambito === 'inicialDominio') ambito = 'Laboral';
 
-        // Agregar las categorías obtenidas al dropdown
-        data.categorias.forEach((categoria, index) => {
-            // Agregar la categoría al menú desplegable
-            // Asigna un valor predeterminado en caso de que no esté definido
-            const color = categoria.color || 'orange'; // O cualquier color predeterminado que desees
-            const listItem = `
-                        <li style="padding: 10px;">
-                            <a href="#" class="categoria-dropdown-item" id="${categoria.id}" data-value="${categoria.valor}" data-color="${color}" style="color: ${color}; padding: 10px;">
-                                ${categoria.nombre}
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    `;
+  const formData = new FormData();
+  if (ambito != null && ambito !== 'null' && ambito !== '') formData.append('ambito', ambito);
+  if (cpRaw != null && cpRaw !== 'null' && cpRaw !== '') formData.append('cp', cpRaw);
 
-        
-            dropdownMenuCategorias.append(listItem);
-
-         
-        });
-
-      
-
-        // Eliminar el último separador
-        dropdownMenuCategorias.children('li').last().remove();
-         // Agregar evento para cerrar el dropdown al hacer clic en una categoría
-       
-           
-       
-    })
-    .catch(error => {
-        console.error('Error al cargar las categorías:', error);
+  try {
+    // 3) Fetch (sin slash final para evitar 404/308, salvo que tu Flask lo pida)
+    const res = await fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
     });
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => '');
+      console.error(`HTTP ${res.status}`, txt);
+      pintarEstado("Error al cargar categorías");
+      return;
+    }
+
+    // 4) Confirmar que es JSON
+    const ct = res.headers.get('content-type') || '';
+    if (!ct.includes('application/json')) {
+      console.warn('La respuesta no es JSON.');
+      pintarEstado("Formato de respuesta inválido");
+      return;
+    }
+
+    const data = await res.json();
+
+    // 5) Normalizar estructura: admite data.categorias o data.data.categorias
+    const categorias = Array.isArray(data?.categorias)
+      ? data.categorias
+      : Array.isArray(data?.data?.categorias)
+      ? data.data.categorias
+      : [];
+
+    // 6) Render seguro
+    dropdownMenuCategorias.empty();
+
+    if (!categorias.length) {
+      pintarEstado("Sin categorías disponibles");
+      return;
+    }
+
+    categorias.forEach((categoria, index) => {
+      const id = categoria?.id ?? `cat-${index}`;
+      const valor = categoria?.valor ?? '';
+      const nombre = categoria?.nombre ?? categoria?.name ?? `Categoría ${index + 1}`;
+      const color = categoria?.color || 'orange';
+
+      const itemHtml = `
+        <li style="padding: 10px;">
+          <a href="#" class="categoria-dropdown-item"
+             id="${id}" data-value="${valor}" data-color="${color}"
+             style="color:${color}; padding:10px;">
+            ${nombre}
+          </a>
+        </li>
+        <li class="cat-divider"><hr class="dropdown-divider"></li>
+      `;
+      dropdownMenuCategorias.append(itemHtml);
+    });
+
+    // 7) Quitar el último separador si existe
+    dropdownMenuCategorias.find('li.cat-divider').last().remove();
+
+    // 8) (Opcional) Delegar click para cerrar/actuar
+    dropdownMenuCategorias.off('click', '.categoria-dropdown-item').on('click', '.categoria-dropdown-item', function (e) {
+      e.preventDefault();
+      const id = $(this).attr('id');
+      // tu lógica al seleccionar categoría…
+      dropdownMenuCategorias.closest('.dropdown').removeClass('show'); // si usas Bootstrap 5
+    });
+
+  } catch (err) {
+    console.error('Error de red/parseo al cargar categorías:', err);
+    pintarEstado("Error de red o parseo");
+  }
+
+  function pintarEstado(texto) {
+    dropdownMenuCategorias
+      .empty()
+      .append(`<li><span class="dropdown-item disabled">${texto}</span></li>`);
+  }
 }
-
-
 
 
 

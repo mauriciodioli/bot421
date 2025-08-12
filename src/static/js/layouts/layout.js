@@ -189,6 +189,7 @@ if (!getCookie("language")) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    debugger;
     const selector = document.getElementById("languageSelector");
     const selected = selector.querySelector(".selected-language");
     const dropdown = selector.querySelector(".language-dropdown");
