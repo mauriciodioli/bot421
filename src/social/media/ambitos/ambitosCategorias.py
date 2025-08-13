@@ -76,8 +76,8 @@ def social_media_ambitosCategorias_categoria_mostrar():
             # Paso 3: Buscar categorías asociadas
             categorias = session.query(AmbitoCategoria).filter(
                 AmbitoCategoria.id.in_(categoria_ids),
-                AmbitoCategoria.estado == 'ACTIVO',
-                AmbitoCategoria.idioma == idioma
+                AmbitoCategoria.estado == 'ACTIVO'
+                
             ).all()
 
             print(f"[DEBUG] Categorías encontradas: {len(categorias)}")

@@ -16,7 +16,7 @@ class Ambitos(db.Model):
     
     # Columnas de la tabla
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)  
-    nombre = db.Column(db.String(500), unique=True, nullable=False)
+    nombre = db.Column(db.String(500), nullable=False)
     descripcion = db.Column(db.String(500), nullable=True)
     idioma = db.Column(db.String(500), nullable=True)
     valor = db.Column(db.String(500), nullable=True)
@@ -36,6 +36,8 @@ class Ambitos(db.Model):
     
     def __repr__(self):
         return f"Ambitos(id={self.id}, nombre={self.nombre}, descripcion={self.descripcion}, idioma={self.idioma}, valor={self.valor}, estado={self.estado})"
+    
+    
     
     @classmethod
     def crear_tabla_ambitos(self):
