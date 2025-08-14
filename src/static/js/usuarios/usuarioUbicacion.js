@@ -1,3 +1,41 @@
+// Utils cookies (sencillos)
+function getCookie(name) {
+  return document.cookie
+    .split('; ')
+    .find(r => r.startsWith(name + '='))?.split('=')[1] || null;
+}
+function setCookie(name, value, days = 365) {
+  const maxAge = days * 24 * 60 * 60;
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; samesite=lax`;
+}
+
+// Asegura que exista codigoPostal en LS y cookie. Devuelve el valor final.
+function ensureCodigoPostal(defaultCp = '1') {
+  let cp = localStorage.getItem('codigoPostal');
+
+  // si no está en LS, probá cookie
+  if (!cp || cp === 'null' || cp === 'undefined' || cp.trim() === '') {
+    cp = getCookie('codigoPostal');
+  }
+
+  // si sigue sin valor, usa el default
+  if (!cp || cp === 'null' || cp === 'undefined' || cp.trim() === '') {
+    cp = String(defaultCp);
+  }
+
+  // sincronizá ambos siempre
+  localStorage.setItem('codigoPostal', cp);
+  setCookie('codigoPostal', cp);
+
+  return cp;
+}
+
+// Uso:
+const codigoPostal = ensureCodigoPostal('1');
+console.log("Código postal en uso:", codigoPostal);
+
+
+
 if (typeof window.lastLatitude === 'undefined') {
     window.lastLatitude = null;
     window.lastLongitude = null;

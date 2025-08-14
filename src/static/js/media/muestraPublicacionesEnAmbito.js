@@ -90,7 +90,7 @@ function cargarDatosPublicacion() {
     if (splash) {
         splash.style.display = 'block'; // Mostrar el splash
     }
-debugger;
+
     // Redirigir a la URL construida con los parámetros
     window.location.href = `/media-muestraPublicacionesEnAmbitos/?publicacion_id=${publicacionId}&user_id=${userId}&ambito=${ambito}&layout=${layout}&categoria=${categoria}`;
 }

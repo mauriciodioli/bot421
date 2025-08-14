@@ -146,14 +146,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     `;
                     dropdownMenu.append(listItem);
 
-                    // Crear una nueva tarjeta para cada dominio
+                   // Crear una nueva tarjeta para cada dominio
                     const domainCard = `
-                        <div class="numRequeris-card${index + 1} card" id="card-${ambito.valor}">
+                        <div class="numRequeris-card${index + 1} card" id="card-${ambito.valor}" data-id="${ambito.id}">
                             <div class="card-content">                              
                                 <p class="card-number">${ambito.nombre}</p>
+                                <input type="hidden" class="ambito-id-oculto" value="${ambito.id}">
                             </div>
                         </div>
                     `;
+
 
                     // Insertar la tarjeta en el contenedor
                     cardContainer.append(domainCard); // Usar jQuery para insertar la tarjeta
@@ -206,10 +208,14 @@ document.addEventListener("DOMContentLoaded", () => {
         $('.card-container').on('click', '.card', function () {
             //const selectedDomain = $(this).find('.card-number').text(); // Usar el número de la tarjeta como dominio
             const selectedDomain = $(this).find('.card-number').text().replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
+            const selectedDomainId = $(this).data('id'); // O $(this).find('.ambito-id-oculto').val()
 
             // Guardar el dominio en localStorage
             localStorage.setItem('dominio', selectedDomain);
-
+            localStorage.setItem('dominio_id', selectedDomainId);
+            // Guardar en cookies (por 1 año)
+            document.cookie = `dominio_id=${selectedDomainId}; path=/; max-age=31536000`;
+  
             // Actualizar el input oculto
             const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
             if (hiddenInput.length) {
@@ -217,7 +223,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Mostrar en consola
-            console.log('Dominio seleccionado:', selectedDomain);
+            
+            console.log('Dominio seleccionado:', selectedDomain, 'ID:', selectedDomainId);
             
             // Llamar a la función para manejar el dominio seleccionado
             enviarDominioAJAX(selectedDomain);

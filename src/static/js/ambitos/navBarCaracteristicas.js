@@ -189,57 +189,71 @@ $('.categoria-dropdown-toggle').on('click', function (e) {
 });
 
 
-
-// Delegación de eventos para manejar clics en los ítems del menú desplegable
-$('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (e) {
-//$(document).on('click', '#navBar-' + ambitoId + ' .categoria-dropdown-item', function (e) {
-
+$('.categoria-dropdown-menu').removeClass('show');
+// 1) EXTRAEMOS TU MISMO CÓDIGO A UNA FUNCIÓN (misma lógica, mismo this)
+function onCategoriaClick(e) {
     e.preventDefault(); // Previene el comportamiento predeterminado
-   
+    
     let categoriaId = $(this).attr('id');
     let categoriaNombre = $(this).data('value');
     
     console.log("Categoría seleccionada:", categoriaNombre);
     console.log("Clic detectado"); // Para verificar si el clic está siendo detectado
+
     // Cerrar el menú desplegable correctamente
     $('.categoria-dropdown-menu').removeClass('show'); // Alternativa sin Bootstrap
- //   $('.categoria-dropdown-toggle').dropdown('hide');  // Si usas Bootstrap (el botón que activa el menú)
-   
+    // $('.categoria-dropdown-toggle').dropdown('hide');  // Si usas Bootstrap
+
     const selectedCategory = this.id; // Obtiene el valor de data-value
-  
+
     // Guardar el dominio en localStorage
     localStorage.setItem('categoria', selectedCategory);
     var domain = localStorage.getItem('dominio');
+
     // Actualizar el input oculto
     const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
     if (hiddenInput.length) {
         hiddenInput.val(selectedCategory);
     }
-    $('#home-tab').text(this.dataset.value);  // Cambiar el texto del botón con el valor de 'selectedCategory'
-    // Mostrar en consola
-  
+
+    $('#home-tab').text(this.dataset.value);  // Cambiar el texto del botón
+
     console.log('Dominio enviado desde categorias---------------:', domain);
     console.log('Categorias---------------:', selectedCategory);
+
     // Llamar a la función para manejar el dominio seleccionado
-    
     if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
-       
         cargarPublicaciones(domain, 'layout');
     }
     if (document.querySelector('#navBarCaracteristicas-index')) {
         console.log("Ejecutando en index.html");
-        enviarDominioAJAXDesdeCategorias(domain,selectedCategory);
-    } 
-    
-    
+        enviarDominioAJAXDesdeCategorias(domain, selectedCategory);
+    }
+
     // Marcar el ítem como activo
     $('.categoria-dropdown-item').removeClass('active');
     $(this).addClass('active');
-     
-    updateColor($(this)[0]); // Convierte jQuery a elemento DOM puro
 
+    updateColor($(this)[0]); // Convierte jQuery a elemento DOM puro
+}
+
+// 2) TU DELEGACIÓN JQUERY ORIGINAL (idéntica)
+$(document).on('click', '.categoria-dropdown-item', function (e) {
+    if (e._catDone) return;   // evita doble ejecución si llega por ambos caminos
+    e._catDone = true;
+    onCategoriaClick.call(this, e); // mantiene el mismo `this` y comportamiento
 });
+
+// 3) FALLBACK EN CAPTURA (NO CAMBIA LA LÓGICA: SOLO INVOCAMOS LA MISMA FUNCIÓN)
+document.addEventListener('click', function (e) {
+    const el = e.target.closest('.categoria-dropdown-item');
+    if (!el) return;
+    if (e._catDone) return;   // si ya lo manejó jQuery, no repetir
+    e._catDone = true;
+    onCategoriaClick.call(el, e); // mismo código, mismo `this`
+}, true); // <- captura para esquivar stopPropagation ajeno
+
 
 
 
@@ -254,13 +268,13 @@ $('.categoria-dropdown-menu').on('click', '.categoria-dropdown-item', function (
 
 // Delegación de eventos para manejar clics en las tarjetas
 $('.card-container').on('click', '.card', function () {
-    const selectedCategory = $(this).find('.card-number').text().replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
-  
+   // const selectedCategory = $(this).find('.card-number').text().replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
+     const selectedCategory = '1'; // Usar un valor fijo para pruebas
     // Guardar el dominio en localStorage
-    localStorage.setItem('categoria', selectedCategory);
+    localStorage.setItem('dominioValor', selectedCategory);
     var domain = localStorage.getItem('dominio');
     // Guardar también en cookie (expira en 30 días)
-    document.cookie = `categoria=${encodeURIComponent(domain)}; path=/; max-age=${60 * 60 * 24 * 30}`;
+    document.cookie = `dominioValor=${encodeURIComponent(domain)}; path=/; max-age=${60 * 60 * 24 * 30}`;
 
     // Actualizar el input oculto
     const hiddenInput = $('#domain'); // Usamos jQuery para seleccionar el input
@@ -269,7 +283,7 @@ $('.card-container').on('click', '.card', function () {
     }
     console.log('hiddenInput:', hiddenInput.val());
     // Mostrar en consola
-    console.log('Categoria seleccionada---------------:', selectedCategory);
+    console.log('Categoria Valor seleccionada---------------:', selectedCategory);
     
      if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
@@ -331,6 +345,7 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
       //  console.log("enviarDominioAJAXDesdeCategorias ya ejecutado, se evita la duplicación.");
        // return;
    // }
+   
     sessionStorage.setItem('dominioCategoriaCargado', 'true');   
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
@@ -352,8 +367,8 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
     var galeriaURL = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
    
-    if ( !localStorage.getItem('categoria')) {        
-        localStorage.setItem('categoria', '1');
+    if ( !localStorage.getItem('dominio')) {        
+        localStorage.setItem('dominio', 'inicialDominio');
        
     }
 
@@ -567,7 +582,7 @@ function renderizarCategorias(categorias, selectedCategory) {
 
     dropdownMenu.innerHTML = "";
     console.log(`🎯 Agregando ${categorias.length} categorías al dropdown`);
-
+    
     categorias.forEach((categoria, index) => {
         const color = categoria.color || 'gray';
 
@@ -606,3 +621,26 @@ function renderizarCategorias(categorias, selectedCategory) {
 
    // console.log("✅ Categorías agregadas correctamente al dropdown.");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

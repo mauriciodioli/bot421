@@ -246,6 +246,7 @@ def media_publicaciones_mostrar_dpi():
         ambitos = request.form.get('ambitos')  # Si el contenido es application/x-www-form-urlencoded
         categoria = request.form.get('categoria')
         idioma = request.form.get('lenguaje')
+        categoriaValor = request.form.get('categoriaValor') 
         codigoPostal = request.cookies.get('codigoPostal')
         if codigoPostal == None:
             codigoPostal = request.form.get('codigoPostal')
@@ -287,17 +288,21 @@ def media_publicaciones_mostrar_dpi():
                             dias = (datetime.today().date() - estado.fecha_eliminado).days
                             if dias <= 30:
                                 eliminadas_ids.add(estado.publicacion_id)
-                    if categoria:
-                        categoriaid = session.query(AmbitoCategoria).filter_by(valor=categoria).first()
-                    else:
-                        categoriaid=0
+                    if categoriaValor:
+                        ambitosCategorias = session.query(AmbitoCategoria).filter_by(valor=categoriaValor).first()
+                        if ambitosCategorias:
+                            categoria = ambitosCategorias.id
+                        else:
+                         
+                            raise ValueError(f"No se encontró una categoría con el valor: {categoriaValor}")
+                  
                     # Traer publicaciones válidas
                     publicaciones = session.query(Publicacion).filter(
                         Publicacion.estado == 'activo',
                         Publicacion.ambito == ambitos,
                         Publicacion.idioma == idioma,
                         Publicacion.codigoPostal == codigoPostal,
-                        Publicacion.categoria_id == categoriaid.id,
+                        Publicacion.categoria_id == int(categoria),
                         ~Publicacion.id.in_(eliminadas_ids)
                     ).all()
 
