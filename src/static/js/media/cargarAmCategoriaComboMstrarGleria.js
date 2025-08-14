@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    debugger;
+    
     // Obtener los selects de ámbitos y categorías para creación y modificación
     const ambitoSelects = {
 
@@ -20,11 +20,12 @@ document.addEventListener('DOMContentLoaded', function () {
             console.warn("Ningún ámbito seleccionado.");
             return;
         }
+        cp = localStorage.getItem('codigoPostal');
 
         fetch('/social-media-publicaciones-obtener-ambitosCategorias/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ambito: ambitoSeleccionado })
+            body: JSON.stringify({ ambito: ambitoSeleccionado,cp: cp })
         })
         .then(response => {
             if (!response.ok) throw new Error('Error al obtener las categorías.');

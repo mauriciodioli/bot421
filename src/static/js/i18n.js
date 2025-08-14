@@ -20,7 +20,27 @@ const translations = {
         "reservar_cita": "Reservar Cita",
         "discover_projects": "Descubrí más proyectos haciendo clic aquí",
         "carrito_compras": "Carrito de Compras",
-        "categorias": "Categorías"
+        "categorias": "Categorías",
+
+        'footer_we_are': "Somos",
+        'footer_home': "Inicio",
+        'footer_plans': "Planes",
+        'footer_about': "Sobre nosotros",
+        'footer_docs': "Documentos",
+        'footer_content': "Contenido",
+        'footer_faq': "FAQ",
+        'footer_contact': "Contactos",
+        'footer_language': "Lenguaje",
+        'footer_login': "Login",
+        'footer_register': "Registrarse",
+        'footer_restart': "Reinicio",
+        'footer_rights': "Todos los derechos reservados",
+        'newsletter_title': "Suscribite a nuestro",
+        'newsletter_word': "newsletter",
+        'newsletter_email_ph': "Email",
+        'newsletter_submit': "Enviar",
+        'disclaimer': "DPIA Solutions está en fase de prueba. Las publicaciones actuales son simuladas y no representan una oferta comercial real. Las imágenes pueden provenir de fuentes externas con fines ilustrativos para validación del sistema."
+
             },
     "in": {
         "ingresa_tus_datos": "Enter your details to receive your order!",
@@ -39,9 +59,29 @@ const translations = {
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Reserve Package",
         "reservar_cita": "Book Appointment",
-         "discover_projects": "Discover more projects by clicking here",
-         "carrito_compras": "Shopping Cart",
-        "categorias": "Categories"
+        "discover_projects": "Discover more projects by clicking here",
+        "carrito_compras": "Shopping Cart",
+        "categorias": "Categories",
+
+        "footer_we_are": "We are",
+        "footer_home": "Home",
+        "footer_plans": "Plans",
+        "footer_about": "About us",
+        "footer_docs": "Documents",
+        "footer_content": "Content",
+        "footer_faq": "FAQ",
+        "footer_contact": "Contacts",
+        "footer_language": "Language",
+        "footer_login": "Login",
+        "footer_register": "Sign up",
+        "footer_restart": "Restart",
+        "footer_rights": "All rights reserved",
+        "newsletter_title": "Subscribe to our",
+        "newsletter_word": "newsletter",
+        "newsletter_email_ph": "Email",
+        "newsletter_submit": "Send",
+        "disclaimer": "DPIA Solutions is currently in testing phase. The current listings are simulated and do not represent a commercial offer. Images may come from external sources for illustrative purposes only."
+
     },
     "pt": {
         "ingresa_tus_datos": "Digite seus dados para receber seu pedido!",
@@ -84,7 +124,27 @@ const translations = {
         "reservar_cita": "Prenota Appuntamento",
         "discover_projects": "Scopri altri progetti cliccando qui",
         "carrito_compras": "Carrello",
-        "categorias": "Categorie"
+        "categorias": "Categorie",
+
+        "footer_we_are": "Siamo",
+        "footer_home": "Inizio",
+        "footer_plans": "Piani",
+        "footer_about": "Chi siamo",
+        "footer_docs": "Documenti",
+        "footer_content": "Contenuti",
+        "footer_faq": "FAQ",
+        "footer_contact": "Contatti",
+        "footer_language": "Lingua",
+        "footer_login": "Login",
+        "footer_register": "Registrati",
+        "footer_restart": "Riavvio",
+        "footer_rights": "Tutti i diritti riservati",
+        "newsletter_title": "Iscriviti alla nostra",
+        "newsletter_word": "newsletter",
+        "newsletter_email_ph": "Email",
+        "newsletter_submit": "Invia",
+        "disclaimer": "DPIA Solutions è in fase di prova. Le pubblicazioni attuali sono simulate e non rappresentano un'offerta commerciale reale. Le immagini possono provenire da fonti esterne a scopo illustrativo."
+
 
     },
     "pl": {
@@ -106,7 +166,27 @@ const translations = {
         "reservar_cita": "Zarezerwuj Wizytę",
         "discover_projects": "Odkryj więcej projektów, klikając tutaj",
         "carrito_compras": "Koszyk zakupowy",
-        "categorias":"Kategorie"
+        "categorias":"Kategorie",
+
+        "footer_we_are": "Jesteśmy",
+        "footer_home": "Start",
+        "footer_plans": "Plany",
+        "footer_about": "O nas",
+        "footer_docs": "Dokumenty",
+        "footer_content": "Treści",
+        "footer_faq": "FAQ",
+        "footer_contact": "Kontakty",
+        "footer_language": "Język",
+        "footer_login": "Zaloguj się",
+        "footer_register": "Zarejestruj się",
+        "footer_restart": "Restart",
+        "footer_rights": "Wszelkie prawa zastrzeżone",
+        "newsletter_title": "Zapisz się do naszego",
+        "newsletter_word": "newslettera",
+        "newsletter_email_ph": "E-mail",
+        "newsletter_submit": "Wyślij",
+        "disclaimer": "DPIA Solutions znajduje się w fazie testowej. Obecne ogłoszenia są symulowane i nie stanowią oferty handlowej. Obrazy mogą pochodzić z zewnętrznych źródeł i służą wyłącznie celom ilustracyjnym."
+
 
     },
     "fr": {
@@ -148,9 +228,29 @@ const translations = {
         "mercado_pago": "Mercado Pago",
         "reservar_paquete": "Paket Reservieren",
         "reservar_cita": "Termin Vereinbaren",
-         "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
-         "carrito_compras": "Warenkorb",
-        "categorias":"Kategorien"
+        "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
+        "carrito_compras": "Warenkorb",
+        "categorias":"Kategorien",
+
+        "footer_we_are": "Wir sind",
+        "footer_home": "Startseite",
+        "footer_plans": "Pläne",
+        "footer_about": "Über uns",
+        "footer_docs": "Dokumente",
+        "footer_content": "Inhalte",
+        "footer_faq": "FAQ",
+        "footer_contact": "Kontakte",
+        "footer_language": "Sprache",
+        "footer_login": "Login",
+        "footer_register": "Registrieren",
+        "footer_restart": "Neustart",
+        "footer_rights": "Alle Rechte vorbehalten",
+        "newsletter_title": "Abonniere unseren",
+        "newsletter_word": "Newsletter",
+        "newsletter_email_ph": "E-Mail",
+        "newsletter_submit": "Senden",
+        "disclaimer": "DPIA Solutions befindet sich in der Testphase. Die aktuellen Einträge sind simuliert und stellen kein tatsächliches kommerzielles Angebot dar. Bilder können zu Illustrationszwecken aus externen Quellen stammen."
+
 
     }
 };
