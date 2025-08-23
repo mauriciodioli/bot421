@@ -239,6 +239,106 @@ def media_consultaPublicaciones_lupa_muestra():
 
 
 
+
+
+
+@consultaPublicaciones.route('/media_consultaPublicaciones_muestra_administracion/', methods=['POST'])
+def media_consultaPublicaciones_muestra_administracion():
+    try:
+        # Obtener datos del request
+        data = request.form or request.json
+        access_token = data.get('access_token_btn_publicaciones')
+        if not access_token:
+            return jsonify({'error': 'Token no proporcionado.'}), 401
+
+        # Validar el token
+        if not Token.validar_expiracion_token(access_token=access_token):
+            return jsonify({'error': 'Token inválido o expirado.'}), 401
+
+        # Decodificar el token
+        decoded_token = jwt.decode(
+            access_token,
+            current_app.config['JWT_SECRET_KEY'],
+            algorithms=['HS256']
+        )
+        user_id = decoded_token.get("sub")
+        if not user_id:
+            return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
+        with get_db_session() as session:
+            # Buscar usuario
+            user = session.query(Usuario).filter(Usuario.id == user_id).first()
+            if not user:
+                return jsonify({'error': 'Usuario no encontrado.'}), 404
+
+            if not user.activo:
+                return jsonify({'error': 'El usuario no está activo.'}), 403
+
+            # Obtener y validar el ámbito
+            ambito = data.get('ambito_btn_publicaciones')
+            if not ambito:
+                return jsonify({'error': 'Ámbito no proporcionado.'}), 400
+
+            # Filtro de publicaciones
+            publicaciones = session.query(Publicacion).with_entities(
+                                    Publicacion.id,
+                                    Publicacion.user_id,
+                                    Publicacion.titulo,
+                                    Publicacion.correo_electronico,
+                                    Publicacion.descripcion,
+                                    Publicacion.fecha_creacion,                                
+                                    Publicacion.texto,
+                                    Publicacion.imagen
+                                ).filter(                                    
+                                    Publicacion.ambito == ambito                                
+                                 ).all()
+
+
+
+            # Procesar los datos
+            data = []
+            if not publicaciones:
+                return render_template(
+                                'media/publicaciones/consultaPublicacionesAdmin.html',
+                                data='',
+                                layout='layout'
+                            )
+            for publicacion in publicaciones:
+                precio, resto = obtenerPrecio(publicacion.texto) if publicacion.texto else (None, None)
+                data.append({
+                    'id': publicacion.id,
+                    'user_id': publicacion.user_id,
+                    'nombre_producto': publicacion.titulo,
+                    'texto': publicacion.texto,
+                    'precio_venta': precio,  # Corregido
+                    'correoElectronico': publicacion.correo_electronico,  # Corregido
+                    'descripcion': publicacion.descripcion,
+                    'fechaCreacion': publicacion.fecha_creacion,
+                    'imagen_url':publicacion.imagen
+                })
+           
+            return render_template(
+                'media/publicaciones/consultaPublicacionesAdmin.html',
+                data=data,
+                layout='layout_administracion'
+            )
+
+    except Exception as e:
+        print("Error:", str(e))
+      
+        return jsonify({'error': 'Hubo un error en la solicitud.'}), 500
+
+
+
+
+
+
+
+
+
+
+
+
+
 def obtenerPrecio(data):
     # Expresión regular para extraer el precio
     patron_precio = r'\$\s?\d+(?:\.\d{3})*(?:,\d+)?'

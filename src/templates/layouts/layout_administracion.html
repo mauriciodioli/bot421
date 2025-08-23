@@ -224,7 +224,13 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/social-media-ambitosCategorias-categorias/">Categorias</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="/social-media-ambitosCategorias-codP/">Pub Cat CodP</a></li>
+                            <li>
+                                <a class="dropdown-item" href="#" id="publicaciones-link">Publicaciones</a>
+                                <form id="publicaciones-form" method="POST" action="/media_consultaPublicaciones_muestra_administracion/" style="display: none;">
+                                    <input type="hidden" id="access_token_btn_publicaciones" name="access_token_btn_publicaciones" value="">
+                                    <input type="hidden" id="ambito_btn_publicaciones" name="ambito_btn_publicaciones" value="">
+                                </form>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/social-media-publicaciones-ambitos-obtener-informe/">Información</a></li>                                                                                        
                          </ul>                        
@@ -266,6 +272,35 @@
 
     <script>
      
+        
+  document.addEventListener('DOMContentLoaded', function () {
+       
+        const link = document.getElementById('publicaciones-link');
+        const form = document.getElementById('publicaciones-form');
+  
+        if (!link || !form) {
+            console.error('No se encontró el enlace o el formulario');
+            return;
+        }
+
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const token = localStorage.getItem('access_token');
+            const ambito = localStorage.getItem('dominio');
+
+            if (!token || !ambito) {
+                alert("Faltan datos en localStorage. Asegúrate de que el token y el ámbito estén guardados.");
+                return;
+            }
+
+            document.getElementById('access_token_btn_publicaciones').value = token;
+            document.getElementById('ambito_btn_publicaciones').value = ambito;
+
+            form.submit();
+        });
+    });
+
         
         document.addEventListener("DOMContentLoaded", function() {
            
@@ -402,12 +437,7 @@
 
 
 
-
-
-
-   
-   
-
+  
 
 
     

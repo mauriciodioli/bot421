@@ -1,18 +1,78 @@
-// Obtener el ID del usuario del localStorage
-const localUserId = localStorage.getItem('usuario_id');
+document.addEventListener('DOMContentLoaded', function () {
+    const localUserId = localStorage.getItem('usuario_id');
 
-// Mostrar u ocultar botones "Eliminar" según el user_id
-document.querySelectorAll('.remove-button').forEach(button => {
-    const consultaUserId = button.getAttribute('data-user-id');
-    
-    if (localUserId === consultaUserId) {
-        button.style.display = 'inline-block'; // Mostrar botón
-    }
+    // Mostrar u ocultar botones "Eliminar" según el user_id
+    document.querySelectorAll('.remove-button').forEach(button => {
+        const consultaUserId = button.getAttribute('data-user-id');
+
+        if (localUserId === consultaUserId) {
+            button.style.display = 'inline-block'; // Mostrar botón
+        } else {
+            button.style.display = 'none'; // Ocultar si no corresponde
+        }
+
+        // Añadir listener al botón
+        button.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const publicacionId = this.getAttribute('data-consulta-id');
+            const token = localStorage.getItem('access_token');
+            const correo = localStorage.getItem('correo_electronico') || '';
+
+            if (!token) {
+                alert('Token no disponible. Inicia sesión nuevamente.');
+                return;
+            }
+
+            if (!confirm('¿Estás seguro de que deseas eliminar esta publicación?')) {
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('publicacion_id', publicacionId);
+            formData.append('correo_electronico', correo);
+
+            fetch('/social_imagenes_eliminar_publicacion/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const row = e.target.closest('tr');
+                    if (row) row.remove();
+                    mostrarMensaje('✅ Publicación eliminada con éxito.');
+                } else {
+                    mostrarMensaje('❌ Error al eliminar: ' + (result.error || 'desconocido'), 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                mostrarMensaje('❌ Error al enviar la solicitud.', 'danger');
+            });
+        });
+    });
 });
 
+// Función para mostrar mensajes al usuario
+function mostrarMensaje(mensaje, tipo = 'success') {
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${tipo} alert-dismissible fade show`;
+    alert.role = 'alert';
+    alert.innerHTML = `
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
 
+    document.body.prepend(alert);
 
-
+    setTimeout(() => {
+        alert.remove();
+    }, 4000);
+}
 
 
 
