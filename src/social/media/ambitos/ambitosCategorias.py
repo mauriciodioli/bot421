@@ -161,38 +161,35 @@ def social_media_ambitos_crear_categoria():
        
         return jsonify({"error": str(e)}), 500
 
-
-
-@ambitosCategorias.route('/social-media-ambitos-actualizar-categoria/<int:id>', methods=['PUT'])
-def social_media_ambitos_actualizar_categoria(id):
+@ambitosCategorias.route('/social-media-ambitos-actualizar-categoria', methods=['POST'])
+def social_media_ambitos_actualizar_categoria():
     try:
         with get_db_session() as session:
-            # Obtener el ambito existente
-            ambitoCategoria = session.query(AmbitoCategoria).filter_by(id=id).first() 
+            data = request.get_json(silent=True) or {}
+            id = data.get('id')
 
-            # Verificar si el ambito existe
-            if not ambitoCategoria:
+            if not id:
+                return jsonify({"error": "Falta el ID"}), 400
+
+            amb = session.query(AmbitoCategoria).filter_by(id=id).first()
+            if not amb:
                 return jsonify({"error": "Ambito no encontrado"}), 404
 
-            # Obtener los datos del cuerpo de la solicitud
-            data = request.get_json()
+            # Actualizar campos
+            amb.nombre      = data.get('nombre', amb.nombre)
+            amb.descripcion = data.get('descripcion', amb.descripcion)
+            amb.idioma      = data.get('idioma', amb.idioma)
+            amb.valor       = data.get('valor', amb.valor)
+            amb.color       = data.get('color', amb.color)
+            amb.estado      = data.get('estado', amb.estado)
 
-            # Actualizar los campos del ambito
-            ambitoCategoria.nombre = data.get('nombre', ambitoCategoria.nombre)
-            ambitoCategoria.descripcion = data.get('descripcion', ambitoCategoria.descripcion)
-            ambitoCategoria.idioma = data.get('idioma', ambitoCategoria.idioma)
-            ambitoCategoria.valor = data.get('valor', ambitoCategoria.valor)
-            ambitoCategoria.color = data.get('color', ambitoCategoria.color)
-            ambitoCategoria.estado = data.get('estado', ambitoCategoria.estado)
-        
-            # Guardar los cambios en la base de datos
             session.commit()
-        
-            resultado = serializar_ambito(ambitoCategoria)
-
-            return jsonify(resultado), 200
-    except Exception as e:       
+            return jsonify(serializar_ambito(amb)), 200
+    except Exception as e:
+        import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500
+
+
     
 
 @ambitosCategorias.route('/social-media-publicaciones-ambitosCategorias-delete/<int:id>', methods=['DELETE'])
