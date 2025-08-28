@@ -195,7 +195,11 @@ function cargarPublicaciones(ambitoParam, layout) {
                                         <p class="card-footer-publicacion">Publicado por: Usuario ${post.user_id}</p>
 
                                         <!-- Botón Ver más -->
-                                        <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                                       <a href="#" class="btn-ver-mas" 
+                                                onclick="toggleTexto(${post.publicacion_id}); return false;">
+                                                ${translations[currentLang].verMas}
+                                        </a>
+
                                     </div>
                                 </div>
                             `;
@@ -337,7 +341,9 @@ function toggleTexto(postId) {
         postText.classList.toggle('text-expanded');
         
         // Cambia el texto del botón según sea necesario
-        button.textContent = postText.classList.contains('text-truncated') ? 'Ver más' : 'Ver menos';
+        button.textContent = postText.classList.contains('text-truncated') 
+            ? translations[currentLang].verMas 
+            : translations[currentLang].verMenos;
     } else {
         console.error(`No se encontró el botón para el postId: ${postId}`);
     }
