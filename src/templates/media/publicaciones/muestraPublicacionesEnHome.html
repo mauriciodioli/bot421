@@ -153,10 +153,11 @@
                           <!-- Combo para elegir cantidad -->
                         <form id="form-agregar">
                         <div class="compra-responsive">
-                            <label for="cantidadCompra">Cantidad:</label>
-                            <input type="number" id="cantidadCompra" name="cantidadCompra" value="1" min="1" step="1">
-                            <button type="submit" id="boton-agregar">Agregar</button>
+                            <label for="cantidadCompra" data-translate="quantity_label">Cantidad:</label>
+                            <input type="number" id="cantidadCompra" name="cantidadCompra" value="1" min="1" step="1" aria-label="quantity_label">
+                            <button type="submit" id="boton-agregar" data-translate="add_button">Agregar</button>
                         </div>
+
                         </form>
 
                         
@@ -173,34 +174,35 @@
 
 
 
-<!-- Nueva fila para los tabs -->
-  <div class="celda full-width">
-    <div class="tabs">
-      <input type="radio" id="tab1" name="tab-control" checked>
-      <input type="radio" id="tab2" name="tab-control">
-      <input type="radio" id="tab3" name="tab-control">
-      <ul>
-        <li title="Descripción"><label for="tab1" role="button"><span>Descripción</span></label></li>
-        <li title="Detalles"><label for="tab2" role="button"><span>Detalles</span></label></li>
-        <li title="Envío"><label for="tab3" role="button"><span>Envío</span></label></li>
-      </ul>
-      <div class="slider"><div class="indicator"></div></div>
-      <div class="content">
-        <section>
-          <h2>Descripción</h2>
-          <p>{{ post.descripcion | safe }}</p>
-        </section>
-        <section>
-          <h2>Detalles</h2>
-          <p>Aquí podrías mostrar características técnicas del producto.</p>
-        </section>
-        <section>
-          <h2>Envío</h2>
-          <p>Información de tiempos, zonas y costos de envío.</p>
-        </section>
-      </div>
+<!-- Tabs con i18n -->
+<div class="celda full-width">
+  <div class="tabs">
+    <input type="radio" id="tab1" name="tab-control" checked>
+    <input type="radio" id="tab2" name="tab-control">
+    <input type="radio" id="tab3" name="tab-control">
+    <ul>
+      <li><label for="tab1" role="button"><span data-translate="tab_description">Descripción</span></label></li>
+      <li><label for="tab2" role="button"><span data-translate="tab_details">Detalles</span></label></li>
+      <li><label for="tab3" role="button"><span data-translate="tab_shipping">Envío</span></label></li>
+    </ul>
+    <div class="slider"><div class="indicator"></div></div>
+    <div class="content">
+      <section>
+        <h2 data-translate="tab_description">Descripción</h2>
+        <p>{{ post.descripcion | safe }}</p>
+      </section>
+      <section>
+        <h2 data-translate="tab_details">Detalles</h2>
+        <p data-translate="details_text">Aquí podrías mostrar características técnicas del producto.</p>
+      </section>
+      <section>
+        <h2 data-translate="tab_shipping">Envío</h2>
+        <p data-translate="shipping_text">Información de tiempos, zonas y costos de envío.</p>
+      </section>
     </div>
   </div>
+</div>
+
 
 
 
@@ -254,19 +256,18 @@
 
 
 
-                    <div id="contenedor-reseñas" class="testimonials"></div>
+                <div id="contenedor-reseñas" class="testimonials"></div>
+                    <div id="mensaje-sin-reseñas" style="display:none;margin-top:10px;">
+                        <p data-translate="no_reviews_msg">Sé el primero en dejar una reseña sobre este producto.</p></div>
+                        <div class="formulario-reseña">
+                            <form id="form-reseña">
+                                <input type="text" id="nombre-reseña"  data-translate-placeholder="review_name_ph" placeholder="Tu nombre" aria-label="review_name_ph" required>
 
-                    <div id="mensaje-sin-reseñas" style="display: none; margin-top: 10px;">
-                      <p>Sé el primero en dejar una reseña sobre este producto.</p>
-                    </div>
+                                <textarea id="comentario-reseña" data-translate-placeholder="review_comment_ph" placeholder="Tu comentario..." aria-label="review_comment_ph" required></textarea>
+                                <button type="submit" data-translate="submit_review">Enviar reseña</button>
+                            </form>
+                </div>
 
-                    <div class="formulario-reseña">
-                      <form id="form-reseña">
-                        <input type="text" id="nombre-reseña" placeholder="Tu nombre" required>
-                        <textarea id="comentario-reseña" placeholder="Tu comentario..." required></textarea>
-                        <button type="submit">Enviar reseña</button>
-                      </form>
-                    </div>
 
 
 
