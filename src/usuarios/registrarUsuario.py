@@ -119,7 +119,7 @@ def registro_usuario():
         usuarioUbicacion = UsuarioUbicacion(user_id=usuario.id, id_region=usuarioRegion.id, codigoPostal=codigoPostal, latitud=latitud, longitud=longitud)
         session.add(usuarioUbicacion)
         session.commit()
-        session.close()
+        
         # Crear una respuesta
     
 

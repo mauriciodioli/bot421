@@ -467,7 +467,10 @@ def close_listener(dbapi_connection, connection_record):
 def teardown_db(exception):
     with get_db_session() as session:
         # Cierra la sesión de la base de datos y libera recursos
-        session.remove()
+        try:
+             session.remove()
+        except Exception as e:
+            app.logger.warning(f"Error al cerrar la sesión: {e}")
 # Escuchar cuando se devuelve una conexión al pool
 @event.listens_for(Pool, "checkin")
 def checkin_listener(dbapi_connection, connection_record):
