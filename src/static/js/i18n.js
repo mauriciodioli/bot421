@@ -22,6 +22,9 @@ const translations = {
         "carrito_compras": "Carrito de Compras",
         "categorias": "Categorías",
 
+        "remove_button":"Eliminar",
+        
+
         "verMas": "Ver más",
         "verMenos": "Ver menos",
 
@@ -70,6 +73,8 @@ const translations = {
         "carrito_compras": "Shopping Cart",
         "categorias": "Categories",
 
+        "remove_button":"Remove",
+
         "verMas": "See more",
         "verMenos": "See less",
 
@@ -117,6 +122,8 @@ const translations = {
         "discover_projects": "Descubra mais projetos clicando aqui",
         "carrito_compras": "Carrinho de Compras",
         "categorias": "Categorias",
+
+        "remove_button":"Remover",
 
         "verMas": "Ver mais",
         "verMenos": "Ver menos",
@@ -167,6 +174,8 @@ const translations = {
         "carrito_compras": "Carrello",
         "categorias": "Categorie",
 
+        "remove_button":"Rimuovi",
+
         "verMas": "Vedi di più",
         "verMenos": "Vedi meno",
 
@@ -215,6 +224,8 @@ const translations = {
         "discover_projects": "Odkryj więcej projektów, klikając tutaj",
         "carrito_compras": "Koszyk zakupowy",
         "categorias":"Kategorie",
+
+        "remove_button":"Usuń",
 
 
         "verMas": "Zobacz więcej",
@@ -265,6 +276,8 @@ const translations = {
         "discover_projects": "Découvrez plus de projets en cliquant ici",
         "carrito_compras": "Panier",
         "categorias":"Catégories",
+
+        "remove_button":"Supprimer",
         
         "verMas": "Voir plus",
         "verMenos": "Voir moins",
@@ -314,6 +327,8 @@ const translations = {
         "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
         "carrito_compras": "Warenkorb",
         "categorias":"Kategorien",
+
+        "remove_button":"Entfernen",
 
         "verMas": "Mehr sehen",
         "verMenos": "Weniger sehen",
@@ -391,3 +406,8 @@ function applyI18n(lang){
 }
 
 const t={es:"Hasta 3 cuotas sin interés",in:"Up to 3 interest-free installments",pt:"Até 3x sem juros",pl:"Do 3 rat bez odsetek",it:"Fino a 3 rate senza interessi",fr:"Jusqu’à 3 fois sans frais",de:"Bis zu 3 Raten ohne Zinsen"}; for(const [l,v] of Object.entries(t)) translations[l]={...(translations[l]||{}),installments_3_no_interest:v};
+
+
+const btns={es:["Volver","Continuar"],in:["Back","Continue"],pt:["Voltar","Continuar"],pl:["Wróć","Kontynuuj"],it:["Indietro","Continua"],fr:["Retour","Continuer"],de:["Zurück","Weiter"]};
+for(const [l,[b,c]] of Object.entries(btns)){translations[l]={...(translations[l]||{}),back_button:b,continue_button:c};}
+applyI18n(currentLang);
