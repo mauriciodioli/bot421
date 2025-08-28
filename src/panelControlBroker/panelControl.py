@@ -11,6 +11,7 @@ from utils.db_session import get_db_session
 from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
+import re
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.orden import Orden
@@ -127,68 +128,57 @@ def panel_control_atomatico(pais,usuario_id,access_token,account,selector):
         return render_template('usuarios/logOutSystem.html')     
      #return jsonify(message="No se encontraron datos disponibles")
 
-def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id,accountCuenta):
+
+
+def parse_precio(cell: str, pick: str = "last") -> float:
+    s = (str(cell) if cell is not None else "").strip()
+    if not s or s in {"#N/A", "N/A", "-"}:
+        return 0.0
+    nums = re.findall(r"-?\d+(?:[.,]\d+)?", s)  # ej: ['18.20','150','37.85']
+    if not nums:
+        return 0.0
+    n = nums[-1] if pick == "last" else nums[0]
+    n = n.replace('.', '') if ('.' in n and ',' in n) else n  # miles si hay ambos
+    n = n.replace(',', '.')
+    try:
+        return float(n)
+    except ValueError:
+        return 0.0
+
+def calcula_ut(cell, unidad_trader: float) -> int:
+    precio = parse_precio(cell)
+    return abs(int(unidad_trader / precio)) if precio else 0
+
+def forma_datos_para_envio_paneles(app, ContenidoSheet, user_id, accountCuenta):
     if not ContenidoSheet:
         return False
-
-    datos_desempaquetados = list(ContenidoSheet)[2:]  # Desempaqueta los datos y omite las dos primeras filas
+    datos_desempaquetados = list(ContenidoSheet)[2:]
     datos_procesados = []
-
     with app.app_context():
-        # Consultar todas las órdenes de la cuenta
-      with get_db_session() as session:
-        ordenes_cuenta = session.query(Orden).filter_by(user_id=user_id).all()
-        valor_usuario_ut = session.query(UnidadTrader).filter_by(usuario_id=user_id,).first()
-      
-        if not valor_usuario_ut:
-            unidadTrader = 0
-        else:
-            unidadTrader=valor_usuario_ut.ut
-       
-        # Crear un diccionario para mapear los símbolos de las órdenes a las órdenes
-        ordenes_por_simbolo = {orden.symbol: orden for orden in ordenes_cuenta}
-
-        for i, tupla_exterior in enumerate(datos_desempaquetados):
-            dato = list(tupla_exterior)  # Convierte la tupla interior a una lista
-            symbol = dato[0]
-
-            # Comprobar si hay una orden para este símbolo en las órdenes de la cuenta
-            if symbol in ordenes_por_simbolo:
-                orden_existente = ordenes_por_simbolo[symbol]
-
-                # Si se encuentra una orden, agregar datos adicionales al dato
-                dato_extra = (orden_existente.clOrdId_alta_timestamp, orden_existente.senial)
-                if len(dato) > 9:
-                    dato[8] = orden_existente.clOrdId_alta_timestamp
-                    dato[9] = orden_existente.senial
-                else:
-                    dato +=dato_extra                
-            else:
-                if len(dato)<11:
-                # Si no se encuentra una orden, agregar None como datos adicionales
-                    dato_extra = (None, None)
-                    dato += dato_extra
-            # Paso 1: Asegurarse de que 'dato[7]' no sea None o esté vacío
-            if dato[0] != 'Formulas G sheets':
-                if dato[7] is not None and dato[7].strip() != ''and dato[7] != '#N/A':
-                    # Paso 1: Eliminar los puntos
-                    cadena_sin_puntos = dato[7].replace('.', '')
-                    # Paso 2: Reemplazar la coma por un punto
-                    cadena_correcta = cadena_sin_puntos.replace(',', '.')
-                    # Paso 3: Convertir la cadena a float
-                    precio = float(cadena_correcta)
-                    if precio != 0:
-                        ut = unidadTrader/precio
-                        ut = abs(int(ut))
+        with get_db_session() as session:
+            ordenes = session.query(Orden).filter_by(user_id=user_id).all()
+            ut_row = session.query(UnidadTrader).filter_by(usuario_id=user_id).first()
+            unidadTrader = ut_row.ut if ut_row else 0
+            ordenes_por_simbolo = {o.symbol: o for o in ordenes}
+            for i, tupla in enumerate(datos_desempaquetados):
+                dato = list(tupla)
+                symbol = dato[0]
+                if symbol in ordenes_por_simbolo:
+                    o = ordenes_por_simbolo[symbol]
+                    if len(dato) > 9:
+                        dato[8], dato[9] = o.clOrdId_alta_timestamp, o.senial
                     else:
-                        ut = 0
+                        dato += (o.clOrdId_alta_timestamp, o.senial)
                 else:
-                    ut = 0
-                dato[3] = str(ut)
-                dato.append(i + 1)
-                datos_procesados.append(tuple(dato))
+                    if len(dato) < 11:
+                        dato += (None, None)
+                if dato[0] != 'Formulas G sheets':
+                    ut = calcula_ut(dato[7], unidadTrader)
+                    dato[3] = str(ut)
+                    dato.append(i + 1)
+                    datos_procesados.append(tuple(dato))
+    return datos_procesados, unidadTrader
 
-    return datos_procesados,unidadTrader
 
 
 

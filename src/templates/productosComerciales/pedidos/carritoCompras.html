@@ -31,10 +31,10 @@
             
             <h2>{{ pedido.nombre_producto }}</h2>
             <p class="price">Precio: <span class="unit-price">{{ pedido.simbolo }} {{ pedido.precio_venta }}</span></p>
-            <label for="quantity-{{ pedido.id }}">Cantidad:</label>
+            <label for="quantity-{{ pedido.id }}" data-translate="quantity_label">Cantidad:</label>
            
             <input type="number" id="quantity-{{ pedido.id }}" name="quantity" class="quantity-input" value="{{ pedido.cantidad or 1 }}" min="1">
-            <button class="remove-button" data-pedido-id="{{ pedido.id }}">Eliminar</button>
+            <button class="remove-button" data-pedido-id="{{ pedido.id }}" data-translate="remove_button">Eliminar</button>
           
         </div>
     </div>
@@ -46,7 +46,7 @@
         </div>
     
         <div class="buttons-container">
-            <button id="return-button" onclick="goBack()">Volver</button>
+            <button id="return-button" onclick="goBack()" data-translate="back_button">Volver</button>
     
             <form id="sistemaDePagos_pagoPedidos" method="POST" action="/sistemaDePagos_pagoPedidos/">
                 <input type="hidden" id="access_token_btn_finalizarPago" name="access_token_btn_finalizarPago">
@@ -62,9 +62,8 @@
 
                 <!-- Campo oculto para enviar el total -->
                 <input type="hidden" id="total_pago" name="total_pago" >
-    
-                <button class="card-button btn-success long-button" type="submit" style="color: green;">Continuar</button>
 
+                <button class="card-button btn-success long-button" type="submit" style="color: green;" data-translate="continue_button">Continuar</button>
             </form>
         </div>
     </div>

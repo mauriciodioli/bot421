@@ -22,6 +22,16 @@ const translations = {
         "carrito_compras": "Carrito de Compras",
         "categorias": "Categorías",
 
+        "remove_button":"Eliminar",
+        
+
+        "verMas": "Ver más",
+        "verMenos": "Ver menos",
+
+        "quantity_label":'Cantidad:',   "add_button":'Agregar',
+        "tab_description":"Descripción","tab_details":"Detalles","tab_shipping":"Envío","details_text":"Aquí podrías mostrar características técnicas del producto.","shipping_text":"Información de tiempos, zonas y costos de envío.",
+        "no_reviews_msg":"Sé el primero en dejar una reseña sobre este producto.","review_name_ph":"Tu nombre","review_comment_ph":"Tu comentario...","submit_review":"Enviar reseña",
+
         'footer_we_are': "Somos",
         'footer_home': "Inicio",
         'footer_plans': "Planes",
@@ -63,6 +73,15 @@ const translations = {
         "carrito_compras": "Shopping Cart",
         "categorias": "Categories",
 
+        "remove_button":"Remove",
+
+        "verMas": "See more",
+        "verMenos": "See less",
+
+        "quantity_label":'Quantity:',  "add_button":'Add',
+        "tab_description":"Description","tab_details":"Details","tab_shipping":"Shipping","details_text":"You could show technical product specs here.","shipping_text":"Information about delivery times, zones and shipping costs.",
+        "no_reviews_msg":"Be the first to leave a review for this product.","review_name_ph":"Your name","review_comment_ph":"Your comment...","submit_review":"Submit review",
+
         "footer_we_are": "We are",
         "footer_home": "Home",
         "footer_plans": "Plans",
@@ -102,7 +121,36 @@ const translations = {
         "reservar_cita": "Agendar Consulta",
         "discover_projects": "Descubra mais projetos clicando aqui",
         "carrito_compras": "Carrinho de Compras",
-        "categorias": "Categorias"
+        "categorias": "Categorias",
+
+        "remove_button":"Remover",
+
+        "verMas": "Ver mais",
+        "verMenos": "Ver menos",
+
+        "quantity_label":'Quantidade:',"add_button":'Adicionar',
+        "tab_description":"Descrição","tab_details":"Detalhes","tab_shipping":"Envio","details_text":"Aqui você pode mostrar características técnicas do produto.","shipping_text":"Informações sobre prazos, regiões e custos de envio.",
+        "no_reviews_msg":"Seja o primeiro a deixar uma avaliação deste produto.","review_name_ph":"Seu nome","review_comment_ph":"Seu comentário...","submit_review":"Enviar avaliação",
+
+        "footer_we_are": "Somos",
+        "footer_home": "Início",
+        "footer_plans": "Planos",
+        "footer_about": "Sobre nós",
+        "footer_docs": "Documentos",
+        "footer_content": "Conteúdo",
+        "footer_faq": "FAQ",
+        "footer_contact": "Contatos",
+        "footer_language": "Idioma",
+        "footer_login": "Login",
+        "footer_register": "Registrar-se",
+        "footer_restart": "Reiniciar",
+        "footer_rights": "Todos os direitos reservados",
+        "newsletter_title": "Inscreva-se na nossa",
+        "newsletter_word": "newsletter",
+        "newsletter_email_ph": "E-mail",
+        "newsletter_submit": "Enviar",
+        "disclaimer": "DPIA Solutions está em fase de testes. As entradas atuais são simuladas e não representam uma oferta comercial real. As imagens podem vir de fontes externas apenas para fins ilustrativos."
+
 
     },
     "it": {
@@ -125,6 +173,15 @@ const translations = {
         "discover_projects": "Scopri altri progetti cliccando qui",
         "carrito_compras": "Carrello",
         "categorias": "Categorie",
+
+        "remove_button":"Rimuovi",
+
+        "verMas": "Vedi di più",
+        "verMenos": "Vedi meno",
+
+        "quantity_label":'Quantità:',  "add_button":'Aggiungi',
+        "tab_description":"Descrizione","tab_details":"Dettagli","tab_shipping":"Spedizione","details_text":"Qui puoi mostrare le caratteristiche tecniche del prodotto.","shipping_text":"Informazioni su tempi, zone e costi di spedizione.",
+        "no_reviews_msg":"Sii il primo a lasciare una recensione per questo prodotto.","review_name_ph":"Il tuo nome","review_comment_ph":"Il tuo commento...","submit_review":"Invia recensione",
 
         "footer_we_are": "Siamo",
         "footer_home": "Inizio",
@@ -168,6 +225,16 @@ const translations = {
         "carrito_compras": "Koszyk zakupowy",
         "categorias":"Kategorie",
 
+        "remove_button":"Usuń",
+
+
+        "verMas": "Zobacz więcej",
+        "verMenos": "Zobacz mniej",
+
+        "quantity_label":'Ilość:',     "add_button":'Dodaj',
+        "tab_description":"Opis","tab_details":"Szczegóły","tab_shipping":"Wysyłka","details_text":"Tutaj możesz pokazać specyfikację techniczną produktu.","shipping_text":"Informacje o czasach dostawy, obszarach i kosztach wysyłki.",
+        "no_reviews_msg":"Bądź pierwszą osobą, która doda opinię o tym produkcie.","review_name_ph":"Twoje imię","review_comment_ph":"Twój komentarz...","submit_review":"Wyślij opinię",
+
         "footer_we_are": "Jesteśmy",
         "footer_home": "Start",
         "footer_plans": "Plany",
@@ -208,7 +275,36 @@ const translations = {
         "reservar_cita": "Réserver un Rendez-vous",
         "discover_projects": "Découvrez plus de projets en cliquant ici",
         "carrito_compras": "Panier",
-        "categorias":"Catégories"
+        "categorias":"Catégories",
+
+        "remove_button":"Supprimer",
+        
+        "verMas": "Voir plus",
+        "verMenos": "Voir moins",
+        "quantity_label":'Quantité :', "add_button":'Ajouter',
+        "tab_description":"Description","tab_details":"Détails","tab_shipping":"Livraison","details_text":"Ici, vous pouvez afficher les caractéristiques techniques du produit.","shipping_text":"Informations sur les délais, zones et coûts de livraison.",
+        "no_reviews_msg":"Soyez le premier à laisser un avis sur ce produit.","review_name_ph":"Votre nom","review_comment_ph":"Votre commentaire...","submit_review":"Soumettre un avis",
+
+        "footer_we_are": "Nous sommes",
+        "footer_home": "Accueil",
+        "footer_plans": "Plans",
+        "footer_about": "À propos",
+        "footer_docs": "Documents",
+        "footer_content": "Contenu",
+        "footer_faq": "FAQ",
+        "footer_contact": "Contacts",
+        "footer_language": "Langue",
+        "footer_login": "Connexion",
+        "footer_register": "S'inscrire",
+        "footer_restart": "Redémarrer",
+        "footer_rights": "Tous droits réservés",
+        "newsletter_title": "Abonnez-vous à notre",
+        "newsletter_word": "newsletter",
+        "newsletter_email_ph": "E-mail",
+        "newsletter_submit": "Envoyer",
+        "disclaimer": "DPIA Solutions est actuellement en phase de test. Les entrées actuelles sont simulées et ne représentent pas une offre commerciale réelle. Les images peuvent provenir de sources externes à des fins d'illustration."
+
+
 
     },
     "de": {
@@ -231,6 +327,14 @@ const translations = {
         "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
         "carrito_compras": "Warenkorb",
         "categorias":"Kategorien",
+
+        "remove_button":"Entfernen",
+
+        "verMas": "Mehr sehen",
+        "verMenos": "Weniger sehen",
+        "quantity_label":'Menge:',     "add_button":'Hinzufügen',
+        "tab_description":"Beschreibung","tab_details":"Details","tab_shipping":"Versand","details_text":"Hier können Sie technische Produktspezifikationen anzeigen.","shipping_text":"Informationen zu Lieferzeiten, Zonen und Versandkosten.",
+        "no_reviews_msg":"Seien Sie der Erste, der eine Bewertung zu diesem Produkt abgibt.","review_name_ph":"Ihr Name","review_comment_ph":"Ihr Kommentar...","submit_review":"Bewertung senden",
 
         "footer_we_are": "Wir sind",
         "footer_home": "Startseite",
@@ -293,3 +397,17 @@ let currentLang = getCookie('language')
 if (currentLang === 'en') currentLang = 'in';
 // Aplica las traducciones
 translate(currentLang);
+applyI18n(currentLang);
+
+
+function applyI18n(lang){
+  document.querySelectorAll('[data-translate]').forEach(el=>{const k=el.dataset.translate,t=translations?.[lang]?.[k]; if(t) el.textContent=t;});
+  document.querySelectorAll('[data-translate-placeholder]').forEach(el=>{const k=el.dataset.translatePlaceholder,t=translations?.[lang]?.[k]; if(t){el.placeholder=t; el.setAttribute('aria-label',t);}});
+}
+
+const t={es:"Hasta 3 cuotas sin interés",in:"Up to 3 interest-free installments",pt:"Até 3x sem juros",pl:"Do 3 rat bez odsetek",it:"Fino a 3 rate senza interessi",fr:"Jusqu’à 3 fois sans frais",de:"Bis zu 3 Raten ohne Zinsen"}; for(const [l,v] of Object.entries(t)) translations[l]={...(translations[l]||{}),installments_3_no_interest:v};
+
+
+const btns={es:["Volver","Continuar"],in:["Back","Continue"],pt:["Voltar","Continuar"],pl:["Wróć","Kontynuuj"],it:["Indietro","Continua"],fr:["Retour","Continuer"],de:["Zurück","Weiter"]};
+for(const [l,[b,c]] of Object.entries(btns)){translations[l]={...(translations[l]||{}),back_button:b,continue_button:c};}
+applyI18n(currentLang);

@@ -228,25 +228,22 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                                     <span class="precio-original-en-ambito">${post.precio_original}</span>
                                     <span class="precio-descuento-en-ambito">${post.precio_descuento}</span>
                                     </div>` : ''}
-                                    <div class="financiacion-info">
-                                    <i class="fas fa-credit-card"></i> Hasta 3 cuotas sin interés
-                                    </div>
+                                        <div class="financiacion-info"><i class="fas fa-credit-card"></i> <span data-translate="installments_3_no_interest">Hasta 3 cuotas sin interés</span></div>
 
 
                                 <p class="card-text-en-ambitos-personales text-truncated-en-ambitos-personales" id="postText-${post.publicacion_id}">
                                     ${post.texto}
                                 </p>
-                                <a href="#" class="btn-ver-mas-en-ambitos-personales" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                                <a href="#" class="btn-ver-mas-en-ambitos-personales" data-translate="verMas" onclick="toggleTexto(${post.publicacion_id});return false;">Ver más</a>
+
 
                                 ${post.botonCompra ? `
-                                    <button class="btn-comprar-en-ambito" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
-                                    Agregar
-                                    </button>` : ''}
-
+                                     <button class="btn-comprar-en-ambito" data-translate="add_button" onclick="abrirPublicacionHome(${post.publicacion_id},'${post.layout}')">Agregar</button>` : ''}
+                          
                                 </div>
                             </div>
                             `;
-                        
+                        applyI18n(currentLang);
                 
                         postDisplayContainer.append(cardHtml);
                  // Desplazar la tarjeta hacia abajo si se ha mostrado una imagen
@@ -291,21 +288,18 @@ function generarEstrellas(rating) {
 
 
 
-function toggleTexto(postId) {
-   
-    var postText = document.getElementById(`postText-${postId}`);
-    var button = document.querySelector(`#card-${postId} .btn-ver-mas-en-ambitos-personales`);
-    
-    if (postText.classList.contains('text-truncated-en-ambitos-personales')) {
-        postText.classList.remove('text-truncated-en-ambitos-personales');
-        postText.classList.add('text-expanded-en-ambitos-personales');
-        button.textContent = 'Ver menos';
-    } else {
-        postText.classList.remove('text-expanded-en-ambitos-personales');
-        postText.classList.add('text-truncated-en-ambitos-personales');
-        button.textContent = 'Ver más';
-    }
+function toggleTexto(postId){
+  const t=document.getElementById(`postText-${postId}`);
+  const b=document.querySelector(`#card-${postId} .btn-ver-mas-en-ambitos-personales`);
+  if(t.classList.contains('text-truncated-en-ambitos-personales')){
+    t.classList.remove('text-truncated-en-ambitos-personales'); t.classList.add('text-expanded-en-ambitos-personales');
+    b.textContent = (translations[currentLang]?.verMenos ?? translations.es.verMenos);
+  }else{
+    t.classList.remove('text-expanded-en-ambitos-personales'); t.classList.add('text-truncated-en-ambitos-personales');
+    b.textContent = (translations[currentLang]?.verMas ?? translations.es.verMas);
+  }
 }
+
 
 function abrirPublicacionHome(publicacionId, layout) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
