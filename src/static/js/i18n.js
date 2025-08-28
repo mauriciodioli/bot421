@@ -22,6 +22,9 @@ const translations = {
         "carrito_compras": "Carrito de Compras",
         "categorias": "Categorías",
 
+        "verMas": "Ver más",
+        "verMenos": "Ver menos",
+
         'footer_we_are': "Somos",
         'footer_home': "Inicio",
         'footer_plans': "Planes",
@@ -63,6 +66,9 @@ const translations = {
         "carrito_compras": "Shopping Cart",
         "categorias": "Categories",
 
+        "verMas": "See more",
+        "verMenos": "See less",
+
         "footer_we_are": "We are",
         "footer_home": "Home",
         "footer_plans": "Plans",
@@ -102,7 +108,31 @@ const translations = {
         "reservar_cita": "Agendar Consulta",
         "discover_projects": "Descubra mais projetos clicando aqui",
         "carrito_compras": "Carrinho de Compras",
-        "categorias": "Categorias"
+        "categorias": "Categorias",
+
+        "verMas": "Ver mais",
+        "verMenos": "Ver menos",
+
+
+        "footer_we_are": "Somos",
+        "footer_home": "Início",
+        "footer_plans": "Planos",
+        "footer_about": "Sobre nós",
+        "footer_docs": "Documentos",
+        "footer_content": "Conteúdo",
+        "footer_faq": "FAQ",
+        "footer_contact": "Contatos",
+        "footer_language": "Idioma",
+        "footer_login": "Login",
+        "footer_register": "Registrar-se",
+        "footer_restart": "Reiniciar",
+        "footer_rights": "Todos os direitos reservados",
+        "newsletter_title": "Inscreva-se na nossa",
+        "newsletter_word": "newsletter",
+        "newsletter_email_ph": "E-mail",
+        "newsletter_submit": "Enviar",
+        "disclaimer": "DPIA Solutions está em fase de testes. As entradas atuais são simuladas e não representam uma oferta comercial real. As imagens podem vir de fontes externas apenas para fins ilustrativos."
+
 
     },
     "it": {
@@ -125,6 +155,9 @@ const translations = {
         "discover_projects": "Scopri altri progetti cliccando qui",
         "carrito_compras": "Carrello",
         "categorias": "Categorie",
+
+        "verMas": "Vedi di più",
+        "verMenos": "Vedi meno",
 
         "footer_we_are": "Siamo",
         "footer_home": "Inizio",
@@ -168,6 +201,10 @@ const translations = {
         "carrito_compras": "Koszyk zakupowy",
         "categorias":"Kategorie",
 
+
+        "verMas": "Zobacz więcej",
+        "verMenos": "Zobacz mniej",
+
         "footer_we_are": "Jesteśmy",
         "footer_home": "Start",
         "footer_plans": "Plany",
@@ -208,7 +245,31 @@ const translations = {
         "reservar_cita": "Réserver un Rendez-vous",
         "discover_projects": "Découvrez plus de projets en cliquant ici",
         "carrito_compras": "Panier",
-        "categorias":"Catégories"
+        "categorias":"Catégories",
+        
+        "verMas": "Voir plus",
+        "verMenos": "Voir moins",
+
+        "footer_we_are": "Nous sommes",
+        "footer_home": "Accueil",
+        "footer_plans": "Plans",
+        "footer_about": "À propos",
+        "footer_docs": "Documents",
+        "footer_content": "Contenu",
+        "footer_faq": "FAQ",
+        "footer_contact": "Contacts",
+        "footer_language": "Langue",
+        "footer_login": "Connexion",
+        "footer_register": "S'inscrire",
+        "footer_restart": "Redémarrer",
+        "footer_rights": "Tous droits réservés",
+        "newsletter_title": "Abonnez-vous à notre",
+        "newsletter_word": "newsletter",
+        "newsletter_email_ph": "E-mail",
+        "newsletter_submit": "Envoyer",
+        "disclaimer": "DPIA Solutions est actuellement en phase de test. Les entrées actuelles sont simulées et ne représentent pas une offre commerciale réelle. Les images peuvent provenir de sources externes à des fins d'illustration."
+
+
 
     },
     "de": {
@@ -231,6 +292,9 @@ const translations = {
         "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
         "carrito_compras": "Warenkorb",
         "categorias":"Kategorien",
+
+        "verMas": "Mehr sehen",
+        "verMenos": "Weniger sehen",
 
         "footer_we_are": "Wir sind",
         "footer_home": "Startseite",
