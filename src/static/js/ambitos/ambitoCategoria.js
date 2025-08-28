@@ -36,7 +36,7 @@ $(document).ready(function() {
         tbody.empty(); // Limpiar la tabla antes de agregar nuevos datos
 
         if (datos.length === 0) {
-            tbody.append('<tr><td colspan="8" class="text-center">No hay datos disponibles</td></tr>');
+            tbody.append('<tr><td colspan="9" class="text-center">No hay datos disponibles</td></tr>');
         } else {
             $.each(datos, function(index, categoria) {
                 let row = `<tr>
@@ -141,7 +141,7 @@ function crearAmbitoCategorias() {
 function agregarFilaATabla(data) {
     let tabla = document.querySelector("table tbody");
     let fila = document.createElement("tr");
-
+    debugger;
     fila.innerHTML = `
         <td>#</td>
         <td>${data.id}</td>      
@@ -178,42 +178,35 @@ function agregarFilaATabla(data) {
 
 // Función para actualizar un ambitoCategoria
 function actualizarAmbitoCategoria() {
-    const id = document.getElementById('AmbitoCategoria-id-editar').value;
-    const nombre = document.getElementById('nombre-editar').value;
-    const descripcion = document.getElementById('descripcion-editar').value;
-    const idioma = document.getElementById('idioma-editar').value;
-    const valor = document.getElementById('valor-editar').value;
-    const color = document.getElementById('color-editar').value;
-    const estado = document.getElementById('estado-editar').value;
-    const userId = document.getElementById('user_id-editar').value;
-   
-    const data = {
-        nombre: nombre,
-        descripcion: descripcion,
-        idioma: idioma,
-        valor: valor,
-        color: color,
-        estado: estado,
-        user_id: userId
-    };
-    
-    fetch(`/social-media-ambitos-actualizar-categoria/${id}`, {  // ✅ Ruta corregida
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json())
-    .then(data => {       
-        alert('Ámbito actualizado con éxito');
-        $('#editarAmbitoCategoriaModal').modal('hide'); // Cerrar el modal
-        obtenerAmbitosCategoria();  // Actualizar la lista de ámbitos
-    })
-    .catch(error => {
-        alert('Error al actualizar el ámbito: ' + error);
-    });
+  const data = {
+    id: document.getElementById('AmbitoCategoria-id-editar').value,
+    nombre: document.getElementById('nombre-editar').value,
+    descripcion: document.getElementById('descripcion-editar').value,
+    idioma: document.getElementById('idioma-editar').value,
+    valor: document.getElementById('valor-editar').value,
+    color: document.getElementById('color-editar').value,
+    estado: document.getElementById('estado-editar').value,
+    user_id: document.getElementById('user_id-editar').value
+  };
+  debugger;
+  fetch(`/social-media-ambitos-actualizar-categoria`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(resp => {
+    alert('Ámbito actualizado con éxito');
+    const el = document.getElementById('editarAmbitoCategoriaModal');
+    (bootstrap.Modal.getInstance(el) || new bootstrap.Modal(el)).hide();
+    obtenerAmbitosCategoria();
+  })
+  .catch(err => {
+    console.error(err);
+    alert('Error al actualizar: ' + err.message);
+  });
 }
+
 
 
 obtenerAmbitosCategoria(); // Llamar a la función para cargar los ámbitos al inicio
@@ -267,7 +260,7 @@ function obtenerAmbitosCategoria() {
                 <td>${categoria.estado}</td>
                 <td>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        data-bs-target="#editarAmbitoModal"
+                        data-bs-target="#editarAmbitoCategoriaModal"
                         data-categoria-id="${categoria.id}"
                         data-nombre="${categoria.nombre}"
                         data-descripcion="${categoria.descripcion}"
@@ -276,6 +269,10 @@ function obtenerAmbitosCategoria() {
                         data-color="${categoria.color}"
                         data-estado="${categoria.estado}"
                         data-user_id="${categoria.user_id}">Editar</button>
+
+
+
+
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                         data-bs-target="#eliminarAmbitoCategoriaModal"
                         data-categoria-id="${categoria.id}"
