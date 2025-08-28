@@ -46,8 +46,8 @@
     <label for="valor">Valor:</label>
     <input type="text" id="valor" class="form-control"><br>
 
-    <label for="color">Color:</label>
-    <input type="text" id="color" class="form-control"><br>
+    <label for="color-editar">Color:</label>
+    <input type="text" id="color-editar" class="form-control">
 
     <label for="estado">Estado:</label>
     <input type="text" id="estado" class="form-control"><br>
@@ -86,6 +86,7 @@
       <div class="modal-body">
         <form id="editarAmbitoCategoriaForm">
           <input type="hidden" id="AmbitoCategoria-id-editar">
+          
           <label for="nombre-editar" style="color: black;">Nombre:</label>
           <input type="text" id="nombre-editar" class="form-control" required><br>
 
@@ -113,6 +114,17 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Modal de confirmación de eliminación -->
 <div class="modal fade" id="eliminarAmbitoCategoriaModal" tabindex="-1" aria-labelledby="eliminarAmbitoCategoriaModalLabel" aria-hidden="true">
@@ -194,7 +206,7 @@ $(document).ready(function() {
     $('#editarAmbitoCategoriaModal').on('show.bs.modal', function (event) {
 
       var button = $(event.relatedTarget); // El botón que activó el modal
-      var ambitoCategoriaId = button.data('ambitocategoria-id'); // Acceder correctamente al 'data-ambitocategoria-id'
+      var ambitoCategoriaId = button.data('categoria-id'); // Acceder correctamente al 'data-ambitocategoria-id'
       var nombre = button.data('nombre');
       var descripcion = button.data('descripcion');
       var idioma = button.data('idioma');
