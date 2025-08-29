@@ -204,6 +204,57 @@ const translations = {
 
 
     },
+    "ÉL": {
+        "ingresa_tus_datos": "Inserisci i tuoi dati per ricevere il tuo ordine!",
+        "nombre": "Nome",
+        "apellido": "Cognome",
+        "direccion": "Indirizzo",
+        "telefono": "Telefono",
+        "email": "Email",
+        "comentarios": "Commenti",
+        "datos_del_pedido": "Dettagli dell'ordine",
+        "descuento": "Sconto",
+        "continuar": "Continua",
+        "confirmar": "Conferma",
+        "metodo_pago": "Metodo di Pagamento",
+        "paypal": "PayPal",
+        "mercado_pago": "Mercado Pago",
+        "reservar_paquete": "Prenota Pacchetto",
+        "reservar_cita": "Prenota Appuntamento",
+        "discover_projects": "Scopri altri progetti cliccando qui",
+        "carrito_compras": "Carrello",
+        "categorias": "Categorie",
+
+        "remove_button":"Rimuovi",
+
+        "verMas": "Vedi di più",
+        "verMenos": "Vedi meno",
+
+        "quantity_label":'Quantità:',  "add_button":'Aggiungi',
+        "tab_description":"Descrizione","tab_details":"Dettagli","tab_shipping":"Spedizione","details_text":"Qui puoi mostrare le caratteristiche tecniche del prodotto.","shipping_text":"Informazioni su tempi, zone e costi di spedizione.",
+        "no_reviews_msg":"Sii il primo a lasciare una recensione per questo prodotto.","review_name_ph":"Il tuo nome","review_comment_ph":"Il tuo commento...","submit_review":"Invia recensione",
+
+        "footer_we_are": "Siamo",
+        "footer_home": "Inizio",
+        "footer_plans": "Piani",
+        "footer_about": "Chi siamo",
+        "footer_docs": "Documenti",
+        "footer_content": "Contenuti",
+        "footer_faq": "FAQ",
+        "footer_contact": "Contatti",
+        "footer_language": "Lingua",
+        "footer_login": "Login",
+        "footer_register": "Registrati",
+        "footer_restart": "Riavvio",
+        "footer_rights": "Tutti i diritti riservati",
+        "newsletter_title": "Iscriviti alla nostra",
+        "newsletter_word": "newsletter",
+        "newsletter_email_ph": "Email",
+        "newsletter_submit": "Invia",
+        "disclaimer": "DPIA Solutions è in fase di prova. Le pubblicazioni attuali sono simulate e non rappresentano un'offerta commerciale reale. Le immagini possono provenire da fonti esterne a scopo illustrativo."
+
+
+    },
     "pl": {
         "ingresa_tus_datos": "Wprowadź swoje dane, aby otrzymać zamówienie!",
         "nombre": "Imię",

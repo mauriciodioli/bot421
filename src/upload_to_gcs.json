@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "secure-moment-233116",
+  "private_key_id": "48e3b100ac4576d252bc032d4dc7d164447d0130",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCS0RodxYmRKnkF\nRiVD0DzovXbBKKnCbMt0H7L8yxFqeVC5MoEKTBuWlH7WwK57CfI5O0yJ5v0nvEaY\nhF6bi9hpcYManuosSfTwtR3EoBKPEFYvTgIQvxXq4YfWmXAE2FvbZN1gqA8Oc6sx\nzDNXZHo5qTM6aMArNQl4V34VkvRw/rp/Fw1DhfhYKDKfVOFmfU4MP/H+51fvwnKZ\nAV0iT+pN8RbNClanwt4T4uW+Zk6+8NhH3vSJiN2xNGm1P5hGBa/DpoeH3DiKd0w6\nV9sbeeXYVtkZEXKUo+p8wMaXXuHlBD/WxBvhoEvY3jaTWCCZnTK5SRl5SGU8bl4T\ng3lQHWulAgMBAAECggEAB4z2fWJ75TnceH93iinLACNCWMPJG0UyH3pD38lnz2SG\n2Md2qHtqjc98SHonXw+PZA8fLBZznZgKv2xLW0+RZTbfyb4zh+yTys9dxQ+AdNgf\nvpYR+B+Dto07ybchcjZYXwuscPyjrZgYTVrVpyB1QsLnbhEWFQLIxmYlh2GD7c2v\n+2c6VYTvPIO+TdkEEZja/OxxS+sZAXRlCQGnHYuiZpqvcCX7AyWiBl76nzZLDokq\nsf1lkHlcKAvBd5rduX8nI4owM9pQLkWMmb35KHx0ZUObk/UqF2G+/XbIgzB0cHR8\nf7tvHDnK4TmhhKcEO/LhxWHJpdWqYmQ0GuDMb3V4EQKBgQDNSjmmymR9YH5dyR/B\nfqfP+8lV4aNELABJP+u40nTS9HCpOKkOefSs/tzSBcsoBIiKdIJKxCzbOHsBM2Ez\nwO2zo/7mEPoqZjCQHxk3BVkrnKevvkYqHGhwOw8D2/a7QquZ+Jz+lvrc/H1yy+Mp\n2c9VI8UjgxEzVueObCNppZ7wDQKBgQC3FUCdccfphWS6UnsCAmxd6jnoE/g+aIvb\nFfc2nt23NnsR9G3NUKgqBKfR2vF9U+RHqVpXrOiDVUx9jpDIER9hR1DCifIxVutp\nLnSJiz0uT5Vs6PW8tl/Us2nVuPDbVV+Z43l/X3b6zZqy0e+Pkc5EQKvfNFwD+oVe\nSZ5RplLr+QKBgCYD4LkqMYGmJMBpRiAmvByfm6Dzr7AoFcV6uMP49Pk7msE7ZNLx\ncoW2jF24BO7cKAy7loUR3tyZkO2f/hf/WgUyETm5WxoO4l9N4vV1YBXbZJH+wi96\nIzzlMtqcGQyERBK3HxtmCf5yIyjm6KIPW32AqjjxRHYlWaveCpC9wrjhAoGBAKdu\nOh9CVM6MfSegEnot+SiR8c75pEZ+mZgMKH69HopUuowa+ueO4Zs7krXqAnrY46Vd\njQ8tQ54HveH9JQ6yCf6Ol56xRNo2YSdZop2+xn65rS9ihIjGSDFeumUHss0C8GDt\nlMkVZtvKd7UdJHYpo3brpcKEQbopuxoVPUHyV1cRAoGAEQhC6buKLc2tUyltnFMa\nRaMnXptnNlWbdPuFbHlsaISst5gUD/xibOkPk3AvT7FEdq8bO3hAwaNuYoOkQX5V\nSU+RY6fPJ664FLp3rWWCb5mPEnovxE3usXrUf5+VAN+TpUCbuUt7c7UDMZ7py3Pf\nJ1GrKEKZog7Wg6cQJTn7i8E=\n-----END PRIVATE KEY-----\n",
+  "client_email": "cuenta-subida-aws@secure-moment-233116.iam.gserviceaccount.com",
+  "client_id": "114931014165615829792",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cuenta-subida-aws%40secure-moment-233116.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
