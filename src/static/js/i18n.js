@@ -20,7 +20,8 @@ const translations = {
         "reservar_cita": "Reservar Cita",
         "discover_projects": "Descubrí más proyectos haciendo clic aquí",
         "carrito_compras": "Carrito de Compras",
-        "categorias": "Categorías",
+        "categorias": "Categorías",       
+        "comprarAli": "Comprar en AliExpress",
 
         "remove_button":"Eliminar",
         
@@ -115,7 +116,8 @@ const translations = {
         "reservar_cita": "Book Appointment",
         "discover_projects": "Discover more projects by clicking here",
         "carrito_compras": "Shopping Cart",
-        "categorias": "Categories",
+        "categorias": "Categories",       
+        "comprarAli": "Buy on AliExpress",
 
         "remove_button":"Remove",
 
@@ -197,6 +199,7 @@ const translations = {
         "discover_projects": "Descubra mais projetos clicando aqui",
         "carrito_compras": "Carrinho de Compras",
         "categorias": "Categorias",
+        "comprarAli": "Comprar no AliExpress",
 
         "remove_button":"Remover",
 
@@ -278,6 +281,8 @@ const translations = {
         "discover_projects": "Scopri altri progetti cliccando qui",
         "carrito_compras": "Carrello",
         "categorias": "Categorie",
+        "verMas": "Vedi di più",
+        "comprarAli": "Compra su AliExpress",
 
         "remove_button":"Rimuovi",
 
@@ -358,6 +363,7 @@ const translations = {
         "discover_projects": "Scopri altri progetti cliccando qui",
         "carrito_compras": "Carrello",
         "categorias": "Categorie",
+         "comprarAli": "Compra su AliExpress",
 
         "remove_button":"Rimuovi",
 
@@ -409,6 +415,7 @@ const translations = {
         "discover_projects": "Odkryj więcej projektów, klikając tutaj",
         "carrito_compras": "Koszyk zakupowy",
         "categorias":"Kategorie",
+        "comprarAli": "Kup na AliExpress",
 
         "remove_button":"Usuń",
 
@@ -490,6 +497,7 @@ const translations = {
         "discover_projects": "Découvrez plus de projets en cliquant ici",
         "carrito_compras": "Panier",
         "categorias":"Catégories",
+        "comprarAli": "Acheter sur AliExpress",
 
         "remove_button":"Supprimer",
         
@@ -570,6 +578,7 @@ const translations = {
         "discover_projects": "Entdecke weitere Projekte, indem du hier klickst",
         "carrito_compras": "Warenkorb",
         "categorias":"Kategorien",
+        "comprarAli": "Auf AliExpress kaufen",
 
         "remove_button":"Entfernen",
 

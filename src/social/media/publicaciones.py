@@ -474,6 +474,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'fecha_creacion': publicacion.fecha_creacion,
                 'estado': publicacion.estado,
                 'idioma': publicacion.idioma,
+                'afiliado_link': publicacion.afiliado_link,
                 'imagenes': imagenes,
                 'videos': videos,
                 'layout': layout,
@@ -482,6 +483,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'descuento': descuento,
                 'simbolo':simbolo,
                 'precio': publicacion.precio,
+                'afiliado_link ': publicacion.afiliado_link,
                 'precio_original': precio_original
             })
 
@@ -1145,6 +1147,7 @@ def publicaciones_modificar_publicaciones():
         botonCompra = request.form.get('postBotonCompra_modificaPublicacion')
         codigoPostal = request.form.get('codigoPostal_modificaPublicacion')
         botonPagoOnline = request.form.get('postPagoOnline_modificaPublicacion')
+        afiliado_link = request.form.get('afiliado_link_modificaPublicacion')
         # Obtener archivos subidos si es necesario
         archivos = request.files.getlist('mediaFile_modificaPublicacion')
         with get_db_session() as session:
@@ -1206,6 +1209,7 @@ def publicaciones_modificar_publicaciones():
             publicacion.categoria_id = int(categoria) if categoria else categoria
             publicacion.idioma = idioma
             publicacion.codigoPostal = codigoPostal
+            publicacion.afiliado_link = afiliado_link
             publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
             publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
             publicacion.pagoOnline  = botonPagoOnline.lower() == "true" if botonPagoOnline else False

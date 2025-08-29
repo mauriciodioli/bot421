@@ -91,6 +91,7 @@ jobs:
             docker cp /home/ubuntu/bot421dbversion2.pem 202404:/src
             docker cp /home/ubuntu/upload_to_gcs.json 202404:/src
             docker cp /home/ubuntu/credentialIa.json 202404:/src
+            docker cp /home/ubuntu/pruebasheetpython.json 202404:/src/strategies
 
 
     - name: Modify _app.py in websocket library
