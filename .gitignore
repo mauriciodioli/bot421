@@ -23,3 +23,4 @@ src/upload_to_gcs.json
 src/strategies/pruebasheetpython.json
 src/logs.log
 src/logs.log
+src/logs.local.log
