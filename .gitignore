@@ -20,3 +20,5 @@ __pycache__/
 # 🔹 Configuración local de workspace (VSCode)
 bot421.code-workspace
 scan_sesiones.py
+src/credentialIa.json
+src/upload_to_gcs.json
