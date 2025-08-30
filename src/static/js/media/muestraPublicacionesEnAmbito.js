@@ -237,9 +237,15 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                                 <a href="#" class="btn-ver-mas-en-ambitos-personales" data-translate="verMas" onclick="toggleTexto(${post.publicacion_id});return false;">Ver más</a>
 
 
-                                ${post.botonCompra ? `
-                                     <button class="btn-comprar-en-ambito" data-translate="add_button" onclick="abrirPublicacionHome(${post.publicacion_id},'${post.layout}')">Agregar</button>` : ''}
-                          
+                                    ${post.botonCompra ? `
+                                      <button class="btn-comprar-en-ambito" data-translate="add_button" onclick="abrirPublicacionHome(${post.publicacion_id},'${post.layout}')">Agregar</button>` : ''}
+                                <!-- Botón Afiliado -->
+                                        ${post.afiliado_link ? `
+                                            <a href="${post.afiliado_link}" target="_blank" class="btn btn-danger">
+                                                ${translations[currentLang].comprarAli}
+                                            </a>
+                                        ` : ''}
+
                                 </div>
                             </div>
                             `;

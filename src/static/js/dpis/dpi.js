@@ -605,7 +605,7 @@ function enviarDominioAJAX(domain) {
 
     var galeriaURL = '/media-publicaciones-mostrar-dpi/';
     var access_token = 'access_dpi_token_usuario_anonimo';
-
+   
     if ( !localStorage.getItem('dominio')) {
         
         localStorage.setItem('dominio', domain);
@@ -666,6 +666,7 @@ function enviarDominioAJAX(domain) {
                         document.cookie = `codigoPostal=${codigoPostal}; path=/; max-age=86400`; // Expira en 1 día
                     }
                     splash.style.display = 'none'; // Ocultar el splash al terminar
+                    
                     if (Array.isArray(response)) {
                         var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
                         postDisplayContainer.empty();
@@ -732,7 +733,12 @@ function enviarDominioAJAX(domain) {
 
                                                 <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
                                                 <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
-
+                                                <!-- Botón Afiliado -->
+                                                    ${post.afiliado_link ? `
+                                                        <a href="${post.afiliado_link}" target="_blank" class="btn btn-danger mt-2">
+                                                            ${translations[currentLang].comprarAli}
+                                                        </a>
+                                                    ` : ''}
                                                 
                                             </div>
                                         </div>

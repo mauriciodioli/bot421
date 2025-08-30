@@ -199,6 +199,12 @@ function cargarPublicaciones(ambitoParam, layout) {
                                                 onclick="toggleTexto(${post.publicacion_id}); return false;">
                                                 ${translations[currentLang].verMas}
                                         </a>
+                                        <!-- Botón Afiliado -->
+                                            ${post.afiliado_link ? `
+                                                <a href="${post.afiliado_link}" target="_blank" class="btn btn-danger mt-2">
+                                                    ${translations[currentLang].comprarAli}
+                                                </a>
+                                            ` : ''}
 
                                     </div>
                                 </div>

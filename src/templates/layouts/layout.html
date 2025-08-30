@@ -112,17 +112,17 @@
 
                     </li>
                     <li class="nav-item">
-                        <a id="admin-link" class="nav-link dropdown-toggle" href="#" onclick="handleAdminClick(event)">Administracion</a>
+                        <a id="admin-link" class="nav-link dropdown-toggle" href="#" onclick="handleAdminClick(event)" data-translate="nav_admin">Administración</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/home">Home</a>
+                        <a class="nav-link" aria-current="page" href="/home" data-translate="nav_home">Home</a>
                     </li>
 
 
                    
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Pedidos</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_orders">Pedidos</a>
                         <ul class="dropdown-menu">
                              <!-- Carrito -->
                              <li>
@@ -138,7 +138,7 @@
                             <li><hr class="dropdown-divider"></li>
                             <!-- Ventas -->
                             <li>
-                                <a class="dropdown-item" href="#" id="ventas-link">En cartera</a>
+                                <a class="dropdown-item" href="#" id="ventas-link"  data-translate="nav_orders_sales_portfolio">En cartera</a>
                                 <!-- Formulario Oculto para Ventas -->
                                 <form id="ventas-form" method="POST" action="/productosComerciales_pedidos_ventasProductosComerciales_muestra/" style="display: none;">
                                     <input type="hidden" id="access_token_form_Ventas" name="access_token_form_Ventas" value="">
@@ -148,7 +148,7 @@
                             <li><hr class="dropdown-divider"></li>
                             <!-- Compras -->
                             <li>
-                                <a class="dropdown-item" href="#" id="compras-link">Adquiridos</a>
+                                <a class="dropdown-item" href="#" id="compras-link" data-translate="nav_orders_purchases_acquired">Adquiridos</a>
                                 <!-- Formulario Oculto para Ventas -->
                                 <form id="compras-form" method="POST" action="/productosComerciales_pedidos_compras/" style="display: none;">
                                     <input type="hidden" id="access_token_btn_compras" name="access_token_btn_compras" value="">
@@ -159,7 +159,7 @@
                             
                             <!-- Consultas -->
                             <li>
-                                <a class="dropdown-item" href="#" id="consultas-link">Consultas</a>
+                                <a class="dropdown-item" href="#" id="consultas-link" data-translate="nav_orders_queries">Consultas</a>
                                 <!-- Formulario Oculto para Ventas -->
                                 <form id="consultas-form" method="POST" action="/media_consultaPublicaciones_muestra/" style="display: none;">
                                     <input type="hidden" id="access_token_btn_consultas" name="access_token_btn_consultas" value="">
@@ -170,15 +170,15 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/detalle/cuenta-demo/layout">Cuenta Demo</a>
+                        <a class="nav-link" aria-current="page" href="/detalle/cuenta-demo/layout" data-translate="nav_demo_account">Cuenta Demo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout">Suscribir</a>
+                        <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout" data-translate="nav_subscribe">Suscribir</a>
                     </li>
  
 
                     <li class="nav-item dropdown" id='AdministrarPublicacionesLayout'>
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Publicar</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_publish">Publicar</a>
                         <ul class="dropdown-menu">              
                                      
                         <!-- 
@@ -188,12 +188,12 @@
                           <li><hr class="dropdown-divider"></li>
                          
                         -->  
-                          <li><a class="dropdown-item" id='adminPublicaciones' href="/mostrarGaleria/">Administrar</a></li>                          
+                          <li><a class="dropdown-item" id='adminPublicaciones' href="/mostrarGaleria/"data-translate="nav_publish_manage">Administrar</a></li>                      
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Fichas</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_cards">Fichas</a>
                         <ul class="dropdown-menu"> 
                           
                             <div class="nav-menu-generar"> 
@@ -217,7 +217,7 @@
                                 <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>   
                                 
                                 <div class="col">  
-                                    <li><button type="submit" class="btn">Listar</button></li>   
+                                    <li><button type="submit" class="btn" data-translate="nav_cards_list">Listar</button></li>   
                                      
                               </div>
                             </form> 
@@ -231,14 +231,14 @@
                             <div class="form-group"><input type="hidden" name="form_cuenta_access_token"  id="form_cuenta_access_token"  class="form-control"></div>  
                             <div class="form-group"><input type="hidden" name="form_cuenta_refresh_token"  id="form_cuenta_refresh_token"  class="form-control"></div>  
                             <div class="col">  
-                            <li><button type="submit" class="btn text-white">Herramientas</button></li>
+                            <li><button type="submit" class="btn text-white" data-translate="nav_tools">Herramientas</button></li>
                           </div>
                         </form>  
                     </li>
                     
                
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Log Out</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"   data-translate="nav_logout">Log Out</a>
                         <ul class="dropdown-menu">                        
                           <li>
                               <form  name="reporteCuenta" action="/logOutSystem/" method="post" class="btn-guardar_inst">
@@ -255,19 +255,19 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Usuario</a>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_user">Usuario</a>
                         <ul class="dropdown-menu">
                             <li><a class="btn" id="openModalCP">CP</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="btn" href="/productosComerciales_suscripciones_muestra?layout=layout">Suscripciones</a></li>
+                            <li><a class="btn" href="/productosComerciales_suscripciones_muestra?layout=layout" data-translate="nav_user_subscriptions">Suscripciones</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="btn" href="/llamada/index-contacto">Contacto</a></li>
+                            <li><a class="btn" href="/llamada/index-contacto" data-translate="nav_user_contact">Contacto</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="btn" href="/registrar_usuario">Registrarse</a></li>
+                            <li><a class="btn" href="/registrar_usuario" data-translate="nav_user_register">Registrarse</a></li>
                             <li><hr class="dropdown-divider"></li>                            
-                            <li><a class="btn" id="consultas-link" href="#">Consultas</a></li>
+                            <li><a class="btn" id="consultas-link" href="#" data-translate="nav_user_queries">Consultas</a></li>
                             <li><hr class="dropdown-divider"></li>     
-                            <li><a  class="btn" id="consultas-link" href="/calculadora_standar_cuentas_endPointBrokers">Calculator</a></li>
+                            <li><a  class="btn" id="consultas-link" href="/calculadora_standar_cuentas_endPointBrokers" data-translate="nav_user_calculator">Calculator</a></li>
                            
                         </ul>
                     </li>
@@ -280,7 +280,7 @@
         </div>
     </nav>
    
-
+    
     <div class = 'container p-4'>
         
       {%block content%}

@@ -459,7 +459,12 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
                                                 <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
                                                 <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
 
-                                                
+                                                <!-- Botón Afiliado -->
+                                                    ${post.afiliado_link ? `
+                                                        <a href="${post.afiliado_link}" target="_blank" class="btn btn-danger mt-2">
+                                                            ${translations[currentLang].comprarAli}
+                                                        </a>
+                                                    ` : ''}
                                             </div>
                                         </div>
                                     `;

@@ -500,8 +500,9 @@ def guardarPublicacion(request, user_id):
             session.add(nueva_publicacion)
             session.commit()
             #guardar la ubicacion publicacion
-            publicacion_id = publicacionUbicacion(nueva_publicacion.id,codigoPostal,user_id)
-            publicacionCategoriaPublicacion(categoria_id,nueva_publicacion.id)
+            publicacion_id = publicacionUbicacion(session,nueva_publicacion.id,codigoPostal,user_id)
+            print("publicacion_id",nueva_publicacion.id)
+            publicacionCategoriaPublicacion(session, categoria_id,nueva_publicacion.id)
             #guardar 
             return nueva_publicacion.id
         
@@ -575,9 +576,9 @@ def es_video(file_path):
 
 
 
-def publicacionCategoriaPublicacion(categoria_id,publicacion_id):
+def publicacionCategoriaPublicacion(session,categoria_id,publicacion_id):
     try:
-        with get_db_session() as session:
+      
             new_categoria_publicacion = CategoriaPublicacion(
                 categoria_id=int(categoria_id),
                 publicacion_id=publicacion_id,
@@ -594,10 +595,10 @@ def publicacionCategoriaPublicacion(categoria_id,publicacion_id):
     
 
 
-def publicacionUbicacion(nueva_publicacion_id,codigoPostal,user_id):
+def publicacionUbicacion(session, nueva_publicacion_id,codigoPostal,user_id):
     try:
         # Buscar si el usuario ya tiene una ubicación guardada
-        with get_db_session() as session:
+        
             usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=user_id).first()
             usuario_ubicacion = session.query(UsuarioUbicacion).filter_by(user_id=user_id).first() # Suponiendo que existe un modelo UsuarioUbicacion
             publicacion_ubicacion = session.query(UsuarioPublicacionUbicacion).filter_by(id=nueva_publicacion_id).first() # Suponiendo que existe un modelo UsuarioUbicacion

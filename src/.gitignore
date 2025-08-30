@@ -1,1 +1,2 @@
-src/strategies/pruebasheetpython.json
+strategies/*.json
+logs.log

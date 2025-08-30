@@ -3,9 +3,7 @@ venv/
 .venv/
 
 # 🔹 Archivos sensibles / credenciales
-src/upload_to_gcs.json
-src/credentialIa.json
-src/strategies/pruebasheetpython.json
+src/strategies/*.json
 
 # 🔹 Logs
 src/logs.log
@@ -22,3 +20,6 @@ bot421.code-workspace
 scan_sesiones.py
 src/credentialIa.json
 src/upload_to_gcs.json
+src/strategies/pruebasheetpython.json
+src/logs.log
+src/logs.log
