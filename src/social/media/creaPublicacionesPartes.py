@@ -465,7 +465,10 @@ def guardarPublicacion(request, user_id):
         codigoPostal = request.form.get('codigoPostal')
         latitud = request.form.get('latitud')
         longitud = request.form.get('longitud') 
+        precio = request.form.get('precio')
+        moneda = request.form.get('moneda')
         pagoOnline = False
+        precio_formateado, moneda = normalizar_precio(precio)
         with get_db_session() as session:
             # Verificar si ya existe una publicación con el mismo título para el mismo usuario
             publicacion_existente = session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
@@ -491,10 +494,13 @@ def guardarPublicacion(request, user_id):
                 color_titulo=color_titulo,
                 fecha_creacion=datetime.now(),
                 estado=estado,
+                afiliado_link="",
                 botonCompra=botonCompra,
                 idioma=idioma,
                 codigoPostal=codigoPostal,            
-                pagoOnline=pagoOnline
+                pagoOnline=pagoOnline,
+                precio= float(precio_formateado),
+                moneda=moneda
             )
             
             session.add(nueva_publicacion)
@@ -629,3 +635,50 @@ def publicacionUbicacion(session, nueva_publicacion_id,codigoPostal,user_id):
        
         return False
             
+            
+
+
+def normalizar_precio(precio):
+    if not precio:
+        return "0", None  # precio, moneda
+
+    precio_str = str(precio).strip()
+
+    # Eliminar caracteres invisibles (espacios raros, NO-BREAK SPACE, etc.)
+    precio_str = re.sub(r"[\u202f\u00a0]", "", precio_str)
+
+    # Mapas de símbolos a códigos de moneda
+    monedas_detectadas = {
+        "EUR": "EUR",
+        "€": "EUR",
+        "USD": "USD",
+        "$": "USD",
+        "ARS": "ARS",
+        "GBP": "GBP",
+        "£": "GBP",
+        "AUD": "AUD",
+        "CAD": "CAD",
+        "BRL": "BRL",
+        "MXN": "MXN",
+        "COP": "COP",
+    }
+
+    moneda = "USD"  # por defecto
+    for clave, codigo in monedas_detectadas.items():
+        if clave in precio_str:
+            moneda = codigo
+            break
+
+    # Extraer valor numérico
+    match = re.search(r"[\d]+[.,]?\d*", precio_str)
+    if match:
+        try:
+            valor_float = float(match.group(0).replace(",", "."))
+            valor_formateado = (
+                f"{int(valor_float)}" if valor_float.is_integer() else f"{valor_float:.2f}"
+            )
+            return valor_formateado, moneda
+        except ValueError:
+            pass
+
+    return "0", None
