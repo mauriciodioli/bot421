@@ -4,6 +4,7 @@ venv/
 
 # 🔹 Archivos sensibles / credenciales
 src/strategies/*.json
+src/*.json
 # 🔹 Logs
 src/logs.log
 # 🔹 Archivos de prueba específicos
