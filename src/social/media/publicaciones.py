@@ -474,8 +474,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'color_titulo': publicacion.color_titulo,
                 'fecha_creacion': publicacion.fecha_creacion,
                 'estado': publicacion.estado,
-                'idioma': publicacion.idioma,
-                'afiliado_link': publicacion.afiliado_link,
+                'idioma': publicacion.idioma,               
                 'imagenes': imagenes,
                 'videos': videos,
                 'layout': layout,
@@ -484,7 +483,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'descuento': descuento,
                 'simbolo':simbolo,
                 'precio': publicacion.precio,
-                'afiliado_link ': publicacion.afiliado_link,
+                'afiliado_link': publicacion.afiliado_link,
                 'precio_original': precio_original
             })
 
