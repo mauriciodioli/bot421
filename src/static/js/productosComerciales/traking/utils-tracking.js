@@ -9,14 +9,21 @@ function getVisitorId() {
 }
 
 function trackImpressionOnce(pubId) {
+  const user_id = localStorage.getItem('usuario_id');
   const vid = getVisitorId();
-  const url = `/afiliado/impresion?pub_id=${pubId}&vid=${encodeURIComponent(vid)}&lang=${encodeURIComponent(window.currentLang || 'es')}`;
+  const lang = encodeURIComponent(window.currentLang || 'es');
+  const url = `/productosComerciales/traking/afiliado/impresion/` +
+              `?pub_id=${pubId}` +
+              `&vid=${encodeURIComponent(vid)}` +
+              `&user_id=${encodeURIComponent(user_id)}` +
+              `&lang=${lang}`;
   if (!navigator.sendBeacon || !navigator.sendBeacon(url)) {
     fetch(url, { method: 'POST' }).catch(()=>{});
   }
 }
 
 function observeCardImpression(pubId) {
+  
   const card = document.getElementById(`card-${pubId}`);
   if (!card) return;
   const io = new IntersectionObserver((entries, obs) => {
@@ -41,3 +48,8 @@ document.addEventListener('click', (e) => {
   }
   lastClickTs = now;
 }, true);
+
+
+
+
+                   

@@ -152,7 +152,13 @@ function cargarPublicaciones(ambitoParam, layout) {
                       //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
                         const lang = window.currentLang || 'es';
                         const vid  = getVisitorId();
-                        const btnComprarHref = `/r/ali?pub_id=${post.publicacion_id}&lang=${encodeURIComponent(lang)}&vid=${encodeURIComponent(vid)}`;
+                        const user_id = localStorage.getItem('usuario_id') || '';
+                        const btnComprarHref = `/productosComerciales/traking/r/ali` +
+                        `?pub_id=${post.publicacion_id}` +
+                        `&lang=${encodeURIComponent(lang)}` +
+                        `&vid=${encodeURIComponent(vid)}` +
+                        `&user_id=${encodeURIComponent(user_id)}`;
+
                       // Tarjeta
                         const comprarTxt = (translations[lang] && translations[lang].comprarAli) || 'Comprar';
                         const verMasTxt  = (translations[lang] && translations[lang].verMas) || 'Ver más';
@@ -220,6 +226,7 @@ function cargarPublicaciones(ambitoParam, layout) {
 
 
                         postDisplayContainer.append(cardHtml);
+                        
                         observeCardImpression(post.publicacion_id);
                     } else {
                         console.log('Publicación sin contenido:', post.publicacion_id);

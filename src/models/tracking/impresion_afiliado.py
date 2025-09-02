@@ -4,7 +4,6 @@ from flask_marshmallow import Marshmallow
 from utils.db import db
 from sqlalchemy import Numeric
 from flask import Blueprint
-from utils.db import db
 from sqlalchemy import inspect, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from typing import Optional

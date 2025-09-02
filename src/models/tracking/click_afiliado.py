@@ -1,7 +1,6 @@
 # models/impresion_afiliado.py
 from datetime import datetime
 from flask_marshmallow import Marshmallow
-from utils.db import db
 from sqlalchemy import Numeric,Index
 from flask import Blueprint
 from utils.db import db

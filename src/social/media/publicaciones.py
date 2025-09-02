@@ -724,7 +724,8 @@ def armar_publicacion(publicaciones):
                 'color_texto': publicacion.color_texto,
                 'color_titulo': publicacion.color_titulo,
                 'fecha_creacion': publicacion.fecha_creacion, 
-                'estado': publicacion.estado,    
+                'estado': publicacion.estado,
+                'afiliado_link': publicacion.afiliado_link,      
                 'idioma':publicacion.idioma,       
                 'imagenes': imagenes,
                 'videos': videos
