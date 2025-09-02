@@ -469,14 +469,7 @@ def close_listener(dbapi_connection, connection_record):
         connection_times.pop(connection_key, None)  # Eliminar el tiempo asociado
    #     app.logger.info(f"close_listener Conexión cerrada. ID: {connection_key}. Total conexiones activas: {len(active_connections)}")
 
-@app.teardown_appcontext
-def teardown_db(exception):
-    with get_db_session() as session:
-        # Cierra la sesión de la base de datos y libera recursos
-        try:
-             session.remove()
-        except Exception as e:
-            app.logger.warning(f"Error al cerrar la sesión: {e}")
+
 # Escuchar cuando se devuelve una conexión al pool
 @event.listens_for(Pool, "checkin")
 def checkin_listener(dbapi_connection, connection_record):

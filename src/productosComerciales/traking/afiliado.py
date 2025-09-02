@@ -108,7 +108,7 @@ def afiliado_impresion():
                 **snap
             )
             session.add(imp)
-            return ("", 204)       # <--- **siempre** devolver algo
+            return jsonify({"url": pub.afiliado_link}), 200
     except Exception as e:
        
         # loguea el error
@@ -157,7 +157,7 @@ def redirect_ali():
         )
         session.add(click)
         
-    return redirect(final_url, code=302)
+    return jsonify({"url": final_url}), 200
 
 
 

@@ -92,30 +92,18 @@ document.addEventListener('click', async (e) => {
       redirect: 'manual',    // ← para capturar Location en 302/3xx
     });
 
-    // 1) JSON {url: "..."}
-    if (res.status === 200) {
-      const data = await res.json().catch(() => ({}));
-      if (data && data.url) {
-        window.location.assign(data.url);
-        return;
-      }
-    }
+     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    // 2) Header Location (204 o 3xx manual)
-    const loc = res.headers.get('Location');
-    if (loc) {
-      window.location.assign(loc);
+    const data = await res.json();
+    if (data && data.url) {
+      window.location.assign(data.url);
       return;
     }
+    // si no vino url, usá fallback
+    if (fallback) window.location.assign(fallback);
 
-    // 3) Si el server respondió 2xx sin info, forzá fallback si querés
-    // const fb = a.dataset.fallbackUrl;
-    // if (fb) window.location.assign(fb);
-
-  } catch (_) {
-    // Fallback opcional si algo truena
-    // const fb = a.dataset.fallbackUrl;
-    // if (fb) window.location.assign(fb);
+  } catch (err) {
+    if (fallback) window.location.assign(fallback);
   }
 }, true);
 
