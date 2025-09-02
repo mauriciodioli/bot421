@@ -150,14 +150,20 @@ function cargarPublicaciones(ambitoParam, layout) {
                         }
                      
                       //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
-                        const lang = window.currentLang || 'es';
-                        const vid  = getVisitorId();
+                        const lang    = window.currentLang || 'es';
+                        const vid     = getVisitorId();
                         const user_id = localStorage.getItem('usuario_id') || '';
-                        const btnComprarHref = `/productosComerciales/traking/r/ali` +
-                        `?pub_id=${post.publicacion_id}` +
-                        `&lang=${encodeURIComponent(lang)}` +
-                        `&vid=${encodeURIComponent(vid)}` +
-                        `&user_id=${encodeURIComponent(user_id)}`;
+
+                        const btnComprarAttrs = `
+                        href="#"
+                        class="btn btn-danger mt-2"
+                        rel="nofollow sponsored"
+                        data-ali-redirect="1"
+                        data-pub-id="${post.publicacion_id}"
+                        data-vid="${vid}"
+                        data-user-id="${user_id}"
+                        data-lang="${lang}"
+                        `;
 
                       // Tarjeta
                         const comprarTxt = (translations[lang] && translations[lang].comprarAli) || 'Comprar';
@@ -210,13 +216,16 @@ function cargarPublicaciones(ambitoParam, layout) {
                                                 onclick="toggleTexto(${post.publicacion_id}); return false;">
                                                 ${translations[currentLang].verMas}
                                         </a>
-                                        <!-- Botón Afiliado -->
-                                            ${post.afiliado_link ? `
-                                            <a href="${btnComprarHref}"
-                                            target="_blank"
-                                            rel="nofollow sponsored"
+                                         <!-- Botón Afiliado -->
+                                        ${post.afiliado_link ? `
+                                            <a href="#"
                                             class="btn btn-danger mt-2"
-                                            data-ali-redirect="1">
+                                            rel="nofollow sponsored"
+                                            data-ali-redirect="1"
+                                            data-pub-id="${post.publicacion_id}"
+                                            data-vid="${vid}"
+                                            data-user-id="${user_id}"
+                                            data-lang="${lang}">
                                             ${comprarTxt}
                                             </a>` : ''}
 
@@ -226,8 +235,19 @@ function cargarPublicaciones(ambitoParam, layout) {
 
 
                         postDisplayContainer.append(cardHtml);
-                        
-                        observeCardImpression(post.publicacion_id);
+                        // Inicializar la observación de impresiones
+                        // Inicializar la observación de impresiones
+                        // Inicializar la observación de impresiones
+                        // Inicializar la observación de impresiones
+// carga mucho la base de datos aplicable cuando hay recursos en cantidad de base de datos
+
+                      //  observeCardImpression(post.publicacion_id);
+
+
+                        // Inicializar la observación de impresiones
+                        // Inicializar la observación de impresiones
+                        // Inicializar la observación de impresiones
+                        // Inicializar la observación de impresiones
                     } else {
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }

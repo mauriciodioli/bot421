@@ -76,11 +76,13 @@ def snapshot_from_publicacion(pub, imagenes=None, videos=None):
         reviews          = val(pub, "reviews"),
     )
 
-@afiliado.route("/productosComerciales/traking/afiliado/impresion/", methods=["POST", "GET"])
+@afiliado.route("/productosComerciales/traking/afiliado/impresion/", methods=["POST"])
 def afiliado_impresion():
-    pub_id    = request.args.get("pub_id", type=int)
-    visitor_id= request.args.get("vid")
-    user_id= request.args.get("user_id", type=int)
+    data = request.get_json(silent=True) or {}
+    pub_id     = data.get("pub_id")
+    visitor_id = data.get("vid")
+    user_id    = data.get("user_id")
+    lang       = data.get("lang", "es")
     if not pub_id:
         abort(400, "pub_id requerido")
     try:
@@ -98,7 +100,7 @@ def afiliado_impresion():
                 publicacion_id = pub_id,
                 visitor_id     = visitor_id,
                 user_id        = user_id,
-                idioma         = get_lang(),
+                idioma         = lang,
                 ip             = get_client_ip(),
                 user_agent     = request.headers.get("User-Agent"),
                 referer        = request.referrer,
@@ -118,32 +120,33 @@ def afiliado_impresion():
         # Pero lo podés reforzar aquí si tu implementación lo requiere.
         pass
 
-@afiliado.route("/productosComerciales/traking/r/ali")
+@afiliado.route("/productosComerciales/traking/r/ali/", methods=["POST"])
 def redirect_ali():
-    pub_id     = request.args.get("pub_id", type=int)
-    visitor_id = request.args.get("vid")
-    user_id    = request.args.get("user_id", type=int)
-    lang = request.args.get("lang")
+    data = request.get_json(silent=True) or {}
+    pub_id     = data.get("pub_id")
+    visitor_id = data.get("vid")
+    user_id    = data.get("user_id")
+    lang       = data.get("lang", "es")
     if not pub_id:
         abort(400, "pub_id requerido")
     with get_db_session() as session:
-        pub = obtener_publicacion(session,pub_id)  # IMPLEMENTA
+        pub = obtener_publicacion(session,int(pub_id))  # IMPLEMENTA
         af_link = pub.get("afiliado_link") if isinstance(pub, dict) else getattr(pub, "afiliado_link", None)
         if not pub or not af_link:
             abort(404, "Publicación sin afiliado_link")
 
        
         # agrega subIDs
-        sub_params = build_sub_params(pub, user_id, lang, visitor_id)
+        sub_params = build_sub_params(pub, int(user_id), lang, visitor_id)
         final_url  = append_params(af_link, sub_params)
 
         # snapshot
         snap = snapshot_from_publicacion(pub, imagenes=[], videos=[])
 
         click = ClickAfiliado(
-            publicacion_id = pub_id,
+            publicacion_id = int(pub_id),
             visitor_id     = visitor_id,
-            user_id        = user_id,
+            user_id        = int(user_id),
             idioma         = lang,
             ip             = get_client_ip(),
             user_agent     = request.headers.get("User-Agent"),
