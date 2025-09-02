@@ -10,8 +10,6 @@ function formatDate(dateString) {
 
 
 
-
-
 function cargarPublicaciones(ambitoParam, layout) {
   
     var access_token = localStorage.getItem('access_token');   
@@ -79,8 +77,9 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                 var categoria_id = null; // Variable para almacenar la categoría actual                
                 response.forEach(function (post) {
-                   
-                    if (post.imagenes.length > 0 || post.videos.length > 0) {
+                    const imgs = Array.isArray(post.imagenes) ? post.imagenes : [];
+                    const vids = Array.isArray(post.videos)   ? post.videos   : [];
+                    if ((imgs.length > 0) || (vids.length > 0)) {
                         var mediaHtml = '';
                         if (categoria_id != post.categoria_id) {
                             categoria_id = post.categoria_id;
@@ -151,7 +150,13 @@ function cargarPublicaciones(ambitoParam, layout) {
                         }
                      
                       //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
-                       
+                        const lang = window.currentLang || 'es';
+                        const vid  = getVisitorId();
+                        const btnComprarHref = `/r/ali?pub_id=${post.publicacion_id}&lang=${encodeURIComponent(lang)}&vid=${encodeURIComponent(vid)}`;
+                      // Tarjeta
+                        const comprarTxt = (translations[lang] && translations[lang].comprarAli) || 'Comprar';
+                        const verMasTxt  = (translations[lang] && translations[lang].verMas) || 'Ver más';
+
                         // Tarjeta de publicación
                       var cardHtml = `
                                 <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
@@ -201,10 +206,13 @@ function cargarPublicaciones(ambitoParam, layout) {
                                         </a>
                                         <!-- Botón Afiliado -->
                                             ${post.afiliado_link ? `
-                                                <a href="${post.afiliado_link}" target="_blank" class="btn btn-danger mt-2">
-                                                    ${translations[currentLang].comprarAli}
-                                                </a>
-                                            ` : ''}
+                                            <a href="${btnComprarHref}"
+                                            target="_blank"
+                                            rel="nofollow sponsored"
+                                            class="btn btn-danger mt-2"
+                                            data-ali-redirect="1">
+                                            ${comprarTxt}
+                                            </a>` : ''}
 
                                     </div>
                                 </div>
@@ -212,6 +220,7 @@ function cargarPublicaciones(ambitoParam, layout) {
 
 
                         postDisplayContainer.append(cardHtml);
+                        observeCardImpression(post.publicacion_id);
                     } else {
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }

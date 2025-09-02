@@ -131,6 +131,30 @@
           <label for="description" class="text-black">Descripción:</label>
           <textarea id="description" name="postDescription_creaPublicacion" placeholder="Escribe una descripción" class="form-control" required></textarea>
         </div>
+       <!-- Precio -->
+        <div class="form-group_creaPublicacion">
+          <label for="precio_creaPublicacion" class="text-black">Precio</label>
+          <input type="number" id="precio_creaPublicacion" name="precio_creaPublicacion"
+                inputmode="decimal" step="0.01" min="0" placeholder="0.00" required>
+        </div>
+        <!-- Moneda -->
+          <div class="form-group_agregaPublicacion">
+            <label for="moneda_agregaPublicacion" class="text-black">Moneda</label>
+            <select id="moneda_agregaPublicacion" name="moneda_agregaPublicacion" class="form-control" required>
+              <option value="">-- Selecciona una moneda --</option>
+              <option value="USD">USD – Dólar estadounidense</option>
+              <option value="EUR">EUR – Euro</option>
+              <option value="GBP">GBP – Libra esterlina</option>
+              <option value="JPY">JPY – Yen japonés</option>
+              <option value="ARS">ARS – Peso argentino</option>
+              <option value="BRL">BRL – Real brasileño</option>
+              <option value="MXN">MXN – Peso mexicano</option>
+              <option value="PLN">PLN – Złoty polaco</option>
+              <option value="CHF">CHF – Franco suizo</option>
+              <option value="CNY">CNY – Yuan chino</option>
+            </select>
+          </div>
+
 
         <!-- Combobox for estado -->
         <div class="form-group_creaPublicacion">
@@ -328,6 +352,30 @@
         <label for="afiliado_link_modificaPublicacion" class="text-black">afiliado_link:</label>
         <input type="text" id="afiliado_link_modificaPublicacion" name="afiliado_link_modificaPublicacion" placeholder="Escribe el afiliado_link">
       </div>
+      <!-- Precio -->
+      <div class="form-group_modificaPublicacion">
+        <label for="precio_modificaPublicacion" class="text-black">Precio:</label>
+        <input type="number" id="precio_modificaPublicacion" name="precio_modificaPublicacion"
+              inputmode="decimal" step="0.01" min="0" placeholder="0.00">
+      </div>
+      <!-- moneda     -->
+      <div class="form-group_modificaPublicacion">
+        <label for="moneda_modificaPublicacion" class="text-black">Moneda:</label>
+        <select id="moneda_modificaPublicacion" name="moneda_modificaPublicacion" class="form-control">
+          <option value="">-- Selecciona una moneda --</option>
+          <option value="USD">USD – Dólar estadounidense</option>
+          <option value="EUR">EUR – Euro</option>
+          <option value="GBP">GBP – Libra esterlina</option>
+          <option value="JPY">JPY – Yen japonés</option>
+          <option value="ARS">ARS – Peso argentino</option>
+          <option value="BRL">BRL – Real brasileño</option>
+          <option value="MXN">MXN – Peso mexicano</option>
+          <option value="PLN">PLN – Złoty polaco</option>
+          <option value="CHF">CHF – Franco suizo</option>
+          <option value="CNY">CNY – Yuan chino</option>
+        </select>
+      </div>
+
 
       <!-- Combobox for ambitos -->
       <div class="form-group_modificaPublicacion">       

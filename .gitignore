@@ -4,17 +4,18 @@ venv/
 
 # 🔹 Archivos sensibles / credenciales
 src/strategies/*.json
-
+src/*.json
 # 🔹 Logs
 src/logs.log
-
 # 🔹 Archivos de prueba específicos
 src/Test/test_euler.py
-
 # 🔹 Cachés de Python
 __pycache__/
 *.pyc
-
 # 🔹 Configuración local de workspace (VSCode)
 bot421.code-workspace
 scan_sesiones.py
+src/credentialIa.json
+src/upload_to_gcs.json
+src/strategies/pruebasheetpython.json
+src/logs.local.log

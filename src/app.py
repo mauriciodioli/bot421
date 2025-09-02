@@ -46,6 +46,9 @@ from productosComerciales.pedidos.pedidos import pedidos
 from productosComerciales.pedidos.ventasProductosComerciales import ventasProductosComerciales
 
 
+from productosComerciales.traking.afiliado import afiliado
+
+
 
 from Tests.test_order_report_handler import test_order_report_handler
 from Tests.test_2_order_report_handler import test_2_order_report_handler
@@ -344,6 +347,9 @@ app.register_blueprint(pagoPedidos)
 app.register_blueprint(payPal)
 
 app.register_blueprint(ventasProductosComerciales)
+
+app.register_blueprint(afiliado)
+
 app.register_blueprint(servidorAws)
 app.register_blueprint(dpi)
 app.register_blueprint(videosYtube)
@@ -467,7 +473,10 @@ def close_listener(dbapi_connection, connection_record):
 def teardown_db(exception):
     with get_db_session() as session:
         # Cierra la sesión de la base de datos y libera recursos
-        session.remove()
+        try:
+             session.remove()
+        except Exception as e:
+            app.logger.warning(f"Error al cerrar la sesión: {e}")
 # Escuchar cuando se devuelve una conexión al pool
 @event.listens_for(Pool, "checkin")
 def checkin_listener(dbapi_connection, connection_record):

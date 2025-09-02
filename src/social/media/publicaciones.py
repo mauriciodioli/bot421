@@ -62,6 +62,7 @@ redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
 redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
 # Conexión a Redis
 redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
+MONEDAS_PERMITIDAS = {"USD","EUR","GBP","JPY","ARS","BRL","MXN","PLN","CHF","CNY"}
 
 
 # Probar la conexión a Redis (opcional)
@@ -473,8 +474,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'color_titulo': publicacion.color_titulo,
                 'fecha_creacion': publicacion.fecha_creacion,
                 'estado': publicacion.estado,
-                'idioma': publicacion.idioma,
-                'afiliado_link': publicacion.afiliado_link,
+                'idioma': publicacion.idioma,               
                 'imagenes': imagenes,
                 'videos': videos,
                 'layout': layout,
@@ -483,7 +483,7 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'descuento': descuento,
                 'simbolo':simbolo,
                 'precio': publicacion.precio,
-                'afiliado_link ': publicacion.afiliado_link,
+                'afiliado_link': publicacion.afiliado_link,
                 'precio_original': precio_original
             })
 
@@ -861,29 +861,57 @@ def es_formato_imagen(filepath):
 
 
 
-def guardarPublicacion(request, user_id):
+def _parse_bool(value) -> bool:
+    if value is None:
+        return False
+    return str(value).strip().lower() in {"1","true","on","sí","si","yes"}
+
+def _parse_precio(value: str) -> float:
+    if not value:
+        return 0.0
+    s = value.strip()
+    # quita separadores de miles comunes y normaliza decimal
+    s = s.replace(" ", "").replace(".", "").replace(",", ".")
+    # solo deja número con decimal opcional y signo
+    if not re.fullmatch(r"-?\d+(\.\d+)?", s):
+        raise ValueError(f"Precio inválido: {value!r}")
+    return float(s)
+
+def guardarPublicacion(user_id):
+    form = request.form
     try:
-        post_title = request.form.get('postTitle_creaPublicacion')
-        post_text = request.form.get('postText_creaPublicacion')   
-        post_descripcion = request.form.get('postDescription_creaPublicacion')
-        ambito = request.form.get('postAmbito_creaPublicacion')
-        correo_electronico = request.form.get('correo_electronico')
-        color_texto = request.form.get('color_texto')
-        color_titulo = request.form.get('color_titulo')
-        estado = request.form.get('postEstado_creaPublicacion')
-        botonCompra = request.form.get('postBotonCompra_creaPublicacion')
-        codigoPostal = request.cookies.get('codigoPostal')
+        post_title       = form.get('postTitle_creaPublicacion', '').strip()
+        post_text        = form.get('postText_creaPublicacion', '')   
+        post_descripcion = form.get('postDescription_creaPublicacion', '')
+        ambito           = form.get('postAmbito_creaPublicacion', '')
+        correo_electronico = form.get('correo_electronico')
+        color_texto      = form.get('color_texto')
+        color_titulo     = form.get('color_titulo')
+        estado           = form.get('postEstado_creaPublicacion') or 'ACTIVO'
+        botonCompra      = _parse_bool(form.get('postBotonCompra_creaPublicacion'))
+        codigoPostal     = request.cookies.get('codigoPostal')
+        moneda           = form.get('moneda_agregaPublicacion') or ''
+        precio_raw       = form.get('precio_creaPublicacion')
+
+        if not post_title:
+            raise ValueError("El título es obligatorio.")
+
+        if moneda and moneda not in MONEDAS_PERMITIDAS:
+            raise ValueError(f"Moneda no permitida: {moneda}")
+
+        precio = _parse_precio(precio_raw)
+
         with get_db_session() as session:
-            # Verificar si ya existe una publicación con el mismo título para el mismo usuario
-            publicacion_existente = session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
-            
-            if publicacion_existente:
-                # Si existe, devolver un mensaje sugiriendo cambiar el nombre
-                return None
-            
-            # Crear una nueva publicación si no existe una con el mismo nombre
-            nueva_publicacion = Publicacion(
-                user_id=user_id,             
+            # Doble defensa: chequear duplicado por (titulo, user_id)
+            existente = session.query(Publicacion)\
+                               .filter_by(titulo=post_title, user_id=user_id)\
+                               .first()
+            if existente:
+                # sugerencia: lanzar una excepción específica y que la capa de ruta maneje el 409
+                raise ValueError("Ya existe una publicación con ese título para este usuario.")
+
+            nueva = Publicacion(
+                user_id=user_id,
                 titulo=post_title,
                 texto=post_text,
                 ambito=ambito,
@@ -891,20 +919,20 @@ def guardarPublicacion(request, user_id):
                 descripcion=post_descripcion,
                 color_texto=color_texto,
                 color_titulo=color_titulo,
-                fecha_creacion=datetime.now(),
+                fecha_creacion=datetime.utcnow(),
                 estado=estado,
                 codigoPostal=codigoPostal,
-                botonCompra=bool(botonCompra)
+                botonCompra=botonCompra,
+                precio=precio,
+                moneda=moneda or None,
             )
-            
-            session.add(nueva_publicacion)
+            session.add(nueva)
             session.commit()
-            return nueva_publicacion.id
+            return nueva.id
+
             
     except Exception as e:
-        print(str(e))
-     
-        return jsonify({'error': 'Ocurrió un error al guardar la publicación.'}), 500
+         raise
    
 
 def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_video_id,media_type,size=0):
@@ -1131,97 +1159,118 @@ def borrado_logicopublicacion(publicacion_id, user_id, estado):
    
 
 
-
 @publicaciones.route('/social_media_publicaciones_modificar_publicaciones/', methods=['POST'])
 def publicaciones_modificar_publicaciones():
+    # --- Auth: Bearer token ---
+    authorization_header = request.headers.get('Authorization')
+    if not authorization_header:
+        return jsonify({'error': 'Token de acceso no proporcionado'}), 401
+    parts = authorization_header.split()
+    if len(parts) != 2 or parts[0].lower() != 'bearer':
+        return jsonify({'error': 'Formato de token no válido'}), 401
+    access_token = parts[1]
+
     try:
-        # Obtener los datos del formulario
-        post_id = request.form.get('postId_modificaPublicacion')
-        titulo = request.form.get('postTitle_modificaPublicacion')
-        texto = request.form.get('postText_modificaPublicacion')
-        descripcion = request.form.get('postDescription_modificaPublicacion')
-        estado = request.form.get('postEstado_modificaPublicacion')
-        ambito = request.form.get('postAmbito_modificaPublicacion')
-        categoria = request.form.get('postAmbitoCategorias_modificaPublicacion')
-        idioma = request.form.get('postCambiarIdioma_modificaPublicacion')
-        botonCompra = request.form.get('postBotonCompra_modificaPublicacion')
-        codigoPostal = request.form.get('codigoPostal_modificaPublicacion')
-        botonPagoOnline = request.form.get('postPagoOnline_modificaPublicacion')
-        afiliado_link = request.form.get('afiliado_link_modificaPublicacion')
-        # Obtener archivos subidos si es necesario
-        archivos = request.files.getlist('mediaFile_modificaPublicacion')
+        if not Token.validar_expiracion_token(access_token=access_token):
+            return jsonify({'error': 'Token de acceso expirado o inválido'}), 401
+        decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token.get("sub")
+        if not user_id:
+            return jsonify({'error': 'Token sin sujeto (sub) válido'}), 401
+    except Exception:
+        return jsonify({'error': 'No se pudo validar el token'}), 401
+
+    # --- Datos del form ---
+    form = request.form
+    post_id        = form.get('postId_modificaPublicacion')
+    titulo         = form.get('postTitle_modificaPublicacion')
+    texto          = form.get('postText_modificaPublicacion')
+    descripcion    = form.get('postDescription_modificaPublicacion')
+    estado         = form.get('postEstado_modificaPublicacion')
+    ambito         = form.get('postAmbito_modificaPublicacion')
+    categoria      = form.get('postAmbitoCategorias_modificaPublicacion')
+    idioma         = form.get('postCambiarIdioma_modificaPublicacion')
+    botonCompra    = form.get('postBotonCompra_modificaPublicacion')
+    codigoPostal   = form.get('codigoPostal_modificaPublicacion')
+    botonPagoOnline= form.get('postPagoOnline_modificaPublicacion')
+    afiliado_link  = form.get('afiliado_link_modificaPublicacion')
+    precio_raw     = form.get('precio_modificaPublicacion')
+    moneda         = form.get('moneda_modificaPublicacion')
+
+    # archivos = request.files.getlist('mediaFile_modificaPublicacion')  # si los usás, procesalos luego
+
+    # Validaciones rápidas
+    if not post_id:
+        return jsonify({'error': 'Falta postId'}), 400
+    try:
+        post_id_int = int(post_id)
+    except ValueError:
+        return jsonify({'error': 'postId inválido'}), 400
+
+    if moneda and moneda not in MONEDAS_PERMITIDAS:
+        return jsonify({'error': f"Moneda no permitida: {moneda}"}), 400
+
+    try:
+        precio = _parse_precio(precio_raw)
+    except ValueError as ve:
+        return jsonify({'error': str(ve)}), 400
+
+    # Sanitizar texto (quita etiquetas HTML básicas)
+    texto_limpio = re.sub(r'<[^>]*>', '', texto) if texto else ''
+
+    # --- DB ---
+    try:
         with get_db_session() as session:
-            # Obtener el encabezado Authorization
-            authorization_header = request.headers.get('Authorization')
-            if not authorization_header:
-                return jsonify({'error': 'Token de acceso no proporcionado'}), 401
-            
-            # Verificar formato del encabezado Authorization
-            parts = authorization_header.split()
-            if len(parts) != 2 or parts[0].lower() != 'bearer':
-                return jsonify({'error': 'Formato de token de acceso no válido'}), 401
-            
-            # Obtener el token de acceso
-            access_token = parts[1]
-
-            # Validar y decodificar el token
-            if Token.validar_expiracion_token(access_token=access_token):  
-                app = current_app._get_current_object()
-                decoded_token = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
-                user_id = decoded_token.get("sub")
-            else:
-               
-                return jsonify({'error': 'Token de acceso expirado o inválido'}), 401
-
-            # Verificar si la publicación existe y pertenece al usuario
-            publicacion = session.query(Publicacion).filter_by(id=post_id, user_id=user_id).first()
+            publicacion = session.query(Publicacion).filter_by(id=post_id_int, user_id=user_id).first()
             if not publicacion:
-            
                 return jsonify({'error': 'Publicación no encontrada o no autorizada'}), 404
-            
-            categoriPublicacion = session.query(CategoriaPublicacion).filter(
-                    CategoriaPublicacion.id == int(categoria),
+
+            # Si usás tabla puente CategoriaPublicacion, mantenla; si NO, borra el bloque y usa solo publicacion.categoria_id
+            if categoria:
+                try:
+                    categoria_id_int = int(categoria)
+                except ValueError:
+                    return jsonify({'error': 'categoria inválida'}), 400
+
+                categoriPublicacion = session.query(CategoriaPublicacion).filter(
+                    CategoriaPublicacion.id == categoria_id_int,
                     CategoriaPublicacion.publicacion_id == publicacion.id
                 ).first()
 
-            if not categoriPublicacion:
-                new_categoriPublicacion = CategoriaPublicacion(
-                    publicacion_id=publicacion.id,
-                    categoria_id=int(categoria),
-                    estado='activo'
-                )   
-                session.add(new_categoriPublicacion)
-            else:
-                categoriPublicacion.categoria_id = int(categoria)
+                if not categoriPublicacion:
+                    new_categoriPublicacion = CategoriaPublicacion(
+                        publicacion_id=publicacion.id,
+                        categoria_id=categoria_id_int,
+                        estado='activo'
+                    )
+                    session.add(new_categoriPublicacion)
+                else:
+                    categoriPublicacion.categoria_id = categoria_id_int
+
+                # Si además guardás FK directa en Publicacion, coherencia:
+                publicacion.categoria_id = categoria_id_int
+
+            publicacion.titulo             = titulo or publicacion.titulo
+            publicacion.texto              = texto_limpio
+            publicacion.descripcion        = descripcion
+            publicacion.estado             = estado or publicacion.estado
+            publicacion.ambito             = ambito
+            publicacion.idioma             = idioma or publicacion.idioma
+            publicacion.codigoPostal       = codigoPostal
+            publicacion.afiliado_link      = afiliado_link
+            publicacion.fecha_modificacion = datetime.utcnow()
+            publicacion.botonCompra        = _parse_bool(botonCompra)
+            publicacion.pagoOnline         = _parse_bool(botonPagoOnline)
+            publicacion.precio             = precio
+            publicacion.moneda             = moneda or None
 
             session.commit()
 
-            
-            # Eliminar todas las etiquetas HTML
-            texto_limpio = re.sub(r'<[^>]*>', '', texto) if texto else ''
-            
-            # Actualizar la publicación
-            publicacion.titulo = titulo
-            publicacion.texto = texto_limpio
-            publicacion.descripcion = descripcion
-            publicacion.estado = estado
-            publicacion.ambito = ambito
-            publicacion.categoria_id = int(categoria) if categoria else categoria
-            publicacion.idioma = idioma
-            publicacion.codigoPostal = codigoPostal
-            publicacion.afiliado_link = afiliado_link
-            publicacion.fecha_modificacion = datetime.now()  # Asignar la fecha de modificación si es necesario
-            publicacion.botonCompra = botonCompra.lower() == "true" if botonCompra else False
-            publicacion.pagoOnline  = botonPagoOnline.lower() == "true" if botonPagoOnline else False
-
-        
-            session.commit()
-          
-            return jsonify({"mensaje": "Publicación modificada con éxito!"})
+        return jsonify({"mensaje": "Publicación modificada con éxito!"})
 
     except Exception as e:
+        # el rollback dentro del with ya se manejó; acá solo informamos
         print(str(e))
-        session.rollback()
         return jsonify({'error': 'Ocurrió un error al modificar la publicación.'}), 500
 
             
