@@ -2,26 +2,76 @@
 {% block content %}
 
 <div class="jumbotron">
-  <h1 class="display-4">Salio del sistema!</h1>
- 
+  <h1 class="display-4" data-i18n="titleLoggedOut">¡Sesión cerrada!</h1>
+
   <hr class="my-4">
-  <p>Para ir a login puedes presionar el boton.</p>
-  <a class="btn btn-primary btn-lg" href="/index" role="button">Logear</a>
+  <p data-i18n="infoGoToLogin">Para ir a login puedes presionar el botón.</p>
+  <a class="btn btn-primary btn-lg" href="/index" role="button" data-i18n="btnLogin">Iniciar sesión</a>
 </div>
-{% include 'layouts/layout_footer.html' %}   
+
+{% include 'layouts/layout_footer.html' %}
+
 <script>
-  
-    let dominio = localStorage.getItem('dominio');
-    let codigoPostal = localStorage.getItem('codigoPostal');
-    let language = localStorage.getItem('language');
-    let latitude = localStorage.getItem('latitude');
-    let longitude = localStorage.getItem('longitude');
-    localStorage.clear();
-    localStorage.setItem('dominio', dominio);
-    localStorage.setItem('codigoPostal', codigoPostal);
-    localStorage.setItem('language', language);
-    localStorage.setItem('latitude', latitude);
-    localStorage.setItem('longitude', longitude);
-   
+  // Restaurar variables que necesitas
+  let dominio = localStorage.getItem('dominio');
+  let codigoPostal = localStorage.getItem('codigoPostal');
+  let language = localStorage.getItem('language');
+  let latitude = localStorage.getItem('latitude');
+  let longitude = localStorage.getItem('longitude');
+  localStorage.clear();
+  if (dominio)       localStorage.setItem('dominio', dominio);
+  if (codigoPostal)  localStorage.setItem('codigoPostal', codigoPostal);
+  if (language)      localStorage.setItem('language', language);
+  if (latitude)      localStorage.setItem('latitude', latitude);
+  if (longitude)     localStorage.setItem('longitude', longitude);
+
+  // i18n básica (ES, EN, IT, PL, FR, PT, DE)
+  const i18n = {
+    es: {
+      titleLoggedOut: "¡Sesión cerrada!",
+      infoGoToLogin: "Para ir a login puedes presionar el botón.",
+      btnLogin: "Iniciar sesión"
+    },
+    en: {
+      titleLoggedOut: "You’ve been signed out",
+      infoGoToLogin: "Click the button to go to login.",
+      btnLogin: "Log in"
+    },
+    it: {
+      titleLoggedOut: "Sei uscito dal sistema",
+      infoGoToLogin: "Clicca il pulsante per andare al login.",
+      btnLogin: "Accedi"
+    },
+    pl: {
+      titleLoggedOut: "Zostałeś wylogowany",
+      infoGoToLogin: "Kliknij przycisk, aby przejść do logowania.",
+      btnLogin: "Zaloguj się"
+    },
+    fr: {
+      titleLoggedOut: "Vous avez été déconnecté",
+      infoGoToLogin: "Cliquez sur le bouton pour aller à la connexion.",
+      btnLogin: "Se connecter"
+    },
+    pt: {
+      titleLoggedOut: "Você saiu do sistema",
+      infoGoToLogin: "Clique no botão para ir ao login.",
+      btnLogin: "Entrar"
+    },
+    de: {
+      titleLoggedOut: "Du wurdest abgemeldet",
+      infoGoToLogin: "Klicke auf den Button, um zum Login zu gehen.",
+      btnLogin: "Anmelden"
+    }
+  };
+
+  // Detección de idioma (fallback: es)
+  const currentLang = (localStorage.getItem('language') || 'es').toLowerCase();
+  const dict = i18n[currentLang] || i18n.es;
+
+  // Aplicar traducciones a todos los elementos con data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.textContent = dict[key];
+  });
 </script>
-{% endblock%}
+{% endblock %}

@@ -66,7 +66,26 @@ const translations = {
         "nav_domains": "Dominios",
         "nav_register": "Registrarse",
 
+"contact_info_title": "Información de Contacto",
+  "contact_info_intro": "Para ponerte en contacto con nosotros, puedes utilizar la siguiente información:",
+  "contact_phone_label": "Teléfono",
+  "contact_email_label": "Correo electrónico",
+  "contact_address_label": "Dirección",
 
+  "contact_form_title": "Formulario de Contacto",
+  "form_name_label": "Nombre:",
+  "form_email_label": "Correo Electrónico:",
+  "form_message_label": "Mensaje:",
+  "form_name_ph": "Tu nombre",
+  "form_email_ph": "Tu correo electrónico",
+  "form_message_ph": "Escribe tu mensaje...",
+  "form_submit": "Enviar",
+  "link_back": "Volver",
+
+  "chat_open_aria": "Abrir chat",
+  "chat_header_title": "Chat DPI",
+  "chat_placeholder": "Escribe tu mensaje...",
+  "chat_send": "Enviar",
 
 
         'footer_we_are': "Somos",
@@ -159,6 +178,27 @@ const translations = {
         "nav_register": "Register",
 
 
+ "contact_info_title": "Contact Information",
+  "contact_info_intro": "To get in touch with us, use the information below:",
+  "contact_phone_label": "Phone",
+  "contact_email_label": "Email",
+  "contact_address_label": "Address",
+
+  "contact_form_title": "Contact Form",
+  "form_name_label": "Name:",
+  "form_email_label": "Email:",
+  "form_message_label": "Message:",
+  "form_name_ph": "Your name",
+  "form_email_ph": "Your email",
+  "form_message_ph": "Type your message...",
+  "form_submit": "Send",
+  "link_back": "Back",
+
+  "chat_open_aria": "Open chat",
+  "chat_header_title": "DPI chat",
+  "chat_placeholder": "Type your message...",
+  "chat_send": "Send",
+
         "footer_we_are": "We are",
         "footer_home": "Home",
         "footer_plans": "Plans",
@@ -239,6 +279,28 @@ const translations = {
         "nav_login": "Entrar",
         "nav_domains": "Domínios",
         "nav_register": "Registrar-se",
+
+"contact_info_title": "Informações de contato",
+  "contact_info_intro": "Para entrar em contato conosco, use as informações abaixo:",
+  "contact_phone_label": "Telefone",
+  "contact_email_label": "E-mail",
+  "contact_address_label": "Endereço",
+
+  "contact_form_title": "Formulário de contato",
+  "form_name_label": "Nome:",
+  "form_email_label": "E-mail:",
+  "form_message_label": "Mensagem:",
+  "form_name_ph": "Seu nome",
+  "form_email_ph": "Seu e-mail",
+  "form_message_ph": "Escreva sua mensagem...",
+  "form_submit": "Enviar",
+  "link_back": "Voltar",
+
+  "chat_open_aria": "Abrir chat",
+  "chat_header_title": "Chat DPI",
+  "chat_placeholder": "Digite sua mensagem...",
+  "chat_send": "Enviar",
+
 
         "footer_we_are": "Somos",
         "footer_home": "Início",
@@ -321,6 +383,28 @@ const translations = {
         "nav_login": "Accedi",
         "nav_domains": "Domini",
         "nav_register": "Registrati",
+
+
+"contact_info_title": "Informazioni di contatto",
+  "contact_info_intro": "Per metterti in contatto con noi, usa le informazioni qui sotto:",
+  "contact_phone_label": "Telefono",
+  "contact_email_label": "Email",
+  "contact_address_label": "Indirizzo",
+
+  "contact_form_title": "Modulo di contatto",
+  "form_name_label": "Nome:",
+  "form_email_label": "Email:",
+  "form_message_label": "Messaggio:",
+  "form_name_ph": "Il tuo nome",
+  "form_email_ph": "La tua email",
+  "form_message_ph": "Scrivi il tuo messaggio...",
+  "form_submit": "Invia",
+  "link_back": "Indietro",
+
+  "chat_open_aria": "Apri chat",
+  "chat_header_title": "Chat DPI",
+  "chat_placeholder": "Scrivi il tuo messaggio...",
+  "chat_send": "Invia",
 
         "footer_we_are": "Siamo",
         "footer_home": "Inizio",
@@ -456,6 +540,28 @@ const translations = {
         "nav_domains": "Domeny",
         "nav_register": "Zarejestruj się",
 
+
+        "contact_info_title": "Informacje kontaktowe",
+  "contact_info_intro": "Aby się z nami skontaktować, skorzystaj z poniższych informacji:",
+  "contact_phone_label": "Telefon",
+  "contact_email_label": "E-mail",
+  "contact_address_label": "Adres",
+
+  "contact_form_title": "Formularz kontaktowy",
+  "form_name_label": "Imię:",
+  "form_email_label": "E-mail:",
+  "form_message_label": "Wiadomość:",
+  "form_name_ph": "Twoje imię",
+  "form_email_ph": "Twój e-mail",
+  "form_message_ph": "Napisz swoją wiadomość...",
+  "form_submit": "Wyślij",
+  "link_back": "Wróć",
+
+  "chat_open_aria": "Otwórz czat",
+  "chat_header_title": "Czat DPI",
+  "chat_placeholder": "Wpisz swoją wiadomość...",
+  "chat_send": "Wyślij",
+
         "footer_we_are": "Jesteśmy",
         "footer_home": "Start",
         "footer_plans": "Plany",
@@ -535,6 +641,28 @@ const translations = {
         "nav_login": "Connexion",
         "nav_domains": "Domaines",
         "nav_register": "S’inscrire",
+
+
+"contact_info_title": "Informations de contact",
+  "contact_info_intro": "Pour nous contacter, utilisez les informations ci-dessous :",
+  "contact_phone_label": "Téléphone",
+  "contact_email_label": "E-mail",
+  "contact_address_label": "Adresse",
+
+  "contact_form_title": "Formulaire de contact",
+  "form_name_label": "Nom :",
+  "form_email_label": "E-mail :",
+  "form_message_label": "Message :",
+  "form_name_ph": "Votre nom",
+  "form_email_ph": "Votre e-mail",
+  "form_message_ph": "Saisissez votre message...",
+  "form_submit": "Envoyer",
+  "link_back": "Retour",
+
+  "chat_open_aria": "Ouvrir le chat",
+  "chat_header_title": "Chat DPI",
+  "chat_placeholder": "Saisissez votre message...",
+  "chat_send": "Envoyer",
 
         "footer_we_are": "Nous sommes",
         "footer_home": "Accueil",
@@ -617,6 +745,29 @@ const translations = {
         "nav_domains": "Domänen",
         "nav_register": "Registrieren",
 
+
+ "contact_info_title": "Kontaktinformationen",
+  "contact_info_intro": "Um uns zu kontaktieren, nutzen Sie die folgenden Informationen:",
+  "contact_phone_label": "Telefon",
+  "contact_email_label": "E-Mail",
+  "contact_address_label": "Adresse",
+
+  "contact_form_title": "Kontaktformular",
+  "form_name_label": "Name:",
+  "form_email_label": "E-Mail:",
+  "form_message_label": "Nachricht:",
+  "form_name_ph": "Ihr Name",
+  "form_email_ph": "Ihre E-Mail",
+  "form_message_ph": "Schreiben Sie Ihre Nachricht...",
+  "form_submit": "Senden",
+  "link_back": "Zurück",
+
+  "chat_open_aria": "Chat öffnen",
+  "chat_header_title": "DPI-Chat",
+  "chat_placeholder": "Nachricht eingeben...",
+  "chat_send": "Senden",
+
+
         "footer_we_are": "Wir sind",
         "footer_home": "Startseite",
         "footer_plans": "Pläne",
@@ -651,22 +802,60 @@ function getCookie(name) {
     return null;
 }
 
-// Función para aplicar las traducciones
+// Aplica traducciones leyendo [data-translate] y, opcionalmente,
+// [data-translate-target] para indicar dónde escribir el texto.
 function translate(lang) {
-    const elements = document.querySelectorAll('[data-translate]');
-    elements.forEach((el) => {
-        const translationKey = el.getAttribute('data-translate');
-        const translation = translations[lang] && translations[lang][translationKey];
+  if (!translations || !translations[lang]) return;
 
-        if (translation) {
-            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                el.setAttribute('placeholder', translation);
-            } else {
-                el.innerText = translation;
-            }
-        }
-    });
+  const elements = document.querySelectorAll('[data-translate]');
+  elements.forEach((el) => {
+    const key = el.getAttribute('data-translate');
+    const t = translations[lang] && translations[lang][key];
+    if (t == null) return; // sin traducción: no tocar
+
+    const target = el.getAttribute('data-translate-target');
+    const tag = el.tagName;
+    const type = (el.getAttribute('type') || '').toLowerCase();
+
+    // Si el dev especifica destino, lo respetamos
+    if (target) {
+      if (target === 'placeholder') {
+        el.setAttribute('placeholder', t);
+        return;
+      }
+      if (target === 'value') {
+        el.setAttribute('value', t);
+        return;
+      }
+      if (target === 'title') {
+        el.setAttribute('title', t);
+        return;
+      }
+      if (target.startsWith('aria-')) {
+        el.setAttribute(target, t);
+        return;
+      }
+      // Cualquier otro atributo personalizado
+      el.setAttribute(target, t);
+      return;
+    }
+
+    // Fallback compatible con tu implementación anterior
+    if (tag === 'INPUT') {
+      if (type === 'button' || type === 'submit' || type === 'reset') {
+        el.setAttribute('value', t);
+      } else {
+        el.setAttribute('placeholder', t);
+      }
+    } else if (tag === 'TEXTAREA') {
+      el.setAttribute('placeholder', t);
+    } else {
+      // No destruimos hijos/íconos: sólo texto del nodo
+      el.textContent = t;
+    }
+  });
 }
+
 
 
 // Detectar el idioma desde las cookies (si no existe, predeterminado a español)

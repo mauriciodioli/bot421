@@ -19,73 +19,81 @@
             </ul>
         {% endif %}
     {% endwith %}
-
-    <div class="container-fluid" id="cardIndex">
-        <div class="container py-4 row justify-content-center m-auto">
-            <div class="row py-3 justify-content-center">
-                <div class="col-md-6 p-4 card card-body cardIndexPlanes"> 
+            <div class="container-fluid" id="cardIndex">
+            <div class="container py-4 row justify-content-center m-auto">
+                <div class="row py-3 justify-content-center">
+                <div class="col-md-6 p-4 card card-body cardIndexPlanes">
                     <main>
-                        <section>
-                            <h2 style="color: gold;">Información de Contacto</h2>
-                            <p>Para ponerte en contacto con nosotros, puedes utilizar la siguiente información:</p>
-                            <ul>
-                                <li>Teléfono: +543543690045</li>
-                                <li>Correo electrónico: info@serviciodpi.com</li>
-                                <li>Dirección: Calle Colombia #480, Córdoba, Argentina</li>
-                            </ul>
-                        </section>
-                    
-                        <section>
-                            <h2 style="color: gold;">Formulario de Contacto</h2>
-                            <form action="/enviar-email-de-contacto/" method="POST">
-                                <div class="form-group">
-                                    <label style="color: gold;" for="nombre">Nombre:</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
-                                </div>
-                    
-                                <div class="form-group">
-                                    <label style="color: gold;" for="email">Correo Electrónico:</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
-                                </div>
-                    
-                                <div class="form-group">
-                                    <label style="color: gold;" for="mensaje">Mensaje:</label>
-                                    <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
-                                </div>
-                    
-                                <div class="form-group">
-                                    <input type="submit" class="btn btn-primary" value="Enviar">
-                                </div>
-                            </form>
-                            <div class="form-group">
-                                <a href="/" class="btn btn-success mt-3">Volver</a>
-                            </div>
-                        </section>
+                    <section>
+                        <h2 style="color: gold;" data-translate="contact_info_title">Información de Contacto</h2>
+                        <p data-translate="contact_info_intro">Para ponerte en contacto con nosotros, puedes utilizar la siguiente información:</p>
+                        <ul>
+                        <li><span data-translate="contact_phone_label">Teléfono</span>: <span dir="ltr">+543543690045</span></li>
+                        <li><span data-translate="contact_email_label">Correo electrónico</span>: <span dir="ltr">info@serviciodpi.com</span></li>
+                        <li><span data-translate="contact_address_label">Dirección</span>: Calle Colombia #480, Córdoba, Argentina</li>
+                        </ul>
+                    </section>
+
+                    <section>
+                        <h2 style="color: gold;" data-translate="contact_form_title">Formulario de Contacto</h2>
+                        <form action="/enviar-email-de-contacto/" method="POST">
+                        <div class="form-group">
+                            <label style="color: gold;" for="nombre" data-translate="form_name_label">Nombre:</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre"
+                                required data-translate="form_name_ph" data-translate-target="placeholder">
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color: gold;" for="email" data-translate="form_email_label">Correo Electrónico:</label>
+                            <input type="email" class="form-control" id="email" name="email"
+                                required data-translate="form_email_ph" data-translate-target="placeholder">
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color: gold;" for="mensaje" data-translate="form_message_label">Mensaje:</label>
+                            <textarea class="form-control" id="mensaje" name="mensaje" rows="4"
+                                    required data-translate="form_message_ph" data-translate-target="placeholder"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <!-- input submit: traducimos el value -->
+                            <input type="submit" class="btn btn-primary" value="Enviar"
+                                data-translate="form_submit" data-translate-target="value">
+                        </div>
+                        </form>
+
+                        <div class="form-group">
+                        <a href="/" class="btn btn-success mt-3" data-translate="link_back">Volver</a>
+                        </div>
+                    </section>
                     </main>
                 </div>
+                </div>
             </div>
-        </div>
-    </div>
+            </div>
 
-    <!-- Widget del Chat -->
-    <div class="chat-icon" id="openChat" aria-label="Abrir chat">
-        💬 <!-- Aquí puedes usar un ícono de chat o una imagen -->
-    </div>
+            <!-- Widget del Chat -->
+            <div class="chat-icon" id="openChat" aria-label="Abrir chat"
+                data-translate="chat_open_aria" data-translate-target="aria-label">
+            💬
+            </div>
 
-    <div class="chat-widget" id="chatWidget" style="display:none;">
-        <div class="chat-header">
-            <span>DPI chat</span>
-            <button id="closeChat">×</button>
-        </div>
-        <div class="chat-body" id="chatBody">
-            <!-- Aquí se mostrarán los mensajes -->
-        </div>
-        <div class="chat-footer">
-            <input type="text" name="chatMessage" id="chatMessage" placeholder="Escribe tu mensaje..." />
-            <button id="sendMessage">Enviar</button>
-        </div>
-    </div>
-</div>
+            <div class="chat-widget" id="chatWidget" style="display:none;">
+            <div class="chat-header">
+                <span data-translate="chat_header_title">DPI chat</span>
+                <button id="closeChat" aria-label="Cerrar">×</button>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <!-- mensajes -->
+            </div>
+            <div class="chat-footer">
+                <input type="text" name="chatMessage" id="chatMessage"
+                    placeholder="Escribe tu mensaje..."
+                    data-translate="chat_placeholder" data-translate-target="placeholder" />
+                <button id="sendMessage" data-translate="chat_send">Enviar</button>
+            </div>
+            </div>
+
 
 {% include 'layouts/layout_footer.html' %}
 <link rel="stylesheet" href="{{ url_for('static',filename='css/social/chats/contacto.css') }}">
