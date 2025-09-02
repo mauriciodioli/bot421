@@ -445,6 +445,29 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
                                 var estadoTextClass;
                             
 
+
+                                //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
+                                const lang    = window.currentLang || 'es';
+                                const vid     = getVisitorId();
+                                const user_id = localStorage.getItem('usuario_id') || '';
+
+                                const btnComprarAttrs = `
+                                href="#"
+                                class="btn btn-danger mt-2"
+                                rel="nofollow sponsored"
+                                data-ali-redirect="1"
+                                data-pub-id="${post.publicacion_id}"
+                                data-vid="${vid}"
+                                data-user-id="${user_id}"
+                                data-lang="${lang}"
+                                `;
+
+                            // Tarjeta
+                                const comprarTxt = (translations[lang] && translations[lang].comprarAli) || 'Comprar';
+                                const verMasTxt  = (translations[lang] && translations[lang].verMas) || 'Ver más';
+
+
+
                                 var cardHtml = `
                                         <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
                                             <div class="card-body">
@@ -457,14 +480,20 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
                                                 </div>
                                                 <p class="card-date">${formatDate(post.fecha_creacion)}</p>
                                                 <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
-                                                <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">Ver más</a>
+                                                <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">${verMasTxt}</a>
 
                                                 <!-- Botón Afiliado -->
-                                                    ${post.afiliado_link ? `
-                                                        <a href="${post.afiliado_link}" target="_blank" class="btn btn-danger mt-2">
-                                                            ${translations[currentLang].comprarAli}
-                                                        </a>
-                                                    ` : ''}
+                                                ${post.afiliado_link ? `
+                                                    <a href="#"
+                                                    class="btn btn-danger mt-2"
+                                                    rel="nofollow sponsored"
+                                                    data-ali-redirect="1"
+                                                    data-pub-id="${post.publicacion_id}"
+                                                    data-vid="${vid}"
+                                                    data-user-id="${user_id}"
+                                                    data-lang="${lang}">
+                                                    ${comprarTxt}
+                                                    </a>` : ''}
                                             </div>
                                         </div>
                                     `;

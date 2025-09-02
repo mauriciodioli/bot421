@@ -127,6 +127,8 @@ def redirect_ali():
     visitor_id = data.get("vid")
     user_id    = data.get("user_id")
     lang       = data.get("lang", "es")
+    if not user_id:
+        user_id = 1  # anónimo
     if not pub_id:
         abort(400, "pub_id requerido")
     with get_db_session() as session:

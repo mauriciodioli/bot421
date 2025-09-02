@@ -200,6 +200,32 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
                         }
                         
                         console.log(post);
+
+
+                        //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
+                        const lang    = window.currentLang || 'es';
+                        const vid     = getVisitorId();
+                        const user_id = localStorage.getItem('usuario_id') || '';
+
+                        const btnComprarAttrs = `
+                        href="#"
+                        class="btn btn-danger mt-2"
+                        rel="nofollow sponsored"
+                        data-ali-redirect="1"
+                        data-pub-id="${post.publicacion_id}"
+                        data-vid="${vid}"
+                        data-user-id="${user_id}"
+                        data-lang="${lang}"
+                        `;
+
+                      // Tarjeta
+                        const comprarTxt = (translations[lang] && translations[lang].comprarAli) || 'Comprar';
+                        const verMasTxt  = (translations[lang] && translations[lang].verMas) || 'Ver más';
+
+
+
+
+
                         var cardHtml = `
                             <div class="card-publicacion-en-ambitos-personales" id="card-${post.publicacion_id}">
                                 <div class="card-body-en-ambitos-personales">
@@ -239,12 +265,20 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
 
                                     ${post.botonCompra ? `
                                       <button class="btn-comprar-en-ambito" data-translate="add_button" onclick="abrirPublicacionHome(${post.publicacion_id},'${post.layout}')">Agregar</button>` : ''}
-                                <!-- Botón Afiliado -->
+                             
+                                      <!-- Botón Afiliado -->
                                         ${post.afiliado_link ? `
-                                            <a href="${post.afiliado_link}" target="_blank" class="btn btn-danger">
-                                                ${translations[currentLang].comprarAli}
-                                            </a>
-                                        ` : ''}
+                                            <a href="#"
+                                            class="btn btn-danger mt-2"
+                                            rel="nofollow sponsored"
+                                            data-ali-redirect="1"
+                                            data-pub-id="${post.publicacion_id}"
+                                            data-vid="${vid}"
+                                            data-user-id="${user_id}"
+                                            data-lang="${lang}">
+                                            ${comprarTxt}
+                                            </a>` : ''}
+
 
                                 </div>
                             </div>
