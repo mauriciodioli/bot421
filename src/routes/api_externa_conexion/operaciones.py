@@ -27,6 +27,7 @@ from panelControlBroker.panelControl import procesar_datos
 from panelControlBroker.panelControl import forma_datos_para_envio_paneles
 import threading
 import jwt
+import os
 import asyncio
 from datetime import datetime  # Agrega esta línea para obtener la fecha y hora actual
 
@@ -37,7 +38,8 @@ from datetime import datetime  # Agrega esta línea para obtener la fecha y hora
 
 operaciones = Blueprint('operaciones',__name__)
 
-
+SPREADSHEET_SHET_USA = os.environ["SPREADSHEET_SHET_USA"]
+SPREADSHEET_SHET_ARG = os.environ["SPREADSHEET_SHET_ARG"]
 saldo = None  # Variable global para almacenar el saldo
 ultima_entrada = 0
 @operaciones.route("/operar",methods=["GET"])
@@ -485,7 +487,7 @@ def operaciones_desde_seniales():
                           if paisSeleccionado == "argentina":
                               ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
                           elif paisSeleccionado == "usa":
-                                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'drpibotUSA')
+                                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bUSA3')
                           else:
                               return "País no válido"
               

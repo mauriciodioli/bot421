@@ -34,6 +34,8 @@ newPath = os.path.join(os.getcwd(), 'strategies/credentials_module.json')
 directorio_credenciales = newPath 
 
 SPREADSHEET_ID = os.environ["SPREADSHEET_ID"]
+SPREADSHEET_SHET_USA = os.environ["SPREADSHEET_SHET_USA"]
+SPREADSHEET_SHET_ARG = os.environ["SPREADSHEET_SHET_ARG"]
 
 
 precios_data = {}
