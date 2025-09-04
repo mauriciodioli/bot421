@@ -22,10 +22,7 @@ from models.payment_page.plan import Plan
 from models.pedidos.pedido import Pedido
 
 
-from typing import Optional
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+
 
 
 
@@ -858,13 +855,13 @@ def enviar_mail_nuevo_pedido(data, to_email):
     subject = "Tu pedido fue recibido ✅"
     html = f"""<p>Hola {data.get('nombreCliente','')},</p>
                <p>Recibimos tu pedido por <b>{data.get('final_price','')}</b>.</p>"""
-    send_email(to_email, subject, html)
+    #send_email(to_email, subject, html)
 
 def enviar_mail_nuevo_pedido_admin(data, to_email):
     subject = "Nuevo pedido en DPIA 🧾"
     html = f"""<p>Cliente: {data.get('nombreCliente','')} {data.get('apellidoCliente','')}</p>
                <p>Total: <b>{data.get('final_price','')}</b></p>"""
-    send_email(to_email, subject, html)
+    #send_email(to_email, subject, html)
 
 def enviar_mail_nuevo_pedido_asociado(data, to_email):
     # si querés, igual al admin
@@ -873,27 +870,3 @@ def enviar_mail_nuevo_pedido_asociado(data, to_email):
 
 
 
-SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
-SMTP_USER = os.getenv("SMTP_USER")           # ej: no-reply@dpia.site o tu @gmail.com
-SMTP_PASS = os.getenv("SMTP_PASS")           # App Password si usás Gmail
-SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "1") == "1"
-DEFAULT_FROM = os.getenv("SMTP_FROM", SMTP_USER or "no-reply@dpia.site")
-
-
-def send_email(to_email: str, subject: str, html: str, text: Optional[str] = None) -> None:
-    msg = MIMEMultipart("alternative")
-    msg["From"] = DEFAULT_FROM
-    msg["To"] = to_email
-    msg["Subject"] = subject
-
-    if text:
-        msg.attach(MIMEText(text, "plain", "utf-8"))
-    msg.attach(MIMEText(html, "html", "utf-8"))
-
-    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as s:
-        if SMTP_USE_TLS:
-            s.starttls()
-        if SMTP_USER and SMTP_PASS:
-            s.login(SMTP_USER, SMTP_PASS)
-        s.send_message(msg)
