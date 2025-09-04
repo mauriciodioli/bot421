@@ -14,6 +14,7 @@ import tokens.token as Token
 from datetime import datetime, timedelta
 import jwt
 import re
+import os
 
 from models.usuario import Usuario
 from models.brokers import Broker
@@ -21,9 +22,11 @@ from models.payment_page.plan import Plan
 from models.pedidos.pedido import Pedido
 
 
-import os, smtplib
+from typing import Optional
+import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+
 
 
 
@@ -877,7 +880,8 @@ SMTP_PASS = os.getenv("SMTP_PASS")           # App Password si usás Gmail
 SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "1") == "1"
 DEFAULT_FROM = os.getenv("SMTP_FROM", SMTP_USER or "no-reply@dpia.site")
 
-def send_email(to_email: str, subject: str, html: str, text: str | None = None):
+
+def send_email(to_email: str, subject: str, html: str, text: Optional[str] = None) -> None:
     msg = MIMEMultipart("alternative")
     msg["From"] = DEFAULT_FROM
     msg["To"] = to_email
