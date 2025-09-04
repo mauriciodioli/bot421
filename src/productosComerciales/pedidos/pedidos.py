@@ -21,6 +21,12 @@ from models.payment_page.plan import Plan
 from models.pedidos.pedido import Pedido
 
 
+import os, smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+
 from models.pedidos.pedidoEntregaPago import PedidoEntregaPago
 from models.publicaciones.publicaciones import Publicacion
 from social.media.publicaciones import retorna_simbolo_desde_codigo_postal
@@ -526,25 +532,15 @@ def productosComerciales_pedidos_alta_carrito_checkBox(pedido_id):
 @pedidos.route('/productosComerciales_pedidos_process_order/', methods=['POST'])
 def productosComerciales_pedidos_process_order():
     try:
-        # Obtener los datos del cuerpo de la solicitud (JSON)
-        data = request.get_json()
+        data = request.get_json() or {}
 
-        # Obtener el token desde los encabezados
+        # --- auth igual que lo tenés ---
         access_token = request.headers.get('Authorization')
-        
-        # Verificar si el token está presente
         if not access_token or not access_token.startswith('Bearer '):
             return jsonify({'error': 'Token de acceso no proporcionado o inválido.'}), 401
-        
         token = access_token.split(' ')[1]
-
-        # Validar el token
         try:
-            decoded_token = jwt.decode(
-                token,
-                current_app.config['JWT_SECRET_KEY'],
-                algorithms=['HS256']
-            )
+            decoded_token = jwt.decode(token, current_app.config['JWT_SECRET_KEY'], algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
             return jsonify({'error': 'Token ha expirado.'}), 401
         except jwt.InvalidTokenError:
@@ -553,119 +549,132 @@ def productosComerciales_pedidos_process_order():
         user_id = decoded_token.get("sub")
         if not user_id:
             return jsonify({'error': 'Token inválido: falta el user_id.'}), 401
-        
-        # Extraer y procesar datos del pedido
-        imagen_url = data.get('imagen_btn_carrito', '')
-        texto = data.get('texto_btn_carrito', '')
-        precio_str = data.get('precio_btn_carrito', '')
-    # Validar precio_str antes de continuar
-        if not precio_str or precio_str.strip() == '':
+
+        # Validar precio (si decidís requerirlo desde el cliente)
+        precio_str = data.get('final_price', '')
+        if precio_str is None or (isinstance(precio_str, str) and precio_str.strip() == ''):
             return jsonify({'error': 'Pedido no procesado: precio no proporcionado.'}), 400
 
-        # Procesar el precio (si es válido)
-        try:
-            precio_venta = float(precio_str.strip('$').replace(',', '').replace('.', '')) if precio_str else None
-        except ValueError:
-            return jsonify({'error': 'El precio proporcionado no es válido.'}), 400
-         
-        if precio_venta is None:
-            return jsonify({'error': 'Pedido no procesado: precio no proporcionado.'}), 400
-        # Obtener datos iniciales
-        pedidos_str = data.get('pedido_data_json')
+        # Items
+        pedidos_str = data.get('pedido_data_json', '[]')
         pedidos = json.loads(pedidos_str)
 
-        # Valores comunes a todos los pedidos (no se alteran)
-        tiempo = datetime.utcnow()  # Fecha y hora actual
-        cantidad = 0
+        tiempo = datetime.utcnow()
+        cantidad_total = 0
 
-        # Iterar sobre cada pedido y actualizarlo usando la nueva función
-        for pedido_data in pedidos:
-            print("Procesando pedido:", pedido_data)
-            cantidad_pedido = actualizar_pedido(pedido_data, data, tiempo)
-            if isinstance(cantidad_pedido, dict):  # Si hubo un error
-                return jsonify(cantidad_pedido), 404
-            cantidad += cantidad_pedido
+        with get_db_session() as session:
+            for pedido_data in pedidos:
+                print("Procesando pedido:", pedido_data)
+                cantidad_total += actualizar_pedido(session, pedido_data, data, tiempo)
 
-        cargar_entrega_pedido(data, user_id, tiempo, cantidad)
+            # 👇 Acá faltaba pasar la session
+            publicacion_id=cargar_entrega_pedido(session, data, user_id, tiempo, cantidad_total)
+     
+            asociado_email = session.query(Publicacion.correo_electronico)\
+                         .filter_by(id=publicacion_id).scalar()
 
-        # Devolver una respuesta exitosa sin detalles del pedido
-        return jsonify({
-            'message': 'Pedido cargado correctamente',
-            'success': True
-        }), 200  # 200 es el código de éxito
+       # enviar_correos_pedido(data, asociado_email)
+        return jsonify({'message': 'Pedido cargado correctamente', 'success': True}), 200
 
     except Exception as e:
-        # Rollback en caso de error
         print(f"Error al procesar el pedido: {str(e)}")
         return jsonify({'error': f'Error inesperado: {str(e)}'}), 500
-    
 
 
-def actualizar_pedido(pedido_data, data, tiempo):
-    
-    with get_db_session() as session:  
-        # Consultar el pedido en la base de datos
-        pedido_existente = session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
 
-        if not pedido_existente:
-            return {'error': f'Pedido {pedido_data.get("id")} no encontrado'}, 404
 
-        # Actualizar solo los campos necesarios
-        pedido_existente.estado = 'terminado'
-        pedido_existente.fecha_pedido = tiempo
-        pedido_existente.fecha_entrega = tiempo
-        pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
-        pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
-        pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
-        pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
-        pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
-        pedido_existente.cantidad = data.get('cantidadCompra', pedido_existente.cantidad)
-        pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
-        pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
-        
-        # Guardar los cambios
-        session.commit()
-        return pedido_existente.cantidad
 
-    
-def cargar_entrega_pedido(data, user_id, tiempo,cantidad):
+def actualizar_pedido(session, pedido_data, data, tiempo):
+    """No commit acá. Devuelve int cantidad del ítem."""
+    pedido_existente = session.query(Pedido).filter_by(id=int(pedido_data.get("id"))).first()
+    if not pedido_existente:
+        # Levantar excepción para que el with haga rollback
+        raise ValueError(f'Pedido {pedido_data.get("id")} no encontrado')
+
+    cantidad_item = int(pedido_data.get('cantidad') or 1)
+
+    pedido_existente.estado = 'terminado'  # o 'reservado' según tu flujo
+    pedido_existente.fecha_pedido = tiempo
+    pedido_existente.fecha_entrega = tiempo
+    pedido_existente.nombreCliente = data.get('nombreCliente', pedido_existente.nombreCliente)
+    pedido_existente.apellidoCliente = data.get('apellidoCliente', pedido_existente.apellidoCliente)
+    pedido_existente.telefonoCliente = data.get('telefonoCliente', pedido_existente.telefonoCliente)
+    pedido_existente.emailCliente = data.get('emailCliente', pedido_existente.emailCliente)
+    pedido_existente.comentarioCliente = data.get('comentariosCliente', pedido_existente.comentarioCliente)
+    pedido_existente.cantidad = cantidad_item
     try:
-        with get_db_session() as session:
-            nuevo_pedido_entrega_pago = PedidoEntregaPago(
-                user_id=user_id,
-                publicacion_id=1,
-                cliente_id=1,
-                ambito=data.get('ambito_pagoPedido'),
-                estado='pendiente',
-                fecha_pedido=tiempo,
-                fecha_entrega=tiempo,
-                lugar_entrega=data.get('direccionCliente', ''),
-                cantidad=cantidad,
-                precio_venta=float(data.get('final_price', '')),
-                consulta=tiempo,
-                asignado_a='',
-                talla='',
-                pais='arg',
-                provincia='',
-                region='',
-                sexo='',
-                nombreCliente=data.get('nombreCliente', ''),
-                apellidoCliente=data.get('apellidoCliente', ''),
-                emailCliente=data.get('emailCliente', ''),
-                telefonoCliente=data.get('telefonoCliente', ''),
-                comentarioCliente=data.get('comentariosCliente', ''),
-                cluster_id=int(data.get('cluster_pedido', '')),
-                pedido_data_json=data.get('pedido_data_json', '')
-            )
-            session.add(nuevo_pedido_entrega_pago)
-            # Antes de hacer commit, puedes imprimir la consulta SQL
-        # print(str(nuevo_pedido_entrega_pago.__table__.insert().compile(dialect=db.engine.dialect)))
-            session.commit()
-            return nuevo_pedido_entrega_pago
+        pedido_existente.cluster_id = int(data.get('cluster_pedido', pedido_existente.cluster_id))
+    except Exception:
+        pass
+    pedido_existente.lugar_entrega = data.get('direccionCliente', pedido_existente.lugar_entrega)
+
+    return cantidad_item
+
+from flask import request, current_app
+import json
+
+def cargar_entrega_pedido(session, data, user_id, tiempo, cantidad):
+    """No commit, no jsonify. Devolver objeto o lanzar excepción."""
+    try:
+        # 1) Leer cookie
+        publicacion_id = None
+        raw = request.cookies.get('publicacion_id')  # str | None
+
+        # 2) Validar/parsear cookie
+        if raw:
+            try:
+                publicacion_id = int(raw)
+            except ValueError:
+                current_app.logger.warning("Cookie publicacion_id inválida: %r", raw)
+
+        # 3) Fallback: primer ítem del pedido_data_json
+        if not publicacion_id:
+            try:
+                items = json.loads(data.get('pedido_data_json', '[]'))
+                if isinstance(items, str):
+                    items = json.loads(items)
+                if items and items[0].get('id'):
+                    publicacion_id = int(items[0]['id'])
+            except Exception as e:
+                current_app.logger.warning("No pude obtener publicacion_id del payload: %s", e)
+
+        if not publicacion_id:
+            raise ValueError("publicacion_id no disponible (ni cookie ni payload)")
+
+        # 4) Construir registro
+        nuevo = PedidoEntregaPago(
+            user_id=user_id,
+            publicacion_id=publicacion_id,          # ← ya usamos el valor
+            cliente_id=1,
+            ambito=data.get('ambito_pagoPedido'),
+            estado='pendiente',
+            fecha_pedido=tiempo,
+            fecha_entrega=tiempo,
+            lugar_entrega=data.get('direccionCliente', ''),
+            cantidad=cantidad,
+            precio_venta=float(data.get('final_price', 0) or 0),
+            consulta=tiempo,
+            asignado_a='',
+            talla='',
+            pais='arg',
+            provincia='',
+            region='',
+            sexo='',
+            nombreCliente=data.get('nombreCliente', ''),
+            apellidoCliente=data.get('apellidoCliente', ''),
+            emailCliente=data.get('emailCliente', ''),
+            telefonoCliente=data.get('telefonoCliente', ''),
+            comentarioCliente=data.get('comentariosCliente', ''),
+            cluster_id=int(data.get('cluster_pedido', 0) or 0),
+            pedido_data_json=data.get('pedido_data_json', '')
+        )
+        session.add(nuevo)
+        return publicacion_id
+
     except Exception as e:
-        # Rollback en caso de error
-     
-        return jsonify({'error': f'Ocurú un error: {str(e)}'}), 500
+        raise RuntimeError(f'Error al crear PedidoEntregaPago: {e}')
+
+
    
 def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailCliente):
     try:
@@ -840,3 +849,47 @@ def obtenerPrecio(data):
 def quitar_acentos(texto):
     acentos = str.maketrans("áéíóúüÁÉÍÓÚÜ", "aeiouuAEIOUU")
     return texto.translate(acentos).lower()
+
+
+def enviar_mail_nuevo_pedido(data, to_email):
+    subject = "Tu pedido fue recibido ✅"
+    html = f"""<p>Hola {data.get('nombreCliente','')},</p>
+               <p>Recibimos tu pedido por <b>{data.get('final_price','')}</b>.</p>"""
+    send_email(to_email, subject, html)
+
+def enviar_mail_nuevo_pedido_admin(data, to_email):
+    subject = "Nuevo pedido en DPIA 🧾"
+    html = f"""<p>Cliente: {data.get('nombreCliente','')} {data.get('apellidoCliente','')}</p>
+               <p>Total: <b>{data.get('final_price','')}</b></p>"""
+    send_email(to_email, subject, html)
+
+def enviar_mail_nuevo_pedido_asociado(data, to_email):
+    # si querés, igual al admin
+    enviar_mail_nuevo_pedido_admin(data, to_email)
+
+
+
+
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USER = os.getenv("SMTP_USER")           # ej: no-reply@dpia.site o tu @gmail.com
+SMTP_PASS = os.getenv("SMTP_PASS")           # App Password si usás Gmail
+SMTP_USE_TLS = os.getenv("SMTP_USE_TLS", "1") == "1"
+DEFAULT_FROM = os.getenv("SMTP_FROM", SMTP_USER or "no-reply@dpia.site")
+
+def send_email(to_email: str, subject: str, html: str, text: str | None = None):
+    msg = MIMEMultipart("alternative")
+    msg["From"] = DEFAULT_FROM
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    if text:
+        msg.attach(MIMEText(text, "plain", "utf-8"))
+    msg.attach(MIMEText(html, "html", "utf-8"))
+
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as s:
+        if SMTP_USE_TLS:
+            s.starttls()
+        if SMTP_USER and SMTP_PASS:
+            s.login(SMTP_USER, SMTP_PASS)
+        s.send_message(msg)

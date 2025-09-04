@@ -12,6 +12,7 @@ from utils.db import db
 import routes.api_externa_conexion.get_login as get
 import jwt
 import re
+import os
 from models.usuario import Usuario
 from models.cuentas import Cuenta
 from models.orden import Orden
@@ -27,6 +28,8 @@ from queue import Queue
 
 panelControl = Blueprint('panelControl',__name__)
 
+SPREADSHEET_SHET_USA = os.environ["SPREADSHEET_SHET_USA"]
+SPREADSHEET_SHET_ARG = os.environ["SPREADSHEET_SHET_ARG"]
 # Crear una cola global para la comunicación
 lock = threading.Lock()
 
@@ -275,16 +278,16 @@ def enviar_leer_sheet(app,pais,user_id,accountCuenta,hilo,selector):
                   #modifico = datoSheet.actualizar_precios(get.SPREADSHEET_ID_PRODUCCION,'valores',pais)
                   app.logger.info('MODIFICO EL SHEET CORRECTAMENTE')
             #ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
-            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+            ContenidoSheet=datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,SPREADSHEET_SHET_ARG)
         elif pais == "usa":
-            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bUSA3')    
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,SPREADSHEET_SHET_USA)    
         else:
             return "País no válido"
      else:   
         if pais == "argentina":
-            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,SPREADSHEET_SHET_ARG)
         elif pais == "usa":
-            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,'bot')
+            ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRUEBA,SPREADSHEET_SHET_ARG)
         else:
             return "País no válido"
         

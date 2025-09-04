@@ -323,15 +323,51 @@
 <script>
 
     // Almacenar los valores en variables globales
-    var publicacionId = document.querySelector('input[name="publicacion_id"]').value;
-    var userId = '{{ post.user_id }}';
-    var ambito = '{{ post.ambito }}';
-    var layout = '{{layout}}';
-    const storageKey = 'reseñas_' + publicacionId;
-    if( !localStorage.setItem('dominio', ambito)) {
-     localStorage.setItem('dominio', ambito);
+  // Lee valores del DOM/Jinja
+  const publicacionIdEl = document.querySelector('input[name="publicacion_id"]');
+  const publicacionId   = publicacionIdEl?.value?.trim() || '';
+  const userId          = '{{ post.user_id }}';
+  const ambito          = '{{ post.ambito }}';
+  const layout          = '{{ layout }}';
+
+  if (publicacionId) {
+    // Cookie para todo el sitio, 30 días. Sobre-escribe si ya existe con mismo nombre+path+dominio
+    setCookie('publicacion_id', publicacionId, { days: 30, path: '/', domain: cookieDomain(), secure: location.protocol === 'https:' });
+    setCookie('dominio', ambito, { days: 30, path: '/', domain: cookieDomain(), secure: location.protocol === 'https:' });
+  }
+
+  // También en localStorage (si querés)
+  localStorage.setItem('publicacion_id', publicacionId);
+  localStorage.setItem('dominio', ambito); // siempre pisa la anterior
+
+  // Helpers
+  function setCookie(name, value, { days = 30, path = '/', domain, secure = false, sameSite = 'Lax' } = {}) {
+    let cookie = encodeURIComponent(name) + '=' + encodeURIComponent(String(value));
+
+    if (days) {
+      const expires = new Date(Date.now() + days * 864e5).toUTCString();
+      cookie += '; Expires=' + expires;
+      cookie += '; Max-Age=' + (days * 86400);
     }
-   
+    cookie += '; Path=' + path;
+    if (domain) cookie += '; Domain=' + domain;
+    cookie += '; SameSite=' + sameSite;
+    if (secure) cookie += '; Secure';
+
+    document.cookie = cookie;
+  }
+
+  function cookieDomain() {
+    // No setear domain en localhost/IP (rompe la cookie)
+    const host = location.hostname;
+    if (host === 'localhost' || /^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return undefined;
+
+    // Para dpia.site y subdominios -> ".dpia.site"
+    const parts = host.split('.');
+    if (parts.length >= 2) return '.' + parts.slice(-2).join('.');
+    return undefined;
+  }
+    
     function replaceMainMedia(src, type) {
     var container = document.getElementById('principal-media');
 

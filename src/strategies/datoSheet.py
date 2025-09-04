@@ -477,7 +477,7 @@ def datoSheet_enviar_senial():
                 
 
                     # Llamar a la función para actualizar la señal
-                    modifico = actualizar_senial(symbol, trade_en_curso, signal, ut, pais, get.SPREADSHEET_ID_PRUEBA, 'bot')
+                    modifico = actualizar_senial(symbol, trade_en_curso, signal, ut, pais, get.SPREADSHEET_ID_PRUEBA,SPREADSHEET_SHET_ARG)
                     
                     if modifico:
                         # Si la señal fue 'closed.', actualiza la operación, si no, agrega una nueva operación

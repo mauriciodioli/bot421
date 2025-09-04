@@ -485,9 +485,9 @@ def operaciones_desde_seniales():
                         # traer datos del portfolio para mostrar cuantas ut se operaron y re enviar esa informacion
                         #  
                           if paisSeleccionado == "argentina":
-                              ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bot')
+                              ContenidoSheet = datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,SPREADSHEET_SHET_ARG)
                           elif paisSeleccionado == "usa":
-                                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,'bUSA3')
+                                ContenidoSheet =  datoSheet.leerSheet(get.SPREADSHEET_ID_PRODUCCION,SPREADSHEET_SHET_USA)
                           else:
                               return "País no válido"
               
