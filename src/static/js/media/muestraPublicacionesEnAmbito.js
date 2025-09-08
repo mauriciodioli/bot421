@@ -204,7 +204,8 @@ function mostrarPublicacionesEnAmbitos(publicacionId, userId, ambito, layout, ca
 
                         //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
                         const lang    = window.currentLang || 'es';
-                        const vid     = getVisitorId();
+                        const vid     = localStorage.getItem('visitor_id');
+
                         const user_id = localStorage.getItem('usuario_id') || '';
 
                         const btnComprarAttrs = `
