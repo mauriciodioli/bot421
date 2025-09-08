@@ -7,6 +7,8 @@ from sqlalchemy.orm import relationship
 
 
 
+
+
 ma = Marshmallow()
 codigoPostal = Blueprint('codigoPostal', __name__)
 
@@ -18,8 +20,7 @@ class CodigoPostal(db.Model):
     pais = db.Column(db.String(100), nullable=True)
     # RELACIÓN con la tabla intermedia
     relaciones_ambito = db.relationship("AmbitoCodigoPostal", backref="codigo_postal", lazy=True)
-
-
+   
 
     def __init__(self, codigoPostal, ciudad=None, pais=None):
         self.codigoPostal = codigoPostal
@@ -35,11 +36,13 @@ class CodigoPostal(db.Model):
          if not insp.has_table("codigo_postal"):
               db.create_all()
 
-class MerShema(ma.Schema):
+class CodigoPostalSchema(ma.Schema):
     class Meta:       
         fields =("id", "codigoPostal", "ciudad", "pais")# Campos a serializar
 
-mer_schema = MerShema()
-mer_shema = MerShema(many=True)
+codigo_postal_schema = CodigoPostalSchema()
+codigos_postales_schema = CodigoPostalSchema(many=True)
 
 from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal  # import directo
+from models.publicaciones.categoriaCodigoPostal import CategoriaCodigoPostal
+

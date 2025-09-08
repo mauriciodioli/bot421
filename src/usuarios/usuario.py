@@ -130,7 +130,7 @@ def eliminar_usuario():
     try:
         usuario_id = request.form['usuario_id']
         with get_db_session() as session:
-            usuario = session.query(Usuario).get(usuario_id)
+            usuario = session.query(Usuario).get(int(usuario_id))
             usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=int(usuario_id)).first()
             usuarioUbicacion = session.query(UsuarioUbicacion).filter_by(user_id=int(usuario_id)).first()
             
@@ -143,7 +143,7 @@ def eliminar_usuario():
             if usuarioUbicacion:
                 session.delete(usuarioUbicacion)
             
-            session.commit()
+          
             flash('Usuario eliminado correctamente.')
 
             cp = request.cookies.get('codigoPostal')
@@ -202,9 +202,9 @@ def editar_usuario():
                 usuarioUbicacion = UsuarioUbicacion(user_id=int(usuario_id), id_region=usuarioRegion.id, codigoPostal=request.form['codigoPostal'], latitud=float(request.form['latitud']), longitud=float(request.form['longitud'])) #UsuarioUbicacion(user_id=int(usuario_id), id_region=usuarioRegion.id, codigoPostal=request.form['codigoPostal'], latitud=request.form['latitud'], longitud=request.form['longitud'])
                 session.add(usuarioUbicacion)
             
-            session.commit()
+            
             flash('Usuario editado correctamente.')
-            cp = request.cookies.get('codigoPostal')
+            cp = request.form['codigoPostal']
             # Filtrar UsuarioRegion con ese código postal
             usuario_regiones = session.query(UsuarioRegion).filter_by(codigoPostal=cp).all()
 

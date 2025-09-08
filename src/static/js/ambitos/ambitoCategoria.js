@@ -32,6 +32,7 @@ $(document).ready(function() {
     });
 
     function actualizarTabla(datos) {
+        debugger;
         let tbody = $("#tablaCategorias tbody");
         tbody.empty(); // Limpiar la tabla antes de agregar nuevos datos
 
@@ -59,10 +60,23 @@ $(document).ready(function() {
                         data-valor="${categoria.valor}"
                         data-estado="${categoria.estado}">Editar</button>
 
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+                                data-bs-target="#listaCPAmbitoCategoriaModal"
+                                data-ambitoCategoria-id="${categoria.id}"
+                                data-nombre="${categoria.nombre}">CP Asignados</button>
+
+
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#asignarCPAmbitoCategoriaModal" 
+                            data-ambitoCategoria-id="${categoria.id}"
+                            data-nombre="${categoria.nombre}">Asignar CP</button>
+
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal"
                             data-bs-target="#eliminarAmbitoCategoriaModal" 
                             data-ambitoCategoria-id="${categoria.id}"
                             data-nombre="${categoria.nombre}">Eliminar</button>
+
+                            
                     </td>
                 </tr>`;
                 tbody.append(row);
@@ -271,6 +285,15 @@ function obtenerAmbitosCategoria() {
                         data-user_id="${categoria.user_id}">Editar</button>
 
 
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            data-bs-target="#asignarCPAmbitoCategoriaModal" 
+                            data-ambitoCategoria-id="${categoria.id}"
+                            data-nombre="${categoria.nombre}">Asignar CP</button>
+
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" 
+                            data-bs-target="#listaCPAmbitoCategoriaModal"
+                            data-ambitoCategoria-id="${categoria.id}"
+                            data-nombre="${categoria.nombre}">CP Asignados</button>
 
 
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal"

@@ -180,8 +180,7 @@ def actualizar_ambito(id):
             ambito.valor = data.get('valor', ambito.valor)
             ambito.estado = data.get('estado', ambito.estado)
         
-            # Guardar los cambios en la base de datos
-            session.commit()
+            
         
             # Verificar si el ambito existe
             resultado = serializar_ambito(ambito)

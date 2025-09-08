@@ -174,6 +174,7 @@ function actualizarAmbito() {
     const valor = document.getElementById('valor-editar').value;
     const estado = document.getElementById('estado-editar').value;
     const userId = document.getElementById('user_id-editar').value;
+    const codigoPostal = document.getElementById('codigo_postal-editar').value;
 
 
     const data = {

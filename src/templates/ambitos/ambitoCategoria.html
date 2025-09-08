@@ -181,6 +181,130 @@
 
 
 
+
+
+<!-- Modal Asignar CP -->
+<div class="modal fade" id="asignarCPAmbitoCategoriaModal" tabindex="-1" aria-labelledby="asignarCPAmbitoCategoriaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="asignarCPAmbitoCategoriaLabel" style="color:black;">
+          Asignar Códigos Postales a: <span id="acp-nombre-cat"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body" style="color:black;">
+        <!-- Filtros leídos de localStorage (solo lectura) -->
+        <div class="row g-2 mb-3">
+          <div class="col-sm-4">
+            <label class="form-label">País (localStorage)</label>
+            <input type="text" id="acp-filtro-pais" class="form-control" readonly>
+          </div>
+          <div class="col-sm-4">
+            <label class="form-label">Idioma (localStorage)</label>
+            <input type="text" id="acp-filtro-idioma" class="form-control" readonly>
+          </div>
+          <div class="col-sm-4">
+            <label class="form-label">Buscar</label>
+            <input type="text" id="acp-buscar" class="form-control" placeholder="Filtrar por CP o ciudad">
+          </div>
+        </div>
+
+        <div id="acp-alert" class="alert alert-warning d-none">Sin resultados para ese país.</div>
+
+        <!-- Lista de CP -->
+        <div class="table-responsive border rounded">
+          <table class="table table-sm align-middle mb-0" id="acp-tabla">
+            <thead>
+              <tr>
+                <th style="width:40px;"><input type="checkbox" id="acp-check-all"></th>
+                <th>ID</th>
+                <th>Código Postal</th>
+                <th>Ciudad</th>
+                <th>País</th>
+              </tr>
+            </thead>
+            <tbody id="acp-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <input type="hidden" id="acp-ambitoCategoria-id">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <!-- BOTÓN futuro para guardar asignaciones (no requerido ahora) -->
+        <button type="button" class="btn btn-primary" id="acp-guardar" disabled>Guardar selección</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- Modal: CP asignados a la categoría -->
+<div class="modal fade" id="listaCPAmbitoCategoriaModal" tabindex="-1" aria-labelledby="listaCPAmbitoCategoriaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="listaCPAmbitoCategoriaLabel" style="color:black;">
+          Códigos postales asignados a: <span id="lcp-nombre-cat"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body" style="color:black;">
+        <input type="hidden" id="lcp-ambitoCategoria-id">
+
+        <div class="mb-2">
+          <input type="text" id="lcp-buscar" class="form-control" placeholder="Filtrar por CP o Ciudad">
+        </div>
+
+        <div id="lcp-alert" class="alert alert-warning d-none">
+          Esta categoría no tiene códigos postales asignados.
+        </div>
+
+        <div class="table-responsive border rounded">
+          <table class="table table-sm align-middle mb-0" id="lcp-tabla">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Código Postal</th>
+                <th>Ciudad</th>
+                <th>País</th>
+                <th>Acciones</th>
+
+              </tr>
+            </thead>
+            <tbody id="lcp-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+ 
+  <script src="{{ url_for('static', filename='js/media/publicaciones/codigos_postales.js') }}"></script>
+
 {% include 'layouts/layout_footer.html' %}   
 
 <script>

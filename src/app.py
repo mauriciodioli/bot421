@@ -111,6 +111,7 @@ from social.media.cargarPdf import cargarPdf
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
 from social.media.ambitos.ambito import ambito
+from social.media.ambitos.codigosPostales import codigosPostales
 from social.media.ambitos.ambitosCategorias import ambitosCategorias
 from social.media.consultaPublicaciones import consultaPublicaciones
 from social.media.creaPublicacionesPartes import creaPublicacionesPartes
@@ -155,6 +156,7 @@ from models.publicaciones.ambitos import ambitos
 from models.publicaciones.ambito_usuario import ambito_usuario
 from models.publicaciones.ambitoCategoria import ambitoCategoria
 from models.publicaciones.ambitoCategoriaRelation import ambitoCategoriaRelation
+from models.publicaciones.categoriaCodigoPostal import categoriaCodigoPostal
 from models.publicaciones.ambito_codigo_postal import ambito_codigo_postal
 from models.publicaciones.categoriaPublicacion import categoriaPublicacion
 from models.publicaciones.publicacionCodigoPostal import publicacionCodigoPostal
@@ -329,9 +331,11 @@ app.register_blueprint(publicaciones)
 app.register_blueprint(cargarPdf)
 app.register_blueprint(ambitos)
 app.register_blueprint(ambito)
+app.register_blueprint(codigosPostales)
 app.register_blueprint(ambito_usuario)
 app.register_blueprint(ambitoCategoria)
 app.register_blueprint(ambitoCategoriaRelation)
+app.register_blueprint(categoriaCodigoPostal)
 app.register_blueprint(ambito_codigo_postal)
 app.register_blueprint(categoriaPublicacion)
 app.register_blueprint(ambitosCategorias)
@@ -696,7 +700,7 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
             )
 
             session.add(log)
-            session.commit()
+            
        
     except SQLAlchemyError as e:
     

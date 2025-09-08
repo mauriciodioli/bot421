@@ -28,6 +28,7 @@ from models.codigoPostal import CodigoPostal
 from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal
 from models.tracking.impresion_afiliado import ImpresionAfiliado
 from models.tracking.click_afiliado import ClickAfiliado
+from models.publicaciones.categoriaCodigoPostal import CategoriaCodigoPostal
 
 from datetime import datetime
 from flask import Blueprint,flash
@@ -65,6 +66,7 @@ def crea_tablas_DB():
     AmbitoCodigoPostal.crear_tabla_ambitoCodigoPostal()
     ImpresionAfiliado.crear_tabla_impresion_afiliado()
     ClickAfiliado.crear_tabla_click_afiliado()
+    CategoriaCodigoPostal.crear_tabla_categoriaCodigoPostal()
 
     
     flash('Tablas creadas exitosamente', 'success')

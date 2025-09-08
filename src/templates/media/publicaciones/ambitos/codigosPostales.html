@@ -1,0 +1,106 @@
+{# templates/media/publicaciones/codigos_postales/index.html #}
+{% if layout == 'layout_administracion' %}
+  {% extends 'layouts/layout_administracion.html' %}
+{% endif %}
+{% block content %}
+<h2>Gestión de Códigos Postales</h2>
+
+<div class="table-responsive">
+  <table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Id</th>
+        <th>CP</th>
+        <th>Ciudad</th>
+        <th>País</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if datos %}
+        {% for cp in datos %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ cp.id }}</td>
+            <td>{{ cp.codigoPostal }}</td>
+            <td>{{ cp.ciudad }}</td>
+            <td>{{ cp.pais }}</td>
+            <td>
+              <button type="button" class="btn btn-primary"
+                      data-bs-toggle="modal" data-bs-target="#editarCodigoPostalModal"
+                      data-cp-id="{{ cp.id }}"
+                      data-codigo-postal="{{ cp.codigoPostal }}"
+                      data-ciudad="{{ cp.ciudad }}"
+                      data-pais="{{ cp.pais }}">
+                Editar
+              </button>
+              <button type="button" class="btn btn-danger"
+                      data-bs-toggle="modal" data-bs-target="#eliminarCodigoPostalModal"
+                      data-cp-id="{{ cp.id }}"
+                      data-codigo-postal="{{ cp.codigoPostal }}">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr><td colspan="6" class="text-center">Sin datos</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+<hr/>
+
+<h5>Crear Código Postal</h5>
+<form id="form-crear-cp" class="row g-2">
+  <div class="col-sm-3"><input class="form-control" id="cp-nuevo" placeholder="Código Postal" required></div>
+  <div class="col-sm-3"><input class="form-control" id="cp-ciudad-nueva" placeholder="Ciudad"></div>
+  <div class="col-sm-3"><input class="form-control" id="cp-pais-nuevo" placeholder="País"></div>
+  <div class="col-sm-3"><button type="submit" class="btn btn-success">Crear</button></div>
+</form>
+
+<!-- Modal Editar -->
+<div class="modal fade" id="editarCodigoPostalModal" tabindex="-1" aria-labelledby="editarCodigoPostalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editarCodigoPostalLabel" style="color:black;">Editar Código Postal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="form-editar-cp">
+          <input type="hidden" id="cp-id-editar">
+          <label style="color:black;">Código Postal</label>
+          <input type="text" id="cp-codigo-editar" class="form-control" required><br>
+          <label style="color:black;">Ciudad</label>
+          <input type="text" id="cp-ciudad-editar" class="form-control"><br>
+          <label style="color:black;">País</label>
+          <input type="text" id="cp-pais-editar" class="form-control"><br>
+          <button type="submit" class="btn btn-primary">Actualizar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="eliminarCodigoPostalModal" tabindex="-1" aria-labelledby="eliminarCodigoPostalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eliminarCodigoPostalLabel" style="color:black;">Eliminar Código Postal</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="color:black;">
+        <p>¿Eliminar <strong id="cp-codigo-eliminar"></strong>?</p>
+        <button type="button" class="btn btn-danger" id="btn-confirmar-eliminar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'layouts/layout_footer.html' %}
+<script src="{{ url_for('static', filename='js/media/publicaciones/codigos_postales.js') }}"></script>
+{% endblock %}

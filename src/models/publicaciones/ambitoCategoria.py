@@ -4,6 +4,7 @@ from utils.db import db
 from sqlalchemy import inspect, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 ma = Marshmallow()
 
 
@@ -56,3 +57,4 @@ class MerShema(ma.Schema):
 
 from models.publicaciones.categoria_general import CategoriaGeneral
 from models.publicaciones.ambito_general import AmbitoGeneral
+
