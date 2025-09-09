@@ -132,33 +132,37 @@ def social_media_ambitosCategorias_categoria_mostrar():
 
 
 
-
-
 # Crear un nuevo Ambito
 @ambitosCategorias.route('/social-media-ambitos-crear-categoria/', methods=['POST'])
 def social_media_ambitos_crear_categoria():
     try:
         data = request.get_json()
 
-        nombre = data.get('nombre')
-        descripcion = data.get('descripcion')
-        idioma = data.get('idioma', None)
-        valor = data.get('valor', None)
-        color = data.get('color', None)
-        estado = data.get('estado', None)
-        nombreAmbito = data.get('ambito', None)
+        nombre        = data.get('nombre')
+        descripcion   = data.get('descripcion')
+        idioma        = data.get('idioma', None)
+        valor         = data.get('valor', None)
+        color         = data.get('color', None)
+        estado        = data.get('estado', None)
+        nombreAmbito  = data.get('ambito', None)
         codigo_postal = data.get('cp', None)
+
         # Validar campos obligatorios
         if not nombre or not descripcion:
             return jsonify({"error": "Los campos 'nombre' y 'descripcion' son obligatorios"}), 400
+
         with get_db_session() as session:
-            # Buscar si ya existe un ámbito con ese nombre e idioma
+            # 1) Validar duplicado por nombre+idioma
             existing_ambito = session.query(AmbitoCategoria).filter_by(nombre=nombre, idioma=idioma).first()
             if existing_ambito:
-                session.close()
                 return jsonify({"error": "La categoría ya existe en este idioma"}), 400
-            ambito = session.query(Ambitos).filter_by(valor=nombreAmbito,idioma=idioma).first()
-            # Crear la nueva categoría
+
+            # 2) Buscar ámbito destino (obligatorio)
+            ambito = session.query(Ambitos).filter_by(valor=nombreAmbito, idioma=idioma, estado='ACTIVO').first()
+            if not ambito:
+                return jsonify({"error": "Ámbito no encontrado o inactivo para ese idioma"}), 404
+
+            # 3) Crear categoría
             nuevo_ambito_categoria = AmbitoCategoria(
                 nombre=nombre,
                 descripcion=descripcion,
@@ -168,54 +172,98 @@ def social_media_ambitos_crear_categoria():
                 estado=estado
             )
             session.add(nuevo_ambito_categoria)
-            session.commit()  # Confirmar antes de usar el ID generado
+            session.flush()  # <-- NECESARIO para tener nuevo_ambito_categoria.id
 
-            # Crear la relación en Ambito_Categoria_Relation
+            # 4) Relación Ámbito ↔ Categoría
             ambito_categoria = AmbitoCategoriaRelation(
-                ambito_id=ambito.id,  # Usamos el ID generado correctamente
-                ambitoCategoria_id=nuevo_ambito_categoria.id,               
+                ambito_id=ambito.id,
+                ambitoCategoria_id=nuevo_ambito_categoria.id,
                 estado=estado
             )
             session.add(ambito_categoria)
-            session.commit()
 
-            # Serializar y devolver el nuevo ámbito
+            # 5) (Nuevo) Relación Categoría ↔ Código Postal
+            if codigo_postal:
+                # Buscar/crear CP
+                cp_obj = session.query(CodigoPostal).filter_by(codigoPostal=codigo_postal).first()
+                if not cp_obj:
+                    cp_obj = CodigoPostal(codigoPostal=codigo_postal)
+                    session.add(cp_obj)
+                    session.flush()  # <-- para cp_obj.id
+
+                # Evitar duplicado de relación
+                cat_cp_rel = session.query(CategoriaCodigoPostal).filter_by(
+                    categoria_id=nuevo_ambito_categoria.id,
+                    codigo_postal_id=cp_obj.id
+                ).first()
+                if not cat_cp_rel:
+                    cat_cp_rel = CategoriaCodigoPostal(
+                        categoria_id=nuevo_ambito_categoria.id,
+                        codigo_postal_id=cp_obj.id
+                    )
+                    session.add(cat_cp_rel)
+
+            # 6) Serializar y devolver
             resultado = serializar_ambito(nuevo_ambito_categoria)
-          
             return jsonify(resultado), 201
 
     except Exception as e:
-       
         return jsonify({"error": str(e)}), 500
+
 
 @ambitosCategorias.route('/social-media-ambitos-actualizar-categoria', methods=['POST'])
 def social_media_ambitos_actualizar_categoria():
     try:
         with get_db_session() as session:
             data = request.get_json(silent=True) or {}
-            id = data.get('id')
+            cat_id = data.get('id')
+            ambito_id = data.get('ambitoId')
 
-            if not id:
-                return jsonify({"error": "Falta el ID"}), 400
+            if not cat_id:
+                return jsonify({"error": "Falta el ID de la categoría"}), 400
+            if ambito_id is None:
+                return jsonify({"error": "Falta 'ambitoId'"}), 400
 
-            amb = session.query(AmbitoCategoria).filter_by(id=id).first()
-            if not amb:
-                return jsonify({"error": "Ambito no encontrado"}), 404
+            cat = session.query(AmbitoCategoria).filter_by(id=cat_id).first()
+            if not cat:
+                return jsonify({"error": "Categoría no encontrada"}), 404
 
-            # Actualizar campos
-            amb.nombre      = data.get('nombre', amb.nombre)
-            amb.descripcion = data.get('descripcion', amb.descripcion)
-            amb.idioma      = data.get('idioma', amb.idioma)
-            amb.valor       = data.get('valor', amb.valor)
-            amb.color       = data.get('color', amb.color)
-            amb.estado      = data.get('estado', amb.estado)
+            # Actualizar campos de la categoría
+            cat.nombre      = data.get('nombre', cat.nombre)
+            cat.descripcion = data.get('descripcion', cat.descripcion)
+            cat.idioma      = data.get('idioma', cat.idioma)
+            cat.valor       = data.get('valor', cat.valor)
+            cat.color       = data.get('color', cat.color)
+            cat.estado      = data.get('estado', cat.estado)
 
-            session.commit()
-            return jsonify(serializar_ambito(amb)), 200
+            # --- Actualizar relación Ámbito <-> Categoría ---
+            ambito_id = int(ambito_id)
+
+            # 1) Si ya existe EXACTAMENTE esa relación, no dupliques
+            existe = session.query(AmbitoCategoriaRelation).filter_by(
+                ambitoCategoria_id=cat.id,
+                ambito_id=ambito_id
+            ).first()
+
+            if not existe:
+                # 2) Opcional: borrar otras relaciones previas de la categoría (si la relación es 1:1)
+                session.query(AmbitoCategoriaRelation).filter_by(
+                    ambitoCategoria_id=cat.id
+                ).delete(synchronize_session=False)
+
+                # 3) Crear la nueva relación
+                session.add(AmbitoCategoriaRelation(
+                    ambitoCategoria_id=cat.id,
+                    ambito_id=ambito_id,
+                    estado=cat.estado or 'ACTIVO'
+                ))
+            # --- fin actualización relación ---
+
+            return jsonify(serializar_ambito(cat)), 200
+
     except Exception as e:
         import traceback; traceback.print_exc()
         return jsonify({"error": str(e)}), 500
-
 
     
 
@@ -250,55 +298,70 @@ def social_media_publicaciones_ambitosCategorias_delete(id):
    
 
 
-@ambitosCategorias.route('/social-media-publicaciones-obtener-ambitosCategorias/', methods=['POST'])
+@ambitosCategorias.route('/social-media-publicaciones-obtener-ambitosCategorias/', methods=['POST']) 
 def obtener_ambitosCategorias():
     try:
-        # Obtener el ámbito por su valor
-        data = request.get_json()
-        print("Datos recibidos:", data)  # Para depuración
-        languaje = request.cookies.get('language', 'in')  # Idioma destino
-        if not data or 'ambito' not in data:
+        data = request.get_json(silent=True) or {}
+        print("Datos recibidos:", data)
+        languaje = request.cookies.get('language', 'in')
+        if 'ambito' not in data:
             return jsonify({"error": "Falta el campo 'ambito' en la solicitud"}), 400
         
         ambito_valor = data['ambito']
-        cp = data['cp']
+        cp = data.get('cp')  # puede venir string tipo "06049"
+
         with get_db_session() as session:
-            # Obtener el ámbito por su valor
-            ambito = session.query(Ambitos).filter_by(valor=ambito_valor,idioma=languaje).first()
+            # Ámbito por valor+idioma
+            ambito = session.query(Ambitos).filter_by(valor=ambito_valor, idioma=languaje).first()
             if not ambito:
-                session.close()
                 return jsonify({"error": "Ámbito no encontrado"}), 404
             
-            # Obtener todas las relaciones del ámbito con sus categorías
+            # Relaciones del ámbito -> categoria_ids
             relations = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito.id).all()
-            
-            # Obtener los IDs de las categorías relacionadas
-            categoria_ids = [relation.ambitoCategoria_id for relation in relations]
-            
-            # Consultar las categorías correspondientes
+            categoria_ids = [r.ambitoCategoria_id for r in relations]
+
+            # ---------- Fallback por Código Postal ----------
+            if not categoria_ids and cp:
+                # resolver cp_id (FK) desde el string de CP
+                cp_id = session.query(CodigoPostal.id)\
+                               .filter(CodigoPostal.codigoPostal == cp)\
+                               .scalar()
+                if cp_id:
+                    # tomar las categorías asociadas a ese CP
+                    cat_ids_cp = session.query(CategoriaCodigoPostal.categoria_id)\
+                                        .filter(CategoriaCodigoPostal.codigo_postal_id == cp_id)\
+                                        .all()
+                    categoria_ids = [cid for (cid,) in cat_ids_cp]
+                else:
+                    # no existe ese CP en la tabla -> no hay categorías
+                    categoria_ids = []
+            # ------------------------------------------------
+
+            if not categoria_ids:
+                return jsonify([]), 200
+
+            # Categorías finales
             ambitosCategorias = session.query(AmbitoCategoria).filter(
-                                AmbitoCategoria.id.in_(categoria_ids),
-                                AmbitoCategoria.idioma == languaje
-                            ).all()
+                AmbitoCategoria.id.in_(categoria_ids),
+                AmbitoCategoria.idioma == languaje,
+                AmbitoCategoria.estado == 'ACTIVO'
+            ).all()
 
+            resultado = [{
+                "id": c.id,
+                "nombre": c.nombre,
+                "descripcion": c.descripcion,
+                "idioma": c.idioma,
+                "valor": c.valor,
+                "color": c.color,
+                "estado": c.estado,
+            } for c in ambitosCategorias]
 
-            # Convertir los objetos a diccionarios serializables
-            resultado = [
-                {
-                    "id": categoria.id,              
-                    "nombre": categoria.nombre,
-                    "descripcion": categoria.descripcion,
-                    "idioma": categoria.idioma,
-                    "valor": categoria.valor,
-                    "color": categoria.color,
-                    "estado": categoria.estado,
-                }
-                for categoria in ambitosCategorias
-            ]
             return jsonify(resultado), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
    
 

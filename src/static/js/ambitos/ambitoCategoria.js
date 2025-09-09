@@ -110,7 +110,7 @@ function crearAmbitoCategorias() {
     let descripcion = document.getElementById("descripcion").value;
     let idioma = document.getElementById("idioma").value;
     let valor = document.getElementById("valor").value;
-    let color = document.getElementById("color").value;
+    let color = document.getElementById("color-categoria").value;
     let estado = document.getElementById("estado").value;
    
     // Validar campos obligatorios
@@ -198,11 +198,12 @@ function actualizarAmbitoCategoria() {
     descripcion: document.getElementById('descripcion-editar').value,
     idioma: document.getElementById('idioma-editar').value,
     valor: document.getElementById('valor-editar').value,
+    ambitoId:document.getElementById('ambitoId-editar').value,
     color: document.getElementById('color-editar').value,
     estado: document.getElementById('estado-editar').value,
     user_id: document.getElementById('user_id-editar').value
   };
-  debugger;
+  
   fetch(`/social-media-ambitos-actualizar-categoria`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
