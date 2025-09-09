@@ -166,7 +166,7 @@ function obtenerAmbito_por_id(id) {
 
 // Función para actualizar un ambito
 function actualizarAmbito() {
-   
+    
     const id = document.getElementById('ambito-id-editar').value;
     const nombre = document.getElementById('nombre-editar').value;
     const descripcion = document.getElementById('descripcion-editar').value;
@@ -183,6 +183,7 @@ function actualizarAmbito() {
         idioma: idioma,
         valor: valor,
         estado: estado,
+        codigoPostal: codigoPostal,
         user_id: userId
     };
     

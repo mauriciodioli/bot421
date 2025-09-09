@@ -133,7 +133,7 @@
           <input type="text" id="valor-editar" class="form-control"><br>
 
           <label for="codigo_postal-editar" style="color: black;">CP:</label>
-          <input type="text" id="codigo_postal-editarr" class="form-control"><br>
+          <input type="text" id="codigo_postal-editar" class="form-control"><br>
 
 
           <label for="estado-editar" style="color: black;">Estado:</label>
@@ -237,6 +237,7 @@ $(document).ready(function() {
         var descripcion = button.data('descripcion');
         var idioma = button.data('idioma');
         var valor = button.data('valor');
+        var codigoPostal = button.data('codigo_postal-editar');
         var estado = button.data('estado');
         var userId = button.data('user_id');
 
@@ -246,8 +247,10 @@ $(document).ready(function() {
         modal.find('#descripcion-editar').val(descripcion);
         modal.find('#idioma-editar').val(idioma);
         modal.find('#valor-editar').val(valor);
+        modal.find('#codigo_postal-editar').val(codigoPostal);
         modal.find('#estado-editar').val(estado);
         modal.find('#user_id-editar').val(userId);
+
     });
 
     // Cargar el nombre del ámbito en el modal de confirmación de eliminación

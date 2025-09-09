@@ -15,6 +15,8 @@ from sqlalchemy.orm import aliased
 from models.publicaciones.categoria_general import CategoriaGeneral, CategoriaTraduccion
 from models.publicaciones.ambito_general import AmbitoGeneral,AmbitoTraduccion
 from models.publicaciones.publicaciones import Publicacion
+from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal
+from models.codigoPostal import CodigoPostal
 from utils.db_session import get_db_session 
 
 ambito = Blueprint('ambito', __name__)
@@ -110,22 +112,40 @@ def crear_ambito():
 @ambito.route('/social-media-publicaciones-ambitos-obtener-informe/', methods=['GET'])
 def informe_ambito():
     return render_template('ambitos/informe_ambitos.html', layout='layout_administracion')
-
 @ambito.route('/social-media-publicaciones-obtener-ambitos/', methods=['GET'])
 def obtener_ambitos():
     try:
-        # Obtener el valor de la cookie "language"
-        idioma = request.cookies.get('language', 'in')  # Por defecto "in" si no se encuentra la cookie
-        with get_db_session() as session:
-            # Consultar los ambitos según el idioma
-            ambitos = session.query(Ambitos).filter_by(idioma=idioma, estado='ACTIVO').all()
+        idioma = request.cookies.get('language', 'in')  # Idioma por cookie
+        codigo_postal = request.cookies.get('codigoPostal', '06049')  # lo recibís por querystring ?cp=06049
 
-            # Convertir los objetos a dicts serializables
+        with get_db_session() as session:
+            query = session.query(Ambitos).filter(
+                Ambitos.idioma == idioma,
+                Ambitos.estado == 'ACTIVO'
+            )
+
+            # --- Filtrado por código postal ---
+            if codigo_postal:
+                # buscar el id del CP
+                cp_obj = session.query(CodigoPostal).filter_by(codigoPostal=codigo_postal).first()
+                if not cp_obj:
+                    return jsonify([]), 200  # no hay ese CP → devolver vacío
+
+                query = query.join(
+                    AmbitoCodigoPostal,
+                    AmbitoCodigoPostal.ambito_id == Ambitos.id
+                ).filter(
+                    AmbitoCodigoPostal.codigo_postal_id == cp_obj.id
+                )
+            # ----------------------------------
+
+            ambitos = query.all()
+
             resultado = [
                 {
                     "id": ambito.id,
                     "user_id": 'none',
-                    "nombre": ambito.nombre,
+                    "nombre": getattr(ambito, 'nombre', None),
                     "descripcion": ambito.descripcion,
                     "idioma": ambito.idioma,
                     "valor": ambito.valor,
@@ -133,11 +153,11 @@ def obtener_ambitos():
                 }
                 for ambito in ambitos
             ]
-        
+
             return jsonify(resultado), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-   
+
 
 
 
@@ -164,32 +184,52 @@ def actualizar_ambito(id):
     try:
         with get_db_session() as session:
             # Obtener el ambito existente
-            ambito = session.query(Ambitos).filter_by(id=id).first() 
-
-            # Verificar si el ambito existe
+            ambito = session.query(Ambitos).filter_by(id=id).first()
             if not ambito:
                 return jsonify({"error": "Ambito no encontrado"}), 404
 
-            # Obtener los datos del cuerpo de la solicitud
-            data = request.get_json()
+            # Datos
+            data = request.get_json(silent=True) or {}
 
-            # Actualizar los campos del ambito
-            ambito.nombre = data.get('nombre', ambito.nombre)
+            # Actualizar campos (ajusta si tu modelo usa 'valor' en vez de 'nombre')
+            ambito.nombre = data.get('nombre', getattr(ambito, 'nombre', None))
             ambito.descripcion = data.get('descripcion', ambito.descripcion)
             ambito.idioma = data.get('idioma', ambito.idioma)
             ambito.valor = data.get('valor', ambito.valor)
             ambito.estado = data.get('estado', ambito.estado)
-        
-            
-        
-            # Verificar si el ambito existe
+
+            # --- Relación Código Postal <-> Ámbito (solo si viene) ---
+            codigo_postal = data.get('codigoPostal')
+            if codigo_postal:
+                # Buscar o crear el CP
+                codigo_postal_obj = session.query(CodigoPostal)\
+                    .filter_by(codigoPostal=codigo_postal).first()
+                if not codigo_postal_obj:
+                    codigo_postal_obj = CodigoPostal(codigoPostal=codigo_postal)
+                    session.add(codigo_postal_obj)
+                    session.flush()  # asegura codigo_postal_obj.id
+
+                # Crear relación si no existe (idempotente)
+                rel = session.query(AmbitoCodigoPostal).filter_by(
+                    ambito_id=ambito.id,
+                    codigo_postal_id=codigo_postal_obj.id
+                ).first()
+
+                if not rel:
+                    rel = AmbitoCodigoPostal(
+                        ambito_id=ambito.id,
+                        codigo_postal_id=codigo_postal_obj.id
+                    )
+                    session.add(rel)
+            # --- fin relación ---
+
+            # Serializar y responder
             resultado = serializar_ambito(ambito)
-           
-                # Devolver el resultado como JSON
             return jsonify(resultado), 200
+
     except Exception as e:
-      
         return jsonify({"error": str(e)}), 500
+
 
 # Eliminar un ambito por su ID
 @ambito.route('/social-media-publicaciones-ambitos-delete/<int:id>', methods=['DELETE'])
