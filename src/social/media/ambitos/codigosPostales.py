@@ -16,9 +16,9 @@ codigosPostales = Blueprint('codigosPostales', __name__)
 
 @codigosPostales.route('/social-media-ambitos-codigosPostales/', methods=['GET'])
 def pagina_codigos_postales():
-  
-    datos = db.session.query(CodigoPostal).order_by(CodigoPostal.id.asc()).all()
-    db.session.remove()
+    with get_db_session() as session:
+        datos = session.query(CodigoPostal).order_by(CodigoPostal.id.asc()).all()
+    
     return render_template('media/publicaciones/ambitos/codigosPostales.html',
                            datos=datos, layout='layout_administracion')
 
@@ -40,19 +40,20 @@ def listar_cp_filtrado():
     idioma = (data.get('idioma') or '').strip()  # hoy no se usa; se acepta por firma
 
     try:
-        q = db.session.query(CodigoPostal)
-        if pais:
-            q = q.filter(CodigoPostal.pais == pais)  # si querés ilike, cambialo según tu DB
+       with get_db_session() as session: 
+            q = session.query(CodigoPostal)
+            if pais:
+                q = q.filter(CodigoPostal.pais == pais)  # si querés ilike, cambialo según tu DB
 
-        cps = q.order_by(CodigoPostal.codigoPostal.asc()).all()
-        data = [{
-            'id': cp.id,
-            'codigoPostal': cp.codigoPostal,
-            'ciudad': cp.ciudad,
-            'pais': cp.pais
-        } for cp in cps]
+            cps = q.order_by(CodigoPostal.codigoPostal.asc()).all()
+            data = [{
+                'id': cp.id,
+                'codigoPostal': cp.codigoPostal,
+                'ciudad': cp.ciudad,
+                'pais': cp.pais
+            } for cp in cps]
 
-        return jsonify({'ok': True, 'data': data})
+       return jsonify({'ok': True, 'data': data})
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
 

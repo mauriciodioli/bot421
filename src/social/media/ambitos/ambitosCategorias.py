@@ -16,6 +16,8 @@ from models.publicaciones.ambito_usuario import Ambito_usuario
 from models.publicaciones.ambitoCategoria import AmbitoCategoria
 from models.publicaciones.ambitoCategoriaRelation import AmbitoCategoriaRelation
 from models.publicaciones.categoriaPublicacion import CategoriaPublicacion
+from models.publicaciones.categoriaCodigoPostal import CategoriaCodigoPostal
+from models.codigoPostal import CodigoPostal
 from models.publicaciones.publicacionCodigoPostal import PublicacionCodigoPostal
 from utils.db_session import get_db_session 
 
@@ -73,14 +75,39 @@ def social_media_ambitosCategorias_categoria_mostrar():
 
             categoria_ids = [rel.ambitoCategoria_id for rel in relaciones]
 
-            # Paso 3: Buscar categorías asociadas
-            categorias = session.query(AmbitoCategoria).filter(
-                AmbitoCategoria.id.in_(categoria_ids),
-                AmbitoCategoria.estado == 'ACTIVO'
-                
-            ).all()
 
+            cp_id = session.query(CodigoPostal.id)\
+                            .filter(CodigoPostal.codigoPostal == codigo_postal)\
+                            .scalar()
+
+
+           # 1) IDs desde la relación CategoriaCodigoPostal (filtrando por CP string)
+            relaciones_categorias = (
+                session.query(CategoriaCodigoPostal.categoria_id)
+                .filter(
+                    CategoriaCodigoPostal.categoria_id.in_(categoria_ids),
+                    CategoriaCodigoPostal.codigo_postal_id == cp_id
+                )
+                .all()
+            )
+
+            # 2) Flatten a lista simple
+            categoria_ids2 = [cid for (cid,) in relaciones_categorias]
+
+            if not categoria_ids2:
+                print("[DEBUG] No hay categorías asociadas a ese CP para este ámbito")
+                return jsonify({'categorias': []})
+
+            # 3) Traer las categorías finales
+            categorias = session.query(AmbitoCategoria).filter(
+                AmbitoCategoria.id.in_(categoria_ids2),
+                AmbitoCategoria.estado == 'ACTIVO'
+                # opcional: , AmbitoCategoria.idioma == idioma
+            ).all()
             print(f"[DEBUG] Categorías encontradas: {len(categorias)}")
+            
+            
+            
 
             # Paso 4: Serializar
             categorias_data = [{
@@ -229,7 +256,7 @@ def obtener_ambitosCategorias():
         # Obtener el ámbito por su valor
         data = request.get_json()
         print("Datos recibidos:", data)  # Para depuración
-
+        languaje = request.cookies.get('language', 'in')  # Idioma destino
         if not data or 'ambito' not in data:
             return jsonify({"error": "Falta el campo 'ambito' en la solicitud"}), 400
         
@@ -237,7 +264,7 @@ def obtener_ambitosCategorias():
         cp = data['cp']
         with get_db_session() as session:
             # Obtener el ámbito por su valor
-            ambito = session.query(Ambitos).filter_by(valor=ambito_valor).first()
+            ambito = session.query(Ambitos).filter_by(valor=ambito_valor,idioma=languaje).first()
             if not ambito:
                 session.close()
                 return jsonify({"error": "Ámbito no encontrado"}), 404
@@ -249,7 +276,11 @@ def obtener_ambitosCategorias():
             categoria_ids = [relation.ambitoCategoria_id for relation in relations]
             
             # Consultar las categorías correspondientes
-            ambitosCategorias = session.query(AmbitoCategoria).filter(AmbitoCategoria.id.in_(categoria_ids),).all()
+            ambitosCategorias = session.query(AmbitoCategoria).filter(
+                                AmbitoCategoria.id.in_(categoria_ids),
+                                AmbitoCategoria.idioma == languaje
+                            ).all()
+
 
             # Convertir los objetos a diccionarios serializables
             resultado = [
