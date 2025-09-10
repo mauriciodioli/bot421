@@ -16,50 +16,69 @@
 {% endif %}
 
 {% block content%}
-
 <div class="cart-container"> 
-    <h3 style="color:rgb(0, 0, 0);">Aquiridos</h3>
-    {% for pedido in data %}
-    <div class="cart-item" data-precio="{{ pedido.precio_venta }}" data-id="{{ pedido.id }}">
-        {% if pedido.imagen_url %}
-        <img src="{{ pedido.imagen_url }}" alt="Imagen del producto" class="product-image">
-        {% else %}
-        <img src="default.jpg" alt="Producto sin imagen" class="product-image">
-        {% endif %}
-        <div class="product-details">
-            <h2>{{ pedido.nombre_producto }}</h2>
-            <p class="price">-> <span class="unit-price">{{ pedido.precio_venta }}</span></p>
-            <p class="fecha_entrega" style="color: black;>Fecha: <span style="color: black;">{{ pedido.fecha_pedido.strftime('%d/%m/%Y') }}</span></p>
-            {% if pedido.estado == "terminado" %}
-                <p class="estado" style="color: black;">Estado: <span style="color: black;">Pendiente de atención o entrega</span></p>
-            {% endif %}
-            {% if pedido.estado == "entregado" %}               
-                <p class="estado" style="color: black;">Estado: <span style="color: black;">Finalizado</span></p>
-            {% endif %}
-            <p class="respuesta" style="font-weight: bold; color: black;">Respuesta: <span style="color: blue;">{{ pedido.respuesta }}</span></p>
+  <h3 style="color:#000;" data-translate="cart_purchased">Adquiridos</h3>
 
-            
+  {% for pedido in data %}
+  <div class="cart-item" data-precio="{{ pedido.precio_venta }}" data-id="{{ pedido.id }}">
+    {% if pedido.imagen_url %}
+      <img src="{{ pedido.imagen_url }}"
+           class="product-image"
+           alt="Imagen del producto"
+           data-translate="cart_img_alt"
+           data-translate-target="alt">
+    {% else %}
+      <img src="default.jpg"
+           class="product-image"
+           alt="Producto sin imagen"
+           data-translate="cart_noimg_alt"
+           data-translate-target="alt">
+    {% endif %}
 
-            
+    <div class="product-details">
+      <h2>{{ pedido.nombre_producto }}</h2>
 
-           
-        </div>
+      <p class="price">
+        <span data-translate="cart_price">Precio</span>:
+        <span class="unit-price">{{ pedido.precio_venta }}</span>
+      </p>
+
+      <p class="fecha_entrega" style="color: black;">
+        <span data-translate="cart_date">Fecha</span>:
+        <span style="color: black;">{{ pedido.fecha_pedido.strftime('%d/%m/%Y') }}</span>
+      </p>
+
+      {% if pedido.estado == "terminado" %}
+        <p class="estado" style="color: black;">
+          <span data-translate="cart_status">Estado</span>:
+          <span style="color: black;" data-translate="cart_status_pending">
+            Pendiente de atención o entrega
+          </span>
+        </p>
+      {% endif %}
+
+      {% if pedido.estado == "entregado" %}
+        <p class="estado" style="color: black;">
+          <span data-translate="cart_status">Estado</span>:
+          <span style="color: black;" data-translate="cart_status_done">
+            Finalizado
+          </span>
+        </p>
+      {% endif %}
+
+      <p class="respuesta" style="font-weight: bold; color: black;">
+        <span data-translate="cart_response">Respuesta</span>:
+        <span style="color: blue;">{{ pedido.respuesta }}</span>
+      </p>
     </div>
-    {% endfor %}
-    <div class="cart-summary">
-        
-    
-        <div class="buttons-container">
-            <button id="return-button" onclick="goBack()">Volver</button>
-    
-            
-        </div>
+  </div>
+  {% endfor %}
+
+  <div class="cart-summary">
+    <div class="buttons-container">
+      <button id="return-button" onclick="goBack()" data-translate="cart_back">Volver</button>
     </div>
-    
-    
-
-
-  
+  </div>
 </div>
 
 
@@ -70,5 +89,6 @@
 {% include 'layouts/layout_carrito.html' %}  
 <!-- Enlaces a scripts de JavaScript -->
 <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/productos/carritoCompras.css')}}"> 
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 
 {% endblock %}

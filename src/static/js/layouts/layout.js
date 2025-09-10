@@ -352,7 +352,9 @@ function guardarCodigoPostal() {
         // Cerrar el modal
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal
-
+ // Funciones del sistema
+        if (typeof cargarAmbitos === "function") cargarAmbitos();
+        if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
  //   } else {
  //       alert('Por favor ingresa un código postal válido (solo números)');
   //  }
