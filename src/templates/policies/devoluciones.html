@@ -1,0 +1,40 @@
+{% if layout == 'layout' %}
+   {% extends 'layouts/layout.html' %}    
+{% endif %}
+{% if layout == 'layout_dpi' %}
+   {% extends 'layouts/layout_dpi.html' %}    
+{% endif %}
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+   {% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout_fichas' %}
+   {% extends 'layouts/layout_fichas.html' %}    
+{% endif %}
+{% if layout == 'layout_detalle_productos' %}
+   {% extends 'layouts/layout_detalle_productos.html' %}    
+{% endif %}
+{% block content %}
+
+<h2 data-translate="returns_title">Devoluciones y garantía</h2>
+<p data-translate="returns_intro">
+  En DPIA podés devolver tu compra dentro de los 15 días posteriores a recibirla, sin preguntas.
+</p>
+<ul>
+  <li data-translate="returns_policy1">Reembolso del 100% o cambio de producto.</li>
+  <li data-translate="returns_policy2">
+    Procesamos el reembolso en 3 a 5 días hábiles tras recibir la devolución.
+  </li>
+  <li data-translate="returns_policy3">
+    Escribinos a <a href="mailto:soporte@dpia.site">soporte@dpia.site</a> con tu número de pedido.
+  </li>
+</ul>
+
+{% include 'layouts/layout_footer.html' %}
+
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+{% endblock%}
+
+

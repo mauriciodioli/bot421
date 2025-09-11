@@ -1,0 +1,39 @@
+{% if layout == 'layout' %}
+   {% extends 'layouts/layout.html' %}    
+{% endif %}
+{% if layout == 'layout_dpi' %}
+   {% extends 'layouts/layout_dpi.html' %}    
+{% endif %}
+{% if layout == 'layoutConexBroker' %}
+   {% extends 'layouts/layoutConexBroker.html' %}    
+{% endif %}
+{% if layout == 'layout_signal' %}
+   {% extends 'layouts/layout_signal.html' %}    
+{% endif %}
+{% if layout == 'layout_fichas' %}
+   {% extends 'layouts/layout_fichas.html' %}    
+{% endif %}
+{% if layout == 'layout_detalle_productos' %}
+   {% extends 'layouts/layout_detalle_productos.html' %}    
+{% endif %}
+{% block content %}
+
+<h2 data-translate="shipping_title">Envíos</h2>
+<p data-translate="shipping_intro">
+  Los pedidos se procesan en 24h y llegan en 3 a 7 días hábiles según tu país.
+</p>
+<ul>
+  <li data-translate="shipping_policy1">Envío con número de seguimiento.</li>
+  <li data-translate="shipping_policy2">Costo calculado al finalizar la compra.</li>
+  <li data-translate="shipping_policy3">
+    Si el envío se retrasa, podés escribirnos a soporte@dpia.site.
+  </li>
+</ul>
+
+
+{% include 'layouts/layout_footer.html' %}
+
+<script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+{% endblock%}
+
+

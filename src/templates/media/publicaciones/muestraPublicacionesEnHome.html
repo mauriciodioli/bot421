@@ -181,18 +181,24 @@
 
 
 
+
 <!-- Tabs con i18n -->
 <div class="celda full-width">
   <div class="tabs">
     <input type="radio" id="tab1" name="tab-control" checked>
     <input type="radio" id="tab2" name="tab-control">
     <input type="radio" id="tab3" name="tab-control">
+    <input type="radio" id="tab4" name="tab-control"> <!-- Nueva pestaña -->
+
     <ul>
       <li><label for="tab1" role="button"><span data-translate="tab_description">Descripción</span></label></li>
       <li><label for="tab2" role="button"><span data-translate="tab_details">Detalles</span></label></li>
       <li><label for="tab3" role="button"><span data-translate="tab_shipping">Envío</span></label></li>
+      <li><label for="tab4" role="button"><span data-translate="tab_returns">Devoluciones</span></label></li>
     </ul>
+
     <div class="slider"><div class="indicator"></div></div>
+
     <div class="content">
       <section>
         <h2 data-translate="tab_description">Descripción</h2>
@@ -206,9 +212,14 @@
         <h2 data-translate="tab_shipping">Envío</h2>
         <p data-translate="shipping_text">Información de tiempos, zonas y costos de envío.</p>
       </section>
+      <section>
+        <h2 data-translate="tab_returns">Devoluciones</h2>
+        <p data-translate="returns_text">Podés devolver tu compra dentro de los 15 días posteriores a recibirla, sin preguntas. Reembolso del 100% o cambio de producto.</p>
+      </section>
     </div>
   </div>
 </div>
+
 
 
 

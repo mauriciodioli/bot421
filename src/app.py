@@ -126,6 +126,8 @@ from social.dpis.dpi import dpi
 from comunicacion.contacto import contacto
 from comunicacion.newsLetter import newsLetter
 
+from policies.legal import legal
+
 from panelControlBroker.panelControl import panelControl
 from panelControl.pcEstrategiaUs import pcEtrategiaUs
 
@@ -371,6 +373,7 @@ app.register_blueprint(turingUser)
 app.register_blueprint(turingRespuestas)
 app.register_blueprint(triviaTuring)
 app.register_blueprint(conectionSheet)
+app.register_blueprint(legal)
 
 
 

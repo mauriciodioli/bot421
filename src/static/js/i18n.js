@@ -145,8 +145,9 @@ const translations = {
   "chat_placeholder": "Escribe tu mensaje...",
   "chat_send": "Enviar",
 
-
-        'footer_we_are': "Somos",
+        "footer_shipping": "Envíos",
+        "footer_returns": "Devoluciones y garantía",
+        'footer_we_are': "Tu oportunidad empieza aquí.",
         'footer_home': "Inicio",
         'footer_plans': "Planes",
         'footer_about': "Sobre nosotros",
@@ -163,11 +164,21 @@ const translations = {
         'newsletter_word': "newsletter",
         'newsletter_email_ph': "Email",
         'newsletter_submit': "Enviar",
-        'disclaimer': "DPIA Solutions está en fase de prueba. Las publicaciones actuales son simuladas y no representan una oferta comercial real. Las imágenes pueden provenir de fuentes externas con fines ilustrativos para validación del sistema."
+        'disclaimer': "DPIA Solutions está en fase de prueba. Las publicaciones actuales son simuladas y no representan una oferta comercial real. Las imágenes pueden provenir de fuentes externas con fines ilustrativos para validación del sistema.",
 
 
-
-
+        "returns_title": "Devoluciones y garantía",
+        "returns_intro": "En DPIA podés devolver tu compra dentro de los 15 días posteriores a recibirla, sin preguntas.",
+        "returns_policy1": "Reembolso del 100% o cambio de producto.",
+        "returns_policy2": "Procesamos el reembolso en 3 a 5 días hábiles tras recibir la devolución.",
+        "returns_policy3": "Escribinos a soporte@dpia.site con tu número de pedido.",
+        "shipping_title": "Envíos",
+        "shipping_intro": "Los pedidos se procesan en 24h y llegan en 3 a 7 días hábiles según tu país.",
+        "shipping_policy1": "Envío con número de seguimiento.",
+        "shipping_policy2": "Costo calculado al finalizar la compra.",
+        "shipping_policy3": "Si el envío se retrasa, podés escribirnos a soporte@dpia.site.",        
+        "tab_returns": "Devoluciones",
+        "returns_text": "Podés devolver tu compra dentro de los 15 días posteriores a recibirla, sin preguntas. Reembolso del 100% o cambio de producto."
 
 
 
@@ -314,8 +325,9 @@ const translations = {
   "chat_header_title": "DPI chat",
   "chat_placeholder": "Type your message...",
   "chat_send": "Send",
-
-        "footer_we_are": "We are",
+        "footer_shipping": "Shipping",
+        "footer_returns": "Returns & Warranty",
+        "footer_we_are": "Your opportunity starts here.",
         "footer_home": "Home",
         "footer_plans": "Plans",
         "footer_about": "About us",
@@ -332,8 +344,20 @@ const translations = {
         "newsletter_word": "newsletter",
         "newsletter_email_ph": "Email",
         "newsletter_submit": "Send",
-        "disclaimer": "DPIA Solutions is currently in testing phase. The current listings are simulated and do not represent a commercial offer. Images may come from external sources for illustrative purposes only."
-
+        "disclaimer": "DPIA Solutions is currently in testing phase. The current listings are simulated and do not represent a commercial offer. Images may come from external sources for illustrative purposes only.",
+        "returns_title": "Returns & Warranty",
+        "returns_intro": "At DPIA you can return your purchase within 15 days of receiving it, no questions asked.",
+        "returns_policy1": "100% refund or product exchange.",
+        "returns_policy2": "We process refunds within 3 to 5 business days after receiving the return.",
+        "returns_policy3": "Write to soporte@dpia.site with your order number.",
+        "shipping_title": "Shipping",
+        "shipping_intro": "Orders are processed within 24h and arrive in 3 to 7 business days depending on your country.",
+        "shipping_policy1": "Shipping with tracking number.",
+        "shipping_policy2": "Cost calculated at checkout.",
+        "shipping_policy3": "If the shipment is delayed, you can write to soporte@dpia.site.",
+        "tab_returns": "Returns",
+        "returns_text": "You can return your purchase within 15 days of receiving it, no questions asked. 100% refund or product exchange."
+  
     },
     "pt": {
         "ingresa_tus_datos": "Digite seus dados para receber seu pedido!",
@@ -476,8 +500,9 @@ const translations = {
   "chat_placeholder": "Digite sua mensagem...",
   "chat_send": "Enviar",
 
-
-        "footer_we_are": "Somos",
+        "footer_shipping": "Envios",
+        "footer_returns": "Devoluções e garantia",
+        "footer_we_are": "A sua oportunidade começa aqui.",
         "footer_home": "Início",
         "footer_plans": "Planos",
         "footer_about": "Sobre nós",
@@ -494,7 +519,19 @@ const translations = {
         "newsletter_word": "newsletter",
         "newsletter_email_ph": "E-mail",
         "newsletter_submit": "Enviar",
-        "disclaimer": "DPIA Solutions está em fase de testes. As entradas atuais são simuladas e não representam uma oferta comercial real. As imagens podem vir de fontes externas apenas para fins ilustrativos."
+        "disclaimer": "DPIA Solutions está em fase de testes. As entradas atuais são simuladas e não representam uma oferta comercial real. As imagens podem vir de fontes externas apenas para fins ilustrativos.",
+        "returns_title": "Devoluções e garantia",
+        "returns_intro": "Na DPIA você pode devolver sua compra em até 15 dias após o recebimento, sem perguntas.",
+        "returns_policy1": "Reembolso de 100% ou troca do produto.",
+        "returns_policy2": "Processamos o reembolso em 3–5 dias úteis após receber a devolução.",
+        "returns_policy3": "Escreva para soporte@dpia.site com o número do seu pedido.",
+        "shipping_title": "Envios",
+        "shipping_intro": "Os pedidos são processados em 24h e chegam em 3 a 7 dias úteis, dependendo do país.",
+        "shipping_policy1": "Envio com número de rastreamento.",
+        "shipping_policy2": "Custo calculado no checkout.",
+        "shipping_policy3": "Se o envio atrasar, escreva para soporte@dpia.site.",
+        "tab_returns": "Devoluções",
+        "returns_text": "Você pode devolver sua compra em até 15 dias após o recebimento, sem perguntas. Reembolso de 100% ou troca do produto."
 
 
     },
@@ -636,8 +673,9 @@ const translations = {
   "chat_header_title": "Chat DPI",
   "chat_placeholder": "Scrivi il tuo messaggio...",
   "chat_send": "Invia",
-
-        "footer_we_are": "Siamo",
+        "footer_shipping": "Spedizioni",
+        "footer_returns": "Resi e garanzia",
+        "footer_we_are": "La tua opportunità inizia qui.",
         "footer_home": "Inizio",
         "footer_plans": "Piani",
         "footer_about": "Chi siamo",
@@ -654,7 +692,24 @@ const translations = {
         "newsletter_word": "newsletter",
         "newsletter_email_ph": "Email",
         "newsletter_submit": "Invia",
-        "disclaimer": "DPIA Solutions è in fase di prova. Le pubblicazioni attuali sono simulate e non rappresentano un'offerta commerciale reale. Le immagini possono provenire da fonti esterne a scopo illustrativo."
+        "disclaimer": "DPIA Solutions è in fase di prova. Le pubblicazioni attuali sono simulate e non rappresentano un'offerta commerciale reale. Le immagini possono provenire da fonti esterne a scopo illustrativo.",
+        "returns_title": "Resi e garanzia",
+        "returns_intro": "Con DPIA puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande.",
+        "returns_policy1": "Rimborso del 100% o sostituzione del prodotto.",
+        "returns_policy2": "Elaboriamo il rimborso entro 3–5 giorni lavorativi dal ricevimento del reso.",
+        "returns_policy3": "Scrivici a soporte@dpia.site con il numero dell'ordine.",
+        "shipping_title": "Spedizioni",
+        "shipping_intro": "Gli ordini vengono elaborati entro 24h e arrivano in 3–7 giorni lavorativi a seconda del paese.",
+        "shipping_policy1": "Spedizione con numero di tracciamento.",
+        "shipping_policy2": "Costo calcolato al checkout.",
+        "shipping_policy3": "Se la spedizione è in ritardo, scrivici a soporte@dpia.site.",
+        "shipping_title": "Versand",
+        "shipping_intro": "Bestellungen werden innerhalb von 24 Stunden bearbeitet und treffen je nach Land in 3 bis 7 Werktagen ein.",
+        "shipping_policy1": "Versand mit Sendungsverfolgung.",
+        "shipping_policy2": "Kosten werden beim Checkout berechnet.",
+        "shipping_policy3": "Wenn sich die Lieferung verzögert, schreiben Sie uns an soporte@dpia.site.",
+        "tab_returns": "Resi",
+        "returns_text": "Puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande. Rimborso del 100% o sostituzione del prodotto."
 
 
     },
@@ -691,7 +746,7 @@ const translations = {
         "tab_description":"Descrizione","tab_details":"Dettagli","tab_shipping":"Spedizione","details_text":"Qui puoi mostrare le caratteristiche tecniche del prodotto.","shipping_text":"Informazioni su tempi, zone e costi di spedizione.",
         "no_reviews_msg":"Sii il primo a lasciare una recensione per questo prodotto.","review_name_ph":"Il tuo nome","review_comment_ph":"Il tuo commento...","submit_review":"Invia recensione",
 
-        "footer_we_are": "Siamo",
+        "footer_we_are": "La tua opportunità inizia qui.",
         "footer_home": "Inizio",
         "footer_plans": "Piani",
         "footer_about": "Chi siamo",
@@ -708,7 +763,14 @@ const translations = {
         "newsletter_word": "newsletter",
         "newsletter_email_ph": "Email",
         "newsletter_submit": "Invia",
-        "disclaimer": "DPIA Solutions è in fase di prova. Le pubblicazioni attuali sono simulate e non rappresentano un'offerta commerciale reale. Le immagini possono provenire da fonti esterne a scopo illustrativo."
+        "disclaimer": "DPIA Solutions è in fase di prova. Le pubblicazioni attuali sono simulate e non rappresentano un'offerta commerciale reale. Le immagini possono provenire da fonti esterne a scopo illustrativo.",
+        "shipping_title": "Spedizioni",
+        "shipping_intro": "Gli ordini vengono elaborati entro 24h e arrivano in 3–7 giorni lavorativi a seconda del paese.",
+        "shipping_policy1": "Spedizione con numero di tracciamento.",
+        "shipping_policy2": "Costo calcolato al checkout.",
+        "shipping_policy3": "Se la spedizione è in ritardo, scrivici a soporte@dpia.site.",
+        "tab_returns": "Resi",
+        "returns_text": "Puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande. Rimborso del 100% o sostituzione del prodotto."
 
 
     },
@@ -852,8 +914,9 @@ const translations = {
   "chat_header_title": "Czat DPI",
   "chat_placeholder": "Wpisz swoją wiadomość...",
   "chat_send": "Wyślij",
-
-        "footer_we_are": "Jesteśmy",
+        "footer_shipping": "Wysyłka",
+        "footer_returns": "Zwroty i gwarancja",
+        "footer_we_are": "Twoja szansa zaczyna się tutaj.",
         "footer_home": "Start",
         "footer_plans": "Plany",
         "footer_about": "O nas",
@@ -870,7 +933,19 @@ const translations = {
         "newsletter_word": "newslettera",
         "newsletter_email_ph": "E-mail",
         "newsletter_submit": "Wyślij",
-        "disclaimer": "DPIA Solutions znajduje się w fazie testowej. Obecne ogłoszenia są symulowane i nie stanowią oferty handlowej. Obrazy mogą pochodzić z zewnętrznych źródeł i służą wyłącznie celom ilustracyjnym."
+        "disclaimer": "DPIA Solutions znajduje się w fazie testowej. Obecne ogłoszenia są symulowane i nie stanowią oferty handlowej. Obrazy mogą pochodzić z zewnętrznych źródeł i służą wyłącznie celom ilustracyjnym.",
+        "returns_title": "Zwroty i gwarancja",
+        "returns_intro": "W DPIA możesz zwrócić zakup w ciągu 15 dni od otrzymania, bez żadnych pytań.",
+        "returns_policy1": "100% zwrot pieniędzy lub wymiana produktu.",
+        "returns_policy2": "Przetwarzamy zwrot w ciągu 3–5 dni roboczych od otrzymania przesyłki.",
+        "returns_policy3": "Napisz na soporte@dpia.site podając numer zamówienia.",
+        "shipping_title": "Wysyłka",
+        "shipping_intro": "Zamówienia są realizowane w ciągu 24h i docierają w 3–7 dni roboczych w zależności od kraju.",
+        "shipping_policy1": "Wysyłka z numerem śledzenia.",
+        "shipping_policy2": "Koszt obliczany przy finalizacji zakupu.",
+        "shipping_policy3": "Jeśli przesyłka się opóźni, napisz na soporte@dpia.site.",
+        "tab_returns": "Zwroty",
+        "returns_text": "Możesz zwrócić zakup w ciągu 15 dni od otrzymania, bez żadnych pytań. 100% zwrot pieniędzy lub wymiana produktu."
 
 
     },
@@ -1010,8 +1085,9 @@ const translations = {
   "chat_header_title": "Chat DPI",
   "chat_placeholder": "Saisissez votre message...",
   "chat_send": "Envoyer",
-
-        "footer_we_are": "Nous sommes",
+        "footer_shipping": "Livraisons",
+        "footer_returns": "Retours et garantie",
+        "footer_we_are": "Votre opportunité commence ici.",
         "footer_home": "Accueil",
         "footer_plans": "Plans",
         "footer_about": "À propos",
@@ -1028,7 +1104,19 @@ const translations = {
         "newsletter_word": "newsletter",
         "newsletter_email_ph": "E-mail",
         "newsletter_submit": "Envoyer",
-        "disclaimer": "DPIA Solutions est actuellement en phase de test. Les entrées actuelles sont simulées et ne représentent pas une offre commerciale réelle. Les images peuvent provenir de sources externes à des fins d'illustration."
+        "disclaimer": "DPIA Solutions est actuellement en phase de test. Les entrées actuelles sont simulées et ne représentent pas une offre commerciale réelle. Les images peuvent provenir de sources externes à des fins d'illustration.",
+        "returns_title": "Retours et garantie",
+        "returns_intro": "Chez DPIA, vous pouvez retourner votre achat dans les 15 jours suivant la réception, sans poser de questions.",
+        "returns_policy1": "Remboursement à 100 % ou échange du produit.",
+        "returns_policy2": "Nous traitons les remboursements dans les 3 à 5 jours ouvrables après réception du retour.",
+        "returns_policy3": "Écrivez à soporte@dpia.site avec votre numéro de commande.",
+        "shipping_title": "Livraisons",
+        "shipping_intro": "Les commandes sont traitées sous 24h et arrivent en 3 à 7 jours ouvrables selon votre pays.",
+        "shipping_policy1": "Livraison avec numéro de suivi.",
+        "shipping_policy2": "Coût calculé à la finalisation de l'achat.",
+        "shipping_policy3": "Si la livraison est retardée, écrivez-nous à soporte@dpia.site.",
+        "tab_returns": "Retours",
+        "returns_text": "Vous pouvez retourner votre achat dans les 15 jours suivant sa réception, sans poser de questions. Remboursement à 100 % ou échange de produit."
 
 
 
@@ -1172,8 +1260,9 @@ const translations = {
   "chat_placeholder": "Nachricht eingeben...",
   "chat_send": "Senden",
 
-
-        "footer_we_are": "Wir sind",
+        "footer_shipping": "Versand",
+        "footer_returns": "Rückgabe und Garantie",
+        "footer_we_are": "WDeine Chance beginnt hier.",
         "footer_home": "Startseite",
         "footer_plans": "Pläne",
         "footer_about": "Über uns",
@@ -1190,7 +1279,19 @@ const translations = {
         "newsletter_word": "Newsletter",
         "newsletter_email_ph": "E-Mail",
         "newsletter_submit": "Senden",
-        "disclaimer": "DPIA Solutions befindet sich in der Testphase. Die aktuellen Einträge sind simuliert und stellen kein tatsächliches kommerzielles Angebot dar. Bilder können zu Illustrationszwecken aus externen Quellen stammen."
+        "disclaimer": "DPIA Solutions befindet sich in der Testphase. Die aktuellen Einträge sind simuliert und stellen kein tatsächliches kommerzielles Angebot dar. Bilder können zu Illustrationszwecken aus externen Quellen stammen.",
+        "returns_title": "Rückgabe und Garantie",
+        "returns_intro": "Bei DPIA können Sie Ihren Einkauf innerhalb von 15 Tagen nach Erhalt ohne Angabe von Gründen zurückgeben.",
+        "returns_policy1": "100% Rückerstattung oder Produktaustausch.",
+        "returns_policy2": "Wir bearbeiten Rückerstattungen innerhalb von 3–5 Werktagen nach Erhalt der Rücksendung.",
+        "returns_policy3": "Schreiben Sie an soporte@dpia.site mit Ihrer Bestellnummer.",
+        "shipping_title": "Versand",
+        "shipping_intro": "Bestellungen werden innerhalb von 24 Stunden bearbeitet und treffen je nach Land in 3 bis 7 Werktagen ein.",
+        "shipping_policy1": "Versand mit Sendungsverfolgung.",
+        "shipping_policy2": "Kosten werden beim Checkout berechnet.",
+        "shipping_policy3": "Wenn sich die Lieferung verzögert, schreiben Sie uns an soporte@dpia.site.",
+        "tab_returns": "Rückgabe",
+        "returns_text": "Sie können Ihren Einkauf innerhalb von 15 Tagen nach Erhalt zurückgeben, ohne Angabe von Gründen. 100 % Rückerstattung oder Produktaustausch."
 
 
     }
