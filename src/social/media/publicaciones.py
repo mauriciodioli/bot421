@@ -256,7 +256,7 @@ def media_publicaciones_mostrar_dpi():
         if ambitos == 'inicialDominio':
             ambitos = 'Laboral'
         if categoria == None:
-            categoria = 'Publicidad'
+            categoria = '18'
         
         layout = 'layout_dpi'
         if not authorization_header:

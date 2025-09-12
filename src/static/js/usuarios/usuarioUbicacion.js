@@ -31,7 +31,7 @@ function ensureCodigoPostal(defaultCp = '1') {
 }
 
 // Uso:
-const codigoPostal = ensureCodigoPostal('1');
+codigoPostal = ensureCodigoPostal('1');
 console.log("Código postal en uso:", codigoPostal);
 
 

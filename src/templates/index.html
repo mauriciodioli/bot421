@@ -23,28 +23,41 @@
       {% include 'ambitos/carrucelDominios.html' %}
 
    <!-- Banda azul brillante arriba -->  
-            <div class="horizontal-padding vertical-padding" style="margin-top: 50px;" >
-             <div class="horizontal-padding vertical-padding">                
-                <section class="sobre-nosotros" id="sobre-nosotros">
-                  <div class="container" id="container-sobre-nosotros">
-                    <div class="flex-container">
-                      <div class="image-container-sobre-nosotros">
-                       <h1 class="sobre-nosotros" style="color: rgb(224, 224, 223); font-size: 52px; font-family: 'Montserrat', sans-serif; margin-bottom: 20px; font-weight: 700;">
-                           Learn to invest, work, and enjoy everything in one place.
-                        </h1>
-                        <h4 class="sobre-nosotros-descripcion" style="color: rgb(201, 197, 197); font-size: 20px; line-height: 1.8; margin-top: 30px;">
-                          Learn to invest in your projects, in the market, with partners. Get help with tutorials and generate additional income with our courses focused on leveraging new technologies to buy, sell, or use for your own projects.
-                        </h4>
-                        <form action="/dpi-in" method="GET">
-                          <button class="card-button long-button" style="margin-top: 20px;" type="submit">Go to content</button>
-                        </form>
-                      </div>
-                
-                      <div class="text-container-sobre-nosotros">
-                        <img src="/static/dpi.jpg" alt="Descripción de la imagen">
-                      </div>
-                    </div>
-                  </div>
+            <div class="horizontal-padding vertical-padding" style="margin-top: 50px;">
+  <div class="horizontal-padding vertical-padding">
+    <section class="sobre-nosotros" id="sobre-nosotros">
+      <div class="container" id="container-sobre-nosotros">
+        <div class="flex-container">
+          <div class="image-container-sobre-nosotros">
+            <h1 class="sobre-nosotros"
+                data-translate="dpi_title">
+              <!-- i18n -->
+            </h1>
+
+            <h4 class="sobre-nosotros-descripcion"
+                data-translate="dpi_description">
+              <!-- i18n -->
+            </h4>
+
+            <form action="/dpi-in" method="GET">
+              <button class="card-button long-button" style="margin-top: 20px;" type="submit"
+                      data-translate="dpi_button">
+                <!-- i18n -->
+              </button>
+            </form>
+          </div>
+
+          <div class="text-container-sobre-nosotros">
+            <img src="/static/dpi.jpg"
+                 data-translate="dpi_image_alt"
+                 data-translate-target="alt"
+                 alt="">
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
 
 
 
@@ -64,31 +77,39 @@
 
 
                   <div class="card-container-grande">
-                    <div class="numRequeris-card1 card">
-                      <div class="card-content">
-                        <p class="card-title">Domains</p>
-                        <p class="card-number">11</p>
+                      <div class="numRequeris-card1 card">
+                        <div class="card-content">
+                          <p class="card-title" data-translate="dpi_card_domains"></p>
+                          <p class="card-number">11</p>
+                        </div>
+                      </div>
+                      <div class="numRequeris-card2 card">
+                        <div class="card-content">
+                          <p class="card-title" data-translate="dpi_card_signals"></p>
+                          <p class="card-number">89</p>
+                        </div>
+                      </div>
+                      <div class="numRequeris-card3 card">
+                        <div class="card-content">
+                          <p class="card-title" data-translate="dpi_card_posts"></p>
+                          <p class="card-number">34</p>
+                        </div>
+                      </div>
+                      <div class="numRequeris-card4 card">
+                        <div class="card-content">
+                          <p class="card-title" data-translate="dpi_card_courses"></p>
+                          <p class="card-number">5</p>
+                        </div>
                       </div>
                     </div>
-                    <div class="numRequeris-card2 card">
-                      <div class="card-content">
-                        <p class="card-title">Signal</p>
-                        <p class="card-number">89</p>
-                      </div>
+
+                    <div class="launch-banner">
+                      <h2 data-translate="dpi_banner_title"></h2>
+                      <p data-translate="dpi_banner_subtitle"></p>
+                      <a href="#domains-publicaciones" class="btn-discover" data-translate="dpi_banner_button"></a>
                     </div>
-                    <div class="numRequeris-card3 card">
-                      <div class="card-content">
-                        <p class="card-title">Post</p>
-                        <p class="card-number">34</p>
-                      </div>
-                    </div>
-                    <div class="numRequeris-card4 card">
-                      <div class="card-content">
-                        <p class="card-title">Curses</p>
-                        <p class="card-number">5</p>
-                      </div>
-                    </div>
-                  </div>
+
+
                 </section>
                 
               </div>
@@ -98,8 +119,7 @@
               
                   
 
-                  
-                  
+
        
 
 
@@ -111,6 +131,9 @@
                     </div>
                 </section>
                 
+                  
+
+                  
                   
                     <!-- Espaciador -->
                   <div style="height: 20px;"></div>
@@ -147,104 +170,129 @@
       
         
 
+<div class="horizontal-padding vertical-padding py-4">
+  <section class="contacto" id="contacto">
+    <div class="contactos-info">
+      <h1 class="contactos-titulo" style="color: gold;" data-translate="dpi_contact_title">
+        CONTACTO
+      </h1>
+      <h3 class="contactos-titulo" style="color: white;" data-translate="dpi_contact_subtitle">
+        TE ASESORAMOS
+      </h3>
+      <form action="/llamada/index-contacto" method="GET">
+        <button class="card-button long-button" style="margin-top: 20px;" type="submit"
+                data-translate="dpi_contact_button">
+          Habla con nosotros
+        </button>
+      </form>
+    </div>
+  </section>
+</div>
 
 
 
 
-              <div class="horizontal-padding vertical-padding py-4">
-                <section class="contacto" id="contacto">
-                  <div class="contactos-info">
-                    <h1 class="contactos-titulo"  style="color: gold;"> CONTACT </h1>
-                    <h3 class="contactos-titulo" style="color:white">WE ADVISE YOU</h3>
-                    <form action="/llamada/index-contacto" method="GET">
-                      <button class="card-button long-button" style="margin-top: 20px;" type="submit">Talk to us</button>
-                    </form>
-                  </div>
-                </section> 
-              </div>
-           
-              <div class="horizontal-padding vertical-padding py-4">
-                <section class="ingreso" id="ingreso">
-                    <div class="ingreso-info">              
-                        <h1 class="ingreso-titulo" style="color: gold;">Login</h1>
-                        {% with messages = get_flashed_messages() %}
-                            {% if messages %}
+
+              
+                  <div class="horizontal-padding vertical-padding py-4">
+                        <section class="ingreso" id="ingreso">
+                          <div class="ingreso-info">
+                            <h1 class="ingreso-titulo" style="color: gold;" data-translate="dpi_login_title">
+                              Iniciar sesión
+                            </h1>
+
+                            {% with messages = get_flashed_messages() %}
+                              {% if messages %}
                                 <ul class="flashes">
-                                    {% for message in messages %}
-                                        <li>{{ message }}</li>
-                                    {% endfor %}
+                                  {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                  {% endfor %}
                                 </ul>
-                            {% endif %}
-                        {% endwith %}
-            
-                        <div class="form-container">
-                            <div class="row">
+                              {% endif %}
+                            {% endwith %}
+
+                            <div class="form-container">
+                              <div class="row">
                                 {% with messages = get_flashed_messages() %}
-                                    {% if messages %}
-                                        <div class="alert alert-danger">
-                                            {% for message in messages %}
-                                                <p>{{ message }}</p>
-                                            {% endfor %}
-                                        </div>
-                                    {% endif %}
+                                  {% if messages %}
+                                    <div class="alert alert-danger">
+                                      {% for message in messages %}
+                                        <p>{{ message }}</p>
+                                      {% endfor %}
+                                    </div>
+                                  {% endif %}
                                 {% endwith %}
-            
+
                                 <form id="loginForm" method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
-                                    <div class="form-group">
-                                        <!--<label for="correo_electronico" class="text-white">Correo electrónico:</label>-->
-                                        <input type="email" class="form-control mb-3" id="correo_electronico" name="correo_electronico" autocomplete="email" placeholder="Correo electrónico" required>
+                                  <div class="form-group">
+                                    <input type="email"
+                                          class="form-control mb-3"
+                                          id="correo_electronico"
+                                          name="correo_electronico"
+                                          autocomplete="email"
+                                          placeholder="Correo electrónico"
+                                          data-translate-placeholder="dpi_login_email_ph"
+                                          required>
+                                  </div>
+
+                                  <div class="form-group">
+                                    <input type="password"
+                                          class="form-control"
+                                          id="password"
+                                          name="password"
+                                          placeholder="Contraseña"
+                                          data-translate-placeholder="dpi_login_password_ph"
+                                          required>
+                                    <span class="toggle-password"
+                                          onclick="togglePasswordVisibility('password')"
+                                          title="Mostrar/ocultar"
+                                         
+                                          data-translate-target="title">👁️</span>
+                                  </div>
+
+                                  <!-- Campos ocultos para la ubicación -->
+                                  <input type="hidden" id="latitud" name="latitud">
+                                  <input type="hidden" id="longitud" name="longitud">
+
+                                  <div class="row justify-content-center">
+                                    <div class="col-md-6 mb-4">
+                                      <button type="submit" class="btn btn-primary" data-translate="dpi_login_submit">
+                                        Ingresar
+                                      </button>
                                     </div>
-            
-                                    <div class="form-group">
-                                        <!--<label for="password" class="text-white">Contraseña:</label>-->
-                                        <input type="password" class="form-control" id="password" name="password" required>
-                                        <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
-                                    </div>     
-                                    
-                                    <!-- Campos ocultos para la ubicación -->
-                                    <input type="hidden" id="latitud" name="latitud">
-                                    <input type="hidden" id="longitud" name="longitud">
-            
-                                    <div class="row justify-content-center">
-                                        <div class="col-md-6 mb-4">
-                                            <button type="submit" class="btn btn-primary">Sign in</button>
-                                        </div>
-                                        <div class="col-md-6 mb-2">
-                                            <a href="/registrar_usuario">
-                                                <button type="button" class="btn btn-secondary">Register now</button>
-                                            </a>
-                                        </div>
+                                    <div class="col-md-6 mb-2">
+                                      <a href="/registrar_usuario">
+                                        <button type="button" class="btn btn-secondary" data-translate="dpi_login_register">
+                                          Registrarse ahora
+                                        </button>
+                                      </a>
                                     </div>
+                                  </div>
                                 </form>
 
-
-                                
-                                <form class="mt-4 bts" method="POST" action="{{ url_for('autenticacion.login_google') }}">                               
-                                    <a class="gplogin social"><i class="fa fa-google-plus"></i><span>Sign in with Google</span></a>
-                                    <!--<button type="submit" class="btn btn-primary btn-block my-2">Iniciar sesión con Google</button>-->
+                                <form class="mt-4 bts" method="POST" action="{{ url_for('autenticacion.login_google') }}">
+                                  <a class="gplogin social" role="button">
+                                    <i class="fa fa-google-plus"></i>
+                                    <span data-translate="dpi_login_google">Iniciar sesión con Google</span>
+                                  </a>
                                 </form>
 
-
-                                
-                               <!--
-                                <form class="mt-4 bts" method="POST" action="{{ url_for('autenticacion.login_google') }}">    
-                                  <button type="submit" class="gplogin social"><i class="fa fa-google-plus"></i><span>Sign in with Google</span></button>
-                                </form>
-                                 -->
-
-                                
-                                <!-- Enlace para recuperación de contraseña -->
                                 <div class="row justify-content-center mt-3">
-                                    <div class="col-md-12 text-center">
-                                        <a href="/usuarios_recuperar_contrasena_usuario_sistema" class="btn btn-link text-white">Forgot your password?</a>
-                                    </div>
+                                  <div class="col-md-12 text-center">
+                                    <a href="/usuarios_recuperar_contrasena_usuario_sistema"
+                                      class="btn btn-link text-white"
+                                      data-translate="dpi_login_forgot">
+                                      ¿Olvidaste tu contraseña?
+                                    </a>
+                                  </div>
                                 </div>
-            
+
+                              </div>
                             </div>
-                        </div>
-                    </div>
-                </section> 
-            </div>
+                          </div>
+                        </section>
+                      </div>
+
             
 
 
@@ -269,28 +317,38 @@
 
   
 <!-- Modal -->
- 
-
-<div class="modal fade" id="modalSeleccionCodigoPostal" tabindex="-1" aria-labelledby="modalSeleccionCodigoPostalLabel" aria-hidden="true">
+ <div class="modal fade" id="modalSeleccionCodigoPostal" tabindex="-1" aria-labelledby="modalSeleccionCodigoPostalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" style="color: black;"  id="modalSeleccionCodigoPostalLabel">Selecciona tu Código Postal</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-              <!-- Aquí se cargará el código postal desde el localStorage -->
-              <label for="codigoPostalModal">Código Postal:</label>
-              
-              <input type="text" id="codigoPostalModal" class="form-control" placeholder="Ingresa tu código postal">
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary" onclick="guardarCodigoPostal()">Guardar</button>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="color: black;"
+            id="modalSeleccionCodigoPostalLabel"
+            data-translate="dpi_zip_modal_title">
+          Selecciona tu Código Postal
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Cerrar"
+                data-translate="dpi_zip_btn_close_aria"
+                data-translate-target="aria-label"></button>
       </div>
+
+      <div class="modal-body">
+        <label for="codigoPostalModal" style="color: black;" data-translate="dpi_zip_label">Código Postal:</label>
+        <input type="text" id="codigoPostalModal" class="form-control"
+               placeholder="Ingresa tu código postal"
+               data-translate-placeholder="dpi_zip_placeholder">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                data-translate="dpi_zip_btn_close">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarCodigoPostal()"
+                data-translate="dpi_zip_btn_save">Guardar</button>
+      </div>
+    </div>
   </div>
 </div>
+
 
 
 
@@ -404,12 +462,18 @@
 
 
 
+  document.querySelector(".btn-discover")?.addEventListener("click", () => {
+  setTimeout(() => document.getElementById("ambitoActual")?.focus({ preventScroll: true }), 400);
+});
+
 
   </script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/mensajeinicial.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpiTruncateTexto.css') }}">
   <script src="{{ url_for('static', filename='js/usuarios/usuarioUbicacion.js') }}"></script>
   <script src="{{ url_for('static', filename='js/logs.js') }}"></script>
-  
+
+  <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
   
  
 

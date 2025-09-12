@@ -30,7 +30,29 @@ from models.publicaciones.publicaciones import Publicacion
 
 ambitosCategorias = Blueprint('ambitosCategorias', __name__)
 
+# Diccionario de traducciones
+TRADUCCIONES = {
+    'Laboral': {
+        'es': 'Laboral',   # Español
+        'in': 'Publicity',      # Inglés
+        'fr': 'travail',   # Francés
+        'pt': 'trabalho',  # Portugués
+        'it': 'lavoro',    # Italiano
+        'pl': 'praca'      # Polaco
+    }
+}
 
+
+def traducir_ambito(nombre, idioma):
+    """
+    Devuelve la traducción del ámbito según el idioma.
+    Si no existe traducción, devuelve el nombre original.
+    """
+    traducciones_ambito = TRADUCCIONES.get(nombre)
+    if not traducciones_ambito:
+        return nombre  # no hay traducción definida
+    
+    return traducciones_ambito.get(idioma, nombre)
 
 @ambitosCategorias.route('/social-media-ambitosCategorias-categorias/')
 def social_media_social_categorias():
@@ -41,13 +63,14 @@ def social_media_social_categorias():
 def social_media_ambitosCategorias_categoria_mostrar():
     try:
         idioma = request.cookies.get('language', 'in')  # Idioma destino
-        ambito_nombre = request.form.get('ambito') or 'Laboral'
+        ambito_nombre = request.form.get('ambito') or 'Work'
         codigo_postal = request.form.get('cp')
-
+        ambito_nombre = traducir_ambito(ambito_nombre, idioma)
         print(f"[DEBUG] idioma recibido: {idioma}")
         print(f"[DEBUG] código postal recibido: {codigo_postal}")
         print(f"[DEBUG] ambito_nombre recibido: {ambito_nombre}")
         with get_db_session() as session:
+                    
             # Paso 1: Buscar el ámbito directamente
             ambito = session.query(Ambitos).filter(
                 func.lower(Ambitos.valor) == ambito_nombre.lower(),
@@ -56,8 +79,12 @@ def social_media_ambitosCategorias_categoria_mostrar():
             ).first()
 
             if not ambito:
-                print("[DEBUG] Ámbito no encontrado directamente, devolviendo error.")
-                return jsonify({'error': 'Ámbito no encontrado en este idioma'}), 404
+                # ⚠️ NO rompas el contrato del frontend: devuelve siempre el mismo shape
+                return jsonify({
+                    'ok': True,
+                    'categorias': [],   # ← SIEMPRE array
+                    'mensaje': 'Ámbito no encontrado para este idioma'
+                }), 200
 
             print(f"[DEBUG] Ámbito encontrado: {ambito.id} | {ambito.valor}")
 
