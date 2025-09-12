@@ -319,6 +319,7 @@ section[id] {
   
   /* Media Queries para pantallas más pequeñas (responsive) */
   @media (max-width: 768px) {
+    #stats-card-resumen { display: none; }
     .card {
       width: calc(50% - 8px); /* Ajustar las tarjetas al 50% del contenedor para pantallas medianas */
       height: 106px; /* Mantener la altura */
@@ -337,6 +338,7 @@ section[id] {
   }
   
   @media (max-width: 480px) {
+     #stats-card-resumen { display: none; }
     .card {
       width: 100%; /* En pantallas pequeñas, que cada tarjeta ocupe todo el ancho */
       height: 106px; /* Mantener la altura */

@@ -59,129 +59,90 @@
   </div>
 </div>
 
+<!-- ===== Bloque ordenado y validado ===== -->
+<div class="horizontal-padding vertical-padding">
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                  <div class="card-container-grande">
-                      <div class="numRequeris-card1 card">
-                        <div class="card-content">
-                          <p class="card-title" data-translate="dpi_card_domains"></p>
-                          <p class="card-number">11</p>
-                        </div>
-                      </div>
-                      <div class="numRequeris-card2 card">
-                        <div class="card-content">
-                          <p class="card-title" data-translate="dpi_card_signals"></p>
-                          <p class="card-number">89</p>
-                        </div>
-                      </div>
-                      <div class="numRequeris-card3 card">
-                        <div class="card-content">
-                          <p class="card-title" data-translate="dpi_card_posts"></p>
-                          <p class="card-number">34</p>
-                        </div>
-                      </div>
-                      <div class="numRequeris-card4 card">
-                        <div class="card-content">
-                          <p class="card-title" data-translate="dpi_card_courses"></p>
-                          <p class="card-number">5</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="launch-banner">
-                      <h2 data-translate="dpi_banner_title"></h2>
-                      <p data-translate="dpi_banner_subtitle"></p>
-                      <a href="#domains-publicaciones" class="btn-discover" data-translate="dpi_banner_button"></a>
-                    </div>
-
-
-                </section>
-                
-              </div>
-              
-              <div class="horizontal-padding vertical-padding">
-
-              
-                  
-
-
-       
-
-
-
-
-                <section class="domains" id="domains">
-                    <div class="card-container">
-                        <!-- Aquí se insertará los dominios para pantallas chicas -->                      
-                    </div>
-                </section>
-                
-                  
-
-                  
-                  
-                    <!-- Espaciador -->
-                  <div style="height: 20px;"></div>
-
-                  
-                  <section class="domains-publicaciones" id="domains-publicaciones">
-                      <div class="jumbotron">
-                     
-                          <h1 name="ambitoActual" id="ambitoActual" style="color: gold;" tabindex="0"></h1>
-                          {% include 'ambitos/navBarCaracteristicas.html' %}  <!-- Aquí se incluye la barra de navegación -->
-                          <div class="splashCarga" id="splashNotificaciones" style="display: none;">
-                            <div class="splash-contenido">
-                                <div class="spinner"></div>
-                              </div>
-                          </div>
-  
-                          <div class="dpi-muestra-publicaciones-centrales" tabindex="0">
-                        
-                          <!-- Aquí se insertará la galería -->
-                        </div>
-                      </div>
-                  </section>
-
-                  
-               
-              </div>
-
-         
-          </section>
-                
+  <!-- Cards -->
+  <section class="stats" id="stats-card-resumen">
+    <div class="card-container-grande">
+      <div class="numRequeris-card1 card">
+        <div class="card-content">
+          <p class="card-title" data-translate="dpi_card_domains"></p>
+          <p class="card-number">11</p>
         </div>
+      </div>
+
+      <div class="numRequeris-card2 card">
+        <div class="card-content">
+          <p class="card-title" data-translate="dpi_card_signals"></p>
+          <p class="card-number">89</p>
+        </div>
+      </div>
+
+      <div class="numRequeris-card3 card">
+        <div class="card-content">
+          <p class="card-title" data-translate="dpi_card_posts"></p>
+          <p class="card-number">34</p>
+        </div>
+      </div>
+
+      <div class="numRequeris-card4 card">
+        <div class="card-content">
+          <p class="card-title" data-translate="dpi_card_courses"></p>
+          <p class="card-number">5</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner -->
+  <div class="launch-banner">
+    <h2 data-translate="dpi_banner_title"></h2>
+    <p data-translate="dpi_banner_subtitle"></p>
+    <a href="#domains-publicaciones" class="btn-discover" data-translate="dpi_banner_button"></a>
+  </div>
+
+  <!-- Lista de dominios (móviles) -->
+  <section class="domains" id="domains">
+    <div class="card-container">
+      <!-- Aquí se insertará los dominios para pantallas chicas -->
+    </div>
+  </section>
+
+  <!-- Espaciador -->
+  <div style="height: 20px;"></div>
+
+  <!-- Publicaciones -->
+  <section class="domains-publicaciones" id="domains-publicaciones">
+    <div class="jumbotron">
+      <h1 name="ambitoActual" id="ambitoActual" style="color: gold;" tabindex="0"></h1>
+
+      {% include 'ambitos/navBarCaracteristicas.html' %}  <!-- Aquí se incluye la barra de navegación -->
+
+      <div class="splashCarga" id="splashNotificaciones" style="display: none;">
+        <div class="splash-contenido">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <div class="dpi-muestra-publicaciones-centrales" tabindex="0">
+        <!-- Aquí se insertará la galería -->
+      </div>
+    </div>
+  </section>
+
+</div>
+<!-- /horizontal-padding vertical-padding -->
 
 
-      
-        
-
+<!-- Contacto -->
 <div class="horizontal-padding vertical-padding py-4">
   <section class="contacto" id="contacto">
     <div class="contactos-info">
-      <h1 class="contactos-titulo" style="color: gold;" data-translate="dpi_contact_title">
-        CONTACTO
-      </h1>
-      <h3 class="contactos-titulo" style="color: white;" data-translate="dpi_contact_subtitle">
-        TE ASESORAMOS
-      </h3>
+      <h1 class="contactos-titulo" style="color: gold;" data-translate="dpi_contact_title">CONTACTO</h1>
+      <h3 class="contactos-titulo" style="color: white;" data-translate="dpi_contact_subtitle">TE ASESORAMOS</h3>
       <form action="/llamada/index-contacto" method="GET">
-        <button class="card-button long-button" style="margin-top: 20px;" type="submit"
-                data-translate="dpi_contact_button">
+        <button class="card-button long-button" style="margin-top: 20px;" type="submit" data-translate="dpi_contact_button">
           Habla con nosotros
         </button>
       </form>
@@ -190,121 +151,106 @@
 </div>
 
 
+<!-- Login -->
+<div class="horizontal-padding vertical-padding py-4">
+  <section class="ingreso" id="ingreso">
+    <div class="ingreso-info">
+      <h1 class="ingreso-titulo" style="color: gold;" data-translate="dpi_login_title">Iniciar sesión</h1>
 
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flashes">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
 
+      <div class="form-container">
+        <div class="row">
 
-              
-                  <div class="horizontal-padding vertical-padding py-4">
-                        <section class="ingreso" id="ingreso">
-                          <div class="ingreso-info">
-                            <h1 class="ingreso-titulo" style="color: gold;" data-translate="dpi_login_title">
-                              Iniciar sesión
-                            </h1>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              <div class="alert alert-danger">
+                {% for message in messages %}
+                  <p>{{ message }}</p>
+                {% endfor %}
+              </div>
+            {% endif %}
+          {% endwith %}
 
-                            {% with messages = get_flashed_messages() %}
-                              {% if messages %}
-                                <ul class="flashes">
-                                  {% for message in messages %}
-                                    <li>{{ message }}</li>
-                                  {% endfor %}
-                                </ul>
-                              {% endif %}
-                            {% endwith %}
+          <form id="loginForm" method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
+            <div class="form-group">
+              <input
+                type="email"
+                class="form-control mb-3"
+                id="correo_electronico"
+                name="correo_electronico"
+                autocomplete="email"
+                placeholder="Correo electrónico"
+                data-translate-placeholder="dpi_login_email_ph"
+                required>
+            </div>
 
-                            <div class="form-container">
-                              <div class="row">
-                                {% with messages = get_flashed_messages() %}
-                                  {% if messages %}
-                                    <div class="alert alert-danger">
-                                      {% for message in messages %}
-                                        <p>{{ message }}</p>
-                                      {% endfor %}
-                                    </div>
-                                  {% endif %}
-                                {% endwith %}
+            <div class="form-group">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                name="password"
+                placeholder="Contraseña"
+                data-translate-placeholder="dpi_login_password_ph"
+                required>
+              <span
+                class="toggle-password"
+                onclick="togglePasswordVisibility('password')"
+                title="Mostrar/ocultar"
+                data-translate="dpi_login_toggle_title"
+                data-translate-target="title">👁️</span>
+            </div>
 
-                                <form id="loginForm" method="POST" action="{{ url_for('autenticacion.loginUsuario') }}">
-                                  <div class="form-group">
-                                    <input type="email"
-                                          class="form-control mb-3"
-                                          id="correo_electronico"
-                                          name="correo_electronico"
-                                          autocomplete="email"
-                                          placeholder="Correo electrónico"
-                                          data-translate-placeholder="dpi_login_email_ph"
-                                          required>
-                                  </div>
+            <!-- Campos ocultos para la ubicación -->
+            <input type="hidden" id="latitud" name="latitud">
+            <input type="hidden" id="longitud" name="longitud">
 
-                                  <div class="form-group">
-                                    <input type="password"
-                                          class="form-control"
-                                          id="password"
-                                          name="password"
-                                          placeholder="Contraseña"
-                                          data-translate-placeholder="dpi_login_password_ph"
-                                          required>
-                                    <span class="toggle-password"
-                                          onclick="togglePasswordVisibility('password')"
-                                          title="Mostrar/ocultar"
-                                         
-                                          data-translate-target="title">👁️</span>
-                                  </div>
+            <div class="row justify-content-center">
+              <div class="col-md-6 mb-4">
+                <button type="submit" class="btn btn-primary" data-translate="dpi_login_submit">Ingresar</button>
+              </div>
+              <div class="col-md-6 mb-2">
+                <a href="/registrar_usuario">
+                  <button type="button" class="btn btn-secondary" data-translate="dpi_login_register">Registrarse ahora</button>
+                </a>
+              </div>
+            </div>
+          </form>
 
-                                  <!-- Campos ocultos para la ubicación -->
-                                  <input type="hidden" id="latitud" name="latitud">
-                                  <input type="hidden" id="longitud" name="longitud">
+          <form class="mt-4 bts" method="POST" action="{{ url_for('autenticacion.login_google') }}">
+            <a class="gplogin social" role="button">
+              <i class="fa fa-google-plus"></i>
+              <span data-translate="dpi_login_google">Iniciar sesión con Google</span>
+            </a>
+          </form>
 
-                                  <div class="row justify-content-center">
-                                    <div class="col-md-6 mb-4">
-                                      <button type="submit" class="btn btn-primary" data-translate="dpi_login_submit">
-                                        Ingresar
-                                      </button>
-                                    </div>
-                                    <div class="col-md-6 mb-2">
-                                      <a href="/registrar_usuario">
-                                        <button type="button" class="btn btn-secondary" data-translate="dpi_login_register">
-                                          Registrarse ahora
-                                        </button>
-                                      </a>
-                                    </div>
-                                  </div>
-                                </form>
+          <div class="row justify-content-center mt-3">
+            <div class="col-md-12 text-center">
+              <a
+                href="/usuarios_recuperar_contrasena_usuario_sistema"
+                class="btn btn-link text-white"
+                data-translate="dpi_login_forgot">
+                ¿Olvidaste tu contraseña?
+              </a>
+            </div>
+          </div>
 
-                                <form class="mt-4 bts" method="POST" action="{{ url_for('autenticacion.login_google') }}">
-                                  <a class="gplogin social" role="button">
-                                    <i class="fa fa-google-plus"></i>
-                                    <span data-translate="dpi_login_google">Iniciar sesión con Google</span>
-                                  </a>
-                                </form>
-
-                                <div class="row justify-content-center mt-3">
-                                  <div class="col-md-12 text-center">
-                                    <a href="/usuarios_recuperar_contrasena_usuario_sistema"
-                                      class="btn btn-link text-white"
-                                      data-translate="dpi_login_forgot">
-                                      ¿Olvidaste tu contraseña?
-                                    </a>
-                                  </div>
-                                </div>
-
-                              </div>
-                            </div>
-                          </div>
-                        </section>
-                      </div>
-
-            
-
-
-            </div> <!-- aqui va todo ubicado en el centro es el fin de la etiqueta que contiene al centro--> 
-            
-       
-       
+        </div>
       </div>
+
     </div>
-  </div>  
-
-
+  </section>
+</div>
+<!-- ===== Fin bloque ordenado ===== -->
 
 
 
