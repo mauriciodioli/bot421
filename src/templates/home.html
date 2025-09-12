@@ -25,25 +25,37 @@
 
 
 
+
 <!-- Modal -->
- 
-<div class="modal fade" id="modalSeleccionCodigoPostal" tabindex="-1" aria-labelledby="modalSeleccionCodigoPostalLabel" aria-hidden="true">
+ <div class="modal fade" id="modalSeleccionCodigoPostal" tabindex="-1" aria-labelledby="modalSeleccionCodigoPostalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h5 class="modal-title" style="color: black;"  id="modalSeleccionCodigoPostalLabel">Selecciona tu Código Postal</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-          </div>
-          <div class="modal-body">
-              <!-- Aquí se cargará el código postal desde el localStorage -->
-              <label for="codigoPostalModal">Código Postal:</label>
-              <input type="text" id="codigoPostalModal" class="form-control" placeholder="Ingresa tu código postal">
-          </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary" onclick="guardarCodigoPostal()">Guardar</button>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="color: black;"
+            id="modalSeleccionCodigoPostalLabel"
+            data-translate="dpi_zip_modal_title">
+          Selecciona tu Código Postal
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Cerrar"
+               
+                data-translate-target="aria-label"></button>
       </div>
+
+      <div class="modal-body">
+        <label for="codigoPostalModal" style="color: black;" data-translate="dpi_zip_label">Código Postal:</label>
+        <input type="text" id="codigoPostalModal" class="form-control"
+               placeholder="Ingresa tu código postal"
+               data-translate-placeholder="dpi_zip_placeholder">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                data-translate="dpi_zip_btn_close">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarCodigoPostal()"
+                data-translate="dpi_zip_btn_save">Guardar</button>
+      </div>
+    </div>
   </div>
 </div>
 

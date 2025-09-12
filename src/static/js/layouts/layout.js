@@ -61,10 +61,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Asignar valores dinámicos al formulario (si es necesario)
         let access_token = localStorage.getItem("access_token")
     
-        var ambito = localStorage.getItem("dominio");
+        var ambito6 = localStorage.getItem("dominio");
         
         document.getElementById('access_token_form_Ventas').value = access_token;
-        document.getElementById('ambito_form_Ventas').value = ambito;
+        document.getElementById('ambito_form_Ventas').value = ambito6;
         // Enviar el formulario
         form.submit();
     });
@@ -79,10 +79,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Asignar valores dinámicos al formulario (si es necesario)
         let access_token = localStorage.getItem("access_token")
     
-        var ambito = localStorage.getItem("dominio");
+        var ambito3 = localStorage.getItem("dominio");
         
         document.getElementById('access_token_btn_compras').value = access_token;
-        document.getElementById('ambito_btn_compras').value = ambito;
+        document.getElementById('ambito_btn_compras').value = ambito3;
         // Enviar el formulario
         form.submit();
     });
@@ -98,10 +98,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Asignar valores dinámicos al formulario (si es necesario)
         let access_token = localStorage.getItem("access_token")
     
-        var ambito = localStorage.getItem("dominio");
+        var ambito4 = localStorage.getItem("dominio");
         
         document.getElementById('access_token_btn_consultas').value = access_token;
-        document.getElementById('ambito_btn_consultas').value = ambito;
+        document.getElementById('ambito_btn_consultas').value = ambito4;
         // Enviar el formulario
         form.submit();
     });
