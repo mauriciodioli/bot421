@@ -250,7 +250,9 @@
       <!-- Columna form (oculta para siempre) -->
       <div class="dpia-contact__form" aria-hidden="true"></div>
     </div>
+    
   </div>
+  <div class="dpi-login-contact-form__bg-top" style="background-color: #061e35"></div>
 </section>
 
 
@@ -261,6 +263,8 @@
 <div class="horizontal-padding vertical-padding py-4">
   <section class="ingreso" id="ingreso">
     <div class="ingreso-info">
+      <img class="ingreso-bg" src="/static/img/dpi_login.jpg" alt="" aria-hidden="true" loading="lazy">
+
    <h2 class="ingreso-titulo ingreso-titulo--accent" data-translate="dpi_login_title">
       Iniciar sesión
     </h2>
@@ -408,11 +412,13 @@
 
 
 
-<p id="status">Esperando ubicación...</p>
 
   {% include 'notificaciones/cookies/aceptaCookies.html' %}
+ <div class="pull-up-80" style="margin-top: -80px; margin-bottom: -40px;">
+     {% include 'layouts/layout_footer.html' %}
 
-  {% include 'layouts/layout_footer.html' %}
+ </div>
+
 
  
   <!-- Aquí se agrega el script -->  
@@ -457,56 +463,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-
-const $nav    = document.getElementById('dx-nav');
-const $pill   = document.getElementById('dx-active-pill');
-const $desc   = document.getElementById('dx-desc');
-const $more   = document.getElementById('dx-more');
-const $others = document.getElementById('dx-other-pills');
-
-function renderNav(activeKey){
-  $nav.innerHTML = DOMAINS.map(d => `
-    <li>
-      <button class="${d.key===activeKey?'is-active':''}" data-key="${d.key}">
-        <span>${d.name}</span>
-        <span class="dx-arrow"></span>
-      </button>
-    </li>`).join('');
-}
-
-function renderContent(activeKey){
-  const active = DOMAINS.find(d=>d.key===activeKey) || DOMAINS[0];
-  if(!active) return; // nada que mostrar si está vacío
-
-  $pill.textContent = active.name;
-  $desc.textContent = active.desc || '—';
-  $more.href = active.href || '#';
-
-  const others = DOMAINS.filter(d=>d.key!==activeKey);
-  $others.innerHTML = others
-    .map(d => `<button class="pill" data-key="${d.key}">${d.name}</button>`)
-    .join('');
-}
-
-function setActive(key){
-  renderNav(key);
-  renderContent(key);
-}
-
-$nav.addEventListener('click', e=>{
-  const btn = e.target.closest('button[data-key]');
-  if(!btn) return;
-  setActive(btn.dataset.key);
-});
-$others.addEventListener('click', e=>{
-  const b = e.target.closest('button[data-key]');
-  if(!b) return;
-  setActive(b.dataset.key);
-});
-
-// init con el primero que venga del backend
-if (DOMAINS.length) setActive(DOMAINS[0].key);
 
 
 
@@ -642,7 +598,5 @@ if (DOMAINS.length) setActive(DOMAINS[0].key);
 
   <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
  
-
-
 
 {% endblock %}

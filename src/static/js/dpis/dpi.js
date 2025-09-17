@@ -124,115 +124,210 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 return response.json();
             })
-          .then(data => {
-                        const dropdownMenu = $('.dropdown-menu');
-                        const cardContainer = $('.card-container');
+         .then(data => {
+  const dropdownMenu = $('.dropdown-menu');
+  const cardContainer = $('.card-container');
 
-                        dropdownMenu.empty();
-                        cardContainer.empty();
+  dropdownMenu.empty();
+  cardContainer.empty();
 
-                        // 1) Agrego el contenedor del nuevo layout dentro de .card-container
-                        const explore = `
-                            <section class="dpia-explore2" id="expertise">
-                            <div class="dpia-explore2__caption"><p>Expertise</p></div>
-                            <div class="dpia-explore2__grid">
-                                <nav class="dpia-explore2__nav" aria-label="Domains">
-                                <ul id="dx-nav"></ul>
-                                </nav>
-                                <div class="dpia-explore2__content">
-                                <div class="dpia-explore2__pill is-active" id="dx-active-pill"></div>
-                                <p class="dpia-explore2__desc" id="dx-desc"></p>
-                                <a class="dpia-explore2__more" id="dx-more" href="#domains-publicaciones" target="_self">
-                                    See more <span class="dx-more-ico"></span>
-                                </a>
-                                <div class="dpia-explore2__pills" id="dx-other-pills"></div>
-                                </div>
-                            </div>
-                            </section>`;
-                        cardContainer.append(explore);
+  // === Layout nuevo dentro de .card-container ===
+  const explore = `
+    <section class="dpia-explore2" id="expertise">
+      <div class="dpia-explore2__caption"><p>Domains</p></div>
+      <div class="dpia-explore2__grid">
+        <nav class="dpia-explore2__nav" aria-label="Domains">
+          <ul id="dx-nav"><!-- items dinámicos --></ul>
+        </nav>
 
-                        // 2) Construyo estructuras a partir de "data" (ambitos)
-                        // Campos esperados por ambito: { id, valor, nombre, descripcion?, url? }
-                        const DOMAINS = data.map(a => ({
-                            key: a.valor,
-                            id: a.id,
-                            name: a.nombre,
-                            desc: a.descripcion || 'Sin descripción disponible.',
-                            href: a.url || '#'
-                        }));
+        <div class="dpia-explore2__content">
+          <div class="dpia-explore2__pill is-active" id="dx-active-pill"></div>
+          <p class="dpia-explore2__desc" id="dx-desc"></p>
 
-                        const $nav   = $('#dx-nav');
-                        const $pill  = $('#dx-active-pill');
-                        const $desc  = $('#dx-desc');
-                        const $more  = $('#dx-more');
-                        const $other = $('#dx-other-pills');
+          <!-- mismo destino que usaban las tarjetas -->
+          <a class="dpia-explore2__more" id="dx-more" href="#domains-publicaciones" target="_self">
+            See more <span class="dx-more-ico"></span>
+          </a>
 
-                        function renderNav(activeKey){
-                            $nav.empty().append(DOMAINS.map((d,i)=>`
-                            <li>
-                                <button class="${d.key===activeKey?'is-active':''}" data-key="${d.key}">
-                                <span>${d.name}</span>
-                                <span class="dx-arrow"></span>
-                                </button>
-                            </li>`).join(''));
-                        }
-                        function renderContent(activeKey){
-                            const active = DOMAINS.find(d=>d.key===activeKey) || DOMAINS[0];
-                            $pill.text(active.name);
-                            $desc.text(active.desc);
-                            $more.attr('href', active.href);
+          <div class="dpia-explore2__pills" id="dx-other-pills"></div>
 
-                            const others = DOMAINS.filter(d=>d.key!==activeKey);
-                            $other.empty().append(others.map(d=>`
-                            <button class="pill" data-key="${d.key}">${d.name}</button>
-                            `).join(''));
-                        }
-                        function setActive(key){
-                            renderNav(key);
-                            renderContent(key);
-                        }
+          <!-- “Tarjetas” ghost ocultas para compatibilidad con scripts viejos -->
+          <div class="card-compat" aria-hidden="true" style="display:none" id="card-compat-container"></div>
+        </div>
+      </div>
+    </section>`;
+  cardContainer.append(explore);
 
-                        // 3) Poblo el nav izquierdo a partir de "data"
-                        setActive(DOMAINS[0]?.key);
+  // === Construcción DOMAINS desde backend, preservando fallback cuando falte desc/url ===
+  const DOMAINS = data.map((a, index) => {
+    const ord = index;
+    const img = (a.imagen && a.imagen.trim())
+             || (window.imgByValor ? window.imgByValor[ord] : null)
+             || '/static/img/images_dpi_tarjetas2.jpg';
 
-                        // 4) Delego eventos (click en nav y en pills de otros dominios)
-                        $nav.on('click', 'button[data-key]', function(){
-                            setActive($(this).data('key'));
-                        });
-                        $other.on('click', 'button[data-key]', function(){
-                            setActive($(this).data('key'));
-                        });
+    const fb = (window.DOMAINS_FALLBACKS && window.DOMAINS_FALLBACKS[a.valor]) || {};
+    return {
+      key:  a.valor,
+      id:   a.id,
+      name: a.nombre,
+      desc: (a.descripcion && a.descripcion.trim()) || fb.desc || '—',
+      href: (a.url && a.url.trim()) || fb.href || '#domains-publicaciones',
+      img
+    };
+  }).filter(d => d.key && d.name);
 
-                        // 5) MENÚ DESPLEGABLE (se mantiene tal cual lo tenías)
-                        data.forEach((ambito, index) => {
-                            const listItem = `
-                            <li>
-                                <a href="#" class="dropdown-item" id="${ambito.valor}">
-                                ${ambito.nombre}
-                                </a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            `;
-                            dropdownMenu.append(listItem);
+  const $nav    = $('#dx-nav');
+  const $pill   = $('#dx-active-pill');
+  const $desc   = $('#dx-desc');
+  const $more   = $('#dx-more');
+  const $others = $('#dx-other-pills');
+  const $compat = $('#card-compat-container');
 
-                            // Mantengo estas líneas si las usa lógica externa (aunque ya no creamos tarjetas):
-                            const ord = index;
-                            const img = (ambito.imagen && ambito.imagen.trim())
-                                        || (window.imgByValor ? window.imgByValor[ord] : null)
-                                        || '/static/img/images_dpi_tarjetas2.jpg';
-                            // (img no se usa en el layout nuevo, pero respetamos variables por compatibilidad)
-                        });
+  // --- RENDER NAV (con atributos de tarjeta para compatibilidad)
+  function renderNav(activeKey){
+    $nav.html(DOMAINS.map((d,i)=>`
+      <li>
+        <button
+          class="${d.key===activeKey?'is-active':''}"
+          data-key="${d.key}"
+          id="card-${d.key}"                 /* mismo id que tarjeta */
+          data-id="${d.id}"                  /* mismo data-id */
+          style="--card-bg:url('${d.img}')"  /* misma custom prop */
+        >
+          <span class="card-number">${d.name}</span>
+          <span class="dx-arrow"></span>
+          <input type="hidden" class="ambito-id-oculto" value="${d.id}">
+        </button>
+      </li>`).join(''));
+  }
 
-                        // 6) "Turing test" al final del menú, como antes
-                        const turingTestItem = `
-                            <li class="nav-item content">
-                            <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                        `;
-                        dropdownMenu.append(turingTestItem);
-                        dropdownMenu.children('li').last().remove();
-                        })
+  // --- RENDER “tarjetas” ghost ocultas (para scripts que consulten .card en el DOM)
+  function renderCompatGhost(){
+    $compat.html(DOMAINS.map((d, idx) => `
+      <div class="numRequeris-card${idx+1} card card--bg"
+           id="card-${d.key}"
+           data-id="${d.id}"
+           style="--card-bg:url('${d.img}')">
+        <div class="card-content">
+          <p class="card-number">${d.name}</p>
+          <input type="hidden" class="ambito-id-oculto" value="${d.id}">
+        </div>
+      </div>
+    `).join(''));
+  }
+
+  // --- RENDER CONTENIDO DERECHA
+  function renderContent(activeKey){
+    const active = DOMAINS.find(d=>d.key===activeKey) || DOMAINS[0];
+    if(!active) return;
+
+    $pill.text(active.name);
+    $desc.text(active.desc);
+    $more.attr('href', active.href || '#domains-publicaciones');
+
+    const others = DOMAINS.filter(d=>d.key!==activeKey);
+    $others.html(others.map(d => `
+      <button class="pill"
+              data-key="${d.key}"
+              data-id="${d.id}"
+              style="--card-bg:url('${d.img}')">
+        <span class="card-number">${d.name}</span>
+        <input type="hidden" class="ambito-id-oculto" value="${d.id}">
+      </button>`).join(''));
+  }
+
+  function setActive(key){
+    renderNav(key);
+    renderContent(key);
+  }
+
+  // --- MISMA LÓGICA de selección que usaban las tarjetas ---
+  function seleccionarDominio(nombre, id){
+    const limpio = (nombre || '').replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
+
+    // localStorage + cookie como antes
+    localStorage.setItem('dominio', limpio);
+    if (id !== undefined && id !== null) {
+      localStorage.setItem('dominio_id', id);
+      document.cookie = `dominio_id=${id}; path=/; max-age=31536000`;
+    }
+
+    // #domain hidden input
+    const hiddenInput = $('#domain');
+    if (hiddenInput.length) hiddenInput.val(limpio);
+
+    // consola y llamada AJAX (igual que antes)
+    console.log('Dominio seleccionado:', limpio, 'ID:', id);
+    if (typeof enviarDominioAJAX === 'function') {
+      enviarDominioAJAX(limpio);
+    }
+
+    // marcar activo visual
+    // (nav)
+    $nav.find('button').removeClass('is-active');
+    $nav.find(`button[data-key="${(DOMAINS.find(d=>d.name===nombre)?.key)||''}"]`).addClass('is-active');
+    // (pills)
+    $others.find('button').removeClass('active');
+    $others.find(`button:contains("${nombre}")`).addClass('active');
+
+    // enfocar sección (como hacía tu handler de tarjetas)
+    $('#ambitoActual').focus();
+  }
+
+  // --- Init / eventos ---
+  if (DOMAINS.length){
+    renderCompatGhost();
+    setActive(DOMAINS[0].key);
+  }
+
+  // Click en NAV izquierdo
+  $nav.on('click', 'button[data-key]', function(){
+    const key = $(this).data('key');
+    const d = DOMAINS.find(x=>x.key===key);
+    if(!d) return;
+    setActive(key);
+    seleccionarDominio(d.name, d.id);
+  });
+
+  // Click en PILLS de “otros dominios”
+  $others.on('click', 'button[data-key]', function(){
+    const key = $(this).data('key');
+    const d = DOMAINS.find(x=>x.key===key);
+    if(!d) return;
+    setActive(key);
+    seleccionarDominio(d.name, d.id);
+  });
+
+  // === MENÚ DESPLEGABLE (idéntico a lo que tenías) ===
+  data.forEach((ambito, index) => {
+    const listItem = `
+      <li>
+        <a href="#" class="dropdown-item" id="${ambito.valor}">
+          ${ambito.nombre}
+        </a>
+      </li>
+      <li><hr class="dropdown-divider"></li>
+    `;
+    dropdownMenu.append(listItem);
+
+    // Se mantienen estas variables por compatibilidad externa
+    const ord = index;
+    const img = (ambito.imagen && ambito.imagen.trim())
+                || (window.imgByValor ? window.imgByValor[ord] : null)
+                || '/static/img/images_dpi_tarjetas2.jpg';
+    // (img ya está incorporada en DOMAINS arriba)
+  });
+
+  // “Turing test” como antes
+  const turingTestItem = `
+    <li class="nav-item content">
+      <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+  `;
+  dropdownMenu.append(turingTestItem);
+  dropdownMenu.children('li').last().remove();
+})
 
             .catch(error => {
                 console.error('Error al cargar los ámbitos:', error);
