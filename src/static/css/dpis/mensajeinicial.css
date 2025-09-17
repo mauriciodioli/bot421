@@ -1,19 +1,97 @@
-.launch-banner {
-  background: linear-gradient(135deg,#111,#222);
-  color: #fff; text-align: center;
-  padding: 2rem 1rem; border-radius: 12px;
-  margin: 1rem auto; max-width: 900px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.4);
+/* === Sección contact (plantilla) — limpio y sin formulario === */
+
+/* espacio para las franjas superior/inferior */
+.m-contact-form{
+  position: relative;
+  padding-top: 64px;     /* alto franja superior */
+  padding-bottom: 24px;  /* alto franja inferior */
 }
-.launch-banner h2 { font-size: 2rem; margin: 0 0 .5rem; }
-.launch-banner p { font-size: 1.1rem; margin-bottom: 1rem; }
-.launch-banner .btn-discover {
-  background: #00d084; color: #111; padding: .75rem 1.25rem;
-  border-radius: 8px; font-weight: bold; text-decoration: none;
-  transition: background .2s ease;
+
+/* franjas */
+.m-contact-form__bg-top{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:50%;        /* ahora ocupa la mitad del bloque */
+  background:#061e35;
+  z-index:0;
 }
-.launch-banner .btn-discover:hover { background: #00b36b; }
+
+.m-contact-form__bg-bottom{
+  position:absolute; bottom:0; left:0; right:0; height:24px; background:#fff; z-index:0;
+}
+
+/* panel celeste (blue-400) detrás del contenido */
+.m-contact-form__wrapper{
+  position:relative;
+  padding: 2.5rem 3rem;   /* más aire lateral */
+  max-width: 1100px;      /* antes estaba muy angosto, ahora lo ampliamos */
+  margin: 0 auto;         /* lo centramos en pantalla */
+  z-index:1;
+}
+
+.m-contact-form__wrapper::after{
+  content:"";
+  position:absolute; inset:0;
+  background:#b4ebf8;                 /* blue-400 */
+  border-radius:4px;
+  z-index:-1;                         /* detrás del contenido del wrapper */
+}
+
+/* contenido siempre sobre el panel */
+.m-contact-form__caption,
+.m-contact-form__inner{ position:relative; z-index:1; }
+
+/* ocultar completamente elementos de contacto */
+.m-contact-form__form,
+.m-contact-form__trigger,
+.m-contact-form a.link[href^="mailto:"],
+.m-contact-form [data-hs-forms-root],
+.m-contact-form iframe[name^="target_iframe_"],
+.m-contact-form .hs-form{
+  display:none !important;
+  height:0 !important; margin:0 !important; padding:0 !important;
+}
+
+/* que la columna de info use todo el ancho */
+.m-contact-form .m-contact-form__info{
+  width:100% !important;
+  margin-bottom:0 !important;
+}
+
+/* botón CTA con look de la plantilla */
+.m-contact-form .m-contact-form__actions .button{
+  display:inline-flex !important;
+  align-items:center;
+  gap:.6rem;
+  padding:.85rem 1.2rem;
+  background:#0b2033;
+  color:#fff !important;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:700;
+  line-height:1;
+  transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.m-contact-form .m-contact-form__actions .button:hover{
+  background:#091a2c;
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
+}
+.m-contact-form .m-contact-form__actions .button .button__arrow{ display:inline-flex; line-height:0; }
+.m-contact-form .m-contact-form__actions .button .button__arrow svg{ width:19px; height:19px; color:#fff; }
+
+/* ancho del párrafo como la plantilla */
+@media (min-width:660px){ .m-contact-form .m-contact-form__text{ max-width:75%; } }
+@media (min-width:1300px){ .m-contact-form .m-contact-form__text{ max-width:65%; } }
+/* Ocultar franja azul en móviles */
+@media (max-width: 768px){
+  .m-contact-form__bg-top{
+    display: none;
+  }
+}
 
 
-html { scroll-behavior: smooth; }
-#domains-publicaciones { scroll-margin-top: 80px; } /* ajustá 80px a tu navbar */
+

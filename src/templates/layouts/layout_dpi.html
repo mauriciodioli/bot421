@@ -32,14 +32,19 @@
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/splashPages/splash.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/index.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/dpis/dpi.css')}}">
+  
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/layouts/idiomas.css')}}">
-   
+    
+
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/modales/modalGaleriaPublicacionesMostradas.css') }}">
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/modificarPublicaciones.css') }}">
     <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraDesplieguePublicacionHome.css') }}">     
   
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
 
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
     <script src="{{ url_for('static', filename='js/notificacionAlertOperacion.js') }}"></script>
@@ -47,6 +52,8 @@
     <script src="/static/js/actualizaTabla.js"></script> 
 
   
+    <script src="/static/js/dpis/dpi_img_dominio_map.js"></script> 
+   
     <meta charset="UTF-8">
     <title>Registro de usuarios</title>
     <meta name="google-signin-client_id" content="TU_CLIENTE_ID_DE_GOOGLE">

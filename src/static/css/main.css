@@ -94,3 +94,86 @@ body {
   line-height: 1.5; /* Ajusta según el tamaño del texto de los enlaces */
   padding-top: 8px; /* Puedes ajustar este valor */
 }
+
+
+/* ===== SOLO COLORES – Tema claro corporativo ===== */
+:root{
+  --bg:#f7f9fc;
+  --surface:#ffffff;
+  --text:#1f2937;
+  --muted:#6b7280;
+  --primary:#1f4e79;
+  --primary-dark:#153a5c;
+  --accent:#d4af37;
+  --border:#e5e7eb;
+}
+
+/* Fondo y texto global */
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* Pantallas pequeñas: mantener claro (no más fondo #333) */
+@media (max-width: 767px) {
+  body {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+  }
+}
+
+/* Contenedor principal claro */
+.container {
+  background: var(--surface) !important;
+}
+
+/* Mensajes / chips informativos: solo color de texto */
+#mensaje_correo_electronico,
+#ambito_actual,
+#mensaje_cuentaBroker,
+#mensaje_simulado {
+  color: var(--text) !important;
+}
+
+/* Modal: sin cambios de layout, solo aseguramos texto */
+#modal { color: var(--text) !important; }
+
+/* Dropzone mensaje */
+.dz-message { color: var(--muted) !important; }
+
+/* Navegación: activo / inactivo */
+.nav-link.active {
+  color: var(--primary) !important;         /* antes #ec1919 */
+}
+.nav-link {
+  color: var(--muted) !important;           /* antes rgb(128,128,128) */
+}
+.nav-item button:hover {
+  background-color: var(--primary) !important;  /* antes blue crudo */
+  color: #fff !important;
+}
+
+/* Botones index */
+.card-button {
+  background-color: var(--primary) !important;  /* antes #007bff */
+  color: #fff !important;
+  border-radius: 5px;
+}
+.card-button:hover {
+  background-color: var(--primary-dark) !important; /* antes #0056b3 */
+}
+
+/* Botón largo: sin cambios estructurales */
+.long-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+/* Label CP: solo color de texto secundario */
+#labelCP {
+  vertical-align: middle;
+  line-height: 1.5;
+  padding-top: 8px;
+  color: var(--muted) !important;
+}

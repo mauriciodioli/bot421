@@ -45,7 +45,7 @@
     background-color: transparent; /* Fondo transparente para el botón en el estado normal */
     color: #fff; /* Texto en blanco para el título del botón */
     font-weight: bold; /* Texto en negrita para el título del botón */
-    border: 2px solid gold; /* Borde dorado para el botón en el estado normal */
+   
     padding: 8px 12px;
     border-radius: 5px;
     cursor: pointer;

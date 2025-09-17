@@ -20,87 +20,169 @@
         {% endwith %}
 
                  
-      {% include 'ambitos/carrucelDominios.html' %}
+      <div class="pull-up-80" style="margin-top: -80px; margin-bottom: -40px;">
+        {% include 'ambitos/carrucelDominios.html' %}
+      </div>
 
    <!-- Banda azul brillante arriba -->  
-            <div class="horizontal-padding vertical-padding" style="margin-top: 50px;">
+  <div class="horizontal-padding vertical-padding" style="margin-top: 50px;">
   <div class="horizontal-padding vertical-padding">
-    <section class="sobre-nosotros" id="sobre-nosotros">
-      <div class="container" id="container-sobre-nosotros">
-        <div class="flex-container">
-          <div class="image-container-sobre-nosotros">
-            <h1 class="sobre-nosotros"
-                data-translate="dpi_title">
-              <!-- i18n -->
-            </h1>
+      
 
-            <h4 class="sobre-nosotros-descripcion"
-                data-translate="dpi_description">
-              <!-- i18n -->
-            </h4>
 
-            <form action="/dpi-in" method="GET">
-              <button class="card-button long-button" style="margin-top: 20px;" type="submit"
-                      data-translate="dpi_button">
-                <!-- i18n -->
-              </button>
-            </form>
-          </div>
 
-          <div class="text-container-sobre-nosotros">
-            <img src="/static/dpi.jpg"
-                 data-translate="dpi_image_alt"
-                 data-translate-target="alt"
-                 alt="">
-          </div>
-        </div>
-      </div>
-    </section>
+
+
+    
+
+
+
+
+            <!-- Sección SOLO para el video -->
+<section class="video-portado" id="video-portado">
+  <div class="video-portado-wrapper">
+    <video class="video-responsivo"
+           autoplay loop muted playsinline
+           preload="none"
+           poster="/static/img/hero-poster.jpg"
+           aria-label="Presentación de DPIA">
+      <source src="/static/img/PD_MB_Main_Header_25fps_2880x1362.mp4" type="video/mp4">
+      <!-- Fallback por si no soporta video -->
+      <img src="/static/img/hero-poster.jpg" alt="DPIA">
+    </video>
+
+    <div class="video-text-block">
+      <div class="video-kicker">Micrositios locales · Multi-idioma</div>
+      <h1 class="video-titulo" data-translate="dpi_title">
+        Un micrositio perfecto para cada sede, gestionado desde un único panel
+      </h1>
+      <p class="video-subtitulo" data-translate="dpi_description"></p>
+    </div>
+
+    <div class="video-boton">
+      <form action="/dpi-in" method="GET">
+        <button class="card-button long-button" type="submit" data-translate="dpi_button"></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
   </div>
 </div>
 
 <!-- ===== Bloque ordenado y validado ===== -->
 <div class="horizontal-padding vertical-padding">
 
-  <!-- Cards -->
-  <section class="stats" id="stats-card-resumen">
-    <div class="card-container-grande">
-      <div class="numRequeris-card1 card">
-        <div class="card-content">
-          <p class="card-title" data-translate="dpi_card_domains"></p>
-          <p class="card-number">11</p>
-        </div>
-      </div>
+<!-- Cards -->
+<section class="s-numbers dpia-resumen">
+  <div class="section-topline section-topline--white" data-aos="fade-up">
+    <p>DPIA en números</p>
+  </div>
 
-      <div class="numRequeris-card2 card">
-        <div class="card-content">
-          <p class="card-title" data-translate="dpi_card_signals"></p>
-          <p class="card-number">89</p>
-        </div>
-      </div>
+  <ul class="s-numbers__list">
+    <li class="color-white" data-aos="fade-up" data-aos-delay="100">
+      <p class="s-numbers__value"><span> 11</span></p>
+      <p class="s-numbers__title">
+        <strong data-translate="dpi_card_domains">Dominios</strong>
+      </p>
+    </li>
 
-      <div class="numRequeris-card3 card">
-        <div class="card-content">
-          <p class="card-title" data-translate="dpi_card_posts"></p>
-          <p class="card-number">34</p>
-        </div>
-      </div>
+    <li class="color-violet" data-aos="fade-up" data-aos-delay="200">
+      <p class="s-numbers__value"><span> 89</span></p>
+      <p class="s-numbers__title">
+        <strong data-translate="dpi_card_signals">Señales</strong>
+      </p>
+    </li>
 
-      <div class="numRequeris-card4 card">
-        <div class="card-content">
-          <p class="card-title" data-translate="dpi_card_courses"></p>
-          <p class="card-number">5</p>
+    <li class="color-red" data-aos="fade-up" data-aos-delay="300">
+      <p class="s-numbers__value"><span>+ 34</span></p>
+      <p class="s-numbers__title">
+        <strong data-translate="dpi_card_posts">Publicaciones</strong>
+      </p>
+    </li>
+
+    <li class="color-green" data-aos="fade-up" data-aos-delay="400">
+      <p class="s-numbers__value"><span>+ 5</span></p>
+      <p class="s-numbers__title">
+        <strong data-translate="dpi_card_courses">Cursos</strong>
+      </p>
+    </li>
+  </ul>
+</section>
+
+
+
+
+<div class="row-fluid-wrapper row-depth-1 row-number-4 dnd_area_lingroup_custom_template-row-2-vertical-alignment dnd-section">
+<div class="row-fluid ">
+<div class="span12 widget-span widget-type-custom_widget dnd-module module_16819019941613-vertical-alignment" style="" data-widget-type="custom_widget" data-x="0" data-w="12">
+<div id="hs_cos_wrapper_module_16819019941613" class="hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style="" data-hs-cos-general-type="widget" data-hs-cos-type="module">
+
+<section class="m-big-text dpia-journey" data-aos="fade-up">
+  <div class="wrap">
+    <div class="section-topline" data-aos="fade-up" data-aos-delay="50">
+      <p>DPIA — Business</p>
+    </div>
+
+    <div class="m-big-text__content" data-aos="fade-up" data-aos-delay="100">
+      Whatever your vision is, wherever you are located,
+      <span class="highlight">we deliver results that matter to you</span>
+    </div>
+  </div>
+</section>
+
+
+</div>
+
+</div><!--end widget-span -->
+</div><!--end row-->
+</div>
+
+
+<section class="m-contact-form m-contact-form--blue-400 remove-mobile-bottom-padding">
+  <div class="m-contact-form__bg-top" style="background-color: #061e35"></div>
+  <div class="m-contact-form__bg-bottom" style="background-color: #ffffff"></div>
+
+  <div class="m-contact-form__wrapper">
+    <div class="m-contact-form__caption" data-aos="fade-up">
+      <h3 class="m-contact-form__subheadline">DPIA</h3>
+    </div>
+
+    <div class="m-contact-form__inner">
+      <div class="m-contact-form__info" data-aos="fade-up" data-aos-delay="50">
+        <h2 class="m-contact-form__headline-alt">
+          Exclusivo. Curado por IA.<br>
+          Lo que hoy es tendencia en redes sociales.
+        </h2>
+
+        <p class="m-contact-form__text" data-aos="fade-up" data-aos-delay="100">
+          Descubrí dominios personales, señales y publicaciones locales en un solo lugar.
+        </p>
+
+        <div class="m-contact-form__actions" data-aos="fade-up" data-aos-delay="150">
+          <a href="#domains-publicaciones" class="button">
+            <span>Descubrir ahora</span>
+            <div class="button__arrow">
+              <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="9.691" cy="9.141" r="8.35" transform="rotate(-180 9.691 9.14)" stroke="currentColor" stroke-width="1.3"></circle>
+                <path d="m5.706 5.141 7.718 7.718M8.425 13.14h3.755a1.5 1.5 0 0 0 1.5-1.5V7.887" stroke="currentColor" stroke-width="1.3"></path>
+              </svg>
+            </div>
+          </a>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- Banner -->
-  <div class="launch-banner">
-    <h2 data-translate="dpi_banner_title"></h2>
-    <p data-translate="dpi_banner_subtitle"></p>
-    <a href="#domains-publicaciones" class="btn-discover" data-translate="dpi_banner_button"></a>
   </div>
+</section>
+
+
+
 
   <!-- Lista de dominios (móviles) -->
   <section class="domains" id="domains">
@@ -115,7 +197,8 @@
   <!-- Publicaciones -->
   <section class="domains-publicaciones" id="domains-publicaciones">
     <div class="jumbotron">
-      <h1 name="ambitoActual" id="ambitoActual" style="color: gold;" tabindex="0"></h1>
+    <h1 id="ambitoActual" class="ambito-actual ambito-actual--accent" tabindex="0"></h1>
+
 
       {% include 'ambitos/navBarCaracteristicas.html' %}  <!-- Aquí se incluye la barra de navegación -->
 
@@ -134,28 +217,54 @@
 </div>
 <!-- /horizontal-padding vertical-padding -->
 
+<section class="dpia-contact" id="contacto">
+  <div class="dpia-contact__bg-top"></div>
+  <div class="dpia-contact__bg-bottom"></div>
 
-<!-- Contacto -->
-<div class="horizontal-padding vertical-padding py-4">
-  <section class="contacto" id="contacto">
-    <div class="contactos-info">
-      <h1 class="contactos-titulo" style="color: gold;" data-translate="dpi_contact_title">CONTACTO</h1>
-      <h3 class="contactos-titulo" style="color: white;" data-translate="dpi_contact_subtitle">TE ASESORAMOS</h3>
-      <form action="/llamada/index-contacto" method="GET">
-        <button class="card-button long-button" style="margin-top: 20px;" type="submit" data-translate="dpi_contact_button">
-          Habla con nosotros
-        </button>
-      </form>
+  <div class="dpia-contact__wrapper">
+    <div class="dpia-contact__caption" data-aos="fade-up">
+      <h3 class="dpia-contact__subheadline">Link with us</h3>
     </div>
-  </section>
-</div>
+
+    <div class="dpia-contact__inner">
+      <div class="dpia-contact__info" data-aos="fade-up" data-aos-delay="60">
+        <h2 class="dpia-contact__headline">
+          Need more insights on working with<br>us?
+        </h2>
+
+        <div class="dpia-contact__actions" data-aos="fade-up" data-aos-delay="120">
+          <a href="/llamada/index-contacto" class="dpia-contact__button">
+            <span>Contact us</span>
+            <div class="dpia-contact__button-arrow">
+              <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="9.691" cy="9.141" r="8.35" transform="rotate(-180 9.691 9.14)" stroke="currentColor" stroke-width="1.3"></circle>
+                <path d="m5.706 5.141 7.718 7.718M8.425 13.14h3.755a1.5 1.5 0 0 0 1.5-1.5V7.887" stroke="currentColor" stroke-width="1.3"></path>
+              </svg>
+            </div>
+          </a>
+
+          <a href="mailto:contact@linkgroup.pl" class="dpia-contact__link">contact@dpia.es</a>
+        </div>
+      </div>
+
+      <!-- Columna form (oculta para siempre) -->
+      <div class="dpia-contact__form" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+
+
 
 
 <!-- Login -->
 <div class="horizontal-padding vertical-padding py-4">
   <section class="ingreso" id="ingreso">
     <div class="ingreso-info">
-      <h1 class="ingreso-titulo" style="color: gold;" data-translate="dpi_login_title">Iniciar sesión</h1>
+   <h2 class="ingreso-titulo ingreso-titulo--accent" data-translate="dpi_login_title">
+      Iniciar sesión
+    </h2>
+
 
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -306,11 +415,111 @@
   {% include 'layouts/layout_footer.html' %}
 
  
-
-  
   <!-- Aquí se agrega el script -->  
   <script>
     
+window.addEventListener('DOMContentLoaded', () => {
+  // AOS: solo inicializa si está cargado
+  if (window.AOS && typeof AOS.init === 'function') {
+    AOS.init({ duration: 700, easing: 'ease-out', once: false, mirror: true });
+  }
+
+  // IntersectionObserver para disparar la clase .in-view
+  const sec = document.querySelector('.m-big-text.dpia-journey');
+  if (sec) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          sec.classList.add('in-view');
+          io.disconnect();
+        }
+      }, { threshold: 0.2 });
+      io.observe(sec);
+    } else {
+      // fallback navegadores viejos
+      sec.classList.add('in-view');
+    }
+  }
+
+  // Smooth scroll del CTA
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const el = document.querySelector(a.getAttribute('href'));
+    if (el) {
+      e.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, { passive: false });
+});
+
+
+
+
+
+
+
+const $nav    = document.getElementById('dx-nav');
+const $pill   = document.getElementById('dx-active-pill');
+const $desc   = document.getElementById('dx-desc');
+const $more   = document.getElementById('dx-more');
+const $others = document.getElementById('dx-other-pills');
+
+function renderNav(activeKey){
+  $nav.innerHTML = DOMAINS.map(d => `
+    <li>
+      <button class="${d.key===activeKey?'is-active':''}" data-key="${d.key}">
+        <span>${d.name}</span>
+        <span class="dx-arrow"></span>
+      </button>
+    </li>`).join('');
+}
+
+function renderContent(activeKey){
+  const active = DOMAINS.find(d=>d.key===activeKey) || DOMAINS[0];
+  if(!active) return; // nada que mostrar si está vacío
+
+  $pill.textContent = active.name;
+  $desc.textContent = active.desc || '—';
+  $more.href = active.href || '#';
+
+  const others = DOMAINS.filter(d=>d.key!==activeKey);
+  $others.innerHTML = others
+    .map(d => `<button class="pill" data-key="${d.key}">${d.name}</button>`)
+    .join('');
+}
+
+function setActive(key){
+  renderNav(key);
+  renderContent(key);
+}
+
+$nav.addEventListener('click', e=>{
+  const btn = e.target.closest('button[data-key]');
+  if(!btn) return;
+  setActive(btn.dataset.key);
+});
+$others.addEventListener('click', e=>{
+  const b = e.target.closest('button[data-key]');
+  if(!b) return;
+  setActive(b.dataset.key);
+});
+
+// init con el primero que venga del backend
+if (DOMAINS.length) setActive(DOMAINS[0].key);
+
+
+
+
+
+
+
+
+
+
+
+
+
     document.getElementById("loginForm").addEventListener("submit", function (event) {
       event.preventDefault(); // Detener el envío del formulario hasta obtener la ubicación
      
@@ -413,14 +622,27 @@
 });
 
 
+
+
+
+
+
   </script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/mensajeinicial.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/video_portada.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_dominios.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_contacto.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpiTruncateTexto.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_card_resumen.css') }}">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_new_disenio.css') }}">
   <script src="{{ url_for('static', filename='js/usuarios/usuarioUbicacion.js') }}"></script>
   <script src="{{ url_for('static', filename='js/logs.js') }}"></script>
 
   <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
-  
  
+
+
 
 {% endblock %}

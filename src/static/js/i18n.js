@@ -3,9 +3,10 @@
 const translations = {
     "es": {
 
-
-        "dpi_title": "Aprende a invertir, trabajar y disfrutar todo en un solo lugar.",
-        "dpi_description": "Aprende a invertir en tus proyectos, en el mercado y con socios. Obtén ayuda con tutoriales y genera ingresos adicionales con cursos enfocados en nuevas tecnologías para comprar, vender o aplicar en tus propios proyectos.",
+        "dpi_kicker": "Micrositios locales · Multi-idioma",
+        "dpi_title": "Un micrositio perfecto para cada sede, gestionado desde un único panel",
+        
+        "dpi_description": "Publicá una vez desde la central y replicá en todas las sucursales con adaptación por código postal e idioma. Imagen unificada, autonomía local y más clientes desde Google.",
         "dpi_button": "Ir al contenido",
         "dpi_image_alt": "Vista previa de la plataforma",
         "dpi_card_domains": "Dominios",
@@ -235,8 +236,9 @@ const translations = {
 
     },
     "in": {
-      "dpi_title": "Learn to invest, work, and enjoy everything in one place.",
-      "dpi_description": "Learn to invest in your projects, in the market, with partners. Get help with tutorials and generate additional income with our courses focused on leveraging new technologies to buy, sell, or use for your own projects.",
+      "dpi_kicker": "Local microsites · Multilingual",
+      "dpi_title": "A perfect microsite for every location, managed from a single dashboard",
+      "dpi_description": "Post once from headquarters and replicate across all branches with postal code and language adaptation. Unified image, local autonomy, and more customers from Google.",
       "dpi_button": "Go to content",
       "dpi_image_alt": "Platform preview",
       "dpi_card_domains": "Domains",
@@ -458,9 +460,10 @@ const translations = {
   
     },
     "pt": {
-
-      "dpi_title": "Aprenda a investir, trabalhar e aproveitar tudo em um só lugar.",
-      "dpi_description": "Aprenda a investir em seus projetos, no mercado e com parceiros. Receba ajuda com tutoriais e gere renda extra com nossos cursos focados em novas tecnologias para comprar, vender ou usar em seus próprios projetos.",
+      "dpi_kicker": "Microsites locais · Multilíngue",
+      
+      "dpi_title": "Um microsite perfeito para cada local, gerenciado a partir de um único painel",
+      "dpi_description": "Publique uma vez na sede e replique em todas as filiais com adaptação por código postal e idioma. Imagem unificada, autonomia local e mais clientes do Google.",
       "dpi_button": "Ir para o conteúdo",
       "dpi_image_alt": "Pré-visualização da plataforma",
       "dpi_card_domains": "Domínios",
@@ -683,9 +686,10 @@ const translations = {
 
     },
     "it": {
-
-        "dpi_title": "Impara a investire, lavorare e divertirti tutto in un unico posto.",
-        "dpi_description": "Impara a investire nei tuoi progetti, nel mercato e con partner. Ottieni supporto con tutorial e genera reddito extra con corsi sulle nuove tecnologie per acquistare, vendere o usarle nei tuoi progetti.",
+        "dpi_kicker": "Micrositi locali · Multilingue",
+     
+        "dpi_title": "Un microsito perfetto per ogni sede, gestito da un unico pannello",
+        "dpi_description": "Pubblica una volta dalla sede centrale e replica in tutte le filiali con adattamento per CAP e lingua. Immagine unificata, autonomia locale e più clienti da Google.",
         "dpi_button": "Vai ai contenuti",
         "dpi_image_alt": "Anteprima della piattaforma",
         "dpi_card_domains": "Domini",
@@ -911,8 +915,8 @@ const translations = {
     "ÉL": {
 
         
-        "dpi_title": "Impara a investire, lavorare e divertirti tutto in un unico posto.",
-        "dpi_description": "Impara a investire nei tuoi progetti, nel mercato e con partner. Ottieni supporto con tutorial e genera reddito extra con corsi sulle nuove tecnologie per acquistare, vendere o usarle nei tuoi progetti.",
+        "dpi_title": "Un microsito perfetto per ogni sede, gestito da un unico pannello",
+        "dpi_description": " Pubblica una volta dalla sede centrale e replica in tutte le filiali con adattamento per CAP e lingua. Immagine unificata, autonomia locale e più clienti da Google.",
         "dpi_button": "Vai ai contenuti",
         "dpi_image_alt": "Anteprima della piattaforma",
         "dpi_card_domains": "Domini",
@@ -1134,9 +1138,9 @@ const translations = {
         "returns_text": "Puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande. Rimborso del 100% o sostituzione del prodotto."
     },
     "pl": {
-
-        "dpi_title": "Ucz się inwestować, pracować i cieszyć się wszystkim w jednym miejscu.",
-        "dpi_description": "Ucz się inwestować w swoje projekty, na rynku i z partnerami. Skorzystaj z tutoriali i zarabiaj dodatkowo dzięki kursom o nowych technologiach do kupowania, sprzedawania lub użycia w swoich projektach.",
+        "dpi_kicker": "Mikrostrony lokalne · Wielojęzyczne",
+        "dpi_title":" Idealna mikrostrona dla każdej lokalizacji, zarządzana z jednego panelu",
+        "dpi_description": " Opublikuj raz z centrali i replikuj we wszystkich oddziałach z dostosowaniem do kodu pocztowego i języka. Ujednolicony wizerunek, lokalna autonomia i więcej klientów z Google.",
         "dpi_button": "Przejdź do treści",
         "dpi_image_alt": "Podgląd platformy",
         "dpi_card_domains": "Domeny",
@@ -1356,8 +1360,8 @@ const translations = {
 
     },
     "fr": {
-
-        "dpi_title": "Apprenez à investir, travailler et profiter de tout en un seul endroit.",
+        "dpi_kicker": "Microsites locaux · Multilingue",
+        "dpi_title": "Un microsite parfait pour chaque emplacement, géré à partir d'un seul panneau",
         "dpi_description": "Apprenez à investir dans vos projets, sur le marché et avec des partenaires. Obtenez de l’aide grâce à des tutoriels et générez des revenus supplémentaires avec nos cours axés sur les nouvelles technologies pour acheter, vendre ou utiliser dans vos propres projets.",
         "dpi_button": "Aller au contenu",
         "dpi_image_alt": "Aperçu de la plateforme",
@@ -1576,9 +1580,9 @@ const translations = {
 
     },
     "de": {
-
-        "dpi_title": "Lernen Sie, in einem einzigen Ort zu investieren, zu arbeiten und zu genießen.",
-        "dpi_description": "Lernen Sie, in Ihre Projekte, auf dem Markt und mit Partnern zu investieren. Erhalten Sie Hilfe mit Tutorials und erzielen Sie zusätzliches Einkommen mit unseren Kursen, die sich auf neue Technologien zum Kaufen, Verkaufen oder für eigene Projekte konzentrieren.",
+        "dpi_kicker": "Lokale Mikroseiten · Mehrsprachig",
+        "dpi_title":"Die perfekte Mikroseite für jeden Standort, verwaltet über ein einziges Panel",
+        "dpi_description": " Veröffentlichen Sie einmal zentral und replizieren Sie in allen Niederlassungen mit Anpassung an Postleitzahl und Sprache. Einheitliches Erscheinungsbild, lokale Autonomie und mehr Kunden über Google.",
         "dpi_button": "Zum Inhalt",
         "dpi_image_alt": "Plattformvorschau",
         "dpi_card_domains": "Domänen",

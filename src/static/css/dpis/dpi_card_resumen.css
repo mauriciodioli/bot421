@@ -1,0 +1,228 @@
+/* ===== Bloque resumen DPIA ===== */
+.dpia-resumen{
+  background:#0f2238;   /* azul DPIA */
+  padding:60px 0;
+  color:#fff;
+  text-align:left;
+}
+
+.dpia-resumen .section-topline p{
+  color:#b9c7d8;
+  font-weight:600;
+  margin:0 0 40px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+/* ===== Números ===== */
+.s-numbers__list{
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:grid;
+  gap:50px;
+}
+@media(min-width:800px){
+  .s-numbers__list{
+    grid-template-columns:repeat(4,1fr);
+    gap:60px;
+  }
+}
+
+.s-numbers__value{
+  font-size:clamp(60px,12vw,140px);
+  font-weight:800;
+  line-height:.9;
+  margin:0 0 12px;
+}
+
+.s-numbers__title{
+  font-size:clamp(16px,2vw,28px);
+  font-weight:500;
+  margin:0;
+}
+.s-numbers__title strong{
+  display:inline-block;
+  padding:.25em .8em;
+  border:2px solid rgba(255,255,255,.4);
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+}
+
+/* Colores personalizados */
+.color-white .s-numbers__value{ color:#ffffff; }
+.color-violet .s-numbers__value{ color:#9aa2ff; }
+.color-red    .s-numbers__value{ color:#ff6b6b; }
+.color-green  .s-numbers__value{ color:#4ade80; }
+.s-numbers__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 50px;
+}
+
+@media (min-width: 800px) {
+  .s-numbers__list {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 60px;
+  }
+}
+
+/* Ocultar "DPIA en números" en celulares */
+@media (max-width: 576px){  /* ajustá a 600/480 si querés */
+  .s-numbers.dpia-resumen{
+    display: none !important;
+  }
+}
+
+.s-numbers__list li {
+  text-align: center;   /* <-- centrado */
+}
+
+.s-numbers__value {
+  font-size: clamp(60px, 12vw, 140px);
+  font-weight: 800;
+  line-height: .9;
+  margin: 0 0 12px;
+}
+
+.s-numbers__title {
+  margin: 0;
+  font-size: clamp(16px, 2vw, 28px);
+  font-weight: 500;
+}
+
+.s-numbers__title strong {
+  display: inline-block;
+  padding: .25em .8em;
+  border: 2px solid rgba(255,255,255,.4);
+  border-radius: 999px;
+  background: rgba(255,255,255,.06);
+}
+.section-topline {
+  max-width: 1200px; /* ancho máximo */
+  margin: 0 auto;    /* centra el bloque */
+  padding: 0 20px;   /* respiro lateral */
+}
+
+
+
+
+
+
+/* ===== Sección big text DPIA ===== */
+/* ===== Paleta DPIA */
+:root{
+  --dpia-bg:#ffffff;
+  --dpia-text:#0b0f14;
+  --dpia-muted:#4b5563;
+  --dpia-accent:#9599ed; /* violeta suave tipo Link */
+  --container:1200px;
+}
+
+/* ===== Sección ===== */
+.m-big-text.dpia-journey{
+  background:var(--dpia-bg);
+  color:var(--dpia-text);
+  padding:72px 20px;
+}
+.m-big-text.dpia-journey .wrap{
+  max-width:var(--container);
+  margin:0 auto;
+}
+
+/* ===== Topline con línea animada ===== */
+.section-topline{
+  position:relative;
+  padding-top:8px;
+  margin-bottom:32px;
+}
+.section-topline p{
+  margin:0;
+  font-size:14px;
+  color:var(--dpia-muted);
+}
+.section-topline::before{             /* línea base (por si no carga JS) */
+  content:"";
+  position:absolute;
+  left:0; right:0; top:0;
+  height:1px; background:rgba(0,0,0,.65);
+  opacity:.25;                        /* tenue */
+}
+.section-topline::after{              /* línea animada */
+  content:"";
+  position:absolute;
+  left:0; top:0;
+  height:1px; width:100%;
+  background:#000;                    /* línea negra */
+  transform:scaleX(0);
+  transform-origin:left;
+  opacity:0;
+  transition:transform .8s ease, opacity .2s ease;
+}
+.m-big-text.dpia-journey.in-view .section-topline::after{
+  transform:scaleX(1);
+  opacity:1;
+}
+
+/* ===== Texto grande ===== */
+.m-big-text__content{
+  font-size:clamp(28px,4vw,48px);
+  line-height:1.28;
+  font-weight:400;
+  letter-spacing:.01em;
+  max-width:900px;
+  margin:0 auto;
+  opacity:0;                          /* por si no usás AOS */
+  transform:translateY(16px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.m-big-text.dpia-journey.in-view .m-big-text__content{
+  opacity:1;
+  transform:translateY(0);
+}
+
+ /* === Highlight con efecto typewriter en loop === */
+/* Ajustá estos valores si cambiás el texto */
+:root{
+  --type-duration: 5s;   /* total: 3s escribir + 1s pausa + 1s borrar */
+  --type-steps: 38;      /* ≈ cantidad de caracteres del highlight */
+  --type-color: var(--dpia-accent, #9599ed);
+}
+
+.m-big-text__content .highlight{
+  display:inline-block;
+  overflow:hidden;
+  white-space:nowrap;
+  color:var(--type-color);
+  border-right:.1em solid var(--type-color);       /* cursor */
+  width:0;
+  opacity:1;
+  vertical-align: -14px;
+
+  /* Pausado hasta que entre en viewport */
+  animation:
+    typingLoop var(--type-duration) steps(var(--type-steps), end) infinite,
+    caretBlink .8s step-end infinite;
+  animation-play-state: paused, paused;
+}
+
+/* Cuando la sección entra en vista, corre las animaciones */
+.m-big-text.dpia-journey.in-view .highlight{
+  animation-play-state: running, running;
+}
+
+/* 0–60% escribe, 60–80% espera (1s), 80–100% borra */
+@keyframes typingLoop{
+  0%   { width:0; }
+  60%  { width:100%; }
+  80%  { width:100%; }   /* pausa ~1s */
+  100% { width:0; }
+}
+
+@keyframes caretBlink{
+  0%, 100% { border-color: transparent; }
+  50%      { border-color: var(--type-color); }
+}
+

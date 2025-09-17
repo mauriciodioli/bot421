@@ -1,0 +1,60 @@
+/* ===== Explore (layout como captura) ===== */
+.dpia-explore2{ padding: 24px 16px 40px; background:hsl(100, 100%, 100%); color:#0b2033; }
+.dpia-explore2__caption{ border-top:1px solid rgba(0,0,0,.5); margin:0 0 18px; padding-top:10px; }
+.dpia-explore2__caption p{ margin:0; font-size:14px; opacity:.85; }
+
+.dpia-explore2__grid{
+  max-width:1200px; margin:0 auto; display:grid; gap:32px;
+  grid-template-columns: 420px 1fr;
+}
+
+/* NAV izquierda */
+.dpia-explore2__nav ul{ list-style:none; margin:0; padding:0; }
+.dpia-explore2__nav li{ border-bottom:1px solid rgba(11,32,51,.35); }
+.dpia-explore2__nav button{
+  width:100%; display:flex; justify-content:space-between; align-items:center;
+  padding:18px 14px; font-size:32px; font-weight:700; letter-spacing:.2px;
+  background:transparent; border:0; color:#0b2033; cursor:pointer;
+}
+.dpia-explore2__nav button .dx-arrow{
+  width:28px; height:28px; border-radius:50%; border:1.6px solid currentColor;
+  display:inline-grid; place-items:center;
+}
+.dpia-explore2__nav button .dx-arrow::after{
+  content:"➜"; font-size:16px; transform:translateX(1px) rotate(-45deg);
+}
+.dpia-explore2__nav button:hover{ color:#6f78e6; }
+.dpia-explore2__nav button.is-active{ color:#6f78e6; }
+
+/* Contenido derecha */
+.dpia-explore2__pill{
+  display:inline-block; padding:20px 28px; border-radius:50px;
+  border:2px solid #bfc6ff; background:#eef0ff; color:#6f78e6; 
+  font-weight:800; font-size:40px; margin-bottom:18px;
+}
+.dpia-explore2__desc{ font-size:22px; line-height:1.6; max-width:1000px; margin: 8px 0 16px; }
+.dpia-explore2__more{
+  display:inline-flex; align-items:center; gap:8px; color:#6f78e6; text-decoration:none;
+  font-weight:800; margin-bottom:20px;
+}
+.dpia-explore2__more .dx-more-ico{
+  width:20px; height:20px; border-radius:50%; border:1.6px solid currentColor; display:inline-block;
+  background: conic-gradient(from 135deg, transparent 0 75%, currentColor 0 100%);
+  mask: radial-gradient(circle 7px at center, transparent 55%, #000 56%);
+}
+
+/* Pills de otros dominios */
+.dpia-explore2__pills{ display:flex; flex-wrap:wrap; gap:16px; margin-top:12px; }
+.dpia-explore2__pills .pill{
+  padding:16px 24px; border-radius:50px; border:2px solid #bfc6ff; background:#eef0ff;
+  color:#0b2033; font-weight:800; font-size:32px; cursor:pointer;
+}
+.dpia-explore2__pills .pill:hover{ color:#6f78e6; border-color:#6f78e6; }
+
+@media (max-width: 1024px){
+  .dpia-explore2__grid{ grid-template-columns: 1fr; }
+  .dpia-explore2__nav button{ font-size:24px; }
+  .dpia-explore2__pill{ font-size:32px; }
+  .dpia-explore2__desc{ font-size:18px; }
+  .dpia-explore2__pills .pill{ font-size:22px; }
+}

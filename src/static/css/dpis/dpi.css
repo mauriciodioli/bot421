@@ -150,20 +150,28 @@ section[id] {
 
 
 /* Estilos para la sección sobre-nosotros */
-.sobre-nosotros {
-    font-family: 'Poppins', sans-serif;
-    font-size: 52px;
-    font-weight: 700;
-    color: rgb(224, 224, 223);
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* Título "Sobre nosotros" con tema actual */
+.sobre-nosotros{
+  font-family: 'Inter', system-ui, Segoe UI, Roboto, Arial, sans-serif !important;
+  font-size: 52px;          /* mantenés tamaño */
+  font-weight: 700;
+  color: var(--text) !important;   /* usa el color de texto del tema */
+  margin-bottom: 18px;
+ 
+  letter-spacing: 1px;
 }
+
+/* Opcional: versión con color de marca o acento */
+.sobre-nosotros--primary { color: var(--primary) !important; }
+.sobre-nosotros--accent  { color: var(--accent)  !important; }
+
 
 /* Estilos de la imagen */
 .text-container-sobre-nosotros img {
     width: 100%; /* Asegura que la imagen ocupe todo el espacio disponible */
     height: auto;
+    border-radius:12px;   /* ← acá redondeás */
+    display:block;        /* evita espacios raros */
 }
 
 /* Contenedor con flexbox para alinear el texto e imagen */
@@ -175,12 +183,19 @@ section[id] {
 }
 
 
+.contactos-titulo, .contactos-subtitulo { color: var(--text); }
+.contacto .card-button.long-button { width: 100%; }
 
+.ingreso-titulo--accent{
+  color: var(--accent) !important; /* dorado #d4af37 */
+}
+/* usa el dorado del tema */
+#ambitoActual, #ambito_actual { color: var(--accent) !important; }
 
 /* Estilo para pantallas grandes */
 @media (min-width: 992px) { /* Puedes ajustar este valor según lo que consideres "pantalla grande" */
   #domains {
-      display: none; /* Oculta la sección en pantallas grandes */
+      display: block; /* Oculta la sección en pantallas grandes o no oculta*/
   }
 }
 
@@ -256,7 +271,7 @@ section[id] {
   .card {
     width: 268px;  /* Ancho inicial para pantallas grandes */
     height: 106px;
-    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
+    background-color: #2423236b; /* Fondo oscuro con algo de transparencia */
     border-radius: 12px; /* Bordes redondeados */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 -4px 8px rgba(255, 255, 255, 0.2); /* Sombra para efecto convexo */
     display: flex;
@@ -300,23 +315,8 @@ section[id] {
     margin: 0; /* Elimina el margen para evitar que se desplace */
   }
   
-  /* Clases específicas para cada tarjeta (si necesitas personalización) */
-  .numRequeris-card1 {
-    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
-  }
-  
-  .numRequeris-card2 {
-    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
-  }
-  
-  .numRequeris-card3 {
-    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
-  }
-  
-  .numRequeris-card4 {
-    background-color: #0000006b; /* Fondo oscuro con algo de transparencia */
-  }
-  
+
+
   /* Media Queries para pantallas más pequeñas (responsive) */
   @media (max-width: 768px) {
     #stats-card-resumen { display: none; }
@@ -335,6 +335,7 @@ section[id] {
       #sobre-nosotros {
         display: none;
       }
+      
   }
   
   @media (max-width: 480px) {
@@ -357,9 +358,38 @@ section[id] {
     }
   }
   
+/* Aplica el fondo genérico SOLO si NO tiene imagen */
+.card:not(.card--bg),
+.numRequeris-card1:not(.card--bg),
+.numRequeris-card2:not(.card--bg),
+.numRequeris-card3:not(.card--bg),
+.numRequeris-card4:not(.card--bg){
+  background: linear-gradient(180deg, rgba(21,44,74,.94), rgba(15,34,56,.94)) !important;
+}
 
 
 
+
+/* Imagen de fondo leída desde --card-bg */
+.card.card--bg{ position:relative; overflow:hidden; }
+
+.card.card--bg::before{
+  content:"";
+  position:absolute; top:0; right:0; bottom:0; left:0;
+  background: var(--card-bg) center/cover no-repeat;   /* << usa tu variable */
+  z-index:0; pointer-events:none;
+}
+
+/* Overlay para legibilidad (opcional) */
+.card.card--bg::after{
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(90deg, rgba(15,34,56,.55), rgba(15,34,56,.15));
+  z-index:1; pointer-events:none;
+}
+
+/* Contenido por encima */
+.card.card--bg .card-content{ position:relative; z-index:2; }
 
 
 
@@ -394,24 +424,6 @@ section[id] {
   line-height: 1.5; /* Ajusta según el tamaño del texto de los enlaces */
   padding-top: 8px; /* Puedes ajustar este valor */
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

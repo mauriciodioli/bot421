@@ -124,55 +124,116 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 return response.json();
             })
-            .then(data => {
-                const dropdownMenu = $('.dropdown-menu'); // Usar jQuery para seleccionar el menú
-                const cardContainer = $('.card-container'); // Usar jQuery para seleccionar el contenedor de tarjetas
+          .then(data => {
+                        const dropdownMenu = $('.dropdown-menu');
+                        const cardContainer = $('.card-container');
 
-                // Limpiar el menú existente
-                dropdownMenu.empty();
-                // Limpiar el contenedor de tarjetas
-                cardContainer.empty();  // Limpiar antes de agregar las nuevas tarjetas
+                        dropdownMenu.empty();
+                        cardContainer.empty();
 
-                // Agregar los ámbitos dinámicamente al menú
-                data.forEach((ambito, index) => {
-                    // Agregar el ámbito al menú desplegable
-                    const listItem = `
-                        <li>
-                            <a href="#" class="dropdown-item" id="${ambito.valor}">
-                                ${ambito.nombre}
-                            </a>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                    `;
-                    dropdownMenu.append(listItem);
-
-                   // Crear una nueva tarjeta para cada dominio
-                    const domainCard = `
-                        <div class="numRequeris-card${index + 1} card" id="card-${ambito.valor}" data-id="${ambito.id}">
-                            <div class="card-content">                              
-                                <p class="card-number">${ambito.nombre}</p>
-                                <input type="hidden" class="ambito-id-oculto" value="${ambito.id}">
+                        // 1) Agrego el contenedor del nuevo layout dentro de .card-container
+                        const explore = `
+                            <section class="dpia-explore2" id="expertise">
+                            <div class="dpia-explore2__caption"><p>Expertise</p></div>
+                            <div class="dpia-explore2__grid">
+                                <nav class="dpia-explore2__nav" aria-label="Domains">
+                                <ul id="dx-nav"></ul>
+                                </nav>
+                                <div class="dpia-explore2__content">
+                                <div class="dpia-explore2__pill is-active" id="dx-active-pill"></div>
+                                <p class="dpia-explore2__desc" id="dx-desc"></p>
+                                <a class="dpia-explore2__more" id="dx-more" href="#domains-publicaciones" target="_self">
+                                    See more <span class="dx-more-ico"></span>
+                                </a>
+                                <div class="dpia-explore2__pills" id="dx-other-pills"></div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                            </section>`;
+                        cardContainer.append(explore);
 
+                        // 2) Construyo estructuras a partir de "data" (ambitos)
+                        // Campos esperados por ambito: { id, valor, nombre, descripcion?, url? }
+                        const DOMAINS = data.map(a => ({
+                            key: a.valor,
+                            id: a.id,
+                            name: a.nombre,
+                            desc: a.descripcion || 'Sin descripción disponible.',
+                            href: a.url || '#'
+                        }));
 
-                    // Insertar la tarjeta en el contenedor
-                    cardContainer.append(domainCard); // Usar jQuery para insertar la tarjeta
-                });
+                        const $nav   = $('#dx-nav');
+                        const $pill  = $('#dx-active-pill');
+                        const $desc  = $('#dx-desc');
+                        const $more  = $('#dx-more');
+                        const $other = $('#dx-other-pills');
 
-                // Agregar el elemento "Turing test" al final del menú
-                const turingTestItem = `
-                    <li class="nav-item content">
-                        <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                `;
-                dropdownMenu.append(turingTestItem);
+                        function renderNav(activeKey){
+                            $nav.empty().append(DOMAINS.map((d,i)=>`
+                            <li>
+                                <button class="${d.key===activeKey?'is-active':''}" data-key="${d.key}">
+                                <span>${d.name}</span>
+                                <span class="dx-arrow"></span>
+                                </button>
+                            </li>`).join(''));
+                        }
+                        function renderContent(activeKey){
+                            const active = DOMAINS.find(d=>d.key===activeKey) || DOMAINS[0];
+                            $pill.text(active.name);
+                            $desc.text(active.desc);
+                            $more.attr('href', active.href);
 
-                // Eliminar el último separador
-                dropdownMenu.children('li').last().remove();
-            })
+                            const others = DOMAINS.filter(d=>d.key!==activeKey);
+                            $other.empty().append(others.map(d=>`
+                            <button class="pill" data-key="${d.key}">${d.name}</button>
+                            `).join(''));
+                        }
+                        function setActive(key){
+                            renderNav(key);
+                            renderContent(key);
+                        }
+
+                        // 3) Poblo el nav izquierdo a partir de "data"
+                        setActive(DOMAINS[0]?.key);
+
+                        // 4) Delego eventos (click en nav y en pills de otros dominios)
+                        $nav.on('click', 'button[data-key]', function(){
+                            setActive($(this).data('key'));
+                        });
+                        $other.on('click', 'button[data-key]', function(){
+                            setActive($(this).data('key'));
+                        });
+
+                        // 5) MENÚ DESPLEGABLE (se mantiene tal cual lo tenías)
+                        data.forEach((ambito, index) => {
+                            const listItem = `
+                            <li>
+                                <a href="#" class="dropdown-item" id="${ambito.valor}">
+                                ${ambito.nombre}
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            `;
+                            dropdownMenu.append(listItem);
+
+                            // Mantengo estas líneas si las usa lógica externa (aunque ya no creamos tarjetas):
+                            const ord = index;
+                            const img = (ambito.imagen && ambito.imagen.trim())
+                                        || (window.imgByValor ? window.imgByValor[ord] : null)
+                                        || '/static/img/images_dpi_tarjetas2.jpg';
+                            // (img no se usa en el layout nuevo, pero respetamos variables por compatibilidad)
+                        });
+
+                        // 6) "Turing test" al final del menú, como antes
+                        const turingTestItem = `
+                            <li class="nav-item content">
+                            <a class="nav-link active" style="color: black;" href="/turing-testTuring">Turing test</a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                        `;
+                        dropdownMenu.append(turingTestItem);
+                        dropdownMenu.children('li').last().remove();
+                        })
+
             .catch(error => {
                 console.error('Error al cargar los ámbitos:', error);
             });

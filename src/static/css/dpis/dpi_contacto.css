@@ -1,0 +1,83 @@
+/* ===== Bloque Contacto DPIA ===== */
+.dpia-contact{
+  position: relative;
+  padding-top: 64px;
+  padding-bottom: 24px;
+}
+
+/* Franjas */
+.dpia-contact__bg-top{
+  position:absolute; top:0; left:0; right:0;
+  height:64px; background:#fff; z-index:0;
+}
+.dpia-contact__bg-bottom{
+  position:absolute; bottom:0; left:0; right:0;
+  height:24px; background:#fff; z-index:0;
+}
+
+/* Panel violeta detrás */
+.dpia-contact__wrapper{
+  position:relative;
+  max-width:1200px;
+  margin:0 auto;
+  padding:3.5rem 3rem;
+  z-index:1;
+}
+.dpia-contact__wrapper::after{
+  content:"";
+  position:absolute; inset:0;
+  background:#9599ed;      /* violeta */
+  border-radius:8px;
+  z-index:-1;
+}
+
+/* Títulos */
+.dpia-contact__caption{
+  border-top:1px solid rgba(0,0,0,.6);
+  padding-top:1rem;
+  margin:0 0 2.25rem;
+}
+.dpia-contact__subheadline{ font-size:1rem; margin:0; }
+.dpia-contact__headline{ font-size:2rem; font-weight:600; margin:0 0 1.5rem; }
+
+/* Acciones */
+.dpia-contact__actions{ display:flex; align-items:center; gap:2rem; }
+
+.dpia-contact__button{
+  display:inline-flex; align-items:center; gap:.6rem;
+  padding:.9rem 1.25rem;
+  background:#0b2033;
+  color:#fff !important;
+  border-radius:8px;
+  font-weight:700;
+  text-decoration:none;
+  line-height:1;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+  transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.dpia-contact__button:hover{
+  background:#091a2c;
+  transform:translateY(-1px);
+  box-shadow:0 8px 20px rgba(0,0,0,.22);
+}
+.dpia-contact__button-arrow{ display:inline-flex; line-height:0; }
+.dpia-contact__button-arrow svg{ width:19px; height:19px; color:#fff; }
+
+.dpia-contact__link{
+  color:#0b2033;
+  text-decoration:none;
+  font-size:1rem;
+}
+
+/* Ocultar form si HubSpot intenta cargar algo */
+.dpia-contact__form,
+.dpia-contact [data-hs-forms-root],
+.dpia-contact iframe[name^="target_iframe_"],
+.dpia-contact .hs-form{ display:none !important; }
+
+/* Responsivo */
+@media (max-width:768px){
+  .dpia-contact__wrapper{ padding:2rem 1.25rem; max-width:94%; }
+  .dpia-contact__actions{ flex-direction:column; align-items:flex-start; gap:1rem; }
+  .dpia-contact__link{ margin-left:0; }
+}
