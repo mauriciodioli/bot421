@@ -5,6 +5,21 @@
   color:#0b2033;
 }
 
+/* Centra verticalmente el bloque de texto SIN mover la línea superior */
+.dpia-contact__inner{
+  /* cualquiera de estas dos opciones funciona; usa UNA */
+  /* OPCIÓN A (flex): */
+  display: flex;
+  align-items: center;          /* centra verticalmente el contenido */
+  min-height: 45vh;             /* empuja el texto hacia la mitad (ajustá 40–50vh) */
+
+  /* OPCIÓN B (grid):
+  display: grid;
+  align-content: center;        /* centra el contenido en el eje vertical */
+  min-height: 45vh;             /* idem */
+  
+}
+
 /* caption */
 .dpia-explore2 .dpia-explore2__caption{
   border-top:1px solid rgba(0,0,0,.5) !important;

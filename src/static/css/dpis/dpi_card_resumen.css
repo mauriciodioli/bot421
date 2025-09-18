@@ -226,3 +226,10 @@
   50%      { border-color: var(--type-color); }
 }
 
+
+/* Ocultar "DPIA en números" en pantallas de celular */
+@media (max-width: 768px) {           /* ajusta 768/600/576 según prefieras */
+  section.s-numbers.dpia-resumen {
+    display: none !important;
+  }
+}

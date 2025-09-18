@@ -2,7 +2,7 @@
 
  /* styles.css */
  .footer {
-    background-color: #000000;
+    background-color: #0f2238;
     color: #fff;
     width: 100%;
     /*position: fixed;*/
@@ -16,7 +16,7 @@
 }
 
 .footer-distributed{
-	background: #000000;
+	background: #0f2238;
 	color: #fff;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.12);
 	box-sizing: border-box;
@@ -62,11 +62,11 @@
 }
 
 .footer-distributed h3 span{
-	color: #ffe34c;
+	color: #ffffff;
 }
 
 .footer-right p span {
-	color: #ffe34c;
+	color: #ffffff;
 }
 
 /* Footer links */

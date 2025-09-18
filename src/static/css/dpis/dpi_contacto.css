@@ -3,6 +3,7 @@
   position: relative;
   padding-top: 64px;
   padding-bottom: 24px;
+  min-height: 70vh;  
 }
 
 /* Franjas */
@@ -29,6 +30,7 @@
   background:#9599ed;      /* violeta */
   border-radius:8px;
   z-index:-1;
+  min-height: 57vh;  
 }
 
 /* Títulos */
@@ -80,4 +82,51 @@
   .dpia-contact__wrapper{ padding:2rem 1.25rem; max-width:94%; }
   .dpia-contact__actions{ flex-direction:column; align-items:flex-start; gap:1rem; }
   .dpia-contact__link{ margin-left:0; }
+
+
+
+
+
+
+
+
 }
+
+
+
+/* === Ajustes puntuales Contact (override) === */
+
+/* 1) Título: más grande y SIN negrita */
+.dpia-contact__headline{
+  font-size: 2.4rem;   /* antes 2rem */
+  font-weight: 400;    /* quitar negrita (era 600) */
+}
+
+/* 2) Botón: un poco más grande */
+.dpia-contact__button{
+  padding: 1.05rem 1.6rem;   /* antes .9rem 1.25rem */
+  font-size: 1.05rem;        /* un toque más grande */
+  gap: .75rem;               /* separa texto e ícono */
+  border-radius: 10px;       /* opcional, más “lleno” */
+}
+.dpia-contact__button-arrow svg{
+  width: 22px;               /* ícono un poco mayor (19 -> 22) */
+  height: 22px;
+}
+
+/* Responsive: mantén buena escala en mobile */
+@media (max-width: 768px){
+  .dpia-contact__headline{
+    font-size: 1.8rem;       /* que no se pase en pantallas chicas */
+  }
+  .dpia-contact__button{
+    font-size: .98rem;
+    padding: .95rem 1.3rem;
+  }
+}
+.dpia-contact__button-arrow svg{
+    width: 20px;
+    height: 20px;
+  }
+
+  
