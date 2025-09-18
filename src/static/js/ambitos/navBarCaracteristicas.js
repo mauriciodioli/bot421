@@ -44,6 +44,256 @@ function updateColor(element) {
 
 
 
+// 1) Click en el "pill" activo => cargar categorías
+$(document)
+  .off('click.dpia', '#dx-active-pill')
+  .on('click.dpia', '#dx-active-pill', function (e) {
+    e.preventDefault();
+    cargarAmbitosCategorias();
+  });
+
+// 2) Accesibilidad: Enter/Espacio también disparan la carga
+$(document)
+  .off('keydown.dpia', '#dx-active-pill')
+  .on('keydown.dpia', '#dx-active-pill', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      cargarAmbitosCategorias();
+      cargarCategoriasEnPills();
+    }
+  });
+
+// 3) (Opcional) Marcarlo como botón y cursor “mano” una vez esté en el DOM
+const activarPillComoBoton = () => {
+  const pill = document.getElementById('dx-active-pill');
+  if (pill) {
+    pill.setAttribute('role', 'button');
+    pill.setAttribute('tabindex', '0');
+    pill.style.cursor = 'pointer';
+  }
+};
+document.addEventListener('DOMContentLoaded', activarPillComoBoton);
+// Si lo insertás más tarde, llamá activarPillComoBoton() después de inyectar `explore`.
+
+
+
+// === 1) Hook: clic/tecla en el pill activo => cargar categorías en #dx-other-pills
+$(document)
+  .off('click.dpia', '#dx-active-pill')
+  .on('click.dpia', '#dx-active-pill', function (e) {
+    e.preventDefault();
+    cargarCategoriasEnPills();
+  });
+
+$(document)
+  .off('keydown.dpia', '#dx-active-pill')
+  .on('keydown.dpia', '#dx-active-pill', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      cargarCategoriasEnPills();
+    }
+  });
+
+// Opcional: marcarlo como botón accesible
+(function activarPillComoBoton(){
+  const pill = document.getElementById('dx-active-pill');
+  if (pill) {
+    pill.setAttribute('role', 'button');
+    pill.setAttribute('tabindex', '0');
+    pill.style.cursor = 'pointer';
+  }
+})();
+
+// === 2) Nueva función: carga categorías y las pinta en #dx-other-pills (borrando los dominios)
+async function cargarCategoriasEnPills() {
+  const $pills = $('#dx-other-pills');     // destino
+  if (!$pills.length) {
+    console.warn('#dx-other-pills no existe');
+    return;
+  }
+
+  // Limpio y muestro estado "cargando"
+  $pills.empty().append(`
+    <div class="dpia-state" id="dx-cat-loading" style="padding:8px;opacity:.8">
+      Cargando categorías…
+    </div>
+  `);
+
+  // --- Payload (igual a tu lógica)
+  let ambito = localStorage.getItem('dominio');
+  const cpRaw = localStorage.getItem('codigoPostal');
+  if (ambito === 'inicialDominio') ambito = 'Laboral';
+
+  const formData = new FormData();
+  if (ambito != null && ambito !== 'null' && ambito !== '') formData.append('ambito', ambito);
+  if (cpRaw  != null && cpRaw  !== 'null' && cpRaw  !== '') formData.append('cp', cpRaw);
+
+  try {
+    const res = await fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!res.ok) {
+      const txt = await res.text().catch(() => '');
+      console.error(`HTTP ${res.status}`, txt);
+      return pintarEstado('Error al cargar categorías');
+    }
+
+    const ct = res.headers.get('content-type') || '';
+    if (!ct.includes('application/json')) {
+      console.warn('La respuesta no es JSON.');
+      return pintarEstado('Formato de respuesta inválido');
+    }
+
+    const data = await res.json();
+    const categorias = Array.isArray(data?.categorias)
+      ? data.categorias
+      : Array.isArray(data?.data?.categorias)
+      ? data.data.categorias
+      : [];
+
+    // Borro dominios y pinto categorías
+    $pills.empty();
+
+    if (!categorias.length) {
+      return pintarEstado('Sin categorías disponibles');
+    }
+
+    // Render de cada categoría como "pill" (mismo look&feel)
+    const frag = document.createDocumentFragment();
+
+    categorias.forEach((categoria, index) => {
+      const id     = categoria?.id ?? `cat-${index}`;
+      const valor  = categoria?.valor ?? '';
+      const nombre = categoria?.nombre ?? categoria?.name ?? `Categoría ${index + 1}`;
+      const color  = categoria?.color || '#0b2033';
+
+      const btn = document.createElement('button');
+      btn.className = 'pill cat-pill';
+      btn.setAttribute('data-id', id);
+      btn.setAttribute('data-key', valor);
+      // Reutilizo tu bg genérico; podés variar por categoría si querés
+      btn.style.setProperty('--card-bg', "url('/static/img/images_dpi_tarjetas2.jpg')");
+
+      btn.innerHTML = `
+        <span class="card-number"  style="color:${color}">${nombre}</span>
+        <input type="hidden" class="categoria-id-oculta" value="${id}">
+      `;
+
+      frag.appendChild(btn);
+    });
+
+    $pills[0].appendChild(frag);
+
+  } catch (err) {
+    console.error('Error de red/parseo al cargar categorías:', err);
+    return pintarEstado('Error de red o parseo');
+  }
+
+  // Mensaje de estado en el mismo contenedor de pills
+  function pintarEstado(texto) {
+    $pills
+      .empty()
+      .append(`<div class="dpia-state" style="padding:8px;opacity:.8">${texto}</div>`);
+  }
+}
+
+// === 3) (Opcional) Qué pasa cuando clickeo una categoría renderizada
+//     - Guardamos selección y (si querés) navegar o refrescar publicaciones
+$(document)
+  .off('click.dpia', '.cat-pill')
+  .on('click.dpia', '.cat-pill', function (e) {
+    e.preventDefault();
+    const $btn = $(this);
+    const catId = $btn.data('id');
+    const catKey = $btn.data('key') || '';
+
+    // Visual: marcar activa
+    $('.cat-pill').removeClass('is-active');
+    $btn.addClass('is-active');
+
+    // Guardar selección para otros módulos
+    localStorage.setItem('categoriaSeleccionadaId', String(catId));
+    localStorage.setItem('categoriaSeleccionadaKey', String(catKey));
+
+    // TODO: acá dispará lo que corresponda en tu app:
+     
+// Realizar la solicitud AJAX al cargar la página
+
+    var storedDomain = localStorage.getItem('dominio');
+    let domain
+    if (storedDomain && storedDomain !== 'null') {
+        domain = storedDomain;
+    } else {
+      
+        let currentURL = window.location.href;
+        let partAfterIndex = currentURL.split("index/")[1];
+        // Si la parte después de "index/" es undefined o vacía, asigna 'laboral'
+        if (typeof partAfterIndex === 'undefined' || partAfterIndex === '') {
+            partAfterIndex = 'Laboral';
+        }
+        console.log(partAfterIndex); // Mostrará "personal"
+        domain = partAfterIndex;
+        localStorage.setItem('dominio', domain); // Guarda 'personal' en el almacenamiento local con la clave 'dominio'
+    }
+    console.log('Dominio seleccionado:', domain, 'ID:', catId);
+    
+     enviarDominioAJAXDesdeCategorias(domain, catId);
+
+      // 👉 Scroll & focus a la sección de publicaciones
+    //   - hace focus en el H1 #ambitoActual (si está)
+    scrollAndFocusSection('domains-publicaciones', '#ambitoActual', /*offset navbar*/ 100);
+// (Opcional) actualizar el H1 con el texto de la categoría
+    const $ambitoH1 = $('#ambitoActual');
+    if ($ambitoH1.length && catKey) {
+      $ambitoH1.text(catKey);
+    }
+
+  });
+
+
+
+
+
+// Helper: scroll suave con compensación de navbar fija y focus accesible
+function scrollAndFocusSection(targetId, focusSelector = null, offsetPx = 100) {
+  const section = document.getElementById(targetId);
+  if (!section) return;
+
+  // Evita saltos: focus sin scroll primero
+  section.setAttribute('tabindex', '-1'); // focusable para lectores de pantalla
+  if (focusSelector) {
+    const focusEl = section.querySelector(focusSelector) || section;
+    focusEl.setAttribute('tabindex', focusEl.getAttribute('tabindex') || '-1');
+    focusEl.focus({ preventScroll: true });
+  } else {
+    section.focus({ preventScroll: true });
+  }
+
+  // Scroll con offset (navbar fija)
+  const y = section.getBoundingClientRect().top + window.pageYOffset - offsetPx;
+  window.scrollTo({ top: y, behavior: 'smooth' });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -92,7 +342,7 @@ async function cargarAmbitosCategorias() {
   const formData = new FormData();
   if (ambito != null && ambito !== 'null' && ambito !== '') formData.append('ambito', ambito);
   if (cpRaw != null && cpRaw !== 'null' && cpRaw !== '') formData.append('cp', cpRaw);
-
+ 
   try {
     // 3) Fetch (sin slash final para evitar 404/308, salvo que tu Flask lo pida)
     const res = await fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
@@ -535,6 +785,7 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    
     const botonCategorias = document.getElementById("caracteristicas-tab");
 
     if (botonCategorias) {
@@ -624,7 +875,7 @@ function renderizarCategorias(categorias, selectedCategory) {
         li.style.padding = "10px";
 
         const a = document.createElement("a");
-        a.href = "#";
+        a.href = "#domains-publicaciones";       
         a.className = "categoria-dropdown-item";
         a.id = categoria.id;
         a.dataset.value = categoria.valor;

@@ -187,10 +187,12 @@ section[id] {
 .contacto .card-button.long-button { width: 100%; }
 
 .ingreso-titulo--accent{
-  color: var(--accent) !important; /* dorado #d4af37 */
+  color: #d8dde2 !important; /* dorado #d4af37 */
+  padding-top: 12px;
+  padding-left: 16px;
 }
 /* usa el dorado del tema */
-#ambitoActual, #ambito_actual { color: var(--accent) !important; }
+#ambitoActual, #ambito_actual { color: #0f2238 !important; }
 
 /* Estilo para pantallas grandes */
 @media (min-width: 992px) { /* Puedes ajustar este valor según lo que consideres "pantalla grande" */
@@ -304,13 +306,14 @@ section[id] {
     font-size: 24px;
     color: white; /* Texto blanco */
     margin: 0; /* Elimina el margen para evitar que se desplace */
+    font-weight: normal; /* Quita la negrita */
   }
   
   /* Número en la tarjeta */
   .card-number {
     font-family: 'Poppins', sans-serif;
     font-size: 24px;
-    color: white; /* Texto blanco */
+    color:#0f2238 ; /* Texto blanco */
     font-weight: bold;
     margin: 0; /* Elimina el margen para evitar que se desplace */
   }

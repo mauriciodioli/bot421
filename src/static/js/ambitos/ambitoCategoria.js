@@ -1,5 +1,6 @@
 $(document).ready(function() {
     $("#buscarAmbito").click(function() {
+        debugger;
         let ambito = $("#ambitoInput").val();
         let cp = $("#codigoPostalInput").val();
       

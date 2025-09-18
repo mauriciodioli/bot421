@@ -67,3 +67,80 @@
     text-decoration: none;
     color: white;
   }
+
+
+
+  
+/* El contenedor define la altura; la imagen NO la cambia */
+/* Altura base (MÓVIL / TABLET): SIN cambios */
+.ingreso-info{
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(360px, 55vh, 560px); /* ← igual que antes */
+}
+
+/* Desktop (≥992px): altura extra + centrado vertical */
+@media (min-width: 992px){
+  .ingreso-info{
+    /* +350px solo en desktop */
+    min-height: clamp(
+      calc(360px + 350px),
+      calc(55vh   + 350px),
+      calc(560px + 350px)
+    );
+
+    /* centrar el contenido en el eje vertical */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;   /* centrado vertical */
+    align-items: flex-start;   /* alineado a la izquierda */
+  }
+
+  /* evita que el primer hijo “empuje” hacia arriba por márgenes */
+  .ingreso-info > *:not(.ingreso-bg){ margin-top: 0; }
+  .ingreso-titulo{ margin-top: 0; }
+}
+
+
+
+/* La imagen ocupa todo el contenedor y se comporta como fondo */
+.ingreso-bg{
+  position: absolute;
+  inset: 0;               /* top/right/bottom/left: 0 */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;      /* llena sin deformar */
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;   /* no bloquea clicks del form */
+  display: block;
+}
+
+/* Overlay opcional para contraste del texto */
+.ingreso-info::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(15,34,56,.35), rgba(15,34,56,.15));
+  z-index: 1;             /* sobre la imagen, bajo el contenido */
+  pointer-events: none;
+}
+
+/* Todo el contenido por encima del fondo/overlay */
+.ingreso-info > *:not(.ingreso-bg){
+  position: relative;
+  z-index: 2;
+}
+
+
+
+/* franjas */
+.dpi-login-contact-form__bg-top{
+  position:absolute;
+  top:50%;
+  left:0;
+  right:0;
+  height:100%;        /* ahora ocupa la mitad del bloque */
+  background:#061e35;
+  z-index:0;
+}
