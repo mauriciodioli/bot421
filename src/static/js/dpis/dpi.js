@@ -756,7 +756,7 @@ function enviarDominioAJAX(domain) {
         console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
         return;
     }
-
+  
     // Mostrar/ocultar splash según la visibilidad de la sección
     toggleSplash(targetSection, splash);
 

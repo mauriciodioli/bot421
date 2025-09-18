@@ -215,6 +215,7 @@ $(document)
     $btn.addClass('is-active');
 
     // Guardar selección para otros módulos
+     localStorage.setItem('categoria', String(catId));
     localStorage.setItem('categoriaSeleccionadaId', String(catId));
     localStorage.setItem('categoriaSeleccionadaKey', String(catKey));
 
