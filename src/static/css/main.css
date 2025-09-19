@@ -113,14 +113,14 @@ body {
 /* Fondo y texto global */
 body {
   background: var(--bg) !important;
-  color: var(--text) !important;
+
 }
 
 /* Pantallas pequeñas: mantener claro (no más fondo #333) */
 @media (max-width: 767px) {
   body {
     background-color: var(--bg) !important;
-    color: var(--text) !important;
+    
   }
 }
 

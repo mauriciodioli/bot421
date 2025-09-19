@@ -89,6 +89,20 @@
   align-items: center; /* Alineación vertical en el centro */
   padding-top: 20%; /* Ajusta este valor para mover el contenido hacia abajo */
 }
+:root{
+  --spin: #eef0ff;     /* claro */
+  --spin-dark: #b6befa;/* más oscuro y armónico */
+}
+
+/* Solo el spinner del splash de notificaciones */
+#splashNotificaciones .spinner{
+  /* aro tenue en el claro, con transparencia */
+  border: 5px solid rgba(238, 240, 255, 0.35);
+  /* borde superior (color que ves girar): más oscuro */
+  border-top: 5px solid var(--spin-dark);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 
 .splash-contenido {
   text-align: center;

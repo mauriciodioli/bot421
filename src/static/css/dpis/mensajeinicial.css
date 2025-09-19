@@ -1,5 +1,7 @@
 /* === Sección contact (plantilla) — limpio y sin formulario === */
-
+:root{
+  --text:#1f2937; /* gris muy oscuro */
+}
 /* espacio para las franjas superior/inferior */
 .m-contact-form{
   position: relative;
@@ -19,7 +21,7 @@
 }
 
 .m-contact-form__bg-bottom{
-  position:absolute; bottom:0; left:0; right:0; height:24px; background:#fff; z-index:0;
+  position:absolute; bottom:0; left:0; right:0; height:24px; background:#ffff; z-index:0;
 }
 
 /* panel celeste (blue-400) detrás del contenido */
@@ -29,6 +31,7 @@
   max-width: 1100px;      /* antes estaba muy angosto, ahora lo ampliamos */
   margin: 0 auto;         /* lo centramos en pantalla */
   z-index:1;
+  color: var(--text) !important;
 }
 
 .m-contact-form__wrapper::after{
