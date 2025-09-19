@@ -1,27 +1,47 @@
-
-
 <ul class="nav nav-tabs mt-3" id="listadoCategorias" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Home</button>
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab"
+            data-bs-target="#home-tab-pane" type="button" role="tab"
+            aria-controls="home-tab-pane" aria-selected="true">
+      <span data-translate="dpi_nav_home">Home</span>
+    </button>
   </li>
-  
+
   <li class="nav-item dropdown" role="presentation">
-    <button class="nav-link dropdown-toggle" style="color: azure;" id="caracteristicas-tab" data-bs-toggle="dropdown" type="button" role="tab" aria-expanded="false"   data-translate="categorias">Categorías</button>
-    
+    <button class="nav-link dropdown-toggle" style="color: azure;" id="caracteristicas-tab"
+            data-bs-toggle="dropdown" type="button" role="tab" aria-expanded="false">
+      <span data-translate="dpi_nav_categories">Categorías</span>
+    </button>
+
     <ul class="dropdown-menu categoria-dropdown-menu">
-      <li><a class="dropdown-item categoria-dropdown-item" href="#" data-color="red">Action</a></li>     
+      <li>
+        <a class="dropdown-item categoria-dropdown-item" href="#" data-color="red"
+           data-translate="dpi_nav_action">Action</a>
+      </li>
+      <!-- si cargas más ítems por JS, poneles su data-translate correspondiente -->
     </ul>
-    
   </li>
- 
 </ul>
 
 <div class="tab-content mt-3" id="myTabContent">
-  <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">Contenido de Home</div>
-  <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">Contenido de Profile</div>
-  <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">Contenido de Contact</div>
-  <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel" aria-labelledby="disabled-tab" tabindex="0">Contenido Deshabilitado</div>
+  <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel"
+       aria-labelledby="home-tab" tabindex="0">
+    <span data-translate="dpi_tab_home_content">Contenido de Home</span>
+  </div>
+  <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel"
+       aria-labelledby="profile-tab" tabindex="0">
+    <span data-translate="dpi_tab_profile_content">Contenido de Profile</span>
+  </div>
+  <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel"
+       aria-labelledby="contact-tab" tabindex="0">
+    <span data-translate="dpi_tab_contact_content">Contenido de Contact</span>
+  </div>
+  <div class="tab-pane fade" id="disabled-tab-pane" role="tabpanel"
+       aria-labelledby="disabled-tab" tabindex="0">
+    <span data-translate="dpi_tab_disabled_content">Contenido Deshabilitado</span>
+  </div>
 </div>
+
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ambitos/navBarCaracteristicas.css') }}">
 <script src="{{ url_for('static', filename='js/ambitos/navBarCaracteristicas.js') }}"></script>

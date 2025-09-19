@@ -38,7 +38,7 @@
 
 
 
-            <!-- Sección SOLO para el video -->
+  <!-- Sección SOLO para el video -->
 <section class="video-portado" id="video-portado">
   <div class="video-portado-wrapper">
     <video class="video-responsivo"
@@ -52,7 +52,7 @@
     </video>
 
     <div class="video-text-block">
-      <div class="video-kicker">Micrositios locales · Multi-idioma</div>
+      <div class="video-kicker" data-translate="dpi_kicker">Micrositios locales · Multi-idioma</div>
       <h1 class="video-titulo" data-translate="dpi_title">
         Un micrositio perfecto para cada sede, gestionado desde un único panel
       </h1>
@@ -87,31 +87,23 @@
 
   <ul class="s-numbers__list">
     <li class="color-white" data-aos="fade-up" data-aos-delay="100">
-      <p class="s-numbers__value"><span> 11</span></p>
-      <p class="s-numbers__title">
-        <strong data-translate="dpi_card_domains">Dominios</strong>
-      </p>
+      <p class="s-numbers__value"><span>11</span></p>
+      <p class="s-numbers__title"><strong data-translate="dpi_card_domains">Dominios</strong></p>
     </li>
 
     <li class="color-violet" data-aos="fade-up" data-aos-delay="200">
-      <p class="s-numbers__value"><span> 89</span></p>
-      <p class="s-numbers__title">
-        <strong data-translate="dpi_card_signals">Señales</strong>
-      </p>
+      <p class="s-numbers__value"><span>89</span></p>
+      <p class="s-numbers__title"><strong data-translate="dpi_card_signals">Señales</strong></p>
     </li>
 
     <li class="color-red" data-aos="fade-up" data-aos-delay="300">
       <p class="s-numbers__value"><span>34+</span></p>
-      <p class="s-numbers__title">
-        <strong data-translate="dpi_card_posts">Publicaciones</strong>
-      </p>
+      <p class="s-numbers__title"><strong data-translate="dpi_card_posts">Publicaciones</strong></p>
     </li>
 
     <li class="color-green" data-aos="fade-up" data-aos-delay="400">
       <p class="s-numbers__value"><span>5+</span></p>
-      <p class="s-numbers__title">
-        <strong data-translate="dpi_card_courses">Cursos</strong>
-      </p>
+      <p class="s-numbers__title"><strong data-translate="dpi_card_courses">Cursos</strong></p>
     </li>
   </ul>
 </section>
@@ -130,9 +122,9 @@
       <p>DPIA — Business</p>
     </div>
 
-    <div class="m-big-text__content" data-aos="fade-up" data-aos-delay="100">
+    <div class="m-big-text__content" data-aos="fade-up" data-aos-delay="100" >
       Whatever your vision is, wherever you are located,
-      <span class="highlight">we deliver results that matter to you</span>
+      <span class="highlight" >we deliver results that matter to you</span>
     </div>
   </div>
 </section>
@@ -144,31 +136,31 @@
 </div><!--end row-->
 </div>
 
-
 <section class="m-contact-form m-contact-form--blue-400 remove-mobile-bottom-padding">
   <div class="m-contact-form__bg-top" style="background-color: #061e35"></div>
   <div class="m-contact-form__bg-bottom" style="background-color: #ffffff"></div>
 
   <div class="m-contact-form__wrapper">
     <div class="m-contact-form__caption" data-aos="fade-up">
-      <h3 class="m-contact-form__subheadline">DPIA</h3>
+      <h3 class="m-contact-form__subheadline" data-translate="dpi_contact_brand">DPIA</h3>
     </div>
 
     <div class="m-contact-form__inner">
       <div class="m-contact-form__info" data-aos="fade-up" data-aos-delay="50">
         <h2 class="m-contact-form__headline-alt">
-          Exclusivo. Curado por IA.<br>
-          Lo que hoy es tendencia en redes sociales.
+          <span data-translate="dpi_contact_headline_1">Exclusivo. Curado por IA.</span><br>
+          <span data-translate="dpi_contact_headline_2">Lo que hoy es tendencia en redes sociales.</span>
         </h2>
 
-        <p class="m-contact-form__text" data-aos="fade-up" data-aos-delay="100">
+        <p class="m-contact-form__text" data-aos="fade-up" data-aos-delay="100" data-translate="dpi_contact_text">
           Descubrí dominios personales, señales y publicaciones locales en un solo lugar.
         </p>
 
         <div class="m-contact-form__actions" data-aos="fade-up" data-aos-delay="150">
           <a href="#domains-publicaciones" class="button">
-            <span>Descubrir ahora</span>
+            <span data-translate="dpi_contact_cta">Descubrir ahora</span>
             <div class="button__arrow">
+              <!-- SVG intacto -->
               <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="9.691" cy="9.141" r="8.35" transform="rotate(-180 9.691 9.14)" stroke="currentColor" stroke-width="1.3"></circle>
                 <path d="m5.706 5.141 7.718 7.718M8.425 13.14h3.755a1.5 1.5 0 0 0 1.5-1.5V7.887" stroke="currentColor" stroke-width="1.3"></path>
@@ -180,6 +172,7 @@
     </div>
   </div>
 </section>
+
 
 
 
@@ -201,7 +194,10 @@
     <h1 id="ambitoActual" class="ambito-actual ambito-actual--accent" tabindex="0"></h1>
 
 
-      {% include 'ambitos/navBarCaracteristicas.html' %}  <!-- Aquí se incluye la barra de navegación -->
+     <div class="nav-wrapper--sm">
+      {% include 'ambitos/navBarCaracteristicas.html' %}
+    </div>
+
 
       <div class="splashCarga" id="splashNotificaciones" style="display: none;">
         <div class="splash-contenido">
@@ -217,25 +213,25 @@
 
 </div>
 <!-- /horizontal-padding vertical-padding -->
-
 <section class="dpia-contact" id="contacto">
   <div class="dpia-contact__bg-top"></div>
   <div class="dpia-contact__bg-bottom"></div>
 
   <div class="dpia-contact__wrapper">
     <div class="dpia-contact__caption" data-aos="fade-up">
-      <h3 class="dpia-contact__subheadline">Link with us</h3>
+      <h3 class="dpia-contact__subheadline" data-translate="dpi_contact2_subheadline">Link with us</h3>
     </div>
 
     <div class="dpia-contact__inner">
       <div class="dpia-contact__info" data-aos="fade-up" data-aos-delay="60">
         <h2 class="dpia-contact__headline">
-          Need more insights on working with<br>us?
+          <span data-translate="dpi_contact2_headline_1">Need more insights on working</span><br>
+          <span data-translate="dpi_contact2_headline_2">with us?</span>
         </h2>
 
         <div class="dpia-contact__actions" data-aos="fade-up" data-aos-delay="120">
           <a href="/llamada/index-contacto" class="dpia-contact__button">
-            <span>Contact us</span>
+            <span data-translate="dpi_contact2_cta">Contact us</span>
             <div class="dpia-contact__button-arrow">
               <svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="9.691" cy="9.141" r="8.35" transform="rotate(-180 9.691 9.14)" stroke="currentColor" stroke-width="1.3"></circle>
@@ -244,15 +240,15 @@
             </div>
           </a>
 
-          <a href="mailto:contact@linkgroup.pl" class="dpia-contact__link">contact@dpia.es</a>
+          <a href="mailto:contact@linkgroup.pl" class="dpia-contact__link" data-translate="dpi_contact2_email">contact@dpia.es</a>
         </div>
       </div>
 
       <!-- Columna form (oculta para siempre) -->
       <div class="dpia-contact__form" aria-hidden="true"></div>
     </div>
-    
   </div>
+
   <div class="dpi-login-contact-form__bg-top" style="background-color: #061e35"></div>
 </section>
 
@@ -596,6 +592,7 @@ window.addEventListener('DOMContentLoaded', () => {
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_new_disenio.css') }}">
   <script src="{{ url_for('static', filename='js/usuarios/usuarioUbicacion.js') }}"></script>
   <script src="{{ url_for('static', filename='js/logs.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/dpis/dpi_card_resumen.js') }}"></script>
 
   <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
  

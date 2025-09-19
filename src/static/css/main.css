@@ -106,6 +106,8 @@ body {
   --primary-dark:#153a5c;
   --accent:#0f2238;
   --border:#e5e7eb;
+   --bg:#f7f9fc;   /* ← AQUÍ cambias el fondo “global” */
+  --surface:#ffffff;  /* ← y el de .container */
 }
 
 /* Fondo y texto global */
