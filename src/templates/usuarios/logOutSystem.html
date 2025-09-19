@@ -1,5 +1,18 @@
 {% extends "layouts/layout_without_navbar.html" %}
 {% block content %}
+<style>
+  .jumbotron,
+  .jumbotron h1,
+  .jumbotron p {
+    color: #111 !important; /* negro (ligeramente más suave que #000) */
+  }
+
+  /* Si hubiera links de texto dentro del jumbotron (no botones), también negros */
+  .jumbotron a:not(.btn) {
+    color: #111 !important;
+    text-decoration: underline;
+  }
+</style>
 
 <div class="jumbotron">
   <h1 class="display-4" data-i18n="titleLoggedOut">¡Sesión cerrada!</h1>
@@ -74,4 +87,5 @@
     if (dict[key]) el.textContent = dict[key];
   });
 </script>
+
 {% endblock %}

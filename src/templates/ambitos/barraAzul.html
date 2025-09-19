@@ -1,18 +1,72 @@
-<!-- Banner azul responsive -->
-<div class="banner-movil" style="
-    background-color: #007bff;
-    width: 100%;
-    padding: 10px 16px;
-    color: white;
-    font-weight: bold;
-    font-size: 14px;
-    text-align: center;
-    position: fixed;     /* 🔥 Lo pegás abajo del header */
-    top: 56px;           /* 👈 Coincide con la altura del header */
-    left: 0;
-    z-index: 1001;       /* Mayor que el header */
-    box-sizing: border-box;
-">
-    If you're interested in the advisory section – 
-    <a href="/llamada/index-contacto" style="color: white; text-decoration: underline;">Learn more →</a>
+<!-- Banner azul -->
+<div id="bannerMovil" class="banner-movil" style="
+  background-color:#007bff; width:100%; padding:10px 16px;
+  color:white; font-weight:bold; font-size:14px; text-align:center;
+  position:fixed; top:56px; left:0; z-index:1001; box-sizing:border-box;">
+  If you're interested in the advisory section –
+  <a href="/llamada/index-contacto" style="color:white; text-decoration:underline;">Learn more →</a>
 </div>
+
+<style>
+  /* usa variable --t para controlar la velocidad desde JS */
+  .banner-movil{
+    --t: 0ms; /* por defecto sin transición (lo setea JS) */
+    transition: transform var(--t) ease, opacity var(--t) ease;
+    will-change: transform, opacity;
+  }
+  .banner-movil.hide{
+    transform: translateY(-120%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .banner-movil{ transition:none !important; }
+  }
+</style>
+
+<script>
+(function(){
+  const bar = document.getElementById('bannerMovil');
+  if(!bar) return;
+
+  const REVEAL_THRESHOLD = 40;  // px antes de llegar al tope
+  let lastY = window.pageYOffset || document.documentElement.scrollTop;
+
+  const atTop = () => (window.pageYOffset || document.documentElement.scrollTop) <= 0;
+  const nearTop = () => (window.pageYOffset || document.documentElement.scrollTop) <= REVEAL_THRESHOLD;
+
+  // estado inicial: visible solo si estás en el tope o cerca del tope
+  if (!(atTop() || nearTop())) {
+    bar.classList.add('hide');
+  }
+
+  window.addEventListener('scroll', () => {
+    const y = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (y > lastY) {
+      // ▼ Bajando → ocultar lento
+      bar.style.setProperty('--t', '320ms');  // lenta
+      bar.classList.add('hide');
+    } else {
+      // ▲ Subiendo
+      if (nearTop()) {
+        // cuando estás a ≤ 40px del tope → mostrar rápido
+        bar.style.setProperty('--t', '40ms'); // casi instantáneo
+        bar.classList.remove('hide');
+      } else {
+        // aún lejos del tope → mantener oculto
+        // no cambiamos transición aquí para evitar parpadeos
+        bar.classList.add('hide');
+      }
+    }
+
+    // siempre visible exactamente en el tope
+    if (atTop()){
+      bar.style.setProperty('--t', '40ms');
+      bar.classList.remove('hide');
+    }
+
+    lastY = y;
+  }, { passive: true });
+})();
+</script>

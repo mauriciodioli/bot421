@@ -1,6 +1,6 @@
 @media (min-width: 992px){ .nav-wrapper--sm{ display:none; } }
 
-
+ .nav-wrapper--sm{ display:none;  }
 
 /* Personalización solo para el nuevo dropdown */
 .categoria-dropdown-menu {
