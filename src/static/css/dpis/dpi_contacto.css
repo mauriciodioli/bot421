@@ -3,7 +3,7 @@
   position: relative;
   padding-top: 64px;
   padding-bottom: 24px;
-  min-height: 70vh;  
+ 
 }
 
 /* Franjas */
@@ -21,7 +21,7 @@
   position:relative;
   max-width:1200px;
   margin:0 auto;
-  padding:3.5rem 3rem;
+  padding: 2rem 3rem; 
   z-index:1;
 }
 .dpia-contact__wrapper::after{
@@ -30,7 +30,7 @@
   background:#9599ed;      /* violeta */
   border-radius:8px;
   z-index:-1;
-  min-height: 57vh;  
+  min-height: 45vh;  
 }
 
 /* Títulos */

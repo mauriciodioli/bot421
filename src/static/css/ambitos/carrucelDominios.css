@@ -1,4 +1,8 @@
 
+.pull-up-80 {
+  display: none !important;
+}
+
 
 .carrusel {
     display: flex;

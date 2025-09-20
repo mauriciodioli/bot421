@@ -669,25 +669,28 @@ fetch('/cuenta-endpoint-all/', {
 
 // Realizar la solicitud AJAX al cargar la página
 $(document).ready(function () {
-  // Obtener el valor por defecto del input hidden cuando carga la página
-  
-    var storedDomain = localStorage.getItem('dominio');
-    let domain
-    if (storedDomain && storedDomain !== 'null') {
-        domain = storedDomain;
-    } else {
-      
-        let currentURL = window.location.href;
-        let partAfterIndex = currentURL.split("index/")[1];
-        // Si la parte después de "index/" es undefined o vacía, asigna 'laboral'
-        if (typeof partAfterIndex === 'undefined' || partAfterIndex === '') {
-            partAfterIndex = 'Laboral';
-        }
-        console.log(partAfterIndex); // Mostrará "personal"
-        domain = partAfterIndex;
-        localStorage.setItem('dominio', domain); // Guarda 'personal' en el almacenamiento local con la clave 'dominio'
-    }
-    enviarDominioAJAX(domain);
+  // dominio desde localStorage o desde la URL /index/<dominio>
+  let domain = localStorage.getItem('dominio');
+  if (!domain || domain === 'null') {
+    const currentURL = window.location.href;
+    let partAfterIndex = (currentURL.split('index/')[1] || '').trim();
+    if (!partAfterIndex) partAfterIndex = 'Laboral';
+    domain = partAfterIndex;
+    localStorage.setItem('dominio', domain);
+  }
+
+  // mostrar spinner (solo mobile)
+  showGlobalSpinner();
+
+  // lanzar tu carga inicial
+  const maybePromise = enviarDominioAJAX(domain);
+
+  // apagar spinner al terminar (funcione devuelva promesa o no)
+  if (maybePromise && typeof maybePromise.finally === 'function') {
+    maybePromise.finally(hideGlobalSpinner);
+  } else {
+    $(document).one('ajaxStop', hideGlobalSpinner); // fallback jQuery
+  }
 });
 
 
@@ -1140,6 +1143,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// === utilidades en GLOBAL ===
+window.showGlobalSpinner = function(){
+  const el = document.getElementById('globalSpinner');
+  if (!el) return;
+  if (el.parentElement !== document.body) document.body.appendChild(el);
+  el.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+};
+window.hideGlobalSpinner = function(){
+  const el = document.getElementById('globalSpinner');
+  if (!el) return;
+  el.style.display = 'none';
+  document.body.style.overflow = '';
+};
 
 
 

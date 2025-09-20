@@ -2,6 +2,10 @@
 
  .nav-wrapper--sm{ display:none;  }
 
+ .nav-link.active {
+  color: #fff !important;
+}
+
 /* Personalización solo para el nuevo dropdown */
 .categoria-dropdown-menu {
   background-color: #eef0ff; /* Color de fondo personalizado */

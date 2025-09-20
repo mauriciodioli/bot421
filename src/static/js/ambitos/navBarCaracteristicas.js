@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function updateColor(element) {
    
-    console.log(element);
+  
     if (!element) return; // Evita errores si no se pasa un elemento
     
     // Obtener el id del elemento

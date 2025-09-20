@@ -1,3 +1,8 @@
+
+.publicacion-detalle {
+  margin-top: 60px;   /* lo baja 80 px respecto al elemento anterior */
+}
+
 /* ==== General ==== */
 .grid-malla {
   display: grid;

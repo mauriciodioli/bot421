@@ -1,3 +1,6 @@
+.home-publicaciones-en-ambitos-personales {
+  margin-top: 40px;   /* lo baja 80 px respecto al bloque de arriba */
+}
 
 .home-publicaciones-en-ambitos-personales {
   display: flex;

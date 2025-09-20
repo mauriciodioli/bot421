@@ -171,3 +171,37 @@
   }
 }
 
+
+
+
+
+
+
+
+
+
+/* Overlay full-screen (solo se usará en mobile) */
+.global-spinner{
+  position: fixed;
+  inset: 0;
+  display: none;                 /* se enciende por JS */
+  align-items: center;
+  justify-content: center;
+  background: rgba(6,30,53,.7);
+  z-index: 2147483647 !important;
+}
+
+/* Loader circular */
+.global-spinner__loader{
+  width: 52px; height: 52px;
+  border: 4px solid #fff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: gp-spin .9s linear infinite;
+}
+@keyframes gp-spin{ to{ transform: rotate(360deg); } }
+
+/* Opcional: solo dejar visible en móviles */
+@media (min-width: 769px){
+  .global-spinner{ display: none !important; }
+}

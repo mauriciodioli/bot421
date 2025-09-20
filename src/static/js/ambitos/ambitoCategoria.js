@@ -340,3 +340,24 @@ function  eliminarAmbitoCategoria(id) {
         alert('Error al eliminar el ámbito: ' + error.message);
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
