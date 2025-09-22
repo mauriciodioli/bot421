@@ -241,28 +241,19 @@ $(document)
     }
     console.log('Dominio seleccionado:', domain, 'ID:', catId);
     
-   if (document.querySelector('#navBarCaracteristicas-home')) {
+       if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
+        cargarPublicaciones(domain,catId);
+        // Después de cargar publicaciones o actualizar el texto
+        const catKey = localStorage.getItem('categoriaSeleccionadaKey') || 'Categoría';
+        $('#ambitoActualHome').text(catKey);
 
-        cargarPublicaciones(domain, catId);
-
-        // ✅ después de cargar, actualizás el H1
-        const $ambitoH1 = $('#ambitoActualHome');
-        if ($ambitoH1.length) {
-            // Texto desde localStorage (con fallback)
-            const catKey = localStorage.getItem('categoriaSeleccionadaKey') || 'Categoría';
-            $ambitoH1.text(catKey);
-
-            // Scroll + focus
-            scrollAndFocusSection('domains-publicaciones', '#ambitoActualHome', 100);
-
-            // Forzar foco en el H1
-            $ambitoH1[0].focus();
-        }
+        // Scroll + foco en el H1
+        scrollAndFocusElement('#ambitoActualHome', 100);
     }else{
         console.log("Ejecutando en index.html");
         enviarDominioAJAXDesdeCategorias(domain,catId);
-        scrollAndFocusSection('domains-publicaciones', '#ambitoActual', /*offset navbar*/ 100);
+         scrollAndFocusSection('domains-publicaciones', '#ambitoActual', /*offset navbar*/ 100);
       // (Opcional) actualizar el H1 con el texto de la categoría
           const $ambitoH1 = $('#ambitoActual');
           if ($ambitoH1.length && catKey) {
@@ -277,11 +268,40 @@ $(document)
   });
 
 
+$(document).on('click', 'button[id^="card-"]', function () {
+  console.log("Click en tarjeta:", this.id);
 
+  // Siempre mueve el scroll hacia la pastilla activa
+  scrollAndFocusElement('#dx-active-pill', 100);
+});
+
+// === Helper: scroll suave hasta un elemento y darle foco ===
+function scrollAndFocusElement(selector, offsetPx = 100) {
+  const el = document.querySelector(selector);
+  if (!el) {
+    console.warn(`Elemento no encontrado: ${selector}`);
+    return;
+  }
+
+  // Asegurar que sea focuseable
+  if (!el.hasAttribute('tabindex')) {
+    el.setAttribute('tabindex', '-1');
+  }
+
+  // Calcular coordenada con compensación de navbar
+  const y = el.getBoundingClientRect().top + window.pageYOffset - offsetPx;
+
+  // Hacer scroll suave
+  window.scrollTo({ top: y, behavior: 'smooth' });
+
+  // Dar foco después de un pequeño delay
+  setTimeout(() => el.focus(), 400);
+}
 
 
 // Helper: scroll suave con compensación de navbar fija y focus accesible
 function scrollAndFocusSection(targetId, focusSelector = null, offsetPx = 100) {
+  debugger;
   const section = document.getElementById(targetId);
   if (!section) return;
 

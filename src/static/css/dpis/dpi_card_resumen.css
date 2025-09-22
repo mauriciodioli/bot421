@@ -107,6 +107,8 @@
 }
 
 
+
+
 /* ===== Sección big text DPIA ===== */
 /* ===== Paleta DPIA */
 :root{
@@ -187,46 +189,38 @@
   --type-color: var(--dpia-accent, #9599ed);
 }
 
-/* Caja del highlight: conserva tu color, cursor y alineación */
 .m-big-text__content .highlight{
-  display:inline-grid;                 /* superpone capas */
-  vertical-align:-14px;
-}
-
-/* Capa de reserva: ocupa el tamaño final pero es invisible */
-.m-big-text__content .highlight::before{
-  content: attr(data-text);            /* el texto se pasa en data-text */
-  visibility:hidden;                   /* no se ve, pero reserva espacio */
-  white-space:nowrap;                  /* evita wraps */
-}
-
-/* Capa visible: texto + cursor animados (sin cambiar ancho/alto de caja) */
-.m-big-text__content .highlight::after{
-  content: attr(data-text);
-  color: var(--type-color);
-  white-space:nowrap;
+  display:inline-block;
   overflow:hidden;
-  border-right:.1em solid var(--type-color);  /* cursor */
-  grid-area:1 / 1;                     /* encima de ::before */
+  white-space:nowrap;
+  color:var(--type-color);
+  border-right:.1em solid var(--type-color);       /* cursor */
+  opacity:1;
+  vertical-align:-14px;
+
+  /* Revelado por máscara: mantiene el ancho estable → no hay saltos */
+  --mask-stop: 0%;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 var(--mask-stop), transparent var(--mask-stop));
+          mask-image: linear-gradient(90deg, #000 0, #000 var(--mask-stop), transparent var(--mask-stop));
 
   /* Pausado hasta que entre en viewport */
   animation:
-    typingClip var(--type-duration) steps(var(--type-steps), end) infinite,
+    typingMask var(--type-duration) steps(var(--type-steps), end) infinite,
     caretBlink .8s step-end infinite;
   animation-play-state: paused, paused;
 }
 
 /* Cuando la sección entra en vista, corre las animaciones */
-.m-big-text.dpia-journey.in-view .highlight::after{
+.m-big-text.dpia-journey.in-view .highlight{
   animation-play-state: running, running;
 }
 
-/* Escribe (abre clip), pausa, borra (cierra clip) */
-@keyframes typingClip{
-  0%   { clip-path: inset(0 100% 0 0); }
-  60%  { clip-path: inset(0   0% 0 0); }
-  80%  { clip-path: inset(0   0% 0 0); }   /* pausa ~1s */
-  100% { clip-path: inset(0 100% 0 0); }
+/* Escribe (avanza máscara), pausa, borra (retrocede máscara) */
+@keyframes typingMask{
+  0%   { --mask-stop: 0%; }
+  60%  { --mask-stop: 100%; }
+  80%  { --mask-stop: 100%; }   /* pausa ~1s */
+  100% { --mask-stop: 0%; }
 }
 
 @keyframes caretBlink{
