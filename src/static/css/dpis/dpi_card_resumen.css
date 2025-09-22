@@ -107,10 +107,6 @@
 }
 
 
-
-
-
-
 /* ===== Sección big text DPIA ===== */
 /* ===== Paleta DPIA */
 :root{
@@ -183,7 +179,7 @@
   transform:translateY(0);
 }
 
- /* === Highlight con efecto typewriter en loop === */
+/* === Highlight con efecto typewriter en loop (sin reflow) === */
 /* Ajustá estos valores si cambiás el texto */
 :root{
   --type-duration: 5s;   /* total: 3s escribir + 1s pausa + 1s borrar */
@@ -191,41 +187,52 @@
   --type-color: var(--dpia-accent, #9599ed);
 }
 
+/* Caja del highlight: conserva tu color, cursor y alineación */
 .m-big-text__content .highlight{
-  display:inline-block;
-  overflow:hidden;
+  display:inline-grid;                 /* superpone capas */
+  vertical-align:-14px;
+}
+
+/* Capa de reserva: ocupa el tamaño final pero es invisible */
+.m-big-text__content .highlight::before{
+  content: attr(data-text);            /* el texto se pasa en data-text */
+  visibility:hidden;                   /* no se ve, pero reserva espacio */
+  white-space:nowrap;                  /* evita wraps */
+}
+
+/* Capa visible: texto + cursor animados (sin cambiar ancho/alto de caja) */
+.m-big-text__content .highlight::after{
+  content: attr(data-text);
+  color: var(--type-color);
   white-space:nowrap;
-  color:var(--type-color);
-  border-right:.1em solid var(--type-color);       /* cursor */
-  width:0;
-  opacity:1;
-  vertical-align: -14px;
+  overflow:hidden;
+  border-right:.1em solid var(--type-color);  /* cursor */
+  grid-area:1 / 1;                     /* encima de ::before */
 
   /* Pausado hasta que entre en viewport */
   animation:
-    typingLoop var(--type-duration) steps(var(--type-steps), end) infinite,
+    typingClip var(--type-duration) steps(var(--type-steps), end) infinite,
     caretBlink .8s step-end infinite;
   animation-play-state: paused, paused;
 }
 
 /* Cuando la sección entra en vista, corre las animaciones */
-.m-big-text.dpia-journey.in-view .highlight{
+.m-big-text.dpia-journey.in-view .highlight::after{
   animation-play-state: running, running;
 }
 
-/* 0–60% escribe, 60–80% espera (1s), 80–100% borra */
-@keyframes typingLoop{
-  0%   { width:0; }
-  60%  { width:100%; }
-  80%  { width:100%; }   /* pausa ~1s */
-  100% { width:0; }
+/* Escribe (abre clip), pausa, borra (cierra clip) */
+@keyframes typingClip{
+  0%   { clip-path: inset(0 100% 0 0); }
+  60%  { clip-path: inset(0   0% 0 0); }
+  80%  { clip-path: inset(0   0% 0 0); }   /* pausa ~1s */
+  100% { clip-path: inset(0 100% 0 0); }
 }
 
 @keyframes caretBlink{
   0%, 100% { border-color: transparent; }
   50%      { border-color: var(--type-color); }
 }
-
 
 /* Ocultar "DPIA en números" en pantallas de celular */
 @media (max-width: 768px) {           /* ajusta 768/600/576 según prefieras */

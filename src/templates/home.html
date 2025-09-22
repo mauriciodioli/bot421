@@ -3,23 +3,37 @@
 
 <div class="jumbotron">  
 
-  {% include 'ambitos/carrucelDominios.html' %}
+
 
   <div class="splashCarga" id="splashNotificaciones" style="display: none;">
     <div class="splash-contenido">
         <div class="spinner"></div>
       </div>
   </div>
-  <div  id="navBarCaracteristicas-home" style="display: none;"></div>
+  
 
+
+  {% include 'ambitos/carrucelDominios.html' %}
+
+
+<!-- Lista de dominios (móviles) -->
+  <section class="domains" id="domains">
+    <div class="card-container">
+      <!-- Aquí se insertará los dominios -->
+    </div>    
+  </section>
+<div  id="navBarCaracteristicas-home" style="display: none;"></div>
 
   {% include 'ambitos/navBarCaracteristicas.html' %}  <!-- Aquí se incluye la barra de navegación -->
+
+
 
     <div class="home-muestra-publicaciones-centrales">
      
      <!-- Aquí se incrustará la galería de imágenes -->
     </div>
 </div>
+
 
 
 
@@ -273,8 +287,10 @@ console.log("No se pudo obtener un nuevo token.");
 <!--se llama para cargar imagenes-->
 
 <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnHome.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_dominios.css') }}">
 
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 
 

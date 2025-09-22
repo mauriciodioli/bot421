@@ -163,7 +163,7 @@ function getCookie(name) {
 var currentLanguage = 'in';
 
 // Obtener el enlace para cambiar el idioma
-  var languageLink = document.getElementById("languageLink");
+   languageLink = document.getElementById("languageLink");
 
 // Si no existe la cookie "language", se crea y se establece "in" como idioma
 if (!getCookie("language")) {
