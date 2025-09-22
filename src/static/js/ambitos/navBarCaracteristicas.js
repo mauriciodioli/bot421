@@ -241,16 +241,38 @@ $(document)
     }
     console.log('Dominio seleccionado:', domain, 'ID:', catId);
     
-     enviarDominioAJAXDesdeCategorias(domain, catId);
+   if (document.querySelector('#navBarCaracteristicas-home')) {
+        console.log("Ejecutando en home.html");
+
+        cargarPublicaciones(domain, catId);
+
+        // ✅ después de cargar, actualizás el H1
+        const $ambitoH1 = $('#ambitoActualHome');
+        if ($ambitoH1.length) {
+            // Texto desde localStorage (con fallback)
+            const catKey = localStorage.getItem('categoriaSeleccionadaKey') || 'Categoría';
+            $ambitoH1.text(catKey);
+
+            // Scroll + focus
+            scrollAndFocusSection('domains-publicaciones', '#ambitoActualHome', 100);
+
+            // Forzar foco en el H1
+            $ambitoH1[0].focus();
+        }
+    }else{
+        console.log("Ejecutando en index.html");
+        enviarDominioAJAXDesdeCategorias(domain,catId);
+        scrollAndFocusSection('domains-publicaciones', '#ambitoActual', /*offset navbar*/ 100);
+      // (Opcional) actualizar el H1 con el texto de la categoría
+          const $ambitoH1 = $('#ambitoActual');
+          if ($ambitoH1.length && catKey) {
+            $ambitoH1.text(catKey);
+          }
+    }
 
       // 👉 Scroll & focus a la sección de publicaciones
     //   - hace focus en el H1 #ambitoActual (si está)
-    scrollAndFocusSection('domains-publicaciones', '#ambitoActual', /*offset navbar*/ 100);
-// (Opcional) actualizar el H1 con el texto de la categoría
-    const $ambitoH1 = $('#ambitoActual');
-    if ($ambitoH1.length && catKey) {
-      $ambitoH1.text(catKey);
-    }
+   
 
   });
 
@@ -471,7 +493,7 @@ function onCategoriaClick(e) {
 
     console.log('Dominio enviado desde categorias---------------:', domain);
     console.log('Categorias---------------:', selectedCategory);
-
+    
     // Llamar a la función para manejar el dominio seleccionado
     if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
@@ -596,8 +618,181 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
       //  console.log("enviarDominioAJAXDesdeCategorias ya ejecutado, se evita la duplicación.");
        // return;
    // }
-   debugger;
-  cargarCategorias(domain, selectedCategory);
+   
+    sessionStorage.setItem('dominioCategoriaCargado', 'true');   
+    // Elementos relevantes
+    const splash = document.querySelector('.splashCarga');
+    const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
+    cp = localStorage.getItem('codigoPostal');
+        if (!cp){
+            cp = '1';
+        }
+
+    if (!splash || !targetSection) {
+        console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
+        return;
+    }
+
+    // Mostrar/ocultar splash según la visibilidad de la sección
+    toggleSplash(targetSection, splash);
+  
+    // Ruta al archivo con la galería de imágenes   
+    var galeriaURL = '/media-publicaciones-mostrar-dpi/';
+    var access_token = 'access_dpi_token_usuario_anonimo';
+   
+    if ( !localStorage.getItem('dominio')) {        
+        localStorage.setItem('dominio', 'inicialDominio');
+       
+    }
+
+   
+
+
+   
+    // Esperar a que se actualice el idioma en localStorage antes de continuar
+    setTimeout(() => {
+        
+                let lenguaje = localStorage.getItem('language'); // Por defecto 'es' si no está definido
+
+
+                $.ajax({
+                type: 'POST',
+                url: galeriaURL,
+                dataType: 'json', // Asegúrate de que el backend devuelva un JSON
+                headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
+                data: { ambitos: domain,
+                        categoria: selectedCategory,
+                        codigoPostal: cp,   
+                        lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
+                success: function (response) {
+                // console.log('Respuesta del servidor:', response[0].ambito);
+                  
+                 
+                    splash.style.display = 'none'; // Ocultar el splash al terminar
+                    if (Array.isArray(response)) {
+                        var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
+                        postDisplayContainer.empty();
+
+                        response.forEach(function(post) {
+                            if (post.imagenes.length > 0 || post.videos.length > 0) {
+                                    var mediaHtml = '';
+
+                                    // Mostrar la primera imagen
+                                    if (Array.isArray(post.imagenes) && post.imagenes.length > 0  || post.videos.length > 0) {
+                                        
+                                        if (Array.isArray(post.imagenes) && post.imagenes.length > 0) {
+                                            // Si hay imágenes, usar la primera
+                                            if (post.imagenes[0].imagen != null) {
+                                                var firstImageBase64 = post.imagenes[0].imagen;
+                                                var firstImageUrl = `data:${post.imagenes[0].mimetype};base64,${firstImageBase64}`;
+                                                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                                        } else {
+                                                var firstImageUrl = post.imagenes[0].filepath;
+                    
+                                                console.log(post.imagenes[0].filepath);
+                                                mediaHtml += `<img src="${firstImageUrl}" alt="Imagen de la publicación" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')" style="cursor: pointer;">`;
+                                        }
+                                        
+                                        } else if (Array.isArray(post.videos) && post.videos.length > 0) {
+                                        
+                                            // Si no hay imágenes pero hay videos, usar el primero
+                                            var firstVideoUrl = post.videos[0].filepath;
+                                            console.log(post.videos[0].filepath);
+                                        
+                                            mediaHtml += `
+                                                    <video controls  style="cursor: pointer;" onclick="abrirPublicacionHome(${post.publicacion_id}, '${post.layout}')">
+                                                        <source src="${firstVideoUrl}" type="video/mp4">                                           
+                                                        Tu navegador no soporta la reproducción de videos.
+                                                    </video>
+                                                `;
+
+                                        } else {
+                                            // Si no hay ni imágenes ni videos, mostrar un mensaje o imagen por defecto
+                                            mediaHtml += `<p>No hay contenido multimedia disponible.</p>`;
+                                        }
+
+                                    
+                                }
+
+                                var estadoClass;
+                                var estadoTextClass;
+                            
+
+
+                                //const { precio, descripcion } = extraerPrecioYDescripcion(post.texto);
+                                const lang    = window.currentLang || 'es';
+                                const vid     = getVisitorId();
+                                const user_id = localStorage.getItem('usuario_id') || '';
+
+                                const btnComprarAttrs = `
+                                href="#"
+                                class="btn btn-danger mt-2"
+                                rel="nofollow sponsored"
+                                data-ali-redirect="1"
+                                data-pub-id="${post.publicacion_id}"
+                                data-vid="${vid}"
+                                data-user-id="${user_id}"
+                                data-lang="${lang}"
+                                `;
+
+                            // Tarjeta
+                                const comprarTxt = (translations[lang] && translations[lang].comprarAli) || 'Comprar';
+                                const verMasTxt  = (translations[lang] && translations[lang].verMas) || 'Ver más';
+
+
+
+                                var cardHtml = `
+                                        <div class="card-publicacion-admin ${estadoClass}" id="card-${post.publicacion_id}">
+                                            <div class="card-body">
+                                                <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                                    <span class="text-white">&times;</span>
+                                                </a>
+                                                <h5 class="card-title">${post.titulo}</h5>
+                                                <div class="card-media-grid-publicacion-en-ambito">
+                                                    ${mediaHtml}
+                                                </div>
+                                                <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                                <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
+                                                <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">${verMasTxt}</a>
+
+                                                <!-- Botón Afiliado -->
+                                                ${post.afiliado_link ? `
+                                                    <a href="#"
+                                                    class="btn btn-danger mt-2"
+                                                    rel="nofollow sponsored"
+                                                    data-ali-redirect="1"
+                                                    data-pub-id="${post.publicacion_id}"
+                                                    data-vid="${vid}"
+                                                    data-user-id="${user_id}"
+                                                    data-lang="${lang}">
+                                                    ${comprarTxt}
+                                                    </a>` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+
+
+                                postDisplayContainer.append(cardHtml);
+                            } else {
+                                splash.style.display = 'none'; // Ocultar el splash al terminar
+                                console.log('Publicación sin contenido:', post.publicacion_id);
+                            }
+                        });
+                    } else {
+                        splash.style.display = 'none'; // Ocultar el splash al terminar
+                        console.error("La respuesta no es un array. Recibido:", response);
+                    }
+                },
+                error: function () {
+                    splash.style.display = 'none'; // Ocultar el splash al terminar
+                    console.error('Error al cargar la galería de imágenes.');
+                }
+            });
+
+
+    }, 2000); // Esperamos 2 segundos para asegurar que `getLocation()` actualice `language`
+
+
 }
 
 
@@ -734,7 +929,6 @@ function renderizarCategorias(categorias, selectedCategory) {
 
    // console.log("✅ Categorías agregadas correctamente al dropdown.");
 }
-
 
 
 

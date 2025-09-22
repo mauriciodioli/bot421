@@ -73,8 +73,8 @@ function cargarPublicaciones(ambitoParam, layout) {
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
                 postDisplayContainer.empty();
-               
-
+             
+             
                 var categoria_id = null; // Variable para almacenar la categoría actual                
                 response.forEach(function (post) {
                     const imgs = Array.isArray(post.imagenes) ? post.imagenes : [];
@@ -236,6 +236,7 @@ function cargarPublicaciones(ambitoParam, layout) {
 
 
                         postDisplayContainer.append(cardHtml);
+                        
                         // Inicializar la observación de impresiones
                         // Inicializar la observación de impresiones
                         // Inicializar la observación de impresiones

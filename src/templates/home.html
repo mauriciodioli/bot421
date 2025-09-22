@@ -13,8 +13,9 @@
   
 
 
-  {% include 'ambitos/carrucelDominios.html' %}
-
+ <div class="pull-up-80" style="margin-top: -80px; margin-bottom: -40px;">
+        {% include 'ambitos/carrucelDominios.html' %}
+      </div>
 
 <!-- Lista de dominios (móviles) -->
   <section class="domains" id="domains">
@@ -24,10 +25,13 @@
   </section>
 <div  id="navBarCaracteristicas-home" style="display: none;"></div>
 
-  {% include 'ambitos/navBarCaracteristicas.html' %}  <!-- Aquí se incluye la barra de navegación -->
+   <div class="nav-wrapper--sm">
+      {% include 'ambitos/navBarCaracteristicas.html' %}
+    </div>
 
 
 
+<h1 id="ambitoActualHome" style="color: black;" class="ambito-actual ambito-actual--accent" tabindex="0"></h1>
     <div class="home-muestra-publicaciones-centrales">
      
      <!-- Aquí se incrustará la galería de imágenes -->
