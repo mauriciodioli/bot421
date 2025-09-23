@@ -49,6 +49,7 @@ $(document)
   .off('click.dpia', '#dx-active-pill')
   .on('click.dpia', '#dx-active-pill', function (e) {
     e.preventDefault();
+    debugger;
     cargarAmbitosCategorias();
   });
 
@@ -273,6 +274,13 @@ $(document).on('click', 'button[id^="card-"]', function () {
 
   // Siempre mueve el scroll hacia la pastilla activa
   scrollAndFocusElement('#dx-active-pill', 100);
+   let dom = localStorage.getItem('dominio');
+   if (dom) {
+    const a = document.querySelector('#ambito_actual a');
+    if (a) a.textContent = dom;
+  }
+ 
+
 });
 
 // === Helper: scroll suave hasta un elemento y darle foco ===
