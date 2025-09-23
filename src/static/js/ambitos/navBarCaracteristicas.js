@@ -274,10 +274,11 @@ $(document).on('click', 'button[id^="card-"]', function () {
 
   // Siempre mueve el scroll hacia la pastilla activa
   scrollAndFocusElement('#dx-active-pill', 100);
-   let dom = localStorage.getItem('dominio');
+   const dom = decodeURIComponent((document.cookie.split('; ').find(r=>r.startsWith('dominio='))||'').split('=')[1]||'');
    if (dom) {
     const a = document.querySelector('#ambito_actual a');
     if (a) a.textContent = dom;
+  
   }
  
 

@@ -2,6 +2,16 @@
 // ======================================================
 // dpi.js — versión unificada (fix modal/foco) + dominios/categorías
 // ======================================================
+// Si alguien llama cargarAmbitos() directo, lo vemos en consola con stack:
+(function wrapDirectCalls(){
+  const _orig = window.cargarAmbitos;
+  if (typeof _orig === 'function') {
+    window.cargarAmbitos = function(){
+      console.trace('[WARN] llamada directa a cargarAmbitos()');
+      return _orig.apply(this, arguments);
+    };
+  }
+})();
 (function bootOnce () {
   if (window.__dpiBooted) return;
   window.__dpiBooted = true;
@@ -16,6 +26,17 @@
   function setCookie(name, value, maxAgeSeconds) {
     document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax`;
   }
+function setCookieOverwrite(name, value, days = 365) {
+  const maxAge = days * 24 * 60 * 60;
+
+  // Borro posibles valores previos
+  document.cookie = `${name}=; path=/; max-age=0; samesite=lax`;
+  document.cookie = `${name}=; max-age=0; samesite=lax`; // por si lo guardaron sin path
+
+  // Escribo el nuevo valor
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; samesite=lax`;
+}
+
 
   // ======================================================
   // 1) ADMIN — navegación (sin reemplazar body.innerHTML)
@@ -146,10 +167,9 @@
       setCookie("language", lang, 31536000); // 1 año
       applyUI(lang);
 
-      // 👉 Disparar dominios y categorías (igual que en tu código “nuevo”)
-      if (typeof cargarAmbitos === "function") cargarAmbitos();
-      if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
-      triggerDomainsReload();
+    
+      triggerAmbitosReload('lang');
+
 
     }
 
@@ -181,7 +201,7 @@
     const currentLang = localStorage.getItem("language") || getCookie("language") || "in";
     applyUI(currentLang);
     buildDropdownOnce();
-    triggerDomainsReload();
+   
 
   }
 
@@ -272,13 +292,14 @@
       cargaCodigoPostalLayout();
 
       // 👉 Disparar dominios y categorías (igual que en tu código “nuevo”)
-      if (typeof cargarAmbitos === 'function') cargarAmbitos();
-      if (typeof cargarAmbitosCarrusel === 'function') cargarAmbitosCarrusel();
+      triggerAmbitosReload('cp');
+
+
 
       // Cerrar modal con limpieza y foco
       moveFocusOut();
       hardCloseModal(modalEl);
-      triggerDomainsReload();
+  
 
     };
   }
@@ -291,14 +312,16 @@
     if (navbarToggler) {
       navbarToggler.addEventListener("click", function () {
         console.log("👉 Navbar toggler clickeado. aria-expanded:", navbarToggler.getAttribute("aria-expanded"));
-        triggerDomainsReload();
+        
+   
+      
       });
     }
     const cpLink = document.getElementById("openModalCP");
     if (cpLink) {
       cpLink.addEventListener("click", function () {
         console.log("👉 Click en CP");
-        triggerDomainsReload();
+       
       });
     }
   }
@@ -316,9 +339,8 @@
     initCodigoPostalModal();
     wireDebug();
 
-    // 👉 Carga inicial (si las funciones existen)
-    if (typeof cargarAmbitos === "function") cargarAmbitos();
-    if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
+     triggerAmbitosReload('init');   // ✅ solo 1
+
   });
 
 })(); // bootOnce IIFE
@@ -344,44 +366,35 @@ function hardCloseModal(modalEl) {
   }, 50);
 }
 
-
-
-
-// --- Domains: rebind tras cambios de estado (idioma/CP) -------------------
 function rebindDomainsUI() {
   const root = document.getElementById('domains');
   if (!root) return;
 
-  const nav       = root.querySelector('#dx-nav');
-  const pillsWrap = root.querySelector('#dx-other-pills');
-  const activePill= root.querySelector('#dx-active-pill');
-  const descEl    = root.querySelector('#dx-desc');
+  const nav        = root.querySelector('#dx-nav');
+  const pillsWrap  = root.querySelector('#dx-other-pills');
+  const activePill = root.querySelector('#dx-active-pill');
 
   function handleClick(e) {
     const btn = e.target.closest('button[data-id]');
     if (!btn) return;
 
-    const id  = btn.dataset.id;
-    const key = btn.dataset.key;
-    const label = btn.querySelector('.card-number')?.textContent?.trim() || key || '';
+    const id     = Number(btn.dataset.id);
+    const nombre = btn.dataset.key || (btn.querySelector('.card-number')?.textContent?.trim() || '');
 
-    // Persistir dominio seleccionado
-    localStorage.setItem('dominio', id);
+    // Persistir (LS)
+    localStorage.setItem('dominio', nombre);
+    localStorage.setItem('dominio_id', String(id));
+debugger;
+    // ✅ Pisar cookies existentes
+    setCookieOverwrite('dominio', nombre);
+    setCookieOverwrite('dominioValor', nombre);
+    setCookieOverwrite('dominio_id', String(id));
 
-    // UI activa
-    if (activePill) activePill.textContent = label;
-    if (nav)  nav.querySelectorAll('button').forEach(b => b.classList.toggle('is-active', b === btn));
-    if (descEl) {
-      // opcional: actualizar descripción si tenés un map por idioma
-      // descEl.textContent = getDescFor(key) || descEl.textContent;
-    }
-
-    // Volver a pedir datos (categorías, etc.)
-    if (typeof cargarAmbitos === "function") cargarAmbitos();
-    if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
+    // UI
+    if (activePill) activePill.textContent = nombre;
+    if (nav) nav.querySelectorAll('button').forEach(b => b.classList.toggle('is-active', b === btn));
   }
 
-  // Enlazar una sola vez por contenedor renderizado
   if (nav && !nav.dataset.bound) {
     nav.addEventListener('click', handleClick);
     nav.dataset.bound = '1';
@@ -392,70 +405,27 @@ function rebindDomainsUI() {
   }
 }
 
-// Lanza los loaders + rebind (con pequeños delays por si hay render async)
-// --- Domains: rebind tras cambios de estado (idioma/CP) -------------------
-function rebindDomainsUI() {
-  const root = document.getElementById('domains');
-  if (!root) return;
 
-  const nav       = root.querySelector('#dx-nav');
-  const pillsWrap = root.querySelector('#dx-other-pills');
-  const activePill= root.querySelector('#dx-active-pill');
-  const descEl    = root.querySelector('#dx-desc');
 
-  function handleClick(e) {
-    const btn = e.target.closest('button[data-id]');
-    if (!btn) return;
 
-    const id  = btn.dataset.id;
-    const key = btn.dataset.key;
-    const label = btn.querySelector('.card-number')?.textContent?.trim() || key || '';
 
-    // Persistir dominio seleccionado
-    localStorage.setItem('dominio', id);
 
-    // UI activa
-    if (activePill) activePill.textContent = label;
-    if (nav)  nav.querySelectorAll('button').forEach(b => b.classList.toggle('is-active', b === btn));
-    if (descEl) {
-      // opcional: actualizar descripción si tenés un map por idioma
-      // descEl.textContent = getDescFor(key) || descEl.textContent;
-    }
 
-    // Volver a pedir datos (categorías, etc.)
-    if (typeof cargarAmbitos === "function") cargarAmbitos();
-    if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
-  }
 
-  // Enlazar una sola vez por contenedor renderizado
-  if (nav && !nav.dataset.bound) {
-    nav.addEventListener('click', handleClick);
-    nav.dataset.bound = '1';
-  }
-  if (pillsWrap && !pillsWrap.dataset.bound) {
-    pillsWrap.addEventListener('click', handleClick);
-    pillsWrap.dataset.bound = '1';
-  }
+// Debounce global para recargar DOMAINS una sola vez
+let _domainsReloadTimer = null;
+// Logger opcional
+function logAmbitos(msg){ console.log(`[ambitos] ${msg}`); }
+
+
+// SIEMPRE llamá a esto (NO llames cargarAmbitos() directo)
+function triggerAmbitosReload(reason, delayMs = 120) {
+
+  clearTimeout(_domainsReloadTimer);
+  _domainsReloadTimer = setTimeout(() => {
+    if (typeof cargarAmbitos === 'function') cargarAmbitos();
+    if (typeof cargarAmbitosCarrusel === 'function') cargarAmbitosCarrusel();
+  }, delayMs);
 }
-
-// Lanza los loaders + rebind (con pequeños delays por si hay render async)
-function triggerDomainsReload() {
-  if (typeof cargarAmbitos === "function") cargarAmbitos();
-  if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
-
-  // Reenganchar ahora y luego tras micro/macrotasks
-  rebindDomainsUI();
-  setTimeout(rebindDomainsUI, 0);
-  setTimeout(rebindDomainsUI, 200);
-}
-
-
-
-
-
-
-
-
-
 
 

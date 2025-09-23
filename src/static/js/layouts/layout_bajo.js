@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Función para cargar dinámicamente los ítems del menú desde el servidor
-    window.cargarAmbitos = function ()  {
+    window.cargarAmbitosLayoutBajo = function ()  {
         fetch('/social-media-publicaciones-obtener-ambitos/', {
             method: 'GET',
             headers: {
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Cargar los ámbitos al cargar la página
-    cargarAmbitos();
+    cargarAmbitosLayoutBajo();
 });
 
 

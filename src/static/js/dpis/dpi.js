@@ -1,4 +1,36 @@
+// --- Logger central para ambitos ---
+function logAmbitos(msg, extra) {
+  const t = new Date().toISOString().split('T')[1].replace('Z','');
+  console.log(`[ambitos ${t}] ${msg}`, extra || '');
+}
 
+// Si alguien llama cargarAmbitos() directo, lo vemos en consola con stack:
+(function wrapDirectCalls(){
+  const _orig = window.cargarAmbitos;
+  if (typeof _orig === 'function') {
+    window.cargarAmbitos = function(){
+      console.trace('[WARN] llamada directa a cargarAmbitos()');
+      return _orig.apply(this, arguments);
+    };
+  }
+})();
+
+const AMBITOS = {
+  inFlight: false,
+  lockReason: null,    // 'init' | 'cp' | 'lang'
+  timer: null,
+};
+
+function setCookieOverwrite(name, value, days = 365) {
+  const maxAge = days * 24 * 60 * 60;
+
+  // Borro posibles valores previos
+  document.cookie = `${name}=; path=/; max-age=0; samesite=lax`;
+  document.cookie = `${name}=; max-age=0; samesite=lax`; // por si lo guardaron sin path
+
+  // Escribo el nuevo valor
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAge}; samesite=lax`;
+}
 document.addEventListener('DOMContentLoaded', function () {
 
     console.log("DOM listo");
@@ -109,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // NO se declara ni se usa dropdownMenu en ningún lado
 
 window.cargarAmbitos = function () {
+  debugger;  
   return fetch('/social-media-publicaciones-obtener-ambitos/', {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
@@ -120,7 +153,7 @@ window.cargarAmbitos = function () {
   .then(data => {
     const $cardContainer = $('.card-container');
     $cardContainer.empty();
-
+debugger;
     // === Layout dentro de .card-container (no tocamos dropdown) ===
     const explore = `
       <section class="dpia-explore2" id="expertise">
@@ -224,7 +257,10 @@ window.cargarAmbitos = function () {
 
     function seleccionarDominio(nombre, id){
       const limpio = (nombre || '').replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
+        debugger;
       localStorage.setItem('dominio', limpio);
+      setCookieOverwrite('dominio', nombre);
+      setCookieOverwrite('dominioValor', nombre);
       if (id !== undefined && id !== null) {
         localStorage.setItem('dominio_id', id);
         document.cookie = `dominio_id=${id}; path=/; max-age=31536000`;
@@ -280,7 +316,7 @@ window.cargarAmbitos = function () {
 $('.card-container').on('click', '.card', function () {
   const selectedDomain = $(this).find('.card-number').text().replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
   const selectedDomainId = $(this).data('id');
-
+debugger;
   localStorage.setItem('dominio', selectedDomain);
   localStorage.setItem('dominio_id', selectedDomainId);
   document.cookie = `dominio_id=${selectedDomainId}; path=/; max-age=31536000`;
@@ -295,9 +331,10 @@ $('.card-container').on('click', '.card', function () {
   $(this).addClass('active');
   $('#ambitoActual').focus();
 });
-
+debugger;
 // Cargar al inicio (no toca dropdown)
-cargarAmbitos();
+
+
 localStorage.setItem('banderaCategorias', 'True');
 
 });
@@ -445,8 +482,9 @@ function guardarCodigoPostal() {
         // Cerrar el modal
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal
-        if (typeof cargarAmbitos === "function") cargarAmbitos();
-        if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
+        debugger;
+        triggerAmbitosReload();
+
 
     } else {
         alert('Por favor ingresa un código postal válido (solo números)');
@@ -573,7 +611,7 @@ $(document).ready(function () {
     const currentURL = window.location.href;
     let partAfterIndex = (currentURL.split('index/')[1] || '').trim();
     if (!partAfterIndex) partAfterIndex = 'Laboral';
-    domain = partAfterIndex;
+    debugger;
     localStorage.setItem('dominio', domain);
   }
 
@@ -667,14 +705,14 @@ function enviarDominioAJAX(domain) {
     var access_token = 'access_dpi_token_usuario_anonimo';
    
     if ( !localStorage.getItem('dominio')) {
-        
+        debugger;
         localStorage.setItem('dominio', domain);
         let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
         document.getElementById("ambitoActual").innerHTML = ambito_actual;
     }
 
     if ( domain !=='inicialDominio') {
-        
+          debugger;
         localStorage.setItem('dominio', domain);
         let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
         document.getElementById("ambitoActual").innerHTML = ambito_actual;
@@ -1002,9 +1040,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selected.innerHTML = `<img src="${langData.flag}"> ${langData.code}`;
         dropdown.style.display = "none";
+        debugger;
+        triggerAmbitosReload();
 
-        if (typeof cargarAmbitos === "function") cargarAmbitos();
-        if (typeof cargarAmbitosCarrusel === "function") cargarAmbitosCarrusel();
     }
 
     function buildDropdown() {
@@ -1078,6 +1116,40 @@ window.hideGlobalSpinner = function(){
 
 
 
+let _ambitosReloadTimer = null;
 
+// Llamá SIEMPRE esto en vez de cargarAmbitos() directo
+function triggerAmbitosReload(reason, delayMs = 100) {
+  // si hay otra razón en curso, ignorar
+  if (AMBITOS.lockReason && AMBITOS.lockReason !== reason) {
+    logAmbitos(`skip (${reason}) lock=${AMBITOS.lockReason}`);
+    return;
+  }
+  AMBITOS.lockReason = reason;
 
+  clearTimeout(AMBITOS.timer);
+  AMBITOS.timer = setTimeout(async () => {
+    if (AMBITOS.inFlight) { logAmbitos(`skip (${reason}) inFlight`); return; }
+    AMBITOS.inFlight = true;
+    logAmbitos(`FETCH start by ${reason}`);
 
+    try {
+      // tu función actual que hace el fetch y pinta la UI:
+      // debe devolver una promesa
+      const res = await cargarAmbitos();
+
+      // si tu carrusel usa el MISMO endpoint, no hagas otro GET:
+      // si tenés una versión que recibe los datos, úsala aquí
+      if (typeof cargarAmbitosCarruselFromData === 'function' && res?.raw) {
+        cargarAmbitosCarruselFromData(res.raw);
+      }
+    } catch (e) {
+      console.warn('[ambitos] error:', e);
+    } finally {
+      AMBITOS.inFlight = false;
+      logAmbitos(`FETCH end by ${reason}`);
+      // liberá el lock un toque después para evitar carreras
+      setTimeout(() => { AMBITOS.lockReason = null; }, 150);
+    }
+  }, delayMs);
+}
