@@ -1,0 +1,69 @@
+
+
+
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px; /* Espacio entre el input y el botón */
+}
+
+#consulta_publicaciones_data {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 200px;
+    vertical-align: middle; /* Asegura que el input esté alineado con el botón */
+    line-height: 20px; /* Ajuste para igualar la altura de la lupa con el input */
+}
+
+#search_button {
+    background-color: #4CAF50; /* Color de fondo */
+    border: none;
+    color: white;
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px; /* Igualar la altura del botón con el input */
+}
+
+#search_button i {
+    font-size: 16px;
+}
+
+
+
+
+/* aseguran modal > backdrop */
+.modal            { z-index: 1055 !important; }
+.modal-backdrop   { z-index: 1050 !important; }
+/* lista horizontal con “chips” */
+#cp-lista-actual{
+  display:flex; flex-wrap:wrap; gap:.5rem;
+  margin:0; padding:0; list-style:none;   /* mata bullets y márgenes */
+}
+#cp-lista-actual .cp-chip{
+  background:#fff; color:#212529;
+  border:1px solid #ced4da; border-radius:999px;
+  padding:.35rem .65rem; font-weight:500;
+  box-shadow:0 1px 2px rgba(0,0,0,.06);
+}
+#cp-lista-actual{ display:flex; flex-wrap:wrap; gap:.5rem; margin:0; padding:0; list-style:none; }
+#cp-lista-actual .cp-chip{ background:#fff; color:#212529; border:1px solid #ced4da; border-radius:999px; padding:.35rem .65rem; font-weight:500; box-shadow:0 1px 2px rgba(0,0,0,.06); }
+#cp-lista-actual .cp-chip--new{ outline:2px solid #198754; box-shadow:0 0 0 4px rgba(25,135,84,.15); transition: outline-color .8s ease, box-shadow .8s ease; }
+#cp-lista-actual{ display:flex; flex-wrap:wrap; gap:.5rem; margin:0; padding:0; list-style:none; }
+#cp-lista-actual .cp-chip{
+  background:#fff; color:#212529; border:1px solid #ced4da; border-radius:999px;
+  padding:.35rem .65rem; font-weight:500; box-shadow:0 1px 2px rgba(0,0,0,.06);
+  display:flex; align-items:center; gap:.5rem;
+}
+#cp-lista-actual .cp-del{
+  border:none; background:transparent; font-size:18px; line-height:1; cursor:pointer;
+  padding:0 .1rem; color:#6c757d;
+}
+#cp-lista-actual .cp-del:hover{ color:#dc3545; }

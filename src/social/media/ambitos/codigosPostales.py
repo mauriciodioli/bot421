@@ -17,10 +17,14 @@ codigosPostales = Blueprint('codigosPostales', __name__)
 @codigosPostales.route('/social-media-ambitos-codigosPostales/', methods=['GET'])
 def pagina_codigos_postales():
     with get_db_session() as session:
-        datos = session.query(CodigoPostal).order_by(CodigoPostal.id.asc()).all()
-    
-    return render_template('media/publicaciones/ambitos/codigosPostales.html',
-                           datos=datos, layout='layout_administracion')
+        datos = session.query(CodigoPostal)\
+                       .order_by(CodigoPostal.id.asc()).all()
+        # Si usás relaciones, cargalas en caliente aquí (selectinload / joinedload)
+        return render_template(
+            'media/publicaciones/ambitos/codigosPostales.html',
+            datos=datos,
+            layout='layout_administracion'
+        )
 
 # ---- API CRUD ----
 @codigosPostales.route('/api/codigos-postales', methods=['GET'])

@@ -19,7 +19,7 @@ redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, 
 
 
 
-@administracion.route('/herramientaAdmin-administracion', methods=['POST'])
+@administracion.route('/herramientaAdmin-administracion/', methods=['POST'])
 def herramientaAdmin_administracion():
     try:
         # Obtener el token del encabezado Authorization

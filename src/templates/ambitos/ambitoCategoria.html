@@ -2,7 +2,16 @@
    {% extends 'layouts/layout_administracion.html' %}   
 {% endif %}
 {% block content %}
-<h2>Gestión de Categorias</h2>
+<style>
+  /* Solo afecta a este form */
+  #ambitoCategoria-form,
+  #ambitoCategoria-form label,
+  #ambitoCategoria-form input,
+  #ambitoCategoria-form input::placeholder {
+    color: #000 !important;
+  }
+</style>
+<h2 style="color: #000;">Gestión de Categorias</h2>
 <div class="mb-3">
   <input type="text" id="ambitoInput" class="form-control" placeholder="Ingrese el ámbito">
   <input type="text" id="codigoPostalInput" class="form-control mt-2" placeholder="Ingrese el código postal">
@@ -32,28 +41,29 @@
 
 
 <!-- Formulario de creación -->
+
 <form id="ambitoCategoria-form">
-    <input type="hidden" id="ambitoCategoria-id" value="">
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" required class="form-control"><br>
+  <input type="hidden" id="ambitoCategoria-id" value="">
 
-    <label for="descripcion">Descripción:</label>
-    <input type="text" id="descripcion" class="form-control"><br>
+  <label for="nombre" class="form-label">Nombre:</label>
+  <input type="text" id="nombre" required class="form-control" placeholder="Nombre"><br>
 
-    <label for="idioma">Idioma:</label>
-    <input type="text" id="idioma" class="form-control"><br>
+  <label for="descripcion" class="form-label">Descripción:</label>
+  <input type="text" id="descripcion" class="form-control" placeholder="Descripción"><br>
 
-    <label for="valor">Valor:</label>
-    <input type="text" id="valor" class="form-control"><br>
+  <label for="idioma" class="form-label">Idioma:</label>
+  <input type="text" id="idioma" class="form-control" placeholder="Idioma"><br>
 
-    <label for="color-categoria">Color:</label>
-    <input type="text" id="color-categoria" class="form-control">
+  <label for="valor" class="form-label">Valor:</label>
+  <input type="text" id="valor" class="form-control" placeholder="Valor"><br>
 
-    <label for="estado">Estado:</label>
-    <input type="text" id="estado" class="form-control"><br>
-    
-    <button type="button" class="btn btn-success" onclick="crearAmbitoCategorias()">Crear Categoria</button>
+  <label for="color-categoria" class="form-label">Color:</label>
+  <input type="text" id="color-categoria" class="form-control" placeholder="#112233">
 
+  <label for="estado" class="form-label">Estado:</label>
+  <input type="text" id="estado" class="form-control" placeholder="activo/inactivo"><br>
+
+  <button type="button" class="btn btn-success" onclick="crearAmbitoCategorias()">Crear Categoria</button>
 </form>
 
 <!-- Modal de confirmación -->

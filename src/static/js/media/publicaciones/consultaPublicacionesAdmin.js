@@ -311,21 +311,281 @@ function agregarListado(pedidoId, checkbox) {
 
 
 
-document.querySelector('.card-button').addEventListener('click', function () {
-    const selectedProducts = Array.from(document.querySelectorAll('.estado-checkbox:checked')).map(checkbox => {
-        const row = checkbox.closest('tr');
-        return {
-            id: row.dataset.id,
-            nombre_producto: row.querySelector('.text').textContent.trim(),
-            precio_venta: row.querySelector('.unit-price').textContent.trim(),
-            cantidad: row.querySelector('.quantity-input').value
-        };
+
+
+
+
+
+
+
+
+
+
+// Pega este JS (una sola vez). Funciona aunque el botón se renderice después.
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.btn-cp');
+  if (!btn) return;
+
+  const pubId  = parseInt(btn.dataset.consultaId, 10);
+  const nombre = btn.dataset.nombreProducto || '';
+
+  if (!Number.isFinite(pubId)) {
+    console.error('Falta data-consulta-id en el botón');
+    return;
+  }
+
+  console.log('CLICK CP → pubId:', pubId, 'nombre:', nombre);
+
+  
+     cargarCodigosActuales(pubId);
+ 
+});
+
+
+
+
+// guarda el pubId en el modal cuando cargás
+async function cargarCodigosActuales(pubId){
+  const url = `/publicaciones/${pubId}/codigos-postales`;
+
+  // fetch
+  let data;
+  try {
+    const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    data = await r.json();
+  } catch (e) {
+    console.error('cargarCodigosActuales:', e);
+    data = { _err: true, codigos: null };
+  }
+
+  // pintar chips
+  const ul = document.getElementById('cp-lista-actual');
+  if (ul) {
+    while (ul.firstChild) ul.removeChild(ul.firstChild);
+    if (data._err) {
+      const li = document.createElement('li');
+      li.className = 'cp-chip';
+      li.textContent = 'Error listando códigos.';
+      ul.appendChild(li);
+    } else {
+      const codigos = Array.isArray(data.codigos) ? data.codigos : [];
+      if (codigos.length === 0) {
+        const li = document.createElement('li');
+        li.className = 'cp-chip';
+        li.textContent = 'Sin códigos postales.';
+        ul.appendChild(li);
+      } else {
+        for (const c of codigos) {
+          const li = document.createElement('li');
+          li.className = 'cp-chip';
+          li.textContent = `#${c.id} · ${c.codigo}${c.ciudad ? ' · ' + c.ciudad : ''}`;
+          ul.appendChild(li);
+        }
+      }
+    }
+  }
+
+  // título y pubId para el modal
+  const titulo = document.getElementById('cp-modal-titulo');
+  if (titulo) titulo.textContent = `ID ${pubId}`;
+  const modalEl = document.getElementById('codigosPostalesModal');
+  if (modalEl) modalEl.dataset.pubId = String(pubId);
+
+  // abrir
+  if (modalEl) {
+    if (window.bootstrap?.Modal) {
+      bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    } else {
+      modalEl.classList.add('show');
+      modalEl.style.display = 'block';
+      modalEl.removeAttribute('aria-hidden');
+    }
+  }
+}
+
+// handler del botón "Agregar"
+document.addEventListener('click', async (e) => {
+  const addBtn = e.target.closest('#cp-btn-agregar');
+  if (!addBtn) return;
+
+  const modalEl = document.getElementById('codigosPostalesModal');
+  const pubId = Number(modalEl?.dataset.pubId || NaN);
+  const input = document.getElementById('cp-input');
+  const codigo = (input?.value || '').trim();
+
+  if (!Number.isFinite(pubId)) {
+    console.error('Falta pubId en modal.dataset.pubId');
+    return;
+  }
+  if (!codigo) {
+    input?.focus();
+    return;
+  }
+
+  addBtn.disabled = true;
+  try {
+    const res = await fetch(`/publicaciones/${pubId}/codigos-postales`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+      body: JSON.stringify({ codigo_postal: codigo })
     });
+    const data = await res.json().catch(()=> ({}));
+    if (!res.ok) {
+      console.error('POST CP fallo:', res.status, data);
+      alert(data?.error || 'No se pudo agregar el código postal.');
+      return;
+    }
+    // ok → refrescar lista
+    input.value = '';
+    await cargarCodigosActuales(pubId);
+  } catch (err) {
+    console.error(err);
+    alert('Error de red agregando el código postal.');
+  } finally {
+    addBtn.disabled = false;
+  }
+});
 
-    // Convertir los datos seleccionados en JSON y asignarlos al campo oculto
-    document.getElementById('consulta_data').value = JSON.stringify(selectedProducts);
 
-    // Opcionalmente, puedes actualizar el total
-    const total = selectedProducts.reduce((sum, product) => sum + (parseFloat(product.precio_venta) * parseInt(product.cantidad, 10)), 0);
-    document.getElementById('total_pago').value = total.toFixed(2);
+
+// render con highlight opcional
+function renderChips(codigos, highlightId){
+  const ul = document.getElementById('cp-lista-actual');
+  if (!ul) return;
+  while (ul.firstChild) ul.removeChild(ul.firstChild);
+
+  if (!Array.isArray(codigos) || codigos.length === 0){
+    const li = document.createElement('li');
+    li.className = 'cp-chip';
+    li.textContent = 'Sin códigos postales.';
+    ul.appendChild(li);
+    return;
+  }
+
+  for (const c of codigos){
+    const li = document.createElement('li');
+    li.className = 'cp-chip';
+    li.dataset.cpId = c.id; // <-- necesario para borrar
+    li.innerHTML = `
+      <span>#${c.id} · ${c.codigo}${c.ciudad ? ' · ' + c.ciudad : ''}</span>
+      <button type="button" class="cp-del" aria-label="Quitar" title="Quitar">&times;</button>
+    `;
+    if (highlightId && Number(c.id) === Number(highlightId)) {
+      li.classList.add('cp-chip--new');
+      setTimeout(()=> li.classList.remove('cp-chip--new'), 1200);
+    }
+    ul.appendChild(li);
+  }
+}
+
+
+// carga lista (con cache off) y opcionalmente resalta uno
+async function cargarCodigosActuales(pubId, highlightId){
+  let data;
+  try {
+    const r = await fetch(`/publicaciones/${pubId}/codigos-postales`, {
+      headers: { 'Accept': 'application/json' },
+      cache: 'no-store'
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    data = await r.json();
+  } catch (e) {
+    console.error('cargarCodigosActuales:', e);
+    data = { _err: true, codigos: [] };
+  }
+
+  if (data._err){
+    renderChips([], null);
+  } else {
+    renderChips(data.codigos || [], highlightId);
+  }
+
+  const titulo = document.getElementById('cp-modal-titulo');
+  if (titulo) titulo.textContent = `ID ${pubId}`;
+
+  const modalEl = document.getElementById('codigosPostalesModal');
+  if (modalEl) {
+    modalEl.dataset.pubId = String(pubId);
+    if (window.bootstrap?.Modal) bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    else { modalEl.classList.add('show'); modalEl.style.display='block'; modalEl.removeAttribute('aria-hidden'); }
+  }
+}
+
+// click en Agregar → POST → recargar y resaltar el nuevo
+document.addEventListener('click', async (e) => {
+  const addBtn = e.target.closest('#cp-btn-agregar');
+  if (!addBtn) return;
+
+  const modalEl = document.getElementById('codigosPostalesModal');
+  const pubId = Number(modalEl?.dataset.pubId || NaN);
+  const input = document.getElementById('cp-input');
+  const codigo = (input?.value || '').trim();
+  if (!Number.isFinite(pubId) || !codigo) { input?.focus(); return; }
+
+  addBtn.disabled = true;
+  try {
+    const res = await fetch(`/publicaciones/${pubId}/codigos-postales`, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+      body: JSON.stringify({ codigo_postal: codigo })
+    });
+    const pdata = await res.json().catch(()=> ({}));
+    if (!res.ok) { alert(pdata?.error || 'No se pudo agregar.'); return; }
+
+    input.value = '';
+    // si el backend devolvió el CP, usamos su id para highlight
+    const nuevoId = pdata?.cp?.id;
+    await cargarCodigosActuales(pubId, nuevoId);
+  } catch (err) {
+    console.error(err);
+    alert('Error de red agregando el código postal.');
+  } finally {
+    addBtn.disabled = false;
+  }
+});
+
+
+
+
+
+document.getElementById('cp-lista-actual')?.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.cp-del');
+  if (!btn) return;
+
+  const li = btn.closest('.cp-chip');
+  const cpId = Number(li?.dataset.cpId || NaN);
+
+  const modalEl = document.getElementById('codigosPostalesModal');
+  const pubId = Number(modalEl?.dataset.pubId || NaN);
+
+  if (!Number.isFinite(pubId) || !Number.isFinite(cpId)) return;
+
+  // opcional: confirm
+  // if (!confirm('¿Quitar este código postal?')) return;
+
+  btn.disabled = true;
+  try {
+    const res = await fetch(`/publicaciones/${pubId}/codigos-postales/${cpId}`, { method: 'DELETE' });
+    const data = await res.json().catch(()=> ({}));
+    if (!res.ok) {
+      console.error('DELETE fallo:', res.status, data);
+      alert(data?.error || 'No se pudo eliminar.');
+      btn.disabled = false;
+      return;
+    }
+    // sacar del DOM sin recargar todo
+    li.remove();
+    const ul = document.getElementById('cp-lista-actual');
+    if (ul && ul.children.length === 0) {
+      const liEmpty = document.createElement('li');
+      liEmpty.className = 'cp-chip';
+      liEmpty.textContent = 'Sin códigos postales.';
+      ul.appendChild(liEmpty);
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Error de red eliminando el código postal.');
+    btn.disabled = false;
+  }
 });

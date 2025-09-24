@@ -107,6 +107,7 @@ from usuarios.usuarioUbicacionC import usuarioUbicacionC
 from social.imagenes.imagenesOperaciones import imagenesOperaciones
 from social.media_e_mail import media_e_mail
 from social.media.publicaciones import publicaciones
+from social.media.publicacionesAdmin import publicacionesAdmin
 from social.media.cargarPdf import cargarPdf
 from social.media.muestraPublicacionesEnHome import muestraPublicacionesEnHome
 from social.media.muestraPublicacionesEnAmbitos import muestraPublicacionesEnAmbitos
@@ -330,6 +331,7 @@ app.register_blueprint(chat)
 app.register_blueprint(operacionEstrategia)
 app.register_blueprint(caucion)
 app.register_blueprint(publicaciones)
+app.register_blueprint(publicacionesAdmin)
 app.register_blueprint(cargarPdf)
 app.register_blueprint(ambitos)
 app.register_blueprint(ambito)

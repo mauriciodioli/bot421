@@ -41,16 +41,45 @@ function setCookieOverwrite(name, value, days = 365) {
   // ======================================================
   // 1) ADMIN — navegación (sin reemplazar body.innerHTML)
   // ======================================================
-  function handleAdminClick(event) {
-    event.preventDefault();
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      alert('No se encontró un token de acceso.');
-      return;
-    }
-    // Render del servidor completo:
-    window.location.href = '/herramientaAdmin-administracion';
+ async function handleAdminClick(event) {
+  event.preventDefault();
+
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    alert('No se encontró un token de acceso.');
+    return;
   }
+
+  try {
+    const resp = await fetch('/herramientaAdmin-administracion/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        layout: 'layout_administracion',   // tu valor real
+        tipoUso: 'admin'     // tu valor real
+      })
+    });
+
+    if (!resp.ok) {
+      let detalle = '';
+      try { detalle = (await resp.json()).error || ''; } catch {}
+      throw new Error(`${resp.status} ${detalle}`);
+    }
+
+    // respuesta es HTML (por render_template)
+    const html = await resp.text();
+    document.open();
+    document.write(html);
+    document.close();
+
+  } catch (err) {
+    console.error(err);
+    alert('Error cargando administración: ' + err.message);
+  }
+}
 
   // ======================================================
   // 2) Links que envían formularios (ventas/compras/consultas)
@@ -334,12 +363,12 @@ function setCookieOverwrite(name, value, days = 365) {
     const adminLink = document.getElementById('admin-link');
     if (adminLink) adminLink.addEventListener('click', handleAdminClick);
 
-    wireFormLinks();
-    initLanguageSelector();
-    initCodigoPostalModal();
-    wireDebug();
+    //wireFormLinks();
+    //initLanguageSelector();
+    //initCodigoPostalModal();
+    //wireDebug();
 
-     triggerAmbitosReload('init');   // ✅ solo 1
+    // triggerAmbitosReload('init');   // ✅ solo 1
 
   });
 

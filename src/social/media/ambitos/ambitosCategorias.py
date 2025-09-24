@@ -341,7 +341,7 @@ def obtener_ambitosCategorias():
             # Ámbito por valor+idioma
             ambito = session.query(Ambitos).filter_by(valor=ambito_valor, idioma=languaje).first()
             if not ambito:
-                return jsonify({"error": "Ámbito no encontrado"}), 404
+                return jsonify({"error": f"Ámbito '{ambito_valor}' no encontrado para el cp"}), 404
             
             # Relaciones del ámbito -> categoria_ids
             relations = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito.id).all()
