@@ -30,6 +30,8 @@ from models.publicaciones.estado_publi_usu import Estado_publi_usu
 from models.codigoPostal import CodigoPostal
 from models.publicaciones.publicacion_imagen_video import Public_imagen_video
 from models.usuarioPublicacionUbicacion import UsuarioPublicacionUbicacion
+from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal
+from models.publicaciones.publicacionCodigoPostal import PublicacionCodigoPostal
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
 
@@ -200,28 +202,57 @@ def media_publicaciones_mostrar_home():
                                     eliminadas_ids.add(estado.publicacion_id)
                         categoria = safe_int(categoria, 0)           
                         
-                        # Traer publicaciones válidas
-                        publicaciones = session.query(Publicacion).filter(
-                            Publicacion.estado == 'activo',
-                            Publicacion.ambito == ambito,
-                            Publicacion.idioma == idioma,
-                            Publicacion.codigoPostal == codigoPostal,
-                            Publicacion.categoria_id == int(categoria),
-                            ~Publicacion.id.in_(eliminadas_ids)
-                        ).all()
+                       # Subquery: códigos (string) del ámbito
+                        ambito_id = session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()                        
+                        subq_codigos = session.query(AmbitoCodigoPostal).filter_by(ambito_id=ambito_id.id).all()                        
+                        cp_ids = [r.codigo_postal_id for r in subq_codigos]
+
+                        # si no hay CPs, no hay publicaciones
+                        if not cp_ids:
+                            publicaciones = []
+                        else:
+                            publicaciones = session.query(Publicacion).filter(
+                                Publicacion.estado == 'activo',
+                                Publicacion.idioma == idioma,
+                                Publicacion.categoria_id == int(categoria),
+                                ~Publicacion.id.in_(eliminadas_ids)
+                              
+                            ).all()
 
 
 
                 else:
-                    if categoria == '1':
-                        ambito_id = session.query(Ambitos).filter_by(valor=ambito,idioma=idioma).first()
-                        categoriaRelation = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
-                        categoria_id = session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
-                        # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                        publicaciones = session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=categoria_id.id).all()
+                  # (mantengo tu bloque previo tal cual)
+                    # Subquery: códigos (IDs) del ámbito
+                    ambito_row = session.query(Ambitos).filter_by(valor=ambito, idioma=idioma).first()
+                    subq_codigos = session.query(AmbitoCodigoPostal).filter_by(ambito_id=ambito_row.id).all()
+                    cp_ids = [r.codigo_postal_id for r in subq_codigos]
+
+                    # si no hay CPs, no hay publicaciones para este ámbito
+                    if not cp_ids:
+                        publicaciones = []
                     else:
-                        # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                        publicaciones = session.query(Publicacion).filter_by(estado='activo',ambito=ambito,idioma=idioma, codigoPostal=codigoPostal, categoria_id=int(categoria)).all()
+                        if categoria == '1':
+                            ambito_id = session.query(Ambitos).filter_by(valor=ambito, idioma=idioma).first()
+                            categoriaRelation = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
+                            categoria_id = session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
+
+                            # antes: filter_by(..., codigoPostal=codigoPostal, ...)
+                            # ahora: IN sobre TODOS los CP del ámbito
+                            publicaciones = session.query(Publicacion).filter(
+                                Publicacion.estado == 'activo',                                
+                                Publicacion.idioma == idioma,
+                                Publicacion.codigoPostal.in_(cp_ids),
+                                Publicacion.categoria_id == categoria_id.id
+                            ).all()
+                        else:
+                            publicaciones = session.query(Publicacion).filter(
+                                Publicacion.estado == 'activo',                                
+                                Publicacion.idioma == idioma,
+                                Publicacion.codigoPostal.in_(cp_ids),
+                                Publicacion.categoria_id == int(categoria)
+                            ).all()
+
                 # Armar el diccionario con todas las publicaciones, imágenes y videos
                 publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
             
@@ -297,41 +328,57 @@ def media_publicaciones_mostrar_dpi():
                          
                             raise ValueError(f"No se encontró una categoría con el valor: {categoriaValor}")
                   
-                    # Traer publicaciones válidas
-                    publicaciones = session.query(Publicacion).filter(
-                        Publicacion.estado == 'activo',
-                        Publicacion.ambito == ambitos,
-                        Publicacion.idioma == idioma,
-                        Publicacion.codigoPostal == codigoPostal,
-                        Publicacion.categoria_id == int(categoria),
-                        ~Publicacion.id.in_(eliminadas_ids)
-                    ).all()
+                    # Subquery: códigos (string) del ámbito
+                    ambito_id = session.query(Ambitos).filter_by(valor=ambitos,idioma=idioma).first()                        
+                    subq_codigos = session.query(AmbitoCodigoPostal).filter_by(ambito_id=ambito_id.id).all()                        
+                    cp_ids = [r.codigo_postal_id for r in subq_codigos]
+
+                    # si no hay CPs, no hay publicaciones
+                    if not cp_ids:
+                        publicaciones = []
+                    else:
+                        publicaciones = session.query(Publicacion).filter(
+                            Publicacion.estado == 'activo',
+                            Publicacion.idioma == idioma,
+                            Publicacion.categoria_id == int(categoria),
+                            ~Publicacion.id.in_(eliminadas_ids)
+                            
+                        ).all()
+
+
 
                 else:
-                    if codigoPostal == '1':
-                        if isinstance(categoria, str) and not categoria.isdigit():
-                            ambitosCategorias = session.query(AmbitoCategoria).filter_by(valor=categoria).first()
-                            categoria_id = ambitosCategorias.id
-                            if not ambitosCategorias:
-                                    session.close()
-                                    raise ValueError(f"No se encontró una categoría con el valor: {categoria}")  # O maneja la excepción de otra forma
+                    # (mantengo tu bloque previo tal cual)
+                    # Subquery: códigos (IDs) del ámbito
+                    ambito_row = session.query(Ambitos).filter_by(valor=ambitos, idioma=idioma).first()
+                    subq_codigos = session.query(AmbitoCodigoPostal).filter_by(ambito_id=ambito_row.id).all()
+                    cp_ids = [r.codigo_postal_id for r in subq_codigos]
+
+                    # si no hay CPs, no hay publicaciones para este ámbito
+                    if not cp_ids:
+                        publicaciones = []
+                    else:
+                        if categoria == '1':
+                            ambito_id = session.query(Ambitos).filter_by(valor=ambitos, idioma=idioma).first()
+                            categoriaRelation = session.query(AmbitoCategoriaRelation).filter_by(ambito_id=ambito_id.id).first()
+                            categoria_id = session.query(AmbitoCategoria).filter_by(id=categoriaRelation.ambitoCategoria_id).first()
+
+                            # antes: filter_by(..., codigoPostal=codigoPostal, ...)
+                            # ahora: IN sobre TODOS los CP del ámbito
+                            publicaciones = session.query(Publicacion).filter(
+                                Publicacion.estado == 'activo',                                
+                                Publicacion.idioma == idioma,
+                                Publicacion.codigoPostal.in_(cp_ids),
+                                Publicacion.categoria_id == categoria_id.id
+                            ).all()
                         else:
-                            categoria_id = int(categoria)
-                                # Si no hay estados publicaciones, obtén todas las publicaciones del usuario
-                        publicaciones = session.query(Publicacion).filter_by(estado='activo',ambito=ambitos,idioma = idioma,categoria_id = categoria_id ).all()
-                    else: 
-                        if isinstance(categoria, str) and not categoria.isdigit():
-                                ambitosCategorias = session.query(AmbitoCategoria).filter_by(valor=categoria).first()
-                                categoria_id = ambitosCategorias.id
-                        else:
-                            categoria_id = int(categoria)
-                        publicaciones = session.query(Publicacion).filter(
-                                        Publicacion.estado == 'activo',
-                                        Publicacion.ambito == ambitos,
-                                        Publicacion.idioma == idioma,
-                                        Publicacion.categoria_id == categoria_id,
-                                        Publicacion.codigoPostal.in_([codigoPostal, '1'])  # Código postal debe ser uno de estos valores
-                                    ).all()
+                            publicaciones = session.query(Publicacion).filter(
+                                Publicacion.estado == 'activo',                              
+                                Publicacion.idioma == idioma,
+                                Publicacion.codigoPostal.in_(cp_ids),
+                                Publicacion.categoria_id == int(categoria)
+                            ).all()
+
                     
                 # Armar el diccionario con todas las publicaciones, imágenes y videos
                 publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
