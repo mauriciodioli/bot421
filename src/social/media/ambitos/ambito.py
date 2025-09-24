@@ -17,29 +17,46 @@ from models.publicaciones.ambito_general import AmbitoGeneral,AmbitoTraduccion
 from models.publicaciones.publicaciones import Publicacion
 from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal
 from models.codigoPostal import CodigoPostal
+from models.publicaciones.publicacionCodigoPostal import PublicacionCodigoPostal
 from utils.db_session import get_db_session 
 
 ambito = Blueprint('ambito', __name__)
 
 
-
 @ambito.route('/social-media-ambitos-ambitos/')
 def social_media_ambitos_ambitos():
     try:
-        idioma = request.cookies.get('language', 'in')  # Idioma por defecto
+        idioma = request.cookies.get('language', 'in')
         with get_db_session() as session:
             ambitos_db = session.query(Ambitos).filter_by(idioma=idioma).all()
-            datos = [serializar_ambito(a) for a in ambitos_db]  # <-- SERIALIZACIÓN AQUÍ
-            
+
+            datos = []
+            for a in ambitos_db:
+                cps = (
+                    session.query(CodigoPostal.id, CodigoPostal.codigoPostal, CodigoPostal.ciudad)
+                    .join(AmbitoCodigoPostal, AmbitoCodigoPostal.codigo_postal_id == CodigoPostal.id)
+                    .filter(AmbitoCodigoPostal.ambito_id == a.id)
+                    .order_by(CodigoPostal.codigoPostal.asc())
+                    .all()
+                )
+
+                amb = serializar_ambito(a)
+                amb['codigos_postales'] = [
+                    {'id': cp.id, 'codigo': cp.codigoPostal, 'ciudad': cp.ciudad}
+                    for cp in cps
+                ]
+                datos.append(amb)
+
             return render_template(
-                'media/publicaciones/ambitos/ambitos.html', 
-                datos=datos, 
-                layout='layout_administracion', 
+                'media/publicaciones/ambitos/ambitos.html',
+                datos=datos,
+                layout='layout_administracion',
                 accion='crear'
             )
     except Exception as e:
-        print(f'Error al obtener los ámbitos: {e}')
+        current_app.logger.exception('social_media_ambitos_ambitos')
         return 'Problemas con la base de datos', 500
+
 
  
 

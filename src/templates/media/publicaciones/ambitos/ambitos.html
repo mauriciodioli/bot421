@@ -14,68 +14,90 @@
   #ambito-form .form-control {
     border: 1px solid #000;
   }
+   .cp-chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:0;padding:0;list-style:none}
+  .cp-chip{background:#fff;color:#111;border:1px solid #ced4da;border-radius:999px;
+           padding:.15rem .5rem;font-size:.8rem;line-height:1.1;white-space:nowrap}
+  .cp-chip--empty{opacity:.7;font-style:italic}
 </style>
 <h2 style="color: #000;">Gestión de Ambitos</h2>
 <div class="table-responsive">
     <table class="table table-dark table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Orden</th>
-                <th scope="col">Id</th>
-                <th scope="col">User ID</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Descripción</th>
-                <th scope="col">Idioma</th>
-                <th scope="col">Valor</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Acciones</th>
-            </tr>
+     <thead>
+          <tr>
+            <th scope="col">Orden</th>
+            <th scope="col">Id</th>
+            <th scope="col">User ID</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Idioma</th>
+            <th scope="col">Valor</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Códigos postales</th>   {# <-- NUEVA #}
+            <th scope="col">Acciones</th>
+          </tr>
         </thead>
         <tbody>
-            {% if datos %}
-            {% for ambito in datos %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ ambito.id }}</td>
-                <td>{{ ambito.user_id }}</td>
-                <td>{{ ambito.nombre }}</td>
-                <td>{{ ambito.descripcion }}</td>
-                <td>{{ ambito.idioma }}</td>
-                <td>{{ ambito.valor }}</td>
-                <td>{{ ambito.estado }}</td>
-                <td>
-                    <!-- Botón para editar -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#editarAmbitoModal" 
-                    data-ambito-id="{{ ambito.id }}"
-                    data-nombre="{{ ambito.nombre }}"
-                    data-descripcion="{{ ambito.descripcion }}"
-                    data-idioma="{{ ambito.idioma }}"
-                    data-valor="{{ ambito.valor }}"
-                    data-estado="{{ ambito.estado }}"
-                    data-user_id="{{ ambito.user_id }}">Editar</button>
-                    <!-- Botón para eliminar -->
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                        data-bs-target="#eliminarAmbitoModal" 
-                        data-ambito-id="{{ ambito.id }}"
-                        data-nombre="{{ ambito.nombre }}">Eliminar</button>
-                   
-                    <!-- Botón para abrir el modal -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCambiarPosicion" 
-                    data-ambito-id="{{ ambito.id }}">
-                    Cambiar Posicion
-                    </button>
+        {% if datos %}
+          {% for ambito in datos %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ ambito.id }}</td>
+            <td>{{ ambito.user_id }}</td>
+            <td>{{ ambito.nombre }}</td>
+            <td>{{ ambito.descripcion }}</td>
+            <td>{{ ambito.idioma }}</td>
+            <td>{{ ambito.valor }}</td>
+            <td>{{ ambito.estado }}</td>
 
+            {# ---- CODIGOS POSTALES (chips) ---- #}
+            <td>
+              <ul class="cp-chips">
+                {% if ambito.codigos_postales and ambito.codigos_postales|length > 0 %}
+                  {# opcional: mostrar hasta 6 y luego +N #}
+                  {% set mostrar = ambito.codigos_postales[:6] %}
+                  {% for cp in mostrar %}
+                    <li class="cp-chip">
+                      {{ cp.codigo }}{% if cp.ciudad %} · {{ cp.ciudad }}{% endif %}
+                    </li>
+                  {% endfor %}
+                  {% if ambito.codigos_postales|length > 6 %}
+                    <li class="cp-chip" title="{{ ambito.codigos_postales[6:]|map(attribute='codigo')|join(', ') }}">+{{ ambito.codigos_postales|length - 6 }}</li>
+                  {% endif %}
+                {% else %}
+                  <li class="cp-chip cp-chip--empty">Sin códigos</li>
+                {% endif %}
+              </ul>
+            </td>
 
+            <td>
+              <!-- Acciones existentes -->
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                      data-bs-target="#editarAmbitoModal" 
+                      data-ambito-id="{{ ambito.id }}"
+                      data-nombre="{{ ambito.nombre }}"
+                      data-descripcion="{{ ambito.descripcion }}"
+                      data-idioma="{{ ambito.idioma }}"
+                      data-valor="{{ ambito.valor }}"
+                      data-estado="{{ ambito.estado }}"
+                      data-user_id="{{ ambito.user_id }}">Editar</button>
 
-                </td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="9" class="text-center">No hay datos disponibles</td>
-            </tr>
-            {% endif %}
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                      data-bs-target="#eliminarAmbitoModal" 
+                      data-ambito-id="{{ ambito.id }}"
+                      data-nombre="{{ ambito.nombre }}">Eliminar</button>
+
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                      data-bs-target="#modalCambiarPosicion" data-ambito-id="{{ ambito.id }}">
+                Cambiar Posicion
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="10" class="text-center">No hay datos disponibles</td>
+          </tr>
+        {% endif %}
         </tbody>
     </table>
 </div>
