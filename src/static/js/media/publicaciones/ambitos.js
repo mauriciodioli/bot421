@@ -230,6 +230,43 @@ function eliminarAmbito(id) {
 
 
 
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('.cp-del');
+  if (!btn) return;
+
+  const li = btn.closest('.cp-chip');
+  if (!li) return;
+
+  const ambitoId = Number(li.dataset.ambitoId || NaN);
+  const cpId     = Number(li.dataset.cpId || NaN);
+  if (!Number.isFinite(ambitoId) || !Number.isFinite(cpId)) return;
+
+  btn.disabled = true;
+  try {
+    const res = await fetch(`/ambitos/${ambitoId}/codigos-postales/${cpId}`, { method: 'DELETE' });
+    const data = await res.json().catch(()=> ({}));
+    if (!res.ok) {
+      alert(data?.error || 'No se pudo eliminar la referencia.');
+      btn.disabled = false;
+      return;
+    }
+    // Eliminar visualmente el chip
+    const ul = li.parentElement;
+    li.remove();
+    // Si quedó vacío, mostrar “Sin códigos”
+    if (ul && ul.children.length === 0) {
+      const empty = document.createElement('li');
+      empty.className = 'cp-chip cp-chip--empty';
+      empty.textContent = 'Sin códigos';
+      ul.appendChild(empty);
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Error de red eliminando la referencia.');
+    btn.disabled = false;
+  }
+});
+
 
 
 
