@@ -345,7 +345,7 @@ function toggleTexto(postId){
 function abrirPublicacionHome(publicacionId, layout) {
     // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
     const accessToken = localStorage.getItem('access_token');
-
+debugger;
    
     
     // Mostrar el splash de espera
@@ -355,7 +355,7 @@ function abrirPublicacionHome(publicacionId, layout) {
         splash.style.display = 'block'; // Mostrar el splash
     }
    
-    window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
+    window.location.href = `/${medico}/${layout}`;
 }
 
 

@@ -715,7 +715,11 @@ def registrar_acceso(request, usuario, exito, motivo_fallo=None):
 
 @app.route("/index/<string:dominio>")
 def index(dominio):
-    return render_template('index.html', dominio=dominio)
+    if dominio == 'home':
+        return ("", 204)  
+    else:
+        print("DOMINIO: ", dominio)
+        return render_template('index.html', dominio=dominio)
 
 @app.route("/home/<string:dominio>")
 def home(dominio):
