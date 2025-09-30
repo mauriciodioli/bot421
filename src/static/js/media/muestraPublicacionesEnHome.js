@@ -1,3 +1,156 @@
+// Simulación de respuesta AJAX o lista de datos
+
+
+  // Helper para esperar que embed.js esté cargado
+  window.ensureEmbedReady = function () {
+    return new Promise((resolve) => {
+      if (typeof window.initEmbedPopups === 'function') return resolve();
+
+      const script = document.querySelector('script[src*="/static/js/embed.js"]');
+      if (!script) return resolve(); // por si no está
+
+      script.addEventListener('load', () => resolve());
+    });
+  };
+
+  // Inserta múltiples popups al DOM
+  function insertarPopupsDesdeLista() {
+
+      const lista = [
+    {
+      dominio: 'Technologia',
+      categoria: 'wearables',
+      lang: 'pl',
+      cp: '60-001'
+    },
+    {
+      dominio: 'Technologia',
+      categoria: 'wearables',
+      lang: 'pl',
+      cp: '60-001'
+    },
+    {
+      dominio: 'Technologia',
+      categoria: 'wearables',
+      lang: 'pl',
+      cp: '60-001'
+    }
+  ];
+    const container = document.querySelector('.home-muestra-publicaciones-centrales');
+    if (!container) return console.warn("Contenedor no encontrado");
+
+    container.innerHTML = ''; // limpiar anteriores
+
+    lista.forEach(data => {
+      const popupHTML = `
+        <div class="dpia-popup-anchor"
+          data-dominio="${data.dominio}"
+          data-categoria="${data.categoria}"
+          data-lang="${data.lang}"
+          data-cp="${data.cp}"
+          data-width="168"
+          data-height="300"
+          data-placeholder-color="#7CFC00">
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', popupHTML);
+    });
+
+    // Esperar y renderizar popups
+    window.ensureEmbedReady().then(() => {
+      window.initEmbedPopups();
+    });
+  }
+
+  
+
+  insertarPopupsDesdeLista();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Esperar a que embed.js esté listo
+window.ensureEmbedReady = window.ensureEmbedReady || function () {
+  return new Promise((resolve) => {
+    if (typeof window.initEmbedPopups === 'function') return resolve();
+    const s = document.querySelector('script[src*="/static/js/embed.js"]');
+    if (!s) return resolve();
+    s.addEventListener('load', () => resolve());
+  });
+};
+
+/**
+ * Inserta N anchors con los mismos parámetros (sin forEach) y dispara el render.
+ * Requiere que embed.js agrupe por (dominio,categoria,lang,cp) y pida la LISTA una sola vez.
+ */
+function insertarPopupsLote({ dominio, categoria, lang, cp, cantidad = 3, container = '.home-muestra-publicaciones-centrales1', width = 168, height = 300, color = '#7CFC00' }) {
+  const cont = document.querySelector(container);
+  if (!cont) return console.warn('Contenedor no encontrado:', container);
+
+  const anchor = `
+    <div class="dpia-popup-anchor"
+      data-dominio="${dominio}"
+      data-categoria="${categoria}"
+      data-lang="${lang}"
+      data-cp="${cp}"
+      data-width="${width}"
+      data-height="${height}"
+      data-placeholder-color="${color}">
+    </div>`;
+
+  // 👉 sin forEach: insertamos el mismo anchor repetido 'cantidad' veces
+  cont.insertAdjacentHTML('beforeend', anchor.repeat(cantidad));
+
+  // Renderiza todos (embed.js hará UNA llamada por grupo y los repartirá)
+  window.ensureEmbedReady().then(() => {
+    window.initEmbedPopups && window.initEmbedPopups();
+  });
+}
+
+// Ejemplo de uso (una sola vez):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -65,7 +218,7 @@ function cargarPublicaciones(ambitoParam, layout) {
             codigoPostal: codigoPostal
         },
         success: function (response) {
-           
+
             if (splash) {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
             }
@@ -73,14 +226,46 @@ function cargarPublicaciones(ambitoParam, layout) {
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
                 postDisplayContainer.empty();
-             
-             
+          
+                let publicacionesValidas = 0;
+                    // === Intercalado: config + anchor HTML (antes del forEach) ===
+                    const popupCada = 2; // cada cuántas cards reales metés un popup
+                    let cardsRenderizadas = 0;
+
+                    const paramsPopup = {
+                    dominio:  'Technologia',
+                    categoria:'wearables',
+                    lang:     'pl',
+                    cp:       localStorage.getItem('codigoPostal') || '60-001',
+                    width:    168,
+                    height:   300,
+                    color:    '#7CFC00'
+                    };
+
+                    const anchorHTML = `
+                    <div class="card-publicacion-admin popup-fake-card">
+                        <div class="dpia-popup-anchor"
+                        data-dominio="${paramsPopup.dominio}"
+                        data-categoria="${paramsPopup.categoria}"
+                        data-lang="${paramsPopup.lang}"
+                        data-cp="${paramsPopup.cp}"
+                        data-width="${paramsPopup.width}"
+                        data-height="${paramsPopup.height}"
+                        data-placeholder-color="${paramsPopup.color}">
+                        </div>
+                    </div>`;
                 var categoria_id = null; // Variable para almacenar la categoría actual                
                 response.forEach(function (post) {
+                     publicacionesValidas++;
+              
                     const imgs = Array.isArray(post.imagenes) ? post.imagenes : [];
                     const vids = Array.isArray(post.videos)   ? post.videos   : [];
                     if ((imgs.length > 0) || (vids.length > 0)) {
+                     
                         var mediaHtml = '';
+
+
+                       
                         if (categoria_id != post.categoria_id) {
                             categoria_id = post.categoria_id;
                         } 
@@ -236,12 +421,21 @@ function cargarPublicaciones(ambitoParam, layout) {
 
 
                         postDisplayContainer.append(cardHtml);
-                        
+                        cardsRenderizadas++;
+
+                        // 👉 Intercalar popup como “falsa publicación”
+                        if (cardsRenderizadas % popupCada === 0) {
+                        // insertamos el anchor inmediatamente después de la card recién pintada
+                        $(`#card-${post.publicacion_id}`).after(anchorHTML);
+                        }
+                                                    // === PRUEBA: agrega 3 popups al final (como la que te funcionó) ===
+
+
                         // Inicializar la observación de impresiones
                         // Inicializar la observación de impresiones
                         // Inicializar la observación de impresiones
                         // Inicializar la observación de impresiones
-// carga mucho la base de datos aplicable cuando hay recursos en cantidad de base de datos
+                        // carga mucho la base de datos aplicable cuando hay recursos en cantidad de base de datos
 
                       //  observeCardImpression(post.publicacion_id);
 
@@ -254,6 +448,17 @@ function cargarPublicaciones(ambitoParam, layout) {
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }
                 });
+                // Renderizar TODOS los popups insertados (una sola vez)
+                    window.ensureEmbedReady?.().then(() => {
+                    setTimeout(() => {
+                        if (typeof window.initEmbedPopups === 'function') {
+                        window.initEmbedPopups(); // embed.js hará UNA llamada /grupo y repartirá
+                        } else {
+                        console.warn('initEmbedPopups no está definido (¿embed.js cargó?)');
+                        }
+                    }, 0);
+                    });
+
                 localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
             } else {
                 console.error("La respuesta no es un array. Recibido:", response);
@@ -405,7 +610,7 @@ function abrirPublicacionHome(publicacionId, layout) {
 
     // Redirigir al usuario después de un pequeño retraso
     setTimeout(() => {
-        window.location.href = `/media-muestraPublicacionesEnHome-mostrar/${publicacionId}/${layout}`;
+        window.location.href = `/${publicacionId}/${layout}`;
     }, 500); // 500 ms de retraso para mostrar el splash
 }
 

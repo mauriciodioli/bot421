@@ -39,8 +39,8 @@ from google.api_core.exceptions import NotFound
 muestraPublicacionesEnHome = Blueprint('muestraPublicacionesEnHome',__name__)
 
 
-
-@muestraPublicacionesEnHome.route('/media-muestraPublicacionesEnDpi-mostrar/<int:publicacion_id>', methods=['GET'])
+# Ruta para mostrar los detalles de una publicación en el home antigua /media-muestraPublicacionesEnDpi-mostrar/
+@muestraPublicacionesEnHome.route('/<int:publicacion_id>', methods=['GET'])
 def media_publicaciones_detalle_dpi(publicacion_id):
     # Obtener los detalles de la publicación desde la base de datos
     # Aquí deberías hacer una consulta para obtener las imágenes y videos
@@ -51,13 +51,18 @@ def media_publicaciones_detalle_dpi(publicacion_id):
         return jsonify({'error': 'Publicación no encontrada'}), 404
     
 
+def resolver_publicacion_id_por_slugs(ambito_slug, perfil_slug):
+    if ambito_slug == 'medico' and perfil_slug == 'carlos-peralta':
+        return 369
+    return None
 
 
 
-
-@muestraPublicacionesEnHome.route('/media-muestraPublicacionesEnHome-mostrar/<int:publicacion_id>/<string:layout>', methods=['GET'])
+# Ruta para mostrar los detalles de una publicación en el home antigua /media-muestraPublicacionesEnHome-mostrar/
+@muestraPublicacionesEnHome.route('/<int:publicacion_id>/<string:layout>', methods=['GET'])
 def media_publicaciones_detalle(publicacion_id, layout):
     # Obtener la publicación
+    resolver_publicacion_id_por_slugs(publicacion_id, layout)
     post = obtener_publicacion_por_id(publicacion_id)
     
     if post:
@@ -75,8 +80,7 @@ def media_publicaciones_detalle(publicacion_id, layout):
     else:
         return render_template('notificaciones/noPoseeDatos.html',layout='layout_dpi')
     
-            
-        return jsonify({'error': 'Publicación no encontrada'}), 404
+    
 def generar_estrellas_html(rating, reviews):
     estrellas_html = ''
     full_stars = int(rating)

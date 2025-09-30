@@ -31,13 +31,17 @@
 
 
 
+
 <h1 id="ambitoActualHome" style="color: black;" class="ambito-actual ambito-actual--accent" tabindex="0"></h1>
     <div class="home-muestra-publicaciones-centrales">
      
      <!-- Aquí se incrustará la galería de imágenes -->
     </div>
+    <div class="home-muestra-publicaciones-centrales1">
+     
+     <!-- Aquí se incrustará la galería de imágenes -->
+    </div>
 </div>
-
 
 
 
@@ -293,14 +297,20 @@ console.log("No se pudo obtener un nuevo token.");
 <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnHome.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_dominios.css') }}">
 
+<script  src="http://54.234.169.22:8100/static/js/embed.js" data-api="http://54.234.169.22:8100/api/popup"  defer></script>
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 
 
 
+<!--<script  src="http://54.234.169.22:8100/static/js/embed.js"  data-api="http://54.234.169.22:8100/api/popup"   defer></script>-->
+
+<!--<script src="http://54.234.169.22:8100/static/js/embed.js" data-api="http://54.234.169.22:8100/api/popup?test=1"defer></script>-->
 
 <script>
+
+
 cargarPublicaciones('','layout')
 </script>
 {% endblock%}

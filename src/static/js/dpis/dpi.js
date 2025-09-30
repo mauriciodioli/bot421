@@ -605,13 +605,14 @@ fetch('/cuenta-endpoint-all/', {
 
 // Realizar la solicitud AJAX al cargar la página
 $(document).ready(function () {
+  
   // dominio desde localStorage o desde la URL /index/<dominio>
   let domain = localStorage.getItem('dominio');
   if (!domain || domain === 'null') {
     const currentURL = window.location.href;
     let partAfterIndex = (currentURL.split('index/')[1] || '').trim();
     if (!partAfterIndex) partAfterIndex = 'Laboral';
-    debugger;
+    
     localStorage.setItem('dominio', domain);
   }
 
@@ -931,7 +932,7 @@ function abrirPublicacionHome(publicacionId) {
     toggleSplash(targetSection, splash);
     console.log("Enviando AJAX");
    // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
-    window.location.href = `/media-muestraPublicacionesEnDpi-mostrar/${publicacionId}`;
+    window.location.href = `/${publicacionId}`;
 }
 
 
