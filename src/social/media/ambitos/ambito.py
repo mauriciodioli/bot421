@@ -362,6 +362,24 @@ def actualizar_cambiarPosicion(id_1, id_2):
 
 
 
+@ambito.route('/ambitos/<int:ambito_id>/codigos-postales/<int:cp_id>', methods=['DELETE'])
+def quitar_cp_de_ambito(ambito_id, cp_id):
+    try:
+        with get_db_session() as session:
+            rel = (session.query(AmbitoCodigoPostal)
+                   .filter_by(ambito_id=ambito_id, codigo_postal_id=cp_id)
+                   .first())
+            if not rel:
+                return jsonify({'error': 'Relación no encontrada'}), 404
+
+            session.delete(rel)
+            session.commit()
+            return jsonify({'ok': True}), 200
+    except Exception as e:
+        current_app.logger.exception("quitar_cp_de_ambito")
+        try: session.rollback()
+        except: pass
+        return jsonify({'error': 'Error eliminando relación', 'detalle': str(e)}), 500
 
 
 

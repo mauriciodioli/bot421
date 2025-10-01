@@ -1,0 +1,15 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Entornos / secretos
+.env
+.venv/
+venv/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
