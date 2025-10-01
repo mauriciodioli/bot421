@@ -1,6 +1,7 @@
 // === Esperar a que embed.js esté listo (robusto) ===
 window.ensureEmbedReady = window.ensureEmbedReady || function () {
   return new Promise((resolve) => {
+    debugger;
     if (typeof window.initEmbedPopups === 'function') return resolve();
     const t0 = Date.now();
     (function check () {
@@ -19,56 +20,7 @@ window.ensureEmbedReady = window.ensureEmbedReady || function () {
  * - allowDup: permite duplicados si pedís más que los disponibles.
  * - placeholderOff: apaga el placeholder visual.
  */
-function insertarPopupsLote({
-  dominio,               // string o número (si usarIds=true)
-  categoria,             // string o número (si usarIds=true)
-  lang,
-  cp,
-  cantidad = 3,
-  cols = 0,
-  allowDup = false,
-  container = '.home-muestra-publicaciones-centrales1',
-  width = 168,
-  height = 300,
-  color = '#7CFC00',
-  usarIds = false,
-  placeholderOff = true, // apaga placeholder por defecto
-  mode = 'replace'       // 'replace' | 'append'
-} = {}) {
-  const cont = document.querySelector(container);
-  if (!cont) { console.warn('Contenedor no encontrado:', container); return null; }
 
-  if (mode === 'replace') {
-    cont.querySelectorAll('.dpia-popup-anchor').forEach(n => n.remove());
-  }
-
-  const attrsDominio = usarIds
-    ? `data-ambito-id="${dominio}" data-categoria-id="${categoria}"`
-    : `data-dominio="${dominio}" data-categoria="${categoria}"`;
-
-  const anchorHTML = `
-    <div class="dpia-popup-anchor"
-      ${attrsDominio}
-      ${lang ? `data-lang="${lang}"` : ''}
-      ${cp ? `data-cp="${cp}"` : ''}
-      data-width="${width}"
-      data-height="${height}"
-      data-count="${cantidad}"
-      ${cols > 0 ? `data-cols="${cols}"` : ''}
-      ${allowDup ? `data-allow-duplicates="true"` : ''}
-      ${placeholderOff ? `data-placeholder="off"` : ''}
-      data-placeholder-color="${color}"></div>`;
-
-  cont.insertAdjacentHTML('beforeend', anchorHTML);
-  const anchor = cont.lastElementChild;
-
-  // Disparar render cuando embed.js esté listo (una sola vez)
-  window.ensureEmbedReady().then(() => {
-    if (typeof window.initEmbedPopups === 'function') window.initEmbedPopups();
-  });
-
-  return anchor; // por si querés manipularlo luego
-}
 
 // Ejemplo:
 // insertarPopupsLote({
@@ -381,6 +333,7 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                         // 👉 Intercalar popup como “falsa publicación”
                         if (cardsRenderizadas % popupCada === 0) {
+                            
                         // insertamos el anchor inmediatamente después de la card recién pintada
                         $(`#card-${post.publicacion_id}`).after(anchorHTML);
                         }
@@ -404,18 +357,22 @@ function cargarPublicaciones(ambitoParam, layout) {
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }
                 });
-                // Renderizar TODOS los popups insertados (una sola vez)
-                    window.ensureEmbedReady?.().then(() => {
-                    setTimeout(() => {
-                        if (typeof window.initEmbedPopups === 'function') {
-                        window.initEmbedPopups(); // embed.js hará UNA llamada /grupo y repartirá
-                        } else {
-                        console.warn('initEmbedPopups no está definido (¿embed.js cargó?)');
-                        }
-                    }, 0);
-                    });
 
-                localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
+                  localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
+document.querySelectorAll('.dpia-popup-anchor').forEach(a => {
+  delete a.dataset.renderizado;
+  a.innerHTML = ''; // opcional: limpiar UI anterior
+});
+
+const cp        = localStorage.getItem('codigoPostal');
+const dominio   = localStorage.getItem('dominio_id');
+const categoria = localStorage.getItem('categoriaSeleccionadaId');
+const lang      = localStorage.getItem('language');
+
+window.initEmbedPopups({ cp, dominio, categoria, lang });
+
+
+                
             } else {
                 console.error("La respuesta no es un array. Recibido:", response);
             }
