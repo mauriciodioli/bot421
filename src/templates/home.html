@@ -198,6 +198,10 @@ console.log("No se pudo obtener un nuevo token.");
     var cuenta = localStorage.getItem("cuenta");
     var usuario = localStorage.getItem("usuario");
     var simuladoOproduccion = localStorage.getItem("selector");
+    var accesstoken;
+    var refreshtoken;
+    var usuario1;
+    
     
    /* if (access_token) { // Verificar si el token existe en el localStorage
       // Enviar una solicitud a la ruta Flask y pasar el token como parte del cuerpo de la solicitud en formato JSON
@@ -231,15 +235,6 @@ console.log("No se pudo obtener un nuevo token.");
     }*/
   
 
-
-
-
-
-
-    var accesstoken;
-    var refreshtoken;
-    var usuario1;
-    
     // Obtener los tokens de localStorage y realizar la solicitud fetch
     function obtenerTokens() {
       accesstoken = localStorage.getItem('access_token');
@@ -296,21 +291,15 @@ console.log("No se pudo obtener un nuevo token.");
 
 <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnHome.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dpis/dpi_dominios.css') }}">
-
-<script  src="http://54.234.169.22:8100/static/js/embed.js" data-api="http://54.234.169.22:8100/api/popup"  defer></script>
+<script src="https://dpia.site/embed.js?v=20251001" data-api="/api/popup/" defer></script>
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnHome.js') }}"></script>
-<script
-  src="http://54.234.169.22:8100/static/js/embed.js"
-  data-api="http://54.234.169.22:8100/api/popup"
-  defer>
-</script>
 <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 
 
 
-<!--<script  src="http://54.234.169.22:8100/static/js/embed.js"  data-api="http://54.234.169.22:8100/api/popup"   defer></script>-->
 
-<!--<script src="http://54.234.169.22:8100/static/js/embed.js" data-api="http://54.234.169.22:8100/api/popup?test=1"defer></script>-->
+<!--<script src="http://127.0.0.1:8100/static/js/embed.js?v=debug" data-api="http://127.0.0.1:8100/api/popup/" defer></script>-->
+
 
 <script>
 

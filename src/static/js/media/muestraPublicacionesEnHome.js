@@ -1,130 +1,86 @@
-// Simulación de respuesta AJAX o lista de datos
-
-
-  // Helper para esperar que embed.js esté cargado
-  window.ensureEmbedReady = function () {
-    return new Promise((resolve) => {
-      if (typeof window.initEmbedPopups === 'function') return resolve();
-
-      const script = document.querySelector('script[src*="/static/js/embed.js"]');
-      if (!script) return resolve(); // por si no está
-
-      script.addEventListener('load', () => resolve());
-    });
-  };
-
-  // Inserta múltiples popups al DOM
-  function insertarPopupsDesdeLista() {
-
-      const lista = [
-    {
-      dominio: 'Technologia',
-      categoria: 'wearables',
-      lang: 'pl',
-      cp: '60-001'
-    },
-    {
-      dominio: 'Technologia',
-      categoria: 'wearables',
-      lang: 'pl',
-      cp: '60-001'
-    },
-    {
-      dominio: 'Technologia',
-      categoria: 'wearables',
-      lang: 'pl',
-      cp: '60-001'
-    }
-  ];
-    const container = document.querySelector('.home-muestra-publicaciones-centrales');
-    if (!container) return console.warn("Contenedor no encontrado");
-
-    container.innerHTML = ''; // limpiar anteriores
-
-    lista.forEach(data => {
-      const popupHTML = `
-        <div class="dpia-popup-anchor"
-          data-dominio="${data.dominio}"
-          data-categoria="${data.categoria}"
-          data-lang="${data.lang}"
-          data-cp="${data.cp}"
-          data-width="168"
-          data-height="300"
-          data-placeholder-color="#7CFC00">
-        </div>
-      `;
-      container.insertAdjacentHTML('beforeend', popupHTML);
-    });
-
-    // Esperar y renderizar popups
-    window.ensureEmbedReady().then(() => {
-      window.initEmbedPopups();
-    });
-  }
-
-  
-
-  insertarPopupsDesdeLista();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Esperar a que embed.js esté listo
+// === Esperar a que embed.js esté listo (robusto) ===
 window.ensureEmbedReady = window.ensureEmbedReady || function () {
   return new Promise((resolve) => {
     if (typeof window.initEmbedPopups === 'function') return resolve();
-    const s = document.querySelector('script[src*="/static/js/embed.js"]');
-    if (!s) return resolve();
-    s.addEventListener('load', () => resolve());
+    const t0 = Date.now();
+    (function check () {
+      if (typeof window.initEmbedPopups === 'function') return resolve();
+      // evita loops infinitos: 10s timeout
+      if (Date.now() - t0 > 10000) { console.warn('embed.js no apareció'); return resolve(); }
+      setTimeout(check, 50);
+    })();
   });
 };
 
 /**
- * Inserta N anchors con los mismos parámetros (sin forEach) y dispara el render.
- * Requiere que embed.js agrupe por (dominio,categoria,lang,cp) y pida la LISTA una sola vez.
+ * Inserta UN solo anchor con data-count para que embed.js renderice N popups.
+ * - mode: "replace" (default) borra anchors previos en el contenedor; "append" agrega.
+ * - usarIds: usa data-ambito-id / data-categoria-id en lugar de nombres.
+ * - allowDup: permite duplicados si pedís más que los disponibles.
+ * - placeholderOff: apaga el placeholder visual.
  */
-function insertarPopupsLote({ dominio, categoria, lang, cp, cantidad = 3, container = '.home-muestra-publicaciones-centrales1', width = 168, height = 300, color = '#7CFC00' }) {
+function insertarPopupsLote({
+  dominio,               // string o número (si usarIds=true)
+  categoria,             // string o número (si usarIds=true)
+  lang,
+  cp,
+  cantidad = 3,
+  cols = 0,
+  allowDup = false,
+  container = '.home-muestra-publicaciones-centrales1',
+  width = 168,
+  height = 300,
+  color = '#7CFC00',
+  usarIds = false,
+  placeholderOff = true, // apaga placeholder por defecto
+  mode = 'replace'       // 'replace' | 'append'
+} = {}) {
   const cont = document.querySelector(container);
-  if (!cont) return console.warn('Contenedor no encontrado:', container);
+  if (!cont) { console.warn('Contenedor no encontrado:', container); return null; }
 
-  const anchor = `
+  if (mode === 'replace') {
+    cont.querySelectorAll('.dpia-popup-anchor').forEach(n => n.remove());
+  }
+
+  const attrsDominio = usarIds
+    ? `data-ambito-id="${dominio}" data-categoria-id="${categoria}"`
+    : `data-dominio="${dominio}" data-categoria="${categoria}"`;
+
+  const anchorHTML = `
     <div class="dpia-popup-anchor"
-      data-dominio="${dominio}"
-      data-categoria="${categoria}"
-      data-lang="${lang}"
-      data-cp="${cp}"
+      ${attrsDominio}
+      ${lang ? `data-lang="${lang}"` : ''}
+      ${cp ? `data-cp="${cp}"` : ''}
       data-width="${width}"
       data-height="${height}"
-      data-placeholder-color="${color}">
-    </div>`;
+      data-count="${cantidad}"
+      ${cols > 0 ? `data-cols="${cols}"` : ''}
+      ${allowDup ? `data-allow-duplicates="true"` : ''}
+      ${placeholderOff ? `data-placeholder="off"` : ''}
+      data-placeholder-color="${color}"></div>`;
 
-  // 👉 sin forEach: insertamos el mismo anchor repetido 'cantidad' veces
-  cont.insertAdjacentHTML('beforeend', anchor.repeat(cantidad));
+  cont.insertAdjacentHTML('beforeend', anchorHTML);
+  const anchor = cont.lastElementChild;
 
-  // Renderiza todos (embed.js hará UNA llamada por grupo y los repartirá)
+  // Disparar render cuando embed.js esté listo (una sola vez)
   window.ensureEmbedReady().then(() => {
-    window.initEmbedPopups && window.initEmbedPopups();
+    if (typeof window.initEmbedPopups === 'function') window.initEmbedPopups();
   });
+
+  return anchor; // por si querés manipularlo luego
 }
 
-// Ejemplo de uso (una sola vez):
-
-
-
-
-
+// Ejemplo:
+// insertarPopupsLote({
+//   dominio: 'Technologia',
+//   categoria: 'wearables',
+//   lang: 'pl',
+//   cp: '60-001',
+//   cantidad: 2,
+//   cols: 2,
+//   allowDup: false,
+//   container: '.home-muestra-publicaciones-centrales1'
+// });
 
 
 
@@ -229,7 +185,7 @@ function cargarPublicaciones(ambitoParam, layout) {
           
                 let publicacionesValidas = 0;
                     // === Intercalado: config + anchor HTML (antes del forEach) ===
-                    const popupCada = 2; // cada cuántas cards reales metés un popup
+                    const popupCada = 1; // cada cuántas cards reales metés un popup
                     let cardsRenderizadas = 0;
 
                     const paramsPopup = {
@@ -356,7 +312,7 @@ function cargarPublicaciones(ambitoParam, layout) {
                         const verMasTxt  = (translations[lang] && translations[lang].verMas) || 'Ver más';
 
                         // Tarjeta de publicación
-                      var cardHtml = `
+                        var cardHtml = `
                                 <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
                                     <div class="card-body">
 

@@ -1,4 +1,15 @@
-
-# Python cache
+# Python bytecode
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+
+# Entornos / secretos
+.env
+.venv/
+venv/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
