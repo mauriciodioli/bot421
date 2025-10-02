@@ -119,6 +119,50 @@ def afiliado_impresion():
         # el `close()` debería ocurrir automáticamente.
         # Pero lo podés reforzar aquí si tu implementación lo requiere.
         pass
+@afiliado.route("/productosComerciales/traking/afiliado/impresion_popup/", methods=["POST"])
+def afiliado_impresion_popup():
+    data = request.get_json(silent=True) or {}
+
+    pub_id        = int(data.get("pub_id") or 22)
+    visitor_id    = str(data.get("vid") or "")
+    user_id       = str(data.get("user_id") or "") or None
+    lang          = str(data.get("lang") or "es")
+    afiliado_link = str(data.get("afiliado_link") or "")
+    categoria_id  = str(data.get("categoria_id"))
+    ambito        = str(data.get("ambito"))
+    if not pub_id:        abort(400, "pub_id requerido")
+    if not afiliado_link: abort(400, "afiliado_link requerido")
+
+    # Si te llegan, úsalas; si no, lista vacía
+    imagenes = data.get("imagenes") or []
+    videos   = data.get("videos") or []
+
+    try:
+        with get_db_session() as session:
+            # 👇 PASAR 'data' al snapshot (NO {}), más imgs/vids
+            snap = snapshot_from_publicacion(data, imagenes=imagenes, videos=videos)
+
+            click = ClickAfiliado(
+                publicacion_id = int(pub_id),
+                visitor_id     = visitor_id,
+                user_id        = int(user_id),
+                idioma         = lang,
+                ip             = get_client_ip(),
+                user_agent     = request.headers.get("User-Agent"),
+                referer        = request.referrer,
+                destino        = afiliado_link,
+                creado_en = datetime.now(timezone.utc),
+                **snap
+            )
+
+            session.add(click)
+           
+            return ("", 204)
+
+    except Exception as e:
+        current_app.logger.error(f"Error en afiliado_impresion_popup: {e}", exc_info=True)
+        abort(500, "Error interno en servidor")
+
 
 @afiliado.route("/productosComerciales/traking/r/ali/", methods=["POST"])
 def redirect_ali():

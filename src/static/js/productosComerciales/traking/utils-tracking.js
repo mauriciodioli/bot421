@@ -46,68 +46,84 @@ function trackImpressionOnce(pubId) {
 }
 
 
-function observeCardImpression(pubId) {
-  
-  const card = document.getElementById(`card-${pubId}`);
-  if (!card) return;
-  const io = new IntersectionObserver((entries, obs) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        trackImpressionOnce(pubId);
-        obs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.5 });
-  io.observe(card);
-}
 
-let lastClickTs = 0;
-document.addEventListener('click', async (e) => {
-  const a = e.target.closest('a[data-ali-redirect="1"]');
-  if (!a) return;
 
-  const now = Date.now();
-  if (now - lastClickTs < 1200) { // anti-doble click
+
+
+
+
+
+
+// === Captura POPUP: toma SIEMPRE el clic antes que utils-tracking ===
+(function popupImpressionCapture() {
+  let lastTs = 0;
+
+  window.addEventListener('click', function (e) {
+    // 1) ¿clic en la imagen del popup o en el botón?
+    const popupA = e.target.closest('.dpia-popup a[href]');
+    const btn    = e.target.closest('a.btn-afiliado-popup');
+    if (!popupA && !btn) return;
+
+    // 2) Buscar el href real del popup
+    const spot = (popupA ? popupA.closest('.dpia-spot')
+                         : (btn.closest('.dpia-spot') || btn.previousElementSibling));
+    const refA = popupA || (spot && spot.querySelector('.dpia-popup a[href]'));
+    const ref  = refA && refA.href;
+    if (!ref) return;
+
+      // === NUEVO: extraer alt y src del <img> dentro del anchor del popup ===
+    const imgEl  = refA.querySelector('img');
+    const altTxt = (imgEl && imgEl.getAttribute('alt') || '').trim();
+    const imgSrc = (imgEl && imgEl.getAttribute('src') || '').trim();
+
+    // 3) Anti doble clic
+    const now = Date.now();
+    if (now - lastTs < 700) { e.preventDefault(); e.stopPropagation(); return; }
+    lastTs = now;
+
+    // 4) Frenar propagación: QUE NO LO AGARRE utils-tracking (data-ali-redirect)
     e.preventDefault();
-    return;
-  }
-  lastClickTs = now;
-  e.preventDefault();
+    e.stopPropagation();
 
-  const payload = {
-    pub_id:   Number(a.dataset.pubId),
-    vid:      String(a.dataset.vid || ''),
-    user_id:  String(a.dataset.userId || ''),
-    lang:     String(a.dataset.lang || 'es'),
-  };
+    // 5) PubId desde el href (ej: .../748/layout)
+    const m = ref.match(/\/(\d+)(?:\/|$)/);
+    const pub_id = m ? Number(m[1]) : 0;
 
-  try {
-    const res = await fetch('/productosComerciales/traking/r/ali/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      keepalive: true,
-      cache: 'no-store',
-      credentials: 'same-origin',
-      redirect: 'manual',    // ← para capturar Location en 302/3xx
-    });
+    // 6) Enviar impresión del POPUP (sendBeacon/keepalive)
+    const payload = {
+      pub_id,
+      vid:  localStorage.getItem('visitor_id') || (typeof getVisitorId==='function' ? getVisitorId() : ''),
+      user_id: localStorage.getItem('usuario_id') || '',
+      lang: window.currentLang || localStorage.getItem('language') || 'es',
+      afiliado_link: ref,
 
-     if (!res.ok) throw new Error(`HTTP ${res.status}`);
+       // === NUEVO: pasar alt y src ===
+      alt: altTxt,
+      titulo: altTxt,          
+      imagen_url: imgSrc,
 
-    const data = await res.json();
-    if (data && data.url) {
-      window.location.assign(data.url);
-      return;
+      categoria_id:localStorage.getItem('categoriaSeleccionadaId'),
+      ambito:this.localStorage.getItem('dominio')     
+    };
+    const body = JSON.stringify(payload);
+
+    let sent = false;
+    if (navigator.sendBeacon) {
+      sent = navigator.sendBeacon('/productosComerciales/traking/afiliado/impresion_popup/',
+              new Blob([body], { type: 'application/json' }));
     }
-    // si no vino url, usá fallback
-    if (fallback) window.location.assign(fallback);
+    if (!sent) {
+      fetch('/productosComerciales/traking/afiliado/impresion_popup/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: true,
+        cache: 'no-store',
+        credentials: 'same-origin',
+      }).catch(() => {});
+    }
 
-  } catch (err) {
-    if (fallback) window.location.assign(fallback);
-  }
-}, true);
-
-
-
-
-                   
+    // 7) Redirigir al href real del popup
+    window.location.assign(ref);
+  }, { capture: true, passive: false }); // << captura para ganarle a utils
+})();

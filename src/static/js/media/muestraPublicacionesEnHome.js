@@ -286,12 +286,12 @@ function cargarPublicaciones(ambitoParam, layout) {
                         postDisplayContainer.append(cardHtml);
                         cardsRenderizadas++;
 
-                        // 👉 Intercalar popup como “falsa publicación”
-                        if (cardsRenderizadas % popupCada === 0) {
-                            
-                        // insertamos el anchor inmediatamente después de la card recién pintada
-                        $(`#card-${post.publicacion_id}`).after(anchorHTML);
+                    // === 1) Insertás como ya hacés, pero pasando pubId ===
+                        if (cardsRenderizadas % popupCada === 0) { 
+                            $(`#card-${post.publicacion_id}`).after(anchorHTML);
+                            wirePopupAffiliate(post.publicacion_id);
                         }
+
                          // === PRUEBA: agrega 3 popups al final (como la que te funcionó) ===
 
 
@@ -489,3 +489,77 @@ function abrirPublicacionHome(publicacionId, layout) {
 
 
 
+/** ====== Hook para POPUP ======
+ * - Toma el href real del <a> dentro del .dpia-popup
+ * - Lo cuelga en el botón
+ * - Captura clic (imagen o botón), manda impresión y redirige
+ */
+function wirePopupAffiliate() {
+  // spot más reciente sin cablear
+  const spot = document.querySelector('.dpia-spot:not([data-wired])');
+  if (!spot) return;
+  spot.dataset.wired = '1';
+debugger;
+  // <a> real dentro del popup (el que querés usar)
+  const popupA = spot.querySelector('.dpia-popup a[href]');
+  if (!popupA) return;
+  const ref = popupA.getAttribute('href'); // ej: https://dpia.site/748/layout
+
+  // botón que insertaste después del spot (después de anchorHTML)
+  let btn = spot.nextElementSibling;
+  // puede que anchorHTML sea el siguiente y el botón el siguiente del siguiente
+  if (!(btn && btn.matches('a.btn-afiliado-popup'))) {
+    btn = btn && btn.nextElementSibling && btn.nextElementSibling.matches('a.btn-afiliado-popup')
+      ? btn.nextElementSibling
+      : document.querySelector('a.btn-afiliado-popup');
+  }
+  if (btn) btn.dataset.afiliadoLink = ref;
+
+  // parsear pubId desde el href del popup (/748/…)
+  const m = ref.match(/\/(\d+)(?:\/|$)/);
+  const pubId = m ? Number(m[1]) : 0;
+
+  const handler = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation(); // que no interfiera tu listener global
+
+    const vid     = localStorage.getItem('visitor_id') || (window.getVisitorId ? getVisitorId() : '');
+    const user_id = localStorage.getItem('usuario_id') || '';
+    const lang    = window.currentLang || localStorage.getItem('language') || 'es';
+
+    const payload = {
+      pub_id: pubId || 0,
+      vid: vid,
+      user_id: user_id,
+      lang: lang,
+      afiliado_link: ref
+    };
+
+    const body = JSON.stringify(payload);
+    let sent = false;
+    if (navigator.sendBeacon) {
+      sent = navigator.sendBeacon(
+        '/productosComerciales/traking/afiliado/impresion_popup/',
+        new Blob([body], { type: 'application/json' })
+      );
+    }
+    if (!sent) {
+      fetch('/productosComerciales/traking/afiliado/impresion_popup/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: true,
+        cache: 'no-store',
+        credentials: 'same-origin',
+      }).catch(()=>{});
+    }
+
+    // redirección al ref del popup
+    window.location.assign(ref);
+  };
+
+  // clic en la imagen del popup
+  popupA.addEventListener('click', handler, { capture: true });
+  // clic en tu botón
+  if (btn) btn.addEventListener('click', handler, { capture: true });
+}

@@ -108,3 +108,11 @@
     max-height: 100%;
     object-fit: cover; /* Ajusta el video sin deformarlo */
 }
+
+
+
+.dpia-popup { position: relative; }
+.dpia-popup .btn-afiliado-popup {
+  position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
+  z-index: 3;
+}
