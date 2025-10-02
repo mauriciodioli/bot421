@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // NO se declara ni se usa dropdownMenu en ningún lado
 
 window.cargarAmbitos = function () {
- 
+    
   return fetch('/social-media-publicaciones-obtener-ambitos/', {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
@@ -482,7 +482,7 @@ function guardarCodigoPostal() {
         // Cerrar el modal
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal
-      
+        
         triggerAmbitosReload();
 
 
@@ -706,14 +706,14 @@ function enviarDominioAJAX(domain) {
     var access_token = 'access_dpi_token_usuario_anonimo';
    
     if ( !localStorage.getItem('dominio')) {
-     
+        
         localStorage.setItem('dominio', domain);
         let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
         document.getElementById("ambitoActual").innerHTML = ambito_actual;
     }
 
     if ( domain !=='inicialDominio') {
-       
+          
         localStorage.setItem('dominio', domain);
         let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
         document.getElementById("ambitoActual").innerHTML = ambito_actual;
@@ -1041,7 +1041,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selected.innerHTML = `<img src="${langData.flag}"> ${langData.code}`;
         dropdown.style.display = "none";
-       
+        
         triggerAmbitosReload();
 
     }

@@ -1,5 +1,25 @@
 let categoriasCache = {};
 
+
+// === Esperar a que embed.js esté listo (robusto) ===
+window.ensureEmbedReady = window.ensureEmbedReady || function () {
+  return new Promise((resolve) => {
+    
+    if (typeof window.initEmbedPopups === 'function') return resolve();
+    const t0 = Date.now();
+    (function check () {
+      if (typeof window.initEmbedPopups === 'function') return resolve();
+      // evita loops infinitos: 10s timeout
+      if (Date.now() - t0 > 10000) { console.warn('embed.js no apareció'); return resolve(); }
+      setTimeout(check, 50);
+    })();
+  });
+};
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // Seleccionamos el primer ítem que tiene el atributo 'data-color'
     const firstItem = document.querySelector('.categoria-dropdown-item[data-color]');
@@ -702,7 +722,43 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
                         var postDisplayContainer = $('.dpi-muestra-publicaciones-centrales');
                         postDisplayContainer.empty();
 
+
+
+
+
+                        let publicacionesValidas = 0;
+                        // === Intercalado: config + anchor HTML (antes del forEach) ===
+                        const popupCada = 1; // cada cuántas cards reales metés un popup
+                        let cardsRenderizadas = 0;
+
+                        const paramsPopup = {
+                        dominio:  'Technologia',
+                        categoria:'wearables',
+                        lang:     'pl',
+                        cp:       localStorage.getItem('codigoPostal') || '60-001',
+                        width:    168,
+                        height:   300,
+                        color:    '#7CFC00'
+                        };
+
+                        const anchorHTML = `
+                        <div class="card-publicacion-admin popup-fake-card">
+                            <div class="dpia-popup-anchor"
+                            data-dominio="${paramsPopup.dominio}"
+                            data-categoria="${paramsPopup.categoria}"
+                            data-lang="${paramsPopup.lang}"
+                            data-cp="${paramsPopup.cp}"
+                            data-width="${paramsPopup.width}"
+                            data-height="${paramsPopup.height}"
+                            data-placeholder-color="${paramsPopup.color}">
+                            </div>
+                        </div>`;
+
+
+
+
                         response.forEach(function(post) {
+                            publicacionesValidas++;
                             if (post.imagenes.length > 0 || post.videos.length > 0) {
                                     var mediaHtml = '';
 
@@ -802,11 +858,36 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
 
 
                                 postDisplayContainer.append(cardHtml);
+                                   cardsRenderizadas++;
+
+                                  // 👉 Intercalar popup como “falsa publicación”
+                                  if (cardsRenderizadas % popupCada === 0) {
+                                      
+                                  // insertamos el anchor inmediatamente después de la card recién pintada
+                                  $(`#card-${post.publicacion_id}`).after(anchorHTML);
+                                  }
+                                  // === PRUEBA: agrega 3 popups al final (como la que te funcionó) ===
                             } else {
                                 splash.style.display = 'none'; // Ocultar el splash al terminar
                                 console.log('Publicación sin contenido:', post.publicacion_id);
                             }
                         });
+
+
+
+                          document.querySelectorAll('.dpia-popup-anchor').forEach(a => {
+                                delete a.dataset.renderizado;
+                                a.innerHTML = ''; // opcional: limpiar UI anterior
+                                });
+
+                                const cp        = localStorage.getItem('codigoPostal');
+                                const dominio   = localStorage.getItem('dominio_id');
+                                const categoria = localStorage.getItem('categoriaSeleccionadaId');
+                                const lang      = localStorage.getItem('language');
+
+                                window.initEmbedPopups({ cp, dominio, categoria, lang });
+
+
                     } else {
                         splash.style.display = 'none'; // Ocultar el splash al terminar
                         console.error("La respuesta no es un array. Recibido:", response);

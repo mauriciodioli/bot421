@@ -1,7 +1,7 @@
 // === Esperar a que embed.js esté listo (robusto) ===
 window.ensureEmbedReady = window.ensureEmbedReady || function () {
   return new Promise((resolve) => {
-    debugger;
+    
     if (typeof window.initEmbedPopups === 'function') return resolve();
     const t0 = Date.now();
     (function check () {
@@ -12,51 +12,6 @@ window.ensureEmbedReady = window.ensureEmbedReady || function () {
     })();
   });
 };
-
-/**
- * Inserta UN solo anchor con data-count para que embed.js renderice N popups.
- * - mode: "replace" (default) borra anchors previos en el contenedor; "append" agrega.
- * - usarIds: usa data-ambito-id / data-categoria-id en lugar de nombres.
- * - allowDup: permite duplicados si pedís más que los disponibles.
- * - placeholderOff: apaga el placeholder visual.
- */
-
-
-// Ejemplo:
-// insertarPopupsLote({
-//   dominio: 'Technologia',
-//   categoria: 'wearables',
-//   lang: 'pl',
-//   cp: '60-001',
-//   cantidad: 2,
-//   cols: 2,
-//   allowDup: false,
-//   container: '.home-muestra-publicaciones-centrales1'
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -337,7 +292,7 @@ function cargarPublicaciones(ambitoParam, layout) {
                         // insertamos el anchor inmediatamente después de la card recién pintada
                         $(`#card-${post.publicacion_id}`).after(anchorHTML);
                         }
-                                                    // === PRUEBA: agrega 3 popups al final (como la que te funcionó) ===
+                         // === PRUEBA: agrega 3 popups al final (como la que te funcionó) ===
 
 
                         // Inicializar la observación de impresiones
@@ -359,17 +314,17 @@ function cargarPublicaciones(ambitoParam, layout) {
                 });
 
                   localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
-document.querySelectorAll('.dpia-popup-anchor').forEach(a => {
-  delete a.dataset.renderizado;
-  a.innerHTML = ''; // opcional: limpiar UI anterior
-});
+                    document.querySelectorAll('.dpia-popup-anchor').forEach(a => {
+                    delete a.dataset.renderizado;
+                    a.innerHTML = ''; // opcional: limpiar UI anterior
+                    });
 
-const cp        = localStorage.getItem('codigoPostal');
-const dominio   = localStorage.getItem('dominio_id');
-const categoria = localStorage.getItem('categoriaSeleccionadaId');
-const lang      = localStorage.getItem('language');
+                    const cp        = localStorage.getItem('codigoPostal');
+                    const dominio   = localStorage.getItem('dominio_id');
+                    const categoria = localStorage.getItem('categoriaSeleccionadaId');
+                    const lang      = localStorage.getItem('language');
 
-window.initEmbedPopups({ cp, dominio, categoria, lang });
+                    window.initEmbedPopups({ cp, dominio, categoria, lang });
 
 
                 
