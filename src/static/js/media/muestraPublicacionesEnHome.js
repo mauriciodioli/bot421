@@ -35,6 +35,10 @@ function insertarPopupsLote({
   placeholderOff = true, // apaga placeholder por defecto
   mode = 'replace'       // 'replace' | 'append'
 } = {}) {
+
+debugger;
+ 
+
   const cont = document.querySelector(container);
   if (!cont) { console.warn('Contenedor no encontrado:', container); return null; }
 
@@ -404,6 +408,7 @@ function cargarPublicaciones(ambitoParam, layout) {
                         console.log('Publicación sin contenido:', post.publicacion_id);
                     }
                 });
+                  localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
                 // Renderizar TODOS los popups insertados (una sola vez)
                     window.ensureEmbedReady?.().then(() => {
                     setTimeout(() => {
@@ -415,7 +420,26 @@ function cargarPublicaciones(ambitoParam, layout) {
                     }, 0);
                     });
 
-                localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
+              // === POPUPS: bloque al final (sin intercalar) ===
+// Usa IDs desde localStorage; si faltan, no hace nada raro.
+insertarPopupsLote({
+  usarIds: true,
+  dominio:   localStorage.getItem('dominio_id'),
+  categoria: localStorage.getItem('categoriaSeleccionadaId'),
+  lang:      localStorage.getItem('language') || window.currentLang || 'es',
+  cp:        localStorage.getItem('codigoPostal') || '',
+  cantidad:  2,   // cuántos popups querés ver
+  cols:      2,   // layout de grilla de ese bloque
+  allowDup:  true, // evita huecos si hay pocos items
+  container: '.home-muestra-publicaciones-centrales1',
+  placeholderOff: true
+});
+
+// Render de popups (una sola vez, después de crear el/los anchors)
+window.ensureEmbedReady().then(() => {
+  if (typeof window.initEmbedPopups === 'function') window.initEmbedPopups();
+});
+
             } else {
                 console.error("La respuesta no es un array. Recibido:", response);
             }

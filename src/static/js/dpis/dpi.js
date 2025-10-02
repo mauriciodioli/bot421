@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // NO se declara ni se usa dropdownMenu en ningún lado
 
 window.cargarAmbitos = function () {
-  debugger;  
+    
   return fetch('/social-media-publicaciones-obtener-ambitos/', {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
@@ -153,7 +153,7 @@ window.cargarAmbitos = function () {
   .then(data => {
     const $cardContainer = $('.card-container');
     $cardContainer.empty();
-debugger;
+
     // === Layout dentro de .card-container (no tocamos dropdown) ===
     const explore = `
       <section class="dpia-explore2" id="expertise">
@@ -257,7 +257,7 @@ debugger;
 
     function seleccionarDominio(nombre, id){
       const limpio = (nombre || '').replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
-        debugger;
+        
       localStorage.setItem('dominio', limpio);
       setCookieOverwrite('dominio', nombre);
       setCookieOverwrite('dominioValor', nombre);
@@ -316,7 +316,7 @@ debugger;
 $('.card-container').on('click', '.card', function () {
   const selectedDomain = $(this).find('.card-number').text().replace(/[^\w\sáéíóúÁÉÍÓÚüÜ]/g, '').trim();
   const selectedDomainId = $(this).data('id');
-debugger;
+
   localStorage.setItem('dominio', selectedDomain);
   localStorage.setItem('dominio_id', selectedDomainId);
   document.cookie = `dominio_id=${selectedDomainId}; path=/; max-age=31536000`;
@@ -331,7 +331,7 @@ debugger;
   $(this).addClass('active');
   $('#ambitoActual').focus();
 });
-debugger;
+
 // Cargar al inicio (no toca dropdown)
 
 
@@ -482,7 +482,7 @@ function guardarCodigoPostal() {
         // Cerrar el modal
         const myModal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionCodigoPostal'));
         myModal.hide();  // Aquí se cierra el modal
-        debugger;
+        
         triggerAmbitosReload();
 
 
@@ -706,14 +706,14 @@ function enviarDominioAJAX(domain) {
     var access_token = 'access_dpi_token_usuario_anonimo';
    
     if ( !localStorage.getItem('dominio')) {
-        debugger;
+        
         localStorage.setItem('dominio', domain);
         let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
         document.getElementById("ambitoActual").innerHTML = ambito_actual;
     }
 
     if ( domain !=='inicialDominio') {
-          debugger;
+          
         localStorage.setItem('dominio', domain);
         let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
         document.getElementById("ambitoActual").innerHTML = ambito_actual;
@@ -1041,7 +1041,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selected.innerHTML = `<img src="${langData.flag}"> ${langData.code}`;
         dropdown.style.display = "none";
-        debugger;
+        
         triggerAmbitosReload();
 
     }
