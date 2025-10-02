@@ -107,7 +107,7 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                     const anchorHTML = `
                     <div class="card-publicacion-admin popup-fake-card">
-                        <div class="dpia-popup-anchor"
+                        <div class="dpia-spot"
                         data-dominio="${paramsPopup.dominio}"
                         data-categoria="${paramsPopup.categoria}"
                         data-lang="${paramsPopup.lang}"
@@ -314,7 +314,7 @@ function cargarPublicaciones(ambitoParam, layout) {
                 });
 
                   localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
-                    document.querySelectorAll('.dpia-popup-anchor').forEach(a => {
+                    document.querySelectorAll('.dpia-spot').forEach(a => {
                     delete a.dataset.renderizado;
                     a.innerHTML = ''; // opcional: limpiar UI anterior
                     });

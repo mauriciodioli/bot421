@@ -743,7 +743,7 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
 
                         const anchorHTML = `
                         <div class="card-publicacion-admin popup-fake-card">
-                            <div class="dpia-popup-anchor"
+                            <div class="dpia-spot"
                             data-dominio="${paramsPopup.dominio}"
                             data-categoria="${paramsPopup.categoria}"
                             data-lang="${paramsPopup.lang}"
@@ -875,7 +875,7 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
 
 
 
-                          document.querySelectorAll('.dpia-popup-anchor').forEach(a => {
+                          document.querySelectorAll('.dpia-spot').forEach(a => {
                                 delete a.dataset.renderizado;
                                 a.innerHTML = ''; // opcional: limpiar UI anterior
                                 });
