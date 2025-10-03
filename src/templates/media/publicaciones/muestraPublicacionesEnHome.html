@@ -17,7 +17,10 @@
 {% extends 'layouts/layout_signal.html' %}    
 {% endif %}
 {% if layout == 'layout_muestra_imagenes_dpi' %}
-{% extends 'layouts/layout_muestra_imagenes_dpi.html' %}    
+{% extends 'layouts/layout_muestra_imagenes_dpi.html' %} 
+{% endif %}
+{% if layout == 'layout_detalle_productos' %}
+{% extends 'layouts/layout_detalle_productos.html' %} 
 {% endif %}
 
 {% block title %}Publicacion desplegada{% endblock %}

@@ -76,3 +76,19 @@
         padding: 10px;
     }
 }
+
+
+#cookieConsent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(2, 74, 230, 0.3);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    display: none;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 2147483647; /* por encima de todo */
+}

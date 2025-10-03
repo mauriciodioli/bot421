@@ -468,19 +468,30 @@ function toggleTexto(postId) {
 
 
 function abrirPublicacionHome(publicacionId, layout) {
-   
-    // Mostrar el splash de espera
-    var splash = document.querySelector('.splashCarga');
-    
-    if (splash) {
-        splash.style.display = 'block'; // Mostrar el splash
-    }
+  // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
+  const accessToken = localStorage.getItem('access_token');
+  
 
-    // Redirigir al usuario después de un pequeño retraso
-    setTimeout(() => {
-        window.location.href = `/${publicacionId}/${layout}`;
-    }, 500); // 500 ms de retraso para mostrar el splash
+  const pub_id = localStorage.getItem('publicacion_id');
+
+  // Mostrar el splash de espera
+  var splash = document.querySelector('.splashCarga');
+  if (splash) {
+    splash.style.display = 'block'; // Mostrar el splash
+  }
+
+  const us_id = localStorage.getItem('usuario_id'); // <-- leído desde localStorage
+
+  if (!us_id) {
+    // si no existe, usa la ruta sin usuario_id
+     window.location.href = `/${pub_id}/${layout}/${'28'}`;
+    return;
+  }
+
+  window.location.href = `/${pub_id}/${layout}/${us_id}`;
 }
+
+
 
 
 
@@ -499,7 +510,7 @@ function wirePopupAffiliate() {
   const spot = document.querySelector('.dpia-spot:not([data-wired])');
   if (!spot) return;
   spot.dataset.wired = '1';
-debugger;
+
   // <a> real dentro del popup (el que querés usar)
   const popupA = spot.querySelector('.dpia-popup a[href]');
   if (!popupA) return;

@@ -343,19 +343,27 @@ function toggleTexto(postId){
 
 
 function abrirPublicacionHome(publicacionId, layout) {
-    // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
-    const accessToken = localStorage.getItem('access_token');
-debugger;
-   
-    
-    // Mostrar el splash de espera
-    var splash = document.querySelector('.splashCarga');
-    
-    if (splash) {
-        splash.style.display = 'block'; // Mostrar el splash
-    }
-   
-    window.location.href = `/${medico}/${layout}`;
+  // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
+  const accessToken = localStorage.getItem('access_token');
+  
+
+  const pub_id = localStorage.getItem('publicacion_id');
+
+  // Mostrar el splash de espera
+  var splash = document.querySelector('.splashCarga');
+  if (splash) {
+    splash.style.display = 'block'; // Mostrar el splash
+  }
+
+  const us_id = localStorage.getItem('usuario_id'); // <-- leído desde localStorage
+
+  if (!us_id) {
+    // si no existe, usa la ruta sin usuario_id
+     window.location.href = `/${pub_id}/${layout}/${'28'}`;
+    return;
+  }
+
+  window.location.href = `/${pub_id}/${layout}/${us_id}`;
 }
 
 

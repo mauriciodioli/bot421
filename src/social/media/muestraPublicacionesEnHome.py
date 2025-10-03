@@ -59,26 +59,46 @@ def resolver_publicacion_id_por_slugs(ambito_slug, perfil_slug):
 
 
 # Ruta para mostrar los detalles de una publicación en el home antigua /media-muestraPublicacionesEnHome-mostrar/
-@muestraPublicacionesEnHome.route('/<int:publicacion_id>/<string:layout>', methods=['GET'])
-def media_publicaciones_detalle(publicacion_id, layout):
-    # Obtener la publicación
-    resolver_publicacion_id_por_slugs(publicacion_id, layout)
-    post = obtener_publicacion_por_id(publicacion_id)
-    
-    if post:
-        
-        if post == 'noPoseeCategoria':
-            return render_template('notificaciones/noPoseeDatos.html', layout='layout_dpi')
-        
-        estrellas_html = generar_estrellas_html(post.get('rating', 4.5), post.get('reviews', 1))
-        return render_template(
-            'media/publicaciones/muestraPublicacionesEnHome.html',
-            post=post,
-            layout=layout,
-            estrellas_html=estrellas_html
-        )
+# ✅ Ruta nueva con usuario_id
+@muestraPublicacionesEnHome.route('/<int:publicacion_id>/<string:layout>/<int:usuario_id>', methods=['GET'])
+def media_publicaciones_detalle(publicacion_id, layout, usuario_id):
+    DEFAULT_LAYOUT = 'layout_dpi'
+    # si es demo (28) ignoro el layout pedido y uso el default
+    # 1) decidir layout
+    if usuario_id == 28:
+        layout_elegido = DEFAULT_LAYOUT
     else:
-        return render_template('notificaciones/noPoseeDatos.html',layout='layout_dpi')
+        if layout is None or layout.strip() == "":
+            layout_elegido = DEFAULT_LAYOUT
+        else:
+            layout_elegido = layout
+
+    # (opcional) whitelist para evitar layouts truchos
+    ALLOWED = {'layout_detalle_productos', 'layout_dpi', 'layout','layout_home', 'layout_admin'}
+    if layout_elegido not in ALLOWED:
+        layout_elegido = DEFAULT_LAYOUT
+
+    resolver_publicacion_id_por_slugs(publicacion_id, layout_elegido)
+    post = obtener_publicacion_por_id(publicacion_id)
+
+    if not post:
+        return render_template('notificaciones/noPoseeDatos.html', layout='layout_dpi')
+    if post == 'noPoseeCategoria':
+        return render_template('notificaciones/noPoseeDatos.html', layout='layout_dpi')
+
+    estrellas_html = generar_estrellas_html(post.get('rating', 4.5), post.get('reviews', 1))
+    return render_template(
+        'media/publicaciones/muestraPublicacionesEnHome.html',
+        post=post,
+        layout=layout_elegido,
+        estrellas_html=estrellas_html
+    )
+
+# ♻️ Compatibilidad: si no te mandan usuario_id, asumí demo (28)
+@muestraPublicacionesEnHome.route('/<int:publicacion_id>/<string:layout>', methods=['GET'])
+def media_publicaciones_detalle_compat(publicacion_id, layout):
+    return media_publicaciones_detalle(publicacion_id, layout, 28)
+
     
     
 def generar_estrellas_html(rating, reviews):
