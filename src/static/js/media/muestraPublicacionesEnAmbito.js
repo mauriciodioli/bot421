@@ -343,6 +343,7 @@ function toggleTexto(postId){
 
 
 function abrirPublicacionHome(publicacionId, layout) {
+  localStorage.setItem('publicacion_id',publicacionId);
   // Redirigir al usuario a una nueva página que muestra todos los detalles de la publicación
   const accessToken = localStorage.getItem('access_token');
   
@@ -359,11 +360,11 @@ function abrirPublicacionHome(publicacionId, layout) {
 
   if (!us_id) {
     // si no existe, usa la ruta sin usuario_id
-     window.location.href = `/${pub_id}/${layout}/${'28'}`;
+     window.location.href = `/${publicacionId}/${layout}/${'28'}`;
     return;
   }
 
-  window.location.href = `/${pub_id}/${layout}/${us_id}`;
+  window.location.href = `/${publicacionId}/${layout}/${us_id}`;
 }
 
 

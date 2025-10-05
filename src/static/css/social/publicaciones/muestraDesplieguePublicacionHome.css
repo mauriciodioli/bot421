@@ -116,3 +116,5 @@
   position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%);
   z-index: 3;
 }
+
+.dpia-explore2__pill { cursor: pointer; }

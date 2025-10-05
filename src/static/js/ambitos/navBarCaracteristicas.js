@@ -148,7 +148,7 @@ async function cargarCategoriasEnPills() {
   const formData = new FormData();
   if (ambito != null && ambito !== 'null' && ambito !== '') formData.append('ambito', ambito);
   if (cpRaw  != null && cpRaw  !== 'null' && cpRaw  !== '') formData.append('cp', cpRaw);
-
+  debugger;
   try {
     const res = await fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
       method: 'POST',
@@ -723,7 +723,29 @@ function enviarDominioAJAXDesdeCategorias(domain,selectedCategory) {
                         postDisplayContainer.empty();
 
 
+                        // === Banner afiliado primero ===
+                          lang2    = window.currentLang || 'es';
+                          const vid     = (typeof getVisitorId === 'function') ? getVisitorId() : '';
+                          const user_id = localStorage.getItem('usuario_id') || '';
 
+                          const bannerHtml = `
+                         
+                              <a href="https://s.click.aliexpress.com/e/_c3vGvCVt"
+                                target="_blank"
+                                rel="nofollow sponsored noopener"
+                                data-ali-redirect="1"
+                                data-pub-id="banner-ali-home"
+                                data-vid="${vid}"
+                                data-user-id="${user_id}"
+                                data-lang="${lang2}">
+                                <img
+                                  src="https://ae01.alicdn.com/kf/S49a4d147835d4372b13b5d44f76e4d27e.jpg"
+                                  alt="Promo Reparación"
+                                  loading="lazy"
+                                  style="border-radius:8px;width:100%;height:auto;display:block;" />
+                              </a>
+                           `;
+                          postDisplayContainer.append(bannerHtml); // queda primero, siempre
 
 
                         let publicacionesValidas = 0;
