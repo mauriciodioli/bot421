@@ -264,7 +264,7 @@ $(document)
     
        if (document.querySelector('#navBarCaracteristicas-home')) {
         console.log("Ejecutando en home.html");
-        cargarPublicaciones(domain,catId);
+        cargarPublicaciones(domain,'layout');
         // Después de cargar publicaciones o actualizar el texto
         const catKey = localStorage.getItem('categoriaSeleccionadaKey') || 'Categoría';
         $('#ambitoActualHome').text(catKey);

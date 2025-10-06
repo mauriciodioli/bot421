@@ -32,9 +32,9 @@ function cargarPublicaciones(ambitoParam, layout) {
     var ambito = ambitoParam || localStorage.getItem('dominio'); // Usa el parámetro o toma del localStorage
     
     let ambito_actual = "<a style='text-decoration:none; color:orange;'>" + ambito + "</a>";
-    
+                                             
     var codigoPostal = localStorage.getItem('codigoPostal'); // Obtener el código postal de localStorage
-    var categoria = localStorage.getItem('categoria'); // Obtener la categoría de localStorage
+    var categoria = localStorage.getItem('categoriaSeleccionadaId'); // Obtener la categoría de localStorage
     if (!categoria) {
         categoria = '1';
     }
@@ -56,7 +56,7 @@ function cargarPublicaciones(ambitoParam, layout) {
     if (ambitoElement) {
         ambitoElement.innerHTML = ambito_actual;
     }
-
+   debugger;
     var galeriaURL = '/media-publicaciones-mostrar-home/';
     
     // Mostrar el splash de espera
@@ -65,8 +65,8 @@ function cargarPublicaciones(ambitoParam, layout) {
         splash.style.display = 'block'; // Mostrar el splash
     }
 
-    let lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
-
+    var lenguaje = localStorage.getItem('language') || 'es'; // Por defecto 'es' si no está definido
+   
     // Realizar la petición AJAX
     $.ajax({
         type: 'POST',
@@ -81,7 +81,8 @@ function cargarPublicaciones(ambitoParam, layout) {
             codigoPostal: codigoPostal
         },
         success: function (response) {
-
+            console.log('response',response);
+debugger;
             if (splash) {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
             }
@@ -321,10 +322,10 @@ function cargarPublicaciones(ambitoParam, layout) {
 
                     const cp        = localStorage.getItem('codigoPostal');
                     const dominio   = localStorage.getItem('dominio_id');
-                    const categoria = localStorage.getItem('categoriaSeleccionadaId');
+                    const categoria32 = localStorage.getItem('categoriaSeleccionadaId');
                     const lang      = localStorage.getItem('language');
 
-                    window.initEmbedPopups({ cp, dominio, categoria, lang });
+                    window.initEmbedPopups({ cp, dominio, categoria32, lang });
 
 
                 
