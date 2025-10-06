@@ -90,7 +90,30 @@ debugger;
             if (Array.isArray(response)) {
                 var postDisplayContainer = $('.home-muestra-publicaciones-centrales');
                 postDisplayContainer.empty();
-          
+           // === Banner afiliado primero ===
+                          lang2    = window.currentLang || 'es';
+                          const vid     = (typeof getVisitorId === 'function') ? getVisitorId() : '';
+                          const user_id = localStorage.getItem('usuario_id') || '';
+
+                          const bannerHtml = `
+                         
+                              <a href="https://s.click.aliexpress.com/e/_c3vGvCVt"
+                                target="_blank"
+                                rel="nofollow sponsored noopener"
+                                data-ali-redirect="1"
+                                data-pub-id="banner-ali-home"
+                                data-vid="${vid}"
+                                data-user-id="${user_id}"
+                                data-lang="${lang2}">
+                                <img
+                                  src="https://ae01.alicdn.com/kf/S49a4d147835d4372b13b5d44f76e4d27e.jpg"
+                                  alt="Promo Reparación"
+                                  loading="lazy"
+                                  style="border-radius:8px;width:100%;height:auto;display:block;" />
+                              </a>
+                           `;
+                          postDisplayContainer.append(bannerHtml); // queda primero, siempre
+
                 let publicacionesValidas = 0;
                     // === Intercalado: config + anchor HTML (antes del forEach) ===
                     const popupCada = 1; // cada cuántas cards reales metés un popup
@@ -314,7 +337,7 @@ debugger;
                     }
                 });
 
-                  localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
+                    localStorage.setItem('categoria', categoria_id); // Guardar la categoría en localStorage
                     document.querySelectorAll('.dpia-spot').forEach(a => {
                     delete a.dataset.renderizado;
                     a.innerHTML = ''; // opcional: limpiar UI anterior
@@ -485,11 +508,11 @@ function abrirPublicacionHome(publicacionId, layout) {
 
   if (!us_id) {
     // si no existe, usa la ruta sin usuario_id
-     window.location.href = `/${pub_id}/${layout}/${'28'}`;
+     window.location.href = `/${publicacionId}/${layout}/${'28'}`;
     return;
   }
 
-  window.location.href = `/${pub_id}/${layout}/${us_id}`;
+  window.location.href = `/${publicacionId}/${layout}/${us_id}`;
 }
 
 
