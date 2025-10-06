@@ -159,10 +159,10 @@ async function cargarCategoriasEnPills() {
   const ls = localStorage.getItem('dominio');
   return (ls && ls !== 'null') ? ls : '';
 })();
-
+  
  
   if (ambito === 'inicialDominio') ambito = 'Laboral';
-
+  localStorage.setItem('dominio',ambito);
   const formData = new FormData();
   if (ambito != null && ambito !== 'null' && ambito !== '') formData.append('ambito', ambito);
   if (cpRaw  != null && cpRaw  !== 'null' && cpRaw  !== '') formData.append('cp', cpRaw);
@@ -248,13 +248,13 @@ $(document)
     const $btn = $(this);
     const catId = $btn.data('id');
     const catKey = $btn.data('key') || '';
-
+    debugger;
     // Visual: marcar activa
     $('.cat-pill').removeClass('is-active');
     $btn.addClass('is-active');
 
     // Guardar selección para otros módulos
-     localStorage.setItem('categoria', String(catId));
+    localStorage.setItem('categoria', String(catId));
     localStorage.setItem('categoriaSeleccionadaId', String(catId));
     localStorage.setItem('categoriaSeleccionadaKey', String(catKey));
 
