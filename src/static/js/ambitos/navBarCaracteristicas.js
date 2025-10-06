@@ -143,6 +143,24 @@ async function cargarCategoriasEnPills() {
   // --- Payload (igual a tu lógica)
   let ambito = localStorage.getItem('dominio');
   const cpRaw = localStorage.getItem('codigoPostal');
+ 
+
+
+
+  // DESPUÉS (solo dominio, sin tocar 'categoria')
+  ambito = (() => {
+  const el = document.querySelector('#dx-active-pill, .dpia-explore2__pill.is-active');
+  if (el) {
+    // 1) si existe data-domain, úsalo
+    if (el.dataset?.domain) return el.dataset.domain.trim();
+    // 2) si no, usa el texto sin el emoji inicial
+    return el.textContent.replace(/^[^\p{L}\p{N}]+/u, '').trim(); // quita emoji/símbolos al comienzo
+  }
+  const ls = localStorage.getItem('dominio');
+  return (ls && ls !== 'null') ? ls : '';
+})();
+
+ 
   if (ambito === 'inicialDominio') ambito = 'Laboral';
 
   const formData = new FormData();
@@ -979,7 +997,7 @@ function cargarCategorias(domain, selectedCategory) {
     const idioma = localStorage.getItem("language") || "in";
 
    // console.log("📦 Enviando datos:", { ambito: domain, cp: cp, idioma: idioma });
-
+    debugger;
     fetch("/social-media-ambitosCategorias-categoria-mostrar/", {
         method: "POST",
         headers: {
