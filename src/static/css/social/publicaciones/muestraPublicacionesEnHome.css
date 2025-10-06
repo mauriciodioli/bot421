@@ -131,5 +131,21 @@ a.btn-ver-mas:hover {
 
 
 
+.promo-banner { width:100%; border-radius:12px; overflow:hidden; }
+.promo-banner a { display:block; }
+.promo-banner img {
+  display:block;
+  width:100%;
+  height:auto;             /* desktop por defecto */
+}
+
+/* Mobile: recorto para que tenga más altura visible */
+@media (max-width: 768px) {
+  .promo-banner img {
+    width:100%;
+    height: clamp(120px, 24vw, 200px); /* altura razonable */
+    object-fit: cover;                 /* recorte centrado */
+  }
+}
 
 
