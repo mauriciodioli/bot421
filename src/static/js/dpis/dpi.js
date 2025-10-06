@@ -33,7 +33,7 @@ function setCookieOverwrite(name, value, days = 365) {
 }
 document.addEventListener('DOMContentLoaded', function () {
 
-    console.log("DOM listo");
+console.log("DOM listo");
     
 
 //eventos para la carga de los items de los dominios
@@ -682,6 +682,13 @@ function enviarDominioAJAX(domain) {
     }
     ajaxInProgress = false;
     console.log("Dominio:", domain);
+
+      // normalizar dominio
+    if (domain == null || domain === '' || domain === 'null') {
+      const ls = localStorage.getItem('dominio');
+      domain = (ls && ls !== 'null') ? ls : 'Publicity';
+      localStorage.setItem('dominio', domain);
+    }
     localStorage.setItem('banderaCategorias', 'True');
     // Elementos relevantes
     const splash = document.querySelector('.splashCarga');
@@ -691,7 +698,7 @@ function enviarDominioAJAX(domain) {
         cp = '1';
     }
 
-
+debugger;
     if (!splash || !targetSection) {
         console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
         return;
