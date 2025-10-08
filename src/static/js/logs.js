@@ -102,6 +102,7 @@ function obtenerIPYRegistrarAcceso() {
 
 // Función para registrar acceso (como en el ejemplo anterior)
 function registrarAcceso(data) {
+    
     fetch('/log_acceso/', {
         method: 'POST',
         headers: {

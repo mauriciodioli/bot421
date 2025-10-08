@@ -133,6 +133,8 @@ function getLanguageByCountryCode(countryCode) {
         "HI": ["IN"], // Hindi
         "AR": ["SA", "AE", "EG", "DZ", "MA"], // Árabe
         "DA": ["DK"], // Danés (para Dinamarca)
+        "PL": ["PL"], // Polaco
+
     };
 
     for (const [language, countries] of Object.entries(languageMap)) {
@@ -159,6 +161,7 @@ function getLanguageName(code) {
         "HI": "hi",
         "AR": "ar",
         "DA": "da", // Agregado para Dinamarca
+        "PL": "pl",
     };
 
     return languageNames[code] || "Unknown";
@@ -218,7 +221,7 @@ function sendLocationToServer(latitude, longitude, language) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                debugger;
+                
                 console.log("Ubicación e idioma actualizados en el servidor:", xhr.responseText);
             } else {
                 console.error("Error en la actualización:", xhr.status, xhr.responseText);

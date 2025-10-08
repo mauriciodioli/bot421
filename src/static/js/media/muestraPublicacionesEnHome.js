@@ -56,7 +56,7 @@ function cargarPublicaciones(ambitoParam, layout) {
     if (ambitoElement) {
         ambitoElement.innerHTML = ambito_actual;
     }
-   debugger;
+   
     var galeriaURL = '/media-publicaciones-mostrar-home/';
     
     // Mostrar el splash de espera
@@ -82,7 +82,7 @@ function cargarPublicaciones(ambitoParam, layout) {
         },
         success: function (response) {
             console.log('response',response);
-debugger;
+
             if (splash) {
                 splash.style.display = 'none'; // Ocultar el splash al terminar
             }
@@ -120,8 +120,8 @@ debugger;
                     let cardsRenderizadas = 0;
 
                     const paramsPopup = {
-                    dominio:  'Technologia',
-                    categoria:'wearables',
+                    dominio:  localStorage.getItem('dominio'),
+                    categoria:localStorage.getItem('categoria'),
                     lang:     'pl',
                     cp:       localStorage.getItem('codigoPostal') || '60-001',
                     width:    168,

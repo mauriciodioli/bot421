@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
   console.log("probanodo",cuenta)
   console.log(usuario)
   console.log(selector)
-  debugger;
+  
   // Almacenar los tokens en el localStorage
   localStorage.setItem("cuenta", cuenta);
   localStorage.setItem("usuario", usuario);
@@ -208,7 +208,7 @@ function leerFilasTabla(tableBody) {
   // var cambiosAntes = compararCambios();
     // Realizar una solicitud AJAX para obtener los nuevos datos
    
-    debugger;
+    
     var paisSeleccionado = localStorage.getItem('paisSeleccionado');
     var usuario_id = 'anonimo'
     var access_token = 'access_dpi_token_usuario_anonimo'
@@ -227,7 +227,7 @@ function leerFilasTabla(tableBody) {
         // La solicitud fue exitosa, actualiza la tabla  
        
         var response = JSON.parse(xhr.responseText);
-        debugger;
+        
         var tableBody = document.getElementById('signalTable').getElementsByTagName('tbody')[0];
         tableBody.innerHTML = ''; // Limpiar el contenido actual de la tabla
 
@@ -567,7 +567,7 @@ function leerFilasTabla(tableBody) {
       // Después de actualizar la tabla, puedes comparar los cambios nuevamente
      // document.getElementById('splash').style.display = 'none';
       document.getElementById('contenido').style.display = 'block';
-      debugger;
+      
       //var cambiosDespues = compararCambios();
 
       //  var openChanged = cambiosDespues.openBefore - cambiosAntes.openBefore;
@@ -587,7 +587,7 @@ function leerFilasTabla(tableBody) {
       var h3Element = $('#ut_usuario');
 
       // Verificar si 'ut_usuario' tiene un valor
-      debugger;
+      
       if ( response.unidadTrader === 0) {
           // Actualizar el contenido y aplicar la clase verde
           h3Element.text('Unidad de Tradeo: ' +  50000);

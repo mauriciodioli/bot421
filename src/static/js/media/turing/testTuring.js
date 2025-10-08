@@ -127,7 +127,7 @@ function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion, 
    // Obtener la lista de preguntas
   categoria_guardada=localStorage.getItem('seleccionCategoria');
 
-  debugger;
+  
     // Verificar si la categoría de la pregunta coincide con la seleccionada o si no es privada
     if (categoria_guardada === 'pregunta-Privada' && categoria !== 'pregunta-Privada') {
       // Si la categoría seleccionada es "Privada", no mostrar otras categorías.
@@ -189,7 +189,7 @@ function agregarPreguntaListaDePreguntas(id, descripcion,idioma, fechaCreacion, 
       }
 
 
-      debugger;
+      
       // Agregar la nueva pregunta al final de la lista
       lista.append(nuevaPregunta);
 
@@ -263,7 +263,7 @@ function obtenerRespuesta() {
  
     if (listaPreguntas && listaPreguntas.children.length >= 6) {
         // Calcular la posición 9 desde abajo
-        debugger;
+        
         const preguntaSeleccionada = listaPreguntas.children[listaPreguntas.children.length - 6];
        
         // Verificar si el elemento en esa posición tiene la estructura esperada
@@ -354,7 +354,7 @@ function iniciarIntervalo() {
     // Llama a las funciones necesarias
     obtenerChatUsuariosPregunta();
     obtenerPregunta(id);
-    debugger;
+    
     obtenerRespuesta(id);
   }, tiempoLectura);
 
@@ -465,7 +465,7 @@ document.getElementById("enviarRespuestaBtn").addEventListener("click", function
           valor_respuesta_turing:'no',
           fecha: new Date().toISOString()  // Fecha actual en formato ISO
       };
-      debugger;
+      
       // Realizar la petición AJAX usando fetch
       fetch('/turing-turingRespuestas-crear/', {
           method: 'POST',
@@ -777,7 +777,7 @@ document.getElementById('enviarPreguntaBtn').onclick = function() {
     const respuesta = document.getElementById('respuestaInputForUserChat').value;
     // Obtener referencia al checkbox
     const seleccionarIdiomaCheckbox = document.getElementById("seleccionarIdiomaCheckbox");
-    debugger;
+    
     // Declarar la variable idioma
     let idioma;
     // Función para actualizar el valor de la variable según el estado del checkbox
@@ -819,7 +819,7 @@ document.getElementById('enviarPreguntaBtn').onclick = function() {
       respuesta_ia: respuesta.trim() !== '' ? respuesta : 'no respondido', // Verifica si la respuesta está vacía
       fecha: new Date().toISOString()  // Fecha actual en formato ISO
     };
-    debugger;
+    
     // Realizar la petición AJAX usando fetch
     fetch('/turing-testTuring-crear/', {
       method: 'POST',
@@ -1014,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Guardar modelo seleccionado
   function saveSelectedModel(model) {
-    debugger;
+    
     selectedModel = model;
     localStorage.setItem('selectedModel', model);
 

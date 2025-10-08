@@ -447,7 +447,7 @@ function cerrarModalImagenGrande() {
   function cargarDatosPublicacion(id) {
     // Obtener la información del post desde el DOM si ya está cargada
     var postCard = document.getElementById(`card-${id}`);
-    debugger;   
+       
     if (postCard) {
       // Obtener los datos de la publicación
       var id_publicacion = id;
@@ -702,12 +702,12 @@ function eliminarPublicacion(id) {
         },
         success: function(response) {
             if (response.success) {
-              debugger;
+              
                 splash.style.display = 'none'; // Ocultar el splash al terminar
                 alert('Publicación eliminada exitosamente.');
                 $('#card-' + id).remove(); // Eliminar la tarjeta de la interfaz
 
-                debugger;
+                
                  // Verificar si hay más tarjetas dentro del acordeón
                  var remainingCards = $('#postAccordion .accordion-item .card-grid-publicaciones .card-publicacion-admin').length;
                  console.log("Elementos encontrados:", $('#postAccordion .accordion-item .card-grid-publicaciones').length);

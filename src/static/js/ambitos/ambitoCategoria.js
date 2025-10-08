@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $("#buscarAmbito").click(function() {
-        debugger;
+     
         let ambito = $("#ambitoInput").val();
         let cp = $("#codigoPostalInput").val();
       
@@ -33,7 +33,7 @@ $(document).ready(function() {
     });
 
     function actualizarTabla(datos) {
-        debugger;
+       
         let tbody = $("#tablaCategorias tbody");
         tbody.empty(); // Limpiar la tabla antes de agregar nuevos datos
 
@@ -156,7 +156,7 @@ function crearAmbitoCategorias() {
 function agregarFilaATabla(data) {
     let tabla = document.querySelector("table tbody");
     let fila = document.createElement("tr");
-    debugger;
+    
     fila.innerHTML = `
         <td>#</td>
         <td>${data.id}</td>      

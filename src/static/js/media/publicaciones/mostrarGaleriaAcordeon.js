@@ -303,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Hacer lo que necesites con la categoría seleccionada, por ejemplo, cargar publicaciones
             console.log(`Categoría seleccionada: ${categoriaValor}, ID: ${categoriaId}, Color: ${categoriaColor}`);
-            debugger;
+            
             // Aquí puedes agregar la lógica para filtrar o cargar las publicaciones
             // Puedes llamar a tu función cargarPublicaciones() pasando el ambitoId adecuado
             cargarPublicaciones(categoriaId);  // Ejemplo de uso, si quieres cargar publicaciones basadas en la categoría

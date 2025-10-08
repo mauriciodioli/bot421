@@ -57,7 +57,7 @@ function confirmarCrearAmbito() {
 }
 // Función para obtener todos los ambitos
 function obtenerAmbitos() {
-    debugger;
+    
     fetch('/social-media-publicaciones-obtener-ambitos/')
         .then(response => {
             if (!response.ok) {

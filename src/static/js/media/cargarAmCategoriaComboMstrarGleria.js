@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            debugger;
+       
             categoriaSelect.innerHTML = '<option value="" disabled selected>Selecciona una categoría</option>';
             data.forEach(categoria => {
                 const option = document.createElement('option');

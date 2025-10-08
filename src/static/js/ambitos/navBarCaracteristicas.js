@@ -127,6 +127,7 @@ $(document)
 
 // === 2) Nueva función: carga categorías y las pinta en #dx-other-pills (borrando los dominios)
 async function cargarCategoriasEnPills() {
+
   const $pills = $('#dx-other-pills');     // destino
   if (!$pills.length) {
     console.warn('#dx-other-pills no existe');
@@ -166,15 +167,16 @@ async function cargarCategoriasEnPills() {
   const formData = new FormData();
   if (ambito != null && ambito !== 'null' && ambito !== '') formData.append('ambito', ambito);
   if (cpRaw  != null && cpRaw  !== 'null' && cpRaw  !== '') formData.append('cp', cpRaw);
-  debugger;
+   
   try {
     const res = await fetch('/social-media-ambitosCategorias-categoria-mostrar/', {
       method: 'POST',
       body: formData,
       headers: { 'Accept': 'application/json' }
     });
-
+ 
     if (!res.ok) {
+     
       const txt = await res.text().catch(() => '');
       console.error(`HTTP ${res.status}`, txt);
       return pintarEstado('Error al cargar categorías');
@@ -187,6 +189,7 @@ async function cargarCategoriasEnPills() {
     }
 
     const data = await res.json();
+     
     const categorias = Array.isArray(data?.categorias)
       ? data.categorias
       : Array.isArray(data?.data?.categorias)
@@ -195,7 +198,7 @@ async function cargarCategoriasEnPills() {
 
     // Borro dominios y pinto categorías
     $pills.empty();
-
+    
     if (!categorias.length) {
       return pintarEstado('Sin categorías disponibles');
     }
@@ -204,6 +207,7 @@ async function cargarCategoriasEnPills() {
     const frag = document.createDocumentFragment();
 
     categorias.forEach((categoria, index) => {
+      
       const id     = categoria?.id ?? `cat-${index}`;
       const valor  = categoria?.valor ?? '';
       const nombre = categoria?.nombre ?? categoria?.name ?? `Categoría ${index + 1}`;
@@ -214,8 +218,7 @@ async function cargarCategoriasEnPills() {
       btn.setAttribute('data-id', id);
       btn.setAttribute('data-key', valor);
       // Reutilizo tu bg genérico; podés variar por categoría si querés
-      btn.style.setProperty('--card-bg', "url('/static/img/images_dpi_tarjetas2.jpg')");
-
+     
       btn.innerHTML = `
         <span class="card-number"  style="color:${color}">${nombre}</span>
         <input type="hidden" class="categoria-id-oculta" value="${id}">
@@ -248,7 +251,7 @@ $(document)
     const $btn = $(this);
     const catId = $btn.data('id');
     const catKey = $btn.data('key') || '';
-    debugger;
+    
     // Visual: marcar activa
     $('.cat-pill').removeClass('is-active');
     $btn.addClass('is-active');
@@ -348,7 +351,7 @@ function scrollAndFocusElement(selector, offsetPx = 100) {
 
 // Helper: scroll suave con compensación de navbar fija y focus accesible
 function scrollAndFocusSection(targetId, focusSelector = null, offsetPx = 100) {
-  debugger;
+  
   const section = document.getElementById(targetId);
   if (!section) return;
 
@@ -997,7 +1000,7 @@ function cargarCategorias(domain, selectedCategory) {
     const idioma = localStorage.getItem("language") || "in";
 
    // console.log("📦 Enviando datos:", { ambito: domain, cp: cp, idioma: idioma });
-    debugger;
+    
     fetch("/social-media-ambitosCategorias-categoria-mostrar/", {
         method: "POST",
         headers: {

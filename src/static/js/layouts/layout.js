@@ -413,7 +413,7 @@ function rebindDomainsUI() {
     // Persistir (LS)
     localStorage.setItem('dominio', nombre);
     localStorage.setItem('dominio_id', String(id));
-debugger;
+
     // ✅ Pisar cookies existentes
     setCookieOverwrite('dominio', nombre);
     setCookieOverwrite('dominioValor', nombre);

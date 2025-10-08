@@ -673,85 +673,111 @@ function toggleSplash(section, splashElement) {
         section.style.paddingBottom = "0";
     }
 }
+
+
+
+
 let ajaxInProgress = false;
 
 function enviarDominioAJAX(domain) {
-    if (ajaxInProgress) {
-        console.log("AJAX ya en curso, evitando llamada duplicada");
-        return; // Evita llamadas simultáneas
-    }
-    ajaxInProgress = false;
-    console.log("Dominio:", domain);
+  if (ajaxInProgress) {
+    console.log("AJAX ya en curso, evitando llamada duplicada");
+    return; // Evita llamadas simultáneas
+  }
+  ajaxInProgress = true; // ← estaba al revés
 
-      // normalizar dominio
-    if (domain == null || domain === '' || domain === 'null') {
-      const ls = localStorage.getItem('dominio');
-      domain = (ls && ls !== 'null') ? ls : 'Publicity';
-      localStorage.setItem('dominio', domain);
-    }
-    localStorage.setItem('banderaCategorias', 'True');
-    // Elementos relevantes
-    const splash = document.querySelector('.splashCarga');
-    const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
-    cp = localStorage.getItem('codigoPostal');
-    if (!cp){
-        cp = '1';
-    }
+  console.log("Dominio:", domain);
 
-debugger;
-    if (!splash || !targetSection) {
-        console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
-        return;
-    }
+  // normalizar dominio
+// 1) del pill activo (si existe)
+
+// 1) del pill activo
+const el = document.querySelector('#dx-active-pill, .dpia-explore2__pill.is-active');
+if (el) {
+  const byData = el.dataset?.domain?.trim();
+  const byText = (el.textContent || '').replace(/^[^\p{L}\p{N}]+/u,'').trim();
+  domain = byData || byText || '';
+}
+
+// 2) de la URL /index/<dominio> (sin inventar 'home')
+if (!domain) {
+  const parts = location.pathname.split('/').filter(Boolean);
+  if (parts[0] === 'index' && parts[1]) {
+    domain = decodeURIComponent(parts[1]);
+  }
+}
+
+// 3) de localStorage
+if (!domain) {
+  const ls = (localStorage.getItem('dominio') || '').trim();
+  if (ls && !/^(null|undefined)$/i.test(ls)) domain = ls;
+}
+
+// normalización opcional
+if (domain) domain = domain.trim();
+
+  localStorage.setItem('banderaCategorias', 'True');
+
+  // Elementos relevantes
+  const splash = document.querySelector('.splashCarga');
+  const targetSection = document.querySelector('.dpi-muestra-publicaciones-centrales'); // Asegúrate de que esta clase esté bien definida
+
+  let cp = localStorage.getItem('codigoPostal'); // ← declarala
+  if (!cp) {
+    cp = '1';
+  }
+
   
-    // Mostrar/ocultar splash según la visibilidad de la sección
-    toggleSplash(targetSection, splash);
+  if (!splash || !targetSection) {
+    console.error("No se encontró el elemento 'splashCarga' o la sección 'domains'.");
+    ajaxInProgress = false; // ← liberar flag antes de salir
+    return;
+  }
 
-    // Ruta al archivo con la galería de imágenes
-    
-    var galeriaURL = '/media-publicaciones-mostrar-dpi/';
-    var access_token = 'access_dpi_token_usuario_anonimo';
-   
-    if ( !localStorage.getItem('dominio')) {
-        
-        localStorage.setItem('dominio', domain);
-        let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
-        document.getElementById("ambitoActual").innerHTML = ambito_actual;
-    }
+  // Mostrar/ocultar splash según la visibilidad de la sección
+  toggleSplash(targetSection, splash);
 
-    if ( domain !=='inicialDominio') {
-          
-        localStorage.setItem('dominio', domain);
-        let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
-        document.getElementById("ambitoActual").innerHTML = ambito_actual;
-    }
+  // Ruta al archivo con la galería de imágenes
+  const galeriaURL = '/media-publicaciones-mostrar-dpi/';
+  const access_token = 'access_dpi_token_usuario_anonimo';
 
-
-    domain = localStorage.getItem('dominio');
-    let ambito_actual = "<a ' style='text-decoration:none;'>" + domain + "</a>";
+  if (!localStorage.getItem('dominio')) {
+    localStorage.setItem('dominio', domain);
+    let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
     document.getElementById("ambitoActual").innerHTML = ambito_actual;
-    // Obtener ubicación antes de ejecutar AJAX
-    let existe = localStorage.getItem('language');
+  }
 
-    if (!existe){
-        getLocation();
-    } 
-  
-    // Esperar a que se actualice el idioma en localStorage antes de continuar
-    setTimeout(() => {
-        
-                let lenguaje = localStorage.getItem('language'); // Por defecto 'es' si no está definido
+  if (domain !== 'inicialDominio') {
+    localStorage.setItem('dominio', domain);
+    let ambito_actual = "<a ' style='text-decoration:none; '>" + domain + "</a>";
+    document.getElementById("ambitoActual").innerHTML = ambito_actual;
+  }
 
+  domain = localStorage.getItem('dominio');
+  let ambito_actual = "<a ' style='text-decoration:none;'>" + domain + "</a>";
+  document.getElementById("ambitoActual").innerHTML = ambito_actual;
 
-                $.ajax({
-                type: 'POST',
-                url: galeriaURL,
-                dataType: 'json', // Asegúrate de que el backend devuelva un JSON
-                headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
-                data: { ambitos: domain, 
-                        codigoPostal: cp,                         
-                        lenguaje: lenguaje}, // Enviar el dominio como parte de los datos
-                success: function (response) {
+  // Obtener ubicación antes de ejecutar AJAX
+  let existe = localStorage.getItem('language');
+  if (!existe) {
+    getLocation();
+  }
+
+  // Esperar a que se actualice el idioma en localStorage antes de continuar
+  setTimeout(() => {
+    let lenguaje = localStorage.getItem('language'); // Por defecto 'es' si no está definido
+
+    $.ajax({
+      type: 'POST',
+      url: galeriaURL,
+      dataType: 'json', // Asegúrate de que el backend devuelva un JSON
+      headers: { 'Authorization': 'Bearer ' + access_token }, // Enviar el token en el encabezado
+      data: {
+        ambitos: domain,
+        codigoPostal: cp,
+        lenguaje: lenguaje
+      }, // Enviar el dominio como parte de los datos
+      success: function (response) {
                     
                     $('#ambitoActual').focus();
                         console.log("Respuesta del servidor:", response);
@@ -1161,3 +1187,42 @@ function triggerAmbitosReload(reason, delayMs = 100) {
     }
   }, delayMs);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(function(){
+  const params = new URLSearchParams(location.search);
+  if (!params.has('debug')) return;
+
+  const ls = {};
+  for (let i=0; i<localStorage.length; i++){
+    const k = localStorage.key(i);
+    ls[k] = localStorage.getItem(k);
+  }
+
+  const ss = {};
+  for (let i=0; i<sessionStorage.length; i++){
+    const k = sessionStorage.key(i);
+    ss[k] = sessionStorage.getItem(k);
+  }
+
+  const data = { localStorage: ls, sessionStorage: ss, cookies: document.cookie };
+  console.log('DEBUG STORAGE →', data);
+
+  const pre = document.createElement('pre');
+  pre.style.cssText = 'position:fixed;inset:8px;z-index:99999;background:#111;color:#0f0;padding:8px;overflow:auto;border:1px solid #333;border-radius:8px';
+  pre.textContent = JSON.stringify(data, null, 2);
+  document.body.appendChild(pre);
+})();
