@@ -123,6 +123,7 @@ from turing.triviaTuring import triviaTuring
 from turing.conectionSheet import conectionSheet
 
 from social.dpis.dpi import dpi
+from social.chats.whatssapp import whatssapp
 
 from comunicacion.contacto import contacto
 from comunicacion.newsLetter import newsLetter
@@ -323,6 +324,7 @@ app.register_blueprint(shedule_triggers)
 app.register_blueprint(administracion)
 app.register_blueprint(contacto)
 app.register_blueprint(newsLetter)
+app.register_blueprint(whatssapp)
 app.register_blueprint(accionesSheet)
 app.register_blueprint(runScript)
 app.register_blueprint(accionesTriggers)

@@ -11,6 +11,7 @@
       </div>
   </div>
   
+  
 <div class="promo-banner">
   <a href="https://s.click.aliexpress.com/e/_c3vGvCVt"
      target="_blank" rel="nofollow sponsored noopener noreferrer">
@@ -84,6 +85,32 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal: guardar número de WhatsApp -->
+<div class="modal fade" id="modalWhatsapp" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="color:black" data-translate="wa_modal_title">WhatsApp del propietario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <label class="form-label" for="waTelefonoInput" style="color:black" data-translate="wa_label">Número (formato internacional)</label>
+        <input id="waTelefonoInput" class="form-control" placeholder="+393445977100" data-translate-placeholder="wa_placeholder">
+        <div class="form-text" data-translate="wa_hint">Usá formato +E.164. Ej: +5491123456789</div>
+        <input type="hidden" id="waOwnerId" value="">
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-translate="close">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarTelefonoWhatsApp()" data-translate="save">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Modal -->
 
 {% include 'layouts/layout_footer.html' %}   
 

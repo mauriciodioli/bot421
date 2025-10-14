@@ -259,12 +259,14 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_user">Usuario</a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" id="openChannelsModal" data-translate="nav_user_channels">Mis canales</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="btn" id="openModalCP">CP</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="btn" href="/productosComerciales_suscripciones_muestra?layout=layout" data-translate="nav_user_subscriptions">Suscripciones</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="btn" href="/llamada/index-contacto" data-translate="nav_user_contact">Contacto</a></li>
+                            <li><a class="btn" href="/llamada/index-contacto" data-translate="nav_user_contact">Soporte</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="btn" href="/registrar_usuario" data-translate="nav_user_register">Registrarse</a></li>
                             <li><hr class="dropdown-divider"></li>                            
@@ -298,8 +300,8 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
-    
-
+    <script src="{{ url_for('static', filename='js/media/chats/whatssapp.js') }}"></script>
+   
     
 
     <script>

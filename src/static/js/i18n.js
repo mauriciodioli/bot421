@@ -64,6 +64,8 @@ const translations = {
         "layout_index_nav_login": "Login",
         "layout_index_nav_register": "Registrarse",
 
+        "layout_nav_user_channels": "Mis canales",
+
         "ingresa_tus_datos": "Ingresa tus datos para recibir tu pedido!",
         "nombre": "Nombre",
         "apellido": "Apellido",
@@ -308,7 +310,7 @@ const translations = {
       "layout_index_nav_login": "Login",
       "layout_index_nav_register": "Register",
       
-
+       "layout_nav_user_channels": "My channels",
 
         "ingresa_tus_datos": "Enter your details to receive your order!",
         "nombre": "First Name",
@@ -544,6 +546,8 @@ const translations = {
       "layout_index_nav_language": "Idioma",
       "layout_index_nav_login": "Entrar",
       "layout_index_nav_register": "Registrar-se",
+      
+       "layout_nav_user_channels": "Meus canais",
 
         "ingresa_tus_datos": "Digite seus dados para receber seu pedido!",
         "nombre": "Nome",
@@ -781,6 +785,8 @@ const translations = {
         "layout_index_nav_language": "Lingua",
         "layout_index_nav_login": "Accedi",
         "layout_index_nav_register": "Registrati",
+
+        "layout_nav_user_channels": "I miei canali",
 
         "ingresa_tus_datos": "Inserisci i tuoi dati per ricevere il tuo ordine!",
         "nombre": "Nome",
@@ -1021,6 +1027,8 @@ const translations = {
         "layout_index_nav_login": "Accedi",
         "layout_index_nav_register": "Registrati",
 
+        "layout_nav_user_channels": "I miei canali",
+
         "ingresa_tus_datos": "Inserisci i tuoi dati per ricevere il tuo ordine!",
         "nombre": "Nome",
         "apellido": "Cognome",
@@ -1256,6 +1264,8 @@ const translations = {
         "layout_index_nav_language": "Język",
         "layout_index_nav_login": "Zaloguj się",
         "layout_index_nav_register": "Zarejestruj się",
+
+        "layout_nav_user_channels": "Moje kanały",
 
         "ingresa_tus_datos": "Wprowadź swoje dane, aby otrzymać zamówienie!",
         "nombre": "Imię",
@@ -1493,6 +1503,8 @@ const translations = {
         "layout_index_nav_login": "Connexion",
         "layout_index_nav_register": "S'inscrire",
 
+        "layout_nav_user_channels": "Mes chaînes",
+
         "ingresa_tus_datos": "Entrez vos informations pour recevoir votre commande!",
         "nombre": "Prénom",
         "apellido": "Nom",
@@ -1725,6 +1737,8 @@ const translations = {
         "layout_index_nav_language": "Sprache",
         "layout_index_nav_login": "Anmelden",
         "layout_index_nav_register": "Registrieren",
+
+        "layout_nav_user_channels": "Meine Kanäle",
 
         "ingresa_tus_datos": "Geben Sie Ihre Daten ein, um Ihre Bestellung zu erhalten!",
         "nombre": "Vorname",
