@@ -34,6 +34,7 @@ from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal
 from models.publicaciones.publicacionCodigoPostal import PublicacionCodigoPostal
 from models.modelMedia.image import Image
 from models.modelMedia.video import Video
+from models.chats.contacto import Contacto
 
 from models.modelMedia.TelegramNotifier import TelegramNotifier
 from utils.db import db
@@ -56,7 +57,7 @@ publicaciones = Blueprint('publicaciones',__name__)
 
 # Configura el cliente de S3
 #s3 = boto3.client('s3', aws_access_key_id='TU_ACCESS_KEY', aws_secret_access_key='TU_SECRET_KEY', region_name='tu-region')
-
+REG_E164 = re.compile(r'^\+[1-9]\d{7,14}$')  # + y 8–15 dígitos
 
 # Configuración de Redis usando las variables de entorno
 redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
@@ -525,7 +526,11 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
             else:
                 descuento = None
                 precio_original = None
-
+            
+            
+            href = build_wp_href(session,publicacion.user_id)
+         
+            
             publicaciones_data.append({
                 'publicacion_id': publicacion.id,
                 'user_id': publicacion.user_id,
@@ -550,15 +555,33 @@ def armar_publicacion_bucket_para_dpi(publicaciones, layout):
                 'simbolo':simbolo,
                 'precio': publicacion.precio,
                 'afiliado_link': publicacion.afiliado_link,
-                'precio_original': precio_original
+                'precio_original': precio_original,
+                'contactoWP': href 
             })
 
     return publicaciones_data
 
 
 
+def build_wp_href(session, user_id):
+    contacto = (
+        session.query(Contacto)
+        .filter(
+            Contacto.user_id == user_id,
+            Contacto.tipo == 'whatsapp',
+            Contacto.is_primary.is_(True),
+        )
+        .first()
+    )
 
+    if not contacto:
+        return None
 
+    raw = (contacto.valor or '').strip()
+    if not REG_E164.fullmatch(raw):
+        return None
+
+    return raw  # ✅ solo el número limpio (ej: +393445977100)
 
 def extraer_precio_y_descripcion(publicacion_id,texto):
     SIMBOLOS = {

@@ -32,12 +32,14 @@ from social.buckets.bucketGoog import mostrar_from_gcs
 from utils.db_session import get_db_session 
 from social.media.publicaciones import retorna_simbolo_desde_codigo_postal
 from google.api_core.exceptions import NotFound
+from models.chats.contacto import Contacto
 
 
 
 
 muestraPublicacionesEnHome = Blueprint('muestraPublicacionesEnHome',__name__)
 
+REG_E164 = re.compile(r'^\+[1-9]\d{7,14}$')  # + y 8–15 dígitos
 
 # Ruta para mostrar los detalles de una publicación en el home antigua /media-muestraPublicacionesEnDpi-mostrar/
 @muestraPublicacionesEnHome.route('/<int:publicacion_id>', methods=['GET'])
@@ -224,6 +226,7 @@ def obtener_publicacion_por_id(publicacion_id):
                     precio_original = None
                 
                 texto = limpiar_texto(publicacion.texto)
+                href = build_wp_href(session,publicacion.user_id)
                 return {
                     'publicacion_id': publicacion.id,
                     'user_id': publicacion.user_id,
@@ -247,7 +250,8 @@ def obtener_publicacion_por_id(publicacion_id):
                     'descuento': descuento,
                     'simbolo':simbolo,
                     'precio': publicacion.precio,
-                    'precio_original': precio_original
+                    'precio_original': precio_original,
+                    'contactoWP': href 
                 }
                 
             else:
@@ -256,7 +260,26 @@ def obtener_publicacion_por_id(publicacion_id):
         print(str(e))
        
         return None
-   
+
+def build_wp_href(session, user_id):
+    contacto = (
+        session.query(Contacto)
+        .filter(
+            Contacto.user_id == user_id,
+            Contacto.tipo == 'whatsapp',
+            Contacto.is_primary.is_(True),
+        )
+        .first()
+    )
+
+    if not contacto:
+        return None
+
+    raw = (contacto.valor or '').strip()
+    if not REG_E164.fullmatch(raw):
+        return None
+
+    return raw  # ✅ solo el número limpio (ej: +393445977100)   
 def extraer_precio_y_descripcion(texto):
     SIMBOLOS = {
             "EUR": "€",

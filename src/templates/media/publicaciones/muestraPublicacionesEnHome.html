@@ -297,16 +297,12 @@
  </div>  
 
 
-
-<a href="https://wa.me/+393445977100"class="whatsapp-float" target="_blank">
-  <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">  
-</a>
-
-<!-- Botón WhatsApp: el href se completa por JS -->
-<a id="wa-link" class="whatsapp-float" href="#" target="_blank" rel="noopener">
+<!-- Botón WhatsApp (oculto por defecto) -->
+<a id="wa-link" class="whatsapp-float" href="#" target="_blank" rel="noopener"
+   data-msg="Hola, vi tu publicación en dpia.site y me interesa."
+   style="display:none">
   <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
 </a>
-
 
 
 
@@ -348,6 +344,33 @@
   const userId          = '{{ post.user_id }}';
   const ambito          = '{{ post.ambito }}';
   const layout          = '{{ layout }}';
+  const contactoWP      = '{{ post.contactoWP }}';
+  
+
+(function(){
+    const a = document.getElementById('wa-link');
+    if (!a) return;
+
+    const REG_E164 = /^\+[1-9]\d{7,14}$/;
+    // Normalizo por si viene "None", "null" o "undefined" como texto
+    const val = (contactoWP || '').trim();
+    const num = (val === 'None' || val === 'null' || val === 'undefined') ? '' : val;
+
+    if (REG_E164.test(num)) {
+      const digits = num.replace(/\D/g, '');
+      const msg = a.dataset.msg || 'Hola, vi tu publicación en dpia.site y me interesa.';
+      a.href = `https://wa.me/${digits}?text=${encodeURIComponent(msg)}`;
+      a.style.display = '';  // mostrar
+    } else {
+      a.removeAttribute('href');
+      a.style.display = 'none'; // ocultar si no hay número válido
+    }
+  })();
+
+
+
+
+
 
   if (publicacionId) {
     // Cookie para todo el sitio, 30 días. Sobre-escribe si ya existe con mismo nombre+path+dominio
