@@ -241,70 +241,90 @@ function cargarPublicaciones(ambitoParam, layout) {
                       // Tarjeta
                         const comprarTxt = (translations[lang] && translations[lang].comprarAli) || 'Comprar';
                         const verMasTxt  = (translations[lang] && translations[lang].verMas) || 'Ver más';
-
-                        // Tarjeta de publicación
+                        // antes del template, armá el link de WA (E.164 o lo que venga)
+                        // WhatsApp
+                        const waDigits = String(post.contactoWP || '').replace(/\D/g, '');
+                        const waMsg    = 'Hola, vi tu publicación en dpia.site y me interesa.';
+                        const waUrl    = waDigits ? `https://wa.me/${waDigits}?text=${encodeURIComponent(waMsg)}` : '';
                         var cardHtml = `
                                 <div class="card-publicacion-admin" id="card-${post.publicacion_id}">
-                                    <div class="card-body">
+                                   <div class="card-body" style="position:relative; padding-bottom:56px;">
 
-                                        <!-- Botón cerrar -->
-                                        <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
-                                            <span class="text-white">&times;</span>
-                                        </a>
 
-                                        <!-- BADGES: categoría + descuento -->
-                                        <div class="card-badges">
-                                            <div class="categoria-badge">${post.categoriaNombre}</div>
-                                            ${post.descuento ? `<div class="descuento-badge">${post.descuento}</div>` : ''}
-                                        </div>
+                                    <a class="btn-close-publicacion" onclick="cerrarPublicacion(${post.publicacion_id})">
+                                        <span class="text-white">&times;</span>
+                                    </a>
 
-                                        <!-- Imagen -->
-                                        <div class="card-media-grid-publicacion-en-ambito" onclick="abrirPublicacionHome(${post.publicacion_id}, 'layout')" style="cursor: pointer;">
-                                            ${mediaHtml}
-                                        </div>
-
-                                        <!-- Título -->
-                                        <h5 class="card-title">${post.titulo}</h5>
-
-                                        <!-- Estrellas con cantidad -->
-                                        <div class="estrellas">
-                                            ${generarEstrellas(post.rating || 4)} <span class="text-muted" style="font-size: 0.9rem;">(${post.reviews || 1})</span>
-                                        </div>
-
-                                        <!-- Precios -->
-                                        ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration: line-through; font-size: 0.95rem;"> ${post.precio_original}</p>` : ''}
-                                        ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size: 1.2rem;">${post.simbolo} ${post.precio}</p>` : ''}
-
-                                        <!-- Descripción -->
-                                        <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
-
-                                        <!-- Fecha -->
-                                        <p class="card-date">${formatDate(post.fecha_creacion)}</p>
-
-                                        <!-- Usuario -->
-                                        <p class="card-footer-publicacion">Publicado por: Usuario ${post.user_id}</p>
-
-                                        <!-- Botón Ver más -->
-                                       <a href="#" class="btn-ver-mas" 
-                                                onclick="toggleTexto(${post.publicacion_id}); return false;">
-                                                ${translations[currentLang].verMas}
-                                        </a>
-                                         <!-- Botón Afiliado -->
-                                        ${post.afiliado_link ? `
-                                            <a href="#"
-                                            class="btn btn-danger mt-2"
-                                            rel="nofollow sponsored"
-                                            data-ali-redirect="1"
-                                            data-pub-id="${post.publicacion_id}"
-                                            data-vid="${vid}"
-                                            data-user-id="${user_id}"
-                                            data-lang="${lang}">
-                                            ${comprarTxt}
-                                            </a>` : ''}
-
+                                    <div class="card-badges">
+                                        <div class="categoria-badge">${post.categoriaNombre}</div>
+                                        ${post.descuento ? `<div class="descuento-badge">${post.descuento}</div>` : ''}
                                     </div>
-                                </div>
-                            `;
+
+                                    <div class="card-media-grid-publicacion-en-ambito" onclick="abrirPublicacionHome(${post.publicacion_id}, 'layout')" style="cursor:pointer;">
+                                        ${mediaHtml}
+                                    </div>
+
+                                    <h5 class="card-title">${post.titulo}</h5>
+
+                                    <div class="estrellas">
+                                        ${generarEstrellas(post.rating || 4)} <span class="text-muted" style="font-size:0.9rem;">(${post.reviews || 1})</span>
+                                    </div>
+
+                                    ${post.precio_original ? `<p class="precio-original text-muted" style="text-decoration:line-through;font-size:0.95rem;"> ${post.precio_original}</p>` : ''}
+                                    ${post.precio ? `<p class="card-precio text-success fw-bold" style="font-size:1.2rem;">${post.simbolo} ${post.precio}</p>` : ''}
+
+                                    <p class="card-text text-truncated" id="postText-${post.publicacion_id}">${post.texto}</p>
+
+                                    <p class="card-date">${formatDate(post.fecha_creacion)}</p>
+                                    <p class="card-footer-publicacion">Publicado por: Usuario ${post.user_id}</p>
+
+                                    <a href="#" class="btn-ver-mas" onclick="toggleTexto(${post.publicacion_id}); return false;">
+                                        ${verMasTxt}
+                                    </a>
+
+                                    ${waUrl ? `
+                                                <a
+                                                    href="${waUrl}"
+                                                    target="_blank"
+                                                    rel="noopener nofollow"
+                                                    aria-label="WhatsApp"
+                                                    style="
+                                                    position:absolute; right:12px; bottom:12px;
+                                                    width:48px; height:48px; border-radius:999px;
+                                                    display:grid; place-items:center;
+                                                    background:#25D366; border:2px solid rgba(255,255,255,.9);
+                                                    box-shadow:0 6px 16px rgba(0,0,0,.25);
+                                                    text-decoration:none; z-index:3;
+                                                    ">
+                                                    <img
+                                                    src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
+                                                    alt="WhatsApp"
+                                                    style="width:44px; height:44px; display:block; object-fit:contain;"
+                                                    >
+                                                </a>
+                                                ` : ''}
+
+
+
+                                    ${post.afiliado_link ? `
+                                        <a href="#"
+                                        class="btn btn-danger mt-2"
+                                        rel="nofollow sponsored"
+                                        data-ali-redirect="1"
+                                        data-pub-id="${post.publicacion_id}"
+                                        data-vid="${vid}"
+                                        data-user-id="${user_id}"
+                                        data-lang="${lang}">
+                                        ${comprarTxt}
+                                        </a>` : ''}
+
+                                        
+
+
+                                                </div>
+                                    </div>
+                                    `;
+
 
 
                         postDisplayContainer.append(cardHtml);
