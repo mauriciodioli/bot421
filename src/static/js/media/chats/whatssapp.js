@@ -75,7 +75,7 @@ const payload = {
     }
 
     // 3) LocalStorage (para uso inmediato del href)
-    localStorage.setItem(`numTelefono:${ownerId}`, raw);
+    localStorage.setItem(`numTelefono:${publicacion_id}`, raw);
 
     // 4) Refrescar botón WhatsApp si existe
     const a = document.querySelector('.whatsapp-float');

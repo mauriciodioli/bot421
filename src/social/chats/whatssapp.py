@@ -14,6 +14,12 @@ import re
 
 whatssapp = Blueprint('whatssapp', __name__)  # si ya existe así en otros lados, mantenelo
 
+DEFAULT_PUBLICACION_ID = 41   # <- NUNCA 0 en una FK opcional
+DEFAULT_AMBITO_ID      = 1      # <- Debe existir en BD
+DEFAULT_CATEGORIA_ID   = 1      # <- Debe existir en BD
+DEFAULT_CP_ID          = None   # <- 99999 va a romper si no existe
+
+# --- Schemas (Marshmallow) ---------------------------------------------------
 # --- Página (vista) -----------------------------------------------------------
 @whatssapp.route('/social-chats-whatssapp/', methods=['GET'])
 def pagina_chats_whatssapp():
@@ -29,7 +35,7 @@ def _validate_e164(valor: str) -> str:
     return v
 
 # --- Listar ------------------------------------------------------------------
-@whatssapp.route('/social-chats-whatssapp/whatsapp', methods=['GET'])
+@whatssapp.route('/social-chats-whatssapp/whatsapp', methods=['GET']) 
 def whatsapp_list():
     user_id        = request.args.get('user_id', type=int)
     publicacion_id = request.args.get('publicacion_id', type=int)
@@ -37,90 +43,145 @@ def whatsapp_list():
 
     with get_db_session() as session:
         q = session.query(Contacto).filter(Contacto.tipo == 'whatsapp')
+
         if user_id is not None:
             q = q.filter(Contacto.user_id == user_id)
         if publicacion_id is not None:
             q = q.filter(Contacto.publicacion_id == publicacion_id)
         if is_active in (0, 1):
             q = q.filter(Contacto.is_active == bool(is_active))
+
         items = q.order_by(Contacto.is_primary.desc(), Contacto.id.desc()).all()
-        return jsonify(contacts_schema.dump(items)), 200
+
+        resultados = []
+        for item in items:
+            resultados.append({
+                "id": item.id,
+                "user_id": item.user_id,
+                "publicacion_id": item.publicacion_id,
+                "tipo": item.tipo,
+                "valor": item.valor,
+                "codigo_postal_id": item.codigo_postal_id,
+                "ambito_id": item.ambito_id,
+                "categoria_id": item.categoria_id,
+                "is_primary": item.is_primary,
+                "is_active": item.is_active,
+                "created_at": item.created_at.isoformat() if item.created_at else None,
+                "updated_at": item.updated_at.isoformat() if item.updated_at else None,
+            })
+
+        return jsonify(resultados), 200
 
 
 
 
-# --- Create -------------------------------------------------------------
+def limpiar_y_convertir(valor_raw):
+    """int si es válido; si está vacío o null, devuelve None"""
+    if valor_raw is None:
+        return None
+    if isinstance(valor_raw, str) and valor_raw.strip() == '':
+        return None
+    try:
+        return int(valor_raw)
+    except (ValueError, TypeError):
+        return None
+
+
 @whatssapp.route('/social-chats-whatssapp/whatsapp', methods=['POST'])
 def whatsapp_create():
     data = request.get_json(force=True) or {}
-    try:
-        user_id = int(data['user_id'])
-        valor   = _validate_e164(data['valor'])
 
-        # Normalizar opcionales: '' -> None
-        def _opt_int(v):
-            if v is None: return None
-            if isinstance(v, str) and v.strip() == '': return None
-            return int(v)
+    user_id = int(data['user_id'])
+    valor   = _validate_e164(data['valor'])
+    is_primary = bool(data.get('is_primary', False))
 
-        publicacion_id   = _opt_int(data.get('publicacion_id'))
-        ambito_id    = _opt_int(data.get('ambito_rel_id'))
-        categoria_id = _opt_int(data.get('categoria_rel_id'))
-        codigo_postal_id = _opt_int(data.get('codigo_postal_id'))
-        is_primary       = bool(data.get('is_primary', False))
+    # ---- Normalización segura ----
+    publicacion_id = limpiar_y_convertir(data.get('publicacion_id'))
+    if publicacion_id in (0, None):
+        publicacion_id = 41  # <- default
 
-        with get_db_session() as session:
-            if is_primary:
-                q = session.query(Contacto).filter(
-                    Contacto.user_id == user_id,
-                    Contacto.tipo == 'whatsapp',
-                )
-                if publicacion_id is None:
-                    q = q.filter(Contacto.publicacion_id.is_(None))
-                else:
-                    q = q.filter(Contacto.publicacion_id == publicacion_id)
+    ambito_id = limpiar_y_convertir(data.get('ambito_rel_id')) or 1
+    categoria_id = limpiar_y_convertir(data.get('categoria_rel_id')) or 1
 
-                q.update({'is_primary': False}, synchronize_session=False)
+    # codigo_postal: si te llega un “código” y no el id, resolvelo acá
+    codigo_postal_id = limpiar_y_convertir(data.get('codigo_postal_id'))
+    if codigo_postal_id in (0, None):
+        codigo_postal_id = None
+    else:
+        with get_db_session() as s:
+            # ajustá el campo según tu modelo real (codigo vs codigoPostal)
+            cp = (s.query(CodigoPostal)
+                        .filter(CodigoPostal.codigoPostal == str(codigo_postal_id))
+                        .first())
+            if not cp:
+                return jsonify({'error': 'codigo_postal_id no existe'}), 400
+            codigo_postal_id = cp.id
 
-            nuevo = Contacto(
+    with get_db_session() as session:
+        # 🔍 Buscar si ya existe contacto del mismo user/tipo/publicacion
+        q = session.query(Contacto).filter(
+            Contacto.user_id == user_id,
+            Contacto.tipo == 'whatsapp',
+        )
+        if publicacion_id is None:
+            q = q.filter(Contacto.publicacion_id.is_(None))
+        else:
+            q = q.filter(Contacto.publicacion_id == publicacion_id)
+
+        existente = q.one_or_none()
+
+        # Si se marca como primary, apagar otros antes (mismo user/tipo)
+        if is_primary:
+            session.query(Contacto).filter(
+                Contacto.user_id == user_id,
+                Contacto.tipo == 'whatsapp'
+            ).update({'is_primary': False}, synchronize_session=False)
+
+        if existente:
+            # ✅ UPDATE
+            existente.valor = valor
+            existente.codigo_postal_id = codigo_postal_id
+            existente.ambito_id = ambito_id
+            existente.categoria_id = categoria_id
+            existente.is_primary = is_primary
+            # si tenés updated_at auto, buenísimo; si no:
+            # existente.updated_at = datetime.utcnow()
+            session.flush()
+            obj = existente
+        else:
+            # ➕ INSERT
+            obj = Contacto(
                 user_id=user_id,
                 publicacion_id=publicacion_id,
                 tipo='whatsapp',
                 valor=valor,
-                is_primary=is_primary,
-                is_active=True,
+                codigo_postal_id=codigo_postal_id,
                 ambito_id=ambito_id,
                 categoria_id=categoria_id,
-                codigo_postal_id=codigo_postal_id,
+                is_primary=is_primary,
+                is_active=True,
             )
-            session.add(nuevo)
-            session.flush()  # obtener ID para la respuesta
+            session.add(obj)
+            session.flush()
 
-            # ✅ Sin Marshmallow: respondemos dict “a mano”
-            resp = {
-                "id": nuevo.id,
-                "user_id": nuevo.user_id,
-                "publicacion_id": nuevo.publicacion_id,
-                "tipo": nuevo.tipo,
-                "valor": nuevo.valor,
-                "codigo_postal_id": nuevo.codigo_postal_id,
-                "ambito_id": nuevo.ambito_id,
-                "categoria_id": nuevo.categoria_id,
-                "is_primary": nuevo.is_primary,
-                "is_active": nuevo.is_active,
-                "created_at": nuevo.created_at.isoformat() if nuevo.created_at else None,
-                "updated_at": nuevo.updated_at.isoformat() if nuevo.updated_at else None,
-            }
-            return jsonify(resp), 201
+        resp = {
+            "id": obj.id,
+            "user_id": obj.user_id,
+            "publicacion_id": obj.publicacion_id,
+            "tipo": obj.tipo,
+            "valor": obj.valor,
+            "codigo_postal_id": obj.codigo_postal_id,
+            "ambito_id": obj.ambito_id,
+            "categoria_id": obj.categoria_id,
+            "is_primary": obj.is_primary,
+            "is_active": obj.is_active,
+            "created_at": obj.created_at.isoformat() if obj.created_at else None,
+            "updated_at": obj.updated_at.isoformat() if obj.updated_at else None,
+        }
+        return jsonify(resp), 200 if existente else 201
 
-    except (KeyError, ValueError) as e:
-        return jsonify({'error': str(e)}), 400
-    except IntegrityError:
-        return jsonify({'error': 'Duplicado para ese contexto'}), 409
-    except Exception:
-        current_app.logger.exception('whatsapp_create error')
-        return jsonify({'error': 'Error interno'}), 500
 
+ 
 
 # --- Obtener uno -------------------------------------------------------------
 @whatssapp.route('/social-chats-whatssapp/whatsapp/<int:contact_id>', methods=['GET'])
