@@ -298,11 +298,18 @@
 
 
 <!-- Botón WhatsApp (oculto por defecto) -->
-<a id="wa-link" class="whatsapp-float" href="#" target="_blank" rel="noopener"
+<a id="wa-link"
+   class="whatsapp-float"
+   href="#"
+   target="_blank"
+   rel="noopener"
    data-msg="Hola, vi tu publicación en dpia.site y me interesa."
    style="display:none">
   <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
 </a>
+
+
+
 
 
 
@@ -344,30 +351,62 @@
   const userId          = '{{ post.user_id }}';
   const ambito          = '{{ post.ambito }}';
   const layout          = '{{ layout }}';
-  const contactoWP      = '{{ post.contactoWP }}';
-  
+  const contactoWP = '{{ post.contactoWP }}';
 
-(function(){
+  // Mini i18n solo para el mensaje
+  const translation = {
+    es: { wa_msg: "Hola, vi tu publicación en dpia.site y me interesa." },
+    in: { wa_msg: "Hi, I saw your post on dpia.site and I'm interested." },
+    pt: { wa_msg: "Olá, vi sua publicação no dpia.site e me interessei." },
+    pl: { wa_msg: "Cześć, zobaczyłem Twoją publikację na dpia.site i jestem zainteresowany." },
+    it: { wa_msg: "Ciao, ho visto la tua pubblicazione su dpia.site e sono interessato." },
+    fr: { wa_msg: "Salut, j’ai vu ta publication sur dpia.site et je suis intéressé." },
+    de: { wa_msg: "Hallo, ich habe deinen Beitrag auf dpia.site gesehen und bin interessiert." },
+  };
+
+  function currentLan() {
+    let lang =
+      (document.cookie.match(/(?:^|;\s*)language=([^;]+)/)?.[1]) ||
+      localStorage.getItem('language') ||
+      (navigator.language || 'es').split('-')[0];
+    if (lang === 'en') lang = 'in';        // tu convención
+    return translation[lang] ? lang : 'es';
+  }
+
+  // opcional: fallback desde localStorage por usuario
+  const LS_KEY = `numTelefono:${localStorage.getItem('usuario_id')||'global'}`;
+
+  (function () {
     const a = document.getElementById('wa-link');
     if (!a) return;
 
     const REG_E164 = /^\+[1-9]\d{7,14}$/;
-    // Normalizo por si viene "None", "null" o "undefined" como texto
-    const val = (contactoWP || '').trim();
-    const num = (val === 'None' || val === 'null' || val === 'undefined') ? '' : val;
 
-    if (REG_E164.test(num)) {
-      const digits = num.replace(/\D/g, '');
-      const msg = a.dataset.msg || 'Hola, vi tu publicación en dpia.site y me interesa.';
-      a.href = `https://wa.me/${digits}?text=${encodeURIComponent(msg)}`;
-      a.style.display = '';  // mostrar
-    } else {
+    // Número: backend > localStorage > vacío
+    const raw = ((contactoWP || '').trim()) || ((localStorage.getItem(LS_KEY) || '').trim());
+    const num = /^(None|null|undefined)$/i.test(raw) ? '' : raw;
+
+    if (!REG_E164.test(num)) {
+      a.style.display = 'none';
       a.removeAttribute('href');
-      a.style.display = 'none'; // ocultar si no hay número válido
+      return;
     }
+    a.style.display = '';
+
+    function msgNow() {
+      const lang = currentLan();
+      return translation[lang]?.wa_msg
+          || a.dataset.msg
+          || 'Hola, vi tu publicación en dpia.site y me interesa.';
+    }
+
+    // Recalcula en el idioma actual justo antes de navegar
+    a.addEventListener('click', function () {
+      const digits = num.replace(/\D/g, '');
+      const msg = msgNow();
+      a.href = `https://wa.me/${digits}?text=${encodeURIComponent(msg)}`;
+    });
   })();
-
-
 
 
 

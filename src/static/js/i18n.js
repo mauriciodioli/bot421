@@ -248,7 +248,8 @@ const translations = {
        'wa.current':'Actual','wa.hint':'Usá formato +E.164. Ej: +5491123456789',
        'wa.invalid':'Número inválido. Ejemplo válido: +393445977100',
        'wa.primary':'Marcar como número principal','wa.ph':'+393445977100',
-       'common.close':'Cerrar','common.save':'Guardar'
+       'common.close':'Cerrar','common.save':'Guardar',
+        "wa_msg": "Hola, vi tu publicación en dpia.site y me interesa."
 
 
 
@@ -485,7 +486,9 @@ const translations = {
         "shipping_policy2": "Cost calculated at checkout.",
         "shipping_policy3": "If the shipment is delayed, you can write to soporte@dpia.site.",
         "tab_returns": "Returns",
-        "returns_text": "You can return your purchase within 15 days of receiving it, no questions asked. 100% refund or product exchange."
+        "returns_text": "You can return your purchase within 15 days of receiving it, no questions asked. 100% refund or product exchange.",
+
+        'wa_title':'Owner WhatsApp','wa.label':'Number (international format)'
   
     },
     "pt": {
@@ -730,7 +733,8 @@ const translations = {
         'wa.current':'Atual','wa.hint':'Use o formato +E.164. Ex: +5491123456789',
         'wa.invalid':'Número inválido. Exemplo válido: +393445977100',
         'wa.primary':'Marcar como número principal','wa.ph':'+393445977100',
-        'common.close':'Fechar','common.save':'Salvar'
+        'common.close':'Fechar','common.save':'Salvar',
+        "wa_msg": "Olá, vi sua publicação em dpia.site e estou interessado."
 
 
     },
@@ -977,7 +981,8 @@ const translations = {
         'wa.current':'Attuale','wa.hint':'Usa il formato +E.164. Es: +5491123456789',
         'wa.invalid':'Numero non valido. Esempio valido: +393445977100',
         'wa.primary':'Segna come numero principale','wa.ph':'+393445977100',
-        'common.close':'Chiudi','common.save':'Salva'
+        'common.close':'Chiudi','common.save':'Salva',
+        "wa_msg": "Ciao, ho visto il tuo annuncio su dpia.site e sono interessato."
 
 
     },
@@ -1224,7 +1229,8 @@ const translations = {
         'wa.current':'Attuale','wa.hint':'Usa il formato +E.164. Es: +5491123456789',
         'wa.invalid':'Numero non valido. Esempio valido: +393445977100',
         'wa.primary':'Segna come numero principale','wa.ph':'+393445977100',
-        'common.close':'Chiudi','common.save':'Salva'
+        'common.close':'Chiudi','common.save':'Salva',
+        "wa_msg": "Ciao, ho visto il tuo annuncio su dpia.site e sono interessato."
     },
     "pl": {
         "dpi_kicker": "Mikrostrony lokalne · Wielojęzyczne",
@@ -1465,7 +1471,8 @@ const translations = {
         'wa.current':'Aktualny','wa.hint':'Użyj formatu +E.164. Ex: +5491123456789',
         'wa.invalid':'Nieprawidłowy numer. Poprawny przykład: +393445977100',
         'wa.primary':'Oznacz jako główny numer','wa.ph':'+393445977100',
-        'common.close':'Zamknij','common.save':'Zapisz'
+        'common.close':'Zamknij','common.save':'Zapisz',
+        "wa_msg": "Cześć, widziałem Twoje ogłoszenie na dpia.site i jestem zainteresowany."
 
 
     },
@@ -1705,7 +1712,8 @@ const translations = {
         'wa.current':'Actuel','wa.hint':'Utilisez le format +E.164. Ex : +5491123456789',
         'wa.invalid':'Numéro invalide. Exemple valide : +393445977100',
         'wa.primary':'Marquer comme numéro principal','wa.ph':'+393445977100',
-        'common.close':'Fermer','common.save':'Enregistrer'
+        'common.close':'Fermer','common.save':'Enregistrer',
+        "wa_msg": "Bonjour, j'ai vu votre annonce sur dpia.site et je suis intéressé."
 
 
 
@@ -1949,7 +1957,8 @@ const translations = {
         'wa.current':'Aktuell','wa.hint':'Verwenden Sie das Format +E.164. Z.B.: +5491123456789',
         'wa.invalid':'Ungültige Nummer. Gültiges Beispiel: +393445977100',
         'wa.primary':'Als Hauptnummer markieren','wa.ph':'+393445977100',
-        'common.close':'Schließen','common.save':'Speichern'
+        'common.close':'Schließen','common.save':'Speichern',
+        "wa_msg": "Hallo, ich habe Ihre Anzeige auf dpia.site gesehen und bin interessiert."
 
 
     }
