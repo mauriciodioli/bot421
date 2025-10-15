@@ -86,31 +86,64 @@
   </div>
 </div>
 
-
 <!-- Modal: guardar número de WhatsApp -->
+<!-- Modal: WhatsApp -->
 <div class="modal fade" id="modalWhatsapp" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content shadow-lg">
       <div class="modal-header">
-        <h5 class="modal-title" style="color:black" data-translate="wa_modal_title">WhatsApp del propietario</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <h5 class="modal-title" id="waModalTitle" data-translate="wa_title">WhatsApp del propietario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="×"></button>
       </div>
 
       <div class="modal-body">
-        <label class="form-label" for="waTelefonoInput" style="color:black" data-translate="wa_label">Número (formato internacional)</label>
-        <input id="waTelefonoInput" class="form-control" placeholder="+393445977100" data-translate-placeholder="wa_placeholder">
-        <div class="form-text" data-translate="wa_hint">Usá formato +E.164. Ej: +5491123456789</div>
+        <div class="mb-2 d-flex align-items-center justify-content-between">
+          <label for="waTelefonoInput" class="form-label mb-0" data-translate="wa.label">
+            Número (formato internacional)
+          </label>
+          <span class="badge bg-light text-body border" id="waTelefonoActualBadge">
+            <span class="me-1" data-translate="wa.current">Actual</span>:
+            <strong id="waTelefonoActualText">—</strong>
+          </span>
+        </div>
+
+        <input id="waTelefonoInput"
+               class="form-control"
+               name="waTelefono"
+               inputmode="tel" autocomplete="tel" spellcheck="false"
+               required
+               maxlength="16"
+               pattern="^\+[1-9]\d{7,14}$"
+               title="+ y 8–15 dígitos (E.164)"
+               data-translate="wa.ph" placeholder="+393445977100">
+
+        <div class="form-text" data-translate="wa.hint">
+          Usá formato +E.164. Ej: +5491123456789
+        </div>
+        <div class="invalid-feedback" data-translate="wa.invalid">
+          Número inválido. Ejemplo válido: +393445977100
+        </div>
+
+        <div class="form-check form-switch mt-3">
+          <input class="form-check-input" type="checkbox" id="waIsPrimary">
+          <label class="form-check-label" for="waIsPrimary" data-translate="wa.primary">
+            Marcar como número principal
+          </label>
+        </div>
+
         <input type="hidden" id="waOwnerId" value="">
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-translate="close">Cerrar</button>
-        <button type="button" class="btn btn-primary" onclick="guardarTelefonoWhatsApp()" data-translate="save">Guardar</button>
+        <button type="button" class="btn btn-light" data-bs-dismiss="modal" data-translate="common.close">Cerrar</button>
+        <button type="button" class="btn btn-primary" onclick="guardarTelefonoWhatsApp()" data-translate="common.save">Guardar</button>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Fin Modal -->
+
 
 {% include 'layouts/layout_footer.html' %}   
 

@@ -149,3 +149,8 @@ a.btn-ver-mas:hover {
 }
 
 
+
+#modalWhatsapp .modal-content{ border-radius:16px }
+  #waTelefonoActualBadge{ font-weight:500 }
+  #waTelefonoInput.is-invalid{ border-color:#dc3545 }
+

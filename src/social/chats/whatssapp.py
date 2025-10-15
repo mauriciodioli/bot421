@@ -135,7 +135,7 @@ def whatsapp_create():
             session.query(Contacto).filter(
                 Contacto.user_id == user_id,
                 Contacto.tipo == 'whatsapp'
-            ).update({'is_primary': False}, synchronize_session=False)
+            ).update({'is_primary': is_primary}, synchronize_session=False)
 
         if existente:
             # ✅ UPDATE
@@ -182,15 +182,28 @@ def whatsapp_create():
 
 
  
+@whatssapp.route('/social-chats-whatssapp/whatsapp/primary', methods=['POST'])
+def whatsapp_get_primary_post():
+    data = request.get_json(silent=True) or {}
+    user_id = data.get('user_id', None)
+    try:
+        user_id = int(user_id)
+    except (TypeError, ValueError):
+        return jsonify({'error': 'user_id requerido'}), 400
+    if user_id <= 0:
+        return jsonify({'error': 'user_id requerido'}), 400
 
-# --- Obtener uno -------------------------------------------------------------
-@whatssapp.route('/social-chats-whatssapp/whatsapp/<int:contact_id>', methods=['GET'])
-def whatsapp_get(contact_id: int):
-    with get_db_session() as session:
-        c = session.get(Contacto, contact_id)
-        if not c or c.tipo != 'whatsapp':
+    with get_db_session() as s:
+        c = (s.query(Contacto)
+               .filter(Contacto.user_id == user_id,
+                       Contacto.tipo == 'whatsapp',
+                       Contacto.is_primary.is_(True))
+               .first())
+        if not c:
             return jsonify({'error': 'No encontrado'}), 404
-        return jsonify(contact_schema.dump(c)), 200
+
+        return jsonify({'valor': c.valor}), 200
+
 
 # --- Actualizar --------------------------------------------------------------
 @whatssapp.route('/social-chats-whatssapp/whatsapp/<int:contact_id>', methods=['PUT', 'PATCH'])

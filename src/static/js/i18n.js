@@ -242,9 +242,13 @@ const translations = {
         "shipping_policy2": "Costo calculado al finalizar la compra.",
         "shipping_policy3": "Si el envío se retrasa, podés escribirnos a soporte@dpia.site.",        
         "tab_returns": "Devoluciones",
-        "returns_text": "Podés devolver tu compra dentro de los 15 días posteriores a recibirla, sin preguntas. Reembolso del 100% o cambio de producto."
+        "returns_text": "Podés devolver tu compra dentro de los 15 días posteriores a recibirla, sin preguntas. Reembolso del 100% o cambio de producto.",
 
-
+       'wa_title':'WhatsApp del propietario','wa.label':'Número (formato internacional)',
+       'wa.current':'Actual','wa.hint':'Usá formato +E.164. Ej: +5491123456789',
+       'wa.invalid':'Número inválido. Ejemplo válido: +393445977100',
+       'wa.primary':'Marcar como número principal','wa.ph':'+393445977100',
+       'common.close':'Cerrar','common.save':'Guardar'
 
 
 
@@ -720,7 +724,13 @@ const translations = {
         "shipping_policy2": "Custo calculado no checkout.",
         "shipping_policy3": "Se o envio atrasar, escreva para soporte@dpia.site.",
         "tab_returns": "Devoluções",
-        "returns_text": "Você pode devolver sua compra em até 15 dias após o recebimento, sem perguntas. Reembolso de 100% ou troca do produto."
+        "returns_text": "Você pode devolver sua compra em até 15 dias após o recebimento, sem perguntas. Reembolso de 100% ou troca do produto.",
+
+        'wa_title':'WhatsApp do proprietário','wa.label':'Número (formato internacional)',
+        'wa.current':'Atual','wa.hint':'Use o formato +E.164. Ex: +5491123456789',
+        'wa.invalid':'Número inválido. Exemplo válido: +393445977100',
+        'wa.primary':'Marcar como número principal','wa.ph':'+393445977100',
+        'common.close':'Fechar','common.save':'Salvar'
 
 
     },
@@ -961,7 +971,13 @@ const translations = {
         "shipping_policy2": "Kosten werden beim Checkout berechnet.",
         "shipping_policy3": "Wenn sich die Lieferung verzögert, schreiben Sie uns an soporte@dpia.site.",
         "tab_returns": "Resi",
-        "returns_text": "Puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande. Rimborso del 100% o sostituzione del prodotto."
+        "returns_text": "Puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande. Rimborso del 100% o sostituzione del prodotto.",
+
+        'wa_title':'WhatsApp del proprietario','wa.label':'Numero (formato internazionale)',
+        'wa.current':'Attuale','wa.hint':'Usa il formato +E.164. Es: +5491123456789',
+        'wa.invalid':'Numero non valido. Esempio valido: +393445977100',
+        'wa.primary':'Segna come numero principale','wa.ph':'+393445977100',
+        'common.close':'Chiudi','common.save':'Salva'
 
 
     },
@@ -1202,7 +1218,13 @@ const translations = {
         "shipping_policy2": "Kosten werden beim Checkout berechnet.",
         "shipping_policy3": "Wenn sich die Lieferung verzögert, schreiben Sie uns an soporte@dpia.site.",
         "tab_returns": "Resi",
-        "returns_text": "Puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande. Rimborso del 100% o sostituzione del prodotto."
+        "returns_text": "Puoi restituire il tuo acquisto entro 15 giorni dalla ricezione, senza domande. Rimborso del 100% o sostituzione del prodotto.",
+
+        'wa_title':'WhatsApp del proprietario','wa.label':'Numero (formato internazionale)',
+        'wa.current':'Attuale','wa.hint':'Usa il formato +E.164. Es: +5491123456789',
+        'wa.invalid':'Numero non valido. Esempio valido: +393445977100',
+        'wa.primary':'Segna come numero principale','wa.ph':'+393445977100',
+        'common.close':'Chiudi','common.save':'Salva'
     },
     "pl": {
         "dpi_kicker": "Mikrostrony lokalne · Wielojęzyczne",
@@ -1437,7 +1459,13 @@ const translations = {
         "shipping_policy2": "Koszt obliczany przy finalizacji zakupu.",
         "shipping_policy3": "Jeśli przesyłka się opóźni, napisz na soporte@dpia.site.",
         "tab_returns": "Zwroty",
-        "returns_text": "Możesz zwrócić zakup w ciągu 15 dni od otrzymania, bez żadnych pytań. 100% zwrot pieniędzy lub wymiana produktu."
+        "returns_text": "Możesz zwrócić zakup w ciągu 15 dni od otrzymania, bez żadnych pytań. 100% zwrot pieniędzy lub wymiana produktu.",
+
+        'wa_title':'WhatsApp właściciela','wa.label':'Numer (format międzynarodowy)',
+        'wa.current':'Aktualny','wa.hint':'Użyj formatu +E.164. Ex: +5491123456789',
+        'wa.invalid':'Nieprawidłowy numer. Poprawny przykład: +393445977100',
+        'wa.primary':'Oznacz jako główny numer','wa.ph':'+393445977100',
+        'common.close':'Zamknij','common.save':'Zapisz'
 
 
     },
@@ -1671,7 +1699,13 @@ const translations = {
         "shipping_policy2": "Coût calculé à la finalisation de l'achat.",
         "shipping_policy3": "Si la livraison est retardée, écrivez-nous à soporte@dpia.site.",
         "tab_returns": "Retours",
-        "returns_text": "Vous pouvez retourner votre achat dans les 15 jours suivant sa réception, sans poser de questions. Remboursement à 100 % ou échange de produit."
+        "returns_text": "Vous pouvez retourner votre achat dans les 15 jours suivant sa réception, sans poser de questions. Remboursement à 100 % ou échange de produit.",
+
+        'wa_title':'WhatsApp du propriétaire','wa.label':'Numéro (format international)',
+        'wa.current':'Actuel','wa.hint':'Utilisez le format +E.164. Ex : +5491123456789',
+        'wa.invalid':'Numéro invalide. Exemple valide : +393445977100',
+        'wa.primary':'Marquer comme numéro principal','wa.ph':'+393445977100',
+        'common.close':'Fermer','common.save':'Enregistrer'
 
 
 
@@ -1909,7 +1943,13 @@ const translations = {
         "shipping_policy2": "Kosten werden beim Checkout berechnet.",
         "shipping_policy3": "Wenn sich die Lieferung verzögert, schreiben Sie uns an soporte@dpia.site.",
         "tab_returns": "Rückgabe",
-        "returns_text": "Sie können Ihren Einkauf innerhalb von 15 Tagen nach Erhalt zurückgeben, ohne Angabe von Gründen. 100 % Rückerstattung oder Produktaustausch."
+        "returns_text": "Sie können Ihren Einkauf innerhalb von 15 Tagen nach Erhalt zurückgeben, ohne Angabe von Gründen. 100 % Rückerstattung oder Produktaustausch.",
+
+        'wa_title':'WhatsApp des Besitzers','wa.label':'Nummer (internationales Format)',
+        'wa.current':'Aktuell','wa.hint':'Verwenden Sie das Format +E.164. Z.B.: +5491123456789',
+        'wa.invalid':'Ungültige Nummer. Gültiges Beispiel: +393445977100',
+        'wa.primary':'Als Hauptnummer markieren','wa.ph':'+393445977100',
+        'common.close':'Schließen','common.save':'Speichern'
 
 
     }
