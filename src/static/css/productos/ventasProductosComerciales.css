@@ -39,4 +39,12 @@ body {
     border-color: #004085;
 }
 
+/* móvil: evita overflow horizontal */
+.table td, .table th { vertical-align: middle; }
+.table .text-wrap { white-space: normal; word-break: break-word; }
+@media (max-width: 576px) {
+  .table th span { display:block; margin-bottom: .25rem; }
+  .table th select { width: 100%; }
+  .table td:last-child { min-width: 220px; } /* espacio para botones */
+}
 
