@@ -89,7 +89,7 @@ def productosComerciales_pedidos_ventasProductosComerciales_actualizarRespuesta_
 def productosComerciales_pedidos_ventasProductosComerciales_muestra():
     # Obtener datos del formulario
     access_token = request.form.get('access_token_form_Ventas')
-    ambito = request.form.get('ambito_form_Ventas')
+    ambito       = request.form.get('ambito_form_Ventas')
 
     if not access_token:
         return jsonify({'error': 'Access token no proporcionado.'}), 400

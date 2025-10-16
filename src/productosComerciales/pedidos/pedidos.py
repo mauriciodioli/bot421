@@ -200,8 +200,8 @@ def productosComerciales_pedidos_mostrar_carrito():
 def productosComerciales_pedidos_compras():
    try:
         # Obtener datos del request
-        data = request.form or request.json
-        access_token = data.get('access_token_btn_compras')
+      
+        access_token = request.form.get('access_token_btn_compras')
         if not access_token:
             return jsonify({'error': 'Token no proporcionado.'}), 401
 
@@ -228,7 +228,7 @@ def productosComerciales_pedidos_compras():
                 return jsonify({'error': 'El usuario no está activo.'}), 403
 
             # Obtener pedidos
-            ambito = data.get('ambito_btn_compras')
+            ambito = request.form.get('ambito_btn_compras')
             
             # Consultar publicaciones y pedidos
             publicaciones = session.query(Publicacion).filter_by(user_id=user_id, ambito=ambito).all()
