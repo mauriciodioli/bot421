@@ -63,8 +63,9 @@ REG_E164 = re.compile(r'^\+[1-9]\d{7,14}$')  # + y 8–15 dígitos
 redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
 redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
 redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
+redis_pass = os.getenv("REDIS_PASSWORD")
 # Conexión a Redis
-redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
+redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db,password=redis_pass, decode_responses=True)
 MONEDAS_PERMITIDAS = {"USD","EUR","GBP","JPY","ARS","BRL","MXN","PLN","CHF","CNY"}
 
 

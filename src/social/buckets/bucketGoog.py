@@ -21,11 +21,13 @@ bucketGoog = Blueprint('bucketGoog', __name__)
 
 # Configuración de Redis usando las variables de entorno
 redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
-redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
+redis_port = os.getenv('REDIS_PORT', 6380)        # Valor por defecto 6379
 redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
+redis_pass = os.getenv("REDIS_PASSWORD")
+
 
 # Conexión a Redis
-redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db, decode_responses=True)
+redis_client = redis.StrictRedis(host=redis_host, port=redis_port, db=redis_db,  password=redis_pass, decode_responses=True)
 
 
 # Probar la conexión a Redis (opcional)

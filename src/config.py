@@ -36,7 +36,7 @@ DOMAIN = os.getenv('DOMAIN')
 redis_host = os.environ["REDIS_HOST"]
 redis_port = os.environ["REDIS_PORT"]
 redis_db = os.environ["REDIS_DB"]
-
+redis_pass = os.environ["REDIS_PASSWORD"]
 
 
 
