@@ -1,6 +1,6 @@
 
 .publicacion-detalle {
-  margin-top: 60px;   /* lo baja 80 px respecto al elemento anterior */
+  margin-top: 0px;   /* lo baja 80 px respecto al elemento anterior */
 }
 
 /* ==== General ==== */
@@ -519,3 +519,147 @@ img, video, iframe {
 
 
 
+
+
+
+
+
+
+/* ==== MODO MICROSITIO: MOBILE FULL-BLEED, SIN CARDS ==== */
+@media (max-width: 768px) {
+  html, body, .microsite {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    background: #0b0b0b; /* o el que uses de fondo global */
+  }
+
+  /* Mata padding/margenes de Bootstrap/Layout dentro del micrositio */
+  .microsite .container,
+  .microsite .container-fluid,
+  .microsite .row,
+  .microsite [class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Grilla sin gaps, 1 columna y a 100% */
+  .microsite .grid-malla {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Cards planas: sin fondo, sin radio, sin sombra ni borde */
+  .microsite .celda {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Cualquier hijo que traiga radios/sombras desde otros CSS */
+  .microsite .celda * {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Quita el drop-shadow y marco blanco de la media principal */
+  .microsite #principal-media,
+  .microsite .imagen-principal-muestra-despliegue-publicacion-home {
+    background: transparent !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .microsite #principal-media img,
+  .microsite #principal-media video {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    display: block !important;
+  }
+
+  /* Bloques superiores/tabs pegados a los bordes */
+  .microsite .texto-superior,
+  .microsite .tabs,
+  .microsite .testimonials,
+  .microsite .formulario-reseña {
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .microsite .tabs .content section { padding: .5rem .75rem !important; }
+
+
+  /* Miniaturas sin márgenes que “empujen” */
+  .microsite .media-adaptada {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Footer a full ancho y alineado */
+  .microsite footer,
+  .microsite .content,
+  .microsite main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Botón WA más al borde y sin tapar contenido */
+  .microsite .whatsapp-float {
+    left: 10px !important;
+    bottom: 12px !important;
+  }
+}
+
+
+/* ==== FULL-BLEED REAL PARA MICROSITIO (rompe el padding del padre) ==== */
+@media (max-width: 768px) {
+  .microsite {
+    width: 100vw !important;                /* ocupa todo el viewport */
+    max-width: 100vw !important;
+    margin-left: calc(50% - 50vw) !important; /* se corre a la izquierda */
+    margin-right: calc(50% - 50vw) !important;/* y a la derecha */
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Por si el padre impone overflow y te recorta el bleed */
+  .microsite { overflow-x: visible !important; }
+  html, body { overflow-x: hidden; }
+
+  /* Refuerzos: nada de padding/margen dentro */
+  .microsite .container,
+  .microsite .container-fluid,
+  .microsite .row,
+  .microsite [class*="col-"],
+  .microsite main,
+  .microsite .content,
+  .microsite .section,
+  .microsite .wrapper {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /* Tus bloques principales sin sangría */
+  .microsite .grid-malla { margin:0 !important; padding:0 !important; gap:0 !important; }
+  .microsite .celda      { margin:0 !important; padding:0 !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; }
+  .microsite #principal-media img,
+  .microsite #principal-media video { border-radius:0 !important; box-shadow:none !important; }
+}

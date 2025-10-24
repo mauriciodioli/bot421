@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset = "UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv = "X-UA-Compatible" content = "id=edge">
+    
+    <title>System DPI</title>
+   
+    <!--BOOSTRAP 5.1.3-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+          crossorigin="anonymous">
+    <!-- dropzone -->
+    <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+    <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <!--SEGURIDAD DE COOKIES Y LOCALSTORAGE -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+
+    <!--CSS PERSONALIZADO -->
+    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/main.css')}}">
+    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/splashPages/splash.css')}}">
+    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/splashPages/splash_modal_crear_publicacion.css')}}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon.png')}}">
+    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/layouts/idiomas.css')}}">
+   
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="/static/js/actualizaTabla.js"></script>     
+    <meta charset="UTF-8">
+    <title>Registro de usuarios</title>
+    <meta name="google-signin-client_id" content="TU_CLIENTE_ID_DE_GOOGLE">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>    
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.2/dist/axios.min.js"></script>
+    <script src="{{url_for('static',filename='js/main.js')}}"></script>
+      <!--esto es para los colores-->
+     <!-- Include the Pickr library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/themes/classic.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr@^1.8.2/dist/pickr.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/PanelControlUsuarioBroker/estrategiaUsuarios.css') }}">
+   <!----> <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/tarjetasFichas.css')}}">
+    <!----> <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/tarjetasTriggers.css')}}">
+    <!----> <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/tarjetasRegistrarCuentaBroker.css')}}">
+   <!---->  <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/productos/descripcionProductos.css')}}">
+   <!---->  <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/subirImagen.css')}}">
+   <!---->  <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/pieDePagina.css')}}">
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/mostrarImagenes.css') }}">
+   
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/galeriaImagenes.css') }}">
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/modales/modalGaleriaPublicacionesMostradas.css') }}">
+   
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/modificarPublicaciones.css') }}">
+     
+   <!---->  <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/tarjetasPlanes.css')}}">
+   <!---->  <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/sub_menus/sub_estrategias.css')}}">
+   <!---->  <link rel =  "stylesheet" href = "{{ url_for('static', filename='css/herramientasAdmin/controlMdh.css')}}">
+   <!---->  <link rel=   "stylesheet" href=" {{ url_for('static', filename='css/social/publicaciones/muestraDesplieguePublicacionHome.css') }}">     
+  
+            
+  <!-- Incluir Font Awesome desde el CDN -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+            <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/sistemaDePagos/carrucelPromocionOfertas.css')}}">
+            <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/media/telegramEnviaMensaje.css')}}"> 
+            <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/social/media/newsLetter.css')}}"> 
+
+            <script src="{{ url_for('static', filename='js/layouts/layout.js') }}"></script>
+            <script src="{{ url_for('static', filename='js/productosComerciales/traking/utils-tracking.js') }}"></script>
+
+
+  </head>
+
+<body>
+    <!-- As a heading -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <h1 name="mensaje_correo_electronico" id="mensaje_correo_electronico"></h1>
+            <h1 name="ambito_actual" id="ambito_actual"></h1>
+            <h1 name="mensaje_cuentaBroker" href="/loginApi" id="mensaje_cuentaBroker"></h1>
+            <h1 name="mensaje_simulado"  id="mensaje_simulado"></h1>
+           
+            
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse " id="navbarNav" >
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                   <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center gap-1" id="openModalCP" href="#">
+                            <span>CP</span>
+                            <span id="labelCP" style="color:#f9b746; position:relative; top:-4px;"></span>
+                        </a>
+                  </li>
+
+                    
+                    <li class="nav-item">
+                               <div id="languageSelector" class="language-selector">
+                                    <div class="selected-language"></div>
+                                    <div class="language-dropdown" style="display: none;"></div>
+                                </div>
+
+                    </li>
+                    <li class="nav-item">
+                        <a id="admin-link" class="nav-link dropdown-toggle" href="#" onclick="handleAdminClick(event)" data-translate="nav_admin">Administración</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/home" data-translate="nav_home">Home</a>
+                    </li>
+
+
+                   
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_orders">Pedidos</a>
+                        <ul class="dropdown-menu">
+                             <!-- Carrito -->
+                             <li>
+                                <form action="/productosComerciales_pedidos_mostrar_carrito/" method="POST">
+                                    <input type="hidden" id="access_token_btn_carrito" name="access_token_btn_carrito" value="">
+                                    <input type="hidden" id="ambito_btn_carrito" name="ambito_btn_carrito" value="">
+                                    <button type="submit" class="btn">
+                                        <img src="{{ url_for('static', filename='img/carrito.png') }}" alt="Carrito" style="width: 30px; height: 30px; margin-right: 8px;">
+                                     
+                                    </button>
+                                </form>
+                             </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- Ventas -->
+                            <li>
+                               <form method="POST"
+                                        action="{{ url_for('ventasProductosComerciales.productosComerciales_pedidos_ventasProductosComerciales_muestra') }}">
+                                    <input type="hidden" name="access_token_form_Ventas" id="access_token_form_Ventas" value="">
+                                    <input type="hidden" name="ambito_form_Ventas" id="ambito_form_Ventas" value="">
+                                    <!-- si usás CSRF (Flask-WTF) -->
+                                    {% if csrf_token is defined %}
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% endif %}
+
+                                    <button type="submit" class="dropdown-item">En cartera</button>
+                               </form>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <!-- Compras -->
+                            <li>
+                              <form method="POST"
+                                    action="{{ url_for('pedidos.productosComerciales_pedidos_compras') }}">
+                                <input type="hidden" name="access_token_btn_compras" id="access_token_btn_compras" value="">
+                                <input type="hidden" name="ambito_btn_compras" id="ambito_btn_compras" value="">
+                                {% if csrf_token is defined %}
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                {% endif %}
+                                <button type="submit" class="dropdown-item" data-translate="nav_orders_purchases_acquired">
+                                Adquiridos
+                                </button>
+                            </form>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            
+                            <!-- Consultas -->
+                            <li>
+                               <form method="POST"
+                                        action="{{ url_for('consultaPublicaciones.media_consultaPublicaciones_muestra') }}">
+                                    <input type="hidden" name="access_token_btn_consultas" id="access_token_btn_consultas" value="">
+                                    <input type="hidden" name="ambito_btn_consultas" id="ambito_btn_consultas" value="">
+                                    {% if csrf_token is defined %}
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% endif %}
+                                    <button type="submit" class="dropdown-item" data-translate="nav_orders_queries">
+                                    Consultas
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/detalle/cuenta-demo/layout" data-translate="nav_demo_account">Cuenta Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/descripcionProductos?layout=layout" data-translate="nav_subscribe">Suscribir</a>
+                    </li>
+ 
+
+                    <li class="nav-item dropdown" id='AdministrarPublicacionesLayout'>
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_publish">Publicar</a>
+                        <ul class="dropdown-menu">              
+                                     
+                        <!-- 
+                          <li><a class="dropdown-item" href="/subirImagen/" >Imagen</a></li>  
+                          <li><hr class="dropdown-divider"></li>
+                          <li><a class="dropdown-item" href="/subirVideo/">Video</a></li>
+                          <li><hr class="dropdown-divider"></li>
+                         
+                        -->  
+                          <li><a class="dropdown-item" id='adminPublicaciones' href="/mostrarGaleria/"data-translate="nav_publish_manage">Administrar</a></li>                      
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_cards">Fichas</a>
+                        <ul class="dropdown-menu"> 
+                          
+                            <div class="nav-menu-generar"> 
+                                <form  name="fichasToken_fichas_generar" action="/fichasToken_fichas_generar/" method="post" class="btn-guardar_inst">
+                                    <div class="form-group"><input type="hidden" name="access_token_form_GenerarFicha"  id="access_token_form_GenerarFicha"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="selector_form_GenerarFicha"  id="selector_form_GenerarFicha"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="accounCuenta_form_GenerarFicha"  id="accounCuenta_form_GenerarFicha"  class="form-control"></div>  
+                                    <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>  
+                            
+                                    <div class="col">  
+                                      <!--<li><button type="submit" class="dropdown-item"></button>Generar</li>    -->  
+                                    </div>
+                                </form>
+                           <!-- <li><hr class="dropdown-divider"></li>-->  
+                            </div>
+                            
+                           
+                        
+                            <form  name="fichasToken-fichas-listar" action="/fichasToken-fichas-listar-sin-cuenta/" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="access_token_form_ListarFicha"  id="access_token_form_ListarFicha"  class="form-control"></div> 
+                                <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>   
+                                
+                                <div class="col">  
+                                    <li><button type="submit" class="btn" data-translate="nav_cards_list">Listar</button></li>   
+                                     
+                              </div>
+                            </form> 
+                                                
+                        </ul>
+                    </li>
+                    <li class="nav-item ">
+                        <form  name="reporteCuenta" action="/registrar_cuenta_broker" method="post" class="btn-guardar_inst">
+                            <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_accounCuenta"  id="form_cuenta_accounCuenta"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_access_token"  id="form_cuenta_access_token"  class="form-control"></div>  
+                            <div class="form-group"><input type="hidden" name="form_cuenta_refresh_token"  id="form_cuenta_refresh_token"  class="form-control"></div>  
+                            <div class="col">  
+                            <li><button type="submit" class="btn text-white" data-translate="nav_tools">Herramientas</button></li>
+                          </div>
+                        </form>  
+                    </li>
+                    
+               
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"   data-translate="nav_logout">Log Out</a>
+                        <ul class="dropdown-menu">                        
+                          <li>
+                              <form  name="reporteCuenta" action="/logOutSystem/" method="post" class="btn-guardar_inst">
+                                <div class="form-group"><input type="hidden" name="layoutOrigen"  id="layoutOrigen"  class="form-control" value='layout'></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_accounCuenta"  id="autenticacion_accounCuenta"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_access_token"  id="autenticacion_access_token"  class="form-control"></div>  
+                                <div class="form-group"><input type="hidden" name="autenticacion_refresh_token"  id="autenticacion_refresh_token"  class="form-control"></div>  
+                                <div class="col">  
+                                 <li><button type="submit" class="btn text-black">exit system</button></li>
+                                </div>
+                              </form> 
+                          </li>                        
+                        </ul>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" data-translate="nav_user">Usuario</a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" id="openChannelsModal" data-translate="nav_user_channels">Mis canales</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="btn" id="openModalCP">CP</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="btn" href="/productosComerciales_suscripciones_muestra?layout=layout" data-translate="nav_user_subscriptions">Suscripciones</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="btn" href="/llamada/index-contacto" data-translate="nav_user_contact">Soporte</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="btn" href="/registrar_usuario" data-translate="nav_user_register">Registrarse</a></li>
+                            <li><hr class="dropdown-divider"></li>                            
+                            <li><a class="btn" id="consultas-link" href="#" data-translate="nav_user_queries">Consultas</a></li>
+                            <li><hr class="dropdown-divider"></li>     
+                            <li><a  class="btn" id="consultas-link" href="/calculadora_standar_cuentas_endPointBrokers" data-translate="nav_user_calculator">Calculator</a></li>
+                           
+                        </ul>
+                    </li>
+                    
+
+                
+                </ul>
+                
+            </div>
+        </div>
+    </nav>
+   
+    
+   
+        
+      {%block content%}
+      {% endblock%}
+        <div class="splash-container" id="splash" style="display:none">
+         {% include 'notificaciones/splashPage.html' %}
+        </div>
+        <div class="splash-container" id="splash" style="display:none">
+            {% include 'notificaciones/splashPage_espere.html' %}
+           </div>
+        
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
+    <script src="{{ url_for('static', filename='js/media/chats/whatssapp.js') }}"></script>
+   
+    
+
+    <script>
+ 
+
+        let correo_electronico = localStorage.getItem("correo_electronico") || "";        
+        let access_token = localStorage.getItem("access_token");
+        let refreshToken = localStorage.getItem("refresh_token");
+        let cuentaBroker = localStorage.getItem("cuenta");
+        let selector = localStorage.getItem("selector");
+        let rol = localStorage.getItem('roll');
+        var cuentaB = localStorage.getItem("cuenta"); 
+        var ambito = localStorage.getItem("dominio");
+        document.getElementById("access_token_form_GenerarFicha").value = access_token;
+        document.getElementById("access_token_form_ListarFicha").value = access_token;
+        document.getElementById("accounCuenta_form_GenerarFicha").value = cuentaB;
+        document.getElementById("selector_form_GenerarFicha").value = selector;
+       
+        //carrito   
+        document.getElementById('access_token_btn_carrito').value = access_token;  
+        document.getElementById('ambito_btn_carrito').value = ambito;
+
+        //ventas
+        document.getElementById('access_token_form_Ventas').value = access_token;       
+        document.getElementById('ambito_form_Ventas').value = ambito;
+        //compras
+        debugger;
+        document.getElementById('access_token_btn_compras').value = access_token;  
+        document.getElementById('ambito_btn_compras').value = ambito;
+        //consultas
+        document.getElementById('access_token_btn_consultas').value = access_token;  
+        document.getElementById('ambito_btn_consultas').value = ambito;
+
+       //herramientas
+        document.getElementById('form_cuenta_accounCuenta').value = cuentaBroker;
+        document.getElementById('form_cuenta_access_token').value = access_token ;
+        document.getElementById('form_cuenta_refresh_token').value = refreshToken;
+
+        
+        //logOutSystem
+        document.getElementById('autenticacion_accounCuenta').value = cuentaBroker;
+        document.getElementById('autenticacion_access_token').value = access_token ;
+        document.getElementById('autenticacion_refresh_token').value = refreshToken;
+     //   console.log(access_token)
+        var cuentaLink = document.querySelector('.nav-menu-generar');
+        cuentaLink.style.display = 'none'; 
+        if (localStorage.getItem("selector")) {
+            let cuentaBroker = localStorage.getItem("cuenta");  
+            let simulado = localStorage.getItem("selector"); 
+            
+               // document.getElementById("access_token_get_cuentas_usuario_broker").value = access_token;
+          
+                if (simulado == 'simulado') {
+                    let cuenta = "<a  style='text-decoration:none; color:white; '>SIMULADO</a>";
+                    document.getElementById("mensaje_simulado").innerHTML = cuenta;
+                
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                    document.getElementById("ambito_actual").innerHTML = ambito_actual;
+
+
+                    let mensaje = "<a ' style='text-decoration:none;  color:orange;'>" + cuentaBroker + "</a>";
+                    document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
+                    
+                    } else if (simulado == 'produccion') {
+
+                    let cuenta = "<a style='text-decoration:none; color:orange; '>REAL</a>";
+                    document.getElementById("mensaje_simulado").innerHTML = cuenta;
+
+                    let enlace_correo = "<a ' style='text-decoration:none; color:#00ff00;''>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                    document.getElementById("ambito_actual").innerHTML = ambito_actual;
+
+
+                    let mensaje = "<a ' style='text-decoration:none;  color:#00ff00;'>" + cuentaBroker + "</a>";
+                    document.getElementById("mensaje_cuentaBroker").innerHTML = mensaje;
+                    } else {
+                        let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                        document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                        let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                        document.getElementById("ambito_actual").innerHTML = ambito_actual;
+    
+    
+                    }
+                
+                
+                    //aqui oculto generador de fichas si no posee cuenta de broker logeada
+                  
+                     
+                    try {
+                        cuentaLink.style.display = 'block';
+                    } catch (error) {
+                        console.error('Error al cambiar el estilo de cuentaLink:', error);
+                        // Aquí puedes agregar más lógica para manejar el error si es necesario.
+                    }
+                    
+                        
+                   
+                
+                
+                }else {
+                    let enlace_correo = "<a ' style='text-decoration:none; color:orange;'>" + correo_electronico + "</a>";
+                    document.getElementById("mensaje_correo_electronico").innerHTML = enlace_correo;
+
+                    let ambito_actual = "<a ' style='text-decoration:none; color:orange;'>" + ambito + "</a>";
+                    document.getElementById("ambito_actual").innerHTML = ambito_actual;
+
+                    console.log("El valor 'selector' no existe en localStorage.");
+                  }
+
+                // Verificar si el rol es "administrador"
+        if (rol != 'ADMINISTRADOR') {          
+            // Ocultar el enlace del menú de administración
+            var adminLink = document.querySelector('.nav-link.dropdown-toggle');
+            adminLink.style.display = 'none';
+
+             var adminLink1 = document.querySelector('#AdministrarPublicacionesLayout');
+            if (adminLink1) {
+                adminLink1.style.display = 'none';
+            }
+        }
+
+
+
+       document.addEventListener("DOMContentLoaded", function() {
+            const userId = localStorage.getItem("usuario_id");
+            if (userId) {
+                const link = document.getElementById("consultas-link");
+                if (link) { // Verificar si el elemento existe
+                    link.href = `/comunicacion_contacto_consultas/layout/${userId}`;
+                } else {
+                    console.error("El elemento #consultas-link no se encontró en el DOM.");
+                }
+            }
+        });
+        
+  // Custom JavaScript to handle submenu toggle
+  $(document).ready(function() {
+    $('.dropdown-submenu a.dropdown-toggle').on("click", function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).next('.dropdown-menu').toggle();
+        $('.dropdown-submenu .dropdown-menu').not($(this).next()).hide();
+    });
+
+    // Close submenu when clicking outside
+    $(document).on("click", function() {
+        $('.dropdown-submenu .dropdown-menu').hide();
+    });
+});
+
+
+       // Cerrar el menú desplegable al ser seleccionado
+       cerrarMenuSeleccionado();
+      
+        
+
+
+
+
+
+
+      
+    </script>
+   
+</body>
+</html>

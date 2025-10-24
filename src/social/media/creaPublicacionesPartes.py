@@ -75,7 +75,7 @@ BUCKET_NAME = os.environ.get('BUCKET_NAME')  # Asegúrate de que este nombre coi
 
 # Configuración de Redis usando las variables de entorno
 redis_host = os.getenv('REDIS_HOST', 'localhost')  # Valor por defecto 'localhost' si no se encuentra la variable
-redis_port = os.getenv('REDIS_PORT', 6379)        # Valor por defecto 6379
+redis_port = os.getenv('REDIS_PORT', 6380)        # Valor por defecto 6379
 redis_db = os.getenv('REDIS_DB', 0)                # Valor por defecto 0
 redis_pass = os.getenv("REDIS_PASSWORD")
 # Conexión a Redis

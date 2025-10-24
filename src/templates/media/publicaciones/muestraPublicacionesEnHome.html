@@ -1,5 +1,5 @@
 {% if layout == 'layout'%}
-{% extends 'layouts/layout.html' %}
+{% extends 'layouts/layout_micro.html' %}
 {% endif %}
 
 {% if layout == 'layout_fichas'%}
@@ -25,6 +25,8 @@
 
 {% block title %}Publicacion desplegada{% endblock %}
 {% block content %}
+<div class="microsite">
+
 <div class="publicacion-detalle">
     <div class="splashCarga" id="splashNotificaciones" style="display: none;">
         <div class="splash-contenido">
@@ -328,7 +330,7 @@
 
 
 </div>
-
+</div>  {# ⬅️ cierra microsite ANTES de endblock #}
 {% include 'layouts/layout_footer.html' %}
 
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
