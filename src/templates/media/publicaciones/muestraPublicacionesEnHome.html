@@ -67,11 +67,22 @@
 
                     {% if post.videos %}
                         <!-- Mostrar el primer video si está disponible -->
-                        <img src="/static/img/video-preview.jpg"
-                            alt="Vista previa del video"
-                            style="cursor: pointer;"
-                            onclick="agrandarImagenVideoPublicacion('video', `{% if 'http' in post.videos[0].filepath %}{{ post.videos[0].filepath }}{% else %}{{ url_for('static', filename=post.videos[0].filepath) }}{% endif %}`)" />
-                    
+
+                      <div class="media-frame">
+                        <video
+                          class="media-adaptada"
+                          muted
+                          playsinline
+                          loop
+                          preload="metadata"
+                          controls
+                          onclick="agrandarImagenVideoPublicacion('video', `{% if 'http' in post.videos[0].filepath %}{{ post.videos[0].filepath }}{% else %}{{ url_for('static', filename=post.videos[0].filepath) }}{% endif %}`)">
+                          <source src="{% if 'http' in post.videos[0].filepath %}{{ post.videos[0].filepath }}{% else %}{{ url_for('static', filename=post.videos[0].filepath) }}{% endif %}" type="video/mp4">
+                          Tu navegador no soporta el formato de video.
+                        </video>
+                      </div>
+
+                  
                     {% elif post.imagenes %}
                         <!-- Mostrar la primera imagen si no hay videos -->
                         <img id="main-image"

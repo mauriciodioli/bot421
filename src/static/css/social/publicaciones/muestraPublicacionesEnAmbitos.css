@@ -27,10 +27,7 @@
   }
 }
 
-img, video, iframe {
-  max-width: 100%;
-  height: auto;
-}
+
 
 @media (max-width: 768px) {
   .media-adaptada {
@@ -335,17 +332,7 @@ img, video, iframe {
   padding: 1rem;
 }
 
-#tab1:checked ~ .slider .indicator {
-  left: 0;
-}
 
-#tab2:checked ~ .slider .indicator {
-  left: 33.3333%;
-}
-
-#tab3:checked ~ .slider .indicator {
-  left: 66.6666%;
-}
 
 /* Posiciones del indicador */
 #tab1:checked ~ .slider .indicator { left: 0; }
@@ -662,4 +649,79 @@ img, video, iframe {
   .microsite .celda      { margin:0 !important; padding:0 !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; }
   .microsite #principal-media img,
   .microsite #principal-media video { border-radius:0 !important; box-shadow:none !important; }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Masonry solo para esta galería */
+.imagenes-muestra-despliegue-publicacion-home.grid-layout{
+  display: block;          /* anula el grid aquí */
+  column-width: 260px;     /* tamaño objetivo de columna (ajustá a gusto) */
+  column-gap: 12px;
+}
+
+@media (max-width: 992px){
+  .imagenes-muestra-despliegue-publicacion-home.grid-layout{ column-width: 220px; }
+}
+@media (max-width: 600px){
+  .imagenes-muestra-despliegue-publicacion-home.grid-layout{ column-width: 160px; }
+}
+
+/* --- GALERÍA (masonry): tiles y medias proporcionales --- */
+.imagen-muestra-despliegue-publicacion-home{
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin: 0 0 12px;
+}
+
+.imagenes-muestra-despliegue-publicacion-home img.media-adaptada,
+.imagenes-muestra-despliegue-publicacion-home video.media-adaptada{
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0;
+  border-radius: 12px;
+  object-fit: contain !important;  /* mantiene proporción, no corta */
+}
+
+/* Hover que NO mueve el layout */
+.imagenes-muestra-despliegue-publicacion-home .media-adaptada:hover{
+  box-shadow: 0 0 0 2px #00ffbf inset;
+  /* nada de transform ni border aquí */
+}
+
+/* --- VIDEO PRINCIPAL (#principal-media) --- */
+
+/* Un único set de reglas para el video principal */
+#principal-media > video{
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain;      /* muestra completo + controles visibles */
+  border-radius: 16px;
+}
+
+/* Desktop/tablet: que el contenedor recorte bordes y no desborde */
+@media (min-width: 769px){
+  #principal-media{
+    overflow: hidden;
+    border-radius: 16px;
+  }
+}
+
+/* Mobile: dejar respirar la barra de controles en iOS */
+@media (max-width: 768px){
+  #principal-media{
+    overflow: visible;
+    padding-bottom: 8px;    /* colchón para los controles */
+  }
 }
