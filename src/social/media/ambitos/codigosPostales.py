@@ -2,7 +2,8 @@
 from flask import Blueprint, render_template, request, jsonify, current_app
 from utils.db import db
 from utils.db_session import get_db_session
-from models.codigoPostal import CodigoPostal, codigo_postal_schema, codigos_postales_schema
+from models.codigoPostal import codigo_postal_schema
+from models.codigoPostal import codigos_postales_schema
 
 from models.publicaciones.ambitos import Ambitos
 from models.publicaciones.ambito_codigo_postal import AmbitoCodigoPostal
@@ -19,12 +20,17 @@ def pagina_codigos_postales():
     with get_db_session() as session:
         datos = session.query(CodigoPostal)\
                        .order_by(CodigoPostal.id.asc()).all()
+        cps = [
+            {"id": r.id, "codigoPostal": r.codigoPostal, "ciudad": r.ciudad, "pais": r.pais}
+            for r in datos
+        ]
         # Si usás relaciones, cargalas en caliente aquí (selectinload / joinedload)
         return render_template(
             'media/publicaciones/ambitos/codigosPostales.html',
-            datos=datos,
+            datos=cps,
             layout='layout_administracion'
         )
+
 
 # ---- API CRUD ----
 @codigosPostales.route('/api/codigos-postales', methods=['GET'])
