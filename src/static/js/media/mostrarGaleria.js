@@ -1134,7 +1134,7 @@ function createPost() {
 
     // Realizar la petición AJAX para eliminar la imagen
     $.ajax({
-      url: '/social_imagenes_eliminar_Imagenes_Publicaciones',
+      url: '/social_imagenes_eliminar_Imagenes_Publicaciones/',
       type: 'POST',
       data: formData,
       processData: false,

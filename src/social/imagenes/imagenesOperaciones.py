@@ -112,12 +112,12 @@ def cargarVideo():
             )
 
             session.add(nueva_imagen)
-            session.commit()
+           
          
             # Realizar alguna acción adicional si es necesario, como mostrar las imágenes
         
 
-            return jsonify({'mensaje': 'Video cargado con éxito', 'nombreArchivo': nombre_archivo})
+            return jsonify({'mensaje': 'Video cargado con éxito', 'nombreArchivo': nombre_archivo}), 201
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -184,11 +184,11 @@ def cargarImagen():
                     size=0
                 )
                 session.add(nueva_imagen)
-                session.commit()
+              
                
             
         # MostrarImages()
-            return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo})
+            return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo}),201
   except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -392,7 +392,7 @@ def imagenesOperaciones_cargar_imagen_video_bucket():
                         return jsonify({'error': 'Publicación no encontrada'}), 404
 
                     # Generar los datos de la publicación
-                    publicacion_data = armar_publicacion_bucket_para_modal(publicacion, layout)
+                    publicacion_data = armar_publicacion_bucket_para_modal(session,publicacion, layout)
 
                 
                     return jsonify(publicacion_data)
@@ -404,9 +404,9 @@ def imagenesOperaciones_cargar_imagen_video_bucket():
     return jsonify({'error': 'No se pudo procesar la solicitud'}), 500
 
 
-def armar_publicacion_bucket_para_modal(publicacion, layout):
-    publicaciones_data = []
-    with get_db_session() as session:
+def armar_publicacion_bucket_para_modal(session,publicacion, layout):
+        publicaciones_data = []
+    
         # Obtener todas las imagenes o videos asociados a la publicación
         imagenVideo = (
             session.query(Public_imagen_video)
@@ -560,6 +560,7 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
                     
                         file_path = cargarImagen_crearPublicacion(
                                                             app,
+                                                            session,
                                                             '',                                                          
                                                             filename, 
                                                             id_publicacion,
@@ -577,6 +578,7 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
                         color_texto = request.form.get('selectedColor')   
                         file_path = cargarVideo_crearPublicacion(
                                                             app,
+                                                            session,
                                                             '',                                                         
                                                             filename, 
                                                             id_publicacion,
@@ -606,9 +608,7 @@ def imagenesOperaciones_cargarImagenVideosAgregados_publicacion():
 
 def comprimir_imagen_y_subir_video(file, filename):
     
-    if not file:
-        app.logger.error("No se encontró el archivo en la solicitud.")
-        return False
+  
     
     # Ruta donde se guardará temporalmente la imagen comprimida
     temp_file_path = os.path.join('static', 'uploads', filename)
@@ -624,7 +624,7 @@ def comprimir_imagen_y_subir_video(file, filename):
         return True
     
     except OSError as e:
-        app.logger.error(f"Error al crear la carpeta: {e}")
+      
         return False
     
 
@@ -649,10 +649,10 @@ def comprimir_imagen_y_subir(file, filename):
         # Eliminar el archivo temporal después de subirlo
         os.remove(absolute_file_path)
 
-        app.logger.info(f"Se cargó la imagen comprimida: {filename}")
+       
         return True
     except Exception as e:
-        app.logger.error(f"Error al cargar la imagen {filename}: {e}")
+      
         return False
 
 # Función para verificar si el archivo es una imagen

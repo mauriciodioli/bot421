@@ -274,7 +274,7 @@ def media_publicaciones_mostrar_home():
                                 ).all()
 
                     # Armar el diccionario con todas las publicaciones, imágenes y videos
-                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones, layout)
+                publicaciones_data = armar_publicacion_bucket_para_dpi(session,publicaciones, layout)
 
             
                 return jsonify(publicaciones_data)
@@ -402,7 +402,7 @@ def media_publicaciones_mostrar_dpi():
 
                     
                 # Armar el diccionario con todas las publicaciones, imágenes y videos
-                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones,layout)
+                publicaciones_data = armar_publicacion_bucket_para_dpi(session,publicaciones,layout)
                 
                 return jsonify(publicaciones_data)
 
@@ -440,125 +440,125 @@ def safe_int(value, default=0):
 
 
 
-def armar_publicacion_bucket_para_dpi(publicaciones, layout):
+def armar_publicacion_bucket_para_dpi(session,publicaciones, layout):
     publicaciones_data = []
 
-    with get_db_session() as session:
-        for publicacion in publicaciones:
-            imagen_video = (
-                session.query(Public_imagen_video)
-                .filter_by(publicacion_id=publicacion.id)
-                .order_by(Public_imagen_video.id.asc())
-                .first()
-            )
+    
+    for publicacion in publicaciones:
+        imagen_video = (
+            session.query(Public_imagen_video)
+            .filter_by(publicacion_id=publicacion.id)
+            .order_by(Public_imagen_video.id.asc())
+            .first()
+        )
 
-            imagenes = []
-            videos = []
+        imagenes = []
+        videos = []
 
-            if imagen_video:
-                if imagen_video.imagen_id:
-                    try:
-                        imagen = session.query(Image).filter_by(id=imagen_video.imagen_id).first()
-                        if imagen:
-                            filepath = imagen.filepath
-                            imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
-                            if publicacion.imagen:
-                                file_path = publicacion.imagen
-                                file_data = None
-                            else:
-                                file_data, file_path = mostrar_from_gcs(imagen_url)
-                            imagen_base64 = base64.b64encode(file_data).decode('utf-8') if file_data else None
-                            if imagen_url:
-                                imagenes.append({
-                                    'id': imagen.id,
-                                    'title': imagen.title,
-                                    'description': imagen.description,
-                                    'filepath': file_path,
-                                    'imagen': imagen_base64,
-                                    'mimetype': 'image/jpeg',
-                                    'randomNumber': imagen.randomNumber,
-                                    'size': imagen.size
-                                })
-                    except Exception as e:
-                        logging.error(f"Error imagen {imagen_video.imagen_id}: {e}")
+        if imagen_video:
+            if imagen_video.imagen_id:
+                try:
+                    imagen = session.query(Image).filter_by(id=imagen_video.imagen_id).first()
+                    if imagen:
+                        filepath = imagen.filepath
+                        imagen_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')  
+                        if publicacion.imagen:
+                            file_path = publicacion.imagen
+                            file_data = None
+                        else:
+                            file_data, file_path = mostrar_from_gcs(imagen_url)
+                        imagen_base64 = base64.b64encode(file_data).decode('utf-8') if file_data else None
+                        if imagen_url:
+                            imagenes.append({
+                                'id': imagen.id,
+                                'title': imagen.title,
+                                'description': imagen.description,
+                                'filepath': file_path,
+                                'imagen': imagen_base64,
+                                'mimetype': 'image/jpeg',
+                                'randomNumber': imagen.randomNumber,
+                                'size': imagen.size
+                            })
+                except Exception as e:
+                    logging.error(f"Error imagen {imagen_video.imagen_id}: {e}")
 
-                if imagen_video.video_id:
-                    try:
-                        video = session.query(Video).filter_by(id=imagen_video.video_id).first()
-                        if video:
-                            filepath = video.filepath
-                            video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
-                            file_data, file_path = mostrar_from_gcs(video_url)
-                            video_base64 = base64.b64encode(file_data).decode('utf-8') if file_data else None
-                            if video_url:
-                                videos.append({
-                                    'id': video.id,
-                                    'title': video.title,
-                                    'description': video.description,
-                                    'video': video_base64,
-                                    'filepath': file_path,
-                                    'mimetype': video.mimetype,
-                                    'size': video.size
-                                })
-                    except Exception as e:
-                        logging.error(f"Error video {imagen_video.video_id}: {e}")
+            if imagen_video.video_id:
+                try:
+                    video = session.query(Video).filter_by(id=imagen_video.video_id).first()
+                    if video:
+                        filepath = video.filepath
+                        video_url = filepath.replace('static/uploads/', '').replace('static\\uploads\\', '')
+                        file_data, file_path = mostrar_from_gcs(video_url)
+                        video_base64 = base64.b64encode(file_data).decode('utf-8') if file_data else None
+                        if video_url:
+                            videos.append({
+                                'id': video.id,
+                                'title': video.title,
+                                'description': video.description,
+                                'video': video_base64,
+                                'filepath': file_path,
+                                'mimetype': video.mimetype,
+                                'size': video.size
+                            })
+                except Exception as e:
+                    logging.error(f"Error video {imagen_video.video_id}: {e}")
 
-            if not publicacion.imagen:
-                if imagenes:
-                    publicacion.imagen = imagenes[0]['filepath']
-                elif videos:
-                    publicacion.imagen = videos[0]['filepath']
-                session.commit()  # se hace dentro del contexto seguro
-
-            categoriaPublicacion = session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion.id).first()
-            categoria = None
-            if categoriaPublicacion:
-                categoria = session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
-            simbolo = retorna_simbolo_desde_codigo_postal(session,publicacion.codigoPostal,publicacion.idioma)
-            if publicacion.precio:
-                if random.random() < 0.5:
-                    descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
-                    descuento = f"{descuento_porcentaje}% OFF"
-                    precio_original_num = round(publicacion.precio / (1 - descuento_porcentaje / 100), 2)
-                    precio_original = f"{simbolo} {precio_original_num}"  # usa el mismo símbolo
-                else:
-                    descuento = None
-                    precio_original = None
+        if not publicacion.imagen:
+            if imagenes:
+                publicacion.imagen = imagenes[0]['filepath']
+            elif videos:
+                publicacion.imagen = videos[0]['filepath']
+         
+            
+        categoriaPublicacion = session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion.id).first()
+        categoria = None
+        if categoriaPublicacion:
+            categoria = session.query(AmbitoCategoria).filter_by(id=categoriaPublicacion.categoria_id).first()
+        simbolo = retorna_simbolo_desde_codigo_postal(session,publicacion.codigoPostal,publicacion.idioma)
+        if publicacion.precio:
+            if random.random() < 0.5:
+                descuento_porcentaje = random.choice([10, 15, 20, 25, 30, 35, 40])
+                descuento = f"{descuento_porcentaje}% OFF"
+                precio_original_num = round(publicacion.precio / (1 - descuento_porcentaje / 100), 2)
+                precio_original = f"{simbolo} {precio_original_num}"  # usa el mismo símbolo
             else:
                 descuento = None
                 precio_original = None
-            
-            
-            href = build_wp_href(session,publicacion.user_id)
-         
-            
-            publicaciones_data.append({
-                'publicacion_id': publicacion.id,
-                'user_id': publicacion.user_id,
-                'titulo': publicacion.titulo,
-                'texto': publicacion.texto,
-                'ambito': publicacion.ambito,
-                'categoriaNombre': categoria.nombre if categoria else None,
-                'categoria_id': categoria.id if categoria else None,
-                'correo_electronico': publicacion.correo_electronico,
-                'descripcion': publicacion.descripcion,
-                'color_texto': publicacion.color_texto,
-                'color_titulo': publicacion.color_titulo,
-                'fecha_creacion': publicacion.fecha_creacion,
-                'estado': publicacion.estado,
-                'idioma': publicacion.idioma,               
-                'imagenes': imagenes,
-                'videos': videos,
-                'layout': layout,
-                'rating': round(random.uniform(3.0, 5.0), 1),
-                'reviews': random.randint(1, 150),
-                'descuento': descuento,
-                'simbolo':simbolo,
-                'precio': publicacion.precio,
-                'afiliado_link': publicacion.afiliado_link,
-                'precio_original': precio_original,
-                'contactoWP': href 
-            })
+        else:
+            descuento = None
+            precio_original = None
+        
+        
+        href = build_wp_href(session,publicacion.user_id)
+        
+        
+        publicaciones_data.append({
+            'publicacion_id': publicacion.id,
+            'user_id': publicacion.user_id,
+            'titulo': publicacion.titulo,
+            'texto': publicacion.texto,
+            'ambito': publicacion.ambito,
+            'categoriaNombre': categoria.nombre if categoria else None,
+            'categoria_id': categoria.id if categoria else None,
+            'correo_electronico': publicacion.correo_electronico,
+            'descripcion': publicacion.descripcion,
+            'color_texto': publicacion.color_texto,
+            'color_titulo': publicacion.color_titulo,
+            'fecha_creacion': publicacion.fecha_creacion,
+            'estado': publicacion.estado,
+            'idioma': publicacion.idioma,               
+            'imagenes': imagenes,
+            'videos': videos,
+            'layout': layout,
+            'rating': round(random.uniform(3.0, 5.0), 1),
+            'reviews': random.randint(1, 150),
+            'descuento': descuento,
+            'simbolo':simbolo,
+            'precio': publicacion.precio,
+            'afiliado_link': publicacion.afiliado_link,
+            'precio_original': precio_original,
+            'contactoWP': href 
+        })
 
     return publicaciones_data
 
@@ -855,86 +855,120 @@ def media_publicaciones_cambiar_estado():
 
 
 
-        
+def cargarImagen_crearPublicacion(app, session, request, filename, id_publicacion,
+                                  color_texto, titulo_publicacion=None,
+                                  mimetype=None, userid=0, index=None, size=0):
 
-def cargarImagen_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):
-    size = size
-    # Guardar información en la base de datos   
-   
     nombre_archivo = filename
     descriptionImagen = titulo_publicacion
-    randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
-    
+    randomNumber_ = random.randint(1, 1000000)
+
     try:
-        with get_db_session() as session:
-            imagen_existente = session.query(Image).filter_by(title=filename).first()
-            if imagen_existente:
-                cargar_id_publicacion_id_imagen_video(id_publicacion, imagen_existente.id, 0, 'imagen', size=size)
-                return filename
-            else:
-                nueva_imagen = Image(
-                    user_id=userid,
-                    title=nombre_archivo,
-                    description=descriptionImagen,
-                    colorDescription=color_texto,
-                    filepath=filename,
-                    randomNumber=randomNumber_,
-                    size=float(size),
-                    mimetype=mimetype
-                )
-                session.add(nueva_imagen)
-                session.commit()
-                
-                cargar_id_publicacion_id_imagen_video(id_publicacion, nueva_imagen.id, 0, 'imagen', size=size)
-                return filename
+        imagen_existente = session.query(Image).filter_by(title=filename).first()
+
+        if imagen_existente:
+            # SOLO lo que necesita la relación, sin mimetype
+            cargar_id_publicacion_id_imagen_video(
+                session=session,
+                id_publicacion=id_publicacion,
+                nueva_imagen_id=imagen_existente.id,
+                nuevo_video_id=0,
+                media_type='imagen',
+                size=size,
+            )
+            return filename
+        else:
+            nueva_imagen = Image(
+                user_id=userid,
+                title=nombre_archivo,
+                description=descriptionImagen,
+                colorDescription=color_texto,
+                filepath=filename,
+                randomNumber=randomNumber_,
+                size=float(size),
+                mimetype=mimetype
+            )
+            session.add(nueva_imagen)
+            session.flush()
+            app.logger.debug(f"[IMG] nueva_imagen.id = {nueva_imagen.id}")
+
+            cargar_id_publicacion_id_imagen_video(
+                session=session,
+                id_publicacion=id_publicacion,
+                nueva_imagen_id=nueva_imagen.id,
+                nuevo_video_id=0,
+                media_type='imagen',
+                size=size,
+            )
+            return filename
+
     except Exception as db_error:
         app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
-     
-
-        raise  # Propagar el error para que pueda ser manejado por capas superiores
-      
+        raise
 
 
-def cargarVideo_crearPublicacion(app, request, filename, id_publicacion, color_texto, titulo_publicacion=None, mimetype=None, userid=0, index=None, size=0):
+def cargarVideo_crearPublicacion(app, session, request, filename,
+                                 id_publicacion, color_texto,
+                                 titulo_publicacion=None, mimetype=None,
+                                 userid=0, index=None, size=0):
     print(f"Entering cargarVideo_crearPublicacion with filename: {filename}, userid: {userid}, index: {index}, size: {size}")
-   # Guardar información en la base de datos
-   
+
     nombre_archivo = filename
     descriptionVideo = titulo_publicacion
     randomNumber_ = random.randint(1, 1000000)  # Número aleatorio
-    
-    try:
-        with get_db_session() as session:
-            video_existente = session.query(Video).filter_by(title=filename,size=size).first()
 
-            if video_existente:
-                print("Video already exists, saving relation to publicacion_media")
-                # Si la imagen ya existe, solo guarda la relación en publicacion_media
-                
-                cargar_id_publicacion_id_imagen_video(id_publicacion,0,video_existente.id,'video',size=size)
-                return filename
-            else:
-                print("Creating new video")
-                nuevo_video = Video(
-                    user_id=userid,
-                    title=nombre_archivo,
-                    description=descriptionVideo,
-                    colorDescription=color_texto,
-                    filepath=filename,
-                    randomNumber=randomNumber_,
-                    size=float(size),
-                    mimetype=mimetype
-                )
-                session.add(nuevo_video)
-                session.commit()
-                print("Saving relation to publicacion_media")
-                cargar_id_publicacion_id_imagen_video(id_publicacion,0,nuevo_video.id,'video',size=size)
+    try:
+        # buscamos si el video ya existe
+        video_existente = session.query(Video).filter_by(
+            title=filename,
+            size=size
+        ).first()
+
+        if video_existente:
+            print("Video already exists, saving relation to publicacion_media")
+
+            cargar_id_publicacion_id_imagen_video(
+                session=session,
+                id_publicacion=id_publicacion,
+                nueva_imagen_id=0,
+                nuevo_video_id=video_existente.id,
+                media_type='video',
+                size=size,
+            )
             return filename
+
+        # si no existe, lo creamos
+        print("Creating new video")
+        nuevo_video = Video(
+            user_id=userid,
+            title=nombre_archivo,
+            description=descriptionVideo,
+            colorDescription=color_texto,
+            filepath=filename,
+            randomNumber=randomNumber_,
+            size=float(size),
+            mimetype=mimetype
+        )
+        session.add(nuevo_video)
+        session.flush()  # asegurar que nuevo_video.id ya existe
+
+        app.logger.debug(f"[VIDEO] nuevo_video.id = {nuevo_video.id}")
+        print("Saving relation to publicacion_media")
+
+        cargar_id_publicacion_id_imagen_video(
+            session=session,
+            id_publicacion=id_publicacion,
+            nueva_imagen_id=0,
+            nuevo_video_id=nuevo_video.id,
+            media_type='video',
+            size=size,
+        )
+        return filename
+
     except Exception as db_error:
         app.logger.error(f"Error al interactuar con la base de datos: {db_error}")
-      
-
         raise  # Propagar el error para que pueda ser manejado por capas superiores
+
 
 
 
@@ -1026,8 +1060,8 @@ def guardarPublicacion(user_id):
          raise
    
 
-def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_video_id,media_type,size=0):
-    with get_db_session() as session:
+def cargar_id_publicacion_id_imagen_video(session,id_publicacion,nueva_imagen_id,nuevo_video_id,media_type,size=0):
+   
         nuevo_ids= Public_imagen_video(
             publicacion_id=id_publicacion,
             imagen_id=nueva_imagen_id,
@@ -1037,7 +1071,7 @@ def cargar_id_publicacion_id_imagen_video(id_publicacion,nueva_imagen_id,nuevo_v
             size=float(size)
         )
         session.add(nuevo_ids)
-        session.commit()
+       
     
         return True
 
@@ -1090,7 +1124,7 @@ def eliminar_relacion_categorias_publicaciones(publicacion_id):
         with get_db_session() as session:
             # Eliminar la relación entre la publicación y las categorías
             session.query(CategoriaPublicacion).filter_by(publicacion_id=publicacion_id).delete()
-            session.commit()
+          
             return True
     except Exception as e:
         print(str(e))
@@ -1145,7 +1179,7 @@ def eliminar_publicacion_y_medios(publicacion_id, user_id):
                     session.delete(p)
                 
                 # Commit de todas las eliminaciones en una sola transacción
-                session.commit()
+               
                 
                 return True
 
@@ -1366,7 +1400,7 @@ def publicaciones_modificar_publicaciones():
 
             
    
-@publicaciones.route('/social_imagenes_eliminar_Imagenes_Publicaciones', methods=['POST'])
+@publicaciones.route('/social_imagenes_eliminar_Imagenes_Publicaciones/', methods=['POST'])
 def social_imagenes_eliminar_Imagenes_Publicaciones():
     try:
         # Obtener el encabezado Authorization
@@ -1437,7 +1471,7 @@ def eliminar_desde_db_imagen_video(data, user_id):
             for item in publicacion_imagen_video:
                 session.delete(item)
 
-            session.commit()
+            
             return True
 
     except Exception as e:
