@@ -203,7 +203,8 @@ def media_consultaPublicaciones_lupa_muestra():
                 return jsonify({'data': []})  # Si no hay publicaciones, regresa un array vacío
 
             for publicacion in publicaciones:
-                precio, resto = obtenerPrecio(publicacion.texto) if publicacion.texto else (None, None)
+                precio = publicacion.precio if publicacion.precio else 0
+               
                 data.append({
                     'id': publicacion.id,
                     'user_id': publicacion.user_id,
