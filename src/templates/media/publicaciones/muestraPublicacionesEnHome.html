@@ -66,12 +66,18 @@
                     <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
 
                     {% if post.videos %}
-                        <!-- Mostrar el primer video si está disponible -->
-                        <img src="/static/img/video-preview.jpg"
-                            alt="Vista previa del video"
-                            style="cursor: pointer;"
-                            onclick="agrandarImagenVideoPublicacion('video', `{% if 'http' in post.videos[0].filepath %}{{ post.videos[0].filepath }}{% else %}{{ url_for('static', filename=post.videos[0].filepath) }}{% endif %}`)" />
-                    
+                                <video 
+                                              id="videoPlayer"
+                                              class="media-adaptada" 
+                                              onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
+                                              onmouseover="this.play()" 
+                                              onmouseout="this.pause(); this.currentTime=0;" 
+                                              muted 
+                                              loop
+                                              playsinline>
+                                              <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
+                                              Tu navegador no soporta el formato de video.
+                                          </video>
                     {% elif post.imagenes %}
                         <!-- Mostrar la primera imagen si no hay videos -->
                         <img id="main-image"
