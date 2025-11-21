@@ -22,7 +22,8 @@
 
     <!--CSS PERSONALIZADO -->
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/main.css')}}">
-    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/navbar.css')}}">
+
+    <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/layouts/layout_muestra_imagenes_dpi.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/profile.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/loginSistema.css')}}">
     <link rel =  "stylesheet" href = "{{ url_for('static',filename='css/tarjetasPlanes.css')}}">
@@ -66,7 +67,8 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
                 <!-- Logo -->
-                <div class="LogoDpi"></div>
+                <div class="LogoDpi" id="logoDiv"></div>
+
         
                 <!-- Botón para colapsar menú -->
                 <button class="navbar-toggler"
@@ -170,7 +172,9 @@
 
     <script>
        
-        
+         document.getElementById('logoDiv').addEventListener('click', ()=> {
+            window.location.href = '/index';
+          });
         // Solicitar permiso para mostrar notificaciones
         solicitarPermiso();
      

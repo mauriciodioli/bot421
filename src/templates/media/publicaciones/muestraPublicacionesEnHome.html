@@ -66,18 +66,23 @@
                     <input type="hidden" name="publicacion_id" value="{{ post.publicacion_id }}" />
 
                     {% if post.videos %}
-                                <video 
-                                              id="videoPlayer"
-                                              class="media-adaptada" 
-                                              onclick="replaceMainMedia('{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}', 'video')" 
-                                              onmouseover="this.play()" 
-                                              onmouseout="this.pause(); this.currentTime=0;" 
-                                              muted 
-                                              loop
-                                              playsinline>
-                                              <source src="{% if 'http' in media.filepath %}{{ media.filepath }}{% else %}{{ url_for('static', filename=media.filepath) }}{% endif %}" type="video/mp4">
-                                              Tu navegador no soporta el formato de video.
-                                          </video>
+                        <!-- Mostrar el primer video si está disponible -->
+
+                      <div class="media-frame">
+                        <video
+                          class="media-adaptada"
+                          muted
+                          playsinline
+                          loop
+                          preload="metadata"
+                          controls
+                          onclick="agrandarImagenVideoPublicacion('video', `{% if 'http' in post.videos[0].filepath %}{{ post.videos[0].filepath }}{% else %}{{ url_for('static', filename=post.videos[0].filepath) }}{% endif %}`)">
+                          <source src="{% if 'http' in post.videos[0].filepath %}{{ post.videos[0].filepath }}{% else %}{{ url_for('static', filename=post.videos[0].filepath) }}{% endif %}" type="video/mp4">
+                          Tu navegador no soporta el formato de video.
+                        </video>
+                      </div>
+
+                  
                     {% elif post.imagenes %}
                         <!-- Mostrar la primera imagen si no hay videos -->
                         <img id="main-image"
@@ -351,7 +356,30 @@
 
 
 <script>
+ (function () {
+    try {
+      const userId = localStorage.getItem('usuario_id');
 
+      if (!userId) {
+        console.log('[CHAT EMBED] Sin usuario logueado, no se carga el chat.');
+        return;
+      }
+
+      // Crear el script del chat sólo si hay usuario
+      const s = document.createElement('script');
+      s.src = 'https://dpia.site/chat-embed.js?v=20251118';
+      s.defer = true;
+
+      // Setear los mismos data-* que usabas antes
+      s.dataset.chatPath = '/chat/contextual-embed';
+      s.dataset.open = 'tab';
+
+      // Lo agregamos al <head> (o al final del body si preferís)
+      document.head.appendChild(s);
+    } catch (err) {
+      console.error('[CHAT EMBED] Error cargando chat condicional:', err);
+    }
+  })();
     // Almacenar los valores en variables globales
   // Lee valores del DOM/Jinja
   const publicacionIdEl = document.querySelector('input[name="publicacion_id"]');

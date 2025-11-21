@@ -364,7 +364,7 @@ def social_publicaciones_crear_publicacion_partes():
             
             
                 # Guardar la publicación en la base de datos
-                id_publicacion = guardarPublicacion(request, user_id)
+                id_publicacion = guardarPublicacion(session,request, user_id)
                 # Procesar archivos multimedia
                 if id_publicacion is True:
                     return jsonify({'message': 'Publicación no creada, ya existe ese nombre'}), 400
@@ -389,6 +389,7 @@ def social_publicaciones_crear_publicacion_partes():
                         titulo_publicacion = request.form.get('postTitle_creaPublicacion')
                         file_path = cargarImagen_crearPublicacion(
                                                         app, 
+                                                        session,
                                                         request, 
                                                         filename, 
                                                         id_publicacion, 
@@ -407,6 +408,7 @@ def social_publicaciones_crear_publicacion_partes():
                         titulo_publicacion = request.form.get('postTitle_creaPublicacion')
                         file_path = cargarVideo_crearPublicacion(
                                                             app,
+                                                            session,
                                                             '',                                                         
                                                             filename, 
                                                             id_publicacion,
@@ -423,7 +425,7 @@ def social_publicaciones_crear_publicacion_partes():
                 publicaciones_user = session.query(Publicacion).filter_by(user_id=user_id,ambito=ambito).all()
             
                 # Armar el diccionario con todas las publicaciones, imágenes y videos
-                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user,layout)
+                publicaciones_data = armar_publicacion_bucket_para_dpi(session,publicaciones_user,layout)
                
             # ArrancaSheduleCargaAutomatica(id_publicacion)  # Inicia el hilo para subir archivos a GCS
     
@@ -450,27 +452,27 @@ def es_formato_imagen(filepath):
 
 
 
-def guardarPublicacion(request, user_id):
+def guardarPublicacion(session,request, user_id):
     try:
-        post_title = request.form.get('postTitle_creaPublicacion')
-        post_text = request.form.get('postText_creaPublicacion')   
-        post_descripcion = request.form.get('postDescription_creaPublicacion')
-        ambito = request.form.get('postAmbito_creaPublicacion')
-        categoria_id =  request.form.get('postAmbitoCategorias_creaPublicacion')
-        correo_electronico = request.form.get('correo_electronico')
-        color_texto = request.form.get('color_texto')
-        color_titulo = request.form.get('color_titulo')
-        estado = request.form.get('postEstado_creaPublicacion')
-        botonCompra = request.form.get('postBotonCompra_creaPublicacion')
-        idioma = request.form.get('lenguaje')
-        codigoPostal = request.form.get('codigoPostal')
-        latitud = request.form.get('latitud')
-        longitud = request.form.get('longitud') 
-        precio = request.form.get('precio')
-        moneda = request.form.get('moneda')
-        pagoOnline = False
-        precio_formateado, moneda = normalizar_precio(precio)
-        with get_db_session() as session:
+            post_title = request.form.get('postTitle_creaPublicacion')
+            post_text = request.form.get('postText_creaPublicacion')   
+            post_descripcion = request.form.get('postDescription_creaPublicacion')
+            ambito = request.form.get('postAmbito_creaPublicacion')
+            categoria_id =  request.form.get('postAmbitoCategorias_creaPublicacion')
+            correo_electronico = request.form.get('correo_electronico')
+            color_texto = request.form.get('color_texto')
+            color_titulo = request.form.get('color_titulo')
+            estado = request.form.get('postEstado_creaPublicacion')
+            botonCompra = request.form.get('postBotonCompra_creaPublicacion')
+            idioma = request.form.get('lenguaje')
+            codigoPostal = request.form.get('codigoPostal')
+            latitud = request.form.get('latitud')
+            longitud = request.form.get('longitud') 
+            precio = request.form.get('precio')
+            moneda = request.form.get('moneda')
+            pagoOnline = False
+            precio_formateado, moneda = normalizar_precio(precio)
+       
             # Verificar si ya existe una publicación con el mismo título para el mismo usuario
             publicacion_existente = session.query(Publicacion).filter_by(titulo=post_title, user_id=user_id).first()
             
@@ -505,7 +507,7 @@ def guardarPublicacion(request, user_id):
             )
             
             session.add(nueva_publicacion)
-            session.commit()
+            session.flush()  # Asegura que nueva_publicacion.id esté disponible
             #guardar la ubicacion publicacion
             publicacion_id = publicacionUbicacion(session,nueva_publicacion.id,codigoPostal,user_id)
             print("publicacion_id",nueva_publicacion.id)
@@ -592,7 +594,7 @@ def publicacionCategoriaPublicacion(session,categoria_id,publicacion_id):
                 estado='activo'
             )
             session.add(new_categoria_publicacion)
-            session.commit()
+            session.flush()
             
             return True
     except Exception as e:
@@ -627,8 +629,8 @@ def publicacionUbicacion(session, nueva_publicacion_id,codigoPostal,user_id):
                             codigoPostal = codigoPostal,
                         )
                 session.add(new_publicacion_ubicacion)
+                session.flush()
 
-            session.commit()
             
             return True
     except Exception as e:

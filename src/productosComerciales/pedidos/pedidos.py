@@ -61,9 +61,7 @@ def productosComerciales_pedidos_muestra():
                     ambito = request.json.get('dominio')
                     
                     # Filtro de pedidos
-                    pedidos = session.query(Pedido).filter(
-                        and_(Pedido.user_id == user_id, Pedido.ambito == ambito)
-                    ).all()
+                    pedidos = session.query(Pedido).filter_by( user_id=user_id,ambito=ambito).all()
                     
                     # Procesar los datos
                     data = []  # Lista para almacenar los datos de los pedidos
@@ -361,7 +359,7 @@ def productosComerciales_pedidos_eliminar_carrito():
                 return jsonify({'error': 'Pedido no encontrado.'}), 404
             
             session.delete(pedido)
-            session.commit()
+            
             
             return jsonify({'success': True, 'message': 'Pedido eliminado correctamente.'})
     
@@ -411,7 +409,7 @@ def productosComerciales_pedidos_alta_carrito():
             texto = data.get('texto_btn_carrito', '')  # Clave corregida
             precio_btn_carrito = data.get('precio_btn_carrito', '')
               
-            if not guardarPedido(data,user_id,float(precio_btn_carrito)):
+            if not guardarPedido(session,data,user_id,float(precio_btn_carrito)):
                 return render_template('notificaciones/logeePrimero.html', layout='layout')
 
         
@@ -513,10 +511,11 @@ def productosComerciales_pedidos_alta_carrito_checkBox(pedido_id):
         # Guardar pedido en la base de datos
             # Validar y procesar el precio
             texto = publicacion.texto  # Clave corregida
-            precio, resto = obtenerPrecio(texto) if texto else (None, None)
+            precio = publicacion.precio
+            
             cantidad = data.get('cantidadCompra', 1)
             emailCliente = data.get('correo_electronico_cbox', '')        
-            if not guardarPedidoDesdeConsultasChecbox(publicacion, user_id, precio,cantidad,emailCliente):
+            if not guardarPedidoDesdeConsultasChecbox(session,publicacion, user_id, precio,cantidad,emailCliente):
                 return jsonify({'success': False, 'message': 'No se pudo guardar el pedido. Inicia sesión e inténtalo de nuevo.'}), 403
 
             return jsonify({'success': True, 'message': 'Pedido agregado correctamente.'})
@@ -669,6 +668,7 @@ def cargar_entrega_pedido(session, data, user_id, tiempo, cantidad):
             pedido_data_json=data.get('pedido_data_json', '')
         )
         session.add(nuevo)
+        session.flush()  # para obtener el ID
         return publicacion_id
 
     except Exception as e:
@@ -676,7 +676,7 @@ def cargar_entrega_pedido(session, data, user_id, tiempo, cantidad):
 
 
    
-def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailCliente):
+def guardarPedidoDesdeConsultasChecbox(session,data, userId, precio,cantidad,emailCliente):
     try:
         """
         Guarda un nuevo pedido en la base de datos si no existe uno similar para el mismo usuario.
@@ -689,7 +689,7 @@ def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailClient
       
         # Validar y procesar el precio
         texto = data.texto
-        precio_venta = float(precio.replace('$', '').replace(',', '').strip())
+        precio_venta = data.precio
         tiempo = datetime.now()
         
         # Verificar si ya existe un pedido para este usuario con el mismo producto
@@ -698,51 +698,51 @@ def guardarPedidoDesdeConsultasChecbox(data, userId, precio,cantidad,emailClient
        # if producto_existente:
         #    print(f"Pedido duplicado detectado para user_id={userId} y nombre_producto={data.get('titulo_btn_carrrito')}.")
          #   return None  # No guardar duplicados
-        with get_db_session() as session:
-            # Crear el nuevo pedido
-            nuevo_pedido = Pedido(
-                user_id=userId,
-                publicacion_id=int(data.id),
-                ambito=data.ambito,
-                estado='pendiente',
-                fecha_pedido=tiempo,
-                fecha_entrega=tiempo,
-                fecha_consulta=tiempo,
-                fecha_baja=tiempo,
-                lugar_entrega='',
-                nombreCliente ='',
-                apellidoCliente = '',
-                telefonoCliente = '',
-                comentarioCliente = '',
-                emailCliente = emailCliente,
-                cantidad=int(cantidad),
-                precio_costo=precio_venta,
-                precio_venta=precio_venta,
-                ganancia=precio_venta,
-                diferencia=precio_venta,
-                nombre_producto=data.titulo,
-                descripcion=texto,
-                consulta='',
-                respuesta='',
-                asignado_a='gerente',
-                tamaño='',
-                provincia='',
-                region='',
-                sexo='',
-                imagen=data.imagen,
-                pagoOnline=data.pagoOnline 
-            )
+        
+        # Crear el nuevo pedido
+        nuevo_pedido = Pedido(
+            user_id=userId,
+            publicacion_id=int(data.id),
+            ambito=data.ambito,
+            estado='pendiente',
+            fecha_pedido=tiempo,
+            fecha_entrega=tiempo,
+            fecha_consulta=tiempo,
+            fecha_baja=tiempo,
+            lugar_entrega='',
+            nombreCliente ='',
+            apellidoCliente = '',
+            telefonoCliente = '',
+            comentarioCliente = '',
+            emailCliente = emailCliente,
+            cantidad=int(cantidad),
+            precio_costo=precio_venta,
+            precio_venta=precio_venta,
+            ganancia=precio_venta,
+            diferencia=precio_venta,
+            nombre_producto=data.titulo,
+            descripcion=texto,
+            consulta='',
+            respuesta='',
+            asignado_a='gerente',
+            tamaño='',
+            provincia='',
+            region='',
+            sexo='',
+            imagen=data.imagen,
+            pagoOnline=data.pagoOnline 
+        )
 
-            # Guardar en la base de datos
-            session.add(nuevo_pedido)
-            session.commit()
-            return nuevo_pedido
+        # Guardar en la base de datos
+        session.add(nuevo_pedido)
+        session.flush()
+        return nuevo_pedido
     
     except Exception as e:
         print(f"Error al guardar pedido: {e}")
         
         return None  # Indica fallo
-def guardarPedido(data, userId, precio):
+def guardarPedido(session,data, userId, precio):
     try:
         """
         Guarda un nuevo pedido en la base de datos si no existe uno similar para el mismo usuario.
@@ -766,45 +766,45 @@ def guardarPedido(data, userId, precio):
          #   return None  # No guardar duplicados
         botonPagoOnline = data.get('precio_btn_PagoOnline')
         pagoOnline = botonPagoOnline.lower() == "true" if botonPagoOnline else False
-        with get_db_session() as session:
-            # Crear el nuevo pedido
-            nuevo_pedido = Pedido(
-                user_id=userId,
-                publicacion_id=int(data.get('publicacion_id_btn_carrito')),
-                ambito=data.get('ambito_btn_carrito'),
-                estado='pendiente',
-                fecha_pedido=tiempo,
-                fecha_entrega=tiempo,
-                fecha_consulta=tiempo,
-                fecha_baja=tiempo,
-                lugar_entrega='',
-                nombreCliente ='',
-                apellidoCliente = '',
-                telefonoCliente = '',
-                comentarioCliente = '',
-                emailCliente = '',
-                cantidad=data.get('cantidadCompra', 1),
-                precio_costo=precio_venta,
-                precio_venta=precio_venta,
-                ganancia=precio_venta,
-                diferencia=precio_venta,
-                nombre_producto=data.get('titulo_btn_carrito'),
-                descripcion=texto,
-                consulta='',
-                respuesta='',
-                asignado_a='gerente',
-                tamaño='',
-                provincia='',
-                region='',
-                sexo='',
-                imagen=imagen_url,
-                pagoOnline=pagoOnline
-            )
+       
+        # Crear el nuevo pedido
+        nuevo_pedido = Pedido(
+            user_id=userId,
+            publicacion_id=int(data.get('publicacion_id_btn_carrito')),
+            ambito=data.get('ambito_btn_carrito'),
+            estado='pendiente',
+            fecha_pedido=tiempo,
+            fecha_entrega=tiempo,
+            fecha_consulta=tiempo,
+            fecha_baja=tiempo,
+            lugar_entrega='',
+            nombreCliente ='',
+            apellidoCliente = '',
+            telefonoCliente = '',
+            comentarioCliente = '',
+            emailCliente = '',
+            cantidad=data.get('cantidadCompra', 1),
+            precio_costo=precio_venta,
+            precio_venta=precio_venta,
+            ganancia=precio_venta,
+            diferencia=precio_venta,
+            nombre_producto=data.get('titulo_btn_carrito'),
+            descripcion=texto,
+            consulta='',
+            respuesta='',
+            asignado_a='gerente',
+            tamaño='',
+            provincia='',
+            region='',
+            sexo='',
+            imagen=imagen_url,
+            pagoOnline=pagoOnline
+        )
 
-            # Guardar en la base de datos
-            session.add(nuevo_pedido)
-            session.commit()
-            return nuevo_pedido
+        # Guardar en la base de datos
+        session.add(nuevo_pedido)
+        session.flush()
+        return nuevo_pedido
     
     except Exception as e:
         print(f"Error al guardar pedido: {e}")

@@ -629,7 +629,7 @@ async function loadVideo(fileName) {
         form.reset(); // Restablece todos los campos del formulario
     }
 
-   
+    document.getElementById("fileLabel").value = '';
     // Resetear el campo de carga de archivos
     document.getElementById("fileInput_creaPublicacion").value = '';
 

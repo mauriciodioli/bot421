@@ -2,7 +2,6 @@
 from pipes import Template
 from unittest import result
 from flask import current_app
-from utils.db_session import get_db_session 
 import requests
 import json
 from flask import Blueprint, render_template, request, redirect, url_for, flash,jsonify,abort    
@@ -13,7 +12,7 @@ import jwt
 from models.usuario import Usuario
 from models.usuarioRegion import UsuarioRegion
 from models.usuarioUbicacion import UsuarioUbicacion
-
+from utils.db_session import get_db_session 
 
 
 
@@ -218,16 +217,32 @@ def editar_usuario():
             usuarios = session.query(Usuario).filter(Usuario.id.in_(usuarios_ids)).all()
 
             # Crear una estructura de datos que agrupe los usuarios con su información de UsuarioRegion
-            usuarios_con_region = [
-                {
-                    "usuario": usuario,
-                    "regiones": [ur for ur in usuario_regiones if ur.user_id == usuario.id],
-                    "codigo_postal": usuario_regiones[0].codigoPostal,  # Obtener código postal de UsuarioRegion
-                    "pais": usuario_regiones[0].pais,  # Obtener país de UsuarioRegion
-                    "idioma": usuario_regiones[0].idioma  # Obtener idioma de UsuarioRegion
-                }
-                for usuario in usuarios
-            ]
+             # Crear una estructura de datos que agrupe los usuarios con su información de UsuarioRegion
+            usuarios_con_region = []
+            for u in usuarios:
+                regiones_u = [ur for ur in usuario_regiones if ur.user_id == u.id]
+
+                usuarios_con_region.append({
+                    "usuario": {
+                        "id": u.id,
+                        # usa los campos que realmente tengas en el modelo
+                        "correo_electronico": getattr(u, "correo_electronico", None),
+                        "roll": getattr(u, "roll", None),
+                    },
+                    "regiones": [
+                        {
+                            "id": r.id,
+                            "user_id": r.user_id,
+                            "codigoPostal": r.codigoPostal,
+                            "pais": r.pais,
+                            "idioma": r.idioma,
+                        }
+                        for r in regiones_u
+                    ],
+                    "codigo_postal": regiones_u[0].codigoPostal if regiones_u else None,
+                    "pais": regiones_u[0].pais if regiones_u else None,
+                    "idioma": regiones_u[0].idioma if regiones_u else None,
+                })
 
             return render_template(
                 "/usuarios/usuarios.html",

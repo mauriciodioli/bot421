@@ -1,0 +1,50 @@
+/* ===== Reset arriba ===== */
+html, body { margin: 0; padding: 0; }
+
+/* Una sola barra, NO fixed */
+.navbar,
+.navbar.bg-dark {                      /* pisa el bg-dark de Bootstrap */
+  position: static !important;
+  background-color: #000 !important;   /* negro puro */
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Links */
+.navbar .nav-link{
+  color: #fff !important;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .6rem 0;
+  transition: color .2s ease;
+}
+.navbar .nav-link:hover{ color: #00ffbf !important; }  /* acento */
+
+/* Toggler (mobile) */
+.navbar-toggler{ border-color: #fff !important; }
+.navbar-toggler-icon{ filter: invert(1); }             /* icono blanco */
+
+/* Logo dentro de la navbar */
+.LogoDpi{
+  width: 56px; height: 56px;
+  background: url('/static/leon.png') center/contain no-repeat;
+  flex: 0 0 56px;
+}
+/* pequeño margen a la derecha del logo */
+.LogoDpi + .navbar-toggler,
+.LogoDpi + .navbar-brand,
+.LogoDpi + .collapse { margin-left: 8px; }
+
+/* Si existe el segundo nav, ocultarlo */
+.NdpiLogo{ display: none !important; }
+
+/* Si usás iconos SVG dentro de los links, asegurá color blanco */
+.navbar .nav-link svg { fill: currentColor; color: #fff; }
+
+#logoDiv{
+  width:56px; height:56px;
+  background: url('/static/leon.png') center/contain no-repeat;
+  cursor: pointer !important;
+  position: relative; z-index: 5;
+}
