@@ -347,7 +347,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnAmbitos.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/muestraPublicacionesEnHomeAgrandaImagenes.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/social/publicaciones/reseniaMuestraPublicEnHome/reseniaMuestraPublicEnHome.css') }}">
-<script src="https://dpia.site/chat-embed.js?v=20251118" data-chat-path="/chat/contextual-embed" data-open="tab" defer></script>
+
 <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbito.js') }}"></script>
 <script src="{{ url_for('static', filename='js/media/muestraPublicacionesEnAmbitoAgrandaImagenes.js') }}"></script>
@@ -356,7 +356,30 @@
 
 
 <script>
+ (function () {
+    try {
+      const userId = localStorage.getItem('usuario_id');
 
+      if (!userId) {
+        console.log('[CHAT EMBED] Sin usuario logueado, no se carga el chat.');
+        return;
+      }
+
+      // Crear el script del chat sólo si hay usuario
+      const s = document.createElement('script');
+      s.src = 'https://dpia.site/chat-embed.js?v=20251118';
+      s.defer = true;
+
+      // Setear los mismos data-* que usabas antes
+      s.dataset.chatPath = '/chat/contextual-embed';
+      s.dataset.open = 'tab';
+
+      // Lo agregamos al <head> (o al final del body si preferís)
+      document.head.appendChild(s);
+    } catch (err) {
+      console.error('[CHAT EMBED] Error cargando chat condicional:', err);
+    }
+  })();
     // Almacenar los valores en variables globales
   // Lee valores del DOM/Jinja
   const publicacionIdEl = document.querySelector('input[name="publicacion_id"]');

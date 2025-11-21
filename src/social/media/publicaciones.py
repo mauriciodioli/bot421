@@ -147,7 +147,7 @@ def media_publicaciones_mostrar():
                                 codigoPostal='1'
                             ).all()
 
-                publicaciones_data = armar_publicacion_bucket_para_dpi(publicaciones_user, layout)
+                publicaciones_data = armar_publicacion_bucket_para_dpi(session,publicaciones_user, layout)
                 return jsonify(publicaciones_data)
 
     except Exception as e:

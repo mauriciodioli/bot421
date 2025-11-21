@@ -62,8 +62,7 @@ def productosComerciales_pedidos_ventasProductosComerciales_actualizarRespuesta_
                 pedido = session.query(Pedido).filter(Pedido.cluster_id == int(cluster_id)).first()
                 if pedido:
                     pedido.respuesta = respuesta  # Actualizo la respuesta del pedido
-                    session.commit()
-                   
+                    
                     return jsonify({'message': 'Respuesta actualizada correctamente.'}), 200
                 else:
                     return jsonify({'error': 'Pedido no encontrado.'}), 404
@@ -252,12 +251,7 @@ def productosComerciales_pedidos_ventasProductosComerciales_actualizarEstado_ped
                     if pedido:               
                         # Agregamos los detalles del pedido a la lista
                         pedido.estado = nuevo_estado
-                        session.commit()
-                    
-                
-                
-                
-                session.commit()
+                        
              
                 return jsonify({"success": True, "message": "Estado actualizado correctamente"})
             else:
@@ -310,7 +304,7 @@ def productosComerciales_pedidos_ventasProductosComerciales_cancela_pedido(pedid
 
                 # Cambiar el estado del pedido a 'cancelado'            
                 pedidoEntregaPago.estado = 'cancelado'
-                session.commit()
+                
                
                 return jsonify({"success": True, "message": "Pedido cancelado exitosamente"}), 200
             else:
