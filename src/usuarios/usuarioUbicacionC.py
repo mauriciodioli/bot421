@@ -138,7 +138,7 @@ def update_user_location_db(user_id, latitude, longitude):
                 )
                 session.add(nuevo_registro)
 
-            session.commit()
+            
             return jsonify({
                 "status": "Ubicación guardada o actualizada en la base de datos", 
                 "latitude": latitude, 
