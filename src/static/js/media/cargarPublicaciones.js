@@ -197,7 +197,7 @@
   
   
   function closePreview() {
-    deb
+    
     var previewImage = document.getElementById('preview-image-media_imagenes');
     var fileInput = document.getElementById('imagen-media_imagenes');
     var uploadButton = document.getElementById('open-popup-media_imagenes');
