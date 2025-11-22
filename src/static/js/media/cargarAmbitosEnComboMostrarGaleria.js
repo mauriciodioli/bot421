@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Actualizar menú desplegable
             dropdownMenu.innerHTML = ''; // Limpiar contenido existente
             data.forEach(ambito => {
-               
                 const listItem = `
                     <li>
                         <a class="dropdown-item" id="${ambito.valor}" href="#" data-val="${ambito.valor}">
@@ -61,6 +60,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Asignar eventos a los nuevos elementos del menú
             agregarEventosClick();
+
+            // 🔥 NUEVO: si hay al menos un ámbito, auto-seleccionar el primero y disparar 'change'
+            if (data.length > 0) {
+                const firstAmbitoValor = data[0].valor;
+
+                ambitoSelects.forEach(select => {
+                    if (select) {
+                        select.value = firstAmbitoValor;
+                        // dispara el change para que el otro JS cargue las categorías
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                });
+
+                // Opcional: también cargar publicaciones del primer ámbito
+                if (typeof cargarPublicaciones === 'function') {
+                    cargarPublicaciones(firstAmbitoValor);
+                }
+            }
         })
         .catch(error => {
             console.error('Error al cargar los ámbitos:', error);
@@ -68,17 +85,26 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Función para asignar eventos a los elementos del menú
-    // Función para asignar eventos a los elementos del menú
-        function agregarEventosClick() {
-            const menuItems = document.querySelectorAll('.dropdown-item');
-            menuItems.forEach(item => {
-                item.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    const ambitoId = this.dataset.val; // Obtener el valor dinámico del ámbito seleccionado
-                    cargarPublicaciones(ambitoId); // Llamar a la función que maneja la lógica del acordeón
+    function agregarEventosClick() {
+        const menuItems = document.querySelectorAll('.dropdown-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', function (event) {
+                event.preventDefault();
+                const ambitoId = this.dataset.val; // Obtener el valor dinámico del ámbito seleccionado
+
+                // 🔥 NUEVO: sincronizar selects y disparar 'change' → carga categorías
+                ambitoSelects.forEach(select => {
+                    if (select) {
+                        select.value = ambitoId;
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
                 });
+
+                // Llamar a la función que maneja la lógica del acordeón (ya la tenías)
+                cargarPublicaciones(ambitoId);
             });
-        }
+        });
+    }
 
     // Llamar a la función para cargar los ámbitos al cargar la página
     cargarAmbitos();
