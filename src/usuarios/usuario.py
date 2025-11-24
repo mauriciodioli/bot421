@@ -24,7 +24,7 @@ def obtener_usuarios_modal():
     try:
         with get_db_session() as session:
             usuarios = session.query(Usuario).all()
-            session.close()
+            
             # Crear una lista de diccionarios para cada usuario
             usuarios_json = [{'id': usuario.id, 'nombre': usuario.correo_electronico} for usuario in usuarios]
             return jsonify(usuarios=usuarios_json)
@@ -189,17 +189,27 @@ def editar_usuario():
             usuario = session.query(Usuario).get(usuario_id) #Usuario.query.get(usuario_id)
             usuarioRegion = session.query(UsuarioRegion).filter_by(user_id=int(usuario_id)).first()
             usuarioUbicacion = session.query(UsuarioUbicacion).filter_by(user_id=int(usuario_id)).first()
-            usuario.email = request.form['email']
+            usuario.correo_electronico = request.form['email']
             usuario.roll = request.form['rol']
             usuarioRegion.codigoPostal = request.form['codigoPostal']
             usuarioRegion.pais = request.form['pais']
             usuarioRegion.idioma = request.form['idioma']
             if usuarioUbicacion:
-                usuarioUbicacion.latitud = request.form['latitud']
-                usuarioUbicacion.longitud = request.form['longitud']
+                usuarioUbicacion.id_region = usuarioRegion.id             
+                usuarioUbicacion.codigoPostal = request.form['codigoPostal']
+                usuarioUbicacion.latitud = float(request.form['latitud'])
+                usuarioUbicacion.longitud = float(request.form['longitud'])
             else:
-                usuarioUbicacion = UsuarioUbicacion(user_id=int(usuario_id), id_region=usuarioRegion.id, codigoPostal=request.form['codigoPostal'], latitud=float(request.form['latitud']), longitud=float(request.form['longitud'])) #UsuarioUbicacion(user_id=int(usuario_id), id_region=usuarioRegion.id, codigoPostal=request.form['codigoPostal'], latitud=request.form['latitud'], longitud=request.form['longitud'])
+                usuarioUbicacion = UsuarioUbicacion(
+                    user_id=int(usuario_id),
+                    id_region=usuarioRegion.id,
+                    codigoPostal=request.form['codigoPostal'],
+                    latitud=float(request.form['latitud']),
+                    longitud=float(request.form['longitud'])
+                )
                 session.add(usuarioUbicacion)
+                session.flush()
+
             
             
             flash('Usuario editado correctamente.')

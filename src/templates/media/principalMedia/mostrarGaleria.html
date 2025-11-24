@@ -115,23 +115,46 @@
       <form id="createPostForm_creaPublicacion" enctype="multipart/form-data">
         
         <!-- Input for the title of the publication -->
-        <div class="form-group_creaPublicacion">
-          <label for="postTitle_creaPublicacion" class="text-black">Título:</label>
-          <input type="text" id="postTitle_creaPublicacion" name="postTitle_creaPublicacion" placeholder="Escribe el título de la publicación" class="form-control" required>
-        </div>
-        
-        <!-- Textarea for the body of the post -->
-        <div class="form-group_creaPublicacion">
-          <label for="body" class="text-black">Texto:</label>
-          <textarea id="body" name="postText_creaPublicacion" placeholder="Escribe tu publicación" class="form-control" required></textarea>
-        </div>
+        <!-- Título -->
+<div class="form-group_creaPublicacion">
+  <label for="postTitle_creaPublicacion" class="text-black">Título:</label>
+  <input
+    type="text"
+    id="postTitle_creaPublicacion"
+    name="postTitle_creaPublicacion"
+    placeholder="Escribe el título de la publicación"
+    class="form-control"
+    required
+    maxlength="120">
+  <small id="titleCounter" class="text-muted">0 / 120</small>
+</div>
 
-        <!-- Textarea for the description of the post -->
-        <div class="form-group_creaPublicacion">
-          <label for="description" class="text-black">Descripción:</label>
-          <textarea id="description" name="postDescription_creaPublicacion" placeholder="Escribe una descripción" class="form-control" required></textarea>
-        </div>
-       <!-- Precio -->
+<!-- Texto -->
+<div class="form-group_creaPublicacion">
+  <label for="body" class="text-black">Texto:</label>
+  <textarea
+    id="body"
+    name="postText_creaPublicacion"
+    placeholder="Escribe tu publicación"
+    class="form-control"
+    required
+    maxlength="4000"></textarea> <!-- límite lógico, BD lo soporta -->
+  <small id="bodyCounter" class="text-muted">0 / 4000</small>
+</div>
+
+<!-- Descripción -->
+<div class="form-group_creaPublicacion">
+  <label for="description" class="text-black">Descripción:</label>
+  <textarea
+    id="description"
+    name="postDescription_creaPublicacion"
+    placeholder="Escribe una descripción"
+    class="form-control"
+    required
+    maxlength="1000"></textarea> <!-- EXACTO como el modelo -->
+  <small id="descriptionCounter" class="text-muted">0 / 1000</small>
+</div>
+
         <div class="form-group_creaPublicacion">
           <label for="precio_creaPublicacion" class="text-black">Precio</label>
           <input type="number" id="precio_creaPublicacion" name="precio_creaPublicacion"
@@ -551,6 +574,56 @@ $(document).ready(function () {
 });
 
 
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('createPostForm_creaPublicacion');
+  if (!form) return;
+
+  const tituloEl = document.getElementById('postTitle_creaPublicacion');
+  const textoEl  = document.getElementById('body');
+  const descEl   = document.getElementById('description');
+
+  // Buscamos el botón submit del formulario SIN tocar tu HTML
+  const submitBtn = form.querySelector('button[type="submit"]');
+  if (!tituloEl || !textoEl || !descEl || !submitBtn) return;
+
+  const LIMITS = {
+    titulo: 120,
+    texto:  800,   // más corto que descripcion
+    desc:   1000
+  };
+
+  function isValidLen(value, min, max) {
+    const len = (value || '').trim().length;
+    return len >= min && len <= max;
+  }
+
+  function validate() {
+    const tituloOk = isValidLen(tituloEl.value, 1, LIMITS.titulo);
+    const textoOk  = isValidLen(textoEl.value,  1, LIMITS.texto);
+    const descOk   = isValidLen(descEl.value,   1, LIMITS.desc);
+
+    // 🔴 ACÁ está la clave: TODOS deben ser válidos
+    const allOk = tituloOk && textoOk && descOk;
+
+    submitBtn.disabled = !allOk;
+  }
+
+  // Escuchar cambios en los 3 campos
+  ['input', 'change', 'keyup'].forEach(evt => {
+    tituloEl.addEventListener(evt, validate);
+    textoEl.addEventListener(evt,  validate);
+    descEl.addEventListener(evt,   validate);
+  });
+
+  // Estado inicial: siempre deshabilitado hasta que todo sea válido
+  submitBtn.disabled = true;
+  validate();
+});
 
 
 

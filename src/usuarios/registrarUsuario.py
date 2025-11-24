@@ -94,7 +94,8 @@ def registro_usuario():
         idioma = 'in'
     numero_de_cuenta = ''
     tipo_usuario= 'usuario'
-    
+    lat = float(latitud) if latitud not in (None, '',) else None
+    lon = float(longitud) if longitud not in (None, '',) else None
     print('password:', password)
     with get_db_session() as session:
         # Verificar si el usuario ya está registrado
@@ -112,13 +113,13 @@ def registro_usuario():
 
         usuario = Usuario(id=None, token=access_token, refresh_token=refresh_token, activo=True, correo_electronico=correo_electronico, password=hashed_password)
         session.add(usuario)
-        session.commit()  # Esto asegura que el usuario tenga un ID asignado
+        session.flush()  # Esto asegura que el usuario tenga un ID asignado
         usuarioRegion = UsuarioRegion( user_id=usuario.id, idioma=idioma, codigoPostal=codigoPostal, pais=pais, region=region, provincia=provincia, ciudad=ciudad)
         session.add(usuarioRegion)
-        session.commit()
-        usuarioUbicacion = UsuarioUbicacion(user_id=usuario.id, id_region=usuarioRegion.id, codigoPostal=codigoPostal, latitud=latitud, longitud=longitud)
+        session.flush()
+        usuarioUbicacion = UsuarioUbicacion(user_id=usuario.id, id_region=usuarioRegion.id, codigoPostal=codigoPostal, latitud=lat, longitud=lon)
         session.add(usuarioUbicacion)
-        session.commit()
+        session.flush()
         
         # Crear una respuesta
     

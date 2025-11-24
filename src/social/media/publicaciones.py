@@ -1052,7 +1052,7 @@ def guardarPublicacion(user_id):
                 moneda=moneda or None,
             )
             session.add(nueva)
-            session.commit()
+            session.flush()  # para obtener el ID asignado
             return nueva.id
 
             
@@ -1369,6 +1369,7 @@ def publicaciones_modificar_publicaciones():
                         estado='activo'
                     )
                     session.add(new_categoriPublicacion)
+                    session.flush()
                 else:
                     categoriPublicacion.categoria_id = categoria_id_int
 
