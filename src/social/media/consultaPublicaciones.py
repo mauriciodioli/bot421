@@ -67,52 +67,62 @@ def media_consultaPublicaciones_muestra():
             if not ambito:
                 return jsonify({'error': 'Ámbito no proporcionado.'}), 400
 
-            # Filtro de publicaciones
             publicaciones = session.query(Publicacion).with_entities(
-                                    Publicacion.id,
-                                    Publicacion.user_id,
-                                    Publicacion.titulo,
-                                    Publicacion.correo_electronico,
-                                    Publicacion.descripcion,
-                                    Publicacion.fecha_creacion,                                
-                                    Publicacion.texto,
-                                    Publicacion.imagen
-                                ).filter(
-                                    Publicacion.user_id == user_id,
-                                    Publicacion.ambito == ambito,
-                                    Publicacion.estado == 'activo',
-                                    Publicacion.botonCompra.is_(True)  # Ignora NULL automáticamente
-                                ).all()
+                    Publicacion.id,
+                    Publicacion.user_id,
+                    Publicacion.titulo,
+                    Publicacion.correo_electronico,
+                    Publicacion.descripcion,
+                    Publicacion.fecha_creacion,
+                    Publicacion.texto,
+                    Publicacion.imagen,
+                    Publicacion.precio
+                ).filter(
+                    Publicacion.user_id == user_id,
+                    Publicacion.ambito == ambito,
+                    Publicacion.estado == 'activo',
+                    Publicacion.botonCompra.is_(True)
+                ).all()
 
-
-
-            # Procesar los datos
             data = []
             if not publicaciones:
                 return render_template(
-                                'media/publicaciones/consultasPublicaciones.html',
-                                data='',
-                                layout='layout'
-                            )
-            for publicacion in publicaciones:
-                precio, resto = obtenerPrecio(publicacion.texto) if publicacion.texto else (None, None)
+                    'media/publicaciones/consultasPublicaciones.html',
+                    data='',
+                    layout='layout'
+                )
+
+            for (
+                pub_id,
+                pub_user_id,
+                titulo,
+                correo,
+                descripcion,
+                fecha_creacion,
+                texto,
+                imagen,
+                precio,
+            ) in publicaciones:
+                precio = precio if precio is not None else 0
+
                 data.append({
-                    'id': publicacion.id,
-                    'user_id': publicacion.user_id,
-                    'nombre_producto': publicacion.titulo,
-                    'texto': publicacion.texto,
-                    'precio_venta': precio,  # Corregido
-                    'correoElectronico': publicacion.correo_electronico,  # Corregido
-                    'descripcion': publicacion.descripcion,
-                    'fechaCreacion': publicacion.fecha_creacion,
-                    'imagen_url':publicacion.imagen
+                    'id': pub_id,
+                    'user_id': pub_user_id,
+                    'nombre_producto': titulo,
+                    'texto': texto,
+                    'precio_venta': precio,
+                    'correoElectronico': correo,
+                    'descripcion': descripcion,
+                    'fechaCreacion': fecha_creacion,
+                    'imagen_url': imagen
                 })
-           
+
             return render_template(
                 'media/publicaciones/consultasPublicaciones.html',
                 data=data,
                 layout='layout'
             )
+
 
     except Exception as e:
         print("Error:", str(e))
@@ -181,30 +191,24 @@ def media_consultaPublicaciones_lupa_muestra():
                 return jsonify({'error': 'Ámbito no proporcionado.'}), 400
             id_consulta = int(data.get('consulta'))
             # Filtro de publicaciones
-            publicaciones = session.query(Publicacion).with_entities(
-                Publicacion.id,
-                Publicacion.user_id,
-                Publicacion.titulo,
-                Publicacion.correo_electronico,
-                Publicacion.descripcion,
-                Publicacion.fecha_creacion,                                
-                Publicacion.texto,
-                Publicacion.imagen
-            ).filter(
-                Publicacion.user_id == id_consulta,
-                Publicacion.ambito == ambito,
-                Publicacion.estado == 'activo',
-                Publicacion.botonCompra.is_(True)  # Ignora NULL automáticamente
-            ).all()
+            publicaciones = (
+                session.query(Publicacion)
+                .filter(
+                    Publicacion.user_id == id_consulta,
+                    Publicacion.ambito == ambito,
+                    Publicacion.estado == 'activo',
+                    Publicacion.botonCompra.is_(True)
+                )
+                .all()
+            )
 
-            # Procesar los datos
             data = []
             if not publicaciones:
-                return jsonify({'data': []})  # Si no hay publicaciones, regresa un array vacío
+                return jsonify({'data': []})
 
             for publicacion in publicaciones:
-                precio = publicacion.precio if publicacion.precio else 0
-               
+                precio = publicacion.precio or 0
+
                 data.append({
                     'id': publicacion.id,
                     'user_id': publicacion.user_id,
@@ -214,11 +218,9 @@ def media_consultaPublicaciones_lupa_muestra():
                     'correoElectronico': publicacion.correo_electronico,
                     'descripcion': publicacion.descripcion,
                     'fechaCreacion': publicacion.fecha_creacion,
-                    'imagen_url': publicacion.imagen
+                    'imagen_url': publicacion.imagen,
                 })
-            
 
-            # Regresa los datos en formato JSON
             return jsonify({'data': data, 'layout': 'layout'})
 
     except Exception as e:
