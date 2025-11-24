@@ -167,29 +167,57 @@ def cargarImagen():
         # Guardar la imagen en la carpeta src/static/uploads
         # print(f"Ruta completa del archivo: {new_path}")
             imagen.save(new_path)
-            upload_to_gcs(new_path, imagen.filename)
+            url_publica = upload_to_gcs(new_path, imagen.filename)
             # Resto de tu lógica para manejar la imagen, el nombre del archivo y el access_token
             # Aquí puedes acceder a 'imagen' (objeto FileStorage), 'nombre_archivo' y 'access_token'
+            
+             # ===== 3) Borrar archivo local si se obtuvo URL =====
+            if url_publica:
+                try:
+                    if os.path.exists(new_path):
+                        os.remove(new_path)
+                except OSError as e:
+                    # No rompas todo por un fallo al borrar el tmp
+                    current_app.logger.warning(f'No se pudo borrar {new_path}: {e}')
+
             #aqui carga la los datos en la base de datos
             if access_token:
                 app = current_app._get_current_object()                    
                 userid = jwt.decode(access_token, app.config['JWT_SECRET_KEY'], algorithms=['HS256'])['sub']
-                nueva_imagen = Image(
-                    user_id=userid,
-                    title=nombre_archivo,
-                    description=descriptionImagen,
-                    colorDescription=selectedColor,
-                    filepath=new_path,
-                    randomNumber=numeroAleatoreo,
-                    size=0
-                )
-                session.add(nueva_imagen)
+                 # 🔍 1) Verificar si ya existe la misma URL
+                url_str = str(url_publica)
+                imagen_existente = session.query(Image).filter(
+                    Image.filepath == url_str
+                    # si lo querés por usuario, usa también:
+                    # Image.user_id == userid
+                ).first()
+                if imagen_existente:
+                    # Ya está en la BD, NO creamos otra fila
+                    current_app.logger.info(
+                        f'Imagen con URL {url_str} ya existe (id={imagen_existente.id}), no se crea duplicado.'
+                    )
+                else:
+                    nueva_imagen = Image(
+                        user_id=userid,
+                        title=nombre_archivo,
+                        description=descriptionImagen,
+                        colorDescription=selectedColor,
+                        filepath=str(url_publica), 
+                        randomNumber=numeroAleatoreo,
+                        size=0,
+                        mimetype=imagen.mimetype
+                    )
+                    session.add(nueva_imagen)
+                    session.flush()
               
                
             
         # MostrarImages()
-            return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo}),201
+            return jsonify({'mensaje': 'Imagen cargada con éxito', 'nombreArchivo': nombre_archivo,'url_publica': str(url_publica)  }),201
   except Exception as e:
+      # Para ver bien el error en consola mientras debugueás
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @imagenesOperaciones.route('/MostrarImages/', methods=['POST'])

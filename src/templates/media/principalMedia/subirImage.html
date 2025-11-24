@@ -1,245 +1,325 @@
-
-{% if layout == 'layout'%}
-{% extends 'layouts/layout.html' %}
+{# ==== LAYOUT BASE ==== #}
+{% if layout == 'layout' %}
+  {% extends 'layouts/layout.html' %}
+{% elif layout == 'layout_fichas' %}
+  {% extends 'layouts/layout_fichas.html' %}
+{% elif layout == 'layoutConexBroker' %}
+  {% extends 'layouts/layoutConexBroker.html' %}
+{% elif layout == 'layout_signal' %}
+  {% extends 'layouts/layout_signal.html' %}
 {% endif %}
 
-{% if layout == 'layout_fichas'%}
-{% extends 'layouts/layout_fichas.html' %}
-{% endif %}
+{% block content %}
 
-{% if layout == 'layoutConexBroker' %}
-{% extends 'layouts/layoutConexBroker.html' %}    
-{% endif %}
-{% if layout == 'layout_signal' %}
-{% extends 'layouts/layout_signal.html' %}    
-{% endif %}
-
-{% block content %} 
- <!-- Modal -->
-<div id="modalPublicar" class="modal-media_imagenes">
+<!-- Modal Bootstrap -->
+<div id="modalPublicar"
+     class="modal fade modal-media_imagenes"
+     tabindex="-1"
+     aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h3 class="modal-title" id="exampleModalLabel" style="color: black;">
-                  Crear publicación
-              </h3>
-              {% if layout == 'layout'%}
-                <button type="button" onclick="window.location.href='/mostrarGaleria'" class="btn-close" aria-label="Close"></button>
-              {% endif %}
-              {% if layout == 'layoutConexBroker' %}
-                  <button type="button" onclick="window.location.href='/home'" class="btn-close" aria-label="Close"></button>
-              {% endif %}
-                  </div>
-          <div class="modal-body">
-              <div class="modal-body-content">
-                  <!-- Primera fila -->
-                  <div class="modal-body-row">
-                      <div class="description-block" id="description-block-media_imagenes">
-                          <textarea id="file-description-media_imagenes" rows="3" placeholder="Ingrese su descripción aquí"></textarea>
-                          <div>
-                              <button id="color-picker-btn-media_imagenes" class="btn btn-primary">Seleccionar Color</button>
-                              <div id="selected-color-media_imagenes"></div>
-                          </div>
-                      </div>
-                  </div>
-                  <!-- Segunda fila -->
-                  <div class="modal-body-row">
-                    <div class="preview-image-container-media_imagenes">
-                      <img id="preview-image-media_imagenes" src="#" alt="Vista previa de la imagen">
-                      <button class="close-button-media_imagenes" onclick="closePreview()" style="display: none;">X</button>
-                      <form id="myForm-media_imagenes" enctype="multipart/form-data">
-                        <input type="hidden" id="postId_subirImagenPublicacion" name="postId_subirImagenPublicacion" value="{{ publicacion_id }}">
- 
-    
-                        <label for="imagen-media_imagenes" class="custom-file-upload-media_imagenes">
-                              <input type="file" name="imagen" id="imagen-media_imagenes" accept="image/*" onchange="previewSelectedImage()">
-                              <i class="fas fa-folder"></i> Seleccionar Imagen
-                          </label>
+    <div class="modal-content">
 
-                      </form>
-                  </div>
-                  </div>
-              </div>
-          </div>
-          <div class="modal-footer">
-              <p id="mensaje-exitoso-media_imagenes" class="hidden-message-media_imagenes"></p>
-              <button class="btn btn-primary" id="open-popup-media_imagenes" onclick="uploadImage()" disabled>Subir Imagen</button>
-          </div>
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: black;">UPLOAD DE IMAGENES</h3>
+
+        {% if layout == 'layout' %}
+          <button type="button"
+                  class="btn-close"
+                  aria-label="Close"
+                  onclick="window.location.href='/mostrarGaleria'"></button>
+        {% elif layout == 'layoutConexBroker' %}
+          <button type="button"
+                  class="btn-close"
+                  aria-label="Close"
+                  onclick="window.location.href='/home'"></button>
+        {% else %}
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        {% endif %}
       </div>
+
+      <div class="modal-body">
+        <div class="modal-body-content">
+          <!-- Primera fila -->
+          <div class="modal-body-row">
+            <div class="description-block" id="description-block-media_imagenes">
+              <textarea id="file-description-media_imagenes"
+                        rows="3"
+                        placeholder="Ingrese su descripción aquí"></textarea>
+              <div>
+                <button id="color-picker-btn-media_imagenes"
+                        class="btn btn-primary">
+                  Seleccionar Color
+                </button>
+                <div id="selected-color-media_imagenes"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Segunda fila -->
+          <div class="modal-body-row">
+            <div class="preview-image-container-media_imagenes">
+              <img id="preview-image-media_imagenes"
+                   src="#"
+                   alt="Vista previa de la imagen">
+              <button class="close-button-media_imagenes"
+                      onclick="closePreview()"
+                      style="display: none;">X</button>
+
+              <form id="myForm-media_imagenes" enctype="multipart/form-data">
+                <input type="hidden"
+                       id="postId_subirImagenPublicacion"
+                       name="postId_subirImagenPublicacion"
+                       value="{{ publicacion_id }}">
+
+                <label for="imagen-media_imagenes"
+                       class="custom-file-upload-media_imagenes">
+                  <input type="file"
+                         name="imagen"
+                         id="imagen-media_imagenes"
+                         accept="image/*"
+                         onchange="previewSelectedImage()">
+                  <i class="fas fa-folder"></i> Seleccionar Imagen
+                </label>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+
+            <p id="mensaje-exitoso-media_imagenes" class="hidden-message-media_imagenes"></p>
+
+            <!-- URL PÚBLICA BIEN GRANDE -->
+            <div id="url-publica-wrapper-media_imagenes" class="w-100 mb-3">
+              <label class="form-label fw-bold text-black" for="url-publica-media_imagenes">
+                URL public
+              </label>
+
+              <div class="input-group input-group-lg">
+                <input
+                  type="text"
+                  id="url-publica-media_imagenes"
+                  class="form-control"
+                  placeholder="Public URL"
+                  readonly
+                >
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  id="btn-copiar-url-media_imagenes"
+                  onclick="copiarUrlPublica()"
+                >
+                  Copiar
+                </button>
+              </div>
+            </div>
+
+            <button class="btn btn-primary"
+                    id="open-popup-media_imagenes"
+                    onclick="uploadImage()"
+                    disabled>
+              Subir Imagen
+            </button>
+          </div>
+
+    </div>
   </div>
 </div>
 
+<script>
+  let selectedColor = '#0000FF8C';  // color por defecto
+  const modalEl = document.getElementById('modalPublicar');
 
+  // ==== INICIALIZAR MODAL BOOTSTRAP ====
+  document.addEventListener('DOMContentLoaded', function () {
+    // por si quedó algo de otro modal
+    document.body.classList.remove('modal-open');
+    document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
 
+    // crear instancia bootstrap
+    window.modalPublicarInstance = new bootstrap.Modal(modalEl, {
+      backdrop: 'static',
+      keyboard: true
+    });
 
-  <script>
-    let selectedColor = '#0000FF8C';  // Establece un color predeterminado
+    // mostrar al entrar en la página
+    window.modalPublicarInstance.show();
+  });
 
-    function closePreview() {
-      var previewImage = document.getElementById('preview-image-media_imagenes');
-      var fileInput = document.getElementById('imagen-media_imagenes');
-      var uploadButton = document.getElementById('open-popup-media_imagenes');
-  
-      previewImage.src = '#'; // Limpiar la imagen
-      fileInput.value = ''; // Limpiar el campo de entrada de archivos
-      var closeButton = document.querySelector('.close-button-media_imagenes');
-      closeButton.style.display = 'none'; // Ocultar el botón de cerrar
-      uploadButton.disabled = true; // Deshabilitar el botón      
+  // ==== PREVIEW / RESET ====
+  function closePreview() {
+    const previewImage = document.getElementById('preview-image-media_imagenes');
+    const fileInput = document.getElementById('imagen-media_imagenes');
+    const uploadButton = document.getElementById('open-popup-media_imagenes');
+    const closeButton = document.querySelector('.close-button-media_imagenes');
+
+    previewImage.src = '#';
+    fileInput.value = '';
+    uploadButton.disabled = true;
+    if (closeButton) closeButton.style.display = 'none';
+  }
+
+  function previewSelectedImage() {
+    const fileInput = document.getElementById('imagen-media_imagenes');
+    const previewImage = document.getElementById('preview-image-media_imagenes');
+    const uploadButton = document.getElementById('open-popup-media_imagenes');
+    const closeButton = document.querySelector('.close-button-media_imagenes');
+
+    const file = fileInput.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        previewImage.src = e.target.result;
+        uploadButton.disabled = false;
+      };
+      reader.readAsDataURL(file);
+      if (closeButton) closeButton.style.display = 'block';
+    } else {
+      previewImage.src = '#';
+      uploadButton.disabled = true;
+      if (closeButton) closeButton.style.display = 'none';
     }
-  
-    function previewSelectedImage() {
-      var fileInput = document.getElementById('imagen-media_imagenes');
-      var previewImage = document.getElementById('preview-image-media_imagenes');
-      var uploadButton = document.getElementById('open-popup-media_imagenes');
-  
-      var file = fileInput.files[0];
-  
-      if (file) {
-          var reader = new FileReader();
-  
-          reader.onload = function (e) {
-              previewImage.src = e.target.result;
-              uploadButton.disabled = false; // Habilitar el botón
-          };
-  
-          reader.readAsDataURL(file);
-      } else {
-          previewImage.src = '#'; // Limpiar la vista previa
-          uploadButton.disabled = true; // Deshabilitar el botón
-      }
-  
-      var closeButton = document.querySelector('.close-button-media_imagenes');
-      closeButton.style.display = file ? 'block' : 'none'; // Mostrar/ocultar el botón de cerrar
+  }
+
+  // ==== SUBIR IMAGEN ====
+  function uploadImage() {
+    const description = document.getElementById('file-description-media_imagenes').value;
+    const fileInput = document.getElementById('imagen-media_imagenes');
+    const accessToken = localStorage.getItem('access_token');
+    const randomNumber = Math.round(Math.random() * 1000000);
+
+    if (!fileInput.files.length) {
+      alert('Por favor, seleccione un archivo.');
+      return;
     }
-  
-    function uploadImage() {
-      var description = document.getElementById('file-description-media_imagenes').value;
-      var fileInput = document.getElementById('imagen-media_imagenes');
-      var fileName = '';
-      var accessToken = localStorage.getItem('access_token');
-      var randomNumber = Math.round(Math.random() * 1000000);
-    
-      if (fileInput.files.length > 0) {
-        fileName = fileInput.files[0].name;
-      } else {
-        alert('Por favor, seleccione un archivo.');
-        return;
-      }
-  
-      var formData = new FormData();
-      formData.append('imagen', fileInput.files[0]);
-      formData.append('nombreArchivo', fileName);
-      formData.append('descriptionImagen', description);
-      formData.append('randomNumber', randomNumber);
-      formData.append('selectedColor', selectedColor);
-      
-      $.ajax({
-        url: '/cargarImagen',
-        type: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        headers: {
-          'Authorization': 'Bearer ' + accessToken
-        },
-        success: function(response) {
-          console.log('Imagen cargada con éxito:', response);
-          $('#result').html('Imagen cargada con éxito. Respuesta del servidor: ' + response);
-          cargarContenidoModal();
+
+    const fileName = fileInput.files[0].name;
+
+    const formData = new FormData();
+    formData.append('imagen', fileInput.files[0]);
+    formData.append('nombreArchivo', fileName);
+    formData.append('descriptionImagen', description);
+    formData.append('randomNumber', randomNumber);
+    formData.append('selectedColor', selectedColor);
+
+    $.ajax({
+      url: '/cargarImagen',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      headers: {
+        'Authorization': 'Bearer ' + accessToken
+      },
+    success: function (response) {
+          console.log('Respuesta /cargarImagen:', response);
+
+          // Por si el backend devuelve texto en vez de JSON ya parseado
+          if (typeof response === 'string') {
+            try {
+              response = JSON.parse(response);
+            } catch (e) {
+              console.error('No se pudo parsear la respuesta como JSON:', e);
+            }
+          }
+
+          const url = response && response.url_publica;
+
+          if (url) {
+            const urlInput = document.getElementById('url-publica-media_imagenes');
+            if (urlInput) {
+              urlInput.value = url;
+              // opcional: seleccionar automáticamente
+              // urlInput.focus();
+              // urlInput.select();
+            }
+          } else {
+            console.warn('No vino url_publica en la respuesta:', response);
+          }
+
           mostrarMensajeExitoso();
         },
-        error: function(error) {
-          $('#result').html('Error al cargar la imagen. Detalles: ' + JSON.stringify(error));
-          mostrarMensajeError();
-          setTimeout(function () {
-            cargarContenidoModal();
-          }, 2000);
-        }
-      });
-    }
 
-    function cargarContenidoModal() {
-      var previewImage = document.getElementById('preview-image-media_imagenes');
-      previewImage.src = '#';
-      var uploadButton = document.getElementById('open-popup-media_imagenes');
-      uploadButton.disabled = true;
-      $('#modalPublicar').modal('show');
-      mostrarMensajeExitoso();
-    }
-
-    function mostrarMensajeExitoso() {
-      var mensajeExitoso = document.getElementById('mensaje-exitoso-media_imagenes');
-      mensajeExitoso.innerHTML = 'Cargado exitosamente';
-      mensajeExitoso.classList.remove('hidden-message-media_imagenes');
-      setTimeout(function () {
-        mensajeExitoso.classList.add('hidden-message-media_imagenes');
-      }, 3000);
-    }
-
-    function mostrarMensajeError() {
-      var mensajeError = document.getElementById('mensaje-exitoso-media_imagenes');
-      mensajeError.textContent = 'Error al cargar la imagen';
-      mensajeError.classList.remove('hidden-message-media_imagenes');
-      setTimeout(function () {
-        mensajeError.classList.add('hidden-message-media_imagenes');
-      }, 3000);
-    }
-
-    const modalPublicar = document.getElementById("modalPublicar");
-    var nombreUsuario = localStorage.getItem("usuario");
-
-    window.addEventListener("load", function () {
-      modalPublicar.style.display = "block";
-      document.body.style.overflow = "hidden"; 
-    });
-
-    const closeButton = document.querySelector(".btn-close");
-    closeButton.addEventListener("click", function (event) {
-      document.body.style.overflow = "auto";
-    });
-
-    function addDeleteEvent(imageElement) {
-      const closeButton = document.createElement("span");
-      closeButton.className = "close-button-media_imagenes";
-      closeButton.innerHTML = "&#x2715;";
-      closeButton.addEventListener("click", function () {
-        const imageWrapper = imageElement.parentNode;
-        imageWrapper.parentNode.removeChild(imageWrapper);
-      });
-      imageElement.appendChild(closeButton);
-    }
-
-    const pickr = Pickr.create({
-      el: '#color-picker-btn-media_imagenes',
-      theme: 'classic',
-      default: '#0000FF8C',
-      swatches: [
-        '#FFFFFF73', '#0000007A', '#FF000094', '#00FF006B', '#0000FF5C', '#FFFF0069', '#FE02FE59', '#0CDBDBB3'
-      ],
-      components: {
-        preview: false,
-        opacity: false,
-        hue: true,
-        interaction: {
-          input: false,
-          clear: true,
-          save: true,
-          interaction: false
-        }
-      },
-      i18n: {
-        'btn:save': 'Guardar',
-        'btn:clear': 'Salir'
-      },
-      preview: {
-        label: 'Color seleccionado:',
+      error: function (error) {
+        console.error('Error al cargar la imagen:', error);
+        mostrarMensajeError();
       }
     });
+  }
 
-    pickr.on('save', (color) => {
-      selectedColor = color.toHEXA().toString();
-      document.getElementById('selected-color-media_imagenes').style.backgroundColor = selectedColor;
-      document.getElementById('file-description-media_imagenes').style.backgroundColor = selectedColor;
-    });
-  </script>
+  // ==== MENSAJES ====
+  function mostrarMensajeExitoso() {
+    const msg = document.getElementById('mensaje-exitoso-media_imagenes');
+    msg.textContent = 'Cargado exitosamente';
+    msg.classList.remove('hidden-message-media_imagenes');
+    setTimeout(() => msg.classList.add('hidden-message-media_imagenes'), 3000);
+  }
+
+  function mostrarMensajeError() {
+    const msg = document.getElementById('mensaje-exitoso-media_imagenes');
+    msg.textContent = 'Error al cargar la imagen';
+    msg.classList.remove('hidden-message-media_imagenes');
+    setTimeout(() => msg.classList.add('hidden-message-media_imagenes'), 3000);
+  }
+
+  // ==== COLOR PICKER ====
+  const pickr = Pickr.create({
+    el: '#color-picker-btn-media_imagenes',
+    theme: 'classic',
+    default: '#0000FF8C',
+    swatches: [
+      '#FFFFFF73', '#0000007A', '#FF000094', '#00FF006B',
+      '#0000FF5C', '#FFFF0069', '#FE02FE59', '#0CDBDBB3'
+    ],
+    components: {
+      preview: false,
+      opacity: false,
+      hue: true,
+      interaction: {
+        input: false,
+        clear: true,
+        save: true,
+        interaction: false
+      }
+    },
+    i18n: {
+      'btn:save': 'Guardar',
+      'btn:clear': 'Salir'
+    }
+  });
+
+  pickr.on('save', (color) => {
+    selectedColor = color.toHEXA().toString();
+    document.getElementById('selected-color-media_imagenes').style.backgroundColor = selectedColor;
+    document.getElementById('file-description-media_imagenes').style.backgroundColor = selectedColor;
+  });
+
+  // ==== COPIAR URL ====
+  function copiarUrlPublica() {
+    const urlInput = document.getElementById('url-publica-media_imagenes');
+    if (!urlInput || !urlInput.value) {
+      alert('No hay URL para copiar.');
+      return;
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(urlInput.value)
+        .then(() => alert('URL copiada al portapapeles.'))
+        .catch(err => {
+          console.error('Error al copiar:', err);
+          alert('No se pudo copiar la URL.');
+        });
+    } else {
+      urlInput.select();
+      document.execCommand('copy');
+      alert('URL copiada al portapapeles.');
+    }
+  }
+</script>
+
 {% endblock %}
