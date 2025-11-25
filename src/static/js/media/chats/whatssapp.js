@@ -3,7 +3,7 @@ async function cargarWhatsappDeUsuarioPOST() {
   const userId = raw ? parseInt(raw, 10) : NaN;
   if (!Number.isInteger(userId) || userId <= 0) return;
 
-  const res = await fetch('/social-chats-whatssapp/whatsapp/primary', {
+  const res = await fetch('/social-chats-whatssapp/whatsapp/primary/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const payload = {
 };
 
   try {
-    let res = await fetch('/social-chats-whatssapp/whatsapp', {
+    let res = await fetch('/social-chats-whatssapp/whatsapp/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'same-origin',

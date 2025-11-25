@@ -35,7 +35,7 @@ def _validate_e164(valor: str) -> str:
     return v
 
 # --- Listar ------------------------------------------------------------------
-@whatssapp.route('/social-chats-whatssapp/whatsapp', methods=['GET']) 
+@whatssapp.route('/social-chats-whatssapp/whatsapp/', methods=['GET']) 
 def whatsapp_list():
     user_id        = request.args.get('user_id', type=int)
     publicacion_id = request.args.get('publicacion_id', type=int)
@@ -87,7 +87,7 @@ def limpiar_y_convertir(valor_raw):
         return None
 
 
-@whatssapp.route('/social-chats-whatssapp/whatsapp', methods=['POST'])
+@whatssapp.route('/social-chats-whatssapp/whatsapp/', methods=['POST'])
 def whatsapp_create():
     data = request.get_json(force=True) or {}
 
@@ -182,7 +182,7 @@ def whatsapp_create():
 
 
  
-@whatssapp.route('/social-chats-whatssapp/whatsapp/primary', methods=['POST'])
+@whatssapp.route('/social-chats-whatssapp/whatsapp/primary/', methods=['POST'])
 def whatsapp_get_primary_post():
     data = request.get_json(silent=True) or {}
     user_id = data.get('user_id', None)
