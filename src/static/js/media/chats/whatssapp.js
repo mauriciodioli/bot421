@@ -67,7 +67,7 @@ const payload = {
   // contexto opcional
   ambito_rel_id: dominio_id ? Number(dominio_id) : null,
   categoria_rel_id: categoria_id ? Number(categoria_id) : null,
-  codigo_postal_id: codigo_postal_id ? Number(codigo_postal_id) : null
+  codigo_postal_id: codigo_postal_id 
 };
 
   try {

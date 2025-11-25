@@ -104,7 +104,7 @@ def whatsapp_create():
     categoria_id = limpiar_y_convertir(data.get('categoria_rel_id')) or 1
 
     # codigo_postal: si te llega un “código” y no el id, resolvelo acá
-    codigo_postal_id = limpiar_y_convertir(data.get('codigo_postal_id'))
+    codigo_postal_id = data.get('codigo_postal_id')
     if codigo_postal_id in (0, None):
         codigo_postal_id = None
     else:
